@@ -4,7 +4,7 @@
 #ifndef SVN_REVISION_H
 #define SVN_REVISION_H
 
-#define BUILD_REVISION 1
+#define BUILD_REVISION 31
 #define BUILD_HOST "SCHNEKRUS"
 #define BUILD_USER "schnek"
 #define BUILD_TIME __TIME__
