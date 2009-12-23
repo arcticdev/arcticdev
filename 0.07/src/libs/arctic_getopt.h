@@ -5,7 +5,7 @@
  */
 
 #ifndef _GETOPT_H
-#define _GETOPT_H
+#define _GETOPT_H //Getopt
 
 // getopt() wrapper 
 #define arctic_no_argument            0

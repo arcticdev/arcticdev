@@ -16,7 +16,6 @@ ConfigFile::ConfigFile()
 
 ConfigFile::~ConfigFile()
 {
-	
 }
 
 void remove_spaces(string& str)

@@ -141,11 +141,11 @@ void AuthCommServerSocket::HandlePacket(WorldPacket & recvData)
 		NULL,												// RSMSG_PONG
 		NULL,/*Deprecated*/									// RCMSG_SQL_EXECUTE
 		NULL,/*Deprecated*/									// RCMSG_RELOAD_ACCOUNTS
-		&AuthCommServerSocket::HandleAuthChallenge,		// RCMSG_AUTH_CHALLENGE
+		&AuthCommServerSocket::HandleAuthChallenge,		    // RCMSG_AUTH_CHALLENGE
 		NULL,												// RSMSG_AUTH_RESPONSE
 		NULL,												// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
 		&AuthCommServerSocket::HandleMappingReply,			// RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
-		&AuthCommServerSocket::HandleUpdateMapping,		// RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
+		&AuthCommServerSocket::HandleUpdateMapping,		    // RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
 		NULL,												// RSMSG_DISCONNECT_ACCOUNT
 		&AuthCommServerSocket::HandleTestConsoleLogin,		// RCMSG_TEST_CONSOLE_LOGIN
 		NULL,												// RSMSG_CONSOLE_LOGIN_RESULT
@@ -153,7 +153,7 @@ void AuthCommServerSocket::HandlePacket(WorldPacket & recvData)
 		NULL,												// RSMSG_SERVER_PING
 		&AuthCommServerSocket::HandleServerPong,			// RCMSG_SERVER_PONG
 		NULL,												// RSMSG_REALM_POP_REQ
-		&AuthCommServerSocket::HandlePopulationRespond,	// RCMSG_REALM_POP_RES
+		&AuthCommServerSocket::HandlePopulationRespond,     // RCMSG_REALM_POP_RES
 	};
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
@@ -548,9 +548,7 @@ void AuthCommServerSocket::SendPing()
 
 void AuthCommServerSocket::HandleServerPong(WorldPacket &recvData)
 {
-	// nothing
 }
-
 
 void AuthCommServerSocket::HandlePopulationRespond(WorldPacket & recvData)
 {
