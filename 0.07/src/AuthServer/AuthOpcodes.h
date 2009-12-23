@@ -4,8 +4,8 @@
  * See COPYING for license details.
  */
 
-#ifndef __AuthOPCODES_H
-#define __AuthOPCODES_H
+#ifndef __AUTHOPCODES_H
+#define __AUTHOPCODES_H
 
 enum RealmListOpcodes
 {

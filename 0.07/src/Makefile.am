@@ -1,1 +1,1 @@
-SUBDIRS = libs AuthServer WorldServer VoiceServer scripts
+SUBDIRS = libs AuthServer WorldServer VoiceServer
