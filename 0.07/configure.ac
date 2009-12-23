@@ -1,13 +1,17 @@
-## Process this file with autoconf to produce a configure script.
+# Process this file with autoconf to produce a configure script.
 # Prelude, basic settings for Autoconf
-# PACKAGE: WoWArcTic foundation
+# PACKAGE: WoWArcTic Foundation
 
-AC_INIT([WoWArcTic],[0.6],[WoWArcTic.ru],[WoWArcTic])
-
+AC_INIT([WoWArcTic],
+	    [0.7],
+	    [www.wowarctic.ru],
+		[wowarctic])
+			
 AC_PREREQ(2.5)
 
 if test -d obj; then rm -rf obj; fi
 
+## Set output files.
 AM_CONFIG_HEADER( config.h )
 INCLUDES="-I/usr/include -I/usr/local/include"
 AC_SUBST(INCLUDES)
@@ -257,15 +261,13 @@ else
 	CFLAGS="$CFLAGS $MYSQL_CFLAGS"
 	CXXFLAGS="$CXXFLAGS $MYSQL_CFLAGS"
 fi
-
+	
 # pcre 
 AX_PATH_LIB_PCRE([
 	LDFLAGS="$LDFLAGS $PCRE_LIBS"
 	CFLAGS="$CFLAGS $PCRE_CFLAGS"
 	CXXFLAGS="$CXXFLAGS $PCRE_CFLAGS"
 ],AC_MSG_ERROR(Couldn't find pcre library. Make sure your pcre path is correct.))
-
-
 
 AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", "Prefix")
 AC_DEFINE_UNQUOTED([SCRIPTDIR], "${scriptdir}", "librarydir")

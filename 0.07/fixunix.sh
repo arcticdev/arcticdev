@@ -1,8 +1,7 @@
 #! /bin/sh
-# 
 #  Converting text files from CR/LF to LF format.
 
-echo "Converting files to Unix format..."
+echo "Converting files to Unix format."
 
 find . -type f "(" \
    -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.s" -o \
@@ -17,4 +16,4 @@ find . -type f "(" \
                 touch -r _tmpfile {};
                 rm _tmpfile" \;
 
-echo "Done!"
+echo "All has passed well!"
