@@ -31,7 +31,7 @@ void AccountMgr::ReloadAccounts(bool silent)
 			// transform to uppercase
 			ARCTIC_TOUPPER(AccountName);
 
-			//Use private __GetAccount, for locks
+			// Use private __GetAccount, for locks
 			acct = __GetAccount(AccountName);
 			if(acct == 0)
 			{
@@ -90,7 +90,7 @@ void AccountMgr::AddAccount(Field* field)
 	string Username = field[1].GetString();
 	string Password = field[2].GetString();
 	// string EncryptedPassword = field[3].GetString();
-	string GMFlags		= field[3].GetString();
+	string GMFlags = field[3].GetString();
 
 	acct->AccountId = field[0].GetUInt32();
 	acct->AccountFlags = field[4].GetUInt8();
@@ -121,8 +121,8 @@ void AccountMgr::AddAccount(Field* field)
     acct->Muted = field[7].GetUInt32();
 	if ( (uint32)UNIXTIME > acct->Muted && acct->Muted != 0 && acct->Muted != 1) //1 = perm ban?
 	{
-		//Accounts should be unbanned once the date is past their set expiry date.
-		acct->Muted= 0;
+		// Accounts should be unbanned once the date is past their set expiry date.
+		acct->Muted = 0;
 		DEBUG_LOG("AccountMgr","Account %s's mute has expired.", Username.c_str());
 		sAuthSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u",acct->AccountId);
 	}
@@ -182,24 +182,24 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 {
 	uint32 id = field[0].GetUInt32();
 	Sha1Hash hash;
-	string Username     = field[1].GetString();
-	string Password	    = field[2].GetString();
-	//string EncryptedPassword = field[3].GetString();
-	string GMFlags		= field[3].GetString();
+	string Username = field[1].GetString();
+	string Password = field[2].GetString();
+	// string EncryptedPassword = field[3].GetString();
+	string GMFlags = field[3].GetString();
 
 	if(id != acct->AccountId)
 	{
-		//printf("Account %u `%s` is a duplicate.\n", id, acct->Username.c_str());
+		// printf("Account %u `%s` is a duplicate.\n", id, acct->Username.c_str());
 		sLog.outColor(TYELLOW, " >> deleting duplicate account %u [%s]...", id, Username.c_str());
 		sLog.outColor(TNORMAL, "\n");
 		sAuthSQL->Execute("DELETE FROM accounts WHERE acct=%u", id);
 		return;
 	}
 
-	acct->AccountId				= field[0].GetUInt32();
-	acct->AccountFlags			= field[4].GetUInt8();
-	acct->Banned				= field[5].GetUInt32();
-	if ((uint32)UNIXTIME > acct->Banned && acct->Banned != 0 && acct->Banned > 3) //1 = perm ban?
+	acct->AccountId = field[0].GetUInt32();
+	acct->AccountFlags = field[4].GetUInt8();
+	acct->Banned = field[5].GetUInt32();
+	if ((uint32)UNIXTIME > acct->Banned && acct->Banned != 0 && acct->Banned > 3) // 1 = perm ban?
 	{
 		// Accounts should be frozen once the date is past their set expiry date.
 		acct->Banned = 2;
@@ -278,6 +278,7 @@ void AccountMgr::ReloadAccountsCallback()
 {
 	ReloadAccounts(true);
 }
+
 BAN_STATUS IPBanner::CalculateBanStatus(in_addr ip_address)
 {
 	Guard lguard(listBusy);
@@ -469,7 +470,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	// packet header
 	ByteBuffer data(m_realms.size() * 150 + 20);
 	data << uint8(0x10);
-	data << uint16(0);	  // Size Placeholder
+	data << uint16(0); // Size Placeholder
 
 	// dunno what this is..
 	data << uint32(0);
@@ -482,7 +483,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	for(; itr != m_realms.end(); ++itr)
 	{
 		data << itr->second->Icon;
-		data << uint8(0);		// delete when using data << itr->second->Lock;
+		data << uint8(0); // delete when using data << itr->second->Lock;
 		data << itr->second->Colour;		
 
 		// This part is the same for all.
@@ -490,11 +491,11 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 		data << itr->second->Address;
 		data << itr->second->Population;
 
-		/* Get our character count */
+		// Get our character count.
 		it = itr->second->CharacterMap.find(Socket->GetAccountID());
 		data << uint8( (it == itr->second->CharacterMap.end()) ? 0 : it->second );
 		data << itr->second->WorldRegion;
-		data << uint8(6);    //Realm ID
+		data << uint8(6); // Realm ID
 	}
 	realmLock.Release();
 
@@ -515,7 +516,6 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 		s = *itr2;
 		s->RefreshRealmsPop();
 	}
-
 }
 
 void InformationCore::TimeoutSockets()
@@ -523,7 +523,7 @@ void InformationCore::TimeoutSockets()
 	if(!usepings)
 		return;
 
-	/* burlex: this is vulnerable to race conditions, adding a mutex to it. */
+	// burlex: this is vulnerable to race conditions, adding a mutex to it.
 	serverSocketLock.Acquire();
 
 	// check the ping time

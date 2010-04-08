@@ -88,7 +88,7 @@ const char * talententryFormat = "uuuuuuuuuxxxxuxxuxxxuxx";
 const char * talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuxux";
 const char * spellcasttimeFormat = "uuxx";
 const char * spellradiusFormat = "ufxf";
-const char * spellrangeFormat = "u"/*Id*/"f"/*MinRange*/"x"/*?*/"f"/*MaxRange*/"x"/*?*/"u"/*?*/"sxxxxxxxxxxxxxxxx"/*?*/"sxxxxxxxxxxxxxxxx";/*?*/
+const char * spellrangeFormat = "u"/*Id*/"f"/*MinRange*/"x""f"/*MaxRange*/"x""u""sxxxxxxxxxxxxxxxx""sxxxxxxxxxxxxxxxx";
 
 const char * WorldMapOverlayfmt = "uxuxxxxxxxxxxxxxx";
 const char * SpellRuneCostfmt = "uuuuu";
@@ -107,23 +107,23 @@ const char * charraceFormat = "uxuxuuxuxxxxxusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 const char * charclassFormat = "uxuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuxux";
 const char * creaturefamilyFormat = "ufufuuuuuxsxxxxxxxxxxxxxxxxx";
 const char * mapentryFormat =
-    "u"                 // 0 id
-	"s"					// 1 name_internal
-	"u"					// 2 map_type
-	"u"					// 3 is_pvp_zone
-	"sxxxxxxxxxxxxxxxx"	// 4-20 real_name
-	"u"					// 21 linked_zone
-	"sxxxxxxxxxxxxxxxx" // 22-38 hordeIntro
-	"sxxxxxxxxxxxxxxxx" // 39-55 allianceIntro
-	"u"					// 56 multimap_id
-	"x"					// 57 unk_float (all 1 but arathi 1.25)
-	"s"					// 58 normalReqText
-	"u"					// 59 parent_map
-	"u"					// 60 start_x
-	"u"					// 61 start_y
-	"u"					// 62 addon
-	"x"					// 63 unk
-	"x";				// 64 unk
+	"u"                  // 0 id
+	"s"                  // 1 name_internal
+	"u"                  // 2 map_type
+	"u"                  // 3 is_pvp_zone
+	"sxxxxxxxxxxxxxxxx"  // 4-20 real_name
+	"u"                  // 21 linked_zone
+	"sxxxxxxxxxxxxxxxx"  // 22-38 hordeIntro
+	"sxxxxxxxxxxxxxxxx"  // 39-55 allianceIntro
+	"u"                  // 56 multimap_id
+	"x"                  // 57 unk_float (all 1 but arathi 1.25)
+	"s"                  // 58 normalReqText
+	"u"                  // 59 parent_map
+	"u"                  // 60 start_x
+	"u"                  // 61 start_y
+	"u"                  // 62 addon
+	"x"                  // 63 unk
+	"x";                 // 64 unk
 
 const char * itemrandomsuffixformat = "usxxxxxxxxxxxxxxxxxuuuuuuuuuu";
 const char * chatchannelformat = "uuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
@@ -237,62 +237,62 @@ bool LoadDBCs()
 void FreeDBCs()
 {
     dbcAreaPOI.Cleanup();
-	dbcAreaTrigger.Cleanup();
-	dbcCharTitlesEntry.Cleanup();
-	dbcGemProperty.Cleanup();
-	dbcGlyphProperty.Cleanup();
-	dbcItemSet.Cleanup();
-	dbcLock.Cleanup();
-	dbcSpell.Cleanup();
-	dbcSpellDuration.Cleanup();
-	dbcSpellRange.Cleanup();
-	dbcSpellRuneCost.Cleanup();
-	dbcEmoteEntry.Cleanup();
-	dbcSpellRadius.Cleanup();
-	dbcSpellCastTime.Cleanup();
-	dbcArea.Cleanup();
-	dbcFactionTemplate.Cleanup();
-	dbcFaction.Cleanup();
-	dbcEnchant.Cleanup();
-	dbcRandomProps.Cleanup();
-	dbcSkillLineSpell.Cleanup();
-	dbcSkillLine.Cleanup();
-	dbcTaxiNode.Cleanup();
-	dbcTaxiPath.Cleanup();
-	dbcTaxiPathNode.Cleanup();
-	dbcAuctionHouse.Cleanup();
-	dbcTalent.Cleanup();
-	dbcTalentTab.Cleanup();
-	dbcCreatureSpellData.Cleanup();
-	dbcCreatureFamily.Cleanup();
-	dbcCharClass.Cleanup();
-	dbcCharRace.Cleanup();
-	dbcMap.Cleanup();
-	dbcItemExtendedCost.Cleanup();
-	dbcItemRandomSuffix.Cleanup();
-	dbcItemLimitCategory.Cleanup();
-	dbcCombatRating.Cleanup();
-	dbcChatChannels.Cleanup();
-	dbcDurabilityQuality.Cleanup();
-	dbcDurabilityCosts.Cleanup();
-	dbcBankSlotPrices.Cleanup();
-	dbcStableSlotPrices.Cleanup();
-	dbcBarberShopStyle.Cleanup();
-	dbcBarberShopPrices.Cleanup();
-	dbcMeleeCrit.Cleanup();
-	dbcMeleeCritBase.Cleanup();
-	dbcSpellCrit.Cleanup();
-	dbcSpellCritBase.Cleanup();
-	dbcManaRegen.Cleanup();
-	dbcManaRegenBase.Cleanup();
-	dbcHPRegen.Cleanup();
-	dbcHPRegenBase.Cleanup();
-	dbcSpellShapeshiftForm.Cleanup();
-	dbcAchievement.Cleanup();
-	dbcAchivementCriteria.Cleanup();
-	dbcVehicle.Cleanup();
-	dbcVehicleSeat.Cleanup();
-	dbcWorldMapOverlay.Cleanup();
-	dbcSummonProps.Cleanup();
+    dbcAreaTrigger.Cleanup();
+    dbcCharTitlesEntry.Cleanup();
+    dbcGemProperty.Cleanup();
+    dbcGlyphProperty.Cleanup();
+    dbcItemSet.Cleanup();
+    dbcLock.Cleanup();
+    dbcSpell.Cleanup();
+    dbcSpellDuration.Cleanup();
+    dbcSpellRange.Cleanup();
+    dbcSpellRuneCost.Cleanup();
+    dbcEmoteEntry.Cleanup();
+    dbcSpellRadius.Cleanup();
+    dbcSpellCastTime.Cleanup();
+    dbcArea.Cleanup();
+    dbcFactionTemplate.Cleanup();
+    dbcFaction.Cleanup();
+    dbcEnchant.Cleanup();
+    dbcRandomProps.Cleanup();
+    dbcSkillLineSpell.Cleanup();
+    dbcSkillLine.Cleanup();
+    dbcTaxiNode.Cleanup();
+    dbcTaxiPath.Cleanup();
+    dbcTaxiPathNode.Cleanup();
+    dbcAuctionHouse.Cleanup();
+    dbcTalent.Cleanup();
+    dbcTalentTab.Cleanup();
+    dbcCreatureSpellData.Cleanup();
+    dbcCreatureFamily.Cleanup();
+    dbcCharClass.Cleanup();
+    dbcCharRace.Cleanup();
+    dbcMap.Cleanup();
+    dbcItemExtendedCost.Cleanup();
+    dbcItemRandomSuffix.Cleanup();
+    dbcItemLimitCategory.Cleanup();
+    dbcCombatRating.Cleanup();
+    dbcChatChannels.Cleanup();
+    dbcDurabilityQuality.Cleanup();
+    dbcDurabilityCosts.Cleanup();
+    dbcBankSlotPrices.Cleanup();
+    dbcStableSlotPrices.Cleanup();
+    dbcBarberShopStyle.Cleanup();
+    dbcBarberShopPrices.Cleanup();
+    dbcMeleeCrit.Cleanup();
+    dbcMeleeCritBase.Cleanup();
+    dbcSpellCrit.Cleanup();
+    dbcSpellCritBase.Cleanup();
+    dbcManaRegen.Cleanup();
+    dbcManaRegenBase.Cleanup();
+    dbcHPRegen.Cleanup();
+    dbcHPRegenBase.Cleanup();
+    dbcSpellShapeshiftForm.Cleanup();
+    dbcAchievement.Cleanup();
+    dbcAchivementCriteria.Cleanup();
+    dbcVehicle.Cleanup();
+    dbcVehicleSeat.Cleanup();
+    dbcWorldMapOverlay.Cleanup();
+    dbcSummonProps.Cleanup();
     dbcCreatureDisplayInfo.Cleanup();
 }
