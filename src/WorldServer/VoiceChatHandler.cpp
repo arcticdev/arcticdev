@@ -378,16 +378,25 @@ void VoiceChatHandler::Update()
 
 #else // VOICE_CHAT
 
-void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
+void WorldSession::HandleChannelWatchOpcode(WorldPacket & recv_data)
 {
+    OUT_DEBUG("WORLD: Received CMSG_SET_CHANNEL_WATCH");
 }
 
-void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & recv_data)
+void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
 {
+    OUT_DEBUG("WORLD: Received CMSG_VOICE_SESSION_ENABLE");
+}
+
+void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket & recv_data)
+{
+    OUT_DEBUG("WORLD: CMSG_CHANNEL_VOICE_ON");
+    // Enable Voice button in channel context menu
 }
 
 void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
 {
+    OUT_DEBUG("WORLD: Received CMSG_SET_ACTIVE_VOICE_CHANNEL");
 }
 
 #endif // VOICE_CHAT

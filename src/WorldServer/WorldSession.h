@@ -275,7 +275,7 @@ public:
 			delete [] sAccountData[index].data;
 		sAccountData[index].data = data;
 		sAccountData[index].sz = sz;
-		if(!initial && !sAccountData[index].bIsDirty)		// Mark as "changed" or "dirty"
+		if(!initial && !sAccountData[index].bIsDirty) // Mark as "changed" or "dirty"
 			sAccountData[index].bIsDirty = true;
 		else if(initial)
 			sAccountData[index].bIsDirty = false;
