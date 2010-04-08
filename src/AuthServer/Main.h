@@ -1,0 +1,37 @@
+/*
+ * Arctic MMORPG Server Software
+ * Copyright (c) 2008-2010 Arctic Server Team
+ * See COPYING for license details.
+ */
+
+#include "../libs/Singleton.h"
+
+extern bool mrunning;
+class AuthSocket;
+extern set<AuthSocket*> _authSockets;
+extern Mutex _authSocketLock;
+extern bool m_encryptedPasswords;
+
+struct AllowedIP
+{
+	unsigned int IP;
+	unsigned char Bytes;
+};
+
+bool IsServerAllowed(unsigned int IP);
+bool IsServerAllowedMod(unsigned int IP);
+
+class AuthServer;
+class AuthServer : public Singleton< AuthServer >
+{
+public:
+	void CheckForDeadSockets();
+	void Run(int argc, char ** argv);
+	void Stop();
+	uint32 max_build;
+	uint32 min_build;
+	uint8 sql_hash[20];
+
+private:
+	bool m_stopEvent;
+};
