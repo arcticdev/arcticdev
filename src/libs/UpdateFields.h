@@ -1096,7 +1096,7 @@ enum EUnitFields
     PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_4                 = UNIT_END + 0x0411, // Size: 7, Type: INT, Flags: PRIVATE
     PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_5                 = UNIT_END + 0x0412, // Size: 7, Type: INT, Flags: PRIVATE
     PLAYER_FIELD_MOD_DAMAGE_DONE_PCT_6                 = UNIT_END + 0x0413, // Size: 7, Type: INT, Flags: PRIVATE
-    PLAYER_FIELD_MOD_HEALING_DONE_PO                   = UNIT_END + 0x0414, // Size: 1, Type: INT, Flags: PRIVATE
+    PLAYER_FIELD_MOD_HEALING_DONE_POS                  = UNIT_END + 0x0414, // Size: 1, Type: INT, Flags: PRIVATE
     PLAYER_FIELD_MOD_HEALING_PCT                       = UNIT_END + 0x0415, // Size: 1, Type: FLOAT, Flags: PRIVATE
     PLAYER_FIELD_MOD_HEALING_DONE_PCT                  = UNIT_END + 0x0416, // Size: 1, Type: FLOAT, Flags: PRIVATE
     PLAYER_FIELD_MOD_TARGET_RESISTANCE                 = UNIT_END + 0x0417, // Size: 1, Type: INT, Flags: PRIVATE

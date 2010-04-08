@@ -177,7 +177,7 @@ bool Rehash()
 	vector<string> vips = StrSplit(ips, " ");
 	vector<string> vipsmod = StrSplit(ipsmod, " ");
 
-	m_allowedIpLock.Acquire();
+	// m_allowedIpLock.Acquire(); // I think no need fucking mutex here 
 	m_allowedIps.clear();
 	m_allowedModIps.clear();
 	vector<string>::iterator itr;
@@ -236,7 +236,7 @@ bool Rehash()
 	if( InformationCore::getSingletonPtr() != NULL )
 		sInfoCore.CheckServers();
 
-	m_allowedIpLock.Release();
+	// m_allowedIpLock.Release(); // if Any problem uncomment two lines 
 
 	return true;
 }
