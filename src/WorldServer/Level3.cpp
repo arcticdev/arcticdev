@@ -1261,6 +1261,7 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 
+	plr->UpdateStats(); 
 	plr->ApplyLevelInfo(Info, Level);
 	return true;
 }

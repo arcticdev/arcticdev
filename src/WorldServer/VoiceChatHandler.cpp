@@ -10,80 +10,68 @@
 
 void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
 {
-	uint8 enabled, unk;
-	recv_data >> enabled;
-	recv_data >> unk;
+    OUT_DEBUG("WORLD: Received CMSG_VOICE_SESSION_ENABLE"); 
+    uint8 voice, mic; 
+    recv_data >> voice >> mic; 
+ 
+    WorldPacket data(SMSG_VOICE_SESSION_ENABLE, 2); 
+    data << voice; 
+    data << mic; 
+    SendPacket(&data); 
+} 
 
-	if(!enabled)
-	{
-		/*
-		{SERVER} Packet: (0x039F) UNKNOWN PacketSize = 16
-		|------------------------------------------------|----------------|
-		|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-		|------------------------------------------------|----------------|
-		|F3 0D 13 01 00 00 00 00 4A C5 00 00 00 00 D1 E1 |........J.......|
-		-------------------------------------------------------------------
-		uint64 player_guid
-		uint64 channel_id
-		*/
-	}
-	else
-	{
-		/*
-		{SERVER} Packet: (0x03D8) UNKNOWN PacketSize = 24
-		|------------------------------------------------|----------------|
-		|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-		|------------------------------------------------|----------------|
-		|4B C5 00 00 00 00 D1 E1 00 6D 6F 6F 63 6F 77 00 |K........moocow.|
-		|F3 0D 13 01 00 00 00 00                         |........        |
-		-------------------------------------------------------------------
-		uint8 channel_id?
-		uint8 channel_type (00=custom channel, 03=party, 04=raid?)
-		string channel_name (not applicable to party/raid)
-		uint64 player_guid
-		*/
-	}
-}
+void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket & recv_data) 
+{ 
+    OUT_DEBUG("WORLD: Received CMSG_CHANNEL_VOICE_ON"); 
+    recv_data.hexlike(); 
+} 
 
-void WorldSession::HandleChannelVoiceQueryOpcode(WorldPacket & recv_data)
-{
-	string name;
-	recv_data >> name;
+void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data) 
+{ 
+    OUT_DEBUG("WORLD: Received CMSG_SET_ACTIVE_VOICE_CHANNEL"); 
+ 
+    if(!sVoiceChatHandler.CanUseVoiceChat()) 
+        return; 
+ 
+    uint8 type; 
+    uint32 id; // I think this is channel crap, 5 is custom, 
 
-	// custom channel
-	Channel * chn = channelmgr.GetChannel(name.c_str(), _player);
-	if(chn == NULL || chn->voice_enabled == false || chn->m_general)
-		return;
+    recv_data >> type >> id; 
 
-	WorldPacket data(SMSG_CHANNEL_NOTIFY_AVAILABLE_VOICE_SESSION, 17+chn->m_name.size());
-	data << uint32( 0x00002e57 );
-	data << uint32( 0xe0e10000 );
-	data << uint8( 0 ); // 00 = custom, 03 = party, 04 = raid
-	data << chn->m_name;
-	data << _player->GetGUID();
-	SendPacket(&data);
-}
+    if(type == 5) 
+    { 
+    // custom channel 
+    Channel * chn = channelmgr.GetChannel(id); 
 
-void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
-{
-	if(!sVoiceChatHandler.CanUseVoiceChat())
-		return;
+    if(chn == NULL) 
+        return; 
 
-	uint32 type;
-	string name;
-	recv_data >> type >> name;
-	if(type == 0)
-	{
-		// custom channel
-		Channel * chn = channelmgr.GetChannel(name.c_str(), _player);
-		if(chn == NULL)
-			return;
+    if(chn->m_general || !chn->voice_enabled) 
+        return; 
 
-		if(chn->m_general || !chn->voice_enabled)
-			return;
+    chn->JoinVoiceChannel(_player); 
+    } 
+} 
 
-		chn->JoinVoiceChannel(_player);
-	}
+void WorldSession::HandleChannelWatchOpcode(WorldPacket & recv_data) 
+{ 
+    OUT_DEBUG("WORLD: Received CMSG_SET_CHANNEL_WATCH"); 
+
+    string name;
+    recv_data >> name;
+
+    // custom channel
+    Channel * chn = channelmgr.GetChannel(name.c_str(), _player);
+    if(chn == NULL || chn->voice_enabled == false || chn->m_general)
+        return;
+
+    WorldPacket data(SMSG_AVAILABLE_VOICE_CHANNEL, 17+chn->m_name.size());
+    data << uint32( 0x00002e57 );
+    data << uint32( 0xe0e10000 );
+    data << uint8( 0 ); // 00 = custom, 03 = party, 04 = raid
+    data << chn->m_name;
+    data << _player->GetGUID();
+    SendPacket(&data);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -112,7 +100,6 @@ void VoiceChatHandler::OnRead(WorldPacket* pck)
 	{
 	case VOICECHAT_SMSG_PONG:
 		{
-			printf("!! VOICECHAT PONGZ!\n");
 			m_client->last_pong = UNIXTIME;
 		}break;
 	case VOICECHAT_SMSG_CHANNEL_CREATED:
@@ -175,7 +162,7 @@ void VoiceChatHandler::SocketDisconnected()
 	m_client = NULL;
 	m_requests.clear();
 
-	WorldPacket data(SMSG_VOICE_SYSTEM_STATUS, 2);
+	WorldPacket data(SMSG_VOICE_CHAT_STATUS, 2);
 	data << uint8(2);
 	data << uint8(0);
 	sWorld.SendGlobalMessage(&data, NULL);
@@ -355,7 +342,7 @@ void VoiceChatHandler::Update()
 				// connected!
 				m_client = s;
 				Log.Notice("VoiceChatHandler", "Connected to %s:%u.", ip_s.c_str(), port);
-				WorldPacket data(SMSG_VOICE_SYSTEM_STATUS, 2);
+				WorldPacket data(SMSG_VOICE_CHAT_STATUS, 2);
 				data << uint8(2) << uint8(1);
 				sWorld.SendGlobalMessage(&data, NULL);
 

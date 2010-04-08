@@ -183,7 +183,8 @@ public:
 	UnitPointer CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, UnitPointer u_caster);
 	void _Expire();
 	
-	void ExpireAndDelete();
+    void ExpireAndDelete(); 
+    void ExpireAndDelete(uint32 delay); 
 
 	ARCTIC_INLINE bool isQuestGiver()
 	{

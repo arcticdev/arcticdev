@@ -404,6 +404,7 @@ public:
 
 	ARCTIC_INLINE std::string getGmClientChannel() { return GmClientChannel; }
 
+	// MOTD line.
 	void SetMotd(const char *motd) { m_motd = motd; }
 	ARCTIC_INLINE const char* GetMotd() const { return m_motd.c_str(); }
 
