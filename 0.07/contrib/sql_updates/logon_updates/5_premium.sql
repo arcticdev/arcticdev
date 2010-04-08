@@ -1,1 +1,0 @@
-ALTER TABLE accounts ADD COLUMN premium int(10) DEFAULT 0 NOT NULL AFTER muted;
