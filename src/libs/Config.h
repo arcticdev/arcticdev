@@ -75,26 +75,16 @@
 // A
 #define ARENATEAM_RURU 1
 // #define ARENATEAM_ENGB 1
-#define AUCTIONHOUSE_RURU 1
-// #define AUCTIONHOUSE_ENGB 1
-#define AUCTIONMGR_RURU 1
-// #define AUCTIONMGR_ENGB 1
 #define AUTHCOMMCLIENT_RURU 1
 // #define AUTHCOMMCLIENT_ENGB 1
 #define AUTHCOMMHANDLER_RURU 1
 // #define AUTHCOMMHANDLER_ENGB 1
 ////////////////////////////////////////////////////////////////////////////////////
 // B
-#define BATTLEGROUNDHANDLER_RURU 1
-// #define BATTLEGROUNDHANDLER_ENGB 1
 #define BATTLEGROUNDMGR_RURU 1
 // #define BATTLEGROUNDMGR_ENGB 1
 ////////////////////////////////////////////////////////////////////////////////////
 // C
-#define CCONSOLE_RURU 1
-// #define CCONSOLE_ENGB 1
-#define CHANNELHANDLER_RURU 1
-// #define CHANNELHANDLER_ENGB 1
 #define CHARACTERHANDLER_RURU 1
 // #define CHARACTERHANDLER_ENGB 1
 #define CHAT_RURU 1
@@ -103,8 +93,6 @@
 // #define CHATHANDLER_ENGB 1
 #define CLUSTERINTERFACE_RURU 1
 // #define CLUSTERINTERFACE_ENGB 1
-#define COLLIDEINTERFACE_RURU 1
-// #define COLLIDEINTERFACE_RURU 1
 #define COMBATHANDLER_RURU 1
 // #define COMBATHANDLER_ENGB 1
 #define COMMON_RURU 1
@@ -157,26 +145,16 @@
 // A
 #ifdef ARENATEAM_RURU
 // #ifdef ARENATEAM_ENGB
-#ifdef AUCTIONHOUSE_RURU
-// #ifdef AUCTIONHOUSE_ENGB
-#ifdef AUCTIONMGR_RURU
-// #ifdef AUCTIONMGR_ENGB
 #ifdef AUTHCOMMCLIENT_RURU
 // #ifdef AUTHCOMMCLIENT_ENGB
 #ifdef AUTHCOMMHANDLER_RURU
 // #ifdef AUTHCOMMHANDLER_ENGB
 ////////////////////////////////////////////////////////////////////////////////////
 // B
-#ifdef BATTLEGROUNDHANDLER_RURU 
-// #ifdef BATTLEGROUNDHANDLER_ENGB
 #ifdef BATTLEGROUNDMGR_RURU
 // #ifdef BATTLEGROUNDMGR_ENGB
 ////////////////////////////////////////////////////////////////////////////////////
 // C
-#ifdef CCONSOLE_RURU
-// #ifdef CCONSOLE_ENGB
-#ifdef CHANNELHANDLER_RURU
-// #ifdef CHANNELHANDLER_ENGB
 #ifdef CHARACTERHANDLER_RURU 
 // #ifdef CHARACTERHANDLER_ENGB 
 #ifdef CHAT_RURU
@@ -185,8 +163,6 @@
 // #ifdef CHATHANDLER_ENGB 
 #ifdef CLUSTERINTERFACE_RURU
 // #ifdef CLUSTERINTERFACE_ENGB
-#ifdef COLLIDEINTERFACE_RURU 
-// #ifdef COLLIDEINTERFACE_ENGB
 #ifdef COMBATHANDLER_RURU 
 // #ifdef COMBATHANDLER_ENGB 
 #ifdef COMMON_RURU
@@ -241,14 +217,6 @@
 #else
 #include "locale/ArenaTeam/enGB_ArenaTeam.h"
 #endif
-#include "locale/AuctionHouse/ruRU_AuctionHouse.h"
-#else
-#include "locale/AuctionHouse/enGB_AuctionHouse.h"
-#endif
-#include "locale/AuctionMgr/ruRU_AuctionMgr.h"
-#else
-#include "locale/AuctionMgr/enGB_AuctionMgr.h"
-#endif
 #include "locale/AuthCommClient/ruRU_AuthCommClient.h"
 #else
 #include "locale/AuthCommClient/enGB_AuthCommClient.h"
@@ -259,24 +227,12 @@
 #endif
 ////////////////////////////////////////////////////////////////////////////////////
 // B
-#include "locale/BattlegroundHandler/ruRU_BattlegroundHandler.h"
-#else
-#include "locale/BattlegroundHandler/enGB_BattlegroundHandler.h"
-#endif
 #include "locale/BattlegroundMgr/ruRU_BattlegroundMgr.h"
 #else
 #include "locale/BattlegroundMgr/enGB_BattlegroundMgr.h"
 #endif
 ////////////////////////////////////////////////////////////////////////////////////
 // C
-#include "locale/CConsole/ruRU_CConsole.h"
-#else
-#include "locale/CConsole/enGB_CConsole.h"
-#endif
-#include "locale/ChannelHandler/ruRU_ChannelHandler.h"
-#else
-#include "locale/ChannelHandler/enGB_ChannelHandler.h"
-#endif
 #include "locale/CharacterHandler/ruRU_CharacterHandler.h"
 #else
 #include "locale/CharacterHandler/enGB_CharacterHandler.h"
@@ -292,10 +248,6 @@
 #include "locale/ClusterInterface/ruRU_ClusterInterface.h"
 #else
 #include "locale/ClusterInterface/enGB_ClusterInterface.h"
-#endif
-#include "locale/CollideInterface/ruRU_CollideInterface.h"
-#else
-#include "locale/CollideInterface/enGB_CollideInterface.h"
 #endif
 #include "locale/CombatHandler/ruRU_CombatHandler.h"
 #else
