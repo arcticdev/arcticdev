@@ -33,6 +33,9 @@ public:
 	void HookOnPlayerKill(PlayerPointer plr, UnitPointer pVictim);
 	void HookOnHK(PlayerPointer plr);
 	void HookOnShadowSight();
+	void SpawnControlPoint(uint32 Id, uint32 Type);
+	void CaptureControlPoint(uint32 Id, uint32 Team);
+	void SOTARebuild(bool m_reliccaptured);
 	void OnPlatformTeleport(PlayerPointer plr);
     void Respawn();
 	

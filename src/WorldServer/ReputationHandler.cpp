@@ -157,15 +157,15 @@ void Player::_InitialReputation()
 				SetFlagAtWar(rep->flag);
 
 			// Visible-ness shit.
-			if((f->parentFaction == 469 && GetTeam() == 0) ||		// Alliance own faction.
-				(f->parentFaction == 67 && GetTeam() == 1) )		 // Horde own faction.
+			if((f->parentFaction == 469 && GetTeam() == 0) || // Alliance own faction.
+				(f->parentFaction == 67 && GetTeam() == 1) ) // Horde own faction.
 			{
 				SetFlagVisible(rep->flag);
 				SetFlagPeaceForced(rep->flag);
 			}
 
-			if((f->parentFaction == 469 && GetTeam() == 1) ||		// Alliance own faction.
-				(f->parentFaction == 67 && GetTeam() == 0) )		 // Horde own faction.
+			if((f->parentFaction == 469 && GetTeam() == 1) || // Alliance own faction.
+				(f->parentFaction == 67 && GetTeam() == 0) ) // Horde own faction.
 			{
 				SetForcedInvisible(rep->flag);
 			}
@@ -280,12 +280,6 @@ bool Player::IsHostileBasedOnReputation(FactionDBC * dbc)
 	else
 		return false;
 
-	/*map<uint32, FactionReputation>::iterator itr = m_reputation.find(Faction);
-	if(itr == m_reputation.end()) return false;
-	if(itr->second.flag & FACTION_FLAG_AT_WAR || GetReputationRankFromStanding(itr->second.standing) <= STANDING_HOSTILE)
-		return true;
-	else
-		return false;*/
 }
 
 void Player::ModStanding(uint32 Faction, int32 Value)

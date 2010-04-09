@@ -4,8 +4,6 @@
  * See COPYING for license details.
  */
 
-// MapCell.h
-
 #ifndef __MAP_CELL_H
 #define __MAP_CELL_H
 

@@ -4,7 +4,6 @@
  * See COPYING for license details.
  */
 
-// MapCell.cpp
 #include "StdAfx.h"
 
 MapCell::MapCell()
@@ -130,8 +129,8 @@ void MapCell::RemoveObjects()
 	}
 	_respawnObjects.clear();
 
-	//This time it's simpler! We just remove everything :)
-	ObjectPointer obj; //do this outside the loop!
+	// This time it's simpler! We just remove everything :)
+	ObjectPointer obj; // do this outside the loop!
 	for(itr = _objects.begin(); itr != _objects.end();)
 	{
 		obj = (*itr);
@@ -151,8 +150,6 @@ void MapCell::RemoveObjects()
 			if(!obj->m_loadedFromDB)
 				continue;
 		}
-
-
 
 		if( obj->Active )
 			obj->Deactivate( _mapmgr );
@@ -241,7 +238,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 		}
 	}
 
-	if(sp->GOSpawns.size())//got GOs
+	if(sp->GOSpawns.size()) // got GOs
 	{
 		GameObjectPointer go;
 		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
@@ -267,20 +264,17 @@ void MapCell::LoadObjects(CellSpawns * sp)
 	}
 }
 
-
 void MapCell::QueueUnloadPending()
 {
 	if(_unloadpending)
 		return;
 
 	_unloadpending = true;
-	//DEBUG_LOG("MapCell", "Queueing pending unload of cell %u %u", _x, _y);
 	sEventMgr.AddEvent(_mapmgr, &MapMgr::UnloadCell,(uint32)_x,(uint32)_y,MAKE_CELL_EVENT(_x,_y),sWorld.map_unload_time * 1000,1,0);
 }
 
 void MapCell::CancelPendingUnload()
 {
-	//DEBUG_LOG("MapCell", "Cancelling pending unload of cell %u %u", _x, _y);
 	if(!_unloadpending)
 		return;
 
@@ -289,7 +283,6 @@ void MapCell::CancelPendingUnload()
 
 void MapCell::Unload()
 {
-	//DEBUG_LOG("MapCell", "Unloading cell %u %u", _x, _y);
 	ASSERT(_unloadpending);
 	if(_active)
 		return;

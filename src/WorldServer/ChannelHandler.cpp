@@ -21,7 +21,7 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 	recvPacket >> channelname;
 	recvPacket >> pass;
 
-	if(!stricmp(channelname.c_str(), ZLOOFGROUPAI) && !sWorld.m_lfgForNonLfg)
+	if(!stricmp(channelname.c_str(), "LookingForGroup") && !sWorld.m_lfgForNonLfg)
 	{
 		// make sure we have lfg dungeons
 		for(i = 0; i < 3; ++i)
@@ -42,7 +42,7 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 		return;
 
 	chn->AttemptJoin(_player, pass.c_str());
-	DEBUG_LOG(ZCHANNESJOAI, "%s", channelname.c_str());
+	DEBUG_LOG("ChannelJoin", "%s", channelname.c_str());
 }
 
 void WorldSession::HandleChannelLeave(WorldPacket& recvPacket)

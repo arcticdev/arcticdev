@@ -95,9 +95,9 @@ int32 GetBattlegroundTypeFromCreature(CreaturePointer pCreature)
 		return BATTLEGROUND_ARATHI_BASIN;
 
 	//Arena
-	if( string(pCreature->GetCreatureInfo()->Name).find(WOWARENASAI) != string::npos )
+	if( string(pCreature->GetCreatureInfo()->Name).find("Arena") != string::npos )
 		return BATTLEGROUND_ARENA_2V2;
-	else if( string(pCreature->GetCreatureInfo()->SubName).find(WOWARENASAI) != string::npos )
+	else if( string(pCreature->GetCreatureInfo()->SubName).find("Arena") != string::npos )
 		return BATTLEGROUND_ARENA_2V2;
 
 	//Alterac Valley
@@ -137,7 +137,7 @@ void WorldSession::SendBattlegroundList(CreaturePointer pCreature, uint32 mapid)
 	int32 type = GetBattlegroundTypeFromCreature( pCreature );
 
 	if( type == -1 )
-		SystemMessage(SORRYINVAAI);
+		SystemMessage("Sorry, invalid battlemaster.");
 	else
 		BattlegroundManager.HandleBattlegroundListPacket(this, type, true);
 }
@@ -258,7 +258,7 @@ void WorldSession::HandleBattleMasterJoinOpcode(WorldPacket &recv_data)
 	CHECK_INWORLD_RETURN
 	if(_player->GetGroup() && _player->GetGroup()->m_isqueued)
 	{
-		SystemMessage(ZYOUAREINAI);
+		SystemMessage("You are in a group that is already queued for a battleground or inside a battleground. Leave the group first.");
 		return;
 	}
 
@@ -275,7 +275,7 @@ void WorldSession::HandleArenaJoinOpcode(WorldPacket &recv_data)
 	CHECK_INWORLD_RETURN
 	if(_player->GetGroup() && _player->GetGroup()->m_isqueued)
 	{
-		SystemMessage(ZYOUAREINAI);
+		SystemMessage("You are in a group that is already queued for a battleground or inside a battleground. Leave the group first.");
 		return;
 	}
 

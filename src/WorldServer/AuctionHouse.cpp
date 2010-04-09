@@ -112,7 +112,7 @@ void AuctionHouse::AddAuction(Auction * auct)
 	auctionedItems.insert( HM_NAMESPACE::hash_map<uint64, ItemPointer >::value_type( auct->pItem->GetGUID(), auct->pItem ) );
 	itemLock.ReleaseWriteLock();
 
-	DEBUG_LOG(AUCTIONHOUSESGAI, AUCTIRERFUSESGAI, dbc->id, auct->Id, auct->ExpiryTime);
+	DEBUG_LOG("AuctionHouse", "%u: Add auction %u, expire@ %u.", dbc->id, auct->Id, auct->ExpiryTime);
 }
 
 Auction * AuctionHouse::GetAuction(uint32 Id)
@@ -128,7 +128,7 @@ Auction * AuctionHouse::GetAuction(uint32 Id)
 
 void AuctionHouse::RemoveAuction(Auction * auct)
 {
-	DEBUG_LOG(AUCTIONHOUSESGAI, REMOUNTRFUSESGAI, dbc->id, auct->Id, auct->DeletedReason);
+	DEBUG_LOG("AuctionHouse", "%u: Removing auction %u, reason %u.", dbc->id, auct->Id, auct->DeletedReason);
 
 	char subject[100];
 	char body[200];
@@ -699,7 +699,7 @@ void AuctionHouse::LoadAuctions()
 		ItemPointer pItem = objmgr.LoadItem(fields[2].GetUInt64());
 		if(!pItem)
 		{
-			printf(DELETESDFUSESGAI, auct->Id, fields[2].GetUInt32());
+			printf("Deleting auction for invalid item %u (%u)\n", auct->Id, fields[2].GetUInt32());
 			CharacterDatabase.Execute("DELETE FROM auctions WHERE auctionId=%u",auct->Id);
 			delete auct;
 			continue;

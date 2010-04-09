@@ -23,7 +23,7 @@ Mutex m_mapCreateLock;
 
 void CCollideInterface::Init()
 {
-	Log.Notice(COLLIINFOAI, INIXWOWSEAI);
+	Log.Notice("CollideInterface", "Init");
 	CollisionMgr = ((VMAP::IVMapManager*)new VMAP::VMapManager);
 	memset(m_mapLocks, 0, sizeof(CollisionMap*)*MAX_MAP);
 }
@@ -182,5 +182,5 @@ bool CCollideInterface::IsOutdoor(uint32 mapId, float x, float y, float z)
 
 void CCollideInterface::DeInit()
 {
-	// bleh.
+// bleh.
 }

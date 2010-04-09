@@ -51,7 +51,6 @@ const float m_gateTransportersLocations[5][4] =
 	{1215.679f, 47.47f, 54.281f, 0.0f},
 };
 
-
 // Defender Trans: (Teleporters.)
 const float sotaTransporters[5][4] = 
 {
@@ -71,11 +70,13 @@ const float sotaTransporterDestination[5][4] =
 	{ 1228.342f, -235.234f, 60.03f, 0.4584f },
 	{ 1193.857f, 69.9f, 58.046f, 5.7245f },
 };
+
 const float sotaRepop[2][4] = 
 {
 	{ 1600.0f, 58.3f, 11.0f, 2.98f },
 	{ 1600.0f, 58.3f, 11.0f, 2.98f },
 };
+
 float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float z2)
 {
 	float dx = x1 - x2;
@@ -83,6 +84,7 @@ float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float 
 	float dz = z1 - z2;
 	return sqrt(dx*dx + dy*dy + dz*dz);
 }
+
 StrandOfTheAncients::StrandOfTheAncients(MapMgrPointer mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
 {
 	Attackers = RandomUInt(2)-1;

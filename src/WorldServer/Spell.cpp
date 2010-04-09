@@ -943,9 +943,9 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 					// have no idea
 					}break;
 				case EFF_TARGET_SELF_FISHING: // Fishing
-				case 46:    // Unknown Summon Atal'ai Skeleton
-				case 47:    // Portal
-				case 52:	// Lightwells, etc
+				case 46: // Unknown Summon Atal'ai Skeleton
+				case 47: // Portal
+				case 52: // Lightwells, etc
 					{
 						store_buff->m_unitTarget = m_caster->GetGUID();
 					}break;
@@ -1055,7 +1055,7 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	m_timer = m_castTime;
 
 	// if( p_caster != NULL )
-	//    m_castTime -= 100;	  // session update time
+	// m_castTime -= 100; // session update time
 
 
 	if( !m_triggeredSpell && p_caster != NULL && p_caster->CooldownCheat )
@@ -1192,7 +1192,7 @@ void Spell::cancel()
 				}
 				if (m_timer > 0)
 					p_caster->delayAttackTimer(-m_timer);
-//				p_caster->setAttackTimer(1000, false);
+                // p_caster->setAttackTimer(1000, false);
 			 }
 		}
 		SendChannelUpdate(0);
@@ -1519,15 +1519,6 @@ void Spell::cast(bool check)
 				// aura state
 				if( m_spellInfo->TargetAuraState )
 					unitTarget->RemoveFlag(UNIT_FIELD_AURASTATE, uint32(1) << (m_spellInfo->TargetAuraState - 1) );
-
-				/*if( unitTarget != NULL && unitTarget->IsInWorld() && u_caster )
-				{
-					u_caster->HandleProc(PROC_ON_SPELL_LAND, unitTarget, m_spellInfo);
-					u_caster->m_procCounter = 0;
-
-					unitTarget->HandleProc(PROC_ON_SPELL_LAND_VICTIM, u_caster, m_spellInfo);
-					unitTarget->m_procCounter = 0; // this is required for to be able to count the depth of procs (though i have no idea where/why we use proc on proc)
-				}*/
 			}
 		}
 
@@ -1776,7 +1767,7 @@ void Spell::AddTime(uint32 type)
 			// in case cast is delayed, make sure we do not exit combat 
 			else
 			{
-//				sEventMgr.ModifyEventTimeLeft(p_caster,EVENT_ATTACK_TIMEOUT,PLAYER_ATTACK_TIMEOUT_INTERVAL,true);
+                // sEventMgr.ModifyEventTimeLeft(p_caster,EVENT_ATTACK_TIMEOUT,PLAYER_ATTACK_TIMEOUT_INTERVAL,true);
 				// also add a new delay to offhand and main hand attacks to avoid cutting the cast short
 				p_caster->delayAttackTimer(delay);
 			}
@@ -1808,7 +1799,7 @@ void Spell::update(uint32 difftime)
 	// skip cast if we're more than 2/3 of the way through
 	if(
 		(((float)m_castTime / 1.5f) > (float)m_timer ) && 
-//		float(m_castTime)/float(m_timer) >= 2.0f		&&
+        // float(m_castTime)/float(m_timer) >= 2.0f &&
 		(
 		m_castPositionX != m_caster->GetPositionX() ||
 		m_castPositionY != m_caster->GetPositionY() ||
@@ -2046,30 +2037,30 @@ void Spell::SendCastResult(uint8 result)
 // uint16 0xFFFF
 enum SpellStartFlags
 {
-	SPELL_START_FLAGS_NONE				= 0x00000000,
-	SPELL_START_FLAGS_UNKNOWN0			= 0x00000001,	// may be pending spell cast
-	SPELL_START_FLAG_DEFAULT			= 0x00000002,	// atm set as default flag
-	SPELL_START_FLAGS_UNKNOWN2			= 0x00000004,
-	SPELL_START_FLAGS_UNKNOWN3			= 0x00000008,
-	SPELL_START_FLAGS_UNKNOWN4			= 0x00000010,
-	SPELL_START_FLAG_RANGED				= 0x00000020,
-	SPELL_START_FLAGS_UNKNOWN6			= 0x00000040,
-	SPELL_START_FLAGS_UNKNOWN7			= 0x00000080,
-	SPELL_START_FLAGS_UNKNOWN8			= 0x00000100,
-	SPELL_START_FLAGS_UNKNOWN9			= 0x00000200,
-	SPELL_START_FLAGS_UNKNOWN10			= 0x00000400,  // TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
-	SPELL_START_FLAGS_POWER_UPDATE		= 0x00000800,
-	SPELL_START_FLAGS_UNKNOWN12			= 0x00001000,
-	SPELL_START_FLAGS_UNKNOWN13			= 0x00002000,
-	SPELL_START_FLAGS_UNKNOWN14			= 0x00004000,
-	SPELL_START_FLAGS_UNKNOWN15			= 0x00008000,
-	SPELL_START_FLAGS_UNKNOWN16			= 0x00010000,
-	SPELL_START_FLAGS_UNKNOWN17			= 0x00020000,
-	SPELL_START_FLAGS_UNKNOWN18			= 0x00040000,
-	SPELL_START_FLAGS_UNKNOWN19			= 0x00080000,
-	SPELL_START_FLAGS_UNKNOWN20			= 0x00100000,
-	SPELL_START_FLAGS_RUNE_UPDATE		= 0x00200000,
-    SPELL_START_FLAGS_UNKNOWN21			= 0x00400000,
+	SPELL_START_FLAGS_NONE = 0x00000000,
+	SPELL_START_FLAGS_UNKNOWN0 = 0x00000001, // may be pending spell cast
+	SPELL_START_FLAG_DEFAULT = 0x00000002, // atm set as default flag
+	SPELL_START_FLAGS_UNKNOWN2 = 0x00000004,
+	SPELL_START_FLAGS_UNKNOWN3 = 0x00000008,
+	SPELL_START_FLAGS_UNKNOWN4 = 0x00000010,
+	SPELL_START_FLAG_RANGED = 0x00000020,
+	SPELL_START_FLAGS_UNKNOWN6 = 0x00000040,
+	SPELL_START_FLAGS_UNKNOWN7 = 0x00000080,
+	SPELL_START_FLAGS_UNKNOWN8 = 0x00000100,
+	SPELL_START_FLAGS_UNKNOWN9 = 0x00000200,
+	SPELL_START_FLAGS_UNKNOWN10 = 0x00000400, // TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
+	SPELL_START_FLAGS_POWER_UPDATE = 0x00000800,
+	SPELL_START_FLAGS_UNKNOWN12 = 0x00001000,
+	SPELL_START_FLAGS_UNKNOWN13 = 0x00002000,
+	SPELL_START_FLAGS_UNKNOWN14 = 0x00004000,
+	SPELL_START_FLAGS_UNKNOWN15 = 0x00008000,
+	SPELL_START_FLAGS_UNKNOWN16 = 0x00010000,
+	SPELL_START_FLAGS_UNKNOWN17 = 0x00020000,
+	SPELL_START_FLAGS_UNKNOWN18 = 0x00040000,
+	SPELL_START_FLAGS_UNKNOWN19 = 0x00080000,
+	SPELL_START_FLAGS_UNKNOWN20 = 0x00100000,
+	SPELL_START_FLAGS_RUNE_UPDATE  = 0x00200000,
+    SPELL_START_FLAGS_UNKNOWN21 = 0x00400000,
 };
 
 void Spell::SendSpellStart()
@@ -2177,30 +2168,30 @@ void Spell::SendSpellStart()
 //////////////////////////////////////////////////////////////////////////
 enum SpellGoFlags
 {
-	SPELL_GO_FLAGS_NONE					= 0x00000000,
-	SPELL_GO_FLAGS_UNKNOWN0				= 0x00000001, // may be pending spell cast
-	SPELL_GO_FLAGS_UNKNOWN1				= 0x00000002,
-	SPELL_GO_FLAGS_UNKNOWN2				= 0x00000004,
-	SPELL_GO_FLAGS_UNKNOWN3				= 0x00000008,
-	SPELL_GO_FLAGS_UNKNOWN4				= 0x00000010,
-	SPELL_GO_FLAGS_RANGED				= 0x00000020,
-	SPELL_GO_FLAGS_UNKNOWN6				= 0x00000040,
-	SPELL_GO_FLAGS_UNKNOWN7				= 0x00000080,
-	SPELL_GO_FLAGS_ITEM_CASTER			= 0x00000100,
-	SPELL_GO_FLAGS_UNKNOWN9				= 0x00000200,
-	SPELL_GO_FLAGS_EXTRA_MESSAGE		= 0x00000400, // TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
-	SPELL_GO_FLAGS_POWER_UPDATE			= 0x00000800,
-	SPELL_GO_FLAGS_UNKNOWN12			= 0x00001000,
-	SPELL_GO_FLAGS_UNKNOWN13			= 0x00002000,
-	SPELL_GO_FLAGS_UNKNOWN14			= 0x00004000,
-	SPELL_GO_FLAGS_UNKNOWN15			= 0x00008000,
-	SPELL_GO_FLAGS_UNKNOWN16			= 0x00010000,
-    SPELL_GO_FLAGS_UNKNOWN17			= 0x00020000,
-	SPELL_GO_FLAGS_UNKNOWN18			= 0x00040000,
-	SPELL_GO_FLAGS_UNKNOWN19			= 0x00080000,
-	SPELL_GO_FLAGS_UNKNOWN20			= 0x00100000,
-	SPELL_GO_FLAGS_RUNE_UPDATE			= 0x00200000,
-	SPELL_GO_FLAGS_UNKNOWN22			= 0x00400000,
+	SPELL_GO_FLAGS_NONE = 0x00000000,
+	SPELL_GO_FLAGS_UNKNOWN0 = 0x00000001, // may be pending spell cast
+	SPELL_GO_FLAGS_UNKNOWN1 = 0x00000002,
+	SPELL_GO_FLAGS_UNKNOWN2 = 0x00000004,
+	SPELL_GO_FLAGS_UNKNOWN3 = 0x00000008,
+	SPELL_GO_FLAGS_UNKNOWN4 = 0x00000010,
+	SPELL_GO_FLAGS_RANGED = 0x00000020,
+	SPELL_GO_FLAGS_UNKNOWN6 = 0x00000040,
+	SPELL_GO_FLAGS_UNKNOWN7 = 0x00000080,
+	SPELL_GO_FLAGS_ITEM_CASTER = 0x00000100,
+	SPELL_GO_FLAGS_UNKNOWN9 = 0x00000200,
+	SPELL_GO_FLAGS_EXTRA_MESSAGE = 0x00000400, // TARGET MISSES AND OTHER MESSAGES LIKE "Resist"
+	SPELL_GO_FLAGS_POWER_UPDATE = 0x00000800,
+	SPELL_GO_FLAGS_UNKNOWN12 = 0x00001000,
+	SPELL_GO_FLAGS_UNKNOWN13 = 0x00002000,
+	SPELL_GO_FLAGS_UNKNOWN14 = 0x00004000,
+	SPELL_GO_FLAGS_UNKNOWN15 = 0x00008000,
+	SPELL_GO_FLAGS_UNKNOWN16 = 0x00010000,
+    SPELL_GO_FLAGS_UNKNOWN17 = 0x00020000,
+	SPELL_GO_FLAGS_UNKNOWN18 = 0x00040000,
+	SPELL_GO_FLAGS_UNKNOWN19 = 0x00080000,
+	SPELL_GO_FLAGS_UNKNOWN20 = 0x00100000,
+	SPELL_GO_FLAGS_RUNE_UPDATE = 0x00200000,
+	SPELL_GO_FLAGS_UNKNOWN22 = 0x00400000,
 };
 
 void Spell::SendSpellGo()
@@ -2237,7 +2228,7 @@ void Spell::SendSpellGo()
 			}
 			else
 			{
-				ip = ItemPrototypeStorage.LookupEntry(2512);	// rough arrow
+				ip = ItemPrototypeStorage.LookupEntry(2512); // rough arrow
 			}
 		}
 		else
@@ -2245,7 +2236,7 @@ void Spell::SendSpellGo()
 			if( p_caster != NULL )
 				ip = ItemPrototypeStorage.LookupEntry(p_caster->GetUInt32Value( PLAYER_AMMO_ID ) );
 			else // HACK FIX
-				ip = ItemPrototypeStorage.LookupEntry(2512);	// rough arrow
+				ip = ItemPrototypeStorage.LookupEntry(2512); // rough arrow
 		}
 	}
 
@@ -2269,6 +2260,7 @@ void Spell::SendSpellGo()
 	//////////////////////////////////////////////////////////////////////////
 	// spell go targets                                                     //
 	//////////////////////////////////////////////////////////////////////////
+
 	// Make sure we don't hit over 100 targets.
 	// It's fine internally, but sending it to the client will REALLY cause it to freak.
 
@@ -2316,7 +2308,7 @@ void Spell::SendSpellGo()
 	// spell log execute is still send 2.08
 	// as I see with this combination, need to test it more
 	// if (flags != 0x120 && m_spellInfo->Attributes & 16) // not ranged and flag 5
-	//     SendLogExecute(0,m_targets.m_unitTarget);
+	// SendLogExecute(0,m_targets.m_unitTarget);
 }
 void Spell::writeSpellGoTargets( WorldPacket * data )
 {
@@ -2361,8 +2353,6 @@ void Spell::SendLogExecute(uint32 damage, uint64 & targetGuid)
 	data << m_caster->GetNewGUID();
 	data << m_spellInfo->Id;
 	data << uint32(1);
-//	data << m_spellInfo->SpellVisual;
-//	data << uint32(1);
 	if (m_caster->GetGUID() != targetGuid)
 		data << targetGuid;
 	if (damage)
@@ -2465,19 +2455,6 @@ void Spell::SendChannelStart(uint32 duration)
 	if( u_caster != NULL )
 		u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,m_spellInfo->Id);
 
-	/*
-	UnitPointer target = objmgr.GetCreature( TO_PLAYER( m_caster )->GetSelection());
-	if(!target)
-		target = objmgr.GetObject<Player>( TO_PLAYER( m_caster )->GetSelection());
-	if(!target)
-		return;
- 
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT,target->GetGUIDLow());
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT+1,target->GetGUIDHigh());
-	//disabled it can be not only creature but GO as well
-	//and GO is not selectable, so this method will not work
-	//these fields must be filled @ place of call
-	*/
 }
 
 void Spell::SendResurrectRequest(PlayerPointer target)
@@ -2506,7 +2483,7 @@ bool Spell::HasPower()
 	switch(m_spellInfo->powerType)
 	{
 	case POWER_TYPE_HEALTH:	{ powerField = UNIT_FIELD_HEALTH; }break;
-	case POWER_TYPE_MANA:	{ powerField = UNIT_FIELD_POWER1; m_usesMana=true; }break;
+	case POWER_TYPE_MANA:	{ powerField = UNIT_FIELD_POWER1; m_usesMana = true; }break;
 	case POWER_TYPE_RAGE:	{ powerField = UNIT_FIELD_POWER2; }break;
 	case POWER_TYPE_FOCUS:	{ powerField = UNIT_FIELD_POWER3; }break;
 	case POWER_TYPE_ENERGY:	{ powerField = UNIT_FIELD_POWER4; }break;
@@ -2965,13 +2942,6 @@ uint8 Spell::CanCast(bool tolerate)
 	if( u_caster && u_caster->GetCurrentSpell() != NULL && u_caster->GetCurrentSpell() != shared_from_this() && !m_triggeredSpell )
 		return SPELL_FAILED_SPELL_IN_PROGRESS;
 
-	/* Spells for the zombie event, unneded with current shapeshift checks
-	if( p_caster && p_caster->GetShapeShift() ==FORM_ZOMBIE && !( ((uint32)1 << (p_caster->GetShapeShift()-1)) & GetSpellProto()->RequiredShapeShift  ))
-	{
-		OUT_DEBUG("Invalid shapeshift: %u", GetSpellProto()->RequiredShapeShift);
-		return SPELL_FAILED_SPELL_UNAVAILABLE;
-	}*/
-
 	if( p_caster != NULL )
 	{
 		if( m_spellInfo->Id == 51721 )
@@ -2993,12 +2963,12 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 		}
 
-		if( m_spellInfo->Id == 33076 )			// Prayer of mending
+		if( m_spellInfo->Id == 33076 ) // Prayer of mending
 		{
 			if( p_caster->GetGroup() != NULL && p_caster->GetGroup()->m_prayerOfMendingCount )
 			{
 				PlayerPointer tmp_plr_pom = p_caster->IsInWorld() ? p_caster->GetMapMgr()->GetPlayer(p_caster->GetGroup()->m_prayerOfMendingTarget) : NULLPLR;
-				if( tmp_plr_pom != NULL )		// remove from current target.
+				if( tmp_plr_pom != NULL ) // remove from current target.
 					tmp_plr_pom->RemoveAura(41635);
 
 				p_caster->GetGroup()->m_prayerOfMendingTarget = 0;
@@ -3012,7 +2982,7 @@ uint8 Spell::CanCast(bool tolerate)
 			!((m_spellInfo->SpellGroupType[0] & p_caster->m_castFilter[0]) || 
 			(m_spellInfo->SpellGroupType[1] & p_caster->m_castFilter[1]) ||
 			(m_spellInfo->SpellGroupType[2] & p_caster->m_castFilter[2])))
-			return SPELL_FAILED_SPELL_IN_PROGRESS;	// Need to figure the correct message
+			return SPELL_FAILED_SPELL_IN_PROGRESS; // Need to figure the correct message
 
 		uint32 self_rez = p_caster->GetUInt32Value(PLAYER_SELF_RES_SPELL);
 		// if theres any spells that should be cast while dead let me know
@@ -3023,12 +2993,12 @@ uint8 Spell::CanCast(bool tolerate)
 			{
 				// casting a spell on self
 				if( m_targets.m_targetMask & TARGET_FLAG_SELF || m_targets.m_unitTarget == p_caster->GetGUID() ||
-					!IsHealingSpell(m_spellInfo) )		// not a holy spell
+					!IsHealingSpell(m_spellInfo) ) // not a holy spell
 				{
 					return SPELL_FAILED_SPELL_UNAVAILABLE;
 				}
 			}
-			else		// not SOR
+			else // not SOR
 				return SPELL_FAILED_CASTER_DEAD;
 		}
 
@@ -3057,18 +3027,11 @@ uint8 Spell::CanCast(bool tolerate)
 					return SPELL_FAILED_ONLY_OUTDOORS;
 			}
 		}
-		//are we in an arena and the spell cooldown is longer then 15mins?
+		// are we in an arena and the spell cooldown is longer then 15mins?
 		if ( p_caster->m_bg && ( p_caster->m_bg->GetType() >= BATTLEGROUND_ARENA_2V2 && p_caster->m_bg->GetType() <= BATTLEGROUND_ARENA_5V5 ) )
 		{
 			if( ( m_spellInfo->RecoveryTime >= 900000 || m_spellInfo->CategoryRecoveryTime >= 900000 ) )
 				return SPELL_FAILED_NOT_IN_ARENA;
-
-			// block resurrect spells
-			/*if( m_spellInfo->Effect[0] == SPELL_EFFECT_RESURRECT || m_spellInfo->Effect[1] == SPELL_EFFECT_RESURRECT || m_spellInfo->Effect[2] == SPELL_EFFECT_RESURRECT ||
-				m_spellInfo->Effect[0] == SPELL_EFFECT_RESURRECT_FLAT || m_spellInfo->Effect[1] == SPELL_EFFECT_RESURRECT_FLAT || m_spellInfo->Effect[2] == SPELL_EFFECT_RESURRECT_FLAT )
-			{
-				return SPELL_FAILED_NOT_IN_ARENA;
-			}*/
 
 			if( !p_caster->m_bg->HasStarted() )
 			{
@@ -3084,7 +3047,12 @@ uint8 Spell::CanCast(bool tolerate)
 			if(p_caster->SchoolImmunityList[0]) // Physical is all that really matters.
 				return SPELL_FAILED_SPELL_UNAVAILABLE;
 		}
-
+        else if(m_spellInfo->Id == 1634)
+		{
+		bool captured = true;
+		3109						StrandOfTheAncients * sota = (StrandOfTheAncients *)p_caster->m_bg;
+		3110						sota->SOTARebuild(captured);
+		3111					}
 		// Requires ShapeShift (stealth only atm, need more work)
 		if( m_spellInfo->RequiredShapeShift )
 		{
@@ -3093,16 +3061,6 @@ uint8 Spell::CanCast(bool tolerate)
 				if( !(((uint32)1 << (p_caster->GetShapeShift()-1)) & m_spellInfo->RequiredShapeShift) && !p_caster->HasDummyAura(SPELL_HASH_SHADOW_DANCE) )
 					return SPELL_FAILED_ONLY_STEALTHED;
 			}
-/*			else if( (m_spellInfo->RequiredShapeShift != 1073741824) && (m_spellInfo->RequiredShapeShift != 134217728) && (m_spellInfo->RequiredShapeShift != 2) )
-			{
-				if( !(((uint32)1 << (p_caster->GetShapeShift()-1)) & m_spellInfo->RequiredShapeShift) )
-					return SPELL_FAILED_ONLY_SHAPESHIFT;
-			}
-			else
-			{
-				if( !(((uint32)1 << (p_caster->GetShapeShift()-1)) & m_spellInfo->RequiredShapeShift) && p_caster->GetShapeShift() )
-					return SPELL_FAILED_ONLY_SHAPESHIFT;
-			}*/
 		}
 
 		// Disarm

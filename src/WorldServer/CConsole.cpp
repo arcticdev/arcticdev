@@ -34,17 +34,17 @@ void ConsoleThread::terminate()
 	ir[1].Event.KeyEvent.wVirtualScanCode = 28;
 	WriteConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), ir, 2, & dwTmp );
 #endif
-	printf( WAITIONGSAI );
+	printf("Waiting for console thread to terminate....\n");
 	while( m_isRunning )
 	{
 		Sleep( 100 );
 	}
-	printf( ZCONSOTESAI );
+	printf("Console shut down.\n");
 }
 
 bool ConsoleThread::run()
 {
-	SetThreadName(CONSOLEDSAI);
+	SetThreadName("Console Interpreter");
 	size_t i = 0;
 	size_t len;
 	char cmd[300];

@@ -10,7 +10,7 @@ initialiseSingleton( AuctionMgr );
 
 void AuctionMgr::LoadAuctionHouses()
 {
-	Log.Notice(ZAUCTIONMGRAI, LOUSESANMGRAI);
+	Log.Notice("AuctionMgr", "Loading Auction Houses...");
 
 	QueryResult * res = CharacterDatabase.Query("SELECT MAX(auctionId) FROM auctions");
 	if(res)
@@ -33,7 +33,7 @@ void AuctionMgr::LoadAuctionHouses()
 			auctionHouses.push_back(ah);
 			tempmap.insert( make_pair( res->Fetch()[0].GetUInt32(), ah ) );
 			if( !((++c) % period) )
-				Log.Notice(ZAUCTIONHOUAI, DONECOMPLETAI, c, res->GetRowCount(), float2int32( (float(c) / float(res->GetRowCount()))*100.0f ));
+				Log.Notice("AuctionHouse", "Done %u/%u, %u%% complete.", c, res->GetRowCount(), float2int32( (float(c) / float(res->GetRowCount()))*100.0f ));
 
 		}while(res->NextRow());
 		delete res;
