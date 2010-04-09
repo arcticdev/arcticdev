@@ -3047,12 +3047,7 @@ uint8 Spell::CanCast(bool tolerate)
 			if(p_caster->SchoolImmunityList[0]) // Physical is all that really matters.
 				return SPELL_FAILED_SPELL_UNAVAILABLE;
 		}
-        else if(m_spellInfo->Id == 1634)
-		{
-		bool captured = true;
-		3109						StrandOfTheAncients * sota = (StrandOfTheAncients *)p_caster->m_bg;
-		3110						sota->SOTARebuild(captured);
-		3111					}
+
 		// Requires ShapeShift (stealth only atm, need more work)
 		if( m_spellInfo->RequiredShapeShift )
 		{
