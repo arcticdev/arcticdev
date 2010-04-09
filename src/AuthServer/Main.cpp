@@ -254,11 +254,11 @@ void AuthServer::Run(int argc, char ** argv)
 
 	struct arctic_option longopts[] =
 	{
-		{ "checkconf",			arctic_no_argument,				&do_check_conf,			1		},
-		{ "screenloglevel",		arctic_required_argument,		&screen_log_level,		1		},
-		{ "fileloglevel",		arctic_required_argument,		&file_log_level,		1		},
-		{ "version",			arctic_no_argument,				&do_version,			1		},
-		{ "conf",				arctic_required_argument,		NULL,					'c'		},
+		{ "checkconf", arctic_no_argument, &do_check_conf, 1 },
+		{ "screenloglevel", arctic_required_argument, &screen_log_level, 1 },
+		{ "fileloglevel", arctic_required_argument, &file_log_level, 1 },
+		{ "version", arctic_no_argument, &do_version, 1 },
+		{ "conf", arctic_required_argument, NULL, 'c' },
 		{ 0, 0, 0, 0 }
 	};
 
@@ -414,7 +414,7 @@ void AuthServer::Run(int argc, char ** argv)
 
 		if(timers[0] <= getMSTime())	           
 		{
-			ThreadPool.IntegrityCheck(2);      // Check every two minutes
+			ThreadPool.IntegrityCheck(2); // Check every two minutes
 			timers[0] = getMSTime() + 120000;
 		}
 
@@ -422,7 +422,7 @@ void AuthServer::Run(int argc, char ** argv)
 		{
 			sInfoCore.TimeoutSockets();
 			sSocketGarbageCollector.Update();
-			CheckForDeadSockets();			   // Flood Protection
+			CheckForDeadSockets(); // Flood Protection
 			UNIXTIME = time(NULL);
 			g_localTime = *localtime(&UNIXTIME);
             timers[0] = getMSTime() + 2000;

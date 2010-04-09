@@ -304,7 +304,6 @@ public:
 	}
 
 protected:
-
 	bool m_sharedPtrDestructed;
 	// Collect and send updates to clients
 	void _UpdateObjects();
@@ -324,7 +323,7 @@ public:
 
 private:
 	// Update System.
-	FastMutex m_updateMutex;		// use a user-mode mutex for extra speed
+	FastMutex m_updateMutex; // use a user-mode mutex for extra speed
 	UpdateQueue _updates;
 	PUpdateQueue _processQueue;
 
@@ -344,7 +343,6 @@ public:
 #ifdef WIN32
 	DWORD threadid;
 #endif
-
 	GameObjectSet activeGameObjects;
 	CreatureSet activeCreatures;
 	VehicleSet activeVehicles;
@@ -375,7 +373,6 @@ public:
 	ByteBuffer m_compressionBuffer;
 
 public:
-
 	// get!
 	ARCTIC_INLINE WorldStateManager& GetStateManager() { return *m_stateManager; }
 
@@ -391,7 +388,6 @@ public:
 
 
 public:
-
 	// stored iterators for safe checking
 	PetStorageMap::iterator __pet_iterator;
 	PlayerStorageMap::iterator __player_iterator;
@@ -409,7 +405,6 @@ public:
 	void CallScriptUpdate();
 
 protected:
-
 	InstanceScript * mInstanceScript;
 };
 

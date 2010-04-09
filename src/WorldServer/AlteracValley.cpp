@@ -151,7 +151,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 
 static uint32 g_unitWaypoints[4][2] = 
 {
-	{  },
+	{ },
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -931,7 +931,6 @@ AVNode::AVNode( AlteracValleyPointer parent, AVNodeTemplate *tmpl, uint32 nodeid
 
 AVNode::~AVNode()
 {
-
 }
 
 void AVNode::Assault(PlayerPointer plr)
@@ -1686,14 +1685,14 @@ struct AVLoot
 const static AVLoot g_avLoot[] = 
 {	
 	// Alliance Loot
-	{ 17306, 0, 100.0f, 1, 1 },                 // Stormpike Soldier's Blood
-	{ 17326, 0, 80.0, 1, 1 },                   // Stormpike Soldier's Meat
+	{ 17306, 0, 100.0f, 1, 1 },  // Stormpike Soldier's Blood
+	{ 17326, 0, 80.0, 1, 1 },    // Stormpike Soldier's Meat
 
 	// Horde Loot	
-	{ 17423, 1, 50.0f, 1, 1 },                  // Crystal Cluster
+	{ 17423, 1, 50.0f, 1, 1 },   // Crystal Cluster
 
 	// Global loot
-	{ 17422, -1, 100.0f, 1, 5 },                // Armor Scrap
+	{ 17422, -1, 100.0f, 1, 5 }, // Armor Scrap
 
 	// EOF
 	{ 0, 0, 0},
@@ -1767,9 +1766,9 @@ void AlteracValley::Herald(const char *format, ...)
 	data << uint8( CHAT_MSG_MONSTER_YELL );
 	data << uint32( LANG_UNIVERSAL );
 	data << uint64( 0 );
-	data << uint32( 0 );        // new in 2.1.0
-	data << uint32( 7 );        // Herald
-	data << "Herald";           // Herald
+	data << uint32( 0 ); // new in 2.1.0
+	data << uint32( 7 ); // Herald
+	data << "Herald";    // Herald
 	data << uint64( 0 );
 	data << uint32( msglen+1 );
 	data << msgbuf;

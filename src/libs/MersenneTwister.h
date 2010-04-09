@@ -52,14 +52,14 @@ class CRandomMersenne {   // Encapsulate random number generator
 #endif
 public:
 	CRandomMersenne(uint32 seed) {                              // Constructor
-		 RandomInit(seed); LastInterval = 0;}                   // 
+		RandomInit(seed); LastInterval = 0;}
 	void RandomInit(uint32 seed);                               // Re-seed
 	void RandomInitByArray(uint32 seeds[], int length);         // Seed by more than 32 bits
 	int IRandom (int min, int max);                             // Output random integer
 	int IRandomX(int min, int max);                             // Output random integer, exact
 	double Random();                                            // Output random float
 	uint32 BRandom();                                           // Output random bits
-private:                                                        //
+private:
 	void Init0(uint32 seed);                                    // Basic initialization procedure
 	uint32 mt[MERS_N];                                          // State vector
 	int mti;                                                    // Index into mt

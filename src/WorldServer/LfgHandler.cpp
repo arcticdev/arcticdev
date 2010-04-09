@@ -100,7 +100,7 @@ void WorldSession::HandleSetLookingForGroup(WorldPacket& recvPacket)
 	
 	recvPacket >> LfgQueueId >> LfgDungeonId >> unk1 >> LfgType;
 	
-	if(LfgDungeonId >= MAX_DUNGEONS || LfgQueueId >= MAX_LFG_QUEUE_ID || LfgType != LfgDungeonTypes[LfgDungeonId])		// last one is for cheaters
+	if(LfgDungeonId >= MAX_DUNGEONS || LfgQueueId >= MAX_LFG_QUEUE_ID || LfgType != LfgDungeonTypes[LfgDungeonId]) // last one is for cheaters
 		return;
 	
 	if(_player->LfgDungeonId[LfgQueueId] != 0)
@@ -166,9 +166,9 @@ void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 	if(_player->m_lfgMatch == NULL && _player->m_lfgInviterGuid == 0)
 	{
 		if(_player->m_lfgMatch == NULL)
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER);					// Matched Player(s) have gone offline.
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER); // Matched Player(s) have gone offline.
 		else
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED);							// Group no longer available.
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED); // Group no longer available.
 
 		return;
 	}
@@ -200,7 +200,7 @@ void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 		PlayerPointer pPlayer = objmgr.GetPlayer(_player->m_lfgInviterGuid);
 		if( pPlayer == NULL )
 		{
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER);					// Matched Player(s) have gone offline.
+			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER); // Matched Player(s) have gone offline.
 			return;
 		}
 

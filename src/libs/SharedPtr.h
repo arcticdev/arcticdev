@@ -40,7 +40,7 @@ class WarsongGulch;
 class WeatherInfo;
 class World;
 class StrandOfTheAncients;
-class IslesOfConquest;
+class IslesOfConquest;      ///////////////////////////////////IsleOfConquest
 
 // Typedefs for readable code
 typedef shared_ptr<CBattleground> BattlegroundPointer;
@@ -72,7 +72,7 @@ typedef shared_ptr<Vehicle> VehiclePointer;
 typedef shared_ptr<WarsongGulch> WarsongGulchPointer;
 typedef shared_ptr<WeatherInfo> WeatherInfoPointer;
 typedef shared_ptr<World> WorldPointer;
-typedef shared_ptr<IslesOfConquest> IslesOfConquestPointer;
+typedef shared_ptr<IslesOfConquest> IslesOfConquestPointer;     ///////////////////////////////////IsleOfConquest
 
 #define CAST(x,y) std::tr1::static_pointer_cast<x>(y)
 

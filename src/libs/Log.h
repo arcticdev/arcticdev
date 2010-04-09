@@ -47,28 +47,28 @@ std::string FormatOutputString(const char * Prefix, const char * Description, bo
 
 class ARCTIC_DECL oLog : public Singleton< oLog > {
 public:
-  void outString( const char * str, ... );
-  void outError( const char * err, ... );
-  void outDetail( const char * str, ... );
-  void outDebug( const char * str, ... );
-  void outTime( );
+    void outString( const char * str, ... );
+    void outError( const char * err, ... );
+    void outDetail( const char * str, ... );
+    void outDebug( const char * str, ... );
+    void outTime( );
 
-  void fLogText(const char *text);
-  void SetLogging(bool enabled);
+    void fLogText(const char *text);
+    void SetLogging(bool enabled);
   
-  void Init(int32 fileLogLevel, int32 screenLogLevel);
-  void SetFileLoggingLevel(int32 level);
-  void SetScreenLoggingLevel(int32 level);
-  void outColor(uint32 colorcode, const char * str, ...);
+    void Init(int32 fileLogLevel, int32 screenLogLevel);
+    void SetFileLoggingLevel(int32 level);
+    void SetScreenLoggingLevel(int32 level);
+    void outColor(uint32 colorcode, const char * str, ...);
   
 #ifdef WIN32
-  HANDLE stdout_handle, stderr_handle;
+    HANDLE stdout_handle, stderr_handle;
 #endif
 
-  int32 m_fileLogLevel;
-  int32 m_screenLogLevel;
+    int32 m_fileLogLevel;
+    int32 m_screenLogLevel;
   
-  FILE *m_file;
+    FILE *m_file;
 };
 
 class SessionLogWriter

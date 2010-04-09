@@ -12,7 +12,6 @@ char arctic_optarg[514];
 int arctic_getopt_long_only(int ___argc, char *const *___argv, const char *__shortopts, const struct arctic_option *__longopts, int *__longind)
 {
 	//  handle the shortops, at the moment it only works with longopts.
-
 	if (___argc == 1 || arg_counter == ___argc) // No arguments (apart from filename)
 		return -1;
 

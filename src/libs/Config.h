@@ -73,16 +73,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////
 // A
-#define ACHIEVEMENTINTERFACE_RURU 1
-// #define ACHIEVEMENTINTERFACE_ENGB 1
-#define AIINTERFACE_RURU 1
-// #define AIINTERFACE_ENGB 1
-#define ALTERACVALLEY_RURU 1
-// #define ALTERACVALLEY_ENGB  1
-#define ARATHIBASIN_RURU 1
-// #define ARATHIBASIN_ENGB 1
-#define ARENAS_RURU 1
-// #define ARENAS_ENGB 1
 #define ARENATEAM_RURU 1
 // #define ARENATEAM_ENGB 1
 #define AUCTIONHOUSE_RURU 1
@@ -165,16 +155,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////
 // A
-#ifdef ACHIEVEMENTINTERFACE_RURU
-// #ifdef ACHIEVEMENTINTERFACE_ENGB
-#ifdef AIINTERFACE_RURU
-// #ifdef AIINTERFACE_ENGB
-#ifdef ALTERACVALLEY_RURU
-// #ifdef ALTERACVALLEY_ENGB
-#ifdef ARATHIBASIN_RURU
-// #ifdef ARATHIBASIN_ENGB
-#ifdef ARENAS_RURU
-// #ifdef ARENAS_ENGB
 #ifdef ARENATEAM_RURU
 // #ifdef ARENATEAM_ENGB
 #ifdef AUCTIONHOUSE_RURU
@@ -257,26 +237,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////
 // A
-#include "locale/AchievementInterface/ruRU_AchievementInterface.h"
-#else
-#include "locale/AchievementInterface/enGB_AchievementInterface.h"
-#endif
-#include "locale/AIInterface/ruRU_AIInterface.h"
-#else
-#include "locale/AIInterface/enGB_AIInterface.h"
-#endif
-#include "locale/AlteracValley/ruRU_AlteracValley.h"
-#else
-#include "locale/AlteracValley/enGB_AlteracValley.h"
-#endif
-#include "locale/ArathiBasin/ruRU_ArathiBasin.h"
-#else
-#include "locale/ArathiBasin/enGB_ArathiBasin.h"
-#endif
-#include "locale/Arenas/ruRU_Arenas.h"
-#else
-#include "locale/Arenas/enGB_Arenas.h"
-#endif
 #include "locale/ArenaTeam/ruRU_ArenaTeam.h"
 #else
 #include "locale/ArenaTeam/enGB_ArenaTeam.h"

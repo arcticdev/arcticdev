@@ -37,14 +37,15 @@ initialiseSingleton( WorldLog );
 ARCTIC_DECL time_t UNIXTIME;
 ARCTIC_DECL tm g_localTime;
 #ifndef WIN32
-static const char* colorstrings[TBLUE+1] = {
-"",
-"\033[22;31m",
-"\033[22;32m",
-"\033[01;33m",
-"\033[0m",
-"\033[01;37m",
-"\033[22;34m",
+static const char* colorstrings[TBLUE+1] = 
+{
+    "",
+    "\033[22;31m",
+    "\033[22;32m",
+    "\033[01;33m",
+    "\033[0m",
+    "\033[01;37m",
+    "\033[22;34m",
 };
 #endif
 
@@ -196,6 +197,7 @@ void oLog::Init(int32 fileLogLevel, int32 screenLogLevel)
 	stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 #endif
 }
+
 void oLog::SetScreenLoggingLevel(int32 level)
 {
 	m_screenLogLevel = level;
@@ -236,7 +238,9 @@ WorldLog::WorldLog()
 	{
 		Log.Notice("WorldLog", "Enabling packetlog output to \"world.log\"");
 		Enable();
-	} else {
+	} 
+	else 
+	{
 		Disable();
 	}
 
@@ -244,10 +248,11 @@ WorldLog::WorldLog()
 	{
 		Log.Notice("WorldLog", "Enabling packetlog output to \"world.xml\"");
 		EnableXml();
-	} else {
+	} 
+	else 
+	{
 		DisableXml();
 	}
-
 }
 
 void WorldLog::Enable()
@@ -275,7 +280,7 @@ void WorldLog::Disable()
 
 	fflush(m_file);
 	fclose(m_file);
-	m_file=NULL;
+	m_file = NULL;
 }
 
 void WorldLog::EnableXml()
@@ -287,7 +292,7 @@ void WorldLog::EnableXml()
 	if(m_xml != NULL)
 	{
 		DisableXml();
-		bEnabledXml=true;
+		bEnabledXml = true;
 	}
 	m_xml = fopen("world.xml", "w");
 	if (m_xml)
@@ -352,13 +357,13 @@ void SessionLogWriter::Close()
 	if(!m_file) return;
 	fflush(m_file);
 	fclose(m_file);
-	m_file=NULL;
+	m_file = NULL;
 }
 
 SessionLogWriter::SessionLogWriter(const char * filename, bool open)
 {
 	m_filename = strdup(filename);
-	m_file=NULL;
+	m_file = NULL;
 	if(open)
 		Open();
 }
