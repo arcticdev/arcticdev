@@ -40,7 +40,7 @@ class WarsongGulch;
 class WeatherInfo;
 class World;
 class StrandOfTheAncients;
-class IslesOfConquest;      ///////////////////////////////////IsleOfConquest
+class IsleOfConquest;
 
 // Typedefs for readable code
 typedef shared_ptr<CBattleground> BattlegroundPointer;
@@ -72,7 +72,7 @@ typedef shared_ptr<Vehicle> VehiclePointer;
 typedef shared_ptr<WarsongGulch> WarsongGulchPointer;
 typedef shared_ptr<WeatherInfo> WeatherInfoPointer;
 typedef shared_ptr<World> WorldPointer;
-typedef shared_ptr<IslesOfConquest> IslesOfConquestPointer;     ///////////////////////////////////IsleOfConquest
+typedef shared_ptr<IsleOfConquest> IocPointer;
 
 #define CAST(x,y) std::tr1::static_pointer_cast<x>(y)
 
@@ -101,7 +101,7 @@ typedef shared_ptr<IslesOfConquest> IslesOfConquestPointer;     ////////////////
 #define TO_LOOTROLL(ptr) CAST(LootRoll,ptr)
 #define TO_VEHICLE(ptr) CAST(Vehicle,ptr)
 #define TO_PTR(classname, ptr) CAST(classname,ptr)
-#define TO_ISLESOFCONQUEST(ptr) CAST(IslesOfConquest,ptr)
+#define TO_IOC(ptr) CAST((IsleOfConquest)ptr)
 
 #define NULLPTR shared_ptr<void>()
 #define NULLGOB shared_ptr<GameObject>()
@@ -176,7 +176,7 @@ class WarsongGulch;
 class WeatherInfo;
 class World;
 class StrandOfTheAncients;
-class IslesOfConquest;
+class IsleOfConquest;
 
 // Typedefs for readable code
 #define BattlegroundPointer CBattleground*;
@@ -208,7 +208,7 @@ class IslesOfConquest;
 #define WarsongGulchPointer WarsongGulch*;
 #define WeatherInfoPointer WeatherInfo*;
 #define WorldPointer World*;
-#define IslesOfConquestPointer IslesOfConquest*;
+#define IocPointer IsleOfConquest*;
 
 #define CAST(x,y) static_cast<x>(y)
 
@@ -237,7 +237,7 @@ class IslesOfConquest;
 #define TO_LOOTROLL(ptr) CAST(LootRoll*,ptr)
 #define TO_VEHICLE(ptr) CAST(Vehicle*,ptr)
 #define TO_PTR(classname, ptr) CAST(classname*,ptr)
-#define TO_ISLESOFCONQUEST(ptr) CAST(IslesOfConquest*,ptr)
+#define TO_IOC(ptr) CAST(IsleOfConquest*,ptr)
 
 #define NULLPTR NULL
 #define NULLGOB NULL

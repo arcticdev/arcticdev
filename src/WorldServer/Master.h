@@ -16,7 +16,7 @@
 #define BANNER "WoWArcTic MMORPG Server r%u/%s-%s-%s :: WorldServer\n"
 
 #ifndef _VERSION
-#define _VERSION "3.2.2"
+#define _VERSION "3.3.3"
 #endif
 
 #if PLATFORM == PLATFORM_WIN32
@@ -65,5 +65,4 @@ private:
 };
 
 #define sMaster Master::getSingleton()
-
 #endif

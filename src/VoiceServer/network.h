@@ -11,7 +11,7 @@ typedef int(*network_io_callback)(void*, int);
 
 typedef struct
 {
-   network_io_callback event_handler;
+	network_io_callback event_handler;
 	network_io_callback write_handler;
 	int fd;
 	void* miscdata;
@@ -24,9 +24,9 @@ typedef struct
 
 enum io_event
 {
-	IOEVENT_READ	= 0,
-	IOEVENT_WRITE	= 1, // not used with udp
-	IOEVENT_ERROR	= 2,
+	IOEVENT_READ = 0,
+	IOEVENT_WRITE = 1, // not used with udp
+	IOEVENT_ERROR = 2,
 };
 
 int network_init();
