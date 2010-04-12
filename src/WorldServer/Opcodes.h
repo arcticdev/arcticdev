@@ -1349,7 +1349,7 @@ enum NPCFlags
     UNIT_NPC_FLAG_GUILD_BANK         = 0x00800000,  // 8388608,     23
     UNIT_NPC_FLAG_SPELLCLICK         = 0x01000000,  // 16777216,    24
     UNIT_NPC_FLAG_GUARD              = 0x10000000,  // custom flag for guards
-    UNIT_NPC_FLAG_PLAYERVEHICLE     = 0x02000000,   //33554432
+    UNIT_NPC_FLAG_PLAYERVEHICLE      = 0x02000000,  // 33554432
 };
 
 enum GossipIcons 
@@ -1366,11 +1366,5 @@ enum GossipIcons
     GOSSIP_ICON_GOSSIP_ARENA = 9,
     GOSSIP_ICON_GOSSIP_COIN = 9,
 };
-/*
-enum FieldFlags 
-{
-    0x00000008 == can't climb slopes too steep
-    0x40000000 == sheathed
-};*/
 
 #endif

@@ -10,68 +10,68 @@
 
 void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
 {
-    OUT_DEBUG("WORLD: Received CMSG_VOICE_SESSION_ENABLE"); 
-    uint8 voice, mic; 
-    recv_data >> voice >> mic; 
- 
-    WorldPacket data(SMSG_VOICE_SESSION_ENABLE, 2); 
-    data << voice; 
-    data << mic; 
-    SendPacket(&data); 
-} 
+	OUT_DEBUG("WORLD: Received CMSG_VOICE_SESSION_ENABLE");
+	uint8 voice, mic;
+	recv_data >> voice >> mic;
 
-void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket & recv_data) 
-{ 
-    OUT_DEBUG("WORLD: Received CMSG_CHANNEL_VOICE_ON"); 
-    recv_data.hexlike(); 
-} 
+	WorldPacket data(SMSG_VOICE_SESSION_ENABLE, 2);
+	data << voice;
+	data << mic;
+	SendPacket(&data);
+}
 
-void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data) 
-{ 
-    OUT_DEBUG("WORLD: Received CMSG_SET_ACTIVE_VOICE_CHANNEL"); 
- 
-    if(!sVoiceChatHandler.CanUseVoiceChat()) 
-        return; 
- 
-    uint8 type; 
-    uint32 id; // I think this is channel crap, 5 is custom, 
+void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket & recv_data)
+{
+	OUT_DEBUG("WORLD: Received CMSG_CHANNEL_VOICE_ON");
+	recv_data.hexlike();
+}
 
-    recv_data >> type >> id; 
+void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
+{
+	OUT_DEBUG("WORLD: Received CMSG_SET_ACTIVE_VOICE_CHANNEL");
 
-    if(type == 5) 
-    { 
-    // custom channel 
-    Channel * chn = channelmgr.GetChannel(id); 
+	if(!sVoiceChatHandler.CanUseVoiceChat())
+		return;
 
-    if(chn == NULL) 
-        return; 
+	uint8 type;
+	uint32 id; // I think this is channel crap, 5 is custom,
 
-    if(chn->m_general || !chn->voice_enabled) 
-        return; 
+	recv_data >> type >> id;
 
-    chn->JoinVoiceChannel(_player); 
-    } 
-} 
+	if(type == 5)
+	{
+		// custom channel
+		Channel * chn = channelmgr.GetChannel(id);
 
-void WorldSession::HandleChannelWatchOpcode(WorldPacket & recv_data) 
-{ 
-    OUT_DEBUG("WORLD: Received CMSG_SET_CHANNEL_WATCH"); 
+		if(chn == NULL)
+			return;
 
-    string name;
-    recv_data >> name;
+		if(chn->m_general || !chn->voice_enabled)
+			return;
 
-    // custom channel
-    Channel * chn = channelmgr.GetChannel(name.c_str(), _player);
-    if(chn == NULL || chn->voice_enabled == false || chn->m_general)
-        return;
+		chn->JoinVoiceChannel(_player);
+	}
+}
 
-    WorldPacket data(SMSG_AVAILABLE_VOICE_CHANNEL, 17+chn->m_name.size());
-    data << uint32( 0x00002e57 );
-    data << uint32( 0xe0e10000 );
-    data << uint8( 0 ); // 00 = custom, 03 = party, 04 = raid
-    data << chn->m_name;
-    data << _player->GetGUID();
-    SendPacket(&data);
+void WorldSession::HandleChannelWatchOpcode(WorldPacket & recv_data)
+{
+	OUT_DEBUG("WORLD: Received CMSG_SET_CHANNEL_WATCH");
+
+	string name;
+	recv_data >> name;
+
+	// custom channel
+	Channel * chn = channelmgr.GetChannel(name.c_str(), _player);
+	if(chn == NULL || chn->voice_enabled == false || chn->m_general)
+		return;
+
+	WorldPacket data(SMSG_AVAILABLE_VOICE_CHANNEL, 17+chn->m_name.size());
+	data << uint32(0x00002e57);
+	data << uint32(0xe0e10000);
+	data << uint8(00); // 00=custom,03=party,04=raid
+	data << chn->m_name;
+	data << _player->GetGUID();
+	SendPacket(&data);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -380,23 +380,26 @@ void VoiceChatHandler::Update()
 
 void WorldSession::HandleChannelWatchOpcode(WorldPacket & recv_data)
 {
-    OUT_DEBUG("WORLD: Received CMSG_SET_CHANNEL_WATCH");
+	OUT_DEBUG("WORLD: Received CMSG_SET_CHANNEL_WATCH");
+	SKIP_READ_PACKET(recv_data);
 }
 
 void WorldSession::HandleEnableMicrophoneOpcode(WorldPacket & recv_data)
 {
-    OUT_DEBUG("WORLD: Received CMSG_VOICE_SESSION_ENABLE");
+	OUT_DEBUG("WORLD: Received CMSG_VOICE_SESSION_ENABLE");
+	SKIP_READ_PACKET(recv_data);
 }
 
 void WorldSession::HandleChannelVoiceOnOpcode(WorldPacket & recv_data)
 {
-    OUT_DEBUG("WORLD: CMSG_CHANNEL_VOICE_ON");
-    // Enable Voice button in channel context menu
+	OUT_DEBUG("WORLD: CMSG_CHANNEL_VOICE_ON");
+	SKIP_READ_PACKET(recv_data);
 }
 
 void WorldSession::HandleVoiceChatQueryOpcode(WorldPacket & recv_data)
 {
-    OUT_DEBUG("WORLD: Received CMSG_SET_ACTIVE_VOICE_CHANNEL");
+	OUT_DEBUG("WORLD: Received CMSG_SET_ACTIVE_VOICE_CHANNEL");
+	SKIP_READ_PACKET(recv_data);
 }
 
 #endif // VOICE_CHAT

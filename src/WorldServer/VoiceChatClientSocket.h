@@ -15,7 +15,6 @@ class VoiceChatClientSocket : public Socket
 	uint16 remaining;
 public:
 	VoiceChatClientSocket(uint32 fd);
-	
 	void OnDisconnect();
 	void OnRead();
 	void SendPacket(WorldPacket* data);

@@ -82,11 +82,11 @@ public:
 	ChatChannelDBC * pDBC;
 	uint32 m_channelId;
 	bool m_deleted;
-#ifdef VOICE_CHAT 
-	bool voice_enabled; 
-	uint16 i_voice_channel_id; 
-	MemberMap m_VoiceMembers; 
-#endif 
+#ifdef VOICE_CHAT
+	bool voice_enabled;
+	uint16 i_voice_channel_id;
+	MemberMap m_VoiceMembers;
+#endif
 public:
 	friend class ChannelMgr;
 	Channel(const char * name, uint32 team, uint32 type_id, uint32 id);
