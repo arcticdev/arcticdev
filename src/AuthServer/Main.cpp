@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "AuthStdAfx.h"
+#include "AuthServer.h"
 #include <signal.h>
 #include "svn_revision.h"
 #ifndef WIN32

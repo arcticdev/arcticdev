@@ -517,7 +517,7 @@ void Unit::GiveGroupXP(UnitPointer pVictim, PlayerPointer PlayerInGroup)
 	}
 	else
 	{
-		if( pGroup->GetGroupType() == GROUP_TYPE_NORMAL)
+		if( pGroup->GetGroupType() == GROUP_TYPE_PARTY)
 		{
 			if(active_player_count==3)
 				xp_mod = 1.1666f;

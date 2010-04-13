@@ -9,41 +9,46 @@
 
 enum PartyErrors
 {
-	ERR_PARTY_NO_ERROR					= 0,
-	ERR_PARTY_CANNOT_FIND				= 1,
-	ERR_PARTY_IS_NOT_IN_YOUR_PARTY		= 2,
-	ERR_PARTY_UNK						= 3,
-	ERR_PARTY_IS_FULL					= 4,
-	ERR_PARTY_ALREADY_IN_GROUP			= 5,
-	ERR_PARTY_YOU_ARENT_IN_A_PARTY		= 6,
-	ERR_PARTY_YOU_ARE_NOT_LEADER		= 7,
-	ERR_PARTY_WRONG_FACTION				= 8,
-	ERR_PARTY_IS_IGNORING_YOU			= 9,
+	ERR_PARTY_NO_ERROR = 0,
+	ERR_PARTY_CANNOT_FIND = 1,
+	ERR_PARTY_IS_NOT_IN_YOUR_PARTY = 2,
+	ERR_PARTY_UNK = 3,
+	ERR_PARTY_IS_FULL = 4,
+	ERR_PARTY_ALREADY_IN_GROUP = 5,
+	ERR_PARTY_YOU_ARENT_IN_A_PARTY = 6,
+	ERR_PARTY_YOU_ARE_NOT_LEADER = 7,
+	ERR_PARTY_WRONG_FACTION = 8,
+	ERR_PARTY_IS_IGNORING_YOU = 9,
 };
 
 enum GroupTypes
 {
-	GROUP_TYPE_NORMAL = 0,
-    GROUP_TYPE_RAID = 1
+	GROUP_TYPE_PARTY = 0x00,
+	GROUP_TYPE_BG = 0x01,
+	GROUP_TYPE_RAID = 0x02,
+	GROUP_TYPE_BGRAID = GROUP_TYPE_BG | GROUP_TYPE_RAID,
+	GROUP_TYPE_LFD = 0x08,
+	// 0x10 Leaving battleground, going to normal group
 };
 
 enum MaxGroupCount
 {
-	MAX_GROUP_SIZE_PARTY				= 5,
-	MAX_GROUP_SIZE_RAID					= 40,
+	MAX_GROUP_SIZE_PARTY = 5,
+	MAX_GROUP_SIZE_RAID = 40,
 };
 
 enum QuickGroupUpdateFlags
 {
-	PARTY_UPDATE_FLAG_POSITION			= 1,
-	PARTY_UPDATE_FLAG_ZONEID			= 2,
+	PARTY_UPDATE_FLAG_POSITION = 1,
+	PARTY_UPDATE_FLAG_ZONEID = 2,
+	// GROUP_UPDATE_FLAG_VEHICLE_SEAT
 };
 
 enum GroupFlags
 {
-	GROUP_FLAG_DONT_DISBAND_WITH_NO_MEMBERS			= 1,
-	GROUP_FLAG_REMOVE_OFFLINE_PLAYERS				= 2,
-	GROUP_FLAG_BATTLEGROUND_GROUP					= 4,
+	GROUP_FLAG_DONT_DISBAND_WITH_NO_MEMBERS = 1,
+	GROUP_FLAG_REMOVE_OFFLINE_PLAYERS = 2,
+	GROUP_FLAG_BATTLEGROUND_GROUP = 4,
 };
 
 struct PlayerInfo;
@@ -101,7 +106,9 @@ class ARCTIC_DECL Group
 public:
 	friend class SubGroup;
 
-	static Group * Create();
+	std::map<PlayerPointer,uint32> m_BeaconOfLightTargets;
+
+	static Group* Create();
 
 	Group(bool Assign);
 	~Group();
@@ -109,6 +116,8 @@ public:
 	// Adding/Removal Management
 	bool AddMember(PlayerInfo * info, int32 subgroupid=-1);
 	void RemovePlayer(PlayerInfo * info);
+	void AddBeaconOfLightTarget(PlayerPointer Target);
+	void RemoveBeaconOfLightTarget(PlayerPointer Target);
 
 	// Leaders and Looting
 	void SetLeader(PlayerPointer pPlayer,bool silent);
@@ -126,9 +135,6 @@ public:
 	ARCTIC_INLINE void OutPacketToAll(uint16 op, uint16 len, const void* data) { OutPacketToAllButOne(op, len, data, NULLPLR); }
 	void OutPacketToAllButOne(uint16 op, uint16 len, const void* data, PlayerPointer pSkipTarget);
 
-	ARCTIC_INLINE uint32 GetGroupInstanceID(void)		{ return m_GroupInstanceID; }
-	ARCTIC_INLINE void SetGroupInstanceID(uint32 newid)	{ m_GroupInstanceID = newid; }
-
 	void SendNullUpdate(PlayerPointer pPlayer);
 
 	// Group Combat
@@ -137,6 +143,7 @@ public:
 	// Destroying/Converting
 	void Disband();
 	PlayerPointer FindFirstPlayer();
+	bool HasDisenchanters();
 	
 	// Accessing functions
 	ARCTIC_INLINE SubGroup * GetSubGroup(uint32 Id)
@@ -159,7 +166,7 @@ public:
 	bool HasMember(PlayerPointer pPlayer);
 	bool HasMember(PlayerInfo * info);
 	ARCTIC_INLINE uint32 MemberCount(void) { return m_MemberCount; }
-	ARCTIC_INLINE bool IsFull() { return ((m_GroupType == GROUP_TYPE_NORMAL && m_MemberCount >= MAX_GROUP_SIZE_PARTY) || (m_GroupType == GROUP_TYPE_RAID && m_MemberCount >= MAX_GROUP_SIZE_RAID)); }
+	ARCTIC_INLINE bool IsFull() { return ((m_GroupType == GROUP_TYPE_PARTY && m_MemberCount >= MAX_GROUP_SIZE_PARTY) || (m_GroupType == GROUP_TYPE_RAID && m_MemberCount >= MAX_GROUP_SIZE_RAID)); }
 
 	SubGroup* FindFreeSubGroup();
 
@@ -190,12 +197,10 @@ public:
 	ARCTIC_INLINE PlayerInfo * GetMainTank() { return m_mainTank; }
 	ARCTIC_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
 
-	void SetDifficulty(uint8 difficulty);
-	
 	//////////////////////////////////////////////////////////////////////////
 	// VoiceChat                                                            //
 	//////////////////////////////////////////////////////////////////////////
-	
+
 #ifdef VOICE_CHAT
 	void AddVoiceMember(PlayerInfo * pPlayer);
 	void RemoveVoiceMember(PlayerInfo * pPlayer);
@@ -213,9 +218,14 @@ protected:
 	PlayerInfo* m_voiceMembersList[41];
 #endif	// VOICE_CHAT
 
+public:
 	ARCTIC_INLINE void SetFlag(uint8 groupflag) { m_groupFlags |= groupflag; }
 	ARCTIC_INLINE void RemoveFlag(uint8 groupflag) { m_groupFlags &= ~groupflag; }
 	ARCTIC_INLINE bool HasFlag(uint8 groupflag) { return (m_groupFlags & groupflag) > 0 ? true : false; }
+	ARCTIC_INLINE int8 GetDifficulty() { return m_difficulty; }
+	ARCTIC_INLINE int8 GetRaidDifficulty() { return m_raiddifficulty; }
+	ARCTIC_INLINE void SetDifficulty(uint8 diff) { m_difficulty = diff; }
+	ARCTIC_INLINE void SetRaidDifficulty(uint8 diff) { m_raiddifficulty = diff; }
 
 protected:
 	PlayerInfo * m_Leader;
@@ -228,7 +238,6 @@ protected:
 	uint16 m_LootThreshold;
 	uint8 m_GroupType;
 	uint32 m_Id;
-	uint32 m_GroupInstanceID;
 
 	SubGroup* m_SubGroups[8];
 	uint8 m_SubGroupCount;
@@ -237,6 +246,7 @@ protected:
 	bool m_dirty;
 	bool m_updateblock;
 	uint8 m_difficulty;
+	uint8 m_raiddifficulty;
 	uint8 m_groupFlags;
 
 	// Evil prayer of mending stuff

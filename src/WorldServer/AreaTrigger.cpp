@@ -109,12 +109,13 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	// Are we REALLY here?
 	CHECK_INWORLD_RETURN;
 
-    // Search quest log, find any exploration quests
+	// Search quest log, find any exploration quests
 	sQuestMgr.OnPlayerExploreArea(GetPlayer(),id);
 
 	AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry( id );
 
 	sHookInterface.OnAreaTrigger(_player, id);
+	CALL_INSTANCE_SCRIPT_EVENT( _player->GetMapMgr(), OnAreaTrigger )( _player, id );
 
 	// if in BG handle is triggers
 	if( _player->m_bg )
@@ -146,8 +147,13 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 		{
 			if(_player->GetPlayerStatus() != TRANSFER_PENDING) // only ports if player is out of pendings
 			{
-				uint32 reason = CheckTriggerPrerequsites(pAreaTrigger, this, _player, WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid));
+				MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
+				MapEntry* map = dbcMap.LookupEntry(pAreaTrigger->Mapid);
+				if(!pMi)
+					return;
 
+				// do we meet the map requirements?
+				uint8 reason = CheckTeleportPrerequisites(pAreaTrigger, this, _player, pAreaTrigger->Mapid);
 				if(reason != AREA_TRIGGER_FAILURE_OK)
 				{
 					const char * pReason = AreaTriggerFailureMessages[reason];
@@ -159,19 +165,17 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 					{
 					case AREA_TRIGGER_FAILURE_LEVEL:
 						{
-							snprintf(msg, 200, pReason, pAreaTrigger->required_level);
+							snprintf(msg,200,pReason,pAreaTrigger->required_level);
 							data << msg;
 						}break;
 					case AREA_TRIGGER_FAILURE_NO_ATTUNE_I:
 						{
-							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							ItemPrototype * pItem = ItemPrototypeStorage.LookupEntry(pMi->required_item);
 							snprintf(msg, 200, pReason, pItem ? pItem->Name1 : "UNKNOWN");
 							data << msg;
 						}break;
 					case AREA_TRIGGER_FAILURE_NO_ATTUNE_Q:
 						{
-							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							Quest * pQuest = QuestStorage.LookupEntry(pMi->required_quest);
 							snprintf(msg, 200, pReason, pQuest ? pQuest->title : "UNKNOWN");
 
@@ -179,7 +183,6 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 						}break;
 					case AREA_TRIGGER_FAILURE_NO_KEY:
 						{
-							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							string temp_msg[2];
 							string tmp_msg;
 							for(uint32 i = 0; i < 2; ++i) 
@@ -203,7 +206,6 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 						}break;
 					case AREA_TRIGGER_FAILURE_LEVEL_HEROIC:
 						{
-							MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
 							snprintf(msg, 200, pReason, pMi->HasFlag(WMI_INSTANCE_XPACK_02) ? 80 : 70);
 							data << msg;
 						}break;
@@ -222,45 +224,21 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 					TO_UNIT(_player)->Dismount();
 
 				uint32 InstanceID = 0;
-				MapInfo * pMi = WorldMapInfoStorage.LookupEntry(pAreaTrigger->Mapid);
+				// Try to find a saved instance and
+				// do not handle Hyjal Inn (trigger 4319), since we need a unique mapid when generating our instance_id.
 
-				// Do not handle Hyjal Inn (trigger 4319) as an instance,
-				// since we need a unique mapid when generating our instance_id.
-				if( id != 4319 && pMi && ( pMi->type == INSTANCE_RAID || _player->iInstanceType >= MODE_HEROIC && pMi->type == INSTANCE_MULTIMODE ) )
+				if( id != 4319 && pMi && ( map->israid() || _player->iRaidType >= MODE_25PLAYER_NORMAL && pMi->type == INSTANCE_MULTIMODE ) )
 				{
 					// Do we have a saved instance we should use?
-					Instance * in = sInstanceMgr.GetSavedInstance( pMi->mapid,_player->GetLowGUID() );
-					if( in && in->m_instanceId )
-						InstanceID = in->m_instanceId;
-					else //no saved instances found, try to find an active intance for the group we are in.
+					Instance * in = NULL;
+					in = sInstanceMgr.GetSavedInstance( pMi->mapid,_player->GetLowGUID(), _player->iRaidType );
+					if( in != NULL  && in->m_instanceId )
 					{
-						InstanceMap::iterator itr;
-						InstanceMap * instancemap = sInstanceMgr.GetInstancesForMap( pMi->mapid );
-						if( instancemap )
-						{
-							for( itr = instancemap->begin(); itr != instancemap->end(); ++itr )
-							{
-								in = itr->second;
-								if( in->m_mapMgr && in->m_mapMgr->HasPlayers() ) //some instances are inside another
-								{
-									PlayerPointer firstplr = sInstanceMgr.GetFirstPlayer(in);
-									if( firstplr != NULL  && firstplr->GetGroup() == _player->GetGroup() )
-									{
-										if (_player->GetGroup()->GetGroupInstanceID() != firstplr->GetGroup()->GetGroupInstanceID())
-										{
-											Log.Warning("InstanceMgr","Group inside instance %d didn't set the GroupInstanceID for map %d [%s], old_instanceID = %d",
-												in->m_instanceId, in->m_mapId, in->m_mapInfo->name, firstplr->GetGroup()->GetGroupInstanceID() );
-											_player->GetGroup()->SetGroupInstanceID(in->m_instanceId);
-										}
-										InstanceID = in->m_instanceId;
-										break;
-									}
-								}
-							}
-						}
+						//If we are the first to enter this instance, also set our current group id.
+						if( in->m_mapMgr == NULL || (!in->m_mapMgr->HasPlayers() && _player->GetGroupID() != in->m_creatorGroup))
+							in->m_creatorGroup =_player->GetGroupID();
+						InstanceID = in->m_instanceId;
 					}
-					// Set current InstanceID for player (or 0 if no instances found)
-					_player->SetInstanceID(InstanceID);
 				}
 
 				// Save our entry point and try to teleport to our instance

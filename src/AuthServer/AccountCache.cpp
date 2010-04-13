@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "AuthStdAfx.h"
+#include "AuthServer.h"
 initialiseSingleton(AccountMgr);
 initialiseSingleton(IPBanner);
 initialiseSingleton(InformationCore);

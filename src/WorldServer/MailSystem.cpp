@@ -577,13 +577,10 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	}
 
 	msg.expire_time = 0;
+	
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
 	{
 		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * 30);
-		if (msg.cod != 0)
-		{
-			msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
-		}
 	}
 
 	// Sending Message

@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "AuthStdAfx.h"
+#include "AuthServer.h"
 #pragma pack(push, 1)
 typedef struct
 {

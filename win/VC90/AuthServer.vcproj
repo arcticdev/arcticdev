@@ -52,7 +52,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="AuthStdAfx.h"
+				PrecompiledHeaderThrough="AuthServer.h"
 				PrecompiledHeaderFile="$(IntDir)/AuthServer.pch"
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
@@ -149,7 +149,7 @@
 				EnableEnhancedInstructionSet="0"
 				FloatingPointModel="2"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="AuthStdAfx.h"
+				PrecompiledHeaderThrough="AuthServer.h"
 				PrecompiledHeaderFile="$(IntDir)/AuthServer.pch"
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
@@ -239,7 +239,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="AuthStdAfx.h"
+				PrecompiledHeaderThrough="AuthServer.h"
 				PrecompiledHeaderFile="$(IntDir)/AuthServer.pch"
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
@@ -332,7 +332,7 @@
 				EnableEnhancedInstructionSet="0"
 				FloatingPointModel="0"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="AuthStdAfx.h"
+				PrecompiledHeaderThrough="AuthServer.h"
 				PrecompiledHeaderFile="$(IntDir)/AuthServer.pch"
 				AssemblerListingLocation="$(IntDir)/"
 				ObjectFile="$(IntDir)/"
@@ -478,7 +478,7 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\..\src\AuthServer\AuthStdAfx.cpp"
+			RelativePath="..\..\src\AuthServer\AuthServer.cpp"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -514,7 +514,7 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="..\..\src\AuthServer\AuthStdAfx.h"
+			RelativePath="..\..\src\AuthServer\AuthServer.h"
 			>
 		</File>
 		<File

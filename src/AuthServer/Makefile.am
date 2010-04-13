@@ -18,8 +18,8 @@ AuthServer_SOURCES = \
     AuthConsole.h \
     AuthOpcodes.cpp \
     AuthOpcodes.h \
-	AuthStdAfx.cpp \
-	AuthStdAfx.h \
+	AuthServer.cpp \
+	AuthServer.h \
 	AutoPatcher.h \
 	AutoPatcher.cpp \
 	Main.cpp \

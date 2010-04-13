@@ -147,7 +147,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 		if(plr->GetGroup())
 		{
 			// check if this is a suitable candidate for a group for others to join
-			if(plr->m_AutoAddMem && plr->IsGroupLeader() && !plr->GetGroup()->IsFull() && plr->GetGroup()->GetGroupType() == GROUP_TYPE_NORMAL)
+			if(plr->m_AutoAddMem && plr->IsGroupLeader() && !plr->GetGroup()->IsFull() && plr->GetGroup()->GetGroupType() == GROUP_TYPE_PARTY)
 			{
 				possibleGroupLeaders.push_back(plr);
 				continue;
@@ -270,7 +270,7 @@ void LfgMgr::SendLfgList( PlayerPointer plr, uint32 Dungeon )
 
 		data << pl->Lfgcomment;
 
-		if(pl->GetGroup() && pl->GetGroup()->GetGroupType() == GROUP_TYPE_NORMAL)
+		if(pl->GetGroup() && pl->GetGroup()->GetGroupType() == GROUP_TYPE_PARTY)
 		{
 			pl->GetGroup()->Lock();
 			sgrp = pl->GetGroup()->GetSubGroup(0);

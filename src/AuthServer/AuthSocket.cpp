@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "AuthStdAfx.h"
+#include "AuthServer.h"
 #include <openssl/md5.h>
 
 enum _errors

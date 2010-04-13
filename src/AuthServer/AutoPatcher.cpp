@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "AuthStdAfx.h"
+#include "AuthServer.h"
 #include "../libs/Auth/MD5.h"
 
 #ifndef WIN32
