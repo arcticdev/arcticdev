@@ -968,7 +968,7 @@ void QuestMgr::OnQuestAccepted(PlayerPointer plr, Quest* qst, ObjectPointer qst_
 
 void QuestMgr::GiveQuestTitleReward(PlayerPointer plr, Quest* qst)
 {
-	if(!qst->reward_title || qst->reward_title > PVPTITLE_END)
+	if(!qst->reward_title || qst->reward_title > TITLE_END)
 		return;
 
 	plr->SetKnownTitle(qst->reward_title, true);

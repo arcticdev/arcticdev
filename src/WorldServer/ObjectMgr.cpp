@@ -2437,6 +2437,7 @@ void ObjectMgr::LoadInstanceReputationModifiers()
 bool ObjectMgr::HandleInstanceReputationModifiers(PlayerPointer pPlayer, UnitPointer pVictim)
 {
 	uint32 team = pPlayer->GetTeam();
+	MapEntry* map = dbcMap.LookupEntry(pPlayer->GetMapId());
 	bool is_boss, is_heroic;
 	if(pVictim->GetTypeId() != TYPEID_UNIT)
 		return false;
@@ -2446,7 +2447,11 @@ bool ObjectMgr::HandleInstanceReputationModifiers(PlayerPointer pPlayer, UnitPoi
 		return false;
 
 	is_boss = (TO_CREATURE( pVictim )->proto && TO_CREATURE( pVictim )->proto->boss) ? true : false;
-	is_heroic = (pPlayer->IsInWorld() && pPlayer->iInstanceType == MODE_HEROIC && pPlayer->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
+
+	if(map->israid()) // We are good here I guess.
+		is_heroic = (pPlayer->IsInWorld() && pPlayer->iRaidType >= MODE_10PLAYER_HEROIC && pPlayer->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
+	else
+		is_heroic = (pPlayer->IsInWorld() && pPlayer->iInstanceType == MODE_5PLAYER_HEROIC && pPlayer->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
 
 	// Apply the bonuses as normal.
 	int32 replimit;
@@ -2471,7 +2476,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(PlayerPointer pPlayer, UnitPoi
 		if(!value || (replimit && pPlayer->GetStanding(i->faction[team]) >= replimit))
 			continue;
 
-		// value *= sWorld.getRate(RATE_KILLREPUTATION);
+		//value *= sWorld.getRate(RATE_KILLREPUTATION);
 		value = float2int32(float(value) * sWorld.getRate(RATE_KILLREPUTATION));
 		pPlayer->ModStanding(i->faction[team], value);
 	}

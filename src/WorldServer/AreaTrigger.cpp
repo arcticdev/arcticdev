@@ -9,97 +9,29 @@
 const char * AreaTriggerFailureMessages[] = 
 {
 	"-",
-	"This instance is currently not available",                                         // AREA_TRIGGER_FAILURE_UNAVAILABLE	
-	"You must have the \"Burning Crusade\" expansion to access this content.",          // AREA_TRIGGER_FAILURE_NO_BC
-	"Heroic mode currently not available for this instance.",                           // AREA_TRIGGER_FAILURE_NO_HEROIC
-	"You must be in a raid group to pass through here.",                                // AREA_TRIGGER_FAILURE_NO_RAID
-	"You must complete the quest \"%s\" to pass through here.",                         // AREA_TRIGGER_FAILURE_NO_ATTUNE_Q	
-	"You must have item \"%s\" to pass through here.",                                  // AREA_TRIGGER_FAILURE_NO_ATTUNE_I	
-	"You must have reached level %u before you can pass through here.",                 // AREA_TRIGGER_FAILURE_LEVEL
-	"You must be in a party to pass through here.",                                     // AREA_TRIGGER_FAILURE_NO_GROUP
-	"You do not have a required key(s) \"%s\" to pass through here.",                   // AREA_TRIGGER_FAILURE_NO_KEY
-	"You must have reached level %u before you can enter heroic mode.",                 // AREA_TRIGGER_FAILURE_LEVEL_HEROIC
-	"Don\'t have any idea why you can\'t pass through here.",                           // AREA_TRIGGER_FAILURE_NO_CHECK
-	"You must have the \"Wrath of the Lich King\" expansion to access this content.",   // AREA_TRIGGER_FAILURE_NO_WOTLK
-	"You are in queue for this raid group.",                                            // AREA_TRIGGER_FAILURE_IN_QUEUE
-	"Another group is already active inside.",											// AREA_TRIGGER_FAILURE_WRONG_GROUP
+	"This instance is currently not available",                                         //AREA_TRIGGER_FAILURE_UNAVAILABLE	
+	"You must have the \"Burning Crusade\" expansion to access this content.",          //AREA_TRIGGER_FAILURE_NO_BC				
+	"Heroic mode currently not available for this instance.",                           //AREA_TRIGGER_FAILURE_NO_HEROIC		
+	"You must be in a raid group to pass through here.",                                //AREA_TRIGGER_FAILURE_NO_RAID			
+	"You must complete the quest \"%s\" to pass through here.",                         //AREA_TRIGGER_FAILURE_NO_ATTUNE_Q	
+	"You must have item \"%s\" to pass through here.",                                  //AREA_TRIGGER_FAILURE_NO_ATTUNE_I	
+	"You must have reached level %u before you can pass through here.",                 //AREA_TRIGGER_FAILURE_LEVEL				
+	"You must be in a party to pass through here.",                                     //AREA_TRIGGER_FAILURE_NO_GROUP			
+	"You do not have a required key(s) \"%s\" to pass through here.",                   //AREA_TRIGGER_FAILURE_NO_KEY				
+	"You must have reached level %u before you can enter heroic mode.",                 //AREA_TRIGGER_FAILURE_LEVEL_HEROIC	
+	"Don\'t have any idea why you can\'t pass through here.",                           //AREA_TRIGGER_FAILURE_NO_CHECK			
+	"You must have the \"Wrath of the Lich King\" expansion to access this content.",   //AREA_TRIGGER_FAILURE_NO_WOTLK			
+	"You are in queue for this raid group.",                                            //AREA_TRIGGER_FAILURE_IN_QUEUE
+	"Another group is already active inside.",											//AREA_TRIGGER_FAILURE_WRONG_GROUP
 };
 
 void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 4);
-	uint32 id ;
+	uint32 id;
 	recv_data >> id;
 	_HandleAreaTriggerOpcode(id);
-}
-
-uint32 CheckTriggerPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, PlayerPointer pPlayer, MapInfo * pMapInfo)
-{
-	if(pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)
-		return AREA_TRIGGER_FAILURE_LEVEL;
-
-	if(!pMapInfo || !pMapInfo->HasFlag(WMI_INSTANCE_ENABLED))
-		return AREA_TRIGGER_FAILURE_UNAVAILABLE;
-
-	if(!pSession->HasFlag(ACCOUNT_FLAG_XPACK_01) && pMapInfo->HasFlag(WMI_INSTANCE_XPACK_01))
-		return AREA_TRIGGER_FAILURE_NO_BC;
-
-	// These can be overridden by cheats/GM
-	if(!pPlayer->triggerpass_cheat)
-	{
-		if( (pMapInfo->type == INSTANCE_RAID || pMapInfo->type == INSTANCE_MULTIMODE ) && !pPlayer->GetGroup())
-			return AREA_TRIGGER_FAILURE_NO_GROUP;
-
-		if( pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
-			return AREA_TRIGGER_FAILURE_NO_HEROIC;
-
-		if( pMapInfo->type == INSTANCE_RAID && pPlayer->GetGroup()->GetGroupType() != GROUP_TYPE_RAID )
-			return AREA_TRIGGER_FAILURE_NO_RAID;
-
-		if( pMapInfo && pMapInfo->required_quest && !( pPlayer->HasFinishedDailyQuest(pMapInfo->required_quest) || pPlayer->HasFinishedDailyQuest(pMapInfo->required_quest)))
-			return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
-
-		if(pMapInfo && pMapInfo->required_item && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->required_item, true))
-			return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
-
-		// we try to enter a heroic instance
-		if( pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_NULL )
-		{
-			// All Northerend heroic instances are automatically unlocked when reaching lvl 80, no keys needed here.
-			if(pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02) && pPlayer->getLevel()>= 80)
-					return AREA_TRIGGER_FAILURE_OK;
-			else
-			{
-				int minLvl = 70;
-				if ( pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02) )
-					minLvl = 80;
-				if( pPlayer->iInstanceType >= MODE_HEROIC && (int)pPlayer->getLevel() <  minLvl)
-					return AREA_TRIGGER_FAILURE_LEVEL_HEROIC;
-
-				// do we need a key?
-				bool reqkey = (pMapInfo->heroic_key[0]||pMapInfo->heroic_key[1])?true:false;
-
-				// do we have a key?
-				bool haskey = (pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[0], false) || pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[1], false))?true:false;
-
-				if(reqkey && !haskey)
-					return AREA_TRIGGER_FAILURE_NO_KEY;
-			}
-		}
-	}
-	else
-		return AREA_TRIGGER_FAILURE_OK;
-
-	// Raid queue
-	if( pMapInfo->type == INSTANCE_RAID || ( pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type == INSTANCE_MULTIMODE ) )
-	{
-		if( ! pPlayer->triggerpass_cheat && pPlayer->m_playerInfo && pMapInfo->playerlimit >= 5 &&
-			(int32)((pMapInfo->playerlimit - 5)/5) < pPlayer->m_playerInfo->subGroup)
-			return AREA_TRIGGER_FAILURE_IN_QUEUE;
-	}
-
-	return AREA_TRIGGER_FAILURE_OK;
 }
 
 void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
@@ -234,7 +166,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 					in = sInstanceMgr.GetSavedInstance( pMi->mapid,_player->GetLowGUID(), _player->iRaidType );
 					if( in != NULL  && in->m_instanceId )
 					{
-						//If we are the first to enter this instance, also set our current group id.
+						// If we are the first to enter this instance, also set our current group id.
 						if( in->m_mapMgr == NULL || (!in->m_mapMgr->HasPlayers() && _player->GetGroupID() != in->m_creatorGroup))
 							in->m_creatorGroup =_player->GetGroupID();
 						InstanceID = in->m_instanceId;

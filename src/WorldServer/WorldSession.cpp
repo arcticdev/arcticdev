@@ -1068,3 +1068,89 @@ void WorldSession::SendAccountDataTimes(uint32 mask)
 
 	SendPacket(&data);
 }
+
+uint8 WorldSession::CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, PlayerPointer pPlayer, uint32 mapid)
+{
+	MapInfo* pMapInfo = WorldMapInfoStorage.LookupEntry(mapid);
+	MapEntry* map = dbcMap.LookupEntry(mapid);
+
+	//is this map enabled?
+	if( pMapInfo  == NULL || !pMapInfo->HasFlag(WMI_INSTANCE_ENABLED))
+		return AREA_TRIGGER_FAILURE_UNAVAILABLE;
+
+	// Do we need TBC expansion?
+	if(!pSession->HasFlag(ACCOUNT_FLAG_XPACK_01) && pMapInfo->HasFlag(WMI_INSTANCE_XPACK_01))
+		return AREA_TRIGGER_FAILURE_NO_BC;
+
+	// Do we need WOTLK expansion?
+	if(!pSession->HasFlag(ACCOUNT_FLAG_XPACK_02) && pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02))
+		return AREA_TRIGGER_FAILURE_NO_WOTLK;
+
+	// Do we meet the areatrigger level requirements?
+	if( pAreaTrigger != NULL && pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)
+		return AREA_TRIGGER_FAILURE_LEVEL;
+
+	//Do we meet the map level requirements?
+	if( pPlayer->getLevel() < pMapInfo->minlevel )
+		return AREA_TRIGGER_FAILURE_LEVEL;
+
+	// Are we trying to enter a non-heroic instance in heroic mode?
+	if((map->israid() ? (pPlayer->iRaidType >= MODE_10PLAYER_HEROIC) : (pPlayer->iInstanceType >= MODE_5PLAYER_HEROIC)) && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
+		return AREA_TRIGGER_FAILURE_NO_HEROIC;
+
+	// These can be overridden by cheats/GM
+	if(!pPlayer->triggerpass_cheat)
+	{
+		//Do we need any quests?
+		if( pMapInfo->required_quest && !( pPlayer->HasFinishedDailyQuest(pMapInfo->required_quest) || pPlayer->HasFinishedDailyQuest(pMapInfo->required_quest)))
+			return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
+
+		// Do we need certain items?
+		if( pMapInfo->required_item && !pPlayer->GetItemInterface()->GetItemCount(pMapInfo->required_item, true))
+			return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
+
+		// Do we need to be in a group?
+		if((map->israid() || pMapInfo->type == INSTANCE_MULTIMODE ) && !pPlayer->GetGroup())
+			return AREA_TRIGGER_FAILURE_NO_GROUP;
+
+		// Does the group have to be a raid group?
+		if( map->israid() && pPlayer->GetGroup()->GetGroupType() != GROUP_TYPE_RAID )
+			return AREA_TRIGGER_FAILURE_NO_RAID;
+
+		// Need http://www.wowhead.com/?spell=46591 to enter Magisters Terrace
+		if( mapid == 585 && pPlayer->iInstanceType >= MODE_5PLAYER_HEROIC && !pPlayer->HasSpell(46591)) // Heroic Countenance
+			return AREA_TRIGGER_FAILURE_NO_HEROIC;
+
+		// Are we trying to enter a saved raid/heroic instance?
+		if(map->israid())
+		{
+			// Raid queue, did we reach our max amt of players?
+			if( pPlayer->m_playerInfo && pMapInfo->playerlimit >= 5 && (int32)((pMapInfo->playerlimit - 5)/5) < pPlayer->m_playerInfo->subGroup)
+				return AREA_TRIGGER_FAILURE_IN_QUEUE;
+
+			// All Heroic instances are automatically unlocked when reaching lvl 80, no keys needed here.
+			if( pPlayer->getLevel() < 80)
+			{
+				//otherwise we still need to be lvl 65 for heroic.
+				if( pPlayer->iRaidType && pPlayer->getLevel() < uint32(pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02) ? 80 : 70))
+					return AREA_TRIGGER_FAILURE_LEVEL_HEROIC;
+
+				//and we might need a key too.
+				bool reqkey = (pMapInfo->heroic_key[0]||pMapInfo->heroic_key[1])?true:false;
+				bool haskey = (pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[0], false) || pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[1], false))?true:false;
+				if(reqkey && !haskey)
+					return AREA_TRIGGER_FAILURE_NO_KEY;
+			}
+		}
+	}
+	// Nothing more to check, should be ok
+	return AREA_TRIGGER_FAILURE_OK;
+}
+
+void WorldSession::HandleTimeSyncResp( WorldPacket & recv_data )
+{
+	uint32 counter, time_;
+	recv_data >> counter >> time_;
+
+	// This is just a response, no need to do anything... Yet.
+}

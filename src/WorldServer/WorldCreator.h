@@ -35,10 +35,10 @@ enum INSTANCE_MODE
 
 enum RAID_MODE
 {
-	MODE_10PLAYER_NORMAL	=	0,
-	MODE_25PLAYER_NORMAL	=	1,
-	MODE_10PLAYER_HEROIC	=	2,
-	MODE_25PLAYER_HEROIC	=	3
+	MODE_10PLAYER_NORMAL = 0,
+	MODE_25PLAYER_NORMAL = 1,
+	MODE_10PLAYER_HEROIC = 2,
+	MODE_25PLAYER_HEROIC = 3
 };
 
 enum INSTANCE_ABORT_ERROR
@@ -143,13 +143,13 @@ public:
 	void Load(TaskList * l);
 
 	// deletes all instances owned by this player.
-	void ResetSavedInstances(Player* plr);
+	void ResetSavedInstances(PlayerPointer plr);
 
 	// player left a group, boot him out of any instances he's not supposed to be in.
-	void PlayerLeftGroup(Group * pGroup, Player* pPlayer);
+	void PlayerLeftGroup(Group * pGroup, PlayerPointer pPlayer);
 
 	// Has instance expired? Can player join?
-	ARCTIC_INLINE uint8 PlayerOwnsInstance(Instance * pInstance, Player* pPlayer)
+	ARCTIC_INLINE uint8 PlayerOwnsInstance(Instance * pInstance, PlayerPointer pPlayer)
 	{
 		// expired?
 		if( HasInstanceExpired( pInstance) )

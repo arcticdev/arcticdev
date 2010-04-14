@@ -1148,7 +1148,7 @@ public:
 
 	bool IsGroupMember(PlayerPointer plyr);
 	ARCTIC_INLINE int HasBeenInvited() { return m_GroupInviter != 0; }
- 	//ARCTIC_INLINE Group* GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
+ 	ARCTIC_INLINE Group* GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
 	ARCTIC_INLINE uint32  GetGroupID() { return m_playerInfo != NULL ? m_playerInfo->m_Group != NULL ? m_playerInfo->m_Group->GetID(): NULL: NULL; }
 	ARCTIC_INLINE int8 GetSubGroup() { return m_playerInfo->subGroup; }
 	ARCTIC_INLINE bool IsBanned()
@@ -2220,7 +2220,7 @@ public:
 
 	ARCTIC_INLINE bool HasKnownTitle( int32 title )
 	{
-		if(title < 1 || title > PVPTITLE_END)
+		if(title < 1 || title > TITLE_END)
 			return false;  // Title doesn't exist
 		if(title < 64)
 			return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES ) & uint64(1) << title ) != (uint64) 0;

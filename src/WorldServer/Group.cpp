@@ -404,14 +404,14 @@ void Group::Disband()
 
 	m_groupLock.Release();
 	CharacterDatabase.Execute("DELETE FROM groups WHERE group_id = %u", m_Id);
-	delete this;	// destroy ourselves, the destructor removes from eventmgr and objectmgr.
+	delete this; // destroy ourselves, the destructor removes from eventmgr and objectmgr.
 }
 
 void SubGroup::Disband()
 {
 	WorldPacket data(SMSG_GROUP_DESTROYED, 1);
 	WorldPacket data2(SMSG_PARTY_COMMAND_RESULT, 12);
-	data2 << uint32(2) << uint8(0) << uint32(0);	// you leave the group
+	data2 << uint32(2) << uint8(0) << uint32(0); // you leave the group
 
 	GroupMembersSet::iterator itr = m_GroupMembers.begin();
 	GroupMembersSet::iterator it2;
@@ -488,7 +488,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 
 	if(m_isqueued)
 	{
-		m_isqueued=false;
+		m_isqueued = false;
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
 	

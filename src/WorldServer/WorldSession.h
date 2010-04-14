@@ -26,7 +26,7 @@ struct TrainerSpell;
 enum MovementFlags
 {
 	// Byte 1 (Resets on Movement Key Press)
-    MOVEFLAG_MOVE_STOP                  = 0x00,			// verified
+	MOVEFLAG_MOVE_STOP                  = 0x00,			// verified
 	MOVEFLAG_MOVE_FORWARD				= 0x01,			// verified
 	MOVEFLAG_MOVE_BACKWARD				= 0x02,			// verified
 	MOVEFLAG_STRAFE_LEFT				= 0x04,			// verified
@@ -124,7 +124,7 @@ enum AccountDataTypes
 	PER_CHARACTER_BINDINGS_CACHE	= 3,	// 0x08 
 	GLOBAL_MACROS_CACHE				= 4,	// 0x10 
 	PER_CHARACTER_MACROS_CACHE		= 5,	// 0x20 
-    PER_CHARACTER_LAYOUT_CACHE		= 6,	// 0x40 
+	PER_CHARACTER_LAYOUT_CACHE		= 6,	// 0x40 
 	PER_CHARACTER_CHAT_CACHE		= 7,	// 0x80 
 	NUM_ACCOUNT_DATA_TYPES			= 8
 };
@@ -404,6 +404,8 @@ protected:
 	void HandleSetSheathedOpcode(WorldPacket & recv_data);
 	void HandleCompleteCinematic(WorldPacket & recv_data);
 	void HandleInspectOpcode( WorldPacket & recv_data );
+	void HandleGameobjReportUseOpCode( WorldPacket& recv_data );
+	void HandleTimeSyncResp(WorldPacket& recv_data);
 
 	// Gm Ticket System in GMTicket.cpp:
 	void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);
@@ -805,6 +807,7 @@ private:
 	uint32 instanceId;
 	uint8 _updatecount;
 public:
+	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, PlayerPointer pPlayer, uint32 mapid);
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
 	time_t floodTime;

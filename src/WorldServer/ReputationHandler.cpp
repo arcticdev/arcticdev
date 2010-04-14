@@ -6,8 +6,8 @@
 
 #include "StdAfx.h"
 
-#define FACTION_FLAG_HIDDEN 4                
-#define FACTION_FLAG_INVISIBLE_FORCED 8               
+#define FACTION_FLAG_HIDDEN 4
+#define FACTION_FLAG_INVISIBLE_FORCED 8
 #define FACTION_FLAG_PEACE_FORCED 16  
 #define FACTION_FLAG_AT_WAR  2
 #define FACTION_FLAG_VISIBLE 1
@@ -110,7 +110,7 @@ void Player::smsg_InitialFactions()
 		{
 			if(rep->flag & 2 && rep->standing >= 0)
 			{
-				printf("listid %u\n", i);
+				DEBUG_LOG("Player","smsg_InitialFactions reputationByListId[%u]", i);
 			}
 			// TODO fix. Structure is right but need to filter sent data.
 			// crashes client when opening rep window with assert((value >= min) && (value <= max))
@@ -452,7 +452,7 @@ void Player::Reputation_OnKilledUnit(UnitPointer pUnit, bool InnerLoop)
 				continue;
 
 			/* rep limit? */
-			if (!IS_INSTANCE(GetMapId()) || (IS_INSTANCE(GetMapId()) && this->iInstanceType != MODE_HEROIC))
+			if (!IS_INSTANCE(GetMapId()) || (IS_INSTANCE(GetMapId()) && this->iInstanceType != MODE_5PLAYER_HEROIC))
 			{
 				if((*itr).replimit)
 				{
