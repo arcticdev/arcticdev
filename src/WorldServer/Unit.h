@@ -9,14 +9,14 @@
 
 class AIInterface;
 
-#define MAX_AURAS 96                               // 40 buff slots, 46 debuff slots.
-#define MAX_POSITIVE_AURAS 40                      // ?
-#define MAX_PASSIVE_AURAS 192                      // grep: i mananged to break this.. :p seems we need more
+#define MAX_AURAS 96             // 40 buff slots, 46 debuff slots.
+#define MAX_POSITIVE_AURAS 40    // ?
+#define MAX_PASSIVE_AURAS 192    // grep: i mananged to break this.. :p seems we need more
 
 bool ARCTIC_DECL Rand(float);
 
 #define UF_TARGET_DIED  1
-#define UF_ATTACKING	2                          // this unit is attacking it's selection
+#define UF_ATTACKING	2        // this unit is attacking it's selection
 #define SPELL_GROUPS	96
 #define SPELL_MODIFIERS 30
 #define DIMINISH_GROUPS	13
