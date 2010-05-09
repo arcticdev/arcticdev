@@ -71,7 +71,7 @@ namespace G3D {
    provided "as is" without express or implied warranty.
 */
 
-#if _MSC_VER >= 1400
+#if _MSC_VER >= 1400 && !COMPILER_INTEL
 #pragma float_control(push)
 #pragma float_control(precise, on)
 #endif
@@ -124,13 +124,11 @@ __inline long int lrintf(float flt) {
 #endif
 }
 
-#if _MSC_VER >= 1400
+#if _MSC_VER >= 1400 && !COMPILER_INTEL
 #pragma float_control(pop)
 #endif
 
 #endif
-
-
 
 const double fuzzyEpsilon = 0.00001;
 
