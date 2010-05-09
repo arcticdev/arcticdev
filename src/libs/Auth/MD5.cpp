@@ -34,3 +34,4 @@ void MD5Hash::Initialize()
 {
 	MD5_Init(&mC);
 }
+

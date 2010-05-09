@@ -19,7 +19,7 @@ void HMACHash::Initialize(uint32 len, uint8 *seed)
 
 HMACHash::~HMACHash()
 {
-    HMAC_CTX_cleanup(&mC);
+	HMAC_CTX_cleanup(&mC);
 }
 
 void HMACHash::UpdateBigNumber(BigNumber *bn0, ...)
@@ -39,7 +39,7 @@ void HMACHash::UpdateBigNumber(BigNumber *bn0, ...)
 
 void HMACHash::UpdateData(const uint8 *data, int length)
 {
-    HMAC_Update(&mC, data, length);
+	HMAC_Update(&mC, data, length);
 }
 
 void HMACHash::UpdateData(const std::string &str)
@@ -49,6 +49,6 @@ void HMACHash::UpdateData(const std::string &str)
 
 void HMACHash::Finalize()
 {
-    uint32 length = 0;
-    HMAC_Final(&mC, (uint8*)mDigest, &length);
+	uint32 length = 0;
+	HMAC_Final(&mC, (uint8*)mDigest, &length);
 }

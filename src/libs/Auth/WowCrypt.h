@@ -8,13 +8,14 @@
 #define _WOWCRYPT_H
 
 #include <stdlib.h>
-#include "Common.h"
+#include "../Common.h"
 #include "HMAC.h"
 #include "RC4Engine.h"
 #include "BigNumber.h"
 #include <vector>
 
-class WowCrypt {
+class WowCrypt 
+{
 public:
 	WowCrypt();
 	~WowCrypt();

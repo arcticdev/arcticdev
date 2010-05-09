@@ -9,8 +9,8 @@
 
 #include "Common.h"
 #include "ByteBuffer.h"
-// #include "openssl/bn.h"
 
+// #include "openssl/bn.h"
 struct bignum_st;
 
 class BigNumber
@@ -29,7 +29,7 @@ class BigNumber
 		void SetRand(int numbits);
 
 		BigNumber operator=(const BigNumber &bn);
-        // BigNumber operator=(Sha1Hash &hash);
+		// BigNumber operator=(Sha1Hash &hash);
 
 		BigNumber operator+=(const BigNumber &bn);
 		BigNumber operator+(const BigNumber &bn) {
