@@ -19,11 +19,11 @@
 namespace VMAP
 {
 	/*
-	This is a balanced static BSP-Tree of triangles.
-	The memory for the tree nodes and the triangles are managed by the ModelContainer.
-	The exception to this is during the conversion of raw data info balanced BSP-Trees.
-	During this conversion the memory management is done internally.
-	*/
+	 * This is a balanced static BSP-Tree of triangles.
+	 * The memory for the tree nodes and the triangles are managed by the ModelContainer.
+	 * The exception to this is during the conversion of raw data info balanced BSP-Trees.
+	 * During this conversion the memory management is done internally.
+	 */
 	class SubModel : public BaseModel
 	{
 		private:
@@ -41,7 +41,7 @@ namespace VMAP
 			SubModel(unsigned int pNTriangles, TriangleBox *pTriangles, unsigned int pTrianglesPos, unsigned int pNNodes, TreeNode *pTreeNodes, unsigned int pNodesPos);
 			SubModel(AABSPTree<Triangle> *pTree);
 			~SubModel(void);
-			//Gets a 50 byte binary block
+			// Gets a 50 byte binary block
 			void initFromBinBlock(void *pBinBlock);
 
 			RayIntersectionIterator<TreeNode, TriangleBox> beginRayIntersection(const Ray& ray, double pMaxTime, bool skipAABoxTests = false) const;
@@ -87,6 +87,6 @@ namespace VMAP
 	bool operator==(const SubModel& pSm1, const SubModel& pSm2);
 	void getBounds(const SubModel& pSm, G3D::AABox& pAABox);
 	void getBounds(const SubModel* pSm, G3D::AABox& pAABox);
-	//====================================
-}														// VMAP
+
+} // VMAP
 #endif

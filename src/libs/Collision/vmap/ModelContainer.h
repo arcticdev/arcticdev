@@ -25,13 +25,13 @@ const char VMAP_MAGIC[] = "VMAP_2.0";
 namespace VMAP
 {
 	/*
-	The ModelContainer is a balanced BSP-Tree of SubModels.
-	We store a map tile or an instance in one ModelContainer.
-	The ModelContainer manages the memory used for the tree nodes, the SubModels and its triangles in static arrays.
-	The tree nodes are used for the BSP-Tree of SubModels as well as for the BSP-Tree of triangles within one SubModel.
-	The references are done by indexes within these static arrays.
-	Therefore we are able to just load a binary block and do not need to mess around with memory allocation and pointers.
-	*/
+	 * The ModelContainer is a balanced BSP-Tree of SubModels.
+	 * We store a map tile or an instance in one ModelContainer.
+	 * The ModelContainer manages the memory used for the tree nodes, the SubModels and its triangles in static arrays.
+	 * The tree nodes are used for the BSP-Tree of SubModels as well as for the BSP-Tree of triangles within one SubModel.
+	 * The references are done by indexes within these static arrays.
+	 * Therefore we are able to just load a binary block and do not need to mess around with memory allocation and pointers.
+	 */
 
 	//=====================================================
 
@@ -89,8 +89,6 @@ namespace VMAP
 
 			size_t getMemUsage();
 	};
-
-	//=====================================================
 
 	//=====================================================
 

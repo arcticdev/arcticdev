@@ -12,9 +12,9 @@
 
 #include "ShortVector.h"
 
-/**
-This is a box and a triangle Class using ShortVectors. Each vector has 16 bit an a fixed point 12.4 representation.
-*/
+/*
+ * This is a box and a triangle Class using ShortVectors. Each vector has 16 bit an a fixed point 12.4 representation.
+ */
 
 namespace VMAP
 {

@@ -14,11 +14,11 @@
 
 using namespace G3D;
 
-/**
-The Class is mainly taken from G3D/AABSPTree.h but modified to be able to use our internal data structure.
-This is an iterator that helps us analysing the BSP-Trees.
-The collision detection is modified to return true, if we are inside an object.
-*/
+/*
+ * The Class is mainly taken from G3D/AABSPTree.h but modified to be able to use our internal data structure.
+ * This is an iterator that helps us analysing the BSP-Trees.
+ * The collision detection is modified to return true, if we are inside an object.
+ */
 
 namespace VMAP
 {
@@ -27,12 +27,12 @@ namespace VMAP
 	{
 		public:
 			static bool collisionLocationForMovingPointFixedAABox(
-				const Vector3&		origin,
-				const Vector3&		dir,
-				const AABox&			box,
-				Vector3&				location,
-				bool&				Inside,
-				Vector3&				normal)
+				const Vector3&  origin,
+				const Vector3&  dir,
+				const AABox&    box,
+				Vector3&        location,
+				bool&           Inside,
+				Vector3&        normal)
 			{
 
 				// Integer representation of a floating-point value.
@@ -185,30 +185,6 @@ namespace VMAP
 						nextChild = -1;
 						return;
 					}
-					/*
-					// check if we can hit the box
-					AABox checkBox;
-					Vector3 location;
-					inNode->getBounds(checkBox);
-					double t2;
-					if(checkBox.contains(ray.origin)) {
-					t2=0;
-					} else {
-					if(CollisionDetection::collisionLocationForMovingPointFixedAABox(
-					ray.origin, ray.direction,
-					checkBox,
-					location)) {
-					t2 = (location - ray.origin).squaredLength();
-					} else {
-					t2 = inf();
-					}
-					}
-					double inMaxTime2 = square(inMaxTime);
-					if(t2 > inMaxTime2 || t2 < -inMaxTime2) {
-					// The box is too far of to be hit
-					valIndex = INT_MAX-1;
-					}
-					*/
 
 					Vector3::Axis splitAxis	= node->getSplitAxis();
 					double		splitLocation = node->getSplitLocation();
@@ -258,18 +234,6 @@ namespace VMAP
 					{
 						nextChild = 1;
 					}
-					/*
-
-					if(nextChild != -1) {
-					Vector3 endPoint = ray.origin + ray.direction * pGlobalMaxTime;
-					const TNode* nextNode = inNode->getChild(pNodeValueAccess->getNodePtr() ,nextChild);
-					AABox box;
-					nextNode->getBounds(box);
-					if(box.contains(ray.origin) && box.contains(endPoint)) {
-					valIndex = INT_MAX-1; // directly go into that box
-					}
-					}
-					*/
 				}
 			};
 
@@ -322,8 +286,7 @@ namespace VMAP
 				return ! (*this == other);
 			}
 
-			/** Compares two iterators, but will only return true if both are at
-			the end. */
+			/* Compares two iterators, but will only return true if both are at the end. */
 			bool operator==(const RayIntersectionIterator& other) const
 			{
 				if (isEnd)
@@ -555,190 +518,5 @@ namespace VMAP
 			}
 
 	};
-
-	///**
-	//  Stores the locations of the splitting planes (the structure but not the content)
-	//  so that the tree can be quickly rebuilt from a previous configuration without
-	//  calling balance.
-	// */
-	//void serializeStructure(BinaryOutput& bo) const {
-	//	Node::serializeStructure(root, bo);
-	//}
-
-	///** Clears the member table */
-	//void deserializeStructure(BinaryInput& bi) {
-	//	clear();
-	//	root = Node::deserializeStructure(bi);
-	//}
-
-	/**
-	Generates a RayIntersectionIterator that produces successive
-	elements from the set whose bounding boxes are intersected by the ray.
-	Typically used for ray tracing, hit-scan, and collision detection.
-
-	The elements are generated mostly in the order that they are hit by the
-	ray, so that iteration may end abruptly when the closest intersection to
-	the ray origin has been reached. Because the elements within a given
-	kd-tree node are unordered, iteration may need to proceed a little past
-	the first member returned in order to find the closest intersection. The
-	iterator doesn't automatically find the first intersection because it is
-	looking at bounding boxes, not the true intersections.
-
-	When the caller finds a true intersection it should call markBreakNode()
-	on the iterator. This will stop the iterator (setting it to the end
-	iterator) when the current node and relevant children are exhausted.
-
-	Complicating the matter further, some members straddle the plane. The
-	iterator produces these members <I>twice</I>. The first time it is
-	produced the caller should only consider intersections on the near side of
-	the split plane. The second time, the caller should only consider
-	intersections on the far side. The minDistance and maxDistance fields
-	specify the range on which intersections should be considered. Be aware
-	that they may be inf or zero.
-
-	An example of how to use the iterator follows. Almost all ray intersection
-	tests will have identical structure.
-
-	<PRE>
-
-	void findFirstIntersection(
-	const Ray&  ray,
-	Object*&	firstObject,
-	double&	firstTime) {
-
-	firstObject   = NULL;
-	firstDistance = inf();
-
-	typedef AABSPTree<Object*>::RayIntersectionIterator IT;
-	const IT end = tree.endRayIntersection();
-
-	for (IT obj = tree.beginRayIntersection(ray);
-	obj != end;
-	++obj) {  // (preincrement is *much* faster than postincrement!)
-
-	// Call your accurate intersection test here.  It is guaranteed
-	// that the ray hits the bounding box of obj.  (*obj) has type T,
-	// so you can call methods directly using the "->" operator.
-	double t = obj->distanceUntilIntersection(ray);
-
-	// Often methods like "distanceUntilIntersection" can be made more
-	// efficient by providing them with the time at which to start and
-	// to give up looking for an intersection; that is,
-	// obj.minDistance and iMin(firstDistance, obj.maxDistance).
-
-	static const double epsilon = 0.00001;
-	if ((t < firstDistance) &&
-	(t <= obj.maxDistance + epsilon) &&
-	(t >= obj.minDistance - epsilon)) {
-
-	// This is the new best collision time
-	firstObject   = obj;
-	firstDistance = t;
-
-	// Tell the iterator that we've found at least one
-	// intersection.  It will finish looking at all
-	// objects in this node and then terminate.
-	obj.markBreakNode();
-	}
-	}
-	}
-	</PRE>
-
-	//	@param skipAABoxTests Set to true when the intersection test for a
-	//	member is faster than an AABox-ray intersection test.  In that case,
-	//	the iterator will not use a bounding box test on values that are
-	//	returned.  Leave false (the default) for objects with slow intersection
-	//	tests.  In that case, the iterator guarantees that the ray hits the
-	//	bounds of any object returned.
-	//
-	//	@cite Implementation by Pete Hopkins
-	//   */
-	//RayIntersectionIterator beginRayIntersection(const Ray& ray, bool skipAABoxTests = false) const {
-	//	return RayIntersectionIterator(ray, root, skipAABoxTests);
-	//}
-	//
-	//RayIntersectionIterator endRayIntersection() const {
-	//	return RayIntersectionIterator();
-	//}
-
-	///**
-	// Returns an array of all members of the set.  See also AABSPTree::begin.
-	// */
-	//void getMembers(Array<T>& members) const {
-	//	memberTable.getKeys(members);
-	//}
-
-	///**
-	// C++ STL style iterator variable.  See begin().
-	// Overloads the -> (dereference) operator, so this acts like a pointer
-	// to the current member.
-	//*/
-	//class Iterator {
-	//private:
-	//	friend class AABSPTree<T>;
-
-	//	// Note: this is a Table iterator, we are currently defining
-	//	// Set iterator
-	//	typename Table<T, Node*>::Iterator it;
-
-	//	Iterator(const typename Table<T, Node*>::Iterator& it) : it(it) {}
-
-	//public:
-	//	inline bool operator!=(const Iterator& other) const {
-	//		return !(*this == other);
-	//	}
-
-	//	bool operator==(const Iterator& other) const {
-	//		return it == other.it;
-	//	}
-
-	//	/**
-	//	Pre increment.
-	//	*/
-	//	Iterator& operator++() {
-	//		++it;
-	//		return *this;
-	//	}
-
-	//	/**
-	//	Post increment (slower than preincrement).
-	//	*/
-	//	Iterator operator++(int) {
-	//		Iterator old = *this;
-	//		++(*this);
-	//		return old;
-	//	}
-
-	//	const T& operator*() const {
-	//		return it->key;
-	//	}
-
-	//	T* operator->() const {
-	//		return &(it->key);
-	//	}
-
-	//	operator T*() const {
-	//		return &(it->key);
-	//	}
-	//};
-
-	///**
-	// C++ STL style iterator method.  Returns the first member.
-	// Use preincrement (++entry) to get to the next element (iteration
-	// order is arbitrary).
-	// Do not modify the set while iterating.
-	// */
-	//Iterator begin() const {
-	//	return Iterator(memberTable.begin());
-	//}
-
-	///**
-	// C++ STL style iterator method.  Returns one after the last iterator
-	// element.
-	// */
-	//Iterator end() const {
-	//	return Iterator(memberTable.end());
-	//}
-
 }
 #endif

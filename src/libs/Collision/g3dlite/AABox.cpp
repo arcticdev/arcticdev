@@ -26,8 +26,6 @@ Box AABox::toBox() const {
     return Box(lo, hi);
 }
 
-
-
 void AABox::split(const Vector3::Axis& axis, float location, AABox& low, AABox& high) const {
     // Low, medium, and high along the chosen axis
     float L = std::min(location, lo[axis]);
@@ -98,9 +96,6 @@ bool AABox::intersects(const AABox& other) const {
 
     for (int a = 0; a < 3; ++a) {
 
-        //     |--------|
-        // |------|
-
         if ((lo[a] > other.hi[a]) ||
             (hi[a] < other.lo[a])) {
             return false;
@@ -110,10 +105,9 @@ bool AABox::intersects(const AABox& other) const {
     return true;
 }
 
-
 bool AABox::culledBy(
     const Array<Plane>&		plane,
-	int&				    cullingPlaneIndex,
+	int&					cullingPlaneIndex,
 	const uint32			inMask,
 	uint32&					outMask) const {
 
@@ -277,7 +271,6 @@ bool AABox::culledBy(
 	cullingPlane = -1;
     return false;
 }
-
 
 bool AABox::intersects(const class Sphere& sphere) const {
     double d = 0; 

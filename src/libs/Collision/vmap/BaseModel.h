@@ -15,13 +15,12 @@
 #include "TreeNode.h"
 
 /*
-A model is based on triangles. To be able to check intersection we need a BSP-Tree.
-This Class holds the array of triangles as well as the management information for the BSP-Tree.
-Both are stored in static array and index information is used instead of pointers.
-Therefore we can load the whole object as a binary block.
-
-The vectors are relative to a base position.
-*/
+ * A model is based on triangles. To be able to check intersection we need a BSP-Tree.
+ * This Class holds the array of triangles as well as the management information for the BSP-Tree.
+ * Both are stored in static array and index information is used instead of pointers.
+ * Therefore we can load the whole object as a binary block.
+ * The vectors are relative to a base position.
+ */
 
 namespace VMAP
 {

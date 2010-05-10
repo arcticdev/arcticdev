@@ -13,8 +13,8 @@ using namespace G3D;
 namespace VMAP
 {
 	/*
-	Vector with 16 bit fix point values 12.4 bit.
-	*/
+	 * Vector with 16 bit fix point values 12.4 bit.
+	 */
 
 	class ShortVector
 	{

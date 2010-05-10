@@ -32,27 +32,32 @@ class BigNumber
 		// BigNumber operator=(Sha1Hash &hash);
 
 		BigNumber operator+=(const BigNumber &bn);
-		BigNumber operator+(const BigNumber &bn) {
+		BigNumber operator+(const BigNumber &bn) 
+		{
 			BigNumber t(*this);
 			return t += bn;
 		}
 		BigNumber operator-=(const BigNumber &bn);
-		BigNumber operator-(const BigNumber &bn) {
+		BigNumber operator-(const BigNumber &bn) 
+		{
 			BigNumber t(*this);
 			return t -= bn;
 		}
 		BigNumber operator*=(const BigNumber &bn);
-		BigNumber operator*(const BigNumber &bn) {
+		BigNumber operator*(const BigNumber &bn) 
+		{
 			BigNumber t(*this);
 			return t *= bn;
 		}
 		BigNumber operator/=(const BigNumber &bn);
-		BigNumber operator/(const BigNumber &bn) {
+		BigNumber operator/(const BigNumber &bn) 
+		{
 			BigNumber t(*this);
 			return t /= bn;
 		}
 		BigNumber operator%=(const BigNumber &bn);
-		BigNumber operator%(const BigNumber &bn) {
+		BigNumber operator%(const BigNumber &bn) 
+		{
 			BigNumber t(*this);
 			return t %= bn;
 		}

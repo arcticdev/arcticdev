@@ -19,9 +19,9 @@
 namespace VMAP
 {
 	/*
-	This Class is used to convert raw vector data into balanced BSP-Trees.
-	To start the conversion call convertWorld().
-	*/
+	 * This Class is used to convert raw vector data into balanced BSP-Trees.
+	 * To start the conversion call convertWorld().
+	 */
 	//===============================================
 
 	class ModelPosition

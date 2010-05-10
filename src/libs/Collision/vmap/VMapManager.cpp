@@ -561,10 +561,10 @@ namespace VMAP
 		return result;
 	}
 	//=========================================================
-	/**
-	When moving from pos1 to pos2 check if we hit an object. Return true and the position if we hit one
-	Return the hit pos or the original dest pos
-	*/
+	/*
+	 * When moving from pos1 to pos2 check if we hit an object. Return true and the position if we hit one
+	 * Return the hit pos or the original dest pos
+	 */
 
 	bool MapTree::getObjectHitPos(const Vector3& pPos1, const Vector3& pPos2, Vector3& pResultHitPos, float pModifyDist)
 	{
@@ -741,24 +741,6 @@ namespace VMAP
 				flags = sm->getIndoorFlag();
 				if( flags != 0 )
 				{
-					/* From WoWdev:
-					Flag 	Meaning
-					0x1 	Always set
-					0x4 	Has vertex colors (MOCV chunk)
-					0x8 	Outdoor
-					0x200 	Has lights (MOLR chunk)
-					0x800 	Has doodads (MODR chunk)
-					0x1000 	Has water (MLIQ chunk)
-					0x2000 	Indoor
-					0x40000 	Show skybox
-
-					**********************
-
-					0x8000 seems to be set in the areas in citys (while it has the indoor flag, its not
-					an indoor area
-
-					*/
-
 					if( !(flags & 0x8) )
 						return false;
 				}
@@ -882,7 +864,6 @@ namespace VMAP
 		}
 	}
 
-	//=========================================================
 	//=========================================================
 
 	void MapTree::addModelConatiner(const std::string& pName, ManagedModelContainer *pMc)

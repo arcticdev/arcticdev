@@ -83,9 +83,6 @@ namespace VMAP
 				float scale;
 				xpos = ypos = noVec = 0;
 
-				//sscanf(buffer, "%d %d %s %s %f %d", &xpos, &ypos, namebuffer,positionbuffer, &scale, &noVec);
-
-				// this is ugly, but the format has no read delimiter and a space could be in the first part of the name
 				int nameStart = findPosChar(buffer, ' ', 2);// find the 2. space
 				if(nameStart > -1 && (iFilterMethod == NULL || (*iFilterMethod)(buffer)))
 				{

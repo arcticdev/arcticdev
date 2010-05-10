@@ -10,8 +10,8 @@
 namespace VMAP
 {
 	/*
-	This is a helper Class to get access to SubModels or triangles when analyzing the BSP-Tree.
-	*/
+	 * This is a helper Class to get access to SubModels or triangles when analyzing the BSP-Tree.
+	 */
 
 	template<class TNode, class TValue> class NodeValueAccess
 	{

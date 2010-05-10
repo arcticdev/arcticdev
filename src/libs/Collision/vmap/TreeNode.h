@@ -7,8 +7,8 @@
 #ifndef _TREENODE_H
 #define _TREENODE_H
 
-//#include "ShortVector.h"
-//#include "ShortBox.h"
+// #include "ShortVector.h"
+// #include "ShortBox.h"
 
 #include <Collision/g3dlite/G3D/Vector3.h>
 #include <Collision/g3dlite/G3D/AABox.h>
@@ -18,10 +18,10 @@ using namespace G3D;
 namespace VMAP
 {
 	/*
-	This Class is mainly taken from G3D/AABSPTree.h and modified to match our data structure.
-	It is the node within our static BSP-Trees.
-	It does not use pointers but indexes to access the values and other nodes.
-	*/
+	 * This Class is mainly taken from G3D/AABSPTree.h and modified to match our data structure.
+	 * It is the node within our static BSP-Trees.
+	 * It does not use pointers but indexes to access the values and other nodes.
+	 */
 
 	//=====================================================
 

@@ -9,10 +9,9 @@
 
 #include "ModelContainer.h"
 
-//=======================================================
 /*
-This is a ModelContainer with reference count information.
-*/
+ * This is a ModelContainer with reference count information.
+ */
 
 namespace VMAP
 {

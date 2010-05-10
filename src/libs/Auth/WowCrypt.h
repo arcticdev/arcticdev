@@ -16,20 +16,20 @@
 
 class WowCrypt 
 {
-public:
-	WowCrypt();
-	~WowCrypt();
+	public:
+		WowCrypt();
+		~WowCrypt();
 
-	void Init(uint8 *K);
-	void DecryptRecv(uint8 * data, size_t len);
-	void EncryptSend(uint8 * data, size_t len);
+		void Init(uint8 *K);
+		void DecryptRecv(uint8 * data, size_t len);
+		void EncryptSend(uint8 * data, size_t len);
 
-	bool IsInitialized() { return _initialized; }
+		bool IsInitialized() { return _initialized; }
 
-private:
-	bool _initialized;
-	RC4Engine _Decrypt;
-	RC4Engine _Encrypt;
+	private:
+		bool _initialized;
+		RC4Engine _Decrypt;
+		RC4Engine _Encrypt;
 };
 
 #endif

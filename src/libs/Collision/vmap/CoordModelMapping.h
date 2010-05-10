@@ -13,10 +13,10 @@
 using namespace G3D;
 
 /*
-This Class is a helper Class to convert the raw vector data into BSP-Trees.
-We read the directory file of the raw data output and build logical groups.
-Models with a lot of vectors are not merged into a resulting model, but separated into an additional file.
-*/
+ * This Class is a helper Class to convert the raw vector data into BSP-Trees.
+ * We read the directory file of the raw data output and build logical groups.
+ * Models with a lot of vectors are not merged into a resulting model, but separated into an additional file.
+ */
 
 namespace VMAP
 {
@@ -131,4 +131,4 @@ namespace VMAP
 
 	};
 }
-#endif													/*_COORDMODELMAPPING_H_*/
+#endif /*_COORDMODELMAPPING_H_*/

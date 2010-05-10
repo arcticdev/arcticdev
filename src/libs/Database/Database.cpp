@@ -559,7 +559,7 @@ bool Database::_Reconnect(DatabaseConnection * conn)
 
 void Database::CleanupLibs()
 {
-		mysql_library_end();
+	mysql_library_end();
 }
 
 Database *Database::Create()
