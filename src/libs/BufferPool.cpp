@@ -8,9 +8,9 @@
 #include "Log.h"
 #include "BufferPool.h"
 
-size_t BufferPool::BufferBucket::buffer_sizes[BUFFER_BUCKET_COUNT] = 
+size_t BufferPool::BufferBucket::buffer_sizes[BUFFER_BUCKET_COUNT] =
 {
-    20,			// 20 bytes
+	20,			// 20 bytes
 	50,			// 50 bytes
 	100,		// 100 bytes
 	200,		// 200 bytes

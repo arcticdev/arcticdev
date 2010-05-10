@@ -100,7 +100,7 @@ void AccountMgr::AddAccount(Field* field)
 		// Accounts should be unbanned once the date is past their set expiry date.
 		acct->Banned = 0;
 		// me go boom :(
-		printf("Account %s's ban has expired.\n",acct->UsernamePtr->c_str());
+		// printf("Account %s's ban has expired.\n",acct->UsernamePtr->c_str());
 		sAuthSQL->Execute("UPDATE accounts SET banned = 0 WHERE acct=%u",acct->AccountId);
 	}
 	acct->SetGMFlags(GMFlags.c_str());
@@ -484,7 +484,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	{
 		data << itr->second->Icon;
 		data << uint8(0); // delete when using data << itr->second->Lock;
-		data << itr->second->Colour;		
+		data << itr->second->Colour;
 
 		// This part is the same for all.
 		data << itr->second->Name;

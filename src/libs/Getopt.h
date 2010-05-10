@@ -14,10 +14,10 @@
 
 struct arctic_option
 {
-    const char *name;
-    int has_arg;
-    int *flag;
-    int val;
+	const char *name;
+	int has_arg;
+	int *flag;
+	int val;
 };
 extern char arctic_optarg[514];
 int arctic_getopt_long_only (int ___argc, char *const *___argv, const char *__shortopts, const struct arctic_option *__longopts, int *__longind);

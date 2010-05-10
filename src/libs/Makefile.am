@@ -30,8 +30,8 @@ noinst_LIBRARIES = libshared.a
 	Threading/Mutex.cpp \
 	Threading/ThreadPool.cpp \
 	Storage.h \
-	arctic_getopt.h \
-	arctic_getopt.cpp \
+	Getopt.h \
+	Getopt.cpp \
 	CrashHandler.h \
 	CrashHandler.cpp \
 	Auth/BigNumber.cpp \

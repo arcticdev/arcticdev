@@ -61,7 +61,7 @@ public:
 		else
 			t = queue.front();
 		mutex.Release();
-		return t;			
+		return t;
 	}
 
 	ARCTIC_INLINE void pop()

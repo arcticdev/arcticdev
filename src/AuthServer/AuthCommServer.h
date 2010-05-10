@@ -52,6 +52,6 @@ public:
 	set<uint32> server_ids;
 };
 
-typedef void (AuthCommServerSocket::*Authpacket_handler)(WorldPacket&);
+typedef void (AuthCommServerSocket::*authpacket_handler)(WorldPacket&);
 
 #endif

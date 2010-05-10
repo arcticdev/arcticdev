@@ -10,7 +10,7 @@ typedef struct
 {
 	uint16 opcode;
 	uint32 size;
-}Authpacket;
+}authpacket;
 #pragma pack(pop)
 
 ARCTIC_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
@@ -117,9 +117,9 @@ void AuthCommServerSocket::HandlePacket(WorldPacket & recvData)
 		return;
 	}
 
-	static Authpacket_handler Handlers[RMSG_COUNT] = 
+	static authpacket_handler Handlers[RMSG_COUNT] = 
 	{
-	    NULL,												// RMSG_NULL
+		NULL,												// RMSG_NULL
 		&AuthCommServerSocket::HandleRegister,				// RCMSG_REGISTER_REALM
 		NULL,												// RSMSG_REALM_REGISTERED
 		&AuthCommServerSocket::HandleSessionRequest,		// RCMSG_REQUEST_SESSION
@@ -128,11 +128,11 @@ void AuthCommServerSocket::HandlePacket(WorldPacket & recvData)
 		NULL,												// RSMSG_PONG
 		NULL,/*Deprecated*/									// RCMSG_SQL_EXECUTE
 		NULL,/*Deprecated*/									// RCMSG_RELOAD_ACCOUNTS
-		&AuthCommServerSocket::HandleAuthChallenge,		    // RCMSG_AUTH_CHALLENGE
+		&AuthCommServerSocket::HandleAuthChallenge,			// RCMSG_AUTH_CHALLENGE
 		NULL,												// RSMSG_AUTH_RESPONSE
 		NULL,												// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
 		&AuthCommServerSocket::HandleMappingReply,			// RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
-		&AuthCommServerSocket::HandleUpdateMapping,		    // RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
+		&AuthCommServerSocket::HandleUpdateMapping,			// RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
 		NULL,												// RSMSG_DISCONNECT_ACCOUNT
 		&AuthCommServerSocket::HandleTestConsoleLogin,		// RCMSG_TEST_CONSOLE_LOGIN
 		NULL,												// RSMSG_CONSOLE_LOGIN_RESULT
@@ -140,7 +140,7 @@ void AuthCommServerSocket::HandlePacket(WorldPacket & recvData)
 		NULL,												// RSMSG_SERVER_PING
 		&AuthCommServerSocket::HandleServerPong,			// RCMSG_SERVER_PONG
 		NULL,												// RSMSG_REALM_POP_REQ
-		&AuthCommServerSocket::HandlePopulationRespond,	    // RCMSG_REALM_POP_RES
+		&AuthCommServerSocket::HandlePopulationRespond,		// RCMSG_REALM_POP_RES
 	};
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
@@ -246,7 +246,7 @@ void AuthCommServerSocket::SendPacket(WorldPacket * data)
 	bool rv;
 	BurstBegin();
 
-	Authpacket header;
+	authpacket header;
 #ifndef USING_BIG_ENDIAN
 	header.opcode = data->GetOpcode();
 	//header.size   = ntohl((u_long)data->size());

@@ -602,8 +602,8 @@ public:
 				Max = result->Fetch()[0].GetUInt32() + 1;
 				if(Max > STORAGE_ARRAY_MAX)
 				{
-					Log.Error("Storage", "The table, '%s', has a maximum entry of %u, which is less %u. Any items higher than %u will not be loaded.",
-						IndexName, Max, STORAGE_ARRAY_MAX, STORAGE_ARRAY_MAX);
+					Log.Warning("Storage", "The table, '%s', has been limited to maximum of %u entries. Any entry higher than %u will be discarted.",
+						IndexName, STORAGE_ARRAY_MAX, Max );
 
 					Max = STORAGE_ARRAY_MAX;
 				}
@@ -666,8 +666,8 @@ public:
 				Max = result->Fetch()[0].GetUInt32() + 1;
 				if(Max > STORAGE_ARRAY_MAX)
 				{
-					Log.Error("Storage", "The table, '%s', has a maximum entry of %u, which is less %u. Any items higher than %u will not be loaded.",
-						IndexName, Max, STORAGE_ARRAY_MAX, STORAGE_ARRAY_MAX);
+					Log.Error("Storage", "The table, '%s', has been limited to maximum of %u entries. Any entry higher than %u will be discarted.",
+						IndexName, STORAGE_ARRAY_MAX, Max );
 
 					Max = STORAGE_ARRAY_MAX;
 				}
@@ -687,7 +687,7 @@ public:
 		{
 			if(result->GetFieldCount() > cols)
 			{
-				Log.Warning("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
+				Log.Error("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
 			}
 			else
 			{
@@ -706,7 +706,7 @@ public:
 			if(!Allocated)
 				continue;
 
-			LoadBlock(fields, Allocated, true);
+			LoadBlock(fields, Allocated);
 		} while(result->NextRow());
 		Log.Notice("Storage", "%u entries loaded from table %s.", result->GetRowCount(), IndexName);
 		delete result;
@@ -753,7 +753,7 @@ public:
 			Entry = fields[0].GetUInt32();
 			Allocated = Storage<T, StorageType>::_storage.LookupEntryAllocate(Entry);
 			if(Allocated)
-				LoadBlock(fields, Allocated);
+				LoadBlock(fields, Allocated, true);
 
 		} while(result->NextRow());
 		delete result;

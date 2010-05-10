@@ -9,7 +9,7 @@
 // #include <vld.h>
 // #include <vldapi.h>
 
-#if COMPILER == MICROSOFT
+#if COMPILER == COMPILER_MICROSOFT
 
 createFileSingleton( MemoryManager ) ;
 

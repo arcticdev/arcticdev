@@ -4,15 +4,24 @@
  * See COPYING for license details.
  */
 
-#include "stdlib.h"
-#include "stdio.h"
+#include <new>
 
-void * operator new[](size_t iSize)
+#ifdef WIN32
+#ifdef SCRIPTLIB
+
+__declspec(dllimport) void* AllocateMemory(size_t iSize);
+__declspec(dllimport) void FreeMemory(void* pPointer);
+
+void * ::operator new(size_t iSize)
 {
-	return malloc(iSize);
+	return AllocateMemory(iSize);
 }
 
-void operator delete[](void* pPointer)
+void ::operator delete(void* pPointer)
 {
-	free(pPointer);
+	FreeMemory(pPointer);
 }
+
+#endif		// SCRIPTLIB
+#endif		// WIN32
+

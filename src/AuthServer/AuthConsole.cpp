@@ -58,7 +58,9 @@ bool AuthConsoleThread::run()
 
 	while (!kill)
 	{
+		// Make sure our buffer is clean to avoid Array bounds overflow
 		memset(cmd,0,sizeof(cmd)); 
+		// Read in single line from "stdin"
 		fgets(cmd, 80, stdin);
 
 		if(kill)
@@ -148,7 +150,7 @@ void AuthConsole::ProcessHelp(char *command)
 {
 	if (command == NULL)
 	{
-		sLog.outString("Console:--------help--------");
+		sLog.outString("Console: help...");
 		sLog.outString("   help, ?: print this text");
 		sLog.outString("   reload, reloads accounts");
 		sLog.outString("   rehash, rehashes config file");

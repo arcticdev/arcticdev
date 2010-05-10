@@ -205,7 +205,6 @@ double CRandomMersenne::Random() {
 	// Output random float number in the interval 0 <= x < 1
 	union {double f; uint32 i[2];} convert;
 	uint32 r = BRandom();               // Get 32 random bits
-	
 	// The fastest way to convert random bits to floating point is as follows:
 	// Set the binary exponent of a floating point number to 1+bias and set
 	// the mantissa to random bits. This will give a random number in the 
@@ -269,4 +268,5 @@ int CRandomMersenne::IRandomX(int min, int max) {
 	// Convert back to signed and return result
 	return (int32)iran + min;
 }
+
 

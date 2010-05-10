@@ -36,17 +36,17 @@ void _OnSignal(int s)
 	switch (s)
 	{
 #ifndef WIN32
-	    case SIGHUP:
-	    {
-		    sLog.outString("Received SIGHUP signal, reloading accounts.");
-		    AccountMgr::getSingleton().ReloadAccounts(true);
-	    }break;
+		case SIGHUP:
+		{
+			sLog.outString("Received SIGHUP signal, reloading accounts.");
+			AccountMgr::getSingleton().ReloadAccounts(true);
+		}break;
 #endif
-	    case SIGINT:
-	    case SIGTERM:
-	    case SIGABRT:
+		case SIGINT:
+		case SIGTERM:
+		case SIGABRT:
 #ifdef _WIN32
-	    case SIGBREAK:
+		case SIGBREAK:
 #endif
 		mrunning = false;
 		break;
@@ -117,8 +117,8 @@ bool startdb()
 	{
 		sLog.outError("sql: Auth database initialization failed. Exiting.");
 		return false;
-	}   
-	
+	}
+
 	return true;
 }
 
@@ -326,7 +326,7 @@ void AuthServer::Run(int argc, char ** argv)
 	Log.Notice("ThreadMgr", "Starting...");
 
 	ThreadPool.Startup(4);
-   
+
 	if(!startdb())
 		return;
 
@@ -343,6 +343,7 @@ void AuthServer::Run(int argc, char ** argv)
 	Log.Notice("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
 	Log.Line();
 
+
 	// Spawn periodic function caller thread for account reload every 10mins
 	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh", 600);
 	atime *= 1000;
@@ -354,11 +355,11 @@ void AuthServer::Run(int argc, char ** argv)
 	uint32 sport = Config.MainConfig.GetIntDefault("Listen", "ServerPort", 8093);
 	string host = Config.MainConfig.GetStringDefault("Listen", "Host", "0.0.0.0");
 	string shost = Config.MainConfig.GetStringDefault("Listen", "ISHost", host.c_str());
-	min_build = Config.MainConfig.GetIntDefault("Client", "MinBuild", 6180);
-	max_build = Config.MainConfig.GetIntDefault("Client", "MaxBuild", 99999);
-	string Auth_pass = Config.MainConfig.GetStringDefault("AuthServer", "RemotePassword", "r3m0t3b4d");
+	min_build = Config.MainConfig.GetIntDefault("Client", "MinBuild", 11159);
+	max_build = Config.MainConfig.GetIntDefault("Client", "MaxBuild", 11159);
+	string auth_pass = Config.MainConfig.GetStringDefault("AuthServer", "RemotePassword", "r3m0t3b4d");
 	Sha1Hash hash;
-	hash.UpdateData(Auth_pass);
+	hash.UpdateData(auth_pass);
 	hash.Finalize();
 	memcpy(sql_hash, hash.GetDigest(), 20);
 	
@@ -412,20 +413,20 @@ void AuthServer::Run(int argc, char ** argv)
 	while(mrunning && authsockcreated && intersockcreated)
 	{
 
-		if(timers[0] <= getMSTime())	           
+		if(timers[0] <= getMSTime())
 		{
 			ThreadPool.IntegrityCheck(2); // Check every two minutes
 			timers[0] = getMSTime() + 120000;
 		}
 
-		if(timers[1] <= getMSTime())                
+		if(timers[1] <= getMSTime())
 		{
 			sInfoCore.TimeoutSockets();
 			sSocketGarbageCollector.Update();
 			CheckForDeadSockets(); // Flood Protection
 			UNIXTIME = time(NULL);
 			g_localTime = *localtime(&UNIXTIME);
-            timers[0] = getMSTime() + 2000;
+			timers[0] = getMSTime() + 2000;
 		}
 
 		PatchMgr::getSingleton().UpdateJobs();
@@ -442,6 +443,7 @@ void AuthServer::Run(int argc, char ** argv)
 #else
 	signal(SIGHUP, 0);
 #endif
+
 	pfc->kill();
 
 	cl->Close();
@@ -470,6 +472,8 @@ void AuthServer::Run(int argc, char ** argv)
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
 	delete pfc;
+	delete cl;
+	delete sl;
 	Log.Notice("AuthServer","Shutdown complete.\n");
 }
 

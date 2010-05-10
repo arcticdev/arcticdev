@@ -12,7 +12,6 @@
 #define _CRT_SECURE_NO_DEPRECATE 1
 #define _CRT_SECURE_COPP_OVERLOAD_STANDARD_NAMES 1
 #pragma warning(disable:4251) // dll-interface bullshit
-#pragma warning(disable:4267) // conversion
 #endif
 
 enum TimeVariables
@@ -291,6 +290,26 @@ using std::tr1::shared_ptr;
 #define shared_ptr std::tr1::shared_ptr
 #define hash_map unordered_map
 #define TRHAX 1
+namespace std
+{
+	namespace tr1
+	{
+		template<> struct hash<const long long unsigned int> : public std::unary_function<const long long unsigned int, std::size_t>
+		{
+			std::size_t operator()(const long long unsigned int val) const
+			{
+				return static_cast<std::size_t>(val);
+			}
+		};
+		template<> struct hash<const unsigned int> : public std::unary_function<const unsigned int, std::size_t>
+		{
+			std::size_t operator()(const unsigned int val) const
+			{
+				return static_cast<std::size_t>(val);
+			}
+		};
+	}
+}
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #define HM_NAMESPACE __gnu_cxx
 using __gnu_cxx::hash_map;
@@ -341,7 +360,11 @@ namespace std
 }
 
 // Use correct types for x64 platforms, too 
+typedef unsigned int uint;
+typedef unsigned long ulong;
+
 #if COMPILER != COMPILER_GNU
+
 typedef signed __int64 int64;
 typedef signed __int32 int32;
 typedef signed __int16 int16;
@@ -351,6 +374,7 @@ typedef unsigned __int64 uint64;
 typedef unsigned __int32 uint32;
 typedef unsigned __int16 uint16;
 typedef unsigned __int8 uint8;
+
 #else
 
 typedef int64_t int64;
@@ -370,14 +394,14 @@ typedef uint32_t DWORD;
 #ifdef WIN32
 	#ifndef SCRIPTLIB
 		#define ARCTIC_DECL __declspec(dllexport)
-		#define SCRIPT_DLL_DECL __declspec(dllimport)
+		#define SCRIPT_DECL __declspec(dllimport)
 	#else
 		#define ARCTIC_DECL __declspec(dllimport)
-		#define SCRIPT_DLL_DECL __declspec(dllexport)
+		#define SCRIPT_DECL __declspec(dllexport)
 	#endif
 #else
 	#define ARCTIC_DECL 
-	#define SCRIPT_DLL_DECL 
+	#define SCRIPT_DECL 
 #endif
 
 // Include all threading files
@@ -534,6 +558,7 @@ struct WayPoint
 	uint32 backwardSpellToCast;
 	std::string forwardSayText;
 	std::string backwardSayText;
+	uint16 count;
 
 };
 
@@ -559,10 +584,20 @@ ARCTIC_INLINE void ARCTIC_TOLOWER(std::string& str)
 		str[i] = (char)tolower(str[i]);
 };
 
+
 ARCTIC_INLINE void ARCTIC_TOUPPER(std::string& str)
 {
 	for(size_t i = 0; i < str.length(); ++i)
 		str[i] = (char)toupper(str[i]);
+};
+
+ARCTIC_INLINE std::string ARCTIC_TOLOWER_RETURN(std::string str)
+{
+	std::string newname = str;
+	for(size_t i = 0; i < str.length(); ++i)
+		newname[i] = (char)tolower(str[i]);
+
+	return newname;
 };
 
 // returns true if the ip hits the mask, otherwise false

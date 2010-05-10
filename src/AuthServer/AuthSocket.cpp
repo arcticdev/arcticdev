@@ -10,13 +10,13 @@
 enum _errors
 {
 	CE_SUCCESS = 0x00,
-	CE_IPBAN = 0x01,						// unable to connect (some internal problem)
-	CE_ACCOUNT_CLOSED = 0x03,			    // "This account has been closed and is no longer in service -- Please check the registered email address of this account for further information.";
-	CE_NO_ACCOUNT = 0x04,					// (5)The information you have entered is not valid.  Please check the spelling of the account name and password.  If you need help in retrieving a lost or stolen password and account
-	CE_ACCOUNT_IN_USE = 0x06,				// This account is already logged in.  Please check the spelling and try again.
+	CE_IPBAN = 0x01,				// unable to connect (some internal problem)
+	CE_ACCOUNT_CLOSED = 0x03,		// "This account has been closed and is no longer in service -- Please check the registered email address of this account for further information.";
+	CE_NO_ACCOUNT = 0x04,			// (5)The information you have entered is not valid.  Please check the spelling of the account name and password.  If you need help in retrieving a lost or stolen password and account
+	CE_ACCOUNT_IN_USE = 0x06,		// This account is already logged in.  Please check the spelling and try again.
 	CE_PREORDER_TIME_LIMIT = 0x07,
-	CE_SERVER_FULL = 0x08,					// Could not log in at this time.  Please try again later.
-	CE_WRONG_BUILD_NUMBER = 0x09,		    // Unable to validate game version.  This may be caused by file corruption or the interference of another program.
+	CE_SERVER_FULL = 0x08,			// Could not log in at this time.  Please try again later.
+	CE_WRONG_BUILD_NUMBER = 0x09,	// Unable to validate game version.  This may be caused by file corruption or the interference of another program.
 	CE_UPDATE_CLIENT = 0x0a,
 	CE_ACCOUNT_FREEZED = 0x0c
 };
@@ -118,7 +118,7 @@ void AuthSocket::HandleChallenge()
 
 		uint8 response[119] = 
 		{
-		    0x00, 0x00, 0x00, 0x72, 0x50, 0xa7, 0xc9, 0x27, 0x4a, 0xfa, 0xb8, 0x77, 0x80, 0x70, 0x22,
+			0x00, 0x00, 0x00, 0x72, 0x50, 0xa7, 0xc9, 0x27, 0x4a, 0xfa, 0xb8, 0x77, 0x80, 0x70, 0x22,
 			0xda, 0xb8, 0x3b, 0x06, 0x50, 0x53, 0x4a, 0x16, 0xe2, 0x65, 0xba, 0xe4, 0x43, 0x6f, 0xe3,
 			0x29, 0x36, 0x18, 0xe3, 0x45, 0x01, 0x07, 0x20, 0x89, 0x4b, 0x64, 0x5e, 0x89, 0xe1, 0x53,
 			0x5b, 0xbd, 0xad, 0x5b, 0x8b, 0x29, 0x06, 0x50, 0x53, 0x08, 0x01, 0xb1, 0x8e, 0xbf, 0xbf,
@@ -347,12 +347,6 @@ void AuthSocket::HandleProof()
 
 	// Store sessionkey
 	m_account->SetSessionKey(m_sessionkey.AsByteArray());
-
-//	OUT_DEBUG("========================\nSession key: ");
-//	for(uint32 z = 0; z < 40; ++z)
-//	OUT_DEBUG("%.2X ", m_account->SessionKey[z]);
-//	OUT_DEBUG("\n========================\n");
-
 	// let the client know
 	sha.Initialize();
 	sha.UpdateBigNumbers(&A, &M, &m_sessionkey, 0);
@@ -405,7 +399,7 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 #define AUTH_RECHALLENGE 2
 #define AUTH_REPROOF 3
 #define REALM_LIST 16
-#define INITIATE_TRANSFER 48    // 0x30
+#define INITIATE_TRANSFER 48	// 0x30
 #define TRANSFER_DATA 49		// 0x31
 #define ACCEPT_TRANSFER 50		// 0x32
 #define RESUME_TRANSFER 51		// 0x33
@@ -479,7 +473,7 @@ void AuthSocket::OnRead()
 	last_recv = UNIXTIME;
 	if(Command < MAX_AUTH_CMD && Handlers[Command] != NULL)
 		(this->*Handlers[Command])();
-	else
+	else if(Command != 19)
 		Log.Notice("AuthSocket", "Unknown cmd %u", Command);
 }
 
@@ -590,14 +584,14 @@ void AuthSocket::HandleReconnectChallenge()
 		return;
 	}
 
-    // Sending response
-    ByteBuffer pkt;
-    pkt << uint8( 0x02 );                        // ReconnectChallenge
-    pkt << uint8( 0x00 );
-    rs.SetRand(16*8);
-    pkt.append( rs.AsByteBuffer() );             // 16 bytes random
-    pkt << uint64( 0x00 ) << uint64( 0x00 );     // 16 bytes zeros
-    Send(pkt.contents(), pkt.size());
+	// Sending response
+	ByteBuffer pkt;
+	pkt << uint8( 0x02 );						// ReconnectChallenge
+	pkt << uint8( 0x00 );
+	rs.SetRand(16*8);
+	pkt.append( rs.AsByteBuffer() );			// 16 bytes random
+	pkt << uint64( 0x00 ) << uint64( 0x00 );	// 16 bytes zeros
+	Send(pkt.contents(), pkt.size());
 }
 
 void AuthSocket::HandleReconnectProof()

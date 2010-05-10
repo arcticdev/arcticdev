@@ -6,11 +6,13 @@
 
 #ifndef _THREADING_MUTEX_H
 #define _THREADING_MUTEX_H
-#ifdef __DragonFly__                                                        
-#include <pthread.h>                                                
-#endif                                                                          
-               
-// #include <pthread.h> // For DFLY
+
+#ifdef __DragonFly__
+#include <pthread.h>
+#endif
+#ifdef _WIN32_WINNT
+#include <Windows.h>
+#endif
 
 class ARCTIC_DECL Mutex
 {

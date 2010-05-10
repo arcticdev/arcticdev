@@ -37,7 +37,7 @@ class CRandomMersenne {   // Encapsulate random number generator
 #define MERS_A   0xE4BD75F5
 #define MERS_B   0x655E5280
 #define MERS_C   0xFFD58000
-#else    
+#else
 // or constants for type MT19937:
 #define MERS_N   624
 #define MERS_M   397
@@ -50,9 +50,12 @@ class CRandomMersenne {   // Encapsulate random number generator
 #define MERS_B   0x9D2C5680
 #define MERS_C   0xEFC60000
 #endif
+
 public:
-	CRandomMersenne(uint32 seed) {                              // Constructor
-		RandomInit(seed); LastInterval = 0;}
+    CRandomMersenne(uint32 seed) 
+    {   // Constructor
+    	RandomInit(seed); LastInterval = 0;
+    }
 	void RandomInit(uint32 seed);                               // Re-seed
 	void RandomInitByArray(uint32 seeds[], int length);         // Seed by more than 32 bits
 	int IRandom (int min, int max);                             // Output random integer
@@ -67,6 +70,6 @@ private:
 	uint32 RLimit;                                              // Rejection limit used by IRandomX
 	enum TArch {LITTLE_ENDIAN1, BIG_ENDIAN1, NONIEEE};          // Definition of architecture
 	TArch Architecture;                                         // Conversion to float depends on architecture
-};    
-
+};
 #endif
+

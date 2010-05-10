@@ -32,7 +32,7 @@ public:
 	}
 
 	// assumes we're int-based 
-    void print()
+	void print()
 	{
 		printf("Elements of CircularQueue[%u]: ", ELEMENTCOUNT);
 		for(int i = 0; i < ELEMENTCOUNT; ++i)
