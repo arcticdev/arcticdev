@@ -21,7 +21,7 @@ class MapMgr;
 class ARCTIC_DECL WorldStateManager
 {
 	struct WorldState
-    {
+	{
 		// uint32 StateId; // index in map
 		int32 FactionMask;
 		int32 ZoneMask;
@@ -34,7 +34,7 @@ class ARCTIC_DECL WorldStateManager
 	WorldStateMap m_states;
 
 	// mapmgr we are working with.
-	MapMgrPointer m_mapMgr;
+	MapMgr* m_mapMgr;
 
 	// synchronization object
 	// shouldn't REALLY be needed, but we're paranoid..
@@ -44,7 +44,7 @@ class ARCTIC_DECL WorldStateManager
 public:
 
 	// constructor, not much to do though, except set mapmgr reference
-	WorldStateManager( MapMgrPointer mgr )
+	WorldStateManager( MapMgr* mgr )
 	{
 		m_mapMgr = mgr;
 	}
@@ -65,10 +65,10 @@ public:
 
 	// sends the current world states to a new player on the map.
 	// this should also be called upon changing zone.
-	void SendWorldStates( PlayerPointer pPlayer );
+	void SendWorldStates( Player* pPlayer );
 
 	// clears world states for a player leaving the map.
-	void ClearWorldStates( PlayerPointer pPlayer );
+	void ClearWorldStates( Player* pPlayer );
 
 	// loads a setting from the database.
 	static const string GetPersistantSetting( const char *szKeyName, const char *szValue );
@@ -95,7 +95,7 @@ public:
 	void LoadFromDB();
 
 	// applys a map template to a new instance
-	void ApplyMapTemplate( MapMgrPointer pmgr );
+	void ApplyMapTemplate( MapMgr* pmgr );
 };
 
 #define sWorldStateTemplateManager WorldStateTemplateManager::getSingleton()

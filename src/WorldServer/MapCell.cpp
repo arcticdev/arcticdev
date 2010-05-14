@@ -16,7 +16,7 @@ MapCell::~MapCell()
 	RemoveObjects();
 }
 
-void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgrPointer mapmgr)
+void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgr* mapmgr)
 {
 	_mapmgr = mapmgr;
 	_active = false;
@@ -28,7 +28,7 @@ void MapCell::Init(uint32 x, uint32 y, uint32 mapid, MapMgrPointer mapmgr)
 	_objects.clear();
 }
 
-void MapCell::AddObject(ObjectPointer obj)
+void MapCell::AddObject(Object* obj)
 {
 	if(obj->IsPlayer())
 		++_playerCount;
@@ -38,7 +38,7 @@ void MapCell::AddObject(ObjectPointer obj)
 	ReleaseLock(); 
 }
 
-void MapCell::RemoveObject(ObjectPointer obj)
+void MapCell::RemoveObject(Object* obj)
 {
 	if(obj->IsPlayer())
 		--_playerCount;
@@ -89,7 +89,7 @@ void MapCell::RemoveObjects()
 	//uint32 ltime = getMSTime();
 
 	/* delete objects in pending respawn state */
-	ObjectPointer pObject;
+	Object* pObject;
 	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
 	{
 		pObject = *itr;
@@ -130,7 +130,7 @@ void MapCell::RemoveObjects()
 	_respawnObjects.clear();
 
 	// This time it's simpler! We just remove everything :)
-	ObjectPointer obj; // do this outside the loop!
+	Object* obj; // do this outside the loop!
 	for(itr = _objects.begin(); itr != _objects.end();)
 	{
 		obj = (*itr);
@@ -173,8 +173,8 @@ void MapCell::LoadObjects(CellSpawns * sp)
 
 	if(sp->CreatureSpawns.size())//got creatures
 	{
-		VehiclePointer v;
-		CreaturePointer c;
+		Vehicle* v;
+		Creature* c;
 		for(CreatureSpawnList::iterator i=sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
 		{
 			if(pInstance)
@@ -240,7 +240,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 
 	if(sp->GOSpawns.size()) // got GOs
 	{
-		GameObjectPointer go;
+		GameObject* go;
 		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
 		{
 			if(!(*i)->eventid)

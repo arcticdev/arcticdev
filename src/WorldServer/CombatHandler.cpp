@@ -26,7 +26,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 	if(GetPlayer()->IsPacified() || GetPlayer()->IsStunned() || GetPlayer()->IsFeared())
 		return;
 
-	UnitPointer pEnemy = _player->GetMapMgr()->GetUnit(guid);
+	Unit* pEnemy = _player->GetMapMgr()->GetUnit(guid);
 
 	if(!pEnemy)
 	{
@@ -54,7 +54,7 @@ void WorldSession::HandleAttackStopOpcode( WorldPacket & recv_data )
 {
 	if(!_player->IsInWorld()) return;
 	uint64 guid = GetPlayer()->GetSelection();
-	UnitPointer pEnemy = NULLUNIT;
+	Unit* pEnemy = NULLUNIT;
 
 	if(guid)
 	{

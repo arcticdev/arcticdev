@@ -6,7 +6,7 @@
  
 #include "StdAfx.h"
 
-bool isHostileNonPvP(ObjectPointer objA, ObjectPointer objB)// B is hostile for A? (without PVP flag checks)
+bool isHostileNonPvP(Object* objA, Object* objB)// B is hostile for A? (without PVP flag checks)
 {
 	bool hostile = false;
 
@@ -46,8 +46,8 @@ bool isHostileNonPvP(ObjectPointer objA, ObjectPointer objB)// B is hostile for 
 	// We check this after the normal isHostile test, that way if we're
 	// on the opposite team we'll already know :p
 
-	PlayerPointer player_objA = GetPlayerFromObject(objA);
-	PlayerPointer player_objB = GetPlayerFromObject(objB);
+	Player* player_objA = GetPlayerFromObject(objA);
+	Player* player_objB = GetPlayerFromObject(objB);
 
 	//BG or PVP?
 	if( player_objA && player_objB )
@@ -86,7 +86,7 @@ bool isHostileNonPvP(ObjectPointer objA, ObjectPointer objB)// B is hostile for 
 	return hostile;
 }
 
-bool isHostile(ObjectPointer objA, ObjectPointer objB)// B is hostile for A?
+bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 {
 	bool hostile = false;
 
@@ -126,8 +126,8 @@ bool isHostile(ObjectPointer objA, ObjectPointer objB)// B is hostile for A?
 	// We check this after the normal isHostile test, that way if we're
 	// on the opposite team we'll already know :p
 
-	PlayerPointer player_objA = GetPlayerFromObject(objA);
-	PlayerPointer player_objB = GetPlayerFromObject(objB);
+	Player* player_objA = GetPlayerFromObject(objA);
+	Player* player_objB = GetPlayerFromObject(objB);
 
 	//BG or PVP?
 	if( player_objA && player_objB )
@@ -168,7 +168,7 @@ bool isHostile(ObjectPointer objA, ObjectPointer objB)// B is hostile for A?
 
 // Where we check if we object A can attack object B. This is used in many feature's
 // Including the spell class and the player class.
-bool isAttackable(ObjectPointer objA, ObjectPointer objB, bool CheckStealth)// A can attack B?
+bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack B?
 {
 	// can't attack self.. this causes problems with buffs if we don't have it :p
 	if( !objA || !objB || objA == objB )
@@ -194,8 +194,8 @@ bool isAttackable(ObjectPointer objA, ObjectPointer objB, bool CheckStealth)// A
 		return false;
 
 	// Get players (or owners of pets/totems)
-	PlayerPointer player_objA = GetPlayerFromObject(objA);
-	PlayerPointer player_objB = GetPlayerFromObject(objB);
+	Player* player_objA = GetPlayerFromObject(objA);
+	Player* player_objB = GetPlayerFromObject(objB);
 	if( player_objA && player_objB )
 	{
 		// Handle duels
@@ -310,9 +310,9 @@ bool isAttackable(ObjectPointer objA, ObjectPointer objB, bool CheckStealth)// A
 	}
 	return hostile;
 }
-PlayerPointer GetPlayerFromObject(ObjectPointer obj)
+Player* GetPlayerFromObject(Object* obj)
 {
-	PlayerPointer player_obj = NULLPLR;
+	Player* player_obj = NULLPLR;
 
 	if( obj->IsPlayer() )
 	{
@@ -320,20 +320,20 @@ PlayerPointer GetPlayerFromObject(ObjectPointer obj)
 	}
 	else if( obj->IsPet() )
 	{
-		PetPointer pet_obj = TO_PET(obj);
+		Pet* pet_obj = TO_PET(obj);
 		if( pet_obj )
 			player_obj =  pet_obj->GetPetOwner();
 	}
 	else if( obj->IsUnit() )
 	{
 		// If it's not a player nor a pet, it can still be a totem.
-		CreaturePointer creature_obj = TO_CREATURE(obj);
+		Creature* creature_obj = TO_CREATURE(obj);
 		if( creature_obj && creature_obj->IsTotem()) 
 			player_obj =  creature_obj->GetTotemOwner();
 	}
 	return player_obj;
 }
-bool isCombatSupport(ObjectPointer objA, ObjectPointer objB)// B combat supports A?
+bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 {
 	if( !objA || !objB )
 		return false;   
@@ -371,7 +371,7 @@ bool isCombatSupport(ObjectPointer objA, ObjectPointer objB)// B combat supports
 	return combatSupport;
 }
 
-bool isAlliance(ObjectPointer objA)
+bool isAlliance(Object* objA)
 {
 	if(!objA || objA->m_factionDBC == NULL || objA->m_faction == NULL)
 		return true;

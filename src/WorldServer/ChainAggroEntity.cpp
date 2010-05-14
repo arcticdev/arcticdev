@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 
-ChainAggroEntity::ChainAggroEntity(CreaturePointer pOwner)
+ChainAggroEntity::ChainAggroEntity(Creature* pOwner)
 {
 	AddAggroEntity(pOwner);
 }
@@ -15,13 +15,13 @@ ChainAggroEntity::~ChainAggroEntity()
 {
 }
 
-void ChainAggroEntity::AddAggroEntity(CreaturePointer pCreature)
+void ChainAggroEntity::AddAggroEntity(Creature* pCreature)
 {
 	pCreature->GetAIInterface()->m_ChainAgroSet = this;
 	m_agroEntitySet.insert(pCreature);
 }
 
-void ChainAggroEntity::RemoveAggroEntity(CreaturePointer pCreature)
+void ChainAggroEntity::RemoveAggroEntity(Creature* pCreature)
 {
 	pCreature->GetAIInterface()->m_ChainAgroSet = NULL;
 	m_agroEntitySet.erase(pCreature);
@@ -35,7 +35,7 @@ void ChainAggroEntity::RemoveAggroEntity(CreaturePointer pCreature)
 
 void ChainAggroEntity::Delete()
 {
-	set<CreaturePointer>::iterator itr = m_agroEntitySet.begin();
+	set<Creature*>::iterator itr = m_agroEntitySet.begin();
 	for(; itr != m_agroEntitySet.end(); ++itr)
 	{
 		(*itr)->GetAIInterface()->m_ChainAgroSet = NULL;
@@ -43,9 +43,9 @@ void ChainAggroEntity::Delete()
 	delete this;
 }
 
-void ChainAggroEntity::EventEnterCombat(UnitPointer pTarget)
+void ChainAggroEntity::EventEnterCombat(Unit* pTarget)
 {
-	set<CreaturePointer>::iterator itr = m_agroEntitySet.begin();
+	set<Creature*>::iterator itr = m_agroEntitySet.begin();
 	for(; itr != m_agroEntitySet.end(); ++itr)
 	{
 		if( (*itr)->isDead() )

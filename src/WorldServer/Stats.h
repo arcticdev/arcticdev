@@ -23,9 +23,9 @@ enum Resistances
 };
 
 ARCTIC_DECL uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl);
-ARCTIC_DECL uint32 CalculateXpToGive(UnitPointer pVictim, UnitPointer pAttacker);
+ARCTIC_DECL uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker);
 ARCTIC_DECL uint32 CalculateStat(uint16 level,double a3, double a2, double a1, double a0);
-ARCTIC_DECL uint32 CalculateDamage( UnitPointer pAttacker, UnitPointer pVictim, uint32 weapon_damage_type, SpellEntry* ability);
+ARCTIC_DECL uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability);
 ARCTIC_DECL uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat);
 ARCTIC_DECL bool isEven (int num);
 

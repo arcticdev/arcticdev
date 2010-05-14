@@ -81,9 +81,9 @@ struct TWayPoint
 
 typedef std::map<uint32, TWayPoint> WaypointMap;
 typedef std::map<uint32, TWayPoint>::iterator WaypointIterator;
-typedef std::map<uint32, PlayerPointer  > PassengerMap;
-typedef std::map<uint32, PlayerPointer  >::iterator PassengerIterator;
-typedef std::map<uint32, ObjectPointer > TransportNPCMap;
+typedef std::map<uint32, Player*  > PassengerMap;
+typedef std::map<uint32, Player*  >::iterator PassengerIterator;
+typedef std::map<uint32, Object* > TransportNPCMap;
 
 bool FillTransporterPathVector(uint32 PathID, TransportPath & Path);
 
@@ -104,9 +104,9 @@ public:
 
 	bool GenerateWaypoints();
 
-	ARCTIC_INLINE void AddPlayer(PlayerPointer pPlayer) { mPassengers[pPlayer->GetLowGUID()] = pPlayer; }
-	ARCTIC_INLINE void RemovePlayer(PlayerPointer pPlayer) {mPassengers.erase(pPlayer->GetLowGUID()); }
-	ARCTIC_INLINE bool HasPlayer(PlayerPointer pPlayer) { return mPassengers.find(pPlayer->GetLowGUID()) != mPassengers.end(); }
+	ARCTIC_INLINE void AddPlayer(Player* pPlayer) { mPassengers[pPlayer->GetLowGUID()] = pPlayer; }
+	ARCTIC_INLINE void RemovePlayer(Player* pPlayer) {mPassengers.erase(pPlayer->GetLowGUID()); }
+	ARCTIC_INLINE bool HasPlayer(Player* pPlayer) { return mPassengers.find(pPlayer->GetLowGUID()) != mPassengers.end(); }
 	ARCTIC_INLINE void SetPeriod(uint32 val) { m_period = val; }
 
 	uint32 m_pathTime;
@@ -116,11 +116,11 @@ public:
 	WaypointIterator mNextWaypoint;
 
 	void OnPushToWorld();
-	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, PlayerPointer target );
-	void DestroyTransportNPCs(PlayerPointer target);
+	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
+	void DestroyTransportNPCs(Player* target);
 	void AddNPC(uint32 Entry, float offsetX, float offsetY, float offsetZ, float offsetO);
-	CreaturePointer GetCreature(uint32 Guid);
-	GameObjectPointer GetGameObject(uint32 Guid);
+	Creature* GetCreature(uint32 Guid);
+	GameObject* GetGameObject(uint32 Guid);
 
 private:
 	

@@ -75,7 +75,7 @@ protected:
   */
 
 class Object;
-typedef set< ObjectPointer > EventableObjectSet;
+typedef set< Object* > EventableObjectSet;
 
 class EventableObjectHolder
 {

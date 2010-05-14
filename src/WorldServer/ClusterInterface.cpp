@@ -165,7 +165,7 @@ void ClusterInterface::HandlePlayerLogin(WorldPacket & pck)
 	/* find the instance */
 	Map * ma = sWorldCreator.GetMap(mapid);
 	ASSERT(ma);
-	MapMgrPointer mm = ma->GetInstance(instance);
+	MapMgr* mm = ma->GetInstance(instance);
 	ASSERT(mm);
 
 	/* create the session */
@@ -280,7 +280,7 @@ void ClusterInterface::HandlePlayerChangedServers(WorldPacket & pck)
 	}
 
 	WorldSession * s = _sessions[sessionid];
-	PlayerPointer plr = s->GetPlayer();
+	Player* plr = s->GetPlayer();
 
 	/* build the packet with the players information */
 	WorldPacket data(ICMSG_PLAYER_CHANGE_SERVER_INFO, 1000);
@@ -292,7 +292,7 @@ void ClusterInterface::HandlePlayerChangedServers(WorldPacket & pck)
 	/* dereference the session */
 }
 
-void ClusterInterface::RequestTransfer(PlayerPointer plr, uint32 MapId, uint32 InstanceId, LocationVector & vec)
+void ClusterInterface::RequestTransfer(Player* plr, uint32 MapId, uint32 InstanceId, LocationVector & vec)
 {
 	WorldPacket data(ICMSG_TELEPORT_REQUEST, 32);
 	data << plr->GetSession()->GetSocket()->GetSessionId() << MapId << InstanceId << vec << vec.o;

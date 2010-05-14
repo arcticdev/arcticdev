@@ -225,7 +225,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 				data = sChatHandler.FillMessageData( CHAT_MSG_SAY, lang, msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 				SendChatPacket(data, 1, lang, this);
-				for(unordered_set<PlayerPointer  >::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
+				for(unordered_set<Player*  >::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 				{
 					(*itr)->GetSession()->SendChatPacket(data, 1, lang, this);
 				}
@@ -317,7 +317,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		} break;
 	case CHAT_MSG_WHISPER:
 		{
-			PlayerPointer player = objmgr.GetPlayer(misc.c_str(), false);
+			Player* player = objmgr.GetPlayer(misc.c_str(), false);
 			if(!player)
 			{
 				data = new WorldPacket(SMSG_CHAT_PLAYER_NOT_FOUND, misc.length() + 1);
@@ -498,7 +498,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 		}
 	}
 
-	UnitPointer pUnit = _player->GetMapMgr()->GetUnit(guid);
+	Unit* pUnit = _player->GetMapMgr()->GetUnit(guid);
 	if(pUnit)
 	{
 		if(pUnit->IsPlayer())
@@ -508,7 +508,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 		}
 		else if(pUnit->GetTypeId() == TYPEID_UNIT)
 		{
-			CreaturePointer p = TO_CREATURE(pUnit);
+			Creature* p = TO_CREATURE(pUnit);
 			if(p->GetCreatureName())
 			{
 				name = p->GetCreatureName()->Name;

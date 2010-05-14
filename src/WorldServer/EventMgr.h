@@ -129,18 +129,18 @@ enum EventTypes
 	EVENT_AURA_REGEN,
 	EVENT_AURA_PERIODIC_REGEN,
 	EVENT_AURA_PERIODIC_HEALPERC,
-	EVENT_ATTACK_TIMEOUT,		               // Zack 2007 05 05: if no action is taken then combat should be exited after 5 seconds.
-	EVENT_SUMMON_EXPIRE,		               // Zack 2007 05 28: similar to pet expire but we can have multiple guardians
-	EVENT_MUTE_PLAYER,			               // Zack 2007 06 05: player gains his voice back
-	EVENT_PLAYER_FORECED_RESURECT,		       // Zack 2007 06 08: After player not pushing release spirit for 6 minutes while dead
-	EVENT_PLAYER_SOFT_DISCONNECT,		       // Zack 2007 06 12: Kick AFK players to not eat resources
+	EVENT_ATTACK_TIMEOUT,                       // Zack 2007 05 05: if no action is taken then combat should be exited after 5 seconds.
+	EVENT_SUMMON_EXPIRE,                        // Zack 2007 05 28: similar to pet expire but we can have multiple guardians
+	EVENT_MUTE_PLAYER,                          // Zack 2007 06 05: player gains his voice back
+	EVENT_PLAYER_FORECED_RESURECT,              // Zack 2007 06 08: After player not pushing release spirit for 6 minutes while dead
+	EVENT_PLAYER_SOFT_DISCONNECT,               // Zack 2007 06 12: Kick AFK players to not eat resources
 	EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG,
 	EVENT_BATTLEGROUND_WSG_AUTO_RETURN_FLAG_1,
 	EVENT_CORPSE_SPAWN_BONES,
-	EVENT_DODGE_BLOCK_FLAG_EXPIRE,	           // yeah, there are more then 1 flags
+	EVENT_DODGE_BLOCK_FLAG_EXPIRE,              // yeah, there are more then 1 flags
 	EVENT_REJUVENATION_FLAG_EXPIRE,
-	EVENT_PARRY_FLAG_EXPIRE,		
-	EVENT_CRIT_FLAG_EXPIRE,		
+	EVENT_PARRY_FLAG_EXPIRE,
+	EVENT_CRIT_FLAG_EXPIRE,
 	EVENT_GMSCRIPT_EVENT,
 	EVENT_RELOCATE,
 	EVENT_BATTLEGROUNDMGR_QUEUE_UPDATE,
@@ -203,11 +203,12 @@ enum EventTypes
 	EVENT_UNIT_SENDMESSAGE,
 	EVENT_SOTA_TIMER,
 	EVENT_VICTORIOUS_FLAG_EXPIRE,
-    EVENT_OVERKILL_EXPIRE, 
- 	EVENT_BEACON_REMOVE, 
- 	EVENT_UNPOSSESS, 
- 	EVENT_PLAYER_AVENGING_WRATH, 
-	EVENT_SEND_AURA_LIST,
+	EVENT_OVERKILL_EXPIRE,
+	EVENT_BEACON_REMOVE,
+	EVENT_UNPOSSESS,
+	EVENT_PLAYER_AVENGING_WRATH,
+	EVENT_SPAWN_ING_EVENT,
+	EVENT_DESPAWN_ING_EVENT
 };
 
 enum EventFlags
@@ -220,10 +221,10 @@ enum EventFlags
 class EventableObject;
 struct ARCTIC_DECL TimedEvent
 {
-	TimedEvent(EventableObjectPointer object, CallbackBase* callback, uint32 type, time_t time, uint32 repeat, uint32 flags) : 
-		obj(object), cb(callback), eventType(type), eventFlag(flags), msTime(time), currTime(time), repeats(repeat), deleted(false),ref(0) {}
+	TimedEvent(void* object, CallbackBase* callback, uint32 type, time_t time, uint32 repeat, uint32 flags, uint32 auraid) : 
+		obj(object), cb(callback), eventType(type), eventFlag(flags), msTime(time), currTime(time), repeats(repeat), deleted(false),ref(0), eventAuraid(auraid) {}
 		
-	EventableObjectPointer obj;
+	void* obj;
 	CallbackBase *cb;
 	uint32 eventType;
 	uint16 eventFlag;
@@ -233,8 +234,9 @@ struct ARCTIC_DECL TimedEvent
 	bool deleted;
 	int instanceId;
 	volatile long ref;
+	uint32 eventAuraid;
 
-	static TimedEvent * Allocate( EventableObjectPointer object, CallbackBase* callback, uint32 flags, time_t time, uint32 repeat);
+	static TimedEvent * Allocate( void* object, CallbackBase* callback, uint32 flags, time_t time, uint32 repeat);
 
 #ifdef WIN32
 	void DecRef()
@@ -277,87 +279,102 @@ class ARCTIC_DECL EventMgr : public Singleton < EventMgr >
 	friend class MiniEventMgr;
 public:
 	template <class Class>
-		void AddEvent(shared_ptr<Class> obj, void (Class::*method)(), uint32 type, uint32 time, uint32 repeats, uint32 flags)
+		void AddEvent(Class* obj, void (Class::*method)(), uint32 type, uint32 time, uint32 repeats, uint32 flags)
 	{
 		// create a timed event
-		TimedEvent * event = new TimedEvent(obj, new CallbackP0<Class>(obj, method), type, time, repeats, flags);
+		TimedEvent * event = new TimedEvent(obj, new CallbackP0<Class>(obj, method), type, time, repeats, flags, 0);
 
 		// add this to the object's list, updating will all be done later on...
 		obj->event_AddEvent(event);
 	}
 
 	template <class Class, typename P1>
-		void AddEvent(shared_ptr<Class> obj, void (Class::*method)(P1), P1 p1, uint32 type, uint32 time, uint32 repeats, uint32 flags)
+		void AddEvent(Class* obj, void (Class::*method)(P1), P1 p1, uint32 type, uint32 time, uint32 repeats, uint32 flags)
 	{
 		// create a timed event
-		TimedEvent * event = new TimedEvent(obj, new CallbackP1<Class, P1>(obj, method, p1), type, time, repeats, flags);
+		TimedEvent * event = new TimedEvent(obj, new CallbackP1<Class, P1>(obj, method, p1), type, time, repeats, flags, 0);
 
 		// add this to the object's list, updating will all be done later on...
 		obj->event_AddEvent(event);
 	}
 
 	template <class Class, typename P1, typename P2>
-		void AddEvent(shared_ptr<Class> obj, void (Class::*method)(P1,P2), P1 p1, P2 p2, uint32 type, uint32 time, uint32 repeats, uint32 flags)
+		void AddEvent(Class* obj, void (Class::*method)(P1,P2), P1 p1, P2 p2, uint32 type, uint32 time, uint32 repeats, uint32 flags)
 	{
 		// create a timed event
-		TimedEvent * event = new TimedEvent(obj, new CallbackP2<Class, P1, P2>(obj, method, p1, p2), type, time, repeats, flags);
+		TimedEvent * event = new TimedEvent(obj, new CallbackP2<Class, P1, P2>(obj, method, p1, p2), type, time, repeats, flags, 0);
 
 		// add this to the object's list, updating will all be done later on...
 		obj->event_AddEvent(event);
 	}
 
 	template <class Class, typename P1, typename P2, typename P3>
-		void AddEvent(shared_ptr<Class> obj,void (Class::*method)(P1,P2,P3), P1 p1, P2 p2, P3 p3, uint32 type, uint32 time, uint32 repeats, uint32 flags)
+		void AddEvent(Class* obj,void (Class::*method)(P1,P2,P3), P1 p1, P2 p2, P3 p3, uint32 type, uint32 time, uint32 repeats, uint32 flags)
 	{
 		// create a timed event
-		TimedEvent * event = new TimedEvent(obj, new CallbackP3<Class, P1, P2, P3>(obj, method, p1, p2, p3), type, time, repeats, flags);
+		TimedEvent * event = new TimedEvent(obj, new CallbackP3<Class, P1, P2, P3>(obj, method, p1, p2, p3), type, time, repeats, flags, 0);
 
 		// add this to the object's list, updating will all be done later on...
 		obj->event_AddEvent(event);
 	}
 
 	template <class Class, typename P1, typename P2, typename P3, typename P4>
-		void AddEvent(shared_ptr<Class> obj, void (Class::*method)(P1,P2,P3,P4), P1 p1, P2 p2, P3 p3, P4 p4, uint32 type, uint32 time, uint32 repeats, uint32 flags)
+		void AddEvent(Class* obj, void (Class::*method)(P1,P2,P3,P4), P1 p1, P2 p2, P3 p3, P4 p4, uint32 type, uint32 time, uint32 repeats, uint32 flags)
 	{
 		// create a timed event
-		TimedEvent * event = new TimedEvent(obj, new CallbackP4<Class, P1, P2, P3, P4>(obj, method, p1, p2, p3, p4), type, time, repeats, flags);
+		TimedEvent * event = new TimedEvent(obj, new CallbackP4<Class, P1, P2, P3, P4>(obj, method, p1, p2, p3, p4), type, time, repeats, flags, 0);
 
 		// add this to the object's list, updating will all be done later on...
 		obj->event_AddEvent(event);
 	}
 
 	template <class Class, typename P1, typename P2, typename P3, typename P4, typename P5>
-		void AddEvent(shared_ptr<Class> obj, void (Class::*method)(P1,P2,P3,P4,P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5, uint32 type, uint32 time, uint32 repeats, uint32 flags)
+		void AddEvent(Class* obj, void (Class::*method)(P1,P2,P3,P4,P5), P1 p1, P2 p2, P3 p3, P4 p4, P5 p5, uint32 type, uint32 time, uint32 repeats, uint32 flags)
 	{
 		// create a timed event
-		TimedEvent * event = new TimedEvent(obj, new CallbackP5<Class, P1, P2, P3, P4, P5>(obj, method, p1, p2, p3, p4, p5), type, time, repeats, flags);
+		TimedEvent * event = new TimedEvent(obj, new CallbackP5<Class, P1, P2, P3, P4, P5>(obj, method, p1, p2, p3, p4, p5), type, time, repeats, flags, 0);
 
 		// add this to the object's list, updating will all be done later on...
 		obj->event_AddEvent(event);
 	}
 
-	template <class Class> void RemoveEvents(shared_ptr<Class> obj) { obj->event_RemoveEvents(-1); }
-	template <class Class> void RemoveEvents(shared_ptr<Class> obj, int32 type)
+	template <class Class, typename P1>
+		void AddAuraEvent(Class* obj, void (Class::*method)(P1), P1 p1, uint32 time, uint32 repeats, uint32 flags, uint32 Auraid)
+	{
+		// create a timed event
+		TimedEvent * event = new TimedEvent(obj, new CallbackP1<Class, P1>(obj, method, p1), EVENT_AURA_REMOVE, time, repeats, flags, Auraid);
+
+		// add this to the object's list, updating will all be done later on...
+		obj->event_AddEvent(event);
+	}
+
+	template <class Class> void RemoveEvents(Class* obj) { obj->event_RemoveEvents(-1); }
+	template <class Class> void RemoveEvents(Class* obj, int32 type)
 	{
 		obj->event_RemoveEvents(type);
 	}
 
-	template <class Class> void ModifyEventTimeLeft(shared_ptr<Class> obj, uint32 type, uint32 time,bool unconditioned=true)
+	template <class Class> void ModifyAuraEventTimeLeft(Class* obj, uint32 time,uint32 Auraid)
+	{
+		obj->event_ModifyAuraTimeLeft(time, Auraid);
+	}
+
+	template <class Class> void ModifyEventTimeLeft(Class* obj, uint32 type, uint32 time,bool unconditioned=true)
 	{
 		obj->event_ModifyTimeLeft(type, time,unconditioned);
 	}
 
-	template <class Class> void ModifyEventTimeAndTimeLeft(shared_ptr<Class> obj, uint32 type, uint32 time)
+	template <class Class> void ModifyEventTimeAndTimeLeft(Class* obj, uint32 type, uint32 time)
 	{
 		obj->event_ModifyTimeAndTimeLeft(type, time);
 	}
 
-	template <class Class> void ModifyEventTime(shared_ptr<Class> obj, uint32 type, uint32 time)
+	template <class Class> void ModifyEventTime(Class* obj, uint32 type, uint32 time)
 	{
 		obj->event_ModifyTime(type, time);
 	}
 
-	template <class Class> bool HasEvent(shared_ptr<Class> obj, uint32 type)
+	template <class Class> bool HasEvent(Class* obj, uint32 type)
 	{
 		return obj->event_HasEvent(type);
 	}
@@ -365,7 +382,7 @@ public:
 	EventableObjectHolder * GetEventHolder(int32 InstanceId)
 	{
 		HolderMap::iterator itr = mHolders.find(InstanceId);
-		if(itr == mHolders.end()) return 0;
+		if(itr == mHolders.end()) return NULL;
 		return itr->second;
 	}
 

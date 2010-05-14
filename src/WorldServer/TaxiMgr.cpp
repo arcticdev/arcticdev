@@ -137,7 +137,7 @@ TaxiPathNode* TaxiPath::GetPathNode(uint32 i)
 		return m_pathNodes.find(i)->second;
 }
 
-void TaxiPath::SendMoveForTime(PlayerPointer riding, PlayerPointer to, uint32 time)
+void TaxiPath::SendMoveForTime(Player* riding, Player* to, uint32 time)
 {
 	if (!time)
 		return;

@@ -16,8 +16,8 @@ public:
 	LootRoll();
 	~LootRoll();
 
-	void Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgrPointer mgr);
-	void PlayerRolled(PlayerPointer player, uint8 choice);
+	void Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr);
+	void PlayerRolled(Player* player, uint8 choice);
 	void Finalize();
 
 	int32 event_GetInstanceID();
@@ -34,7 +34,7 @@ private:
 	uint32 _itemunk2;
 	uint32 _remaining;
 	uint64 _guid;
-	MapMgrPointer _mgr;
+	MapMgr* _mgr;
 };
 
 typedef vector<pair<RandomProps*, float> > RandomPropertyVector;
@@ -54,7 +54,7 @@ typedef struct __LootItem
 	uint32 iItemsCount;
 	RandomProps * iRandomProperty;
 	ItemRandomSuffixEntry * iRandomSuffix;
-	LootRollPointer roll;
+	LootRoll* roll;
 	bool passed;
 	LooterSet has_looted;
 	uint32 ffa_loot;
@@ -83,8 +83,8 @@ struct Loot
 	std::vector<__LootItem> items;
 	uint32 gold;
 	LooterSet looters;
-	bool HasItems(PlayerPointer Looter);
-	bool HasLoot(PlayerPointer Looter);
+	bool HasItems(Player* Looter);
+	bool HasLoot(Player* Looter);
 };
 
 struct tempy

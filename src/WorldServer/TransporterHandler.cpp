@@ -324,7 +324,7 @@ void Transporter::UpdatePosition()
 
 void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, float y, float z)
 {
-	sEventMgr.RemoveEvents(shared_from_this(), EVENT_TRANSPORTER_NEXT_WAYPOINT);
+	sEventMgr.RemoveEvents(this, EVENT_TRANSPORTER_NEXT_WAYPOINT);
 
 	if(mPassengers.size() > 0)
 	{
@@ -342,7 +342,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			it2 = itr;
 			++itr;
 
-			PlayerPointer plr = objmgr.GetPlayer(it2->first);
+			Player* plr = objmgr.GetPlayer(it2->first);
 			if(!plr)
 			{
 				// remove from map
@@ -406,7 +406,7 @@ Transporter::~Transporter()
 
 void Transporter::Destructor()
 {
-	sEventMgr.RemoveEvents(TO_TRANSPORT(shared_from_this()));
+	sEventMgr.RemoveEvents(TO_TRANSPORT(this));
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
 		if(itr->second->GetTypeId()==TYPEID_UNIT)
@@ -433,7 +433,7 @@ void ObjectMgr::LoadTransporters()
 	{
 		uint32 entry = QR->Fetch()[0].GetUInt32();
 
-		TransporterPointer pTransporter(new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 |entry));
+		Transporter* pTransporter(new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 |entry));
 		if(!pTransporter->CreateAsTransporter(entry, ""))
 		{
 			Log.Warning("ObjectMgr","Skipped invalid transporterid %d.", entry);
@@ -464,7 +464,7 @@ void ObjectMgr::LoadTransporters()
 void Transporter::OnPushToWorld()
 {
 	// Create waypoint event
-	sEventMgr.AddEvent(CAST(Transporter,shared_from_this()), &Transporter::UpdatePosition, EVENT_TRANSPORTER_NEXT_WAYPOINT, 100, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(CAST(Transporter,this), &Transporter::UpdatePosition, EVENT_TRANSPORTER_NEXT_WAYPOINT, 100, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offsetZ, float offsetO)
@@ -479,7 +479,7 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 	if(inf == NULL || proto == NULL)
 		return;
 
-	CreaturePointer pCreature(new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | guid));
+	Creature* pCreature(new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | guid));
 	pCreature->Init();
 	pCreature->Load(proto, m_position.x, m_position.y, m_position.z, 0.0f);
 	pCreature->m_transportPosition = new LocationVector(offsetX, offsetY, offsetZ, offsetO);
@@ -488,7 +488,7 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 	m_npcs.insert(make_pair(guid,pCreature));
 }
 
-CreaturePointer Transporter::GetCreature(uint32 Guid)
+Creature* Transporter::GetCreature(uint32 Guid)
 {
 	TransportNPCMap::iterator itr = m_npcs.find(Guid);
 	if(itr == m_npcs.end())
@@ -499,7 +499,7 @@ CreaturePointer Transporter::GetCreature(uint32 Guid)
 		return NULLCREATURE;
 }
 
-uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, PlayerPointer target )
+uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target )
 {
 	uint32 cnt = Object::BuildCreateUpdateBlockForPlayer(data, target);
 

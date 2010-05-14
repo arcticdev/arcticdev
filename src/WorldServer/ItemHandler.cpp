@@ -33,10 +33,10 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 		return;
 
 	int32 c=count;
-	ItemPointer i1 =_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
+	Item* i1 =_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 	if(!i1)
 		return;
-	ItemPointer i2=_player->GetItemInterface()->GetInventoryItem(DstInvSlot,DstSlot);
+	Item* i2=_player->GetItemInterface()->GetInventoryItem(DstInvSlot,DstSlot);
 
 	if( (i1 && i1->wrapped_item_id) || (i2 && i2->wrapped_item_id) || ( i1 && i1->GetProto()->MaxCount < 2 ) || ( i2 && i2->GetProto()->MaxCount < 2 ) || count < 1 )
 	{
@@ -123,8 +123,8 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	CHECK_PACKET_SIZE(recv_data, 4);
 	WorldPacket data;
 	WorldPacket packet;
-	ItemPointer SrcItem = NULLITEM;
-	ItemPointer DstItem = NULLITEM;
+	Item* SrcItem = NULLITEM;
+	Item* DstItem = NULLITEM;
 
 	int8 DstInvSlot = 0, DstSlot = 0, SrcInvSlot = 0, SrcSlot = 0, error = 0;
 
@@ -363,8 +363,8 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	ItemPointer dstitem = _player->GetItemInterface()->GetInventoryItem(dstslot);
-	ItemPointer srcitem = _player->GetItemInterface()->GetInventoryItem(srcslot);
+	Item* dstitem = _player->GetItemInterface()->GetInventoryItem(dstslot);
+	Item* srcitem = _player->GetItemInterface()->GetInventoryItem(srcslot);
 	
 	// allow weapon switching in combat
 	bool skip_combat = false;
@@ -491,14 +491,14 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 {
 	if(!_player->IsInWorld()) return;
 	CHECK_PACKET_SIZE(recv_data, 2);
-	//PlayerPointer plyr = GetPlayer();
+	//Player* plyr = GetPlayer();
 
 	int8 SrcInvSlot, SrcSlot;
 
 	recv_data >> SrcInvSlot >> SrcSlot;
 
 	OUT_DEBUG( ITEMDDESTVSLOTAI, SrcInvSlot, SrcSlot );
-	ItemPointer it = _player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
+	Item* it = _player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 
 	if(it)
 	{
@@ -564,7 +564,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 		if(mail_id)
 			_player->m_mailBox->OnMessageCopyDeleted(mail_id); 
 		
-		ItemPointer pItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot,false);
+		Item* pItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot,false);
 		if(!pItem)
 			return;
 
@@ -596,7 +596,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 	OUT_DEBUG(ITEMDAUSTVSLOTAI, SrcInvSlot, SrcSlot); 
 
-	ItemPointer eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
+	Item* eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 
 	if(!eitem) 
 	{
@@ -635,7 +635,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	// handle equipping of 2h when we have two items equipped! :) special case.
 	if((Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND) && !_player->titanGrip)
 	{
-		ItemPointer mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
+		Item* mainhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND);
 		if( mainhandweapon != NULL && mainhandweapon->GetProto()->InventoryType == INVTYPE_2HWEAPON )
 		{
 			if( Slot == EQUIPMENT_SLOT_OFFHAND && eitem->GetProto()->InventoryType == INVTYPE_WEAPON )
@@ -653,7 +653,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		if(eitem->GetProto()->InventoryType == INVTYPE_2HWEAPON)
 		{
 			// see if we have a weapon equipped in the offhand, if so we need to remove it
-			ItemPointer offhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND);
+			Item* offhandweapon = _player->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND);
 			if( offhandweapon != NULL )
 			{
 				// we need to de-equip this
@@ -723,7 +723,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		}
 	}
 
-	ItemPointer oitem = NULLITEM;
+	Item* oitem = NULLITEM;
 
 	if( SrcInvSlot == INVENTORY_SLOT_NOT_SET )
 	{
@@ -892,7 +892,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 	WorldPacket data(16);
 	uint64 guid;
 	int32 stuff;
-	ItemPointer add ;
+	Item* add ;
 	AddItemResult result;
 	uint8 error;
 
@@ -906,7 +906,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 		return;
 
 	//what a magical number 69???
-	ItemPointer it = _player->GetItemInterface()->GetBuyBack(stuff);
+	Item* it = _player->GetItemInterface()->GetBuyBack(stuff);
 	if (it)
 	{
 		// Find free slot and break if inv full
@@ -1005,7 +1005,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	CreaturePointer unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(vendorguid));
+	Creature* unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(vendorguid));
 	// Check if Vendor exists
 	if (unit == NULL)
 	{
@@ -1013,7 +1013,7 @@ void WorldSession::HandleSellItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	ItemPointer item = _player->GetItemInterface()->GetItemByGUID(itemguid);
+	Item* item = _player->GetItemInterface()->GetItemByGUID(itemguid);
 	if(!item)
 	{
 		SendSellItem(vendorguid, itemguid, 1);
@@ -1115,11 +1115,11 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	if( _player->isCasting() )
 		_player->InterruptCurrentSpell();
 
-	CreaturePointer unit = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(srcguid) );
+	Creature* unit = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(srcguid) );
 	if( unit == NULL || !unit->HasItems() )
 		return;
 
-	ContainerPointer c = NULLCONTAINER;
+	Container* c = NULLCONTAINER;
 
 	CreatureItem ci;
 	unit->GetSellItemByItemId( itemid, ci );
@@ -1211,8 +1211,8 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	}
 
 	// ok our z and slot are set.
-	ItemPointer oldItem= NULLITEM;
-	ItemPointer pItem=NULLITEM;
+	Item* oldItem= NULLITEM;
+	Item* pItem=NULLITEM;
 	if(slot != INVENTORY_SLOT_NOT_SET)
 		oldItem = _player->GetItemInterface()->GetInventoryItem(bagslot, slot);
 
@@ -1308,7 +1308,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	uint32 itemid = 0;
 	int32 slot = 0;
 	uint8 amount = 0;
-	ItemPointer add = NULLITEM;
+	Item* add = NULLITEM;
 	uint8 error = 0;
 	SlotResult slotresult;
 	AddItemResult result;
@@ -1317,7 +1317,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	recv_data >> slot >> amount;
 
 
-	CreaturePointer unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(srcguid));
+	Creature* unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(srcguid));
 	if (unit == NULL || !unit->HasItems())
 		return;
 
@@ -1380,7 +1380,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 
 	if(!add)
 	{
-		ItemPointer itm = objmgr.CreateItem(item.itemid, _player);
+		Item* itm = objmgr.CreateItem(item.itemid, _player);
 		if(!itm)
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM, INV_ERR_DONT_OWN_THAT_ITEM);
@@ -1403,7 +1403,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 		}
 		else 
 		{
-			if( ItemPointer bag = _player->GetItemInterface()->GetInventoryItem(slotresult.ContainerSlot))
+			if( Item* bag = _player->GetItemInterface()->GetInventoryItem(slotresult.ContainerSlot))
 			{
 				if( !TO_CONTAINER(bag)->AddItem(slotresult.Slot, itm) )
 				{
@@ -1453,7 +1453,7 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 
 	recv_data >> guid;
 
-	CreaturePointer unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* unit = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if (unit == NULL)
 		return;
 
@@ -1464,7 +1464,7 @@ void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 	SendInventoryList(unit);
 }
 
-void WorldSession::SendInventoryList(CreaturePointer unit)
+void WorldSession::SendInventoryList(Creature* unit)
 {
 	if(!unit->HasItems())
 	{
@@ -1529,8 +1529,8 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 	//WorldPacket data;
 	WorldPacket packet;
 	int8 SrcInv = 0, Slot = 0, DstInv = 0;
-	ItemPointer srcitem = NULLITEM;
-	ItemPointer dstitem = NULLITEM;
+	Item* srcitem = NULLITEM;
+	Item* dstitem = NULLITEM;
 	int8 NewSlot = 0;
 	int8 error;
 	AddItemResult result;
@@ -1646,7 +1646,7 @@ void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 	if(!GetPlayer())
 		return;
 
-	ItemPointer item = _player->GetItemInterface()->GetInventoryItem(uslot, slot);
+	Item* item = _player->GetItemInterface()->GetInventoryItem(uslot, slot);
 	DEBUG_LOG(ZWORLSWOWSESSIAI, slot);
 
 	if(item)
@@ -1663,7 +1663,7 @@ void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 	}
 }
 
-ARCTIC_INLINE uint32 RepairItemCost(PlayerPointer pPlayer, ItemPointer pItem)
+ARCTIC_INLINE uint32 RepairItemCost(Player* pPlayer, Item* pItem)
 {
 	DurabilityCostsEntry * dcosts = dbcDurabilityCosts.LookupEntry(pItem->GetProto()->ItemLevel);
 	if(!dcosts)
@@ -1684,7 +1684,7 @@ ARCTIC_INLINE uint32 RepairItemCost(PlayerPointer pPlayer, ItemPointer pItem)
 	return cost / 2;
 }
 
-ARCTIC_INLINE void RepairItem(PlayerPointer pPlayer, ItemPointer pItem)
+ARCTIC_INLINE void RepairItem(Player* pPlayer, Item* pItem)
 {
 	// int32 cost = (int32)pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY ) - (int32)pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
 	int32 cost = RepairItemCost(pPlayer, pItem);
@@ -1709,13 +1709,13 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 
 	uint64 npcguid;
 	uint64 itemguid;
-	ItemPointer pItem;
-	ContainerPointer pContainer;
+	Item* pItem;
+	Container* pContainer;
 	uint32 j, i;
 
 	recvPacket >> npcguid >> itemguid;
 
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(npcguid) );
+	Creature* pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(npcguid) );
 	if( pCreature == NULL )
 		return;
 
@@ -1756,7 +1756,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 	}
 	else 
 	{
-		ItemPointer item = _player->GetItemInterface()->GetItemByGUID(itemguid);
+		Item* item = _player->GetItemInterface()->GetItemByGUID(itemguid);
 		if(item)
 		{
 			SlotResult *searchres=_player->GetItemInterface()->LastSearchResult();// this never gets null since we get a pointer to the inteface internal var
@@ -1829,7 +1829,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 
 	DEBUG_LOG(GODGABUFSSLFWOAI, (uint32)SrcInvSlot, (uint32)SrcSlot);
 
-	ItemPointer eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
+	Item* eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 
 	if(!eitem) 
 	{
@@ -1875,7 +1875,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 
 	OUT_DEBUG(ITEMAUTOSBANKSAI, (uint32)SrcInvSlot, (uint32)SrcSlot);
 
-	ItemPointer eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
+	Item* eitem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 
 	if(!eitem) 
 	{
@@ -1913,7 +1913,7 @@ void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacke
 	uint32 inventory_slot;
 	recvPacket >> inventory_slot;
 
-	ItemPointer item = _player->GetItemInterface()->GetInventoryItem(inventory_slot);
+	Item* item = _player->GetItemInterface()->GetInventoryItem(inventory_slot);
 	if(!item) return;
 
 	item->RemoveAllEnchantments(true);
@@ -1931,7 +1931,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 
 	GetPlayer()->ObjLock();
 
-	ItemPointer TargetItem =_player->GetItemInterface()->GetItemByGUID(itemguid);
+	Item* TargetItem =_player->GetItemInterface()->GetItemByGUID(itemguid);
 	if(!TargetItem)
 	{
 		GetPlayer()->ObjUnlock();
@@ -1963,7 +1963,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 		{
 			ItemInterface * itemi = _player->GetItemInterface();
 			ItemPrototype * ip = NULL;
-			ItemPointer it = itemi->GetItemByGUID(gemguid);			
+			Item* it = itemi->GetItemByGUID(gemguid);			
 			if (apply) 
 			{				
 				if( !it )
@@ -2075,7 +2075,7 @@ void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
 	int8 destitem_bagslot, destitem_slot;
 	uint32 source_entry;
 	uint32 itemid;
-	ItemPointer src,dst;
+	Item* src,dst;
 
 	recv_data >> sourceitem_bagslot >> sourceitem_slot;
 	recv_data >> destitem_bagslot >> destitem_slot;

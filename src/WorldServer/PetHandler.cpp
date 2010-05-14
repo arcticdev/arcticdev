@@ -21,7 +21,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 
 	if(GET_TYPE_FROM_GUID(petGuid) == HIGHGUID_TYPE_UNIT)
 	{
-		CreaturePointer pCharm = GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(petGuid));
+		Creature* pCharm = GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(petGuid));
 		if(!pCharm) 
 			return;
 
@@ -46,11 +46,11 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		}
 		return;
 	}
-	PetPointer pPet = _player->GetMapMgr()->GetPet(GET_LOWGUID_PART(petGuid));
+	Pet* pPet = _player->GetMapMgr()->GetPet(GET_LOWGUID_PART(petGuid));
 	if(!pPet || !pPet->isAlive())
 		return;
 
-	UnitPointer pTarget = NULLUNIT;
+	Unit* pTarget = NULLUNIT;
 
 	if(action == PET_ACTION_SPELL || action == PET_ACTION_SPELL_1 || action == PET_ACTION_SPELL_2 || (action == PET_ACTION_ACTION && misc == PET_ACTION_ATTACK )) // >> target
 	{
@@ -209,7 +209,7 @@ void WorldSession::HandlePetNameQuery(WorldPacket & recv_data)
 	uint64 petGuid = 0;
 
 	recv_data >> reqNumber >> petGuid;
-	PetPointer pPet = _player->GetMapMgr()->GetPet(GET_LOWGUID_PART(petGuid));
+	Pet* pPet = _player->GetMapMgr()->GetPet(GET_LOWGUID_PART(petGuid));
 	if(!pPet) return;
 
 	WorldPacket data(8 + pPet->GetName().size());
@@ -226,7 +226,7 @@ void WorldSession::HandleStablePet(WorldPacket & recv_data)
 	if(!_player->IsInWorld()) return;
 
 	// remove pet from world and association with player
-	PetPointer pPet = _player->GetSummon();
+	Pet* pPet = _player->GetSummon();
 	if(pPet && pPet->GetUInt32Value(UNIT_CREATED_BY_SPELL) != 0) 
 		return;
 	
@@ -278,7 +278,7 @@ void WorldSession::HandleStableSwapPet(WorldPacket & recv_data)
 		OUT_DEBUG("PET SYSTEM: Player "I64FMT" tried to unstable non-existant pet %d", _player->GetGUID(), petnumber);
 		return;
 	}
-	PetPointer pPet = _player->GetSummon();
+	Pet* pPet = _player->GetSummon();
 	if(pPet && pPet->GetUInt32Value(UNIT_CREATED_BY_SPELL) != 0) return;
 
 	// stable current pet
@@ -372,7 +372,7 @@ void WorldSession::HandlePetSetActionOpcode(WorldPacket& recv_data)
 	if(!_player->GetSummon())
 		return;
 
-	PetPointer pet = _player->GetSummon();
+	Pet* pet = _player->GetSummon();
 	SpellEntry * spe = dbcSpell.LookupEntryForced( spell );
 	if( spe == NULL )
 		return;
@@ -399,7 +399,7 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
 		return;
 	}
 
-	PetPointer pet = _player->GetSummon();
+	Pet* pet = _player->GetSummon();
 	pet->Rename(name);
 
 	// Disable pet rename.
@@ -409,7 +409,7 @@ void WorldSession::HandlePetRename(WorldPacket & recv_data)
 void WorldSession::HandlePetAbandon(WorldPacket & recv_data)
 {
 	if(!_player->IsInWorld()) return;
-	PetPointer pet = _player->GetSummon();
+	Pet* pet = _player->GetSummon();
 	if(!pet) return;
 
 	pet->Dismiss(false);
@@ -422,7 +422,7 @@ void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
 	uint64 guid;
 	recv_data >> guid;
 
-	PetPointer pPet = _player->GetSummon();
+	Pet* pPet = _player->GetSummon();
 	if( pPet == NULL || pPet->GetGUID() != guid )
 	{
 		sChatHandler.SystemMessage(this, "That pet is not your current pet, or you do not have a pet.");

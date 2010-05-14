@@ -45,7 +45,7 @@ void Vehicle::Init()
 	Creature::Init();
 }
 
-void Vehicle::InitSeats(uint32 vehicleEntry, PlayerPointer pRider)
+void Vehicle::InitSeats(uint32 vehicleEntry, Player* pRider)
 {
 	m_maxPassengers = 0;
 	SetVehicleEntry(vehicleEntry);
@@ -147,7 +147,7 @@ bool Vehicle::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	return Creature::Load(spawn, mode, info);
 }
 
-void Vehicle::SendSpells(uint32 entry, PlayerPointer plr)
+void Vehicle::SendSpells(uint32 entry, Player* plr)
 {
 	list<uint32> avail_spells;
 	for(list<AI_Spell*>::iterator itr = GetAIInterface()->m_spells.begin(); itr != GetAIInterface()->m_spells.end(); ++itr)
@@ -189,7 +189,7 @@ void Vehicle::Despawn(uint32 delay, uint32 respawntime)
 {
 	if(delay)
 	{
-		sEventMgr.AddEvent(vehicle_shared_from_this(), &Vehicle::Despawn, (uint32)0, respawntime, EVENT_VEHICLE_RESPAWN, delay, 1,0);
+		sEventMgr.AddEvent(TO_VEHICLE(this), &Vehicle::Despawn, (uint32)0, respawntime, EVENT_VEHICLE_RESPAWN, delay, 1,0);
 		return;
 	}
 
@@ -204,9 +204,9 @@ void Vehicle::Despawn(uint32 delay, uint32 respawntime)
 			pCell = m_mapCell;
 	
 		ASSERT(pCell);
-		pCell->_respawnObjects.insert(obj_shared_from_this());
-		sEventMgr.RemoveEvents(shared_from_this());
-		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnVehicle, vehicle_shared_from_this(), pCell, EVENT_VEHICLE_RESPAWN, respawntime, 1, 0);
+		pCell->_respawnObjects.insert(TO_OBJECT(this));
+		sEventMgr.RemoveEvents(this);
+		sEventMgr.AddEvent(m_mapMgr, &MapMgr::EventRespawnVehicle, TO_VEHICLE(this), pCell, EVENT_VEHICLE_RESPAWN, respawntime, 1, 0);
 		Unit::RemoveFromWorld(false);
 		m_position = m_spawnLocation;
 		m_respawnCell=pCell;
@@ -225,13 +225,13 @@ void Vehicle::Update(uint32 time)
 
 void Vehicle::SafeDelete()
 {
-	sEventMgr.RemoveEvents(shared_from_this());
-	sEventMgr.AddEvent(vehicle_shared_from_this(), &Vehicle::DeleteMe, EVENT_VEHICLE_SAFE_DELETE, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.RemoveEvents(this);
+	sEventMgr.AddEvent(TO_VEHICLE(this), &Vehicle::DeleteMe, EVENT_VEHICLE_SAFE_DELETE, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Vehicle::DeleteMe()
 {
-	VehiclePointer pThis = vehicle_shared_from_this();
+	Vehicle* pThis = TO_VEHICLE(this);
 
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
@@ -239,7 +239,7 @@ void Vehicle::DeleteMe()
 	Destructor();
 }
 
-void Vehicle::AddPassenger(UnitPointer pPassenger)
+void Vehicle::AddPassenger(Unit* pPassenger)
 {
 	if(!m_maxPassengers) // how is this happening?
 	{
@@ -259,7 +259,7 @@ void Vehicle::AddPassenger(UnitPointer pPassenger)
 	}
 }
 
-uint8 Vehicle::GetPassengerSlot(UnitPointer pPassenger)
+uint8 Vehicle::GetPassengerSlot(Unit* pPassenger)
 {
 	for(uint8 i = 0; i < m_maxPassengers; ++i)
 	{
@@ -272,43 +272,54 @@ uint8 Vehicle::GetPassengerSlot(UnitPointer pPassenger)
 	return 0xFF;
 }
 
-void Vehicle::RemovePassenger(UnitPointer pPassenger)
+void Vehicle::RemovePassenger(Unit* pPassenger)
 {
-	VehiclePointer pThis = vehicle_shared_from_this();
+	if(!pPassenger)
+		return;
+
+	Vehicle* pThis = TO_VEHICLE(this);
 
 	uint8 slot = pPassenger->m_inVehicleSeatId;
-	if(slot >= 8)
-		return;
-	pPassenger->m_CurrentVehicle.reset();
+
+	pPassenger->m_CurrentVehicle = NULL;
 	pPassenger->m_inVehicleSeatId = 0xFF;
 
-	pPassenger->RemoveFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION));
+	pPassenger->RemoveFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION | UNIT_FLAG_NOT_SELECTABLE));
 	if( pPassenger->IsPlayer() )
 		pPassenger->RemoveAura(TO_PLAYER(pPassenger)->m_MountSpellId);
 
 	if( m_mountSpell )
 		pPassenger->RemoveAura( m_mountSpell );
 
-	WorldPacket data(MSG_MOVE_HEARTBEAT, 48);
-	data << pPassenger->GetNewGUID();
-	data << uint32(MOVEFLAG_FLYING);
-	data << uint16( 0x40 );
-	data << getMSTime();
-	data << GetPositionX();
-	data << GetPositionY();
-	data << GetPositionZ();
-	data << GetOrientation();
-	data << uint32( 0 );
-	pPassenger->SendMessageToSet(&data, false);
+	WorldPacket data(SMSG_MONSTER_MOVE, 85);
+	data << pPassenger->GetNewGUID();			// PlayerGUID
+	data << uint8(0);							// Unk - blizz uses 0x40
+	data << pPassenger->GetPosition();			// Player Position xyz
+	data << getMSTime();						// Timestamp
+	data << uint8(0x4);							// Flags
+	data << pPassenger->GetOrientation();		// Orientation
+	data << uint32(MOVEFLAG_AIR_SUSPENSION);	// MovementFlags
+	data << uint32(0);							// MovementTime
+	data << uint32(1);							// Pointcount
+	data << GetPosition();						// Vehicle Position xyz
+	SendMessageToSet(&data, false);
+
+	pPassenger->movement_info.flags &= ~MOVEFLAG_TAXI;
+	pPassenger->movement_info.transX = 0;
+	pPassenger->movement_info.transY = 0;
+	pPassenger->movement_info.transZ = 0;
+	pPassenger->movement_info.transO = 0;
+	pPassenger->movement_info.transTime = 0;
+	pPassenger->movement_info.transSeat = 0;
 
 	if(pPassenger->IsPlayer())
 	{
-		PlayerPointer plr = TO_PLAYER(pPassenger);
+		Player* plr = TO_PLAYER(pPassenger);
 		if(plr == GetControllingUnit())
 		{
-			plr->m_CurrentCharm.reset();
+			plr->m_CurrentCharm = NULL;
 			data.Initialize(SMSG_CLIENT_CONTROL_UPDATE);
-			data << GetNewGUID() << uint8( 0 );
+			data << GetNewGUID() << (uint8)0;
 			plr->GetSession()->SendPacket(&data);
 		}
 		RemoveFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_PLAYER_CONTROLLED_CREATURE | UNIT_FLAG_PLAYER_CONTROLLED));
@@ -321,16 +332,16 @@ void Vehicle::RemovePassenger(UnitPointer pPassenger)
 		data << plr->m_teleportAckCounter;
 		plr->m_teleportAckCounter++;
 		data << uint32(MOVEFLAG_FLYING);
-		data << uint16( 0x40 );
+		data << uint16(0x40);
 		data << getMSTime();
 		data << GetPositionX();
 		data << GetPositionY();
 		data << GetPositionZ();
 		data << GetOrientation();
-		data << uint32( 0 );
+		data << uint32(0);
 		plr->GetSession()->SendPacket(&data);
 
-		plr->SetUInt64Value( PLAYER_FARSIGHT, 0 );	
+		plr->SetUInt64Value( PLAYER_FARSIGHT, 0 );
 
 		data.Initialize(SMSG_PET_DISMISS_SOUND);
 		data << uint32(m_vehicleSeats[slot]->m_exitUISoundID);
@@ -338,9 +349,24 @@ void Vehicle::RemovePassenger(UnitPointer pPassenger)
 		plr->GetSession()->SendPacket(&data);
 
 		data.Initialize(SMSG_PET_SPELLS);
-		data << uint64( 0 );
-		data << uint32( 0 );
+		data << uint64(0);
+		data << uint32(0);
 		plr->GetSession()->SendPacket(&data);
+
+		CreatureProtoVehicle* vehicleproto = CreatureProtoVehicleStorage.LookupEntry(GetEntry());
+		if(vehicleproto && vehicleproto->healthfromdriver)
+		{
+			if(slot == 0)
+			{
+				uint32 health = GetUInt32Value(UNIT_FIELD_HEALTH);
+				uint32 maxhealth = GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+				uint32 healthdiff = maxhealth - health;
+
+				SetUInt32Value(UNIT_FIELD_HEALTH, GetProto()->MaxHealth - (healthdiff/(((plr->GetTotalItemLevel())*(vehicleproto->healthunitfromitemlev)))));
+				SetUInt32Value(UNIT_FIELD_MAXHEALTH, GetProto()->MaxHealth);
+			}
+		}
+		plr->SetPlayerStatus(NONE);
 	}
 		
 	if(slot == 0)
@@ -348,8 +374,8 @@ void Vehicle::RemovePassenger(UnitPointer pPassenger)
 		m_redirectSpellPackets = NULLPLR;
 		CombatStatus.Vanished();
 		pPassenger->SetUInt64Value( UNIT_FIELD_CHARM, 0 );
-		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, GetCharmTempVal());
 		SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, GetCharmTempVal());
 		/* update target faction set */
 		_setFaction();
 		UpdateOppFactionSet();
@@ -358,31 +384,46 @@ void Vehicle::RemovePassenger(UnitPointer pPassenger)
 		GetAIInterface()->WipeHateList();
 		GetAIInterface()->WipeTargetList();
 		EnableAI();
-		//Despawn(0,1000);
+		// Despawn(0,1000);
+	}
 
-		//note: this is not blizz like we should despawn
-		//and respawn at spawn point.
-		//Well actually this is how blizz wanted it
-		//but they couldnt get it to work xD
+	m_passengers[slot] = NULL;
+	// note: this is not blizz like we should despawn
+	// and respawn at spawn point.
+	// Well actually this is how blizz wanted it
+	// but they couldnt get it to work xD
+	bool haspassengers = false;
+	for(uint8 i = 0; i < m_seatSlotMax; ++i)
+	{
+		if(m_passengers[i] != NULL)
+		{
+			haspassengers = true;
+			break;
+		}
+	}
+
+	if(!haspassengers)
+	{
 		if( m_spawn )
 			GetAIInterface()->MoveTo(m_spawn->x, m_spawn->y, m_spawn->z, m_spawn->o);
 		else //we're a temp spawn
 			SafeDelete();
-
-		m_controllingUnit.reset();
-		for(uint8 i = 0; i < m_maxPassengers; i++)
-		{
-			if(i != 0 && m_passengers[i])
-			{
-				RemovePassenger(m_passengers[i]);
-			}
-		}
 	}
 
-	m_passengers[slot].reset();
+	// We need to null this out, its changed automatically.
+	if(m_TransporterGUID) // Vehicle has a transport guid?
+		pPassenger->m_TransporterGUID = m_TransporterGUID;
+	else
+		pPassenger->m_TransporterGUID = NULL;
+
+	if(pPassenger->IsPlayer())
+		--m_passengerCount;
+
+	if(!IsFull())
+		SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 }
 
-bool Vehicle::HasPassenger(UnitPointer pPassenger)
+bool Vehicle::HasPassenger(Unit* pPassenger)
 {
 	for(uint8 i = 0; i < m_maxPassengers; ++i)
 	{
@@ -392,7 +433,7 @@ bool Vehicle::HasPassenger(UnitPointer pPassenger)
 	return false;
 }
 
-void Vehicle::_AddToSlot(UnitPointer pPassenger, uint8 slot)
+void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 {
 	assert( slot < m_maxPassengers );
 	m_passengers[ slot ] = pPassenger;
@@ -411,7 +452,7 @@ void Vehicle::_AddToSlot(UnitPointer pPassenger, uint8 slot)
 	// This is where the real magic happens
 	if( pPassenger->IsPlayer() )
 	{
-		PlayerPointer pPlayer = TO_PLAYER(pPassenger);
+		Player* pPlayer = TO_PLAYER(pPassenger);
 		//pPlayer->Root();
 
 		if(pPlayer->m_CurrentCharm)
@@ -437,7 +478,7 @@ void Vehicle::_AddToSlot(UnitPointer pPassenger, uint8 slot)
 			pPlayer->GetSummon()->Remove(false, true, true);	// hunter pet -> just remove for later re-call
 		}
 
-		pPlayer->m_CurrentVehicle = vehicle_shared_from_this();
+		pPlayer->m_CurrentVehicle = TO_VEHICLE(this);
 
 		pPlayer->SetFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION));
 
@@ -464,7 +505,7 @@ void Vehicle::_AddToSlot(UnitPointer pPassenger, uint8 slot)
 			data << GetNewGUID() << uint8(1);
 			pPlayer->GetSession()->SendPacket(&data);
 
-			pPlayer->m_CurrentCharm = vehicle_shared_from_this();
+			pPlayer->m_CurrentCharm = TO_VEHICLE(this);
 			pPlayer->SetUInt64Value(UNIT_FIELD_CHARM, GetGUID());
 			SetCharmTempVal(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
@@ -642,8 +683,8 @@ void WorldSession::HandleSpellClick( WorldPacket & recv_data )
     uint64 guid;
     recv_data >> guid;
 
-	VehiclePointer pVehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
-	UnitPointer pPlayer = TO_UNIT(GetPlayer());
+	Vehicle* pVehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
+	Unit* pPlayer = TO_UNIT(GetPlayer());
 
 	if(!pVehicle)
 		return;

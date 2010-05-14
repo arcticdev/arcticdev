@@ -176,25 +176,38 @@ struct AI_Spell
 
 uint32 getGuardId(uint32 id);
 
-typedef std::tr1::unordered_map< UnitPointer, int32> TargetMap;
-#ifdef TRHAX
-	namespace std
-	{
-		namespace tr1
-		{
-			template <>
-			class hash < UnitPointer > : public unary_function< UnitPointer, size_t>
+typedef std::tr1::unordered_map< Unit*, int32> TargetMap;
+#ifdef WIN32
+template <>
+			class hash < Unit* > : public unary_function< Unit*, size_t>
 			{
 			public:
-				size_t operator()(UnitPointer __x) const
+				size_t operator()(Unit* __x) const
 				{
-					return (size_t)__x.get();
+					return (size_t)__x;
 				}
 			};
-		};
-	};
+#else
+#ifdef TRHAX
+	        namespace std
+	        {
+	                namespace tr1
+	                {
+	                        template <>
+	                        class hash < Unit* > : public unary_function< Unit*, size_t>
+	                        {
+	                        public:
+	                                size_t operator()(Unit* __x) const
+	                                {
+	                                        return (size_t)__x;
+	                                }
+	                        };
+	                };
+	        };
+	#endif
 #endif
-typedef unordered_set< UnitPointer > AssistTargetSet;
+
+typedef unordered_set< Unit* > AssistTargetSet;
 typedef std::map<uint32, AI_Spell*> SpellMap;
 
 class ChainAggroEntity;
@@ -206,56 +219,56 @@ public:
 	~AIInterface();
 
 	// Misc
-	void Init(UnitPointer un, AIType at, MovementType mt);
-	void Init(UnitPointer un, AIType at, MovementType mt, UnitPointer owner); // used for pets
-	UnitPointer GetUnit() { return m_Unit; }
-	UnitPointer GetPetOwner() { return m_PetOwner; }
+	void Init(Unit* un, AIType at, MovementType mt);
+	void Init(Unit* un, AIType at, MovementType mt, Unit* owner); // used for pets
+	Unit* GetUnit() { return m_Unit; }
+	Unit* GetPetOwner() { return m_PetOwner; }
 	void DismissPet();
-	void SetUnitToFollow(UnitPointer un) { UnitToFollow = un; };
-	void SetUnitToFear(UnitPointer un)  { UnitToFear = un; };
+	void SetUnitToFollow(Unit* un) { UnitToFollow = un; };
+	void SetUnitToFear(Unit* un)  { UnitToFear = un; };
 	void SetFollowDistance(float dist) { FollowDistance = dist; };
 	void SetUnitToFollowAngle(float angle) { m_fallowAngle = angle; }
-	bool setInFront(UnitPointer target);
-	ARCTIC_INLINE UnitPointer getUnitToFollow() { return UnitToFollow; }
+	bool setInFront(Unit* target);
+	ARCTIC_INLINE Unit* getUnitToFollow() { return UnitToFollow; }
 	void setCreatureState(CreatureState state){ m_creatureState = state; }
 	ARCTIC_INLINE uint8 getAIState() { return m_AIState; }
 	ARCTIC_INLINE uint8 getAIType() { return m_AIType; }
 	ARCTIC_INLINE uint8 getCurrentAgent() { return m_aiCurrentAgent; }
 	void setCurrentAgent(AI_Agent agent) { m_aiCurrentAgent = agent; }
 	uint32 getThreatByGUID(uint64 guid);
-	uint32 getThreatByPtr(UnitPointer obj);
-	UnitPointer GetMostHated();
-	UnitPointer GetSecondHated();
+	uint32 getThreatByPtr(Unit* obj);
+	Unit* GetMostHated();
+	Unit* GetSecondHated();
 	bool modThreatByGUID(uint64 guid, int32 mod);
-	bool modThreatByPtr(UnitPointer obj, int32 mod);
-	void RemoveThreatByPtr(UnitPointer obj);
+	bool modThreatByPtr(Unit* obj, int32 mod);
+	void RemoveThreatByPtr(Unit* obj);
 	ARCTIC_INLINE AssistTargetSet GetAssistTargets() { return m_assistTargets; }
 	ARCTIC_INLINE TargetMap *GetAITargets() { return &m_aiTargets; }
-	void addAssistTargets(UnitPointer Friends);
+	void addAssistTargets(Unit* Friends);
 	void ClearHateList();
 	void WipeHateList();
 	void WipeTargetList();
-	bool taunt(UnitPointer caster, bool apply = true);
-	UnitPointer getTauntedBy();
+	bool taunt(Unit* caster, bool apply = true);
+	Unit* getTauntedBy();
 	bool GetIsTaunted();
 	ARCTIC_INLINE size_t getAITargetsCount() { return m_aiTargets.size(); }
 	ARCTIC_INLINE uint32 getOutOfCombatRange() { return m_outOfCombatRange; }
 	void setOutOfCombatRange(uint32 val) { m_outOfCombatRange = val; }
 
 	// Spell
-	uint8 CastSpell(UnitPointer caster, SpellEntry *spellInfo, SpellCastTargets targets);
+	uint8 CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTargets targets);
 	SpellEntry *getSpellEntry(uint32 spellId);
-	SpellCastTargets setSpellTargets(SpellEntry *spellInfo, UnitPointer target);
+	SpellCastTargets setSpellTargets(SpellEntry *spellInfo, Unit* target);
 	AI_Spell *getSpell();
 	void addSpellToList(AI_Spell *sp);
 	// don't use this until i finish it !!
 	void CancelSpellCast();
 
 	// Event Handler
-	void HandleEvent(uint32 event, UnitPointer pUnit, uint32 misc1);
-	void OnDeath(ObjectPointer pKiller);
-	void AttackReaction( UnitPointer pUnit, uint32 damage_dealt, uint32 spellId = 0);
-	bool HealReaction(UnitPointer caster, UnitPointer victim, uint32 amount, SpellEntry * sp);
+	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
+	void OnDeath(Object* pKiller);
+	void AttackReaction( Unit* pUnit, uint32 damage_dealt, uint32 spellId = 0);
+	bool HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellEntry * sp);
 	//Note//
     void Event_Summon_EE_totem(uint32 summon_duration);
 	void Event_Summon_FE_totem(uint32 summon_duration);
@@ -269,14 +282,14 @@ public:
 	void MoveTo(float x, float y, float z, float o);
 	uint32 getMoveFlags();
 	void UpdateMove();
-	void SendCurrentMove(PlayerPointer plyr/*uint64 guid*/);
+	void SendCurrentMove(Player* plyr/*uint64 guid*/);
 	void StopMovement(uint32 time);
 	uint32 getCurrentWaypoint() { return m_currentWaypoint; }
 	void changeWayPointID(uint32 oldwpid, uint32 newwpid);
 	bool addWayPoint(WayPoint* wp);
 	bool saveWayPoints();
-	bool showWayPoints(PlayerPointer pPlayer, bool Backwards);
-	bool hideWayPoints(PlayerPointer pPlayer);
+	bool showWayPoints(Player* pPlayer, bool Backwards);
+	bool hideWayPoints(Player* pPlayer);
 	WayPoint* getWayPoint(uint32 wpid);
 	void deleteWayPoint(uint32 wpid);
 	void deleteWaypoints();
@@ -290,16 +303,16 @@ public:
 	bool IsFlying();
 
 	// Calculation
-	float _CalcAggroRange(UnitPointer target);
-	void _CalcDestinationAndMove( UnitPointer target, float dist);
-	float _CalcCombatRange(UnitPointer target, bool ranged);
+	float _CalcAggroRange(Unit* target);
+	void _CalcDestinationAndMove( Unit* target, float dist);
+	float _CalcCombatRange(Unit* target, bool ranged);
 	float _CalcDistanceFromHome();
-	uint32 _CalcThreat(uint32 damage, SpellEntry * sp, UnitPointer Attacker);
+	uint32 _CalcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker);
 	
 	void SetAllowedToEnterCombat(bool val) { m_AllowedToEnterCombat = val; }
 	ARCTIC_INLINE bool GetAllowedToEnterCombat(void) { return m_AllowedToEnterCombat; }
 
-	void CheckTarget(UnitPointer target);
+	void CheckTarget(Unit* target);
 	ARCTIC_INLINE void SetAIState(AI_State newstate) { m_AIState = newstate; }
 
 	// Movement
@@ -339,8 +352,8 @@ public:
 	uint32 m_totalMoveTime;
 	ARCTIC_INLINE void AddStopTime(uint32 Time) { m_moveTimer += Time; }
 	ARCTIC_INLINE void SetNextSpell(AI_Spell*sp) { m_nextSpell = sp; }
-	ARCTIC_INLINE UnitPointer GetNextTarget() { return m_nextTarget; }
-	ARCTIC_INLINE void SetNextTarget (UnitPointer nextTarget) 
+	ARCTIC_INLINE Unit* GetNextTarget() { return m_nextTarget; }
+	ARCTIC_INLINE void SetNextTarget (Unit* nextTarget) 
 	{ 
 		m_nextTarget = nextTarget; 
 		if(nextTarget)
@@ -353,14 +366,14 @@ public:
 		else m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
 	}
 
-	CreaturePointer m_formationLinkTarget;
+	Creature* m_formationLinkTarget;
 	float m_formationFollowDistance;
 	float m_formationFollowAngle;
 	uint32 m_formationLinkSqlId;
 
 	void WipeReferences();
 	WayPointMap *m_waypoints;
-	ARCTIC_INLINE void SetPetOwner(UnitPointer owner) { m_PetOwner = owner; }
+	ARCTIC_INLINE void SetPetOwner(Unit* owner) { m_PetOwner = owner; }
  
 	list<AI_Spell*> m_spells;
 
@@ -405,19 +418,19 @@ protected:
 
 	// Misc
 	bool firstLeaveCombat;
-	UnitPointer FindTarget();
-	UnitPointer FindTargetForSpell(AI_Spell *sp);
-	UnitPointer FindHealTargetForSpell(AI_Spell *sp);
+	Unit* FindTarget();
+	Unit* FindTargetForSpell(AI_Spell *sp);
+	Unit* FindHealTargetForSpell(AI_Spell *sp);
 	bool FindFriends(float dist);
 	AI_Spell *m_nextSpell;
-	UnitPointer m_nextTarget;
+	Unit* m_nextTarget;
 	uint32 m_fleeTimer;
 	bool m_hasFled;
 	bool m_hasCalledForHelp;
 	uint32 m_outOfCombatRange;
 
-	UnitPointer m_Unit;
-	UnitPointer m_PetOwner;
+	Unit* m_Unit;
+	Unit* m_PetOwner;
 
 	float FollowDistance;
 	float FollowDistance_backup;
@@ -430,9 +443,9 @@ protected:
 	AI_State m_AIState;
 	AI_Agent m_aiCurrentAgent;
 
-	UnitPointer tauntedBy;      // This mob will hit only tauntedBy mob.
+	Unit* tauntedBy;      // This mob will hit only tauntedBy mob.
 	bool isTaunted;
-	UnitPointer soullinkedWith; // This mob can be hitten only by soullinked unit
+	Unit* soullinkedWith; // This mob can be hitten only by soullinked unit
 	bool isSoulLinked;
 
 	// Movement
@@ -454,9 +467,9 @@ protected:
 
 	float m_lastFollowX;
 	float m_lastFollowY;
-	UnitPointer UnitToFollow;
-	UnitPointer UnitToFollow_backup; // used unly when forcing creature to wander (blind spell) so when effect wears off we can follow our master again (guardian)
-	UnitPointer UnitToFear;
+	Unit* UnitToFollow;
+	Unit* UnitToFollow_backup; // used unly when forcing creature to wander (blind spell) so when effect wears off we can follow our master again (guardian)
+	Unit* UnitToFear;
 	uint32 m_timeToMove;
 	uint32 m_timeMoved;
 	uint32 m_moveTimer;
@@ -473,6 +486,6 @@ public:
 
 	void WipeCurrentTarget();
 	bool CheckCurrentTarget();
-	bool TargetUpdateCheck(UnitPointer ptr);
+	bool TargetUpdateCheck(Unit* ptr);
 };
 #endif

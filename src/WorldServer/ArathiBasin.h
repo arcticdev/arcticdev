@@ -39,13 +39,13 @@ enum ABSpawnTypes
 class ArathiBasin : public CBattleground
 {
 public:
-    GameObjectPointer m_buffs[AB_NUM_BUFFS];
-    GameObjectPointer m_controlPoints[AB_NUM_CONTROL_POINTS];
-    GameObjectPointer m_controlPointAuras[AB_NUM_CONTROL_POINTS];
+    GameObject* m_buffs[AB_NUM_BUFFS];
+    GameObject* m_controlPoints[AB_NUM_CONTROL_POINTS];
+    GameObject* m_controlPointAuras[AB_NUM_CONTROL_POINTS];
     bool m_nearingVictory[2];
 
 protected:
-	list< GameObjectPointer > m_gates;
+	list< GameObject* > m_gates;
 	
 	uint32 m_resources[2];
 	uint32 m_capturedBases[2];
@@ -56,47 +56,47 @@ protected:
 	int m_bonusHonor;
 	uint32 m_resToGainBG;
 	bool m_flagIsVirgin[AB_NUM_CONTROL_POINTS];
-	CreaturePointer m_spiritGuides[AB_NUM_CONTROL_POINTS];
+	Creature* m_spiritGuides[AB_NUM_CONTROL_POINTS];
 	uint32 m_lgroup;
 
 public:
-	ArathiBasin( MapMgrPointer mgr, uint32 id, uint32 lgroup, uint32 t);
+	ArathiBasin( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
 	~ArathiBasin();
 
 	virtual void Init();
 
-	void HookOnPlayerDeath(PlayerPointer plr);
-	void HookFlagDrop(PlayerPointer plr, GameObjectPointer obj);
-	void HookFlagStand(PlayerPointer plr, GameObjectPointer obj);
-	void HookOnMount(PlayerPointer plr);
-	void HookOnAreaTrigger(PlayerPointer plr, uint32 id);
-	bool HookHandleRepop(PlayerPointer plr);
-	void OnAddPlayer(PlayerPointer plr);
-	void OnRemovePlayer(PlayerPointer plr);
+	void HookOnPlayerDeath(Player* plr);
+	void HookFlagDrop(Player* plr, GameObject* obj);
+	void HookFlagStand(Player* plr, GameObject* obj);
+	void HookOnMount(Player* plr);
+	void HookOnAreaTrigger(Player* plr, uint32 id);
+	bool HookHandleRepop(Player* plr);
+	void OnAddPlayer(Player* plr);
+	void OnRemovePlayer(Player* plr);
 	void OnCreate();
-	void HookOnPlayerKill(PlayerPointer plr, UnitPointer pVictim);
-	void HookOnHK(PlayerPointer plr);
+	void HookOnPlayerKill(Player* plr, Unit* pVictim);
+	void HookOnHK(Player* plr);
 	void HookOnShadowSight();
 	void SpawnBuff(uint32 x);
 	LocationVector GetStartingCoords(uint32 Team);
-	void DropFlag(PlayerPointer plr);
+	void DropFlag(Player* plr);
 
-	static BattlegroundPointer Create( MapMgrPointer m, uint32 i, uint32 l, uint32 t) { return ArathiBasinPointer(new ArathiBasin(m, i, l, t)); }
+	static CBattleground* Create( MapMgr* m, uint32 i, uint32 l, uint32 t) { return new ArathiBasin(m, i, l, t); }
 
 	const char * GetName() { return "Arathi Basin"; }
 	void OnStart();
 
 	void EventUpdateResources(uint32 Team);
-	bool HookSlowLockOpen( GameObjectPointer pGo, PlayerPointer pPlayer, SpellPointer pSpell);
+	bool HookSlowLockOpen( GameObject* pGo, Player* pPlayer, Spell* pSpell);
 
 	/* AB Game Mechanics */
 	void SpawnControlPoint(uint32 Id, uint32 Type);
 	void CaptureControlPoint(uint32 Id, uint32 Team);
-	void AssaultControlPoint(PlayerPointer pPlayer, uint32 Id);
+	void AssaultControlPoint(Player* pPlayer, uint32 Id);
 
     /* loot */
 	bool SupportsPlayerLoot() { return true; }
-	void HookGenerateLoot(PlayerPointer plr, CorpsePointer pCorpse);
+	void HookGenerateLoot(Player* plr, Corpse* pCorpse);
 
 	void SetIsWeekend(bool isweekend);
 };

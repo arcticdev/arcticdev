@@ -184,7 +184,7 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 	uint32 j;
 	size_t pos;
 	vector<uint64>::iterator itr;
-	ItemPointer pItem;
+	Item* pItem;
 
 	// add stuff
 	if(msg->deleted_flag || msg->Expired() || (uint32)UNIXTIME < msg->delivery_time)
@@ -315,7 +315,7 @@ void MailSystem::DeliverMessage(MailMessage* message)
 {
 	message->SaveToDB();
 
-	PlayerPointer plr = objmgr.GetPlayer((uint32)message->player_guid);
+	Player* plr = objmgr.GetPlayer((uint32)message->player_guid);
 	if(plr != NULL)
 	{
 		plr->m_mailBox->AddMessage(message);
@@ -336,7 +336,7 @@ void MailSystem::ReturnToSender(MailMessage* message)
 	msg.sender_guid = message->player_guid;
 
 	// remove the old message
-	PlayerPointer plr = objmgr.GetPlayer((uint32)message->player_guid);
+	Player* plr = objmgr.GetPlayer((uint32)message->player_guid);
 	if(plr != NULL)
 	{
 		plr->m_mailBox->DeleteMessage(message);
@@ -467,10 +467,10 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	uint8 itemslot;
 	uint8 i;
 	uint64 itemguid;
-	vector< ItemPointer > items;
-	vector< ItemPointer >::iterator itr;
+	vector< Item* > items;
+	vector< Item* >::iterator itr;
 	string recepient;
-	ItemPointer pItem;
+	Item* pItem;
 	int8 real_item_slot;
 
 	recv_data >> gameobject >> recepient;
@@ -706,7 +706,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	}
 
 	// grab the item
-	ItemPointer item = objmgr.LoadItem( *itr );
+	Item* item = objmgr.LoadItem( *itr );
 	if(item == 0)
 	{
 		// doesn't exist
@@ -885,7 +885,7 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 		return;
 	}
 
-	ItemPointer pItem = objmgr.CreateItem(8383, _player);
+	Item* pItem = objmgr.CreateItem(8383, _player);
 	pItem->SetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID, message_id);
 	if( _player->GetItemInterface()->AddItemToFreeSlot(pItem) )
 	{

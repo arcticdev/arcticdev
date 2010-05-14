@@ -139,7 +139,7 @@ void ArenaTeam::Destroy()
 bool ArenaTeam::AddMember(PlayerInfo * info)
 {
 	uint32 base_field;
-	PlayerPointer plr = info->m_loggedInPlayer;
+	Player* plr = info->m_loggedInPlayer;
 	if(m_memberCount >= m_slots)
 		return false;
 
@@ -392,7 +392,7 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	PlayerPointer plr = objmgr.GetPlayer(player_name.c_str(), false);
+	Player* plr = objmgr.GetPlayer(player_name.c_str(), false);
 	if(plr == NULL)
 	{
 		SystemMessage(PLAYERSNONEXISTAI, player_name.c_str());
@@ -548,7 +548,7 @@ void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 	if(team == NULL)
 		return;
 
-	PlayerPointer plr = objmgr.GetPlayer(team->m_leader);
+	Player* plr = objmgr.GetPlayer(team->m_leader);
 	if(plr != NULL)
 		plr->GetSession()->SystemMessage(DENISWERESHSANVAI, _player->GetName(), team->m_name.c_str());
 }

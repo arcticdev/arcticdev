@@ -656,10 +656,10 @@ LootRoll::LootRoll() : EventableObject()
 {
 }
 
-void LootRoll::Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgrPointer mgr)
+void LootRoll::Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr)
 {
 	_mgr = mgr;
-	sEventMgr.AddEvent(shared_from_this(), &LootRoll::Finalize, EVENT_LOOT_ROLL_FINALIZE, 60000, 1,0);
+	sEventMgr.AddEvent(this, &LootRoll::Finalize, EVENT_LOOT_ROLL_FINALIZE, 60000, 1,0);
 	_groupcount = groupcount;
 	_guid = guid;
 	_slotid = slotid;
@@ -671,18 +671,17 @@ void LootRoll::Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid,
 
 LootRoll::~LootRoll()
 {
-	
 }
 
 void LootRoll::Finalize()
 {
 	if( !mLootLock.AttemptAcquire() ) // only one finalization, please. players on different maps can roll, too, so this is needed.
 	{
-		sEventMgr.RemoveEvents(shared_from_this());
+		sEventMgr.RemoveEvents(this);
 		return;
 	}
 
-	sEventMgr.RemoveEvents(shared_from_this());
+	sEventMgr.RemoveEvents(this);
 
 	// this we will have to finalize with groups types.. for now
 	// we'll just assume need before greed. person with highest roll
@@ -721,12 +720,12 @@ void LootRoll::Finalize()
 	uint32 guidtype = GET_TYPE_FROM_GUID(_guid);
 	if( guidtype == HIGHGUID_TYPE_UNIT )
 	{
-		CreaturePointer pc = _mgr->GetCreature(GET_LOWGUID_PART(_guid));
+		Creature* pc = _mgr->GetCreature(GET_LOWGUID_PART(_guid));
 		if(pc) pLoot = &pc->m_loot;
 	}
 	else if( guidtype == HIGHGUID_TYPE_GAMEOBJECT )
 	{
-		GameObjectPointer go = _mgr->GetGameObject(GET_LOWGUID_PART(_guid));
+		GameObject* go = _mgr->GetGameObject(GET_LOWGUID_PART(_guid));
 		if(go) pLoot = &go->m_loot;
 	}
 
@@ -744,7 +743,7 @@ void LootRoll::Finalize()
 	}
 
 	// set this so we're not deleted yet.
-	LootRollPointer pThis = pLoot->items.at(_slotid).roll;
+	LootRoll* pThis = pLoot->items.at(_slotid).roll;
 
 	pLoot->items.at(_slotid).roll = NULLROLL;
 
@@ -756,7 +755,7 @@ void LootRoll::Finalize()
 		return;
 	}
 
-	PlayerPointer _player = (player) ? _mgr->GetPlayer((uint32)player) : NULLPLR;
+	Player* _player = (player) ? _mgr->GetPlayer((uint32)player) : NULLPLR;
 	if(!player || !_player)
 	{
 		/* all passed */
@@ -797,7 +796,7 @@ void LootRoll::Finalize()
 		return;
 	}
 
-	ItemPointer add = _player->GetItemInterface()->FindItemLessMax(itemid, amt, false);
+	Item* add = _player->GetItemInterface()->FindItemLessMax(itemid, amt, false);
 
 	if (!add)
 	{
@@ -809,7 +808,7 @@ void LootRoll::Finalize()
 		}
 
 		DEBUG_LOG("HandleAutostoreItem","AutoLootItem %u",itemid);
-		ItemPointer item = objmgr.CreateItem( itemid, _player);
+		Item* item = objmgr.CreateItem( itemid, _player);
 
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 		if(pLoot->items.at(_slotid).iRandomProperty!=NULL)
@@ -847,7 +846,7 @@ void LootRoll::Finalize()
 	// this gets sent to all looters
 	data.Initialize(SMSG_LOOT_REMOVED);
 	data << uint8(_slotid);
-	PlayerPointer plr;
+	Player* plr;
 	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
 	{
 		if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
@@ -855,7 +854,7 @@ void LootRoll::Finalize()
 	}
 }
 
-void LootRoll::PlayerRolled(PlayerPointer player, uint8 choice)
+void LootRoll::PlayerRolled(Player* player, uint8 choice)
 {
 	if(m_NeedRolls.find(player->GetLowGUID()) != m_NeedRolls.end() || m_GreedRolls.find(player->GetLowGUID()) != m_GreedRolls.end())
 		return; // dont allow cheaters
@@ -944,7 +943,7 @@ void LootMgr::FillObjectLootMap(map<uint32, vector<uint32> > *dest)
 
 }
 
-bool Loot::HasLoot(PlayerPointer Looter)
+bool Loot::HasLoot(Player* Looter)
 {
 	// check gold
 	if( gold > 0 )
@@ -952,7 +951,8 @@ bool Loot::HasLoot(PlayerPointer Looter)
 
 	return HasItems(Looter);
 }
-bool Loot::HasItems(PlayerPointer Looter)
+
+bool Loot::HasItems(Player* Looter)
 {
 	// check items
 	for(vector<__LootItem>::iterator itr = items.begin(); itr != items.end(); ++itr)

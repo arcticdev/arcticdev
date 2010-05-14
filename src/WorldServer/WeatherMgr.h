@@ -22,10 +22,10 @@ public:
 	~WeatherMgr();
 
 	void LoadFromDB();
-	void SendWeather(PlayerPointer plr);
+	void SendWeather(Player* plr);
 
 private:
-	std::map<uint32, WeatherInfoPointer > m_zoneWeathers;
+	std::map<uint32, WeatherInfo* > m_zoneWeathers;
 };
 
 class WeatherInfo : public EventableObject, public std::tr1::enable_shared_from_this<WeatherInfo>
@@ -40,7 +40,7 @@ public:
 	void BuildUp();
 	void Update();	
 	void SendUpdate();
-	void SendUpdate(PlayerPointer plr);
+	void SendUpdate(Player* plr);
 
 protected:
 	void _GenerateWeather();

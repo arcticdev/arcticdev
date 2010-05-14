@@ -66,7 +66,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 			if( !VerifyName(pName, szLen) )
 			{
 				printf("renaming character %s, %u\n", pName,uGuid);
-                PlayerPointer pPlayer = objmgr.GetPlayer(uGuid);
+                Player* pPlayer = objmgr.GetPlayer(uGuid);
 				if( pPlayer != NULL )
 				{
 					pPlayer->rename_pending = true;
@@ -356,7 +356,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	// checking number of chars is useless since client will not allow to create more than 10 chars
 	// as the 'create' button will not appear (unless we want to decrease maximum number of characters)
 
-	PlayerPointer pNewChar = objmgr.CreatePlayer();
+	Player* pNewChar = objmgr.CreatePlayer();
 	pNewChar->SetSession(this);
 	if(!pNewChar->Create( recv_data ))
 	{
@@ -493,7 +493,7 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 
 		CharacterDatabase.WaitExecute("DELETE FROM characters WHERE guid = %u", (uint32)guid);
 
-		CorpsePointer c=objmgr.GetCorpseByOwner((uint32)guid);
+		Corpse* c=objmgr.GetCorpseByOwner((uint32)guid);
 		if(c)
 			CharacterDatabase.Execute("DELETE FROM corpses WHERE guid = %u", c->GetLowGUID());
 
@@ -636,7 +636,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	}
 
 	// We have a valid Guid so let's create the player and login
-	PlayerPointer plr = PlayerPointer (new Player((uint32)playerGuid));
+	Player* plr = Player* (new Player((uint32)playerGuid));
 	plr->Init();
 	plr->SetSession(this);
 	m_bIsWLevelSet = false;
@@ -646,7 +646,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	plr->LoadFromDB((uint32)playerGuid);
 }
 
-void WorldSession::FullLogin(PlayerPointer plr)
+void WorldSession::FullLogin(Player* plr)
 {
 	DEBUG_LOG("WorldSession", "Fully loading player %u", plr->GetLowGUID());
 	SetPlayer(plr);
@@ -777,7 +777,7 @@ void WorldSession::FullLogin(PlayerPointer plr)
 	// Find our transporter and add us if we're on one.
 	if(plr->m_TransporterGUID != 0)
 	{
-		TransporterPointer pTrans = objmgr.GetTransporter(GUID_LOPART(plr->m_TransporterGUID));
+		Transporter* pTrans = objmgr.GetTransporter(GUID_LOPART(plr->m_TransporterGUID));
 		if(pTrans)
 		{
 			if(plr->isDead())
@@ -948,7 +948,7 @@ bool ChatHandler::HandleRenameCommand(const char * args, WorldSession * m_sessio
 	pi->name = strdup(new_name.c_str());
 
 	// look in world for him
-	PlayerPointer plr = objmgr.GetPlayer(pi->guid);
+	Player* plr = objmgr.GetPlayer(pi->guid);
 	if(plr != 0)
 	{
 		plr->SetName(new_name);

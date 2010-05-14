@@ -120,8 +120,8 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 
 	if(sp->CreatureSpawns.size()) // got creatures
 	{
-		VehiclePointer v;
-		CreaturePointer c;
+		Vehicle* v;
+		Creature* c;
 		for(CreatureSpawnList::iterator i=sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
 		{
 			if(pInstance)
@@ -185,7 +185,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 
 	if(sp->GOSpawns.size()) // got GOs
 	{
-		GameObjectPointer go;
+		GameObject* go;
 		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
 		{
 			if((*i)->eventid && (*i)->eventid == eventId)
@@ -214,7 +214,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 void MapCell::ModifyEventIdSetting(bool active, uint8 eventId)
 {
 	ObjectSet::iterator itr;
-	ObjectPointer pObject; // do this outside the loop!
+	Object* pObject; // do this outside the loop!
 	for(itr = _objects.begin(); itr != _objects.end();)
 	{
 		pObject = (*itr);
@@ -292,7 +292,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 	ObjectSet::iterator itr;
 
 	/* delete objects in pending respawn state */
-	ObjectPointer pObject;
+	Object* pObject;
 	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
 	{
 		pObject = *itr;
@@ -427,7 +427,7 @@ void DayWatcherThread::update_event_settings(uint8 eventid, time_t activated)
 
 bool DayWatcherThread::SpawnEventId(uint8 eventId, bool activate)
 {
-	MapMgrPointer mgr;
+	MapMgr* mgr;
 	CreatureEventSpawnMaps::iterator itr = m_creatureEventSpawnMaps.find(eventId);
 	if(itr != m_creatureEventSpawnMaps.end())
 	{

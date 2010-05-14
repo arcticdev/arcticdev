@@ -91,7 +91,7 @@ void WorldSession::HandleChannelSetOwner(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -119,7 +119,7 @@ void WorldSession::HandleChannelModerator(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -135,7 +135,7 @@ void WorldSession::HandleChannelUnmoderator(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -151,7 +151,7 @@ void WorldSession::HandleChannelMute(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -167,7 +167,7 @@ void WorldSession::HandleChannelUnmute(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -183,7 +183,7 @@ void WorldSession::HandleChannelInvite(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -198,7 +198,7 @@ void WorldSession::HandleChannelKick(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;
@@ -214,7 +214,7 @@ void WorldSession::HandleChannelBan(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,newp;
 	Channel * chn;
-	PlayerPointer plr;
+	Player* plr;
 
 	recvPacket >> channelname;
 	recvPacket >> newp;

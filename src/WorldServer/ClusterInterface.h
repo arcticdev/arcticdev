@@ -72,7 +72,7 @@ public:
 	ARCTIC_INLINE void SendPacket(WorldPacket * data) { if(_clientSocket) _clientSocket->SendPacket(data); }
 	ARCTIC_INLINE void SetSocket(WSClient * s) { _clientSocket = s; }
 
-	void RequestTransfer(PlayerPointer plr, uint32 MapId, uint32 InstanceId, LocationVector & vec);
+	void RequestTransfer(Player* plr, uint32 MapId, uint32 InstanceId, LocationVector & vec);
 };
 
 #define sClusterInterface ClusterInterface::getSingleton()

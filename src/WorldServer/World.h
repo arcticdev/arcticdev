@@ -370,7 +370,7 @@ public:
 	~World();
 	void Destructor();
 
-	uint32 GetMaxLevel(PlayerPointer plr);
+	uint32 GetMaxLevel(Player* plr);
 
 	/* Reloads the config and sets all of the setting variables.*/
 	void Rehash(bool load);
@@ -521,7 +521,7 @@ public:
 
 	uint32 expansionUpdateTime;
 
-	void DeleteObject(ObjectPointer obj);
+	void DeleteObject(Object* obj);
 
 	uint32 compression_threshold;
 

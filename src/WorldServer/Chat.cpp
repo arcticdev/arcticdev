@@ -799,10 +799,10 @@ WorldPacket* ChatHandler::FillSystemMessageData(const char *message) const
 	return data;
 }
 
-PlayerPointer ChatHandler::getSelectedChar(WorldSession *m_session, bool showerror)
+Player* ChatHandler::getSelectedChar(WorldSession *m_session, bool showerror)
 {
 	uint64 guid;
-	PlayerPointer chr;
+	Player* chr;
 
 
 	if (!m_session || !m_session->GetPlayer()) return NULLPLR;
@@ -828,10 +828,10 @@ PlayerPointer ChatHandler::getSelectedChar(WorldSession *m_session, bool showerr
 	return chr;
 }
 
-CreaturePointer ChatHandler::getSelectedCreature(WorldSession *m_session, bool showerror)
+Creature* ChatHandler::getSelectedCreature(WorldSession *m_session, bool showerror)
 {
 	uint64 guid;
-	CreaturePointer creature = NULLCREATURE;
+	Creature* creature = NULLCREATURE;
 	
 	if (!m_session || !m_session->GetPlayer()) return NULLCREATURE;
 
@@ -926,7 +926,7 @@ void ChatHandler::BlueSystemMessage(WorldSession *m_session, const char *message
 	delete data;
 }
 
-void ChatHandler::RedSystemMessageToPlr(PlayerPointer plr, const char *message, ...)
+void ChatHandler::RedSystemMessageToPlr(Player* plr, const char *message, ...)
 {
 	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
@@ -936,7 +936,7 @@ void ChatHandler::RedSystemMessageToPlr(PlayerPointer plr, const char *message, 
 	RedSystemMessage(plr->GetSession(), (const char*)msg1);
 }
 
-void ChatHandler::GreenSystemMessageToPlr(PlayerPointer plr, const char *message, ...)
+void ChatHandler::GreenSystemMessageToPlr(Player* plr, const char *message, ...)
 {
 	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
@@ -946,7 +946,7 @@ void ChatHandler::GreenSystemMessageToPlr(PlayerPointer plr, const char *message
 	GreenSystemMessage(plr->GetSession(), (const char*)msg1);
 }
 
-void ChatHandler::BlueSystemMessageToPlr(PlayerPointer plr, const char *message, ...)
+void ChatHandler::BlueSystemMessageToPlr(Player* plr, const char *message, ...)
 {
 	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
@@ -956,7 +956,7 @@ void ChatHandler::BlueSystemMessageToPlr(PlayerPointer plr, const char *message,
 	BlueSystemMessage(plr->GetSession(), (const char*)msg1);
 }
 
-void ChatHandler::SystemMessageToPlr(PlayerPointer plr, const char* message, ...)
+void ChatHandler::SystemMessageToPlr(Player* plr, const char* message, ...)
 {
 	if( !message || !plr || !plr->GetSession() ) return;
 	va_list ap;
@@ -1006,7 +1006,7 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 		}
 	}
 
-	PlayerPointer plr = getSelectedChar(m_session, false);
+	Player* plr = getSelectedChar(m_session, false);
 	if(plr)
 	{  
 		sGMLog.writefromsession(m_session, USEDAMODAAAAA, fieldname, av, plr->GetName());
@@ -1035,7 +1035,7 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 	}
 	else
 	{
-		CreaturePointer cr = getSelectedCreature(m_session, false);
+		Creature* cr = getSelectedCreature(m_session, false);
 		if(cr)
 		{
 			if(!(field < UNIT_END && fieldmax < UNIT_END)) return false;
@@ -1124,7 +1124,7 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 		}
 	}
 
-	PlayerPointer plr = getSelectedChar(m_session, false);
+	Player* plr = getSelectedChar(m_session, false);
 	if(plr)
 	{  
 		sGMLog.writefromsession(m_session, USEDAMODAMODA, fieldname, av, plr->GetName());
@@ -1143,7 +1143,7 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 	}
 	else
 	{
-		CreaturePointer cr = getSelectedCreature(m_session, false);
+		Creature* cr = getSelectedCreature(m_session, false);
 		if(cr)
 		{
 			if(!(field < UNIT_END && fieldmax < UNIT_END)) return false;
@@ -1182,7 +1182,7 @@ bool ChatHandler::HandleGetPosCommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleDebugRetroactiveQuestAchievements(const char *args, WorldSession *m_session)
 {
-	PlayerPointer pTarget = getSelectedChar(m_session, true );
+	Player* pTarget = getSelectedChar(m_session, true );
 	if(!pTarget) return true;
 
 	pTarget->RetroactiveCompleteQuests();

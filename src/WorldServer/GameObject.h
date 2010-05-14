@@ -143,7 +143,7 @@ public:
 
 	virtual void Update(uint32 p_time);
 
-	void Spawn( MapMgrPointer m);
+	void Spawn( MapMgr* m);
 	void Despawn(uint32 time);
 
 	// void _EnvironmentalDamageUpdate();
@@ -159,9 +159,9 @@ public:
 	void UpdateRotation();
 
 	// Fishing stuff
-	void UseFishingNode(PlayerPointer player);
-	void EndFishing(PlayerPointer player,bool abort);
-	void FishHooked(PlayerPointer player);
+	void UseFishingNode(Player* player);
+	void EndFishing(Player* player,bool abort);
+	void FishHooked(Player* player);
 	
 	// Quests
 	void _LoadQuests();
@@ -175,12 +175,12 @@ public:
 	std::list<QuestRelation *>::iterator QuestsEnd() { return m_quests->end(); };
 	void SetQuestList(std::list<QuestRelation *>* qst_lst) { m_quests = qst_lst; };
 
-	void SetSummoned(UnitPointer mob)
+	void SetSummoned(Unit* mob)
 	{
 		m_summoner = mob;
 		m_summonedGo = true;
 	}
-	UnitPointer CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, UnitPointer u_caster);
+	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, Unit* u_caster);
 	void _Expire();
 	
 	void ExpireAndDelete(); 
@@ -209,10 +209,10 @@ public:
 	int32 charges;  // used for type==22,to limit number of usages.
 	bool invisible; // invisible
 	uint8 invisibilityFlag;
-	UnitPointer m_summoner;
+	Unit* m_summoner;
 	int8 bannerslot;
 	int8 bannerauraslot;
-	BattlegroundPointer m_battleground;
+	CBattleground* m_battleground;
 
 	void CallScriptUpdate();
    
@@ -224,7 +224,7 @@ public:
 	ARCTIC_INLINE bool HasAI() { return spell != 0; }
 	GOSpawn * m_spawn;
 	void OnPushToWorld();
-	void OnRemoveInRangeObject(ObjectPointer pObj);
+	void OnRemoveInRangeObject(Object* pObj);
 	void RemoveFromWorld(bool free_guid);
 
 	ARCTIC_INLINE bool CanMine(){return (mines_remaining > 0);}

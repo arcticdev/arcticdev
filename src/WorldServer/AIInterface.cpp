@@ -92,7 +92,7 @@ AIInterface::AIInterface()
 	m_spells.clear();
 }
 
-void AIInterface::Init(UnitPointer un, AIType at, MovementType mt)
+void AIInterface::Init(Unit* un, AIType at, MovementType mt)
 {
 	ASSERT(at != AITYPE_PET);
 
@@ -131,7 +131,7 @@ AIInterface::~AIInterface()
 	UnitToFollow_backup = NULLUNIT;
 }
 
-void AIInterface::Init(UnitPointer un, AIType at, MovementType mt, UnitPointer owner)
+void AIInterface::Init(Unit* un, AIType at, MovementType mt, Unit* owner)
 {
 	ASSERT(at == AITYPE_PET || at == AITYPE_TOTEM);
 
@@ -152,11 +152,11 @@ void AIInterface::Init(UnitPointer un, AIType at, MovementType mt, UnitPointer o
 	m_sourceZ = un->GetPositionZ();
 }
 
-void AIInterface::HandleEvent(uint32 event, UnitPointer pUnit, uint32 misc1)
+void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 {
 	if( GetUnit() == NULL ) return;
 
-	CreaturePointer cr = NULLCREATURE;
+	Creature* cr = NULLCREATURE;
 	if( GetUnit()->GetTypeId() == TYPEID_UNIT )
 	{
 		cr = TO_CREATURE( GetUnit() );
@@ -278,7 +278,7 @@ void AIInterface::HandleEvent(uint32 event, UnitPointer pUnit, uint32 misc1)
 				if(getAIType() == AITYPE_PET)
 				{
 					SetAIState(STATE_FOLLOWING);
-					getUnitToFollow() = GetPetOwner();
+					UnitToFollow = m_PetOwner;
 					SetFollowDistance(3.0f);
 					m_lastFollowX = m_lastFollowY = 0;
 					if(GetUnit()->IsPet())
@@ -491,7 +491,7 @@ void AIInterface::HandleEvent(uint32 event, UnitPointer pUnit, uint32 misc1)
 				// only save creature which exist in db (don't want to save 0 values in db) 
 				if( GetUnit()->m_loadedFromDB && cr->m_spawn != NULL )
 				{
-					MapMgrPointer GMap = GetUnit()->GetMapMgr();
+					MapMgr* GMap = GetUnit()->GetMapMgr();
 					if(GMap != NULL)
 					if( GMap && GMap->pInstance && GMap->GetMapInfo()->type != INSTANCE_PVP )
 					{
@@ -512,7 +512,7 @@ void AIInterface::Update(uint32 p_time)
 		assert(totemspell != 0);
 		if(p_time >= m_totemspelltimer)
 		{
-			SpellPointer pSpell(new Spell(GetUnit(), totemspell, true, NULLAURA));
+			Spell* pSpell(new Spell(GetUnit(), totemspell, true, NULLAURA));
 
 			SpellCastTargets targets(0);
 			if(! GetNextTarget() ||
@@ -563,7 +563,7 @@ void AIInterface::Update(uint32 p_time)
 		{
 			if(!GetUnit()->bInvincible && GetUnit()->IsPet()) 
 			{
-				PetPointer pPet = TO_PET(GetUnit());
+				Pet* pPet = TO_PET(GetUnit());
 	
 				if(pPet->GetPetAction() == PET_ACTION_ATTACK || pPet->GetPetState() != PET_STATE_PASSIVE)
 				{
@@ -710,7 +710,7 @@ void AIInterface::_UpdateTargets()
 		{
 			if(firstLeaveCombat)
 			{
-				UnitPointer target = FindTarget();
+				Unit* target = FindTarget();
 				if(target)
 				{
 					AttackReaction(target, 1, 0);
@@ -722,7 +722,7 @@ void AIInterface::_UpdateTargets()
 		}
 		else if( getAITargetsCount() == 0 && (getAIType() == AITYPE_PET && (GetUnit()->IsPet() && TO_PET(GetUnit())->GetPetState() == PET_STATE_AGGRESSIVE) || (!GetUnit()->IsPet() && disable_melee == false ) ) )
 		{
-			 UnitPointer target = FindTarget();
+			 Unit* target = FindTarget();
 			 if( target )
 			 {
 				 AttackReaction(target, 1, 0);
@@ -732,7 +732,7 @@ void AIInterface::_UpdateTargets()
 	// Find new Targets when we are ooc
 	if((getAIState() == STATE_IDLE || getAIState() == STATE_SCRIPTIDLE) && GetAssistTargets().size() == 0)
 	{
-		UnitPointer target = FindTarget();
+		Unit* target = FindTarget();
 		if(target)
 		{
 			AttackReaction(target, 1, 0);
@@ -872,7 +872,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 									if(fabs(our_facing-his_facing)<CREATURE_DAZE_TRIGGER_ANGLE && !GetNextTarget()->HasNegativeAura(CREATURE_SPELL_TO_DAZE))
 									{
 										SpellEntry *info = dbcSpell.LookupEntry(CREATURE_SPELL_TO_DAZE);
-										SpellPointer sp(new Spell(GetUnit(), info, false, NULLAURA));
+										Spell* sp(new Spell(GetUnit(), info, false, NULLAURA));
 										SpellCastTargets targets;
 										targets.m_unitTarget = GetNextTarget()->GetGUID();
 										sp->prepare(&targets);
@@ -941,7 +941,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 							SpellEntry *info = dbcSpell.LookupEntry(m_RangedAttackSpell);
 							if(info)
 							{
-								SpellPointer sp(new Spell(GetUnit(), info, false, NULLAURA));
+								Spell* sp(new Spell(GetUnit(), info, false, NULLAURA));
 								SpellCastTargets targets(GetNextTarget()->GetGUID());
 								sp->prepare(&targets);
 
@@ -984,7 +984,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					SpellCastTargets targets;
 					if(m_nextSpell->spellType == STYPE_HEAL)
 					{
-						UnitPointer starget = FindHealTargetForSpell(m_nextSpell);
+						Unit* starget = FindHealTargetForSpell(m_nextSpell);
 						if(starget)
 							targets = setSpellTargets(spellInfo, starget);
 					}
@@ -1033,7 +1033,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 						// add pet spell after use to pet owner with some chance
 						if( GetUnit()->IsPet() &&  GetPetOwner() && GetPetOwner()->IsPlayer())
 						{	
-							PetPointer pPet = TO_PET(GetUnit());
+							Pet* pPet = TO_PET(GetUnit());
 							if( pPet && Rand(5)) //5% change to gain spell from pet
 								pPet->AddPetSpellToOwner(spellInfo->Id);
 						}
@@ -1105,7 +1105,7 @@ void AIInterface::DismissPet()
 {
 }
 
-void AIInterface::AttackReaction(UnitPointer pUnit, uint32 damage_dealt, uint32 spellId)
+void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
 {
 	if( getAIState() == STATE_EVADE || m_fleeTimer != 0 || !pUnit || !pUnit->isAlive() || !GetUnit()->isAlive() )
 	{
@@ -1127,7 +1127,7 @@ void AIInterface::AttackReaction(UnitPointer pUnit, uint32 damage_dealt, uint32 
 	HandleEvent(EVENT_DAMAGETAKEN, pUnit, _CalcThreat(damage_dealt, spellId ? dbcSpell.LookupEntryForced(spellId) : NULL, pUnit));
 }
 
-bool AIInterface::HealReaction(UnitPointer caster, UnitPointer victim, uint32 amount, SpellEntry * sp)
+bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellEntry * sp)
 {
 	if(!caster || !victim)
 	{
@@ -1203,7 +1203,7 @@ bool AIInterface::HealReaction(UnitPointer caster, UnitPointer victim, uint32 am
 	return false;
 }
 
-void AIInterface::OnDeath(ObjectPointer pKiller)
+void AIInterface::OnDeath(Object* pKiller)
 {
 	if(pKiller->GetTypeId() == TYPEID_PLAYER || pKiller->GetTypeId() == TYPEID_UNIT)
 		HandleEvent(EVENT_UNITDIED, TO_UNIT(pKiller), 0);
@@ -1211,20 +1211,20 @@ void AIInterface::OnDeath(ObjectPointer pKiller)
 		HandleEvent(EVENT_UNITDIED, GetUnit(), 0);
 }
 
-UnitPointer AIInterface::FindTarget()
+Unit* AIInterface::FindTarget()
 {// find nearest hostile Target to attack
 	if( !GetAllowedToEnterCombat() ) 
 		return NULLUNIT;
 
-	UnitPointer target = NULLUNIT;
-	UnitPointer critterTarget = NULLUNIT;
+	Unit* target = NULLUNIT;
+	Unit* critterTarget = NULLUNIT;
 	float distance = 999999.0f; // that should do it.. :p
 	float crange;
 	float z_diff;
 
-	unordered_set<ObjectPointer >::iterator itr, it2;
-	ObjectPointer pObj;
-	UnitPointer pUnit;
+	unordered_set<Object* >::iterator itr, it2;
+	Object* pObj;
+	Unit* pUnit;
 	float dist;
 	bool pvp = true;
 	
@@ -1345,7 +1345,7 @@ UnitPointer AIInterface::FindTarget()
 
 		if(target->GetUInt32Value(UNIT_FIELD_CREATEDBY) != 0)
 		{
-			UnitPointer target2 = GetUnit()->GetMapMgr()->GetPlayer(target->GetUInt32Value(UNIT_FIELD_CREATEDBY));
+			Unit* target2 = GetUnit()->GetMapMgr()->GetPlayer(target->GetUInt32Value(UNIT_FIELD_CREATEDBY));
 			if(target2)
 			{
 				AttackReaction(target2, 1, 0);
@@ -1355,7 +1355,7 @@ UnitPointer AIInterface::FindTarget()
 	return target;
 }
 
-UnitPointer AIInterface::FindTargetForSpell(AI_Spell *sp)
+Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 {
 
 	TargetMap::iterator itr, itr2;
@@ -1398,7 +1398,7 @@ UnitPointer AIInterface::FindTargetForSpell(AI_Spell *sp)
 	return GetMostHated();
 }
 
-UnitPointer AIInterface::FindHealTargetForSpell(AI_Spell *sp)
+Unit* AIInterface::FindHealTargetForSpell(AI_Spell *sp)
 {
 	TargetMap::iterator itr, itr2;
 
@@ -1443,8 +1443,8 @@ bool AIInterface::FindFriends(float dist)
 	bool result = false;
 	TargetMap::iterator it;
 
-	unordered_set<ObjectPointer >::iterator itr;
-	UnitPointer pUnit;
+	unordered_set<Object* >::iterator itr;
+	Unit* pUnit;
 
 	for( itr = GetUnit()->GetInRangeSetBegin(); itr != GetUnit()->GetInRangeSetEnd(); itr++ )
 	{
@@ -1498,7 +1498,7 @@ bool AIInterface::FindFriends(float dist)
 	return result;
 }
 
-float AIInterface::_CalcAggroRange(UnitPointer target)
+float AIInterface::_CalcAggroRange(Unit* target)
 {
 	const static float baseAR[17] = {19.0f, 18.5f, 18.0f, 17.5f, 17.0f, 16.5f, 16.0f, 15.5f, 15.0f, 14.5f, 12.0f, 10.5f, 8.5f,  7.5f,  6.5f,  6.5f, 5.0f};
 	int8 lvlDiff = target->getLevel() - GetUnit()->getLevel();
@@ -1545,7 +1545,7 @@ float AIInterface::_CalcAggroRange(UnitPointer target)
 	return (AggroRange*AggroRange);
 }
 
-void AIInterface::_CalcDestinationAndMove(UnitPointer target, float dist)
+void AIInterface::_CalcDestinationAndMove(Unit* target, float dist)
 {
 	if(!m_canMove || GetUnit()->IsStunned())
 	{
@@ -1594,7 +1594,7 @@ void AIInterface::_CalcDestinationAndMove(UnitPointer target, float dist)
 		UpdateMove();
 }
 
-float AIInterface::_CalcCombatRange(UnitPointer target, bool ranged)
+float AIInterface::_CalcCombatRange(Unit* target, bool ranged)
 {
 	if(!target)
 	{
@@ -1707,7 +1707,7 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 	if( GetUnit()->GetTypeId() == TYPEID_PLAYER )
 		TO_PLAYER(GetUnit())->GetSession()->SendPacket(&data);
 
-	for(unordered_set<PlayerPointer  >::iterator itr = GetUnit()->GetInRangePlayerSetBegin(); itr != GetUnit()->GetInRangePlayerSetEnd(); ++itr)
+	for(unordered_set<Player*  >::iterator itr = GetUnit()->GetInRangePlayerSetBegin(); itr != GetUnit()->GetInRangePlayerSetEnd(); ++itr)
 	{
 		if( (*itr)->GetPositionNC().Distance2DSq( GetUnit()->GetPosition() ) >= World::m_movementCompressThresholdCreatures )
 			(*itr)->AppendMovementData( SMSG_MONSTER_MOVE, data.GetSize(), (const uint8*)data.GetBufferPointer() );
@@ -1804,7 +1804,7 @@ void AIInterface::UpdateMove()
 
 	if(GetUnit()->GetTypeId() == TYPEID_UNIT)
 	{
-		CreaturePointer creature = TO_CREATURE(GetUnit());
+		Creature* creature = TO_CREATURE(GetUnit());
 
 		float angle = 0.0f;
 		float c_reach =GetUnit()->GetFloatValue(UNIT_FIELD_COMBATREACH);
@@ -1845,7 +1845,7 @@ void AIInterface::UpdateMove()
 	setCreatureState(MOVING);
 }
 
-void AIInterface::SendCurrentMove(PlayerPointer plyr/*uint64 guid*/)
+void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 {
 	if(m_destinationX == 0.0f && m_destinationY == 0.0f && m_destinationZ == 0.0f) return; // invalid move 
 
@@ -1887,7 +1887,7 @@ void AIInterface::SendCurrentMove(PlayerPointer plyr/*uint64 guid*/)
 
 }
 
-bool AIInterface::setInFront(UnitPointer target) // not the best way to do it, though
+bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
 {
 	// angle the object has to face
 	float angle = GetUnit()->calcAngle(GetUnit()->GetPositionX(), GetUnit()->GetPositionY(), target->GetPositionX(), target->GetPositionY() ); 
@@ -1987,7 +1987,7 @@ void AIInterface::deleteWayPoint(uint32 wpid)
 	saveWayPoints();
 }
 
-bool AIInterface::showWayPoints(PlayerPointer pPlayer, bool Backwards)
+bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 {
 	if(!hasWaypoints())
 		return false;
@@ -2007,7 +2007,7 @@ bool AIInterface::showWayPoints(PlayerPointer pPlayer, bool Backwards)
 			wp = *itr;
 
 			// Create
-			CreaturePointer pWayPoint(new Creature((uint64)HIGHGUID_TYPE_WAYPOINT << 32 | wp->id));
+			Creature* pWayPoint(new Creature((uint64)HIGHGUID_TYPE_WAYPOINT << 32 | wp->id));
 			pWayPoint->Init();
 			pWayPoint->CreateWayPoint(wp->id,pPlayer->GetMapId(),wp->x,wp->y,wp->z,0);
 			pWayPoint->SetUInt32Value(OBJECT_FIELD_ENTRY, 300000);
@@ -2052,7 +2052,7 @@ bool AIInterface::showWayPoints(PlayerPointer pPlayer, bool Backwards)
 	return true;
 }
 
-bool AIInterface::hideWayPoints(PlayerPointer pPlayer)
+bool AIInterface::hideWayPoints(Player* pPlayer)
 {
 	if(!hasWaypoints())
 		return false;
@@ -2291,7 +2291,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			if( m_formationLinkTarget == NULL)
 			{
 				// haven't found our target yet
-				CreaturePointer c = TO_CREATURE(GetUnit());
+				Creature* c = TO_CREATURE(GetUnit());
 				if(!c->haslinkupevent)
 				{
 					// register linkup event
@@ -2619,7 +2619,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 	}
 }
 
-uint8 AIInterface::CastSpell(UnitPointer caster, SpellEntry *spellInfo, SpellCastTargets targets)
+uint8 AIInterface::CastSpell(Unit* caster, SpellEntry *spellInfo, SpellCastTargets targets)
 {
 	if( getAIType() != AITYPE_PET && disable_spell )
 		return SPELL_FAILED_ERROR;
@@ -2632,7 +2632,7 @@ uint8 AIInterface::CastSpell(UnitPointer caster, SpellEntry *spellInfo, SpellCas
 	// Stop AI while casting.
 	SetAIState(STATE_CASTING);
 
-	SpellPointer nspell(new Spell(caster, spellInfo, false, NULLAURA));
+	Spell* nspell(new Spell(caster, spellInfo, false, NULLAURA));
 	return nspell->prepare(&targets);
 }
 
@@ -2656,7 +2656,7 @@ SpellEntry *AIInterface::getSpellEntry(uint32 spellId)
 	return spellInfo;
 }
 
-SpellCastTargets AIInterface::setSpellTargets(SpellEntry *spellInfo, UnitPointer target)
+SpellCastTargets AIInterface::setSpellTargets(SpellEntry *spellInfo, Unit* target)
 {
 	SpellCastTargets targets;
 	targets.m_unitTarget = target ? target->GetGUID() : 0;
@@ -2708,7 +2708,7 @@ AI_Spell *AIInterface::getSpell()
 	{
 		if(GetUnit()->IsPet())
 		{
-			PetPointer pPet = TO_PET(GetUnit());
+			Pet* pPet = TO_PET(GetUnit());
 			def_spell = pPet->HandleAutoCastEvent();
 		}
 		else
@@ -2800,14 +2800,14 @@ void AIInterface::addSpellToList(AI_Spell *sp)
 
 uint32 AIInterface::getThreatByGUID(uint64 guid)
 {
-	UnitPointer obj = GetUnit()->GetMapMgr()->GetUnit(guid);
+	Unit* obj = GetUnit()->GetMapMgr()->GetUnit(guid);
 	if(obj)
 		return getThreatByPtr(obj);
 
 	return 0;
 }
 
-uint32 AIInterface::getThreatByPtr(UnitPointer obj)
+uint32 AIInterface::getThreatByPtr(Unit* obj)
 {
 	TargetMap::iterator it = m_aiTargets.find(obj);
 	if(it != m_aiTargets.end())
@@ -2818,9 +2818,9 @@ uint32 AIInterface::getThreatByPtr(UnitPointer obj)
 }
 
 // should return a valid target
-UnitPointer AIInterface::GetMostHated()
+Unit* AIInterface::GetMostHated()
 {
-	UnitPointer ResultUnit=NULLUNIT;
+	Unit* ResultUnit=NULLUNIT;
 
 	// override mosthated with taunted target. Basic combat checks are made for it. 
 	// What happens if we can't see tauntedby unit ?
@@ -2828,7 +2828,7 @@ UnitPointer AIInterface::GetMostHated()
 	if(ResultUnit)
 		return ResultUnit;
 
-	pair< UnitPointer , int32> currentTarget;
+	pair< Unit* , int32> currentTarget;
 	currentTarget.first = NULLUNIT;
 	currentTarget.second = -1;
 
@@ -2859,11 +2859,11 @@ UnitPointer AIInterface::GetMostHated()
 
 	return currentTarget.first;
 }
-UnitPointer AIInterface::GetSecondHated()
+Unit* AIInterface::GetSecondHated()
 {
-	UnitPointer ResultUnit=GetMostHated();
+	Unit* ResultUnit=GetMostHated();
 
-	pair< UnitPointer, int32> currentTarget;
+	pair< Unit*, int32> currentTarget;
 	currentTarget.first = NULLUNIT;
 	currentTarget.second = -1;
 
@@ -2898,14 +2898,14 @@ bool AIInterface::modThreatByGUID(uint64 guid, int32 mod)
 	if (!m_aiTargets.size())
 		return false;
 
-	UnitPointer obj = GetUnit()->GetMapMgr()->GetUnit(guid);
+	Unit* obj = GetUnit()->GetMapMgr()->GetUnit(guid);
 	if(obj)
 		return modThreatByPtr(obj, mod);
 
 	return false;
 }
 
-bool AIInterface::modThreatByPtr(UnitPointer obj, int32 mod)
+bool AIInterface::modThreatByPtr(Unit* obj, int32 mod)
 {
 	if(obj == NULL)
 		return false;
@@ -2914,7 +2914,7 @@ bool AIInterface::modThreatByPtr(UnitPointer obj, int32 mod)
 	{
 		int32 partmod = float2int32(mod * obj->mThreatRAmount);
 		mod -= partmod;
-		UnitPointer robj = obj->mThreatRTarget;
+		Unit* robj = obj->mThreatRTarget;
 		if( partmod && robj && robj->isAlive() && obj->GetDistanceSq(robj) < 1600 )
 		{
 			TargetMap::iterator it = m_aiTargets.find(robj);
@@ -2988,7 +2988,7 @@ bool AIInterface::modThreatByPtr(UnitPointer obj, int32 mod)
 	return true;
 }
 
-void AIInterface::RemoveThreatByPtr(UnitPointer obj)
+void AIInterface::RemoveThreatByPtr(Unit* obj)
 {
 	if(!obj)
 		return;
@@ -3010,7 +3010,7 @@ void AIInterface::RemoveThreatByPtr(UnitPointer obj)
 	}
 }
 
-void AIInterface::addAssistTargets(UnitPointer Friend)
+void AIInterface::addAssistTargets(Unit* Friend)
 {
 	// stop adding stuff that gives errors on linux!
 	GetAssistTargets().insert(Friend);
@@ -3039,7 +3039,7 @@ void AIInterface::WipeTargetList()
 	GetUnit()->CombatStatus.Vanished();
 }
 
-bool AIInterface::taunt(UnitPointer caster, bool apply)
+bool AIInterface::taunt(Unit* caster, bool apply)
 {
 	if(apply)
 	{
@@ -3077,7 +3077,7 @@ bool AIInterface::taunt(UnitPointer caster, bool apply)
 	return true;
 }
 
-UnitPointer AIInterface::getTauntedBy()
+Unit* AIInterface::getTauntedBy()
 {
 	if(GetIsTaunted())
 	{
@@ -3102,7 +3102,7 @@ bool AIInterface::GetIsTaunted()
 	return isTaunted;
 }
 
-void AIInterface::CheckTarget(UnitPointer target)
+void AIInterface::CheckTarget(Unit* target)
 {
 	if( target == NULL )
 		return;
@@ -3165,7 +3165,7 @@ void AIInterface::CheckTarget(UnitPointer target)
 		tauntedBy = NULLUNIT;
 }
 
-uint32 AIInterface::_CalcThreat(uint32 damage, SpellEntry * sp, UnitPointer Attacker)
+uint32 AIInterface::_CalcThreat(uint32 damage, SpellEntry * sp, Unit* Attacker)
 {
 	if (isSameFaction(GetUnit(),Attacker))
 		return 0;
@@ -3214,7 +3214,7 @@ void AIInterface::ResetProcCounts()
 void AIInterface::Event_Summon_EE_totem(uint32 summon_duration)
 {
 	m_totemspelltimer = 0xEFFFFFFF;
-	UnitPointer ourslave=GetUnit()->CreateTemporaryGuardian(15352,summon_duration,float(-M_PI*2), 0);
+	Unit* ourslave=GetUnit()->CreateTemporaryGuardian(15352,summon_duration,float(-M_PI*2), 0);
 	if(ourslave)
 	{
 		TO_CREATURE(ourslave)->ResistanceModPct[NATURE_DAMAGE]=100;   // we should be imune to nature dmg. This can be also set in db
@@ -3232,7 +3232,7 @@ void AIInterface::Event_Summon_FE_totem(uint32 summon_duration)
 	// timer should not reach this value thus not cast this spell again
 	m_totemspelltimer = 0xEFFFFFFF;
 	// creatures do not support PETs and the spell uses that effect so we force a summon guardian thing
-	UnitPointer ourslave=GetUnit()->CreateTemporaryGuardian(15438,summon_duration,float(-M_PI*2), 0);
+	Unit* ourslave=GetUnit()->CreateTemporaryGuardian(15438,summon_duration,float(-M_PI*2), 0);
 	if(ourslave)
 	{
 		TO_CREATURE(ourslave)->ResistanceModPct[FIRE_DAMAGE]=100;// we should be imune to fire dmg. This can be also set in db
@@ -3294,7 +3294,7 @@ void AIInterface::CallGuards()
 
 		uint8 spawned = 0;
 	
-		unordered_set<PlayerPointer>::iterator hostileItr = GetUnit()->GetInRangePlayerSetBegin();
+		unordered_set<Player*>::iterator hostileItr = GetUnit()->GetInRangePlayerSetBegin();
 		for(; hostileItr != GetUnit()->GetInRangePlayerSetEnd(); hostileItr++)
 		{
 			if(spawned >= 3)
@@ -3303,7 +3303,7 @@ void AIInterface::CallGuards()
 			if(!isHostile(*hostileItr, GetUnit()))
 				continue;
 
-			CreaturePointer guard = GetUnit()->GetMapMgr()->CreateCreature(guardId);
+			Creature* guard = GetUnit()->GetMapMgr()->CreateCreature(guardId);
 			guard->Load(cp, x, y, z);
 			guard->SetInstanceID(GetUnit()->GetInstanceID());
 			guard->SetZoneId(GetUnit()->GetZoneId());

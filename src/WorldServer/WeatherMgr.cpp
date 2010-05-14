@@ -90,7 +90,7 @@ WeatherMgr::WeatherMgr()
 
 WeatherMgr::~WeatherMgr()
 {
-	map<uint32, WeatherInfoPointer>::iterator itr;
+	map<uint32, WeatherInfo*>::iterator itr;
 	for( itr = m_zoneWeathers.begin(); itr != m_zoneWeathers.end(); itr++)
 		itr->second->Destructor();
 	m_zoneWeathers.clear();
@@ -107,7 +107,7 @@ void WeatherMgr::LoadFromDB()
 	do
 	{
 		Field *fields = result->Fetch();
-		WeatherInfoPointer wi(new WeatherInfo);
+		WeatherInfo* wi(new WeatherInfo);
 		wi->m_zoneId = fields[0].GetUInt32();
 		wi->m_effectValues[0] = fields[1].GetUInt32();  // high_chance
 		wi->m_effectValues[1] = fields[2].GetUInt32();  // high_type
@@ -124,9 +124,9 @@ void WeatherMgr::LoadFromDB()
 	delete result;
 }
 
-void WeatherMgr::SendWeather(PlayerPointer plr)  // Update weather when player has changed zone (WorldSession::HandleZoneUpdateOpcode)
+void WeatherMgr::SendWeather(Player* plr)  // Update weather when player has changed zone (WorldSession::HandleZoneUpdateOpcode)
 {
-	std::map<uint32, WeatherInfoPointer >::iterator itr;
+	std::map<uint32, WeatherInfo* >::iterator itr;
 	itr = m_zoneWeathers.find(plr->GetZoneId());
 
 	if (itr == m_zoneWeathers.end())
@@ -161,7 +161,7 @@ WeatherInfo::~WeatherInfo()
 void WeatherInfo::Destructor()
 {
 	m_effectValues.clear();
-	sEventMgr.RemoveEvents(shared_from_this());
+	sEventMgr.RemoveEvents(this);
 }
 
 void WeatherInfo::_GenerateWeather()
@@ -192,7 +192,7 @@ void WeatherInfo::_GenerateWeather()
 
 	SendUpdate();
 
-	sEventMgr.AddEvent(shared_from_this(), &WeatherInfo::BuildUp, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*2), 0,0);
+	sEventMgr.AddEvent(this, &WeatherInfo::BuildUp, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*2), 0,0);
 	DEBUG_LOG("WeatherMgr", "Forecast for zone:%d new type:%d new interval:%d ms",m_zoneId,m_currentEffect,(uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*2));
 }
 
@@ -201,8 +201,8 @@ void WeatherInfo::BuildUp()
     // Increase until 0.5, start random counter when reached   
 	if (m_currentDensity >= 0.50f) 
 	{
-		sEventMgr.RemoveEvents(shared_from_this(), EVENT_WEATHER_UPDATE);
-		sEventMgr.AddEvent(shared_from_this(), &WeatherInfo::Update, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*4), 0,0);
+		sEventMgr.RemoveEvents(this, EVENT_WEATHER_UPDATE);
+		sEventMgr.AddEvent(this, &WeatherInfo::Update, EVENT_WEATHER_UPDATE, (uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*4), 0,0);
 //		OUT_DEBUG("Weather starting random for zone:%d type:%d new interval:%d ms",m_zoneId,m_currentEffect,(uint32)(m_totalTime/ceil(m_maxDensity/WEATHER_DENSITY_UPDATE)*4));
 	}
 	else
@@ -222,7 +222,7 @@ void WeatherInfo::Update()
 		{
 			m_currentDensity = 0.0f;
 			m_currentEffect = 0;
-			sEventMgr.RemoveEvents(shared_from_this(), EVENT_WEATHER_UPDATE);
+			sEventMgr.RemoveEvents(this, EVENT_WEATHER_UPDATE);
 			_GenerateWeather();
 			return;
 		}
@@ -243,13 +243,13 @@ void WeatherInfo::SendUpdate()
 {
 	WorldPacket data(SMSG_WEATHER, 9);
 	BuildWeatherPacket(&data, m_currentEffect, m_currentDensity);
-	MapMgrPointer mgr = sInstanceMgr.GetMapMgr(dbcArea.LookupEntryForced(m_zoneId)->mapId);
+	MapMgr* mgr = sInstanceMgr.GetMapMgr(dbcArea.LookupEntryForced(m_zoneId)->mapId);
 	if(mgr)
 		mgr->SendPacketToPlayers(m_zoneId, FACTION_MASK_ALL, &data);
 	// sWorld.SendZoneMessage(&data, m_zoneId, 0);
 }
 
-void WeatherInfo::SendUpdate(PlayerPointer plr)   // Updates weather for player's zone-change only if new zone weather differs
+void WeatherInfo::SendUpdate(Player* plr)   // Updates weather for player's zone-change only if new zone weather differs
 {
 	if(plr->m_lastSeenWeather == m_currentEffect) // return if weather is same as previous zone
 		return;

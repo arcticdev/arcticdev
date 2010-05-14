@@ -251,7 +251,7 @@ public:
 	void AddItem(GossipMenuItem* GossipItem);
 	void AddItem(uint8 Icon, const char* Text, int32 Id = -1, bool Coded = false, uint32 BoxMoney = 0, const char* BoxMessage = "");
 	void BuildPacket(WorldPacket& Packet);
-	void SendTo(PlayerPointer Plr);
+	void SendTo(Player* Plr);
 	GossipMenuItem GetItem(uint32 Id);
 	ARCTIC_INLINE void SetTextID(uint32 TID) { TextId = TID; }
 
@@ -322,7 +322,7 @@ public:
 };
 
 typedef std::map<uint32, uint32>                                    OverrideIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, PlayerPointer  >             PlayerStorageMap;
+typedef HM_NAMESPACE::hash_map<uint32, Player*  >             PlayerStorageMap;
 typedef std::list<GM_Ticket*>                                       GmTicketList;
 
 #ifndef WIN32
@@ -369,18 +369,18 @@ public:
 	typedef std::set<AchievementCriteriaEntry*>							AchievementCriteriaSet;
 	
     // HashMap typedef's
-    typedef HM_NAMESPACE::hash_map<uint64, ItemPointer >                ItemMap;
+    typedef HM_NAMESPACE::hash_map<uint64, Item* >                ItemMap;
 	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>                 CorpseCollectorMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PlayerInfo*>                 PlayerNameMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PlayerCreateInfo*>           PlayerCreateInfoMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Guild*>                      GuildMap;
 	typedef HM_NAMESPACE::hash_map<uint32, skilllinespell*>             SLMap;
 	typedef HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>*>  VendorMap;
-    typedef HM_NAMESPACE::hash_map<uint32, TransporterPointer >         TransportMap;
+    typedef HM_NAMESPACE::hash_map<uint32, Transporter* >         TransportMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Trainer*>                    TrainerMap;
 	typedef HM_NAMESPACE::hash_map<uint32, std::vector<TrainerSpell*> > TrainerSpellMap;
     typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>         ReputationModMap;
-    typedef HM_NAMESPACE::hash_map<uint32, CorpsePointer >              CorpseMap;
+    typedef HM_NAMESPACE::hash_map<uint32, Corpse* >              CorpseMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Group*>						GroupMap;
     
     // Map typedef's
@@ -398,8 +398,8 @@ public:
 	TotemSpellMap m_totemSpells;
 	OverrideIdMap mOverrideIdMap;
 
-	PlayerPointer GetPlayer(const char* name, bool caseSensitive = true);
-	PlayerPointer GetPlayer(uint32 guid);
+	Player* GetPlayer(const char* name, bool caseSensitive = true);
+	Player* GetPlayer(uint32 guid);
 	
 	CorpseMap m_corpses;
 	Mutex _corpseslock;
@@ -411,11 +411,11 @@ public:
 	Mutex m_achievementLock;
 	AchievementCriteriaMap m_achievementCriteriaMap;
 	
-	ItemPointer CreateItem(uint32 entry,PlayerPointer owner);
-	ItemPointer LoadItem(uint64 guid);
+	Item* CreateItem(uint32 entry,Player* owner);
+	Item* LoadItem(uint64 guid);
   
 	// Groups
-	Group * GetGroupByLeader(PlayerPointer pPlayer);
+	Group * GetGroupByLeader(Player* pPlayer);
 	Group * GetGroupById(uint32 id);
 	uint32 GenerateGroupId()
 	{
@@ -473,15 +473,15 @@ public:
 	void LoadAchievements();
 
 	// Corpse Stuff
-	CorpsePointer GetCorpseByOwner(uint32 ownerguid);
+	Corpse* GetCorpseByOwner(uint32 ownerguid);
 	void CorpseCollectorUnload();
 	void DespawnCorpse(uint64 Guid);
-	void CorpseAddEventDespawn(CorpsePointer pCorpse);
-	void DelinkPlayerCorpses(PlayerPointer pOwner);
-	CorpsePointer CreateCorpse();
-	void AddCorpse(CorpsePointer );
-	void RemoveCorpse(CorpsePointer );
-	CorpsePointer GetCorpse(uint32 corpseguid);
+	void CorpseAddEventDespawn(Corpse* pCorpse);
+	void DelinkPlayerCorpses(Player* pOwner);
+	Corpse* CreateCorpse();
+	void AddCorpse(Corpse* );
+	void RemoveCorpse(Corpse* );
+	Corpse* GetCorpse(uint32 corpseguid);
 
 	uint32 GetGossipTextForNpc(uint32 ID);
 
@@ -501,7 +501,7 @@ public:
 
 	std::list<ItemPrototype*>* GetListForItemSet(uint32 setid);
 
-	PetPointer CreatePet();
+	Pet* CreatePet();
 	uint32 m_hiPetGuid;
 	uint32 m_hiArenaTeamId;
 	uint32 GenerateArenaTeamId()
@@ -515,22 +515,22 @@ public:
 
 	Mutex m_petlock;
 
-	PlayerPointer CreatePlayer();
+	Player* CreatePlayer();
 	Mutex m_playerguidlock;
 	PlayerStorageMap _players;
 	RWLock _playerslock;
 	uint32 m_hiPlayerGuid;
 	
-	void AddPlayer(PlayerPointer p); // add it to global storage
-	void RemovePlayer(PlayerPointer p);
+	void AddPlayer(Player* p); // add it to global storage
+	void RemovePlayer(Player* p);
 	
 	// Serialization
 	void LoadQuests();
 	void LoadPlayersInfo();
 	void LoadPlayerCreateInfo();
 	void LoadGuilds();
-	CorpsePointer LoadCorpse(uint32 guid);
-	void LoadCorpses(MapMgrPointer mgr);
+	Corpse* LoadCorpse(uint32 guid);
+	void LoadCorpses(MapMgr* mgr);
 	void LoadGMTickets();
 	void SaveGMTicket(uint64 guid, QueryBuffer * buf);
 	void LoadAuctions();
@@ -551,7 +551,7 @@ public:
 	
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
-    void AddTransport(TransporterPointer pTransporter);
+    void AddTransport(Transporter* pTransporter);
    
 	void LoadTrainers();
 	Trainer* GetTrainer(uint32 Entry);
@@ -562,7 +562,7 @@ public:
 	void LoadRandomItemCreation();
 	void LoadRandomCardCreation();
 	void LoadScrollCreation();
-	void CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, PlayerPointer Plr); 
+	void CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, Player* Plr); 
 
 	LevelInfo * GetLevelInfo(uint32 Race, uint32 Class, uint32 Level);
 	void GenerateLevelUpInfo();
@@ -589,8 +589,8 @@ public:
 		return r;
 	}
 
-	TransporterPointer GetTransporter(uint32 guid);
-	TransporterPointer GetTransporterByEntry(uint32 entry);
+	Transporter* GetTransporter(uint32 guid);
+	Transporter* GetTransporterByEntry(uint32 entry);
 
 	Charter * CreateCharter(uint32 LeaderGuid, CharterTypes Type);
 	Charter * GetCharter(uint32 CharterId, CharterTypes Type);
@@ -616,11 +616,11 @@ public:
 	typedef HM_NAMESPACE::hash_map<uint32, NpcMonsterSay*> MonsterSayMap;
 	MonsterSayMap mMonsterSays[NUM_MONSTER_SAY_EVENTS];
 
-	void HandleMonsterSayEvent(CreaturePointer pCreature, MONSTER_SAY_EVENTS Event);
+	void HandleMonsterSayEvent(Creature* pCreature, MONSTER_SAY_EVENTS Event);
 	bool HasMonsterSay(uint32 Entry, MONSTER_SAY_EVENTS Event);
 	void LoadMonsterSay();
 
-	bool HandleInstanceReputationModifiers(PlayerPointer pPlayer, UnitPointer pVictim);
+	bool HandleInstanceReputationModifiers(Player* pPlayer, Unit* pVictim);
 	void LoadInstanceReputationModifiers();
 
 	ARCTIC_INLINE bool IsSpellDisabled(uint32 spellid)

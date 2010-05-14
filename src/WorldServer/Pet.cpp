@@ -86,7 +86,7 @@ uint32 GetAutoCastTypeForSpell(SpellEntry * ent)
 	return AUTOCAST_EVENT_NONE;
 }
 
-void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, CreaturePointer created_from_creature, UnitPointer owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime)
+void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Unit* owner, SpellEntry* created_by_spell, uint32 type, uint32 expiretime)
 {
 	SetIsPet(true);
 
@@ -401,7 +401,7 @@ void Pet::InitializeSpells()
 		if( info->Attributes & ATTRIBUTES_PASSIVE )
 		{
 			// Cast on self..
-			SpellPointer sp(new Spell(obj_shared_from_this(), info, true, NULLAURA));
+			Spell* sp(new Spell(TO_OBJECT(this), info, true, NULLAURA));
 			SpellCastTargets targets(GetGUID());
 			sp->prepare(&targets);
 
@@ -453,7 +453,7 @@ AI_Spell*Pet::CreateAISpell(SpellEntry * info)
 	return sp;
 }
 
-void Pet::LoadFromDB(PlayerPointer owner, PlayerPet * pi)
+void Pet::LoadFromDB(Player* owner, PlayerPet * pi)
 {
 	m_Owner = owner;
 	m_OwnerGuid = m_Owner->GetGUID();
@@ -569,7 +569,7 @@ void Pet::OnPushToWorld()
 {
 	// before we initialize pet spells so we can apply spell mods on them 
 	if( m_Owner && m_Owner->IsPlayer() )
-		TO_PLAYER( m_Owner )->EventSummonPet( pet_shared_from_this() );
+		TO_PLAYER( m_Owner )->EventSummonPet( TO_PET(this) );
 
 	Creature::OnPushToWorld();
 }
@@ -580,13 +580,13 @@ void Pet::InitializeMe(bool first)
 	{
 		// 2 pets???!
 		m_Owner->GetSummon()->Remove(true, true, true);
-		m_Owner->SetSummon( pet_shared_from_this() );
+		m_Owner->SetSummon( TO_PET(this) );
 	}
 	else
-		m_Owner->SetSummon( pet_shared_from_this() );
+		m_Owner->SetSummon( TO_PET(this) );
 
 	// set up ai and shit
-	GetAIInterface()->Init(unit_shared_from_this() ,AITYPE_PET,MOVEMENTTYPE_NONE,m_Owner);
+	GetAIInterface()->Init(TO_UNIT(this) ,AITYPE_PET,MOVEMENTTYPE_NONE,m_Owner);
 	GetAIInterface()->SetUnitToFollow(m_Owner);
 	GetAIInterface()->SetFollowDistance(3.0f);
 
@@ -652,8 +652,8 @@ void Pet::InitializeMe(bool first)
 	if(!bExpires)
 		UpdatePetInfo(false);
 
-	sEventMgr.AddEvent(pet_shared_from_this(), &Pet::HandleAutoCastEvent, uint32(AUTOCAST_EVENT_ON_SPAWN), EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	sEventMgr.AddEvent(pet_shared_from_this(), &Pet::HandleAutoCastEvent, uint32(AUTOCAST_EVENT_LEAVE_COMBAT), EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO_PET(this), &Pet::HandleAutoCastEvent, uint32(AUTOCAST_EVENT_ON_SPAWN), EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO_PET(this), &Pet::HandleAutoCastEvent, uint32(AUTOCAST_EVENT_LEAVE_COMBAT), EVENT_UNK, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Pet::UpdatePetInfo(bool bSetToOffline)
@@ -746,9 +746,9 @@ void Pet::Remove(bool bSafeDelete, bool bUpdate, bool bSetOffline)
 	}
 	ClearPetOwner();
 
-	PetPointer pThis = pet_shared_from_this();    // EventMgr can remove the last reference left! :(
-	sEventMgr.RemoveEvents(shared_from_this());
-	sEventMgr.AddEvent(pet_shared_from_this(), &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	Pet* pThis = TO_PET(this);    // EventMgr can remove the last reference left! :(
+	sEventMgr.RemoveEvents(this);
+	sEventMgr.AddEvent(TO_PET(this), &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	m_dismissed = true;
 }
 
@@ -760,7 +760,7 @@ void Pet::PetSafeDelete()
 		RemoveFromWorld(false, false);
 	}
 
-	// sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, object_shared_from_this(), EVENT_CREATURE_SAFE_DELETE, 1000, 1);
+	// sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, object_this, EVENT_CREATURE_SAFE_DELETE, 1000, 1);
 	Creature::SafeDelete();
 }
 
@@ -775,7 +775,7 @@ void Pet::DelayedRemove(bool bTime, bool bDeath)
 			Remove(true, true, true);
 	}
 	else
-		sEventMgr.AddEvent(pet_shared_from_this(), &Pet::DelayedRemove, true, bDeath, EVENT_PET_DELAYED_REMOVE, PET_DELAYED_REMOVAL_TIME, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		sEventMgr.AddEvent(TO_PET(this), &Pet::DelayedRemove, true, bDeath, EVENT_PET_DELAYED_REMOVE, PET_DELAYED_REMOVAL_TIME, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void Pet::GiveXP( uint32 xp )
@@ -876,7 +876,7 @@ void Pet::AddSpell(SpellEntry * sp, bool learning)
 	{
 		if(IsInWorld())
 		{
-			SpellPointer spell(new Spell(obj_shared_from_this(), sp, true, NULLAURA));
+			Spell* spell(new Spell(TO_OBJECT(this), sp, true, NULLAURA));
 			SpellCastTargets targets(GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;
@@ -934,7 +934,7 @@ void Pet::AddSpell(SpellEntry * sp, bool learning)
 						SetAutoCast(asp, true);
 
 					if(asp->autocast_type==AUTOCAST_EVENT_ON_SPAWN)
-						CastSpell(unit_shared_from_this(), sp, false);
+						CastSpell(TO_UNIT(this), sp, false);
 
 					RemoveSpell(itr->first);
 					done=true;
@@ -957,7 +957,7 @@ void Pet::AddSpell(SpellEntry * sp, bool learning)
 					SetAutoCast(asp,true);
 
 				if(asp->autocast_type==AUTOCAST_EVENT_ON_SPAWN)
-					CastSpell(unit_shared_from_this(), sp, false);
+					CastSpell(TO_UNIT(this), sp, false);
 			}
 			else
 				mSpells[sp] = DEFAULT_SPELL_STATE;

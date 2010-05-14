@@ -691,7 +691,7 @@ typedef struct
 {
     uint32 setid;
 	uint32 itemscount;
-	// SpellPointer spell[8];
+	// Spell* spell[8];
 }ItemSet;
 #pragma pack(pop)
 

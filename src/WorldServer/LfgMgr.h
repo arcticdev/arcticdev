@@ -27,19 +27,19 @@ class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
 public:	
 	
-	typedef list<PlayerPointer  > LfgPlayerList;
+	typedef list<Player*  > LfgPlayerList;
 
 	LfgMgr();
 	~LfgMgr();
 
-	bool AttemptLfgJoin(PlayerPointer pl, uint32 LfgDungeonId);
-	void SetPlayerInLFGqueue(PlayerPointer pl,uint32 LfgDungeonId);
-	void SetPlayerInLfmList(PlayerPointer pl, uint32 LfgDungeonId);
-	void RemovePlayerFromLfgQueue(PlayerPointer pl,uint32 LfgDungeonId);
-	void RemovePlayerFromLfgQueues(PlayerPointer pl);
-	void RemovePlayerFromLfmList(PlayerPointer pl, uint32 LfmDungeonId);
+	bool AttemptLfgJoin(Player* pl, uint32 LfgDungeonId);
+	void SetPlayerInLFGqueue(Player* pl,uint32 LfgDungeonId);
+	void SetPlayerInLfmList(Player* pl, uint32 LfgDungeonId);
+	void RemovePlayerFromLfgQueue(Player* pl,uint32 LfgDungeonId);
+	void RemovePlayerFromLfgQueues(Player* pl);
+	void RemovePlayerFromLfmList(Player* pl, uint32 LfmDungeonId);
 	void UpdateLfgQueue(uint32 LfgDungeonId);
-	void SendLfgList(PlayerPointer plr, uint32 Dungeon);
+	void SendLfgList(Player* plr, uint32 Dungeon);
 	void EventMatchTimeout(LfgMatch * pMatch);
 
 	int32 event_GetInstanceId() { return -1; }
@@ -54,8 +54,8 @@ protected:
 class LfgMatch
 {
 public:
-	set<PlayerPointer  > PendingPlayers;
-	set<PlayerPointer  > AcceptedPlayers;
+	set<Player*  > PendingPlayers;
+	set<Player*  > AcceptedPlayers;
 	Mutex lock;
 	uint32 DungeonId;
     Group * pGroup;

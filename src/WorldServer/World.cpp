@@ -58,7 +58,7 @@ World::World()
 	m_CEThreshold = 10000;
 }
 
-uint32 World::GetMaxLevel(PlayerPointer plr)
+uint32 World::GetMaxLevel(Player* plr)
 {
 	uint32 level = 60; // Classic World of Warcraft
 	if(LevelCap_Custom_All != 0)
@@ -436,7 +436,7 @@ bool World::SetInitialWorldSettings()
 	FillSpellReplacementsTable();
 	sLog.outString("");*/
 
-#define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new NoSharedPtrCallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
+#define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
 	// Fill the task list with jobs to do.
 	TaskList tl;
 	Storage_FillTaskList(tl);
@@ -458,26 +458,19 @@ bool World::SetInitialWorldSettings()
 	ApplyNormalFixes();
 
 	MAKE_TASK(ObjectMgr, LoadAchievements);
-	if(Config.MainConfig.GetBoolDefault("Startup", "BackgroundWaypointLoading", false))
-	{
-		ThreadPool.ExecuteTask(new BasicTaskExecutor(new NoSharedPtrCallbackP0<ObjectMgr>(ObjectMgr::getSingletonPtr(), &ObjectMgr::LoadCreatureWaypoints),
-			BTE_PRIORITY_MED));
-	}
-	else
-	{
-		MAKE_TASK(ObjectMgr, LoadCreatureWaypoints);
-	}
+	MAKE_TASK(ObjectMgr, LoadCreatureWaypoints);
 	MAKE_TASK(ObjectMgr, LoadTrainers);
 	MAKE_TASK(ObjectMgr, LoadTotemSpells);
 	MAKE_TASK(ObjectMgr, LoadSpellOverride);
 	MAKE_TASK(ObjectMgr, LoadVendors);
 	MAKE_TASK(ObjectMgr, LoadAIThreatToSpellId);
-	MAKE_TASK(ObjectMgr, LoadSpellProcOverride);
+	MAKE_TASK(ObjectMgr, LoadSpellFixes);
 	MAKE_TASK(ObjectMgr, LoadGuildCharters);
 	MAKE_TASK(ObjectMgr, LoadGMTickets);
 	MAKE_TASK(ObjectMgr, LoadPetLevelupSpellMap);
 	MAKE_TASK(AddonMgr,  LoadFromDB);
 	MAKE_TASK(ObjectMgr, SetHighestGuids);
+	MAKE_TASK(ObjectMgr, ListGuidAmounts);
 	MAKE_TASK(ObjectMgr, LoadReputationModifiers);
 	MAKE_TASK(ObjectMgr, LoadMonsterSay);
 	MAKE_TASK(WeatherMgr,LoadFromDB);
@@ -557,7 +550,7 @@ bool World::SetInitialWorldSettings()
 	Channel::LoadConfSettings();
 
 	Log.Notice("World", "Starting Battlegrounds...");
-	BattlegroundMgrPointer BattlegroundMgr(new CBattlegroundManager);
+	CBattlegroundManager* BattlegroundMgr(new CBattlegroundManager);
 	BattlegroundMgr->Init();
 
 	Log.Notice("World", "Starting CharacterLoaderThread...");
@@ -632,7 +625,7 @@ bool World::SetInitialWorldSettings()
 		}
 	}
 
-	sEventMgr.AddEvent(CAST(World,shared_from_this()), &World::CheckForExpiredInstances, EVENT_WORLD_UPDATEAUCTIONS, 120000, 0, 0);
+	sEventMgr.AddEvent(CAST(World,this), &World::CheckForExpiredInstances, EVENT_WORLD_UPDATEAUCTIONS, 120000, 0, 0);
 	return true;
 }
 
@@ -692,7 +685,7 @@ void World::SendFactionMessage(WorldPacket *packet, uint8 teamId)
 {
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
-	PlayerPointer plr;
+	Player* plr;
 	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
 	{
 		plr = itr->second->GetPlayer();
@@ -1144,7 +1137,7 @@ void TaskList::waitForThreadsToExit()
 	}
 }
 
-void World::DeleteObject(ObjectPointer obj)
+void World::DeleteObject(Object* obj)
 {
 	obj->Destructor();
 	obj = NULLOBJ;
@@ -1496,7 +1489,7 @@ void World::PollMailboxInsertQueue(DatabaseConnection * con)
 {
 	QueryResult * result;
 	Field * f;
-	ItemPointer pItem;
+	Item* pItem;
 	uint32 itemid;
 	uint32 stackcount;
 
@@ -2240,7 +2233,7 @@ void World::UpdateShutdownStatus()
 	else
 	{
 		// shutting down?
-		sEventMgr.RemoveEvents(CAST(World,shared_from_this()), EVENT_WORLD_SHUTDOWN);
+		sEventMgr.RemoveEvents(CAST(World,this), EVENT_WORLD_SHUTDOWN);
 		if( m_shutdownTime )
 		{
 			SendWorldText("Server is saving and shutting down. You will be disconnected shortly.", NULL);
@@ -2275,7 +2268,7 @@ void World::QueueShutdown(uint32 delay, uint32 type)
 	m_shutdownType = type;
 
 	// add event
-	sEventMgr.AddEvent(CAST(World,shared_from_this()), &World::UpdateShutdownStatus, EVENT_WORLD_SHUTDOWN, 50, 0, 0);
+	sEventMgr.AddEvent(CAST(World,this), &World::UpdateShutdownStatus, EVENT_WORLD_SHUTDOWN, 50, 0, 0);
 
 	// send message
 	char buf[1000];

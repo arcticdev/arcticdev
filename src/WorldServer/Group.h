@@ -55,7 +55,7 @@ struct PlayerInfo;
 typedef struct
 {
 	PlayerInfo * player_info;
-	PlayerPointer player;
+	Player* player;
 }GroupMember;
 
 class Group;
@@ -106,7 +106,7 @@ class ARCTIC_DECL Group
 public:
 	friend class SubGroup;
 
-	std::map<PlayerPointer,uint32> m_BeaconOfLightTargets;
+	std::map<Player*,uint32> m_BeaconOfLightTargets;
 
 	static Group* Create();
 
@@ -116,33 +116,33 @@ public:
 	// Adding/Removal Management
 	bool AddMember(PlayerInfo * info, int32 subgroupid=-1);
 	void RemovePlayer(PlayerInfo * info);
-	void AddBeaconOfLightTarget(PlayerPointer Target);
-	void RemoveBeaconOfLightTarget(PlayerPointer Target);
+	void AddBeaconOfLightTarget(Player* Target);
+	void RemoveBeaconOfLightTarget(Player* Target);
 
 	// Leaders and Looting
-	void SetLeader(PlayerPointer pPlayer,bool silent);
-	void SetLooter(PlayerPointer pPlayer, uint8 method, uint16 threshold);
+	void SetLeader(Player* pPlayer,bool silent);
+	void SetLooter(Player* pPlayer, uint8 method, uint16 threshold);
 
 	// Transferring data to clients
 	void Update();
 
 	ARCTIC_INLINE void SendPacketToAll(WorldPacket *packet) { SendPacketToAllButOne(packet, NULLPLR); }
-	void SendPacketToAllButOne(WorldPacket *packet, PlayerPointer pSkipTarget);
+	void SendPacketToAllButOne(WorldPacket *packet, Player* pSkipTarget);
 
 	ARCTIC_INLINE void SendPacketToAll(StackPacket *packet) { SendPacketToAllButOne(packet, NULLPLR); }
-	void SendPacketToAllButOne(StackPacket *packet, PlayerPointer pSkipTarget);
+	void SendPacketToAllButOne(StackPacket *packet, Player* pSkipTarget);
 
 	ARCTIC_INLINE void OutPacketToAll(uint16 op, uint16 len, const void* data) { OutPacketToAllButOne(op, len, data, NULLPLR); }
-	void OutPacketToAllButOne(uint16 op, uint16 len, const void* data, PlayerPointer pSkipTarget);
+	void OutPacketToAllButOne(uint16 op, uint16 len, const void* data, Player* pSkipTarget);
 
-	void SendNullUpdate(PlayerPointer pPlayer);
+	void SendNullUpdate(Player* pPlayer);
 
 	// Group Combat
-	void SendPartyKillLog(ObjectPointer player, ObjectPointer Unit);
+	void SendPartyKillLog(Object* player, Object* Unit);
 
 	// Destroying/Converting
 	void Disband();
-	PlayerPointer FindFirstPlayer();
+	Player* FindFirstPlayer();
 	bool HasDisenchanters();
 	
 	// Accessing functions
@@ -163,7 +163,7 @@ public:
 
 	void MovePlayer(PlayerInfo * info, uint8 subgroup);
 
-	bool HasMember(PlayerPointer pPlayer);
+	bool HasMember(Player* pPlayer);
 	bool HasMember(PlayerInfo * info);
 	ARCTIC_INLINE uint32 MemberCount(void) { return m_MemberCount; }
 	ARCTIC_INLINE bool IsFull() { return ((m_GroupType == GROUP_TYPE_PARTY && m_MemberCount >= MAX_GROUP_SIZE_PARTY) || (m_GroupType == GROUP_TYPE_RAID && m_MemberCount >= MAX_GROUP_SIZE_RAID)); }
@@ -178,10 +178,10 @@ public:
 	ARCTIC_INLINE uint8 GetGroupType() { return m_GroupType; }
 	ARCTIC_INLINE uint32 GetID() { return m_Id; }
 
-	void UpdateOutOfRangePlayer(PlayerPointer pPlayer, uint32 Flags, bool Distribute, WorldPacket * Packet);
-	void UpdateAllOutOfRangePlayersFor(PlayerPointer pPlayer);
-	void HandleUpdateFieldChange(uint32 Index, PlayerPointer pPlayer);
-	void HandlePartialChange(uint32 Type, PlayerPointer pPlayer);
+	void UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribute, WorldPacket * Packet);
+	void UpdateAllOutOfRangePlayersFor(Player* pPlayer);
+	void HandleUpdateFieldChange(uint32 Index, Player* pPlayer);
+	void HandlePartialChange(uint32 Type, Player* pPlayer);
 
 	uint64 m_targetIcons[8];
 	ARCTIC_INLINE Mutex& getLock() { return m_groupLock; }

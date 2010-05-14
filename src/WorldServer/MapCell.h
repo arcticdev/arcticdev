@@ -19,18 +19,18 @@ public:
 	MapCell();
 	~MapCell();
 
-	typedef unordered_set<ObjectPointer > ObjectSet;
+	typedef unordered_set<Object* > ObjectSet;
 
 	//Init
-	void Init(uint32 x, uint32 y, uint32 mapid, MapMgrPointer mapmgr);
+	void Init(uint32 x, uint32 y, uint32 mapid, MapMgr* mapmgr);
 
 	ARCTIC_INLINE void AquireLock(){ m_objectlock.Acquire(); } 
  	ARCTIC_INLINE void ReleaseLock(){ m_objectlock.Release(); } 
 
 	// Object Managing
-	void AddObject(ObjectPointer obj);
-	void RemoveObject(ObjectPointer obj);
-	bool HasObject(ObjectPointer obj) { return (_objects.find(obj) != _objects.end()); }
+	void AddObject(Object* obj);
+	void RemoveObject(Object* obj);
+	bool HasObject(Object* obj) { return (_objects.find(obj) != _objects.end()); }
 	bool HasPlayers() { return ((_playerCount > 0) ? true : false); }
 	ARCTIC_INLINE size_t GetObjectCount() { return _objects.size(); }
 	void RemoveObjects();
@@ -74,7 +74,7 @@ private:
 	bool _unloadpending;
 
 	uint16 _playerCount;
-	MapMgrPointer _mapmgr;
+	MapMgr* _mapmgr;
 
 	Mutex m_objectlock;
 };

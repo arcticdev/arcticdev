@@ -171,7 +171,7 @@ typedef std::map<uint32, AchievementCriteriaSet*>       AchievementCriteriaMap;
 
 class ARCTIC_DECL AchievementInterface
 {
-	PlayerPointer m_player;
+	Player* m_player;
 	map<uint32,AchievementData*> m_achivementDataMap;
 private:
 	void GiveRewardsForAchievement(AchievementEntry * ae);
@@ -184,12 +184,12 @@ private:
 	AchievementData * GetAchievementDataByAchievementID(uint32 ID);
 
 	// Get functions
-	PlayerPointer GetPlayer() { return m_player; }
+	Player* GetPlayer() { return m_player; }
 
 	WorldPacket * m_achievementInspectPacket;
 
 public:
-	AchievementInterface(PlayerPointer plr);
+	AchievementInterface(Player* plr);
 	~AchievementInterface();
 
 	void LoadFromDB( QueryResult * pResult );
@@ -208,7 +208,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	
 	void HandleAchievementCriteriaKillCreature(uint32 killedMonster);
-	void HandleAchievementCriteriaWinBattleground(uint32 bgMapId, uint32 scoreMargin, uint32 time, BattlegroundPointer bg);
+	void HandleAchievementCriteriaWinBattleground(uint32 bgMapId, uint32 scoreMargin, uint32 time, CBattleground* bg);
 	void HandleAchievementCriteriaRequiresAchievement(uint32 achievementId);
 	void HandleAchievementCriteriaLevelUp(uint32 level);
 	void HandleAchievementCriteriaOwnItem(uint32 itemId, uint32 stack = 1);
@@ -222,7 +222,7 @@ public:
 	void HandleAchievementCriteriaBuyBankSlot(bool retroactive = false);
 	void HandleAchievementCriteriaFlightPathsTaken();
 	void HandleAchievementCriteriaExploreArea(uint32 areaId, uint32 explorationFlags);
-	void HandleAchievementCriteriaDoEmote(uint32 emoteId, UnitPointer pTarget);
+	void HandleAchievementCriteriaDoEmote(uint32 emoteId, Unit* pTarget);
 	void HandleAchievementCriteriaCompleteQuestsInZone(uint32 zoneId);
 	void HandleAchievementCriteriaReachSkillLevel(uint32 skillId, uint32 skillLevel);
 	void HandleAchievementCriteriaWinDuel();

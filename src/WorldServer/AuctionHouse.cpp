@@ -109,7 +109,7 @@ void AuctionHouse::AddAuction(Auction * auct)
 
 	// add the item
 	itemLock.AcquireWriteLock();
-	auctionedItems.insert( HM_NAMESPACE::hash_map<uint64, ItemPointer >::value_type( auct->pItem->GetGUID(), auct->pItem ) );
+	auctionedItems.insert( HM_NAMESPACE::hash_map<uint64, Item* >::value_type( auct->pItem->GetGUID(), auct->pItem ) );
 	itemLock.ReleaseWriteLock();
 
 	DEBUG_LOG("AuctionHouse", "%u: Add auction %u, expire@ %u.", dbc->id, auct->Id, auct->ExpiryTime);
@@ -176,7 +176,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 		{
 			snprintf(subject, 100, "%u:0:5", (unsigned int)auct->pItem->GetEntry());
 			uint32 cut = uint32(float(cut_percent * auct->HighestBid));
-			PlayerPointer plr = objmgr.GetPlayer(auct->Owner);
+			Player* plr = objmgr.GetPlayer(auct->Owner);
 			if(cut && plr && plr->GetUInt32Value(PLAYER_FIELD_COINAGE) >= cut)
 				plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -((int32)cut));
 			
@@ -218,7 +218,7 @@ void WorldSession::HandleAuctionListBidderItems( WorldPacket & recv_data )
 	uint64 guid;
 	recv_data >> guid;
 
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse)
 		return;
 
@@ -276,7 +276,7 @@ void Auction::AddToPacket(WorldPacket & data)
 	  	data << uint32( 0 );	                           // Unknown 
 }
 
-void AuctionHouse::SendBidListPacket(PlayerPointer plr, WorldPacket * packet)
+void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket * packet)
 {
 	uint32 count = 0;
 
@@ -327,7 +327,7 @@ void AuctionHouse::UpdateItemOwnerships(uint32 oldGuid, uint32 newGuid)
 	auctionLock.ReleaseWriteLock();
 }
 
-void AuctionHouse::SendOwnerListPacket(PlayerPointer plr, WorldPacket * packet)
+void AuctionHouse::SendOwnerListPacket(Player* plr, WorldPacket * packet)
 {
 	uint32 count = 0;
 
@@ -354,7 +354,7 @@ void AuctionHouse::SendOwnerListPacket(PlayerPointer plr, WorldPacket * packet)
 	plr->GetSession()->SendPacket(&data);
 }
 
-void AuctionHouse::SendAuctionNotificationPacket(PlayerPointer plr, Auction * auct)
+void AuctionHouse::SendAuctionNotificationPacket(Player* plr, Auction * auct)
 {
 	WorldPacket data(SMSG_AUCTION_BIDDER_NOTIFICATION, 32);
 	data << GetID(); 
@@ -379,7 +379,7 @@ void WorldSession::HandleAuctionPlaceBid( WorldPacket & recv_data )
 	uint32 auction_id, price;
 	recv_data >> auction_id >> price;
 
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse || price == 0)
 		return;
 
@@ -442,7 +442,7 @@ void WorldSession::HandleCancelAuction( WorldPacket & recv_data)
 	uint32 auction_id;
 	recv_data >> auction_id;
 
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse)
 		return;
 
@@ -474,12 +474,12 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	recv_data >> guid >> unk2;
 	recv_data >> item >> unk1 >> bid >> buyout >> etime;
 	
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(  !pCreature || !pCreature->auctionHouse )
 		return; // NPC doesnt exist or isnt an auctioneer
 
 	// Get item
-	ItemPointer pItem = _player->GetItemInterface()->GetItemByGUID(item);
+	Item* pItem = _player->GetItemInterface()->GetItemByGUID(item);
 	if( !pItem || pItem->IsSoulbound() || pItem->HasFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) )
 	{
 		WorldPacket data(SMSG_AUCTION_COMMAND_RESULT, 8);
@@ -559,14 +559,14 @@ void WorldSession::HandleAuctionListOwnerItems( WorldPacket & recv_data )
 	uint64 guid;
 	recv_data >> guid;
 
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse)
 		return;
 
 	pCreature->auctionHouse->SendOwnerListPacket(_player, &recv_data);
 }
 
-void AuctionHouse::SendAuctionList(PlayerPointer plr, WorldPacket * packet)
+void AuctionHouse::SendAuctionList(Player* plr, WorldPacket * packet)
 {
 	uint32 start_index, current_index = 0;
 	uint32 counted_items = 0;
@@ -672,7 +672,7 @@ void WorldSession::HandleAuctionListItems( WorldPacket & recv_data )
 	uint64 guid;
 	recv_data >> guid;
 
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse)
 		return;
 
@@ -696,7 +696,7 @@ void AuctionHouse::LoadAuctions()
 		auct->Id = fields[0].GetUInt32();
 		
 
-		ItemPointer pItem = objmgr.LoadItem(fields[2].GetUInt64());
+		Item* pItem = objmgr.LoadItem(fields[2].GetUInt64());
 		if(!pItem)
 		{
 			printf("Deleting auction for invalid item %u (%u)\n", auct->Id, fields[2].GetUInt32());

@@ -111,8 +111,8 @@ public:
 	virtual void Init();
 	virtual void Destructor();
 
-	void LoadFromDB(PlayerPointer owner, PlayerPet * pi);
-	void CreateAsSummon(uint32 entry, CreatureInfo *ci, CreaturePointer created_from_creature, UnitPointer owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime);
+	void LoadFromDB(Player* owner, PlayerPet * pi);
+	void CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Unit* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime);
 
 	virtual void Update(uint32 time);
 	void OnPushToWorld();
@@ -151,7 +151,7 @@ public:
 
 	void DelayedRemove(bool bTime, bool bDeath);
 
-	ARCTIC_INLINE PlayerPointer GetPetOwner() { return m_Owner; }
+	ARCTIC_INLINE Player* GetPetOwner() { return m_Owner; }
 	ARCTIC_INLINE void ClearPetOwner() { m_Owner = NULLPLR; }
 	void GiveXP(uint32 xp);
 	uint32 GetNextLevelXP(uint32 currentlevel);
@@ -215,7 +215,7 @@ public:
 
 protected:
 	bool bHasLoyalty;
-	PlayerPointer m_Owner;
+	Player* m_Owner;
 	uint32 m_PetXP;
 	PetSpellMap mSpells;
 	PlayerPet * mPi;

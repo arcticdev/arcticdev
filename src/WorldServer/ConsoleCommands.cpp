@@ -118,7 +118,7 @@ bool HandleKickCommand(BaseConsole * pConsole, int argc, const char * argv[])
 		return false;
 
 	char pAnnounce[1024];
-	PlayerPointer pPlayer;
+	Player* pPlayer;
 
 	pPlayer = objmgr.GetPlayer(argv[1]);
 	if( pPlayer == NULL )
@@ -229,7 +229,7 @@ bool HandlePlayerInfoCommand(BaseConsole * pConsole, int argc, const char * argv
 	if(argc < 2)
 		return false;
 
-	PlayerPointer plr = objmgr.GetPlayer(argv[1]);
+	Player* plr = objmgr.GetPlayer(argv[1]);
 	if( plr == NULL )
 	{
 		pConsole->Write(WOWZPLAYERSAAAI);
@@ -294,7 +294,7 @@ bool HandleSaveAllCommand(BaseConsole * pConsole, int argc, const char * argv[])
 bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
 	char pAnnounce[1024];
-	PlayerPointer pPlayer;
+	Player* pPlayer;
 	string outstr;
 
 	if(argc < 3)

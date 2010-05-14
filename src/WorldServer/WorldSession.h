@@ -205,10 +205,10 @@ public:
 	WorldSession(uint32 id, string Name, WorldSocket *sock);
 	~WorldSession();
 
-	PlayerPointer m_loggingInPlayer;
+	Player* m_loggingInPlayer;
 
- 	bool portPlr;
- 	LocationVector portVec;
+	bool portPlr;
+	LocationVector portVec;
 	uint32 portMap;
 	uint32 portInst;
  
@@ -241,7 +241,7 @@ public:
 	uint32 m_lastPing;
 
 	ARCTIC_INLINE uint32 GetAccountId() const { return _accountId; }
-	ARCTIC_INLINE PlayerPointer GetPlayer() { return _player; }
+	ARCTIC_INLINE Player* GetPlayer() { return _player; }
 	
 	/* Acct flags */
 	void SetAccountFlags(uint32 flags) { _accountFlags = flags; }
@@ -267,7 +267,7 @@ public:
 	{
 		_socket = sock;
 	}
-	ARCTIC_INLINE void SetPlayer(PlayerPointer plr) { _player = plr; }
+	ARCTIC_INLINE void SetPlayer(Player* plr) { _player = plr; }
 	
 	ARCTIC_INLINE void SetAccountData(uint32 index, char* data, bool initial,uint32 sz)
 	{
@@ -318,7 +318,7 @@ public:
 
 	int __fastcall Update(uint32 InstanceID);
 
-	void SendItemPushResult(ItemPointer pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount);
+	void SendItemPushResult(Item* pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount);
 	void SendBuyFailed(uint64 guid, uint32 itemid, uint8 error);
 	void SendSellItem(uint64 vendorguid, uint64 itemid, uint8 error);
 	void SendNotification(const char *message, ...);
@@ -444,11 +444,11 @@ protected:
 	void HandleLootMethodOpcode(WorldPacket& recvPacket);
 	void HandleMinimapPingOpcode(WorldPacket& recvPacket);
 	void HandleSetPlayerIconOpcode(WorldPacket& recv_data);
-	void SendPartyCommandResult(PlayerPointer pPlayer, uint32 p1, std::string name, uint32 err);
+	void SendPartyCommandResult(Player* pPlayer, uint32 p1, std::string name, uint32 err);
 
 	// Raid
 	void HandleConvertGroupToRaidOpcode(WorldPacket& recvPacket);
-    void HandleWorldStateUITimerUpdate(WorldPacket& recv_data);
+	void HandleWorldStateUITimerUpdate(WorldPacket& recv_data);
 	void HandleGroupChangeSubGroup(WorldPacket& recvPacket);
 	void HandleGroupAssistantLeader(WorldPacket& recvPacket);
 	void HandleRequestRaidInfoOpcode(WorldPacket& recvPacket);
@@ -610,9 +610,9 @@ protected:
 
 	// Guild
 	void HandleGuildQuery(WorldPacket & recv_data);
-	void HandleCreateGuild(WorldPacket & recv_data);				   
-	void HandleInviteToGuild(WorldPacket & recv_data);			  
-	void HandleGuildAccept(WorldPacket & recv_data);			 
+	void HandleCreateGuild(WorldPacket & recv_data);
+	void HandleInviteToGuild(WorldPacket & recv_data);
+	void HandleGuildAccept(WorldPacket & recv_data);
 	void HandleGuildDecline(WorldPacket & recv_data);
 	void HandleGuildInfo(WorldPacket & recv_data);
 	void HandleGuildRoster(WorldPacket & recv_data);
@@ -757,18 +757,18 @@ protected:
 
 public:
 	void SendTradeStatus(uint32 TradeStatus);
-	void SendInventoryList(CreaturePointer pCreature);
-	void SendTrainerList(CreaturePointer pCreature);
-	void SendCharterRequest(CreaturePointer pCreature);
-	void SendTaxiList(CreaturePointer pCreature);
-	void SendInnkeeperBind(CreaturePointer pCreature);
-	void SendBattlegroundList(CreaturePointer pCreature, uint32 mapid);
-	void SendBankerList(CreaturePointer pCreature);
-	void SendTabardHelp(CreaturePointer pCreature);
-	void SendAuctionList(CreaturePointer pCreature);
-	void SendSpiritHealerRequest(CreaturePointer pCreature);
-	void FullLogin(PlayerPointer plr);
-    void SendAccountDataTimes(uint32 mask);
+	void SendInventoryList(Creature* pCreature);
+	void SendTrainerList(Creature* pCreature);
+	void SendCharterRequest(Creature* pCreature);
+	void SendTaxiList(Creature* pCreature);
+	void SendInnkeeperBind(Creature* pCreature);
+	void SendBattlegroundList(Creature* pCreature, uint32 mapid);
+	void SendBankerList(Creature* pCreature);
+	void SendTabardHelp(Creature* pCreature);
+	void SendAuctionList(Creature* pCreature);
+	void SendSpiritHealerRequest(Creature* pCreature);
+	void FullLogin(Player* plr);
+	void SendAccountDataTimes(uint32 mask);
 	
 	float m_wLevel; // Level of water the player is currently in
 	bool m_bIsWLevelSet; // Does the m_wLevel variable contain up-to-date information about water level?
@@ -777,7 +777,7 @@ public:
 
 private:
 	friend class Player;
-	PlayerPointer _player;
+	Player* _player;
 	WorldSocket *_socket;
 		
 	/* Preallocated buffers for movement handlers */
@@ -807,7 +807,7 @@ private:
 	uint32 instanceId;
 	uint8 _updatecount;
 public:
-	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, PlayerPointer pPlayer, uint32 mapid);
+	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid);
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
 	time_t floodTime;

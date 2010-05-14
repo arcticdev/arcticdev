@@ -85,7 +85,7 @@ float CalculateDistance(float x1, float y1, float z1, float x2, float y2, float 
 	return sqrt(dx*dx + dy*dy + dz*dz);
 }
 
-StrandOfTheAncients::StrandOfTheAncients(MapMgrPointer mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
+StrandOfTheAncients::StrandOfTheAncients(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr,id,lgroup,t)
 {
 	Attackers = RandomUInt(2)-1;
 	BattleRound = 1;
@@ -195,7 +195,7 @@ void StrandOfTheAncients::Init()
 	CBattleground::Init();
 }
 
-bool StrandOfTheAncients::HookHandleRepop(PlayerPointer plr)
+bool StrandOfTheAncients::HookHandleRepop(Player* plr)
 {
 	LocationVector dest;
 
@@ -206,16 +206,16 @@ bool StrandOfTheAncients::HookHandleRepop(PlayerPointer plr)
 	return true;
 }
 
-void StrandOfTheAncients::HookOnAreaTrigger(PlayerPointer plr, uint32 id)
+void StrandOfTheAncients::HookOnAreaTrigger(Player* plr, uint32 id)
 {
 }
 
-void StrandOfTheAncients::HookOnPlayerDeath(PlayerPointer plr)
+void StrandOfTheAncients::HookOnPlayerDeath(Player* plr)
 {
 	plr->m_bgScore.Deaths++;
 	UpdatePvPData();
 }
-void StrandOfTheAncients::OnPlatformTeleport(PlayerPointer plr)
+void StrandOfTheAncients::OnPlatformTeleport(Player* plr)
 {
 	LocationVector dest;
 	uint32 closest_platform = 0;
@@ -241,21 +241,21 @@ void StrandOfTheAncients::OnPlatformTeleport(PlayerPointer plr)
 	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest);
 }
 
-void StrandOfTheAncients::HookFlagDrop(PlayerPointer plr, GameObjectPointer obj)
+void StrandOfTheAncients::HookFlagDrop(Player* plr, GameObject* obj)
 {
 }
 
-void StrandOfTheAncients::HookFlagStand(PlayerPointer plr, GameObjectPointer obj)
+void StrandOfTheAncients::HookFlagStand(Player* plr, GameObject* obj)
 {
 }
 
-bool StrandOfTheAncients::HookSlowLockOpen(GameObjectPointer pGo, PlayerPointer pPlayer, SpellPointer pSpell)
+bool StrandOfTheAncients::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
 {
 	Respawn();
 	OnStart();
 	if(BattleRound == 1)
 	{
-		sEventMgr.RemoveEvents(TO_SOTA( shared_from_this() ), EVENT_SOTA_TIMER);
+		sEventMgr.RemoveEvents(TO_SOTA( this ), EVENT_SOTA_TIMER);
 		PlaySoundToAll( 8212 );
 		pPlayer->CastSpell(pPlayer,52459,true);
 		if(pPlayer->GetTeam() == Attackers)
@@ -389,17 +389,17 @@ void StrandOfTheAncients::Respawn()
 	}
 }
 
-void StrandOfTheAncients::HookOnMount(PlayerPointer plr)
+void StrandOfTheAncients::HookOnMount(Player* plr)
 {
 }
 
-void StrandOfTheAncients::OnAddPlayer(PlayerPointer plr)
+void StrandOfTheAncients::OnAddPlayer(Player* plr)
 {
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
 }
 
-void StrandOfTheAncients::OnRemovePlayer(PlayerPointer plr)
+void StrandOfTheAncients::OnRemovePlayer(Player* plr)
 {
 	plr->RemoveAura(BG_PREPARATION);
 }
@@ -416,13 +416,13 @@ void StrandOfTheAncients::OnCreate()
 	sm.CreateWorldState( WORLDSTATE_SOTA_TIMER_3, 0 );
 }
 
-void StrandOfTheAncients::HookOnPlayerKill(PlayerPointer plr, UnitPointer pVictim)
+void StrandOfTheAncients::HookOnPlayerKill(Player* plr, Unit* pVictim)
 {
 	plr->m_bgScore.KillingBlows++;
 	UpdatePvPData();
 }
 
-void StrandOfTheAncients::HookOnHK(PlayerPointer plr)
+void StrandOfTheAncients::HookOnHK(Player* plr)
 {
 	plr->m_bgScore.HonorableKills++;
 	UpdatePvPData();
@@ -439,10 +439,10 @@ LocationVector StrandOfTheAncients::GetStartingCoords(uint32 Team)
 void StrandOfTheAncients::OnStart()
 {
 	SetTime(ROUND_LENGTH, 0);
-	sEventMgr.AddEvent( TO_SOTA( shared_from_this() ), &StrandOfTheAncients::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	sEventMgr.AddEvent( TO_SOTA( this ), &StrandOfTheAncients::TimeTick, EVENT_SOTA_TIMER, MSTIME_SECOND * 5, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
-void StrandOfTheAncients::HookGenerateLoot(PlayerPointer plr, CorpsePointer pCorpse)
+void StrandOfTheAncients::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 {
 }
 
@@ -496,10 +496,10 @@ void StrandOfTheAncients::TimeTick()
 	SetTime(GetRoundTime() - 1,0);
 	if(GetRoundTime() == 0)
 	{
-		sEventMgr.RemoveEvents(TO_SOTA( shared_from_this() ), EVENT_SOTA_TIMER);
+		sEventMgr.RemoveEvents(TO_SOTA( this ), EVENT_SOTA_TIMER);
 		if(BattleRound == 1)
 		{
-			PlayerPointer pPlayer;
+			Player* pPlayer;
 			PlaySoundToAll( 8212 );
 			pPlayer->CastSpell(pPlayer,52459,true);
 			if(pPlayer->GetTeam() == Attackers)
@@ -547,8 +547,8 @@ void StrandOfTheAncients::EndGame()
 		m_losingteam = 2;
 	m_nextPvPUpdateTime = 0;
 
-	sEventMgr.RemoveEvents(shared_from_this());
-	sEventMgr.AddEvent(TO_CBATTLEGROUND(shared_from_this()), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+	sEventMgr.RemoveEvents(this);
+	sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 	m_mainLock.Acquire();
 	// Honor is added?
@@ -556,7 +556,7 @@ void StrandOfTheAncients::EndGame()
 	SpellEntry * loser_spell = dbcSpell.LookupEntry(61159);
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<PlayerPointer  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->Root();
 

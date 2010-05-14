@@ -10,10 +10,10 @@
 class HonorHandler
 {
 public:
-	static int32 CalculateHonorPointsForKill(PlayerPointer pPlayer, UnitPointer pVictim);
-	static void RecalculateHonorFields(PlayerPointer pPlayer);
-	static void AddHonorPointsToPlayer(PlayerPointer pPlayer, uint32 uAmount);
-	static void OnPlayerKilledUnit(PlayerPointer pPlayer, UnitPointer pVictim);	
+	static int32 CalculateHonorPointsForKill(Player* pPlayer, Unit* pVictim);
+	static void RecalculateHonorFields(Player* pPlayer);
+	static void AddHonorPointsToPlayer(Player* pPlayer, uint32 uAmount);
+	static void OnPlayerKilledUnit(Player* pPlayer, Unit* pVictim);	
 	static int32 CalculateHonorPointsFormula(uint32 AttackerLevel,uint32 VictimLevel);
 };
 

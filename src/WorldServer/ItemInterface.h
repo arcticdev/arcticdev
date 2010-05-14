@@ -35,18 +35,18 @@ class ARCTIC_DECL ItemInterface
 {
 private:
 	SlotResult result;
-	PlayerPointer m_pOwner;
-	ItemPointer m_pItems[MAX_INVENTORY_SLOT+1];
-	ItemPointer m_pBuyBack[MAX_BUYBACK_SLOT+1];
+	Player* m_pOwner;
+	Item* m_pItems[MAX_INVENTORY_SLOT+1];
+	Item* m_pBuyBack[MAX_BUYBACK_SLOT+1];
 
-	AddItemResult m_AddItem(ItemPointer item, int8 ContainerSlot, int8 slot);
+	AddItemResult m_AddItem(Item* item, int8 ContainerSlot, int8 slot);
 
 public:
 	friend class ItemIterator;
-	ItemInterface( PlayerPointer pPlayer );
+	ItemInterface( Player* pPlayer );
 	~ItemInterface();
 
-	PlayerPointer GetOwner() { return m_pOwner; }
+	Player* GetOwner() { return m_pOwner; }
 	bool IsBagSlot(int8 slot);
 
 	uint32 m_CreateForPlayer(ByteBuffer *data);
@@ -55,34 +55,34 @@ public:
 	void mLoadItemsFromDatabase(QueryResult * result);
 	void mSaveItemsToDatabase(bool first, QueryBuffer * buf);
 
-	ItemPointer GetInventoryItem(int8 slot);
-	ItemPointer GetInventoryItem(int8 ContainerSlot, int8 slot);
+	Item* GetInventoryItem(int8 slot);
+	Item* GetInventoryItem(int8 ContainerSlot, int8 slot);
 	int8 GetInventorySlotById(uint32 ID);
 	int8 GetInventorySlotByGuid(uint64 guid);
 	int8 GetBagSlotByGuid(uint64 guid);
 
-	ItemPointer SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot);
-	AddItemResult SafeAddItem(ItemPointer pItem, int8 ContainerSlot, int8 slot);
-	ItemPointer SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 slot, bool destroy); //doesnt destroy item from memory
-	ItemPointer SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy);
-	ItemPointer SafeRemoveAndRetreiveItemByGuidRemoveStats(uint64 guid, bool destroy);
+	Item* SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot);
+	AddItemResult SafeAddItem(Item* pItem, int8 ContainerSlot, int8 slot);
+	Item* SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 slot, bool destroy); //doesnt destroy item from memory
+	Item* SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy);
+	Item* SafeRemoveAndRetreiveItemByGuidRemoveStats(uint64 guid, bool destroy);
 	bool SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot); //destroys item fully
 	bool SafeFullRemoveItemByGuid(uint64 guid); //destroys item fully
-	AddItemResult AddItemToFreeSlot(ItemPointer item);
-	AddItemResult AddItemToFreeBankSlot(ItemPointer item);
+	AddItemResult AddItemToFreeSlot(Item* item);
+	AddItemResult AddItemToFreeBankSlot(Item* item);
 	
 	/* Finds a stack that didn't reach max capacity
 	\param itemid The entry of the item to search for
 	\param cnt The item count you wish to add to the stack
 	\param IncBank Should this search the player's bank as well?
-	\return An ItemPointer to a stack of itemid which can contain cnt more items
+	\return An Item* to a stack of itemid which can contain cnt more items
 	*/
-	ItemPointer FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank);
+	Item* FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank);
 	uint32 GetItemCount(uint32 itemid, bool IncBank = false);
 	uint32 RemoveItemAmt(uint32 id, uint32 amt);
-	uint32 RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, ItemPointer * pointer);
+	uint32 RemoveItemAmt_ProtectPointer(uint32 id, uint32 amt, Item* * pointer);
 	void RemoveAllConjured();
-	void BuyItem(ItemPrototype *item, uint32 total_amount, CreaturePointer pVendor, ItemExtendedCostEntry *ec);
+	void BuyItem(ItemPrototype *item, uint32 total_amount, Creature* pVendor, ItemExtendedCostEntry *ec);
 
 	uint32 CalculateFreeSlots(ItemPrototype *proto);
 	void ReduceItemDurability();
@@ -97,17 +97,17 @@ public:
 	SlotResult FindAmmoBag();
 	int8 FindFreeBackPackSlot();
 	int8 FindFreeKeyringSlot();
-	int8 FindSpecialBag(ItemPointer item);
+	int8 FindSpecialBag(Item* item);
 
 
-	int8 CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPointer item, bool ignore_combat = false, bool skip_2h_check = false);
+	int8 CanEquipItemInSlot(int8 DstInvSlot, int8 slot, Item* item, bool ignore_combat = false, bool skip_2h_check = false);
 	int8 CanReceiveItem(ItemPrototype * item, uint32 amount, ItemExtendedCostEntry *ec);
-	int8 CanAffordItem(ItemPrototype * item,uint32 amount, CreaturePointer pVendor, ItemExtendedCostEntry *ec);
+	int8 CanAffordItem(ItemPrototype * item,uint32 amount, Creature* pVendor, ItemExtendedCostEntry *ec);
 	int8 GetItemSlotByType(uint32 type);
-	ItemPointer GetItemByGUID(uint64 itemGuid);
+	Item* GetItemByGUID(uint64 itemGuid);
 
 
-	void BuildInventoryChangeError(ItemPointer SrcItem, ItemPointer DstItem, uint8 Error);
+	void BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint8 Error);
 	void SwapItemSlots(int8 srcslot, int8 dstslot);
 
 	int8 GetInternalBankSlotFromPlayer(int8 islot); //converts inventory slots into 0-x numbers
@@ -115,14 +115,14 @@ public:
 	bool HasGemEquipped( uint32 GemID , int8 IgnoreSlot = -1 ); // (GemID: The item ID of the gem)
 
 	//buyback stuff
-	ARCTIC_INLINE ItemPointer GetBuyBack(int32 slot) 
+	ARCTIC_INLINE Item* GetBuyBack(int32 slot) 
 	{ 
 		if(slot >= 0 && slot <= MAX_BUYBACK_SLOT)
 			return m_pBuyBack[slot];
 		else 
 			return NULLITEM;
 	}
-	void AddBuyBackItem(ItemPointer it, uint32 price);
+	void AddBuyBackItem(Item* it, uint32 price);
 	void RemoveBuyBackItem(uint32 index);
 	void EmptyBuyBack();
 	bool IsEquipped(uint32 itemid);
@@ -182,8 +182,8 @@ class ItemIterator
 	bool m_searchInProgress;
 	uint32 m_slot;
 	uint32 m_containerSlot;
-	ContainerPointer m_container;
-	ItemPointer m_currentItem;
+	Container* m_container;
+	Item* m_currentItem;
 	ItemInterface* m_target;
 public:
 	ItemIterator(ItemInterface* target) : m_atEnd(false),m_searchInProgress(false),m_slot(0),m_containerSlot(0),m_container(NULLCONTAINER),m_target(target) {}
@@ -209,12 +209,12 @@ public:
 		m_searchInProgress=false;
 	}
 
-	ItemPointer operator*() const
+	Item* operator*() const
 	{
 		return m_currentItem;
 	}
 
-	ItemPointer operator->() const
+	Item* operator->() const
 	{
 		return m_currentItem;
 	}
@@ -285,7 +285,7 @@ public:
 		m_currentItem = NULLITEM;
 	}
 
-	ARCTIC_INLINE ItemPointer Grab() { return m_currentItem; }
+	ARCTIC_INLINE Item* Grab() { return m_currentItem; }
 	ARCTIC_INLINE bool End() { return m_atEnd; }
 };
 

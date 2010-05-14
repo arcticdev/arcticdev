@@ -199,7 +199,7 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 {
 	DEBUG_LOG("WORLD","HandleCorpseQueryOpcode Received MSG_CORPSE_QUERY");
 
-	CorpsePointer pCorpse;
+	Corpse* pCorpse;
 	//WorldPacket data(MSG_CORPSE_QUERY, 21);
 	uint8 databuffer[100];
 	StackPacket data(MSG_CORPSE_QUERY, databuffer, 100);
@@ -301,7 +301,7 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 	uint8 databuffer[10000];
 	StackPacket data(SMSG_QUESTGIVER_STATUS_MULTIPLE, databuffer, 10000);
 	Object::InRangeSet::iterator itr;
-	CreaturePointer pCreature;
+	Creature* pCreature;
 	uint32 count = 0;
 	data << count;
 

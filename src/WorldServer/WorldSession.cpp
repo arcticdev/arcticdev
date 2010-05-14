@@ -257,7 +257,7 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		if( _player->m_currentLoot && _player->IsInWorld() )
 		{
-			ObjectPointer obj = _player->GetMapMgr()->_GetObject( _player->m_currentLoot );
+			Object* obj = _player->GetMapMgr()->_GetObject( _player->m_currentLoot );
 			if( obj != NULL )
 				obj->m_loot.looters.erase(_player->GetLowGUID());
 			obj = NULLOBJ;
@@ -542,7 +542,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_MOVE_TIME_SKIPPED].handler						   = &WorldSession::HandleMoveTimeSkippedOpcode;
 	WorldPacketHandlers[CMSG_MOVE_NOT_ACTIVE_MOVER].handler					   = &WorldSession::HandleMoveNotActiveMoverOpcode;
 	WorldPacketHandlers[CMSG_SET_ACTIVE_MOVER].handler						   = &WorldSession::HandleSetActiveMoverOpcode;
-    WorldPacketHandlers[CMSG_MOVE_CHNG_TRANSPORT].handler                      = &WorldSession::HandleMovementOpcodes;
+	WorldPacketHandlers[CMSG_MOVE_CHNG_TRANSPORT].handler                      = &WorldSession::HandleMovementOpcodes;
 	
 	// ACK
 	WorldPacketHandlers[MSG_MOVE_TELEPORT_ACK].handler						   = &WorldSession::HandleMoveTeleportAckOpcode;
@@ -994,7 +994,7 @@ void WorldSession::SendChatPacket(WorldPacket * data, uint32 langpos, int32 lang
 	SendPacket(data);
 }
 
-void WorldSession::SendItemPushResult(ItemPointer pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount)
+void WorldSession::SendItemPushResult(Item* pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount)
 {
 	packetSMSG_ITEM_PUSH_RESULT data;
 	data.guid = _player->GetGUID();
@@ -1048,7 +1048,7 @@ void WorldSession::HandleAchievementInspect(WorldPacket &recv_data)
 	recv_data >> guid;
 
 	uint64 rguid = guid.GetOldGuid();
-	UnitPointer pUnit = GetPlayer()->GetMapMgr()->GetPlayer( GUID_LOPART(rguid) );
+	Unit* pUnit = GetPlayer()->GetMapMgr()->GetPlayer( GUID_LOPART(rguid) );
 	if( pUnit && pUnit->IsPlayer() && TO_PLAYER(pUnit)->GetAchievementInterface()->HasAchievements() )
     {   
 	    SendPacket(TO_PLAYER(pUnit)->GetAchievementInterface()->BuildAchievementData(true)); 
@@ -1069,7 +1069,7 @@ void WorldSession::SendAccountDataTimes(uint32 mask)
 	SendPacket(&data);
 }
 
-uint8 WorldSession::CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, PlayerPointer pPlayer, uint32 mapid)
+uint8 WorldSession::CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid)
 {
 	MapInfo* pMapInfo = WorldMapInfoStorage.LookupEntry(mapid);
 	MapEntry* map = dbcMap.LookupEntry(mapid);

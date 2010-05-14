@@ -12,7 +12,7 @@
 #include "StdAfx.h"
 createFileSingleton(StructFactory);
 
-MapScriptInterface::MapScriptInterface(MapMgrPointer mgr)
+MapScriptInterface::MapScriptInterface(MapMgr* mgr)
 {
 	mapMgr = mgr;
 }
@@ -61,9 +61,9 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 	return PlayerCount;
 }
 
-GameObjectPointer MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2)
+GameObject* MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2)
 {
-	GameObjectPointer pGameObject = mapMgr->CreateGameObject(Entry);
+	GameObject* pGameObject = mapMgr->CreateGameObject(Entry);
 	if(pGameObject == NULL || !pGameObject->CreateFromProto(Entry, mapMgr->GetMapId(), cX, cY, cZ, cO, 0.0f, 0.0f, 0.0f, 0.0f))
 		return NULLGOB;
 
@@ -76,7 +76,7 @@ GameObjectPointer MapScriptInterface::SpawnGameObject(uint32 Entry, float cX, fl
 	return pGameObject;
 }
 
-CreaturePointer MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2)
+Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2)
 {
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(Entry);
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(Entry);
@@ -85,7 +85,8 @@ CreaturePointer MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float 
 		return NULLCREATURE;
 	}
 
-	CreatureSpawn * sp = new CreatureSpawn;
+	CreatureSpawn * sp = NULL;
+	sp = new CreatureSpawn;
 	sp->entry = Entry;
 	sp->form = 0;
 	sp->id = 0;
@@ -107,8 +108,14 @@ CreaturePointer MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float 
 	sp->phase = 1;
 	sp->vehicle = proto->vehicle_entry;
 
-	CreaturePointer p = this->mapMgr->CreateCreature(Entry);
-	ASSERT(p);
+	Creature* p = NULLCREATURE;
+	p = mapMgr->CreateCreature(Entry);
+	if(p == NULLCREATURE)
+	{
+		delete sp;
+		return NULLCREATURE;
+	}
+
 	p->Load(sp, (uint32)NULL, NULL);
 	p->spawnid = 0;
 	p->m_spawn = NULL;
@@ -120,15 +127,15 @@ CreaturePointer MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float 
 	return p;
 }
 
-void MapScriptInterface::DeleteCreature(CreaturePointer ptr)
+void MapScriptInterface::DeleteCreature(Creature* ptr)
 {
-	ptr->Destructor();
+	delete ptr;
 	ptr = NULLCREATURE;
 }
 
-void MapScriptInterface::DeleteGameObject(GameObjectPointer ptr)
+void MapScriptInterface::DeleteGameObject(GameObject* ptr)
 {
-	ptr->Destructor();
+	delete ptr;
 	ptr = NULLGOB;
 }
 

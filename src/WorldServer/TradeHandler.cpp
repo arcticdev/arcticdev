@@ -23,7 +23,7 @@ void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 
 	uint32 TradeStatus = TRADE_STATUS_PROPOSED;
 
-	PlayerPointer pTarget = _player->GetMapMgr()->GetPlayer((uint32)guid);
+	Player* pTarget = _player->GetMapMgr()->GetPlayer((uint32)guid);
 	if(pTarget == NULL || !pTarget->IsInWorld())
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
 	else
@@ -68,7 +68,7 @@ void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 
 void WorldSession::HandleBeginTrade(WorldPacket & recv_data)
 {
-	PlayerPointer pTarget = NULLPLR;
+	Player* pTarget = NULLPLR;
 	uint32 TradeStatus = TRADE_STATUS_INITIATED;
 
 	if(!_player->IsInWorld() || _player->mTradeTarget == 0)
@@ -111,7 +111,7 @@ void WorldSession::HandleBusyTrade(WorldPacket & recv_data)
 
 	uint32 TradeStatus = TRADE_STATUS_PLAYER_BUSY;
 
-	PlayerPointer pTarget = _player->GetTradeTarget();
+	Player* pTarget = _player->GetTradeTarget();
 	if(pTarget == NULL || !pTarget->IsInWorld())
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
 
@@ -127,7 +127,7 @@ void WorldSession::HandleIgnoreTrade(WorldPacket & recv_data)
 
 	uint32 TradeStatus = TRADE_STATUS_PLAYER_IGNORED;
 
-	PlayerPointer pTarget = _player->GetTradeTarget();
+	Player* pTarget = _player->GetTradeTarget();
 	if(pTarget == NULL || !pTarget->IsInWorld())
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
 
@@ -149,7 +149,7 @@ void WorldSession::HandleCancelTrade(WorldPacket & recv_data)
 
 	uint32 TradeStatus = TRADE_STATUS_CANCELLED;
 
-	PlayerPointer pTarget = _player->GetTradeTarget();
+	Player* pTarget = _player->GetTradeTarget();
 	if(pTarget == NULL || !pTarget->IsInWorld())
 	{
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
@@ -174,7 +174,7 @@ void WorldSession::HandleUnacceptTrade(WorldPacket & recv_data)
 
 	uint32 TradeStatus = TRADE_STATUS_UNACCEPTED;
 
-	PlayerPointer pTarget = _player->GetTradeTarget();
+	Player* pTarget = _player->GetTradeTarget();
 	if(pTarget == NULL || !pTarget->IsInWorld())
 	{
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
@@ -203,11 +203,11 @@ void WorldSession::HandleSetTradeItem(WorldPacket & recv_data)
 	int8 SourceBag = recv_data.contents()[1];
 	uint8 SourceSlot = recv_data.contents()[2];
 
-	PlayerPointer pTarget = _player->GetTradeTarget();
+	Player* pTarget = _player->GetTradeTarget();
 	if(pTarget == NULL || !pTarget->IsInWorld() || TradeSlot > 6)
 		return;
 
-	ItemPointer pItem = _player->GetItemInterface()->GetInventoryItem(SourceBag, SourceSlot);
+	Item* pItem = _player->GetItemInterface()->GetInventoryItem(SourceBag, SourceSlot);
 	if( pItem == NULL )
 		return;
 
@@ -275,7 +275,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 
 	uint32 TradeStatus = TRADE_STATUS_ACCEPTED;
 
-	PlayerPointer pTarget = _player->GetTradeTarget();
+	Player* pTarget = _player->GetTradeTarget();
 	if(pTarget == NULL || !pTarget->IsInWorld())
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
 
@@ -291,7 +291,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 		// Ready!
 		uint32 ItemCount = 0;
 		uint32 TargetItemCount = 0;
-		ItemPointer pItem;
+		Item* pItem;
 
 		// Count items on both sides, check if bags are empty.
 		for(uint32 Index = 0; Index < 6; ++Index)

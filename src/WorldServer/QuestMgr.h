@@ -36,53 +36,53 @@ public:
 
 	~QuestMgr();
 
-	uint32 PlayerMeetsReqs(PlayerPointer plr, Quest* qst, bool skiplevelcheck);
+	uint32 PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck);
 
-	uint8 CalcStatus(ObjectPointer quest_giver, PlayerPointer plr);
-	uint32 CalcQuestStatus(ObjectPointer quest_giver, PlayerPointer plr, QuestRelation* qst);
-	uint32 CalcQuestStatus(ObjectPointer quest_giver, PlayerPointer plr, Quest* qst, uint8 type, bool skiplevelcheck);
-	uint32 ActiveQuestsCount(ObjectPointer quest_giver, PlayerPointer plr);
+	uint8 CalcStatus(Object* quest_giver, Player* plr);
+	uint32 CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation* qst);
+	uint32 CalcQuestStatus(Object* quest_giver, Player* plr, Quest* qst, uint8 type, bool skiplevelcheck);
+	uint32 ActiveQuestsCount(Object* quest_giver, Player* plr);
 
 	// Packet Forging...
-	void BuildOfferReward(WorldPacket* data,Quest* qst, ObjectPointer qst_giver, uint32 menutype, uint32 language, PlayerPointer plr);
-	void BuildQuestDetails(WorldPacket* data, Quest* qst, ObjectPointer qst_giver, uint32 menutype, uint32 language, PlayerPointer plr);	
-	void BuildRequestItems(WorldPacket* data, Quest* qst, ObjectPointer qst_giver, uint32 status, uint32 language);
-	void BuildQuestComplete(PlayerPointer , Quest* qst);
-	void BuildQuestList(WorldPacket* data, ObjectPointer qst_giver, PlayerPointer plr, uint32 language);
-	bool OnActivateQuestGiver(ObjectPointer qst_giver, PlayerPointer plr);
-    bool isRepeatableQuestFinished(PlayerPointer plr, Quest *qst);
+	void BuildOfferReward(WorldPacket* data,Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player* plr);
+	void BuildQuestDetails(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 menutype, uint32 language, Player* plr);	
+	void BuildRequestItems(WorldPacket* data, Quest* qst, Object* qst_giver, uint32 status, uint32 language);
+	void BuildQuestComplete(Player* , Quest* qst);
+	void BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr, uint32 language);
+	bool OnActivateQuestGiver(Object* qst_giver, Player* plr);
+    bool isRepeatableQuestFinished(Player* plr, Quest *qst);
 
-	void SendQuestUpdateAddKill(PlayerPointer plr, uint32 questid, uint32 entry, uint32 count, uint32 tcount, uint64 guid);
+	void SendQuestUpdateAddKill(Player* plr, uint32 questid, uint32 entry, uint32 count, uint32 tcount, uint64 guid);
 	void BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count);
 	void BuildQuestUpdateComplete(WorldPacket* data, Quest* qst);
 	void BuildQuestFailed(WorldPacket* data, uint32 questid);
-	void SendPushToPartyResponse(PlayerPointer plr, PlayerPointer pTarget, uint32 response);
+	void SendPushToPartyResponse(Player* plr, Player* pTarget, uint32 response);
 
-	bool OnGameObjectActivate(PlayerPointer plr, GameObjectPointer go);
-	void _OnPlayerKill(PlayerPointer plr, uint32 creature_entry);
-	void OnPlayerKill(PlayerPointer plr, CreaturePointer victim);
-	void OnPlayerCast(PlayerPointer plr, uint32 spellid, uint64& victimguid);
-	void OnPlayerItemPickup(PlayerPointer plr, ItemPointer item);
-	void OnPlayerExploreArea(PlayerPointer plr, uint32 AreaID);
-	void OnPlayerSlain(PlayerPointer plr, PlayerPointer victim);
-	void OnQuestAccepted(PlayerPointer plr, Quest* qst, ObjectPointer qst_giver);
-	void OnQuestFinished(PlayerPointer plr, Quest* qst, ObjectPointer qst_giver, uint32 reward_slot);
+	bool OnGameObjectActivate(Player* plr, GameObject* go);
+	void _OnPlayerKill(Player* plr, uint32 creature_entry);
+	void OnPlayerKill(Player* plr, Creature* victim);
+	void OnPlayerCast(Player* plr, uint32 spellid, uint64& victimguid);
+	void OnPlayerItemPickup(Player* plr, Item* item);
+	void OnPlayerExploreArea(Player* plr, uint32 AreaID);
+	void OnPlayerSlain(Player* plr, Player* victim);
+	void OnQuestAccepted(Player* plr, Quest* qst, Object* qst_giver);
+	void OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint32 reward_slot);
 	bool SkippedKills( uint32 QuestID );
 
-	void GiveQuestRewardReputation(PlayerPointer plr, Quest* qst, ObjectPointer qst_giver);
-	void GiveQuestTitleReward(PlayerPointer plr, Quest* qst);
+	void GiveQuestRewardReputation(Player* plr, Quest* qst, Object* qst_giver);
+	void GiveQuestTitleReward(Player* plr, Quest* qst);
 
-	uint32 GenerateQuestXP(PlayerPointer pl, Quest *qst);
-	uint32 GenerateRewardMoney(PlayerPointer pl, Quest *qst);
+	uint32 GenerateQuestXP(Player* pl, Quest *qst);
+	uint32 GenerateRewardMoney(Player* pl, Quest *qst);
 
-	void SendQuestInvalid( INVALID_REASON reason, PlayerPointer plyr);
-	void SendQuestFailed(FAILED_REASON failed, Quest *qst, PlayerPointer plyr);
-	void SendQuestUpdateFailed(Quest *pQuest, PlayerPointer plyr);
-	void SendQuestUpdateFailedTimer(Quest *pQuest, PlayerPointer plyr);
-	void SendQuestLogFull(PlayerPointer plyr);
+	void SendQuestInvalid( INVALID_REASON reason, Player* plyr);
+	void SendQuestFailed(FAILED_REASON failed, Quest *qst, Player* plyr);
+	void SendQuestUpdateFailed(Quest *pQuest, Player* plyr);
+	void SendQuestUpdateFailedTimer(Quest *pQuest, Player* plyr);
+	void SendQuestLogFull(Player* plyr);
 	
-	void LoadNPCQuests(CreaturePointer qst_giver);
-	void LoadGOQuests(GameObjectPointer go);
+	void LoadNPCQuests(Creature* qst_giver);
+	void LoadGOQuests(GameObject* go);
 
 	QuestRelationList* GetCreatureQuestList(uint32 entryid);
 	QuestRelationList* GetGOQuestList(uint32 entryid);
@@ -93,7 +93,7 @@ public:
 	ARCTIC_INLINE bool IsQuestRepeatable(Quest *qst) { return (qst->is_repeatable!=0 ? true : false); }
 	ARCTIC_INLINE bool IsQuestDaily(Quest *qst) { return (qst->is_repeatable==2 ? true : false); }
 
-	bool CanStoreReward(PlayerPointer plyr, Quest *qst, uint32 reward_slot);
+	bool CanStoreReward(Player* plyr, Quest *qst, uint32 reward_slot);
 
 	ARCTIC_INLINE int32 QuestHasMob(Quest* qst, uint32 mob)
 	{

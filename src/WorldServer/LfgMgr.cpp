@@ -34,7 +34,7 @@ LfgMgr::~LfgMgr()
 {	
 }
 
-bool LfgMgr::AttemptLfgJoin(PlayerPointer pl, uint32 LfgDungeonId)
+bool LfgMgr::AttemptLfgJoin(Player* pl, uint32 LfgDungeonId)
 {
 	if( pl == NULL )
 		return false;
@@ -45,7 +45,7 @@ bool LfgMgr::AttemptLfgJoin(PlayerPointer pl, uint32 LfgDungeonId)
 	return false;
 }
 
-void LfgMgr::SetPlayerInLFGqueue(PlayerPointer pl,uint32 LfgDungeonId)
+void LfgMgr::SetPlayerInLFGqueue(Player* pl,uint32 LfgDungeonId)
 {
 	if( pl == NULL )
 		return;
@@ -62,7 +62,7 @@ void LfgMgr::SetPlayerInLFGqueue(PlayerPointer pl,uint32 LfgDungeonId)
 	m_lock.Release();
 }
 
-void LfgMgr::RemovePlayerFromLfgQueues(PlayerPointer pl)
+void LfgMgr::RemovePlayerFromLfgQueues(Player* pl)
 {
 	if( pl == NULL )
 		return;
@@ -95,7 +95,7 @@ void LfgMgr::RemovePlayerFromLfgQueues(PlayerPointer pl)
 	m_lock.Release();
 }
 
-void LfgMgr::RemovePlayerFromLfgQueue( PlayerPointer plr, uint32 LfgDungeonId )
+void LfgMgr::RemovePlayerFromLfgQueue( Player* plr, uint32 LfgDungeonId )
 {
 	if( plr == NULL )
 		return;
@@ -121,7 +121,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 	LfgPlayerList::iterator itr;
 	LfgPlayerList::iterator it2;
 	LfgPlayerList::iterator it3;
-	PlayerPointer plr;
+	Player* plr;
 	uint32 i;
 	//LfgMatch * pMatch;
 
@@ -208,7 +208,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 	m_lock.Release();
 }
 
-void LfgMgr::SendLfgList( PlayerPointer plr, uint32 Dungeon )
+void LfgMgr::SendLfgList( Player* plr, uint32 Dungeon )
 {
 	if( plr == NULL )
 		return;
@@ -219,7 +219,7 @@ void LfgMgr::SendLfgList( PlayerPointer plr, uint32 Dungeon )
 	LfgPlayerList::iterator itr;
 	GroupMembersSet::iterator it2;
 	uint32 count = 0;
-	PlayerPointer pl;
+	Player* pl;
 	uint32 i;
 	uint64 tguid;
 	SubGroup * sgrp;
@@ -300,7 +300,7 @@ void LfgMgr::SendLfgList( PlayerPointer plr, uint32 Dungeon )
     plr->GetSession()->SendPacket(&data);
 }
 
-void LfgMgr::SetPlayerInLfmList(PlayerPointer pl, uint32 LfgDungeonId)
+void LfgMgr::SetPlayerInLfmList(Player* pl, uint32 LfgDungeonId)
 {
 	if( pl == NULL )
 		return;
@@ -316,7 +316,7 @@ void LfgMgr::SetPlayerInLfmList(PlayerPointer pl, uint32 LfgDungeonId)
 	m_lock.Release();
 }
 
-void LfgMgr::RemovePlayerFromLfmList(PlayerPointer pl, uint32 LfmDungeonId)
+void LfgMgr::RemovePlayerFromLfmList(Player* pl, uint32 LfmDungeonId)
 {
 	if( pl == NULL )
 		return;

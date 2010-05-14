@@ -28,13 +28,13 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	uint8 error = 0;
 	SlotResult slotresult;
 
-	ItemPointer add;
+	Item* add;
 
 	if(_player->isCasting())
 		_player->InterruptCurrentSpell();
 
-	GameObjectPointer pGO = NULLGOB;
-	ObjectPointer pLootObj;
+	GameObject* pGO = NULLGOB;
+	Object* pLootObj;
 	
 	// handle item loot
 	uint64 guid = _player->GetLootGUID();
@@ -98,7 +98,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		}
 	
 		DEBUG_LOG("HandleAutostoreItem","AutoLootItem %u",itemid);
-		ItemPointer item = objmgr.CreateItem( itemid, GetPlayer());
+		Item* item = objmgr.CreateItem( itemid, GetPlayer());
 	   
 		item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 		if(pLootObj->m_loot.items.at(lootSlot).iRandomProperty!=NULL)
@@ -141,7 +141,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		WorldPacket data(1);
 		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << lootSlot;
-		PlayerPointer plr;
+		Player* plr;
 		for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); ++itr)
 		{
 			plr = _player->GetMapMgr()->GetPlayer((*itr));
@@ -178,8 +178,8 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 	
 	// lookup the object we will be looting
 	// TODO: Handle item guids
-	ObjectPointer pLootObj = _player->GetMapMgr()->_GetObject(_player->GetLootGUID());
-	PlayerPointer plr;
+	Object* pLootObj = _player->GetMapMgr()->_GetObject(_player->GetLootGUID());
+	Player* plr;
 	if( pLootObj == NULL )
 		return;
 	
@@ -208,7 +208,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		Group* party = _player->GetGroup();
 		pLootObj->m_loot.gold = 0;
 
-		vector<PlayerPointer  > targets;
+		vector<Player*  > targets;
 		targets.reserve(party->MemberCount());
 
 		GroupMembersSet::iterator itr;
@@ -234,7 +234,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		StackPacket pkt(SMSG_LOOT_MONEY_NOTIFY, databuf, 50);
 		pkt << share;
 
-		for(vector<PlayerPointer  >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+		for(vector<Player*  >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 		{
 			if(((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) >= PLAYER_MAX_GOLD)
 				continue;
@@ -313,7 +313,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 	// special case
 	if( GET_TYPE_FROM_GUID( guid ) == HIGHGUID_TYPE_GAMEOBJECT )
 	{	   
-		GameObjectPointer pGO = _player->GetMapMgr()->GetGameObject( GET_LOWGUID_PART(guid) );
+		GameObject* pGO = _player->GetMapMgr()->GetGameObject( GET_LOWGUID_PART(guid) );
 		if( pGO == NULL )
 			return;
 
@@ -419,7 +419,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 	else if( GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_ITEM )
 	{
 		// if we have no items left, destroy the item.
-		ItemPointer pItem = _player->GetItemInterface()->GetItemByGUID(guid);
+		Item* pItem = _player->GetItemInterface()->GetItemByGUID(guid);
 		if( pItem != NULL )
 		{
 			if( !pItem->m_loot.HasItems(_player) )
@@ -431,7 +431,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 
 	else if( GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_UNIT )
 	{
-		UnitPointer pLootTarget = _player->GetMapMgr()->GetUnit(guid);
+		Unit* pLootTarget = _player->GetMapMgr()->GetUnit(guid);
 		if( pLootTarget != NULL )
 		{
 			pLootTarget->m_loot.looters.erase(_player->GetLowGUID());
@@ -450,7 +450,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 
 	else if( GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_CORPSE )
 	{
-		CorpsePointer pCorpse = objmgr.GetCorpse((uint32)guid);
+		Corpse* pCorpse = objmgr.GetCorpse((uint32)guid);
 		if( pCorpse != NULL && !pCorpse->m_loot.HasLoot(_player) )
 			pCorpse->Despawn();
 	}
@@ -520,7 +520,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	uint32 total_count = 0;
 
 	PlayerStorageMap::const_iterator itr,iend;
-	PlayerPointer plr;
+	Player* plr;
 	uint32 lvl;
 	bool add;
 	WorldPacket data;
@@ -637,7 +637,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 {
-	PlayerPointer pPlayer = GetPlayer();
+	Player* pPlayer = GetPlayer();
 	WorldPacket data(SMSG_LOGOUT_RESPONSE, 9);
 
 	DEBUG_LOG( "WORLD"," Recvd CMSG_LOGOUT_REQUEST Message" );
@@ -696,7 +696,7 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 
 	DEBUG_LOG( "WORLD"," Recvd CMSG_LOGOUT_CANCEL Message" );
 
-	PlayerPointer pPlayer = GetPlayer();
+	Player* pPlayer = GetPlayer();
 	if(!pPlayer || !_logoutTime)
 		return;
 
@@ -794,7 +794,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	uint64 guid;
 	recv_data >> guid;
 
-	CorpsePointer pCorpse = objmgr.GetCorpse( (uint32)guid );
+	Corpse* pCorpse = objmgr.GetCorpse( (uint32)guid );
 
 	if( pCorpse == NULL )
 		return;
@@ -851,7 +851,7 @@ void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 	}
 
 	// need to check guid
-	PlayerPointer pl = _player->GetMapMgr()->GetPlayer((uint32)guid);
+	Player* pl = _player->GetMapMgr()->GetPlayer((uint32)guid);
 	if(!pl)
 		pl = objmgr.GetPlayer((uint32)guid);
 	
@@ -1132,11 +1132,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	uint64 guid;
 	recv_data >> guid;
 	SpellCastTargets targets;
-	SpellPointer spell = NULLSPELL;
+	Spell* spell = NULLSPELL;
 	SpellEntry *spellInfo = NULL;
 	OUT_DEBUG("WORLD: CMSG_GAMEOBJ_USE: [GUID %d]", guid);   
 
-	GameObjectPointer obj = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
+	GameObject* obj = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 	if (!obj)
 		return;
 
@@ -1144,7 +1144,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	if (!goinfo)
 		return;
 
-	PlayerPointer plyr = GetPlayer();
+	Player* plyr = GetPlayer();
    
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
 	
@@ -1167,7 +1167,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		case GAMEOBJECT_TYPE_CHEST: // cast da spell
 		{
 			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
-			spell = SpellPointer(new Spell(plyr, spellInfo, true, NULLAURA));
+			spell = Spell*(new Spell(plyr, spellInfo, true, NULLAURA));
 			_player->m_currentSpell = spell;
 			targets.m_unitTarget = obj->GetGUID();
 			spell->prepare(&targets); 
@@ -1248,7 +1248,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
 			if(!info)
 				break;
-			SpellPointer spell(new Spell(plyr, info, false, NULLAURA));
+			Spell* spell(new Spell(plyr, info, false, NULLAURA));
 			// spell->SpellByOther = true;
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
@@ -1284,7 +1284,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if(i == goinfo->SpellFocus - 1)
 			{
 				obj->m_ritualspell = 0;
-				PlayerPointer plr;
+				Player* plr;
 				for(i=0;i<goinfo->SpellFocus;i++)
 				{
 					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
@@ -1303,66 +1303,66 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					info = dbcSpell.LookupEntry(goinfo->sound1);
 					if(!info)
 						break;
-					PlayerPointer target = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
+					Player* target = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
 					if(!target)
 						return;
 
-					spell = SpellPointer(new Spell(obj,info,true,NULLAURA));
+					spell = Spell*(new Spell(obj,info,true,NULLAURA));
 					SpellCastTargets targets;
 					targets.m_unitTarget = target->GetGUID();
 					spell->prepare(&targets);
 				}
 				else if(goinfo->ID == 177193) // doom portal
 				{
-					PlayerPointer psacrifice = NULLPLR;
-					SpellPointer spell = NULLSPELL;
+					Player* psacrifice = NULLPLR;
+					Spell* spell = NULLSPELL;
 					
 					// kill the sacrifice player
 					psacrifice = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[(int)(rand()%(goinfo->SpellFocus-1))]);
-					PlayerPointer pCaster = obj->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+					Player* pCaster = obj->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 					if(!psacrifice || !pCaster)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound4);
 					if(!info)
 						break;
-					spell = SpellPointer(new Spell(psacrifice, info, true, NULLAURA));
+					spell = Spell*(new Spell(psacrifice, info, true, NULLAURA));
 					targets.m_unitTarget = psacrifice->GetGUID();
 					spell->prepare(&targets);
 					
 					// summons demon		   
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					spell = SpellPointer(new Spell(pCaster, info, true, NULLAURA));
+					spell = Spell*(new Spell(pCaster, info, true, NULLAURA));
 					SpellCastTargets targets;
 					targets.m_unitTarget = pCaster->GetGUID();
 					spell->prepare(&targets);					
 				}
 				else if(goinfo->ID == 179944)			// Summoning portal for meeting stones
 				{
-					PlayerPointer plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
+					Player* plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualtarget);
 					if(!plr)
 						return;
 
-					PlayerPointer pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+					Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 					if(!pleader)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					SpellPointer spell(new Spell(pleader, info, true, NULLAURA));
+					Spell* spell(new Spell(pleader, info, true, NULLAURA));
 					SpellCastTargets targets(plr->GetGUID());
 					spell->prepare(&targets);
 
-					// expire the GameObjectPointer.
+					// expire the GameObject*.
 					obj->ExpireAndDelete();
 				}
 				else if(goinfo->ID == 194108)			// Ritual of Summoning portal for warlocks
 				{
-					PlayerPointer pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+					Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 					if(!pleader)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					SpellPointer spell(new Spell(pleader, info, true, NULLAURA));
+					Spell* spell(new Spell(pleader, info, true, NULLAURA));
 					SpellCastTargets targets(pleader->GetGUID());
 					spell->prepare(&targets);
 
@@ -1371,12 +1371,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				}
 				else if( goinfo->ID == 186811 || goinfo->ID == 193062 ) // ritual of refreshment
 				{
-					PlayerPointer pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+					Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 					if(!pleader)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					SpellPointer spell(new Spell(pleader, info, true, NULLAURA));
+					Spell* spell(new Spell(pleader, info, true, NULLAURA));
 					SpellCastTargets targets(pleader->GetGUID());
 					spell->prepare(&targets);
 				         
@@ -1385,12 +1385,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				}
 				else if( goinfo->ID == 181622 || goinfo->ID == 193168 ) // ritual of souls
 				{
-					PlayerPointer pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
+					Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 					if(!pleader)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					SpellPointer spell(new Spell(pleader, info, true, NULLAURA));
+					Spell* spell(new Spell(pleader, info, true, NULLAURA));
 					SpellCastTargets targets(pleader->GetGUID());
 					spell->prepare(&targets);
 				}
@@ -1408,7 +1408,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		case GAMEOBJECT_TYPE_MEETINGSTONE:	// Meeting Stone
 		{
 			// Use selection.
-			PlayerPointer pPlayer = objmgr.GetPlayer((uint32)_player->GetSelection());
+			Player* pPlayer = objmgr.GetPlayer((uint32)_player->GetSelection());
 			if(!pPlayer || _player->GetGroup() != pPlayer->GetGroup() || !_player->GetGroup())
 				return;
 
@@ -1417,11 +1417,11 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				return;
 
 			// Create the summoning portal.
-			GameObjectPointer pGo = _player->GetMapMgr()->CreateGameObject(179944);
+			GameObject* pGo = _player->GetMapMgr()->CreateGameObject(179944);
 			if( pGo == NULL || !pGo->CreateFromProto(179944, _player->GetMapId(), _player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), 0.0f, 0.0f, 0.0f, 0.0f, 0.0f))
 				return;
             // dont allow to spam them 
- 	        GameObjectPointer gobj = _player->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(_player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), 179944); 
+ 	        GameObject* gobj = _player->GetMapMgr()->GetInterface()->GetGameObjectNearestCoords(_player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), 179944); 
  	        if( gobj ) 
  	        gobj->ExpireAndDelete(); 
 			
@@ -1519,7 +1519,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	uint32 talent_points = 61;
 	recv_data >> guid;
 
-	PlayerPointer player = _player->GetMapMgr()->GetPlayer( (uint32)guid );
+	Player* player = _player->GetMapMgr()->GetPlayer( (uint32)guid );
     
 	if( player == NULL )
 		return;
@@ -1537,7 +1537,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	data << uint32(slotUsedMask);	// will be replaced later
 	for(uint32 slot = 0; slot < EQUIPMENT_SLOT_END; slot++)
 	{
-		ItemPointer item = player->GetItemInterface()->GetInventoryItem(slot);
+		Item* item = player->GetItemInterface()->GetInventoryItem(slot);
 		if( item )
 		{
 			slotUsedMask |= 1 << slot;
@@ -1619,7 +1619,7 @@ void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
 	if(self_res_spell)
 	{
 		SpellEntry * sp = dbcSpell.LookupEntry(self_res_spell);
-		SpellPointer s(new Spell(_player,sp,false,NULLAURA));
+		Spell* s(new Spell(_player,sp,false,NULLAURA));
 		SpellCastTargets tgt;
 		tgt.m_unitTarget=_player->GetGUID();
 		s->prepare(&tgt);	
@@ -1664,7 +1664,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	uint8 error = 0;
 	SlotResult slotresult;
 
-	CreaturePointer pCreature = NULLCREATURE;
+	Creature* pCreature = NULLCREATURE;
 	Loot * m_loot = NULL;
 
 	/* struct:
@@ -1687,7 +1687,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	if(_player->GetGroup() == NULL || _player->GetGroup()->GetLooter() != _player->m_playerInfo)
 		return;
 
-	PlayerPointer player = _player->GetMapMgr()->GetPlayer((uint32)target_playerguid);
+	Player* player = _player->GetMapMgr()->GetPlayer((uint32)target_playerguid);
 	if(!player)
 	    return;
 
@@ -1750,7 +1750,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		return;
 	}
 
-	ItemPointer item = objmgr.CreateItem( itemid, player);
+	Item* item = objmgr.CreateItem( itemid, player);
 	
 	item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
 	if(m_loot->items.at(slotid).iRandomProperty!=NULL)
@@ -1786,7 +1786,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		WorldPacket data( 1 );
 		data.SetOpcode( SMSG_LOOT_REMOVED );
 		data << slotid;
-		PlayerPointer plr;
+		Player* plr;
 		for(LooterSet::iterator itr = m_loot->looters.begin(); itr != m_loot->looters.end(); ++itr)
 		{
 			if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
@@ -1820,12 +1820,12 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 	uint8 choice;
 	recv_data >> creatureguid >> slotid >> choice;
 
-	LootRollPointer li = NULLROLL;
+	LootRoll* li = NULLROLL;
 
 	uint32 guidtype = GET_TYPE_FROM_GUID(creatureguid);
 	if (guidtype == HIGHGUID_TYPE_GAMEOBJECT) 
 	{
-		GameObjectPointer pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(creatureguid));
+		GameObject* pGO = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(creatureguid));
 		if (!pGO)
 			return;
 		if (slotid >= pGO->m_loot.items.size() || pGO->m_loot.items.size() == 0)
@@ -1836,7 +1836,7 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 	else if (guidtype == HIGHGUID_TYPE_UNIT) 
 	{
 		// Creatures
-		CreaturePointer pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creatureguid));
+		Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creatureguid));
 		if (!pCreature)
 			return;
 
@@ -1861,7 +1861,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 	int8 slot, containerslot;
 	recv_data >> containerslot >> slot;
 
-	ItemPointer pItem = _player->GetItemInterface()->GetInventoryItem(containerslot, slot);
+	Item* pItem = _player->GetItemInterface()->GetInventoryItem(containerslot, slot);
 	if(!pItem)
 		return;
 

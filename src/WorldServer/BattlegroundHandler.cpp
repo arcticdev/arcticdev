@@ -65,7 +65,7 @@ void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 }
 
 // Returns -1 if indeterminable.
-int32 GetBattlegroundTypeFromCreature(CreaturePointer pCreature)
+int32 GetBattlegroundTypeFromCreature(Creature* pCreature)
 {
 	switch (pCreature->m_factionDBC->ID)
 	{
@@ -129,7 +129,7 @@ int32 GetBattlegroundTypeFromCreature(CreaturePointer pCreature)
 	return -1;
 }
 
-void WorldSession::SendBattlegroundList(CreaturePointer pCreature, uint32 mapid)
+void WorldSession::SendBattlegroundList(Creature* pCreature, uint32 mapid)
 {
 	if(!pCreature)
 		return;
@@ -148,7 +148,7 @@ void WorldSession::HandleBattleMasterHelloOpcode(WorldPacket &recv_data)
 	recv_data >> guid;
 
 	CHECK_INWORLD_RETURN;
-	CreaturePointer pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(guid) );
+	Creature* pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(guid) );
 	if( pCreature == NULL )
 		return;
 
@@ -167,7 +167,7 @@ void WorldSession::HandleAreaSpiritHealerQueryOpcode(WorldPacket &recv_data)
 	uint64 guid;
 	recv_data >> guid;
 
-	CreaturePointer psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(psg == NULL)
 		return;
 	
@@ -187,7 +187,7 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket &recv_data)
 	if(!_player->IsInWorld() || !_player->m_bg) return;
 	uint64 guid;
 	recv_data >> guid;
-	CreaturePointer psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* psg = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(psg == NULL)
 		return;
 
@@ -197,7 +197,7 @@ void WorldSession::HandleAreaSpiritHealerQueueOpcode(WorldPacket &recv_data)
 void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_data)
 {
 	// empty opcode
-	BattlegroundPointer bg = _player->m_bg;
+	CBattleground* bg = _player->m_bg;
 	if(!_player->IsInWorld() || !bg)
 		return;
 
@@ -209,10 +209,10 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
 		uint32 count1 = 0;
 		uint32 count2 = 0;
 
-		PlayerPointer ap = objmgr.GetPlayer((CAST(WarsongGulch, bg))->GetAllianceFlagHolderGUID());
+		Player* ap = objmgr.GetPlayer((CAST(WarsongGulch, bg))->GetAllianceFlagHolderGUID());
 		if(ap) ++count2;
 
-		PlayerPointer hp = objmgr.GetPlayer((CAST(WarsongGulch, bg))->GetHordeFlagHolderGUID());
+		Player* hp = objmgr.GetPlayer((CAST(WarsongGulch, bg))->GetHordeFlagHolderGUID());
 		if(hp) ++count2;
 
 		data << count1;
@@ -237,7 +237,7 @@ void WorldSession::HandleBattlegroundPlayerPositionsOpcode(WorldPacket &recv_dat
 		uint32 count1 = 0;
 		uint32 count2 = 0;
 
-		PlayerPointer ap = objmgr.GetPlayer((CAST(EyeOfTheStorm, bg))->GetFlagHolderGUID());
+		Player* ap = objmgr.GetPlayer((CAST(EyeOfTheStorm, bg))->GetFlagHolderGUID());
 		if(ap) ++count2;
 
 		data << count1;
@@ -316,7 +316,7 @@ void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
 	uint64 guid;
 	recv_data >> guid;
 
-	PlayerPointer player = _player->GetMapMgr()->GetPlayer( (uint32)guid );
+	Player* player = _player->GetMapMgr()->GetPlayer( (uint32)guid );
 	if( player == NULL )
 		return;
 	
@@ -340,7 +340,7 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
 	uint64 guid;
 	recv_data >> guid;
 
-	PlayerPointer player =  _player->GetMapMgr()->GetPlayer( (uint32)guid );
+	Player* player =  _player->GetMapMgr()->GetPlayer( (uint32)guid );
 	if( player == NULL )
 		return;
 

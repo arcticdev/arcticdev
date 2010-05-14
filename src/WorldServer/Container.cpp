@@ -72,7 +72,7 @@ void Container::LoadFromDB( Field*fields )
 	SetUInt32Value( CONTAINER_FIELD_NUM_SLOTS, m_itemProto->ContainerSlots);
 }
 
-void Container::Create( uint32 itemid, PlayerPointer owner )
+void Container::Create( uint32 itemid, Player* owner )
 {
 
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
@@ -120,7 +120,7 @@ bool Container::HasItems()
 	return false;
 }
 
-bool Container::AddItem(int8 slot, ItemPointer item)
+bool Container::AddItem(int8 slot, Item* item)
 {
 	if (slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return false;
@@ -161,7 +161,7 @@ bool Container::AddItem(int8 slot, ItemPointer item)
 
 void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 {
-	ItemPointer temp;
+	Item* temp;
 	if( SrcSlot < 0 || SrcSlot >= (int8)m_itemProto->ContainerSlots )
 		return;
 	
@@ -219,14 +219,14 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 	}
 }
 
-ItemPointer Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
+Item* Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
 {
 	if( slot < 0 || (uint32)slot >= GetProto()->ContainerSlots )
 		return NULLITEM;
 
-	ItemPointer pItem = m_Slot[slot];
+	Item* pItem = m_Slot[slot];
 
-	if( pItem == NULL || pItem == item_shared_from_this() ) return NULLITEM;
+	if( pItem == NULL || pItem == TO_ITEM(this) ) return NULLITEM;
 	m_Slot[slot] = NULLITEM;
 
 	if( pItem->GetOwner() == m_owner )
@@ -254,9 +254,9 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 	if( slot < 0 || (uint32)slot >= GetProto()->ContainerSlots )
 		return false;
 
-	ItemPointer pItem = m_Slot[slot];
+	Item* pItem = m_Slot[slot];
 
-	if( pItem == NULL ||pItem == item_shared_from_this() ) return false;
+	if( pItem == NULL ||pItem == TO_ITEM(this) ) return false;
 	m_Slot[slot] = NULLITEM;
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + slot*2, 0 );
@@ -273,7 +273,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 	return true;
 }
 
-bool Container::AddItemToFreeSlot(ItemPointer pItem, uint32 * r_slot)
+bool Container::AddItemToFreeSlot(Item* pItem, uint32 * r_slot)
 {
 	uint32 slot;
 	for(slot = 0; slot < GetProto()->ContainerSlots; slot++)

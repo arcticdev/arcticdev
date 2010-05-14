@@ -122,7 +122,7 @@ class MapMgr;
 class ARCTIC_DECL Object : public EventableObject, public std::tr1::enable_shared_from_this<Object>
 {
 public:
-	typedef unordered_set< ObjectPointer > InRangeSet;
+	typedef unordered_set< Object* > InRangeSet;
 	typedef std::map<string, void*> ExtensionSet;
 
 	virtual ~Object ( );
@@ -135,8 +135,8 @@ public:
 	
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
-	virtual void AddToWorld(MapMgrPointer pMapMgr);
-	void PushToWorld(MapMgrPointer );
+	virtual void AddToWorld(MapMgr* pMapMgr);
+	void PushToWorld(MapMgr* );
 	virtual void OnPushToWorld() { }
 	virtual void OnPrePushToWorld() { }
 	virtual void RemoveFromWorld(bool free_guid);
@@ -163,21 +163,21 @@ public:
 	ARCTIC_INLINE bool IsVehicle() { return m_isVehicle; }
 	ARCTIC_INLINE bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 	bool IsPet();
-	bool IsGiveXPorHonor(PlayerPointer plr, UnitPointer Target);
+	bool IsGiveXPorHonor(Player* plr, Unit* Target);
 
 	// This includes any nested objects we have, inventory for example.
-	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, PlayerPointer target );
-	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer *buf, PlayerPointer target );
+	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
+	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, Player* target );
 	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, UpdateMask * mask );
 	uint32 __fastcall BuildOutOfRangeUpdateBlock( ByteBuffer *buf );
 
 	WorldPacket* BuildFieldUpdatePacket(uint32 index,uint32 value);
-	void BuildFieldUpdatePacket(PlayerPointer Target, uint32 Index, uint32 Value);
+	void BuildFieldUpdatePacket(Player* Target, uint32 Index, uint32 Value);
 	void BuildFieldUpdatePacket(ByteBuffer * buf, uint32 Index, uint32 Value);
 
-	void DealDamage(UnitPointer pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId);
+	void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId);
 	
-	virtual void DestroyForPlayer( PlayerPointer target ) const;
+	virtual void DestroyForPlayer( Player* target ) const;
 
 	void BuildHeartBeatMsg( WorldPacket *data ) const;
 	WorldPacket * BuildTeleportAckMsg( const LocationVector & v);
@@ -188,8 +188,8 @@ public:
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
 	void SetRotation( uint64 guid );
 
-	void CastSpell(ObjectPointer Target, SpellEntry* Sp, bool triggered);
-	void CastSpell(ObjectPointer Target, uint32 SpellID, bool triggered);
+	void CastSpell(Object* Target, SpellEntry* Sp, bool triggered);
+	void CastSpell(Object* Target, uint32 SpellID, bool triggered);
 	void CastSpell(uint64 targetGuid, SpellEntry* Sp, bool triggered);
 	void CastSpell(uint64 targetGuid, uint32 SpellID, bool triggered);
 
@@ -213,10 +213,10 @@ public:
 	ARCTIC_INLINE LocationVector * GetPositionV() { return &m_position; }
 
 	//Distance Calculation
-	float CalcDistance(ObjectPointer Ob);
+	float CalcDistance(Object* Ob);
 	float CalcDistance(float ObX, float ObY, float ObZ);
-	float CalcDistance(ObjectPointer Oa, ObjectPointer Ob);
-	float CalcDistance(ObjectPointer Oa, float ObX, float ObY, float ObZ);
+	float CalcDistance(Object* Oa, Object* Ob);
+	float CalcDistance(Object* Oa, float ObX, float ObY, float ObZ);
 	float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
 
 	// Only for MapMgr use
@@ -224,7 +224,7 @@ public:
 	// Only for MapMgr use
 	ARCTIC_INLINE void SetMapCell(MapCell* cell) { m_mapCell = cell; }
 	// Only for MapMgr use
-	ARCTIC_INLINE MapMgrPointer GetMapMgr() const { return m_mapMgr; }
+	ARCTIC_INLINE MapMgr* GetMapMgr() const { return m_mapMgr; }
 
 	ARCTIC_INLINE void SetMapId(uint32 newMap) { m_mapId = newMap; }
 	void SetZoneId(uint32 newZone);
@@ -292,14 +292,14 @@ public:
 	bool HasUpdateField(uint32 index) { return m_updateMask.GetBit(index); }
 
 	//use it to check if a object is in range of another
-	bool isInRange(ObjectPointer target, float range);
+	bool isInRange(Object* target, float range);
 
 	// Use it to Check if a object is in front of another one
-	bool isInFront(ObjectPointer target);
-	bool isInBack(ObjectPointer target);
+	bool isInFront(Object* target);
+	bool isInBack(Object* target);
 	
 	// Check to see if an object is in front of a target in a specified arc (in degrees)
-	bool isInArc(ObjectPointer target , float degrees); 
+	bool isInArc(Object* target , float degrees); 
 
 	// Calculates the angle between two Positions.
 	float calcAngle( float Position1X, float Position1Y, float Position2X, float Position2Y );
@@ -308,7 +308,7 @@ public:
 	// converts to 360 > x > 0..
 	float getEasyAngle( float angle );
 
-	ARCTIC_INLINE const float GetDistanceSq(ObjectPointer obj)
+	ARCTIC_INLINE const float GetDistanceSq(Object* obj)
 	{
 		if(obj->GetMapId() != m_mapId) return 40000.0f; //enough for out of range
 		return m_position.DistanceSq(obj->GetPosition());
@@ -329,7 +329,7 @@ public:
 		return m_position.DistanceSq(x, y, z);
 	}
 
-	ARCTIC_INLINE const float GetDistance2dSq( ObjectPointer obj )
+	ARCTIC_INLINE const float GetDistance2dSq( Object* obj )
 	{
 		if( obj->GetMapId() != m_mapId )
 			return 40000.0f; // enough for out of range
@@ -343,12 +343,12 @@ public:
 
 
 	// In-range object management, not sure if we need it
-	ARCTIC_INLINE bool IsInRangeSet( ObjectPointer pObj )
+	ARCTIC_INLINE bool IsInRangeSet( Object* pObj )
 	{
 		return !( m_objectsInRange.find( pObj ) == m_objectsInRange.end() );
 	}
 	
-	virtual void AddInRangeObject(ObjectPointer pObj)
+	virtual void AddInRangeObject(Object* pObj)
 	{
 		if( pObj == NULL )
 			return;
@@ -359,7 +359,7 @@ public:
 			m_inRangePlayers.insert( TO_PLAYER(pObj) );
 	}
 
-	ARCTIC_INLINE void RemoveInRangeObject( ObjectPointer pObj )
+	ARCTIC_INLINE void RemoveInRangeObject( Object* pObj )
 	{
 		if( pObj == NULL )
 			return;
@@ -373,7 +373,7 @@ public:
 		return ( m_objectsInRange.size() > 0 );
 	}
 
-	virtual void OnRemoveInRangeObject( ObjectPointer pObj )
+	virtual void OnRemoveInRangeObject( Object* pObj )
 	{
 		if( pObj->GetTypeId() == TYPEID_PLAYER )
 			m_inRangePlayers.erase( TO_PLAYER(pObj) );
@@ -390,7 +390,7 @@ public:
 	ARCTIC_INLINE size_t GetInRangePlayersCount() { return m_inRangePlayers.size();}
 	ARCTIC_INLINE InRangeSet::iterator GetInRangeSetBegin() { return m_objectsInRange.begin(); }
 	ARCTIC_INLINE InRangeSet::iterator GetInRangeSetEnd() { return m_objectsInRange.end(); }
-	ARCTIC_INLINE InRangeSet::iterator FindInRangeSet(ObjectPointer obj) { return m_objectsInRange.find(obj); }
+	ARCTIC_INLINE InRangeSet::iterator FindInRangeSet(Object* obj) { return m_objectsInRange.find(obj); }
 
 	void RemoveInRangeObject(InRangeSet::iterator itr)
 	{ 
@@ -398,7 +398,7 @@ public:
 		m_objectsInRange.erase(itr);
 	}
 
-	ARCTIC_INLINE bool RemoveIfInRange( ObjectPointer obj )
+	ARCTIC_INLINE bool RemoveIfInRange( Object* obj )
 	{
 		InRangeSet::iterator itr = m_objectsInRange.find(obj);
 		if( obj->GetTypeId() == TYPEID_PLAYER )
@@ -411,23 +411,23 @@ public:
 		return true;
 	}
 
-	ARCTIC_INLINE void AddInRangePlayer( ObjectPointer obj )
+	ARCTIC_INLINE void AddInRangePlayer( Object* obj )
 	{
 		m_inRangePlayers.insert( TO_PLAYER(obj) );
 	}
 
-	ARCTIC_INLINE void RemoveInRangePlayer( ObjectPointer obj )
+	ARCTIC_INLINE void RemoveInRangePlayer( Object* obj )
 	{
 		m_inRangePlayers.erase( TO_PLAYER(obj) );
 	}
 
-	bool IsInRangeOppFactSet(ObjectPointer pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
+	bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	void UpdateOppFactionSet();
-	ARCTIC_INLINE unordered_set<ObjectPointer >::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
-	ARCTIC_INLINE unordered_set<ObjectPointer >::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
-	ARCTIC_INLINE unordered_set<PlayerPointer  >::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
-	ARCTIC_INLINE unordered_set<PlayerPointer  >::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
-	ARCTIC_INLINE unordered_set<PlayerPointer  > * GetInRangePlayerSet() { return &m_inRangePlayers; };
+	ARCTIC_INLINE unordered_set<Object* >::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
+	ARCTIC_INLINE unordered_set<Object* >::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
+	ARCTIC_INLINE unordered_set<Player*  >::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
+	ARCTIC_INLINE unordered_set<Player*  >::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
+	ARCTIC_INLINE unordered_set<Player*  > * GetInRangePlayerSet() { return &m_inRangePlayers; };
 
 	void __fastcall SendMessageToSet(WorldPacket *data, bool self,bool myteam_only=false);
 	ARCTIC_INLINE void SendMessageToSet(StackPacket * data, bool self) { OutPacketToSet(data->GetOpcode(), (uint16)data->GetSize(), data->GetBufferPointer(), self); }
@@ -451,17 +451,17 @@ public:
 	float m_base_runSpeed;
 	float m_base_walkSpeed;
 
-	void SpellNonMeleeDamageLog(UnitPointer pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false, uint32 AdditionalCritChance = 0);
+	void SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage, bool allowProc, bool static_damage = false, bool no_remove_auras = false, uint32 AdditionalCritChance = 0);
 	
 	//////////////////////////////////////////////////////////////////////////
 	// SpellLog packets just to keep the code cleaner and better to read    //
 	//////////////////////////////////////////////////////////////////////////
-	void SendSpellLog(ObjectPointer Caster, ObjectPointer Target,uint32 Ability, uint8 SpellLogType);
-	void SendSpellNonMeleeDamageLog( ObjectPointer Caster, UnitPointer Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToSet );
-	void SendAttackerStateUpdate( UnitPointer Target, dealdamage *dmg, uint32 realdamage, uint32 abs, uint32 blocked_damage, uint32 hit_status, uint32 vstate );
+	void SendSpellLog(Object* Caster, Object* Target,uint32 Ability, uint8 SpellLogType);
+	void SendSpellNonMeleeDamageLog( Object* Caster, Unit* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToSet );
+	void SendAttackerStateUpdate( Unit* Target, dealdamage *dmg, uint32 realdamage, uint32 abs, uint32 blocked_damage, uint32 hit_status, uint32 vstate );
 
 	// Dynamic objects
-	DynamicObjectPointer dynObj;
+	DynamicObject* dynObj;
 
 	// object faction
 	void _setFaction();
@@ -477,10 +477,10 @@ public:
 
 	bool Active;
 	bool CanActivate();
-	void Activate(MapMgrPointer mgr);
-	void Deactivate(MapMgrPointer mgr);
+	void Activate(MapMgr* mgr);
+	void Deactivate(MapMgr* mgr);
 	bool m_inQueue;
-	ARCTIC_INLINE void SetMapMgr(MapMgrPointer mgr) { m_mapMgr = mgr; }
+	ARCTIC_INLINE void SetMapMgr(MapMgr* mgr) { m_mapMgr = mgr; }
 
 	void Delete()
 	{
@@ -491,15 +491,15 @@ public:
 
 	ARCTIC_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }
 	void PlaySoundToSet(uint32 sound_entry);
-	void EventSpellHit(SpellPointer pSpell);
+	void EventSpellHit(Spell* pSpell);
 
-	bool PhasedCanInteract(ObjectPointer pObj);
+	bool PhasedCanInteract(Object* pObj);
 	bool HasPhase() { return m_phaseMode != 0; }
 	void EnablePhase(int32 phaseMode);
 	void DisablePhase(int32 phaseMode);
 	void SetPhase(int32 phase); // Don't fucking use this.
 
-	AuraPointer m_phaseAura;
+	Aura* m_phaseAura;
 
 protected:
 	Object (  );
@@ -508,12 +508,12 @@ protected:
 	void _Create( uint32 mapid, float x, float y, float z, float ang);
 
 	// Mark values that need updating for specified player.
-	virtual void _SetUpdateBits(UpdateMask *updateMask, PlayerPointer target) const;
+	virtual void _SetUpdateBits(UpdateMask *updateMask, Player* target) const;
 	// Mark values that player should get when he/she/it sees object for first time.
-	virtual void _SetCreateBits(UpdateMask *updateMask, PlayerPointer target) const;
+	virtual void _SetCreateBits(UpdateMask *updateMask, Player* target) const;
 
-	void _BuildMovementUpdate( ByteBuffer *data, uint16 flags, uint32 flags2, PlayerPointer target );
-	void _BuildValuesUpdate( ByteBuffer *data, UpdateMask *updateMask, PlayerPointer target );
+	void _BuildMovementUpdate( ByteBuffer *data, uint16 flags, uint32 flags2, Player* target );
+	void _BuildValuesUpdate( ByteBuffer *data, UpdateMask *updateMask, Player* target );
 
 	/* Main Function called by isInFront(); */
 	bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y );
@@ -536,7 +536,7 @@ protected:
 	// Continent/map id.
 	uint32 m_mapId;
 	// Map manager
-	MapMgrPointer m_mapMgr;
+	MapMgr* m_mapMgr;
 	// Current map cell
 	MapCell *m_mapCell;
 
@@ -564,9 +564,9 @@ protected:
 
 	// Set of Objects in range.
 	// TODO: that functionality should be moved into WorldServer.
-	unordered_set<ObjectPointer > m_objectsInRange;
-	unordered_set<PlayerPointer > m_inRangePlayers;
-	unordered_set<ObjectPointer > m_oppFactsInRange;
+	unordered_set<Object* > m_objectsInRange;
+	unordered_set<Player* > m_inRangePlayers;
+	unordered_set<Object* > m_oppFactsInRange;
    
 	int32 m_instanceId;
 
@@ -615,7 +615,7 @@ public:
 	ARCTIC_INLINE uint32 GetHealth() { return m_uint32Values[UNIT_FIELD_HEALTH]; }
 	ARCTIC_INLINE uint32 GetMaxHealth() { return m_uint32Values[UNIT_FIELD_MAXHEALTH]; }
 
-	bool IsInLineOfSight(ObjectPointer pObj);
+	bool IsInLineOfSight(Object* pObj);
 	int32 GetSpellBaseCost(SpellEntry *sp);
 
 	//////////////////////////////////////////////////////////////////////////

@@ -171,7 +171,7 @@ void Guild::AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...)
 	m_lock.Release();
 }
 
-void Guild::SendPacketToAllButOne(WorldPacket * data, PlayerPointer pSkipTarget)
+void Guild::SendPacketToAllButOne(WorldPacket * data, Player* pSkipTarget)
 {
 	if(!pSkipTarget)
 	return;
@@ -591,7 +591,7 @@ bool Guild::LoadFromDB(Field * f)
 				do 
 				{
 
-					ItemPointer pItem = objmgr.LoadItem(res2->Fetch()[3].GetUInt64());
+					Item* pItem = objmgr.LoadItem(res2->Fetch()[3].GetUInt64());
 					if(pItem == NULL)
 					{
 						printf(GDELETESAI, GetGuildId(), res2->Fetch()[3].GetUInt32());
@@ -812,7 +812,7 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	{
 		if(pMember->m_loggedInPlayer)
 		{
-			PlayerPointer plr = objmgr.GetPlayer(pMember->guid);
+			Player* plr = objmgr.GetPlayer(pMember->guid);
 			sChatHandler.SystemMessageToPlr(plr, ZYOUSHAVAI, pClient->GetPlayer()->GetName());
 		}
 		LogGuildEvent(GUILD_EVENT_REMOVED, 2, pMember->name, pClient->GetPlayer()->GetName());
@@ -1127,7 +1127,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 	WorldPacket data(SMSG_GUILD_ROSTER, (60*10) + (100 * m_members.size()) + 100);
 	GuildMemberMap::iterator itr;
 	GuildRank * r;
-	PlayerPointer pPlayer;
+	Player* pPlayer;
 	uint32 i, j;
 	uint32 c =0;
 	uint32 pos;

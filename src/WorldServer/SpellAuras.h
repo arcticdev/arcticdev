@@ -418,7 +418,7 @@ class ARCTIC_DECL Aura : public EventableObject, public std::tr1::enable_shared_
 {
 	uint64 periodic_target;
 public:
-    Aura(SpellEntry *proto, int32 duration,ObjectPointer caster, UnitPointer target);
+    Aura(SpellEntry *proto, int32 duration,Object* caster, Unit* target);
 	~Aura();
 
 	void ExpireRemove();
@@ -451,14 +451,14 @@ public:
 
 	bool m_applied;
 
-	ObjectPointer GetCaster();
+	Object* GetCaster();
 	ARCTIC_INLINE uint64 GetCasterGUID(){return m_casterGuid;}
-	UnitPointer GetUnitCaster();
-	ARCTIC_INLINE UnitPointer GetTarget() { return m_target; }
+	Unit* GetUnitCaster();
+	ARCTIC_INLINE Unit* GetTarget() { return m_target; }
 
 	void RemoveIfNecessary();
 
-	AuraPointer  StrongerThat(AuraPointer aur);
+	Aura*  StrongerThat(Aura* aur);
 	void ApplyModifiers(bool apply);
 	void UpdateModifiers();
 	void AddAuraVisual();
@@ -467,7 +467,7 @@ public:
 	void EventUpdatePlayerAA(float r);
 	void EventRelocateRandomTarget();
 	void RemoveAA();
-	void AttemptDispel(UnitPointer pCaster, bool canResist = true);
+	void AttemptDispel(Unit* pCaster, bool canResist = true);
 	bool m_dispelled;
 	uint32 m_resistPctChance;
 		
@@ -501,7 +501,7 @@ public:
 	}
 
 	uint32 procCharges;
-	uint32 GetMaxProcCharges(UnitPointer caster);
+	uint32 GetMaxProcCharges(Unit* caster);
 	void ModProcCharges(int32 mod);
 	uint32 stackSize;
 	void ModStackSize(int32 mod);
@@ -768,8 +768,8 @@ public:
 
 	// log message's
 	void SendPeriodicAuraLog(uint32 amt, uint32 Flags);
-	static void SendPeriodicAuraLog(UnitPointer Caster, UnitPointer Target, SpellEntry *sp, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0);
-	static void SendPeriodicAuraLog(const uint64& CasterGuid, UnitPointer Target, SpellEntry *sp, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0);
+	static void SendPeriodicAuraLog(Unit* Caster, Unit* Target, SpellEntry *sp, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0);
+	static void SendPeriodicAuraLog(const uint64& CasterGuid, Unit* Target, SpellEntry *sp, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0);
 
 	bool WasCastInDuel() { return m_castInDuel; }
 
@@ -819,7 +819,7 @@ private:
 	void SetCasterFaction(uint32 faction){ m_casterfaction = faction; }
 	ARCTIC_INLINE void DurationPctMod(uint32 mechanic);
 
-	ARCTIC_INLINE bool IsInrange(float x1,float y1, float z1, ObjectPointer o,float square_r)
+	ARCTIC_INLINE bool IsInrange(float x1,float y1, float z1, Object* o,float square_r)
 	{
 		float t;
 		float r;
@@ -832,8 +832,8 @@ private:
 		return ( r<=square_r);
 	}
 	
-	UnitPointer m_target;
-	PlayerPointer p_target;
+	Unit* m_target;
+	Player* p_target;
 	uint32 timeleft;
 	int32 m_duration; // in msecs
 //	bool m_positive;
@@ -848,8 +848,8 @@ private:
 protected:
 	uint32 m_casterfaction;
 
-	void SendInterrupted(uint8 result, ObjectPointer m_caster);
-	void SendChannelUpdate(uint32 time, ObjectPointer m_caster);
+	void SendInterrupted(uint8 result, Object* m_caster);
+	void SendChannelUpdate(uint32 time, Object* m_caster);
 	void SpecialCases();
 public:
 	bool m_deleted;

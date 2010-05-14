@@ -58,7 +58,7 @@ uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl)
 #undef PLAYER_LEVEL_CAP
 }
 
-uint32 CalculateXpToGive(UnitPointer pVictim, UnitPointer pAttacker)
+uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 {
 	
 	uint32 premium = 0;
@@ -372,7 +372,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 	return gain;
 }
 
-uint32 CalculateDamage( UnitPointer pAttacker, UnitPointer pVictim, uint32 weapon_damage_type, SpellEntry* ability ) // spellid is used only for 2-3 spells, that have AP bonus
+uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability ) // spellid is used only for 2-3 spells, that have AP bonus
 {
 	// TODO:
    	//  Some awesome formula to determine how much damage to deal
@@ -385,7 +385,7 @@ uint32 CalculateDamage( UnitPointer pAttacker, UnitPointer pVictim, uint32 weapo
 	//type of this UNIT_FIELD_ATTACK_POWER_MODS is unknown, not even uint32 disabled for now.
 
 	uint32 offset;
-	ItemPointer it = NULLITEM;
+	Item* it = NULLITEM;
 
 	if(pAttacker->disarmed && pAttacker->IsPlayer())
 	{
@@ -411,7 +411,7 @@ uint32 CalculateDamage( UnitPointer pAttacker, UnitPointer pVictim, uint32 weapo
 	float bonus;
 	float wspeed;
 	float appbonuspct = 1.0f;
-	ItemPointer BonusItem = NULLITEM;
+	Item* BonusItem = NULLITEM;
 	if( pAttacker->IsPlayer() && weapon_damage_type == MELEE )
 	{
 		BonusItem = TO_PLAYER(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
@@ -452,7 +452,7 @@ uint32 CalculateDamage( UnitPointer pAttacker, UnitPointer pVictim, uint32 weapo
 		{
 			if(!pAttacker->disarmed)
 			{
-				ItemPointer it = TO_PLAYER(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
+				Item* it = TO_PLAYER(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
 				if(it)
 				{
 					wspeed = (float)it->GetProto()->Delay;
@@ -518,7 +518,7 @@ uint32 CalculateDamage( UnitPointer pAttacker, UnitPointer pVictim, uint32 weapo
 		{
 			if(!pAttacker->disarmed)
 			{
-				ItemPointer it = TO_PLAYER(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				Item* it = TO_PLAYER(pAttacker)->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 
 				if(it)
 					wspeed = (float)it->GetProto()->Delay;

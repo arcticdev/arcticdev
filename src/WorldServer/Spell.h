@@ -1271,13 +1271,13 @@ ARCTIC_INLINE bool IsHealingSpell(SpellEntry *sp)
 	return false;
 }
 
-ARCTIC_INLINE bool IsInrange(LocationVector & location, ObjectPointer o, float square_r)
+ARCTIC_INLINE bool IsInrange(LocationVector & location, Object* o, float square_r)
 {
     float r = o->GetDistanceSq(location);
     return ( r<=square_r);
 }
 
-ARCTIC_INLINE bool IsInrange(float x1,float y1, float z1, ObjectPointer o,float square_r)
+ARCTIC_INLINE bool IsInrange(float x1,float y1, float z1, Object* o,float square_r)
 {
     float r = o->GetDistanceSq(x1, y1, z1);
     return ( r<=square_r);
@@ -1296,20 +1296,20 @@ ARCTIC_INLINE bool IsInrange(float x1,float y1, float z1,float x2,float y2, floa
     return ( r<=square_r);
 }
    
-ARCTIC_INLINE bool IsInrange(ObjectPointer o1,ObjectPointer o2,float square_r)
+ARCTIC_INLINE bool IsInrange(Object* o1,Object* o2,float square_r)
 {
     return IsInrange(o1->GetPositionX(),o1->GetPositionY(),o1->GetPositionZ(),
         o2->GetPositionX(),o2->GetPositionY(),o2->GetPositionZ(),square_r);
 }
 
-ARCTIC_INLINE bool TargetTypeCheck(ObjectPointer obj,uint32 ReqCreatureTypeMask)
+ARCTIC_INLINE bool TargetTypeCheck(Object* obj,uint32 ReqCreatureTypeMask)
 {
 	if( !ReqCreatureTypeMask )
 		return true;
 
 	if( obj->GetTypeId() == TYPEID_UNIT )
 	{
-		CreaturePointer cr = TO_CREATURE(obj);
+		Creature* cr = TO_CREATURE(obj);
 		CreatureInfo* inf = cr->GetCreatureName();
 		if( inf == NULL || !( 1 << ( inf->Type - 1 ) & ReqCreatureTypeMask ) )
 			return false;
@@ -1609,18 +1609,18 @@ class DummySpellHandler;
 
 enum SpellDidHitResult
 {
-	SPELL_DID_HIT_SUCCESS					= 0,
-	SPELL_DID_HIT_MISS						= 1,
-	SPELL_DID_HIT_RESIST					= 2,
-	SPELL_DID_HIT_DODGE						= 3,
-	SPELL_DID_HIT_PARRY						= 4,
-	SPELL_DID_HIT_BLOCK						= 5,
-	SPELL_DID_HIT_EVADE						= 6,
-	SPELL_DID_HIT_IMMUNE					= 7,
-	SPELL_DID_HIT_IMMUNE_2					= 8,
-	SPELL_DID_HIT_DEFLECT					= 9,
-	SPELL_DID_HIT_ABSORB					= 10,
-	SPELL_DID_HIT_REFLECT					= 11,
+	SPELL_DID_HIT_SUCCESS = 0,
+	SPELL_DID_HIT_MISS = 1,
+	SPELL_DID_HIT_RESIST = 2,
+	SPELL_DID_HIT_DODGE = 3,
+	SPELL_DID_HIT_PARRY = 4,
+	SPELL_DID_HIT_BLOCK = 5,
+	SPELL_DID_HIT_EVADE = 6,
+	SPELL_DID_HIT_IMMUNE = 7,
+	SPELL_DID_HIT_IMMUNE_2 = 8,
+	SPELL_DID_HIT_DEFLECT = 9,
+	SPELL_DID_HIT_ABSORB = 10,
+	SPELL_DID_HIT_REFLECT = 11,
 };
 
 // Spell instance
@@ -1628,7 +1628,7 @@ class ARCTIC_DECL Spell : public std::tr1::enable_shared_from_this<Spell>
 {
 public:
     friend class DummySpellHandler;
-    Spell( ObjectPointer Caster, SpellEntry *info, bool triggered, AuraPointer aur);
+    Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
 
 	void Destructor();
@@ -1674,9 +1674,9 @@ public:
     // Removes reagents, ammo, and items/charges
     void RemoveItems();
     // Calculates the i'th effect value
-    int32 CalculateEffect(uint32, UnitPointer target);
+    int32 CalculateEffect(uint32, Unit* target);
     // Handles Teleport function
-    void HandleTeleport(uint32 id, UnitPointer Target);
+    void HandleTeleport(uint32 id, Unit* Target);
     // Determines how much skill caster going to gain
     void DetermineSkillUp();
     // Increases cast time of the spell
@@ -1685,10 +1685,10 @@ public:
     void AddStartCooldown();
 
 
-    bool Reflect(UnitPointer refunit);
+    bool Reflect(Unit* refunit);
 
     ARCTIC_INLINE uint32 getState() { return m_spellState; }
-    ARCTIC_INLINE void SetUnitTarget(UnitPointer punit){unitTarget=punit;}
+    ARCTIC_INLINE void SetUnitTarget(Unit* punit){unitTarget=punit;}
 	ARCTIC_INLINE SpellEntry *GetSpellProto() { return m_spellInfo; }
 
     // Send Packet functions
@@ -1699,9 +1699,9 @@ public:
     void SendInterrupted(uint8 result);
     void SendChannelUpdate(uint32 time);
     void SendChannelStart(uint32 duration);
-    void SendResurrectRequest(PlayerPointer target);
-	static void SendHealSpellOnPlayer(ObjectPointer caster, ObjectPointer target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
-    static void SendHealManaSpellOnPlayer(ObjectPointer caster, ObjectPointer target, uint32 dmg, uint32 powertype, uint32 spellid);
+    void SendResurrectRequest(Player* target);
+	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
+    static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
     
 
     void HandleAddAura(uint64 guid);
@@ -1878,15 +1878,15 @@ public:
 	void SpellTargetPositionOfTarget(uint32 i, uint32 j);
 	void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
 
-	uint64 static FindLowestHealthRaidMember(PlayerPointer Target, uint32 dist);
+	uint64 static FindLowestHealthRaidMember(Player* Target, uint32 dist);
 
     void Heal(int32 amount);
 
-    GameObjectPointer			g_caster;
-    UnitPointer					u_caster;
-    ItemPointer					i_caster;
-    PlayerPointer 				p_caster;
-    ObjectPointer				m_caster;
+    GameObject* g_caster;
+    Unit*       u_caster;
+    Item*       i_caster;
+    Player*     p_caster;
+    Object*     m_caster;
 
 	bool SpellEffectUpdateQuest(uint32 questid);
 
@@ -1895,10 +1895,10 @@ public:
 	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
 	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
 	ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
-    ARCTIC_INLINE ItemPointer GetItemTarget() { return itemTarget; }
-    ARCTIC_INLINE UnitPointer GetUnitTarget() { return unitTarget; }
-    ARCTIC_INLINE PlayerPointer GetPlayerTarget() { return playerTarget; }
-    ARCTIC_INLINE GameObjectPointer GetGameObjectTarget() { return gameObjTarget; }
+    ARCTIC_INLINE Item* GetItemTarget() { return itemTarget; }
+    ARCTIC_INLINE Unit* GetUnitTarget() { return unitTarget; }
+    ARCTIC_INLINE Player* GetPlayerTarget() { return playerTarget; }
+    ARCTIC_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
 
     uint32 chaindamage;
 
@@ -2044,12 +2044,12 @@ public:
 	SummonPropertiesEntry * m_summonProperties;
     
     int32 damage;
-    AuraPointer  m_triggeredByAura;
+    Aura*  m_triggeredByAura;
 	signed int	forced_basepoints[3]; // some talent inherit base points from previous caster spells
  
     bool m_triggeredSpell;
     bool m_AreaAura;
-    // uint32 TriggerSpellId;  // used to set next spell to use
+    // uint32 TriggerSpellId;     // used to set next spell to use
     // uint64 TriggerSpellTarget; // used to set next spell target
     bool m_requiresCP;
     float m_castPositionX;
@@ -2074,7 +2074,7 @@ public:
     ARCTIC_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
     ARCTIC_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
 
-	SpellPointer m_reflectedParent;
+	Spell* m_reflectedParent;
 
    // Returns true iff spellEffect's effectNum effect affects testSpell based on EffectSpellClassMask
    ARCTIC_INLINE static bool EffectAffectsSpell(SpellEntry* spellEffect, uint32 effectNum, SpellEntry* WowTestSpell)
@@ -2088,28 +2088,28 @@ protected:
 	bool m_sharedPtrDestructed;
 
 	// Spell state's
-	bool    m_usesMana;
-	bool    m_Spell_Failed;        // for 5sr
-	bool    m_Delayed;
-	uint32  m_spellState;
-	int32   m_castTime;
-	int32   m_timer;
-	bool    m_ForceConsumption;
+	bool m_usesMana;
+	bool m_Spell_Failed; // for 5sr
+	bool m_Delayed;
+	uint32 m_spellState;
+	int32 m_castTime;
+	int32 m_timer;
+	bool m_ForceConsumption;
 
 	// Current Targets to be used in effect handler
-	UnitPointer      unitTarget;
-	ItemPointer      itemTarget;
-	GameObjectPointer gameObjTarget;
-	PlayerPointer     playerTarget;
-	CorpsePointer     corpseTarget;
-	uint32      add_damage;
+	Unit* unitTarget;
+	Item* itemTarget;
+	GameObject* gameObjTarget;
+	Player* playerTarget;
+	Corpse* corpseTarget;
+	uint32 add_damage;
 
-	uint8       cancastresult;
-	uint32      Dur;
-	bool        bDurSet;
-	float       Rad[3];
-	bool        bRadSet[3];
-	bool        m_cancelled;
+	uint8 cancastresult;
+	uint32 Dur;
+	bool bDurSet;
+	float Rad[3];
+	bool bRadSet[3];
+	bool m_cancelled;
 	bool m_isCasting;
 	bool m_projectileWait;
 
@@ -2125,16 +2125,16 @@ private:
 	SpellTargetList m_targetList;
 
 	// adds a target to the list, performing DidHit checks
-	void _AddTarget(const UnitPointer target, const uint32 effectid);
+	void _AddTarget(const Unit* target, const uint32 effectid);
 
 	// adds a target to the list, negating DidHit checks
 	void _AddTargetForced(const uint64& guid, const uint32 effectid);
 
 	// didhit checker
-	uint8 _DidHit(const UnitPointer target);
+	uint8 _DidHit(const Unit* target);
 
 	// gets the pointer of an object (optimized for spell system)
-	ObjectPointer _LookupObject(const uint64& guid);
+	Object* _LookupObject(const uint64& guid);
 
 	// sets the pointers (unitTarget, itemTarget, etc) for a given guid
 	void _SetTargets(const uint64& guid);
@@ -2147,11 +2147,11 @@ private:
 	uint32 m_missTargetCount;
 	
 	// magnet
-	UnitPointer m_magnetTarget;
+	Unit* m_magnetTarget;
 };
 
-void ApplyDiminishingReturnTimer(uint32 * Duration, UnitPointer Target, SpellEntry * spell);
-void UnapplyDiminishingReturnTimer(UnitPointer Target, SpellEntry * spell);
+void ApplyDiminishingReturnTimer(uint32 * Duration, Unit* Target, SpellEntry * spell);
+void UnapplyDiminishingReturnTimer(Unit* Target, SpellEntry * spell);
 uint32 GetDiminishingGroup(uint32 NameHash);
 
 #endif

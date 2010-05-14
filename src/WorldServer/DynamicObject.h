@@ -9,8 +9,8 @@
 
 struct SpellEntry;
 
-typedef unordered_set<UnitPointer >  DynamicObjectList;
-typedef unordered_set<UnitPointer >  FactionRangeList;
+typedef unordered_set<Unit* >  DynamicObjectList;
+typedef unordered_set<Unit* >  FactionRangeList;
 
 class ARCTIC_DECL DynamicObject : public Object
 {
@@ -21,11 +21,11 @@ public:
 	virtual void Destructor();
 	virtual void Init();
 
-	void Create(ObjectPointer caster, SpellPointer pSpell, float x, float y, float z, uint32 duration, float radius);
+	void Create(Object* caster, Spell* pSpell, float x, float y, float z, uint32 duration, float radius);
 	void UpdateTargets();
 
-	void AddInRangeObject(ObjectPointer pObj);
-	void OnRemoveInRangeObject(ObjectPointer pObj);
+	void AddInRangeObject(Object* pObj);
+	void OnRemoveInRangeObject(Object* pObj);
 	void Remove();
 
 	// Accessors
@@ -34,11 +34,11 @@ public:
 protected:
 	
 	SpellEntry * m_spellProto;
-	UnitPointer u_caster;
-	PlayerPointer p_caster;
-	ObjectPointer m_caster;
-	GameObjectPointer g_caster;
-	SpellPointer m_parentSpell;
+	Unit* u_caster;
+	Player* p_caster;
+	Object* m_caster;
+	GameObject* g_caster;
+	Spell* m_parentSpell;
 	DynamicObjectList targets;
 	
 	uint32 m_aliveDuration;

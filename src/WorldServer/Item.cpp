@@ -51,7 +51,7 @@ Item::~Item()
 void Item::Destructor()
 {
 
-	sEventMgr.RemoveEvents( shared_from_this() );
+	sEventMgr.RemoveEvents( this );
 
 	EnchantmentMap::iterator itr;
 	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
@@ -72,7 +72,7 @@ void Item::Destructor()
 	Object::Destructor();
 }
 
-void Item::Create( uint32 itemid, PlayerPointer owner )
+void Item::Create( uint32 itemid, Player* owner )
 {
 	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
  
@@ -101,7 +101,7 @@ void Item::Create( uint32 itemid, PlayerPointer owner )
 		locked = false;
 }
 
-void Item::LoadFromDB(Field* fields, PlayerPointer plr, bool light )
+void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 {
 	uint32 itemid = fields[2].GetUInt32();
 	uint32 random_prop, random_suffix;
@@ -334,10 +334,10 @@ void Item::DeleteFromDB()
 {
 	if( m_itemProto->ContainerSlots>0 && GetTypeId() == TYPEID_CONTAINER )
 	{
-		// deleting a ContainerPointer.
+		// deleting a Container*.
 		for( uint32 i = 0; i < m_itemProto->ContainerSlots; ++i )
 		{
-			if( CAST(Container,shared_from_this())->GetItem( i ) != NULL )
+			if( CAST(Container,this)->GetItem( i ) != NULL )
 			{
 				// abort the delete.
 				return;
@@ -432,7 +432,7 @@ uint32 GetSellPriceForItem( ItemPrototype *proto, uint32 count )
 	return cost;
 }
 
-uint32 GetBuyPriceForItem( ItemPrototype* proto, uint32 count, PlayerPointer plr, CreaturePointer vendor )
+uint32 GetBuyPriceForItem( ItemPrototype* proto, uint32 count, Player* plr, Creature* vendor )
 {
 	int32 cost = proto->BuyPrice;
 
@@ -453,7 +453,7 @@ uint32 GetSellPriceForItem( uint32 itemid, uint32 count )
 		return 1;
 }
 
-uint32 GetBuyPriceForItem( uint32 itemid, uint32 count, PlayerPointer plr, CreaturePointer vendor )
+uint32 GetBuyPriceForItem( uint32 itemid, uint32 count, Player* plr, Creature* vendor )
 {
 	if( ItemPrototype* proto = ItemPrototypeStorage.LookupEntry( itemid ) )
 		return GetBuyPriceForItem( proto, count, plr, vendor );
@@ -473,14 +473,14 @@ void Item::RemoveFromWorld()
 		return;
 
 	mSemaphoreTeleport = true;
-	m_mapMgr->RemoveObject( obj_shared_from_this(), false );
+	m_mapMgr->RemoveObject( TO_OBJECT(this), false );
 	m_mapMgr = NULLMAPMGR;
   
 	// update our event holder
 	event_Relocate();
 }
 
-void Item::SetOwner( PlayerPointer owner )
+void Item::SetOwner( Player* owner )
 { 
 	if( owner != NULL )
 		SetUInt64Value( ITEM_FIELD_OWNER, owner->GetGUID() );
@@ -520,12 +520,12 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	if( m_owner == NULL )
 		return Slot;
 
-	PlayerPointer owner = m_owner;
+	Player* owner = m_owner;
 
 	// Add the removal event.
 	if( Duration )
 	{
-		sEventMgr.AddEvent( item_shared_from_this(), &Item::RemoveEnchantment, uint32(Slot), EVENT_REMOVE_ENCHANTMENT1 + Slot, Duration * 1000, 1, 0 );
+		sEventMgr.AddEvent( TO_ITEM(this), &Item::RemoveEnchantment, uint32(Slot), EVENT_REMOVE_ENCHANTMENT1 + Slot, Duration * 1000, 1, 0 );
 	}
 
 	// No need to send the log packet, if the owner isn't in world (we're still loading)
@@ -724,15 +724,15 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 							if( sp == NULL )
 								continue;
 
-							SpellPointer spell = NULLSPELL;
+							Spell* spell = NULLSPELL;
 							// Never found out why, 
 							// but this Blade of Life's Inevitability spell must be casted by the item, not owner.
 							if( m_itemProto->ItemId != 34349  )
-								spell = SpellPointer(new Spell( m_owner, sp, true, NULLAURA ));
+								spell = (new Spell( m_owner, sp, true, NULLAURA ));
 							else
-								spell = SpellPointer(new Spell( item_shared_from_this(), sp, true, NULLAURA ));
+								spell = (new Spell( TO_ITEM(this), sp, true, NULLAURA ));
 							
-							spell->i_caster = item_shared_from_this();
+							spell->i_caster = TO_ITEM(this);
 							spell->prepare( &targets );
 						}
 					}
@@ -990,7 +990,7 @@ bool Item::IsGemRelated( EnchantEntry* Enchantment )
 
 uint32 Item::GetSocketsCount()
 {
-	if(shared_from_this()->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
+	if(this->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
 		return 0;
 
 	uint32 c = 0;

@@ -13,19 +13,19 @@ class ARCTIC_DECL ChainAggroEntity
 	friend class AIInterface;
 
 private:
-	set<CreaturePointer> m_agroEntitySet;
+	set<Creature*> m_agroEntitySet;
 public:
-	ChainAggroEntity(CreaturePointer pOwner);
+	ChainAggroEntity(Creature* pOwner);
 	~ChainAggroEntity();
 
-	static ChainAggroEntity* Create(CreaturePointer pCreature) { return new ChainAggroEntity(pCreature); }
+	static ChainAggroEntity* Create(Creature* pCreature) { return new ChainAggroEntity(pCreature); }
 
-	void AddAggroEntity(CreaturePointer pCreature);
-	void RemoveAggroEntity(CreaturePointer pCreature);
+	void AddAggroEntity(Creature* pCreature);
+	void RemoveAggroEntity(Creature* pCreature);
 
 	void Delete();
 
-	void EventEnterCombat(UnitPointer pTarget);
+	void EventEnterCombat(Unit* pTarget);
 };
 
 

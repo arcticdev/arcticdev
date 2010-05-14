@@ -18,7 +18,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 1);
 	WorldPacket data(100);
 	std::string membername;
-	PlayerPointer player = NULLPLR;
+	Player* player = NULLPLR;
 	Group *group = NULL;
 
 	recv_data >> membername;
@@ -122,7 +122,7 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 {
 	if(!_player->IsInWorld()) return;
 
-	PlayerPointer player = objmgr.GetPlayer(_player->GetInviter());
+	Player* player = objmgr.GetPlayer(_player->GetInviter());
 	if ( !player )
 		return;
 	
@@ -157,7 +157,7 @@ void WorldSession::HandleGroupDeclineOpcode( WorldPacket & recv_data )
 	if(!_player->IsInWorld()) return;
 	WorldPacket data(SMSG_GROUP_DECLINE, 100);
 
-	PlayerPointer player = objmgr.GetPlayer(_player->GetInviter());
+	Player* player = objmgr.GetPlayer(_player->GetInviter());
 	if(!player) return;
 
 	data << GetPlayer()->GetName();
@@ -176,7 +176,7 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 	if(!_player->IsInWorld()) return;
 	CHECK_PACKET_SIZE(recv_data, 1);
 	std::string membername;
-	PlayerPointer player;
+	Player* player;
 	PlayerInfo * info;
 
 	recv_data >> membername;
@@ -195,7 +195,7 @@ void WorldSession::HandleGroupUninviteGUIDOpcode( WorldPacket & recv_data )
 	if(!_player->IsInWorld()) return;
 	CHECK_PACKET_SIZE(recv_data, 1);
 	std::string membername;
-	PlayerPointer player;
+	Player* player;
 	PlayerInfo * info;
 	uint64 guid;
 	recv_data >> guid;
@@ -216,7 +216,7 @@ void WorldSession::HandleGroupSetLeaderOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 1);
 	WorldPacket data;
 	uint64 MemberGuid;
-	PlayerPointer player;
+	Player* player;
 
 	recv_data >> MemberGuid;
 	
@@ -297,7 +297,7 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 	if( pGroup == NULL)
 		return;
 
-	PlayerPointer pLootMaster = objmgr.GetPlayer((uint32)lootMaster);
+	Player* pLootMaster = objmgr.GetPlayer((uint32)lootMaster);
 
 	if ( pLootMaster )
 		pGroup->SetLooter(pLootMaster , lootMethod, threshold );
@@ -356,7 +356,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 	}
 }
 
-void WorldSession::SendPartyCommandResult(PlayerPointer pPlayer, uint32 p1, std::string name, uint32 err)
+void WorldSession::SendPartyCommandResult(Player* pPlayer, uint32 p1, std::string name, uint32 err)
 {
 	if(!_player->IsInWorld()) return;
 	// if error message do not work, please sniff it and leave me a message

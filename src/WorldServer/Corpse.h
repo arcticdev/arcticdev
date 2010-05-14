@@ -45,7 +45,7 @@ public:
 	virtual void Destructor();
 
    // void Create();
-	void Create (PlayerPointer owner, uint32 mapid, float x, float y, float z, float ang );
+	void Create (Player* owner, uint32 mapid, float x, float y, float z, float ang );
 
 	void SaveToDB();
 	void DeleteFromDB();

@@ -91,7 +91,7 @@ void WorldStateManager::UpdateWorldState( uint32 uWorldStateId, uint32 uValue )
 	//m_lock.Release();
 }
 
-void WorldStateManager::SendWorldStates( PlayerPointer pPlayer )
+void WorldStateManager::SendWorldStates( Player* pPlayer )
 {
 	// be threadsafe! wear a mutex!
 	//m_lock.Acquire();
@@ -132,7 +132,7 @@ void WorldStateManager::SendWorldStates( PlayerPointer pPlayer )
 	pPlayer->GetSession()->SendPacket(&data);	
 }
 
-void WorldStateManager::ClearWorldStates( PlayerPointer pPlayer )
+void WorldStateManager::ClearWorldStates( Player* pPlayer )
 {
 	// clears the clients view of world states for this map
 	uint8 msgdata[10];
@@ -215,7 +215,7 @@ void WorldStateTemplateManager::LoadFromDB()
 	delete pResult;
 }
 
-void WorldStateTemplateManager::ApplyMapTemplate(MapMgrPointer pmgr)
+void WorldStateTemplateManager::ApplyMapTemplate(MapMgr* pmgr)
 {
 	WorldStateTemplateList::iterator itr = m_templatesForMaps[pmgr->GetMapId()].begin();
 	WorldStateTemplateList::iterator itrend = m_templatesForMaps[pmgr->GetMapId()].end();

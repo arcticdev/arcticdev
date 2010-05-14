@@ -407,8 +407,8 @@ struct PlayerCreateInfo
 
 struct DamageSplit
 {
-	PlayerPointer caster;
-	AuraPointer   aura;
+	Player* caster;
+	Aura*   aura;
 	uint32  miscVal;
 	union
 	{
@@ -588,7 +588,7 @@ struct PlayerInfo
 	int8 groupVoiceId;
 #endif
 
-	PlayerPointer m_loggedInPlayer;
+	Player* m_loggedInPlayer;
 	Guild * guild;
 	GuildRank * guildRank;
 	GuildMember * guildMember;
@@ -800,7 +800,7 @@ typedef std::map<uint32, uint64>                      SoloSpells;
 typedef std::map<SpellEntry*, pair<uint32, uint32> >  StrikeSpellMap;
 typedef std::map<uint32, OnHitSpell >                 StrikeSpellDmgMap;
 typedef std::map<uint32, PlayerSkill>                 SkillMap;
-typedef std::set<PlayerPointer *>                     ReferenceSet;
+typedef std::set<Player* *>                     ReferenceSet;
 typedef std::map<uint32, PlayerCooldown>              PlayerCooldownMap;
 
 // #define OPTIMIZED_PLAYER_SAVING
@@ -825,7 +825,7 @@ public:
 	ARCTIC_INLINE GuildRank * GetGuildRankS() { return m_playerInfo->guildRank; }
 
 	void EventGroupFullUpdate();
-	void GroupUninvite(PlayerPointer player, PlayerInfo *info);
+	void GroupUninvite(Player* player, PlayerInfo *info);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Skill System															//
@@ -871,7 +871,7 @@ public:
 	void SetLastPotion(uint32 itemid) { m_lastPotionId = itemid; }
 	void Cooldown_OnCancel(SpellEntry *pSpell);
 	void Cooldown_AddStart(SpellEntry * pSpell);
-	void Cooldown_Add(SpellEntry * pSpell, ItemPointer pItemCaster);
+	void Cooldown_Add(SpellEntry * pSpell, Item* pItemCaster);
 	void Cooldown_AddItem(ItemPrototype * pProto, uint32 x);
 	bool Cooldown_CanCast(SpellEntry * pSpell);
 	bool Cooldown_CanCast(ItemPrototype * pProto, uint32 x);
@@ -892,14 +892,14 @@ public:
 	void EquipInit(PlayerCreateInfo *EquipInfo);
 	void RemoveSpellTargets(uint32 Type);
 	void RemoveSpellIndexReferences(uint32 Type);
-	void SetSpellTargetType(uint32 Type, UnitPointer target);
+	void SetSpellTargetType(uint32 Type, Unit* target);
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
 	void TriggerMovie(uint32 movieID);
  	void SendDungeonDifficulty();
 	void SendRaidDifficulty();
 
 	void AddToWorld();
-	void AddToWorld(MapMgrPointer pMapMgr);
+	void AddToWorld(MapMgr* pMapMgr);
 	void RemoveFromWorld();
 	bool Create ( WorldPacket &data );
 
@@ -1098,7 +1098,7 @@ public:
 	Standing  GetStandingRank(uint32 Faction);
 	bool  IsHostileBasedOnReputation(FactionDBC * dbc);
 	void  UpdateInrangeSetsBasedOnReputation();
-	void  Reputation_OnKilledUnit(UnitPointer pUnit, bool InnerLoop);
+	void  Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop);
 	void  Reputation_OnTalk(FactionDBC * dbc);
 	static Standing  GetReputationRankFromStanding(int32 Standing_);
 	
@@ -1146,7 +1146,7 @@ public:
 		return false;
 	}
 
-	bool IsGroupMember(PlayerPointer plyr);
+	bool IsGroupMember(Player* plyr);
 	ARCTIC_INLINE int HasBeenInvited() { return m_GroupInviter != 0; }
  	ARCTIC_INLINE Group* GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
 	ARCTIC_INLINE uint32  GetGroupID() { return m_playerInfo != NULL ? m_playerInfo->m_Group != NULL ? m_playerInfo->m_Group->GetID(): NULL: NULL; }
@@ -1170,7 +1170,7 @@ public:
 	void CreateResetGuardHostileFlagEvent()
 	{
 		event_RemoveEvents( EVENT_GUARD_HOSTILE );
-		sEventMgr.AddEvent(TO_PLAYER(shared_from_this()), &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
+		sEventMgr.AddEvent(TO_PLAYER(this), &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
 	}
 
 	uint32 m_hasInRangeGuards;
@@ -1192,7 +1192,7 @@ public:
     // Duel                                                                 //
     //////////////////////////////////////////////////////////////////////////
 
-    void  RequestDuel(PlayerPointer pTarget);
+    void  RequestDuel(Player* pTarget);
 	void  DuelBoundaryTest();
 	void  EndDuel(uint8 WinCondition);
 	void  DuelCountdown();
@@ -1201,7 +1201,7 @@ public:
 	void  SetDuelState(uint8 state) { m_duelState = state; }
 	ARCTIC_INLINE uint8  GetDuelState() { return m_duelState; }
     // duel variables
-    PlayerPointer  DuelingWith;
+    Player*  DuelingWith;
 
     //////////////////////////////////////////////////////////////////////////
     // Trade                                                                //
@@ -1223,8 +1223,8 @@ public:
     // Pets                                                                 //
     //////////////////////////////////////////////////////////////////////////
 	
-	ARCTIC_INLINE void  SetSummon(PetPointer pet) { m_Summon = pet; }
-	ARCTIC_INLINE PetPointer  GetSummon(void) { return m_Summon; }
+	ARCTIC_INLINE void  SetSummon(Pet* pet) { m_Summon = pet; }
+	ARCTIC_INLINE Pet*  GetSummon(void) { return m_Summon; }
 	uint32  GeneratePetNumber(void);
 	void  RemovePlayerPet(uint32 pet_number);
 	ARCTIC_INLINE  void AddPlayerPet(PlayerPet* pet, uint32 index) { m_Pets[index] = pet; }
@@ -1255,7 +1255,7 @@ public:
 				return itr->first;
 		return 0;
 	}
-	void  EventSummonPet(PetPointer new_pet); // if we charmed or simply summoned a pet, this function should get called
+	void  EventSummonPet(Pet* new_pet); // if we charmed or simply summoned a pet, this function should get called
 	void  EventDismissPet(); // if pet/charm died or whatever happned we should call this function
 
     //////////////////////////////////////////////////////////////////////////
@@ -1263,7 +1263,7 @@ public:
     //////////////////////////////////////////////////////////////////////////
 	
 	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
-	ARCTIC_INLINE void  ApplyItemMods(ItemPointer item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
+	ARCTIC_INLINE void  ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
     // item interface variables
     ItemInterface *     m_ItemInterface;
 
@@ -1276,8 +1276,8 @@ public:
 	
 	ARCTIC_INLINE  void SetDancingRuneWeaponMod(int32 mod) { m_DancingRuneWeaponBonus = mod; }
 	ARCTIC_INLINE  int32 GetDancingRuneWeaponMod() { return m_DancingRuneWeaponBonus; }
-	ARCTIC_INLINE  void SetDancingRuneWeapon(CreaturePointer cp) { m_DancingRuneWeapon = cp; }
-	ARCTIC_INLINE  CreaturePointer GetDancingRuneWeapon() { return m_DancingRuneWeapon; }
+	ARCTIC_INLINE  void SetDancingRuneWeapon(Creature* cp) { m_DancingRuneWeapon = cp; }
+	ARCTIC_INLINE  Creature* GetDancingRuneWeapon() { return m_DancingRuneWeapon; }
 
     //////////////////////////////////////////////////////////////////////////
     // Loot                                                                 //
@@ -1311,8 +1311,8 @@ public:
 	
 	// Talents
 	// These functions build a specific type of A9 packet
-	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, PlayerPointer target );
-	void DestroyForPlayer( PlayerPointer target ) const;
+	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
+	void DestroyForPlayer( Player* target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
 	void EventTalentHearthOfWildChange(bool apply);
 	
@@ -1350,11 +1350,11 @@ public:
     //////////////////////////////////////////////////////////////////////////
 	
 	void SpawnCorpseBones();
-	CorpsePointer CreateCorpse();
+	Corpse* CreateCorpse();
 	void KillPlayer();
-	void ResurrectPlayer(PlayerPointer pResurrector);
+	void ResurrectPlayer(Player* pResurrector);
 	void BuildPlayerRepop();
-	CorpsePointer RepopRequestedPlayer();
+	Corpse* RepopRequestedPlayer();
 	
 	// silly event handler
 	void EventRepopRequestedPlayer() { RepopRequestedPlayer(); }
@@ -1473,16 +1473,16 @@ public:
 	uint32 m_SwimmingTime;
 	uint32 m_BreathDamageTimer;
 	// Visible objects
-	bool CanSee(ObjectPointer obj);
-	ARCTIC_INLINE bool IsVisible(ObjectPointer pObj) { return !(m_visibleObjects.find(pObj) == m_visibleObjects.end()); }
-	void AddInRangeObject(ObjectPointer pObj);
-	void OnRemoveInRangeObject(ObjectPointer pObj);
+	bool CanSee(Object* obj);
+	ARCTIC_INLINE bool IsVisible(Object* pObj) { return !(m_visibleObjects.find(pObj) == m_visibleObjects.end()); }
+	void AddInRangeObject(Object* pObj);
+	void OnRemoveInRangeObject(Object* pObj);
 	void ClearInRangeSet();
-	ARCTIC_INLINE void AddVisibleObject(ObjectPointer pObj) { m_visibleObjects.insert(pObj); }
-	ARCTIC_INLINE void RemoveVisibleObject(ObjectPointer pObj) { m_visibleObjects.erase(pObj); }
+	ARCTIC_INLINE void AddVisibleObject(Object* pObj) { m_visibleObjects.insert(pObj); }
+	ARCTIC_INLINE void RemoveVisibleObject(Object* pObj) { m_visibleObjects.erase(pObj); }
 	ARCTIC_INLINE void RemoveVisibleObject(InRangeSet::iterator itr) { m_visibleObjects.erase(itr); }
-	ARCTIC_INLINE InRangeSet::iterator FindVisible(ObjectPointer obj) { return m_visibleObjects.find(obj); }
-	ARCTIC_INLINE void RemoveIfVisible(ObjectPointer obj)
+	ARCTIC_INLINE InRangeSet::iterator FindVisible(Object* obj) { return m_visibleObjects.find(obj); }
+	ARCTIC_INLINE void RemoveIfVisible(Object* obj)
 	{
 		InRangeSet::iterator itr = m_visibleObjects.find(obj);
 		if(itr == m_visibleObjects.end())
@@ -1492,7 +1492,7 @@ public:
 		PushOutOfRange(obj->GetNewGUID());
 	}
 
-	ARCTIC_INLINE bool GetVisibility(ObjectPointer obj, InRangeSet::iterator *itr)
+	ARCTIC_INLINE bool GetVisibility(Object* obj, InRangeSet::iterator *itr)
 	{
 		*itr = m_visibleObjects.find(obj);
 		return ((*itr) != m_visibleObjects.end());
@@ -1527,11 +1527,11 @@ public:
 	uint32 HasBGQueueSlotOfType(uint32 type);
 
 	// Battlegrounds.
-	BattlegroundPointer m_bg;
+	CBattleground* m_bg;
 
 #define NUM_BG_QUEUE_SLOTS 2
 
-	BattlegroundPointer m_pendingBattleground[NUM_BG_QUEUE_SLOTS];
+	CBattleground* m_pendingBattleground[NUM_BG_QUEUE_SLOTS];
 	uint32 m_bgSlot;
 	bool m_bgRatedQueue;
 	uint32 m_bgEntryPointMap;
@@ -1553,8 +1553,8 @@ public:
 	uint32 GetBGQueueSlot();
 	
 	void EventRepeatSpell();
-	void EventCastRepeatedSpell(uint32 spellid, UnitPointer target);
-	int32 CanShootRangedWeapon(uint32 spellid, UnitPointer target, bool autoshot);
+	void EventCastRepeatedSpell(uint32 spellid, Unit* target);
+	int32 CanShootRangedWeapon(uint32 spellid, Unit* target, bool autoshot);
 	uint32 m_AutoShotDuration;
 	uint32 m_AutoShotAttackTimer;
 	bool m_onAutoShot;
@@ -1629,7 +1629,7 @@ public:
 	uint32 Seal;
 	int32 rageFromDamageDealt;
 	// GameObject commands
-	GameObjectPointer m_GM_SelectedGO;
+	GameObject* m_GM_SelectedGO;
 	
 #ifndef CLUSTERING
 	void _Relocate(uint32 mapid,const LocationVector & v, bool sendpending, bool force_new_world, uint32 instance_id);
@@ -1654,11 +1654,11 @@ public:
 	void Kick(uint32 delay = 0);
 	void SoftDisconnect();
 	uint32 m_KickDelay;
-	UnitPointer m_CurrentCharm;
-	TransporterPointer m_CurrentTransporter;
+	Unit* m_CurrentCharm;
+	Transporter* m_CurrentTransporter;
 	
-	ObjectPointer GetSummonedObject () {return m_SummonedObject;};
-	void SetSummonedObject (ObjectPointer t_SummonedObject) {m_SummonedObject = t_SummonedObject;};
+	Object* GetSummonedObject () {return m_SummonedObject;};
+	void SetSummonedObject (Object* t_SummonedObject) {m_SummonedObject = t_SummonedObject;};
 	uint32 roll;
 
 	void ClearCooldownsOnLine(uint32 skill_line, uint32 called_from);
@@ -1733,7 +1733,7 @@ public:
 	uint32 m_arenaPoints;
 	bool m_honorless;
 	uint32 m_lastSeenWeather;
-	unordered_set<ObjectPointer > m_visibleFarsightObjects;
+	unordered_set<Object* > m_visibleFarsightObjects;
 	void EventTeleport(uint32 mapid, float x, float y, float z, float o);
 	void EventTeleport(uint32 mapid, float x, float y, float z)
 	{
@@ -1747,11 +1747,11 @@ public:
 	void RemoveSummonSpell(uint32 Entry, uint32 SpellID);
 	set<uint32>* GetSummonSpells(uint32 Entry);
 	LockedQueue<WorldPacket*> delayedPackets;
-	set<PlayerPointer  > gmTargets;
+	set<Player*  > gmTargets;
 	uint32 m_UnderwaterMaxTime;
 	uint32 m_UnderwaterLastDmg;
-	ARCTIC_INLINE void setMyCorpse(CorpsePointer corpse) { myCorpse = corpse; }
-	ARCTIC_INLINE CorpsePointer getMyCorpse() { return myCorpse; }
+	ARCTIC_INLINE void setMyCorpse(Corpse* corpse) { myCorpse = corpse; }
+	ARCTIC_INLINE Corpse* getMyCorpse() { return myCorpse; }
 
 	uint32 m_resurrectHealth, m_resurrectMana;
 	uint32 resurrector;
@@ -1763,12 +1763,12 @@ public:
 	// DBC stuff
 	CharRaceEntry * myRace;
 	CharClassEntry * myClass;
-	UnitPointer linkTarget;
+	Unit* linkTarget;
 	bool stack_cheat;
 	bool triggerpass_cheat;
 	bool SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, float Z, float O);
 	bool SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec);
-	void SafeTeleport(MapMgrPointer mgr, LocationVector vec);
+	void SafeTeleport(MapMgr* mgr, LocationVector vec);
 	void EjectFromInstance();
 	bool raidgrouponlysent;
 	
@@ -1823,9 +1823,9 @@ public:
 	void OnPrePushToWorld();
 	void OnWorldPortAck();
 	uint32 m_TeleportState;
-	set<UnitPointer > visiblityChangableSet;
+	set<Unit* > visiblityChangableSet;
 	bool m_beingPushed;
-	bool CanSignCharter(Charter * charter, PlayerPointer requester);
+	bool CanSignCharter(Charter * charter, Player* requester);
 	uint32 m_FlyingAura;
 	stringstream LoadAuras;
 	bool resend_speed;
@@ -1864,22 +1864,22 @@ public:
 	void SendAreaTriggerMessage(const char * message, ...);
         
 	// Trade Target
-	// PlayerPointer getTradeTarget() {return mTradeTarget;};
+	// Player* getTradeTarget() {return mTradeTarget;};
 
-	ARCTIC_INLINE PlayerPointer GetTradeTarget()
+	ARCTIC_INLINE Player* GetTradeTarget()
 	{
 		if(!IsInWorld()) return NULLPLR;
 		return m_mapMgr->GetPlayer((uint32)mTradeTarget);
 	}
 
-	ItemPointer getTradeItem(uint32 slot) {return mTradeItems[slot];};
+	Item* getTradeItem(uint32 slot) {return mTradeItems[slot];};
         
 	// Water level related stuff (they are public because they need to be accessed fast)
 	// Nose level of the character (needed for proper breathing)
 	float m_noseLevel;
 
 	// Mind Control.
-	void Possess(UnitPointer pTarget);
+	void Possess(Unit* pTarget);
 	void UnPossess();
 
 	// Last Speeds.
@@ -1938,7 +1938,7 @@ public:
 	bool UnpackPlayerData(ByteBuffer & data);
 #endif
 
-	CreaturePointer m_tempSummon;
+	Creature* m_tempSummon;
 	bool m_deathVision;
 	SpellEntry * last_heal_spell;
 	LocationVector m_sentTeleportPosition;
@@ -1991,8 +1991,8 @@ protected:
 	uint32 m_summoner;
 
 	uint32 iActivePet;
-	void _SetCreateBits(UpdateMask *updateMask, PlayerPointer target) const;
-	void _SetUpdateBits(UpdateMask *updateMask, PlayerPointer target) const;
+	void _SetCreateBits(UpdateMask *updateMask, Player* target) const;
+	void _SetUpdateBits(UpdateMask *updateMask, Player* target) const;
 
 	// Update system components.
 	ByteBuffer bUpdateBuffer;
@@ -2029,7 +2029,7 @@ protected:
 	void _LoadPetSpells(QueryResult * result);
 	void _SavePet(QueryBuffer * buf);
 	void _SavePetSpells(QueryBuffer * buf);
-	void _ApplyItemMods( ItemPointer item, int8 slot, bool apply, bool justdrokedown = false, bool skip_stat_apply = false );
+	void _ApplyItemMods( Item* item, int8 slot, bool apply, bool justdrokedown = false, bool skip_stat_apply = false );
 	void _EventAttack( bool offhand );
 	void _EventExploration();
 
@@ -2040,7 +2040,7 @@ protected:
 	// Trade																//
 	//////////////////////////////////////////////////////////////////////////
 	
-	ItemPointer mTradeItems[7];
+	Item* mTradeItems[7];
 	uint32 mTradeGold;
 	uint32 mTradeTarget;
 	uint32 mTradeStatus;
@@ -2056,14 +2056,14 @@ protected:
 	std::string m_name;          // max 21 character name
 	uint32  m_Tutorials[8];
 	int32			m_DancingRuneWeaponBonus;
-	CreaturePointer m_DancingRuneWeapon;
+	Creature* m_DancingRuneWeapon;
 
     // Character Ban
 	uint32  m_banned;
 	string  m_banreason;
 	uint32  m_AreaID;
 	AreaTable  *m_areaDBC;
-	PetPointer  m_Summon;
+	Pet*  m_Summon;
 	uint32  m_PetNumberMax;
 	std::map<uint32, PlayerPet*> m_Pets;
 	
@@ -2119,16 +2119,16 @@ protected:
 	// Channels
 	std::set<uint32> m_channels;
 	// Visible objects
-	unordered_set<ObjectPointer > m_visibleObjects;
+	unordered_set<Object* > m_visibleObjects;
 	// Groups/Raids
 	uint32 m_GroupInviter;
 	uint8 m_StableSlotCount;
 
     // Fishing related
-	ObjectPointer m_SummonedObject;
+	Object* m_SummonedObject;
 
     // other system
-	CorpsePointer myCorpse;
+	Corpse* myCorpse;
 
 	uint32 m_lastHonorResetTime;
 	uint32 _fields[PLAYER_END];
@@ -2204,10 +2204,10 @@ public:
 	uint32 m_castFilter[3];	    // spell group relation of only spells that player can currently cast 
 
 	uint32 m_vampiricEmbrace;
-	void VampiricSpell(uint32 dmg, UnitPointer pTarget, SpellEntry *spellinfo);
+	void VampiricSpell(uint32 dmg, Unit* pTarget, SpellEntry *spellinfo);
 
 	// grounding totem
-	AuraPointer m_magnetAura;
+	Aura* m_magnetAura;
 
 	// spirit of redemption
 	bool m_canCastSpellsWhileDead;
@@ -2287,7 +2287,7 @@ public:
 	static void InitializeTalentInspectSupport();
 
 	// loooooot
-	void GenerateLoot(CorpsePointer pCorpse);
+	void GenerateLoot(Corpse* pCorpse);
 };
 
 class SkillIterator
@@ -2295,9 +2295,9 @@ class SkillIterator
 	SkillMap::iterator m_itr;
 	SkillMap::iterator m_endItr;
 	bool m_searchInProgress;
-	PlayerPointer m_target;
+	Player* m_target;
 public:
-	SkillIterator(PlayerPointer target) : m_searchInProgress(false),m_target(target) {}
+	SkillIterator(Player* target) : m_searchInProgress(false),m_target(target) {}
 	~SkillIterator() { if(m_searchInProgress) { EndSearch(); } if(m_target) { m_target = NULLPLR; } }
 
 	void BeginSearch()
@@ -2347,12 +2347,12 @@ class CMovementCompressorThread : public ThreadContext
 {
 	bool running;
 	Mutex m_listLock;
-	set<PlayerPointer  > m_players;
+	set<Player*  > m_players;
 public:
 	CMovementCompressorThread() { running = true; }
 
-	void AddPlayer(PlayerPointer pPlayer);
-	void RemovePlayer(PlayerPointer pPlayer);
+	void AddPlayer(Player* pPlayer);
+	void RemovePlayer(Player* pPlayer);
 
 	void OnShutdown() { running = false; }
 	bool run();

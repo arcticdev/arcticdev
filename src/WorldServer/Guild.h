@@ -233,7 +233,7 @@ struct ARCTIC_DECL GuildBankTab
 	uint8 iTabId;
 	char * szTabName;
 	char * szTabIcon;
-	ItemPointer pSlots[MAX_GUILD_BANK_SLOTS];
+	Item* pSlots[MAX_GUILD_BANK_SLOTS];
 	list<GuildBankEvent*> lLog;
 };
 
@@ -320,7 +320,7 @@ public:
    ARCTIC_INLINE void SendPacket(WorldPacket * data){ SendPacketToAllButOne(data, NULLPLR); }
    
    /* Sends a packet to all online players except by one. */
-   void SendPacketToAllButOne(WorldPacket * data, PlayerPointer pSkipTarget);
+   void SendPacketToAllButOne(WorldPacket * data, Player* pSkipTarget);
 
 	/* Sends a guild chat message.*/
 	void GuildChat(const char * szMessage, WorldSession * pClient, int32 iType);

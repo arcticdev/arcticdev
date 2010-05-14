@@ -10,7 +10,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_RETURN;
 	
-	PlayerPointer p_User = GetPlayer();
+	Player* p_User = GetPlayer();
 	DEBUG_LOG("WORLD","Received use Item packet, data length = %i",recvPacket.size());
 	int8 tmp1,slot;
 	uint8 unk; // 3.0.2 added unk
@@ -20,7 +20,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	uint32 glyphIndex;
 
 	recvPacket >> tmp1 >> slot >> cn >> dummyid >> item_guid >> glyphIndex >> unk;
-	ItemPointer tmpItem = NULLITEM;
+	Item* tmpItem = NULLITEM;
 	tmpItem = p_User->GetItemInterface()->GetInventoryItem(tmp1,slot);
 	if (!tmpItem)
 		tmpItem = p_User->GetItemInterface()->GetInventoryItem(slot);
@@ -161,7 +161,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	SpellPointer spell(new Spell(_player, spellInfo, false, NULLAURA));
+	Spell* spell(new Spell(_player, spellInfo, false, NULLAURA));
 	spell->extra_cast_number=cn;
 	spell->m_glyphIndex = glyphIndex;
 	spell->i_caster = tmpItem;
@@ -229,7 +229,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		if((spellInfo->Flags3 & FLAGS3_ACTIVATE_AUTO_SHOT) /*spellInfo->Attributes == 327698*/)	// auto shot..
 		{
 			// sLog.outString( "HandleSpellCast: Auto Shot-type spell cast (id %u, name %s)" , spellInfo->Id , spellInfo->Name );
-			ItemPointer weapon = GetPlayer()->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
+			Item* weapon = GetPlayer()->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
 			if(!weapon) 
 				return;
 			uint32 spellid;
@@ -307,7 +307,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 		if( targets.m_unitTarget && GetPlayer()->GetMapMgr() && spellInfo->c_is_flags & SPELL_FLAG_IS_DAMAGING )
 		{
-			UnitPointer pUnit = GetPlayer()->GetMapMgr()->GetUnit( targets.m_unitTarget );
+			Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit( targets.m_unitTarget );
 			if( pUnit && pUnit != GetPlayer() && !isAttackable( GetPlayer(), pUnit, false ) && !pUnit->IsInRangeOppFactSet(GetPlayer()) && !pUnit->CombatStatus.DidDamageTo(GetPlayer()->GetGUID()))
 			{
 				//GetPlayer()->BroadcastMessage("Faction exploit detected. You will be disconnected in 5 seconds.");
@@ -318,7 +318,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			}
 		}
 
-		SpellPointer spell(new Spell(GetPlayer(), spellInfo, false, NULLAURA));
+		Spell* spell(new Spell(GetPlayer(), spellInfo, false, NULLAURA));
 		spell->extra_cast_number=cn;
 		spell->prepare(&targets);
 	}
@@ -354,7 +354,7 @@ void WorldSession::HandleCancelChannellingOpcode( WorldPacket& recvPacket)
 	uint32 spellId;
 	recvPacket >> spellId;
 
-	PlayerPointer plyr = GetPlayer();
+	Player* plyr = GetPlayer();
 	if(!plyr)
 		return;
 	if(plyr->m_currentSpell)
@@ -376,10 +376,10 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 	uint8 counter;
 	uint32 spellid;
 	uint8 flags;
-	UnitPointer caster;
+	Unit* caster;
 	SpellCastTargets targets;
 	SpellEntry *sp;
-	SpellPointer pSpell;
+	Spell* pSpell;
 	list<AI_Spell*>::iterator itr;
 
 	recvPacket >> guid >> counter >> spellid >> flags;
@@ -413,7 +413,7 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 	
 	targets.read(recvPacket, _player->GetGUID());
 
-	pSpell = SpellPointer(new Spell(caster, sp, false, NULLAURA));
+	pSpell = Spell*(new Spell(caster, sp, false, NULLAURA));
 	pSpell->extra_cast_number = counter;
 	pSpell->prepare(&targets);
 }

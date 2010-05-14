@@ -7,6 +7,12 @@
 #ifndef _MAP_SCRIPT_INTERFACE_H
 #define _MAP_SCRIPT_INTERFACE_H
 
+/* 
+ * Class MapScriptInterface
+ * Provides an interface to mapmgr for scripts, to obtain objects,
+ * get players, etc.
+ */
+
 class GameObject;
 class Object;
 class Creature;
@@ -16,19 +22,20 @@ class Player;
 class ARCTIC_DECL MapScriptInterface
 {
 public:
-	MapScriptInterface(MapMgrPointer mgr);
+	MapScriptInterface(MapMgr* mgr);
 	~MapScriptInterface();
 
-	template<class T, uint32 TypeId> shared_ptr<T> GetObjectNearestCoords(uint32 Entry, float x, float y, float z, float ClosestDist)
+	template<class T, uint32 TypeId> T* GetObjectNearestCoords(uint32 Entry, float x, float y, float z, float ClosestDist)
 	{
 		MapCell * pCell = mapMgr->GetCell(mapMgr->GetPosX(x), mapMgr->GetPosY(y));
-		if(pCell == 0)
-			return CAST(T, NULLPTR);
 
-		ObjectPointer ClosestObject = NULLOBJ;
+		if(pCell == NULL)
+			return CAST(T, NULLPLR);
+
+		Object* ClosestObject = NULLOBJ;
 		float CurrentDist = 0;
-        ObjectSet::const_iterator iter = pCell->Begin();
-		for(; iter != pCell->End(); ++iter)
+		ObjectSet::const_iterator iter;
+		for(iter = pCell->Begin(); iter != pCell->End(); ++iter)
 		{
 			CurrentDist = (*iter)->CalcDistance(x, y, (z != 0.0f ? z : (*iter)->GetPositionZ()));
 			if(CurrentDist < ClosestDist && (*iter)->GetTypeId() == TypeId)
@@ -44,18 +51,19 @@ public:
 		return CAST(T, ClosestObject);
 	}
 
-	ARCTIC_INLINE GameObjectPointer GetGameObjectNearestCoords(float x, float y, float z = 0.0f, uint32 Entry = 0, float ClosestDistance = 999999.0f)
+	ARCTIC_INLINE GameObject* GetGameObjectNearestCoords(float x, float y, float z = 0.0f, uint32 Entry = 0, float ClosestDistance = 999999.0f)
 	{
 		return GetObjectNearestCoords<GameObject, TYPEID_GAMEOBJECT>(Entry, x, y, z, ClosestDistance);
 	}
 
-	ARCTIC_INLINE CreaturePointer GetCreatureNearestCoords(float x, float y, float z = 0.0f, uint32 Entry = 0, float ClosestDistance = 999999.0f)
+	ARCTIC_INLINE Creature* GetCreatureNearestCoords(float x, float y, float z = 0.0f, uint32 Entry = 0, float ClosestDistance = 999999.0f)
 	{
 		return GetObjectNearestCoords<Creature, TYPEID_UNIT>(Entry, x, y, z, ClosestDistance);
 	}
 
-	ARCTIC_INLINE PlayerPointer GetPlayerNearestCoords(float x, float y, float z = 0.0f, uint32 Entry = 0, float ClosestDistance = 999999.0f)
+	ARCTIC_INLINE Player* GetPlayerNearestCoords(float x, float y, float z = 0.0f, uint32 Entry = 0, float ClosestDistance = 999999.0f)
 	{
+		// Don't bother checking empty maps.
 		if(!mapMgr->GetPlayerCount())
 			return NULLPLR;
 		return GetObjectNearestCoords<Player, TYPEID_PLAYER>(Entry, x, y, z, ClosestDistance);
@@ -63,15 +71,15 @@ public:
 
 	uint32 GetPlayerCountInRadius(float x, float y, float z = 0.0f, float radius = 5.0f);
 	
-	GameObjectPointer SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2);
-	CreaturePointer SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2);
+	GameObject* SpawnGameObject(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, uint32 Misc1, uint32 Misc2);
+	Creature* SpawnCreature(uint32 Entry, float cX, float cY, float cZ, float cO, bool AddToWorld, bool tmplate, uint32 Misc1, uint32 Misc2);
 	WayPoint * CreateWaypoint();
 
-	void DeleteGameObject(GameObjectPointer ptr);
-	void DeleteCreature(CreaturePointer ptr);
+	void DeleteGameObject(GameObject* ptr);
+	void DeleteCreature(Creature* ptr);
 
 private:
-	MapMgrPointer mapMgr;
+	MapMgr* mapMgr;
 };
 
 class ARCTIC_DECL StructFactory : public Singleton<StructFactory>
@@ -84,4 +92,3 @@ public:
 #define sStructFactory StructFactory::getSingleton()
 
 #endif
-

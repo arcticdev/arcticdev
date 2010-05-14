@@ -19,8 +19,8 @@ bool ChatHandler::HandleWPAddCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 	AIInterface* ai = NULL;
-	CreaturePointer pCreature = NULLCREATURE;
-	PlayerPointer p = m_session->GetPlayer();
+	Creature* pCreature = NULLCREATURE;
+	Player* p = m_session->GetPlayer();
 	if(p->waypointunit != NULL)
 	{
 		SystemMessage(m_session, "Using Previous Unit.");
@@ -141,7 +141,7 @@ bool ChatHandler::HandleWPMoveTypeCommand(const char* args, WorldSession *m_sess
 		return true;
 	}
 
-	CreaturePointer pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature)
 	{
 		SystemMessage(m_session, "You should select a creature.");
@@ -174,7 +174,7 @@ bool ChatHandler::HandleWPShowCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 
-	CreaturePointer pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature)
 	{
 		SystemMessage(m_session, "You should select a Creature.");
@@ -191,7 +191,7 @@ bool ChatHandler::HandleWPShowCommand(const char* args, WorldSession *m_session)
 	bool Backwards = (pBackwards)? ((atoi(pBackwards)>0)?true:false) : false;
 
 	AIInterface* ai = pCreature->GetAIInterface();
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 
 
 	if(pPlayer->waypointunit != ai)
@@ -240,7 +240,7 @@ bool ChatHandler::HandleWPDeleteCommand(const char* args, WorldSession *m_sessio
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -288,7 +288,7 @@ bool ChatHandler::HandleWPChangeNoCommand(const char* args, WorldSession *m_sess
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -345,7 +345,7 @@ bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession *m_session
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -394,7 +394,7 @@ bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_sess
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -450,7 +450,7 @@ bool ChatHandler::HandleWPWaitCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -506,7 +506,7 @@ bool ChatHandler::HandleWaypointGettextCommand(const char* args, WorldSession *m
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -552,7 +552,7 @@ bool ChatHandler::HandleWaypointForwardTextCommand(const char* args, WorldSessio
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -600,7 +600,7 @@ bool ChatHandler::HandleWaypointBackwardTextCommand(const char* args, WorldSessi
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -647,7 +647,7 @@ bool ChatHandler::HandleWPSpellToCastCommand(const char* args, WorldSession *m_s
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -706,7 +706,7 @@ bool ChatHandler::HandleWPStandStateCommand(const char* args, WorldSession *m_se
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -763,7 +763,7 @@ bool ChatHandler::HandleWPEmoteCommand(const char* args, WorldSession *m_session
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -827,7 +827,7 @@ bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -886,7 +886,7 @@ bool ChatHandler::HandleWPInfoCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 	AIInterface* ai = pPlayer->waypointunit;
 	if(!ai || !ai->GetUnit())
 	{
@@ -942,7 +942,7 @@ bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession *m_session)
 		return true;
 	}
 
-	CreaturePointer pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature)
 	{
 		SystemMessage(m_session, "You should select a Creature.");
@@ -956,7 +956,7 @@ bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession *m_session)
 	}
 
 	AIInterface* ai = pCreature->GetAIInterface();
-	PlayerPointer pPlayer = m_session->GetPlayer();
+	Player* pPlayer = m_session->GetPlayer();
 
 
 	if(pPlayer->waypointunit == ai)
@@ -981,7 +981,7 @@ bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_session)
 {
-	CreaturePointer cr = 
+	Creature* cr = 
 		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!cr)
 	{
@@ -1076,7 +1076,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 
 bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession * m_session)
 {
-	CreaturePointer cr = 
+	Creature* cr = 
 		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!cr)return false;
 	if(!cr->GetSQL_id())
@@ -1089,7 +1089,7 @@ bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession * m_session
 
 bool ChatHandler::HandleDeleteWaypoints(const char* args, WorldSession * m_session)
 {
-	CreaturePointer cr = 
+	Creature* cr = 
 		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!cr)return false;
 	if(!cr->GetSQL_id())
@@ -1117,8 +1117,8 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 		return true;
 	}
 	AIInterface* ai = NULL;
-	CreaturePointer pCreature = NULLCREATURE;
-	PlayerPointer p = m_session->GetPlayer();
+	Creature* pCreature = NULLCREATURE;
+	Player* p = m_session->GetPlayer();
 	if(p->waypointunit != NULL)
 	{
 		SystemMessage(m_session, "Using Previous Unit.");
@@ -1207,11 +1207,11 @@ bool ChatHandler::HandleWaypointAddFlyCommand(const char * args, WorldSession * 
 
 bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_session)
 {
-	CreaturePointer un = NULLCREATURE;
+	Creature* un = NULLCREATURE;
 	float dist = 999999.0f;
 	float dist2;
-	PlayerPointer plr = m_session->GetPlayer();
-	unordered_set<ObjectPointer >::iterator itr;
+	Player* plr = m_session->GetPlayer();
+	unordered_set<Object* >::iterator itr;
 	for(itr = plr->GetInRangeSetBegin(); itr != plr->GetInRangeSetEnd(); ++itr)
 	{
 		if( (dist2 = plr->GetDistance2dSq(*itr)) < dist && (*itr)->GetTypeId() == TYPEID_UNIT )

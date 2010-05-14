@@ -43,7 +43,7 @@ void DynamicObject::Destructor()
 	// remove aura from all targets
 	DynamicObjectList::iterator jtr  = targets.begin();
 	DynamicObjectList::iterator jend = targets.end();
-	UnitPointer target;
+	Unit* target;
 
 	while(jtr != jend)
 	{
@@ -52,7 +52,7 @@ void DynamicObject::Destructor()
 		target->RemoveAura(m_spellProto->Id);
 	}
 
-	if(m_caster && m_caster->dynObj == dyn_shared_from_this() )
+	if(m_caster && m_caster->dynObj == TO_DYNAMICOBJECT(this) )
 		m_caster->dynObj = NULLDYN;
 
 	m_parentSpell=NULLSPELL;
@@ -66,7 +66,7 @@ void DynamicObject::Destructor()
 	Object::Destructor();
 }
 
-void DynamicObject::Create(ObjectPointer caster, SpellPointer pSpell, float x, float y, float z, uint32 duration, float radius)
+void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, float z, uint32 duration, float radius)
 {
 	Object::_Create(caster->GetMapId(),x, y, z, 0);
 	if(pSpell->g_caster)
@@ -118,14 +118,14 @@ void DynamicObject::Create(ObjectPointer caster, SpellPointer pSpell, float x, f
 		caster->dynObj->m_aliveDuration = 1;
 		caster->dynObj->UpdateTargets();
 	}
-	caster->dynObj = TO_DYNAMICOBJECT(shared_from_this());
+	caster->dynObj = TO_DYNAMICOBJECT(this);
 	
 	PushToWorld(caster->GetMapMgr());
 
-	sEventMgr.AddEvent(TO_DYNAMICOBJECT(shared_from_this()), &DynamicObject::UpdateTargets, EVENT_DYNAMICOBJECT_UPDATE, 200, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO_DYNAMICOBJECT(this), &DynamicObject::UpdateTargets, EVENT_DYNAMICOBJECT_UPDATE, 200, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
-void DynamicObject::AddInRangeObject( ObjectPointer pObj )
+void DynamicObject::AddInRangeObject( Object* pObj )
 {
 	if( pObj->IsUnit() )
 	{
@@ -133,15 +133,15 @@ void DynamicObject::AddInRangeObject( ObjectPointer pObj )
 		if( p_caster != NULL)
 			attackable = isAttackable( m_caster, pObj );
 		else
-			attackable = isAttackable( dyn_shared_from_this(), pObj );
+			attackable = isAttackable( TO_DYNAMICOBJECT(this), pObj );
 		
 		if( attackable )
-			m_inRangeOppFactions.insert( TO_UNIT( pObj ) );
+			m_inRangeOppFactions.insert( TO_UNIT(pObj) );
 	}
 	Object::AddInRangeObject( pObj );
 }
 
-void DynamicObject::OnRemoveInRangeObject( ObjectPointer pObj )
+void DynamicObject::OnRemoveInRangeObject( Object* pObj )
 {
 	if( pObj->IsUnit() )
 	{
@@ -159,9 +159,9 @@ void DynamicObject::UpdateTargets()
 
 	if(m_aliveDuration >= 200)
 	{
-		unordered_set<ObjectPointer >::iterator itr = GetInRangeSetBegin(),itr2;
-		unordered_set<ObjectPointer >::iterator iend = GetInRangeSetEnd();
-		UnitPointer target;
+		unordered_set<Object* >::iterator itr = GetInRangeSetBegin(),itr2;
+		unordered_set<Object* >::iterator iend = GetInRangeSetEnd();
+		Unit* target;
 		float radius = m_floatValues[DYNAMICOBJECT_RADIUS]*m_floatValues[DYNAMICOBJECT_RADIUS];
 
 		while(itr != iend)
@@ -183,7 +183,7 @@ void DynamicObject::UpdateTargets()
 
 			if(GetDistanceSq(target) <= radius)
 			{
-				AuraPointer pAura(new Aura(m_spellProto, m_aliveDuration, m_caster, target));
+				Aura* pAura(new Aura(m_spellProto, m_aliveDuration, m_caster, target));
 				for(uint32 i = 0; i < 3; ++i)
 				{
 					if(m_spellProto->Effect[i] == 27)
@@ -236,7 +236,7 @@ void DynamicObject::UpdateTargets()
 	{
 		DynamicObjectList::iterator jtr  = targets.begin();
 		DynamicObjectList::iterator jend = targets.end();
-		UnitPointer target;
+		Unit* target;
 
 		while(jtr != jend)
 		{

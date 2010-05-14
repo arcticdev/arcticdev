@@ -134,7 +134,7 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 
 bool ChatHandler::HandleStartCommand(const char* args, WorldSession *m_session)
 {
-	PlayerPointer m_plyr = TO_PLAYER(getSelectedChar(m_session, false));
+	Player* m_plyr = TO_PLAYER(getSelectedChar(m_session, false));
 	if( m_plyr == NULL)
 		return false;
 
@@ -245,15 +245,15 @@ bool ChatHandler::HandleNYICommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_session)
 {
-	UnitPointer m_target = NULLUNIT;
+	Unit* m_target = NULLUNIT;
 
-	PlayerPointer p_target = getSelectedChar(m_session, false);
+	Player* p_target = getSelectedChar(m_session, false);
 
 	if(p_target)
 		m_target = p_target;
 	else
 	{
-		CreaturePointer m_crt = getSelectedCreature(m_session, false);
+		Creature* m_crt = getSelectedCreature(m_session, false);
 		if(m_crt)
 			m_target = m_crt;
 	}
@@ -325,7 +325,7 @@ bool ChatHandler::HandleRangeCheckCommand( const char *args , WorldSession *m_se
 		return true;
 	}
 
-	UnitPointer unit = m_session->GetPlayer()->GetMapMgr()->GetUnit( guid );
+	Unit* unit = m_session->GetPlayer()->GetMapMgr()->GetUnit( guid );
 	if(!unit)
 	{
 		m_session->SystemMessage("Invalid selection imo.");
@@ -352,7 +352,7 @@ bool ChatHandler::HandleGmLogCommentCommand( const char *args , WorldSession *m_
 bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_session )
 {
 	m_session->SystemMessage("Ratings!!!");
-	PlayerPointer m_plyr = getSelectedChar(m_session, false);
+	Player* m_plyr = getSelectedChar(m_session, false);
 	for( uint32 i = 0; i < 24; i++ )
 	{
 		m_plyr->ModUnsigned32Value( PLAYER_FIELD_COMBAT_RATING_1 + i, i );

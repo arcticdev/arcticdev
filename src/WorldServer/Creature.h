@@ -83,7 +83,7 @@ struct CreatureInfo
 		if(!models[0] && !models[1] && !models[2] && !models[3])
 		{
 			// All models are invalid.
-			Log.Warning(ZCSDATYREAI, AICREATYRAI, Id);
+			Log.Warning("CreatureSpawn", "Creature %u has no model_id", Id);
 			return 0;
 		}
 
@@ -318,7 +318,7 @@ public:
 	void Load(CreatureProto * proto_, float x, float y, float z, float o = 0.0f);
 
 	void AddToWorld();
-	void AddToWorld(MapMgrPointer pMapMgr);
+	void AddToWorld(MapMgr* pMapMgr);
 	void RemoveFromWorld(bool addrespawnevent, bool free_guid);
 
 	// Creation
@@ -445,7 +445,7 @@ public:
 	void RegenerateMana(bool isinterrupted);
 	int BaseAttackType;
 
-	bool CanSee(UnitPointer obj) // * Invisibility & Stealth Detection - Partha *
+	bool CanSee(Unit* obj) // * Invisibility & Stealth Detection - Partha *
 	{
 		if(!obj)
 			return false;
@@ -485,7 +485,7 @@ public:
 	}
 
 	//Make this unit face another unit
-	bool setInFront(UnitPointer target);
+	bool setInFront(Unit* target);
 
 	bool Skinned;
 
@@ -507,14 +507,14 @@ public:
 
 	void OnJustDied();
 	void OnRemoveCorpse();
-	void OnRespawn(MapMgrPointer m);
+	void OnRespawn(MapMgr* m);
 	void SafeDelete();
 	// void Despawn();
 	void SummonExpire(); // this is used for guardians. They are non respawnable creatures linked to a player
 
 	// In Range
-	void AddInRangeObject(ObjectPointer pObj);
-	void OnRemoveInRangeObject(ObjectPointer pObj);
+	void AddInRangeObject(Object* pObj);
+	void OnRemoveInRangeObject(Object* pObj);
 	void ClearInRangeSet();
 
 	// Demon
@@ -528,8 +528,8 @@ public:
 	void SetEnslaveSpell(uint32 spellId) { m_enslaveSpell = spellId; }
 	bool RemoveEnslave();
 
-	ARCTIC_INLINE PlayerPointer GetTotemOwner() { return totemOwner; }
-	ARCTIC_INLINE void SetTotemOwner(PlayerPointer owner) { totemOwner = owner; }
+	ARCTIC_INLINE Player* GetTotemOwner() { return totemOwner; }
+	ARCTIC_INLINE void SetTotemOwner(Player* owner) { totemOwner = owner; }
 	ARCTIC_INLINE int32 GetTotemSlot() { return totemSlot; }
 	ARCTIC_INLINE void SetTotemSlot(int32 slot) { totemSlot = slot; }
 	ARCTIC_INLINE bool IsExotic(CreatureFamilyEntry * family )
@@ -596,11 +596,11 @@ public:
 	bool CanAddToWorld();
 
 	WayPointMap * m_custom_waypoint_map;
-	PlayerPointer m_escorter;
+	Player* m_escorter;
 	void DestroyCustomWaypointMap();
 	bool IsInLimboState() { return m_limbostate; }
 	uint32 GetLineByFamily(CreatureFamilyEntry * family){return family->skilline ? family->skilline : 0;};
-	void RemoveLimboState(UnitPointer healer);
+	void RemoveLimboState(Unit* healer);
 	void SetGuardWaypoints();
 	bool m_corpseEvent;
 	MapCell * m_respawnCell;
@@ -630,7 +630,7 @@ protected:
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
 
-	PlayerPointer totemOwner;
+	Player* totemOwner;
 	int32 totemSlot;
 
 	bool m_PickPocketed;
@@ -649,13 +649,13 @@ public:
 	int8 m_lootMethod;
 
 	// updates the loot state, whether it is tagged or lootable, or no longer has items
-	void UpdateLootAnimation(PlayerPointer Looter);
+	void UpdateLootAnimation(Player* Looter);
 
 	// clears tag, clears "tagged" visual grey
 	void ClearTag();
 
 	// tags the object by a certain player.
-	void Tag(PlayerPointer plr);
+	void Tag(Player* plr);
 
 	// used by bgs
 	bool m_noDeleteAfterDespawn;
