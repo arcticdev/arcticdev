@@ -8,7 +8,7 @@
 
 void WorldSession::HandleConvertGroupToRaidOpcode(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	// This is just soooo easy now   
 	Group *pGroup = _player->GetGroup();
 	if(!pGroup) return;
@@ -25,7 +25,7 @@ void WorldSession::HandleConvertGroupToRaidOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleGroupChangeSubGroup(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	std::string name;
 	uint8 subGroup;
 
@@ -41,11 +41,10 @@ void WorldSession::HandleGroupChangeSubGroup(WorldPacket & recv_data)
 
 void WorldSession::HandleGroupAssistantLeader(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN;
+
 	uint64 guid;
 	uint8 on;
-
-	if(!_player->IsInWorld())
-		return;
 
 	if(_player->GetGroup() == NULL)
 		return;
@@ -58,7 +57,7 @@ void WorldSession::HandleGroupAssistantLeader(WorldPacket & recv_data)
 
 	recv_data >> guid >> on;
 	if(on == 0)
-        _player->GetGroup()->SetAssistantLeader(NULL);
+		_player->GetGroup()->SetAssistantLeader(NULL);
 	else
 	{
 		PlayerInfo * np = objmgr.GetPlayerInfo((uint32)guid);
@@ -74,11 +73,10 @@ void WorldSession::HandleGroupAssistantLeader(WorldPacket & recv_data)
 
 void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 {
+	CHECK_INWORLD_RETURN;
+
 	uint8 promotetype, on;
 	uint64 guid;
-
-	if(!_player->IsInWorld())
-		return;
 
 	if(_player->GetGroup() == NULL)
 		return;
@@ -115,7 +113,7 @@ void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 }
 
 void WorldSession::HandleRequestRaidInfoOpcode(WorldPacket & recv_data)
-{  
+{
 	//            SMSG_RAID_INSTANCE_INFO = 716, //(0x2CC)
 	sInstanceMgr.BuildSavedRaidInstancesForPlayer(_player);
 }
@@ -130,15 +128,17 @@ void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
 
 	if(recv_data.size() == 0)
 	{
-    if(pGroup->GetLeader() == _player->m_playerInfo ||
-        pGroup->GetAssistantLeader() == _player->m_playerInfo)
+	if(pGroup->GetLeader() == _player->m_playerInfo ||
+		pGroup->GetAssistantLeader() == _player->m_playerInfo)
 		{
-        WorldPacket data(MSG_RAID_READY_CHECK, 9);
-        data << _player->GetGUID();
+			WorldPacket data(MSG_RAID_READY_CHECK, 9);
+			data << _player->GetGUID();
 			pGroup->SendPacketToAll(&data);
 		}
 		else
+		{
 			SendNotification(NOTIFICATION_MESSAGE_NO_PERMISSION);
+		}
 	}
 	else
 	{

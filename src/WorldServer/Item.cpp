@@ -268,7 +268,7 @@ void Item::ApplyRandomProperties( bool apply )
 	}
 }
 
-void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer* buf )
+void Item::SaveToDB( int16 containerslot, int16 slot, bool firstsave, QueryBuffer* buf )
 {
 	if( !m_isDirty && !firstsave )
 		return;
@@ -278,7 +278,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	ss << "REPLACE INTO playeritems VALUES(";
 
 	ss << m_uint32Values[ITEM_FIELD_OWNER] << ",";
-    ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
+	ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
 	ss << m_uint32Values[OBJECT_FIELD_ENTRY] << ",";
 	ss << wrapped_item_id << ",";
 	ss << m_uint32Values[ITEM_FIELD_GIFTCREATOR] << ",";
@@ -354,7 +354,7 @@ uint32 GetSkillByProto( uint32 Class, uint32 SubClass )
 	{
 		return arm_skills[SubClass];
 	} 
-    else if( Class == 2 )
+	else if( Class == 2 )
 	{
 		if( SubClass < 20 ) // no skill for fishing
 		{
@@ -511,11 +511,11 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	SetUInt32Value( EnchantBase + 1, (uint32)Instance.ApplyTime );
 	SetUInt32Value( EnchantBase + 2, 0 ); // charges
 
-    // Add it to our map.
-    if((int32)Enchantments.size()>Slot)
-        Enchantments[Slot] = Instance;
-    else
-        DEBUG_LOG(ERROORSWIOWAI, __FUNCTION__, __LINE__);
+	// Add it to our map.
+	if((int32)Enchantments.size()>Slot)
+		Enchantments[Slot] = Instance;
+	else
+		DEBUG_LOG(ERROORSWIOWAI, __FUNCTION__, __LINE__);
 
 	if( m_owner == NULL )
 		return Slot;
@@ -550,7 +550,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 		// Only apply the enchantment bonus if we're equipped.
 		uint8 slot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() );
 		if( slot > EQUIPMENT_SLOT_START && slot < EQUIPMENT_SLOT_END )
-            ApplyEnchantmentBonus( Slot, APPLY );
+			ApplyEnchantmentBonus( Slot, APPLY );
 	}
 
 	owner->SaveToDB(false);
@@ -568,9 +568,6 @@ void Item::RemoveEnchantment( uint32 EnchantmentSlot )
 	uint32 Slot = itr->first;
 	if( itr->second.BonusApplied )
 		ApplyEnchantmentBonus( EnchantmentSlot, REMOVE );
-	
-	if( !m_itemProto && !m_owner )
-		return;
 
 	// Unset the item fields.
 	uint32 EnchantBase = Slot * 3 + ITEM_FIELD_ENCHANTMENT_1_1;
@@ -609,12 +606,12 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 	}
 
 	// Apply the visual on the player.
-	uint32 ItemSlot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() ) * PLAYER_VISIBLE_ITEM_LENGTH; // for 3.1.1 "* 18" is a bad idea, now it's "* 2"; but this could have been calculated based on UpdateFields.h! This is PLAYER_VISIBLE_ITEM_LENGTH
-	uint32 VisibleBase = PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + ItemSlot;
-	if ( VisibleBase <= PLAYER_VISIBLE_ITEM_19_ENCHANTMENT )
-		m_owner->SetUInt32Value( VisibleBase, Apply ? Entry->Id : 0 ); // On 3.1 we can't add a Slot to the base now, as we no longer have multiple fields for storing them. This in some cases will try to write for example 3 visuals into one place, but now every item has only one field for this, and as we can't choose which visual to have, we'll accept the last one.
-	else
-		sLog.outError( ITEMSZAPPPBAI, VisibleBase );
+	uint32 ItemSlot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() );
+	if(ItemSlot < EQUIPMENT_SLOT_END)
+	{
+		uint32 VisibleBase = PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + ItemSlot * PLAYER_VISIBLE_ITEM_LENGTH;
+		m_owner->SetUInt32Value( VisibleBase, Apply ? Entry->Id : 0 );
+	}
 
 	// Another one of those for loop that where not indented properly god knows what will break
 	// but i made it actually affect the code below it
@@ -673,7 +670,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 						}
 						else
 							TS.procChance = Entry->min[c];
-						DEBUG_LOG( WOWENCHANTSAI, SETTINGPROCAI, TS.procChance );
+						DEBUG_LOG( "Enchant", "Setting procChance to %u%%.", TS.procChance );
 						TS.deleted = false;
 						TS.spellId = Entry->spell[c];
 						m_owner->m_procSpells.push_back( TS );
@@ -693,7 +690,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 								// m_owner->m_procSpells.erase(itr2);
 								itr->deleted = true;
 							}
-							itr++;
+							++itr;
 						}
 					}
 				}break;
@@ -711,7 +708,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					m_owner->CalcDamage();
 				}break;
 
-			case 3:		 // Cast spell (usually means apply aura)
+			case 3: // Cast spell (usually means apply aura)
 				{
 					if( Apply )
 					{
@@ -744,7 +741,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 
 				}break;
 
-			case 4:		 // Modify physical resistance
+			case 4: // Modify physical resistance
 				{
 					int32 val = Entry->min[c];
 					if( RandomSuffixAmount )
@@ -761,7 +758,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					m_owner->CalcResistance( Entry->spell[c] );
 				}break;
 
-			case 5:	// Modify rating ...order is PLAYER_FIELD_COMBAT_RATING_1 and above
+			case 5: // Modify rating ...order is PLAYER_FIELD_COMBAT_RATING_1 and above
 				{
 					// spellid is enum ITEM_STAT_TYPE
 					// min=max is amount
@@ -800,7 +797,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 
 			default:
 				{
-					DEBUG_LOG( WOWENCHANTSAI, UNKNOWNSDADAI, Entry->type[c], Entry->Id );
+					DEBUG_LOG( "Enchant","Unknown enchantment type: %u (%u)", Entry->type[c], Entry->Id );
 				}break;
 			}
 		}
@@ -840,13 +837,13 @@ int32 Item::FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type )
 	if( GetProto()->SocketBonus )
 		GemSlotsReserve++;
 
-	if( random_type == 1 )		// random prop
+	if( random_type == 1 ) // random prop
 	{
 		for( uint32 Slot = 8; Slot < 11; ++Slot )
 			if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == 0 )
 				return Slot;
 	}
-	else if( random_type == 2 )	// random suffix
+	else if( random_type == 2 ) // random suffix
 	{
 		for( uint32 Slot = 6; Slot < 11; ++Slot )
 			if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == 0 )
@@ -856,7 +853,7 @@ int32 Item::FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type )
 	for( uint32 Slot = GemSlotsReserve + 2; Slot < 11; Slot++ )
 	{
 		if( m_uint32Values[ITEM_FIELD_ENCHANTMENT_1_1 + Slot * 3] == 0 )
-			return Slot;	
+			return Slot;
 	}
 
 	return -1;
@@ -893,21 +890,22 @@ void Item::ModifyEnchantmentTime( uint32 Slot, uint32 Duration )
 void Item::SendEnchantTimeUpdate( uint32 Slot, uint32 Duration )
 {
 	/*
-	{SERVER} Packet: (0x01EB) SMSG_ITEM_ENCHANT_TIME_UPDATE Size = 24
-	|------------------------------------------------|----------------|
-	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-	|------------------------------------------------|----------------|
-	|69 32 F0 35 00 00 00 40 01 00 00 00 08 07 00 00 |i2.5...@........|
-	|51 46 35 00 00 00 00 00						 |QF5.....		  |
-	-------------------------------------------------------------------
-    uint64 item_guid
-	uint32 count?
-	uint32 time_in_seconds
-	uint64 player_guid
-	*/
+	 * {SERVER} Packet: (0x01EB) SMSG_ITEM_ENCHANT_TIME_UPDATE Size = 24
+	 * |------------------------------------------------|----------------|
+	 * |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
+	 * |------------------------------------------------|----------------|
+	 * |69 32 F0 35 00 00 00 40 01 00 00 00 08 07 00 00 |i2.5...@........|
+	 * |51 46 35 00 00 00 00 00                         |QF5.....        |
+	 * -------------------------------------------------------------------
+	 *
+	 * uint64 item_guid
+	 * uint32 count?
+	 * uint32 time_in_seconds
+	 * uint64 player_guid
+	 */
 
-	WorldPacket* data = new WorldPacket(SMSG_ITEM_ENCHANT_TIME_UPDATE, 24 );
-	*data << GetGUID();
+	WorldPacket* data = NULL;
+	data = new WorldPacket(SMSG_ITEM_ENCHANT_TIME_UPDATE, 24 );	*data << GetGUID();
 	*data << Slot;
 	*data << Duration;
 	*data << m_owner->GetGUID();
@@ -945,7 +943,7 @@ void Item::RemoveRelatedEnchants( EnchantEntry* newEnchant )
 void Item::RemoveProfessionEnchant()
 {
 	EnchantmentMap::iterator itr;
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); itr++ )
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
 	{
 		if( itr->second.Duration != 0 )// not perm
 			continue;
@@ -961,7 +959,7 @@ void Item::RemoveSocketBonusEnchant()
 {
 	EnchantmentMap::iterator itr;
 	
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); itr++ )
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
 	{
 		if( itr->second.Enchantment->Id == GetProto()->SocketBonus )
 		{
@@ -990,8 +988,8 @@ bool Item::IsGemRelated( EnchantEntry* Enchantment )
 
 uint32 Item::GetSocketsCount()
 {
-	if(this->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
-		return 0;
+	/*if(this->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
+		return 0;*/
 
 	uint32 c = 0;
 	for( uint32 x = 0; x < 3; x++ )
@@ -1016,7 +1014,7 @@ uint32 Item::GenerateRandomSuffixFactor( ItemPrototype* m_itemProto )
 //////////////////////////////////////////////////////////////////////////
 // Item Links                                                           //
 //////////////////////////////////////////////////////////////////////////
-static const char *g_itemQualityColours[7] = 
+static const char *g_itemQualityColours[15] = 
 {
 	"|cff9d9d9d",		// Grey
 	"|cffffffff",		// White
@@ -1025,18 +1023,18 @@ static const char *g_itemQualityColours[7] =
 	"|cffa335ee",		// Purple
 	"|cffff8000",		// Orange
 	"|cffe6cc80",		// Artifact
-};
+	"|cffe5cc80",		// Heirloom	"|cff00ffff",		// Turquoise	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// };
 
 string ItemPrototype::ConstructItemLink(uint32 random_prop, uint32 random_suffix, uint32 stack)
 {
-	if( Quality > 6 )
+	if( Quality > 15 )
 		return "INVALID_ITEM";
 
 	char buf[1000];
 	char sbuf[50];
 	char rptxt[100];
 	char rstxt[100];
-	
+
 	// stack text
 	if( stack > 1 )
 		snprintf(sbuf, 50, "x%u", stack);
@@ -1064,9 +1062,9 @@ string ItemPrototype::ConstructItemLink(uint32 random_prop, uint32 random_suffix
 	}
 
 	// construct full link
-	snprintf(buf, 1000, ITEMWOWARKLAI, g_itemQualityColours[Quality], ItemId, /* suffix/prop */ random_suffix ? (-(int32)random_suffix) : random_prop, 
+	snprintf(buf, 1000, "%s|Hitem:%u:0:0:0:0:0:%d:0|h[%s%s%s]%s|h|r", g_itemQualityColours[Quality], ItemId, /* suffix/prop */ random_suffix ? (-(int32)random_suffix) : random_prop, 
 		Name1, rstxt, rptxt, sbuf);
-	
+
 	return string(buf);
 }
 
@@ -1077,18 +1075,26 @@ bool ItemPrototype::ValidateItemLink(const char *szLink)
 
 uint32 Item::CountGemsWithLimitId(uint32 LimitId) 
 { 
-		uint32 result = 0; 
-        for( uint32 count = 0; count < GetSocketsCount(); count++ ) 
-        {                
-			EnchantmentInstance* ei = GetEnchantment( 2 + count ); 
-             if (ei && ei->Enchantment->GemEntry ) 
-			{ 
-				ItemPrototype* ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry); 
-                 if( ip && ip->ItemLimitCategory == LimitId )
-				 {                    
-					 result++; 
-				 }
-            } 
-        } 
-        return result; 
+	uint32 result = 0; 
+	for( uint32 count = 0; count < GetSocketsCount(); count++ ) 
+	{
+		EnchantmentInstance* ei = GetEnchantment( 2 + count ); 
+		if (ei && ei->Enchantment->GemEntry ) 
+		{ 
+			ItemPrototype* ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry); 
+			if( ip && ip->ItemLimitCategory == LimitId )
+			{
+				 result++; 
+			}
+		} 
+	} 
+	return result; 
+}
+
+bool ItemPrototype::ValidateItemSpell(uint32 SpellId)
+{
+	for(uint8 i = 0; i < 5; ++i)
+		if(Spells[i].Id == SpellId)
+			return true;
+	return false;
 } 

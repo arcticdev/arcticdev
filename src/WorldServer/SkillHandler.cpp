@@ -11,7 +11,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 /*
-	mage - arcane - 81			
+	mage - arcane - 81
 	mage - fire - 41
 	mage - frost - 61
 
@@ -50,15 +50,15 @@
 
 void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
- 	 
+	CHECK_INWORLD_RETURN;
+
 	uint32 talent_id, requested_rank;
 	recv_data >> talent_id >> requested_rank;
 
 	_player->LearnTalent(talent_id, requested_rank);
 
 	_player->UpdateTalentInspectBuffer();
-	_player->smsg_TalentsInfo(true, talent_id, requested_rank);
+	_player->smsg_TalentsInfo(false);
 }
 
 void WorldSession::HandleLearnPreviewTalents( WorldPacket & recv_data )
@@ -66,19 +66,18 @@ void WorldSession::HandleLearnPreviewTalents( WorldPacket & recv_data )
 	uint32 count = 0;
 	uint32 talent_id, requested_rank;
 	recv_data >> count;
-	for(uint32 i = 0; i < count && recv_data.rpos() < recv_data.size(); i++)
+	for(uint32 i = 0; i < count && recv_data.rpos() < recv_data.size(); ++i)
 	{
 		recv_data >> talent_id >> requested_rank;
 		_player->LearnTalent(talent_id, requested_rank);
 	}
-
 	_player->UpdateTalentInspectBuffer();
-	_player->smsg_TalentsInfo(false, 0, 0);
+	_player->smsg_TalentsInfo(false);
 }
 
 void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	uint32 playerGold = GetPlayer()->GetUInt32Value( PLAYER_FIELD_COINAGE );
 	uint32 price = GetPlayer()->CalcTalentResetCost(GetPlayer()->GetTalentResetTimes());
 
@@ -94,7 +93,7 @@ void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
 
 void WorldSession::HandleUnlearnSkillOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	uint32 skill_line;
 	uint32 points_remaining=_player->GetUInt32Value(PLAYER_CHARACTER_POINTS2);
 	recv_data >> skill_line;

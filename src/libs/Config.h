@@ -55,6 +55,7 @@
 // At the moment it is only good for joining, you can't leave a voice channel yet :P
 // Also, it only works for parties. Custom chat channels are not fully supported yet.
 // However, if you want to play around with it, feel free to enable this define.
+// Default: Disabled
 
 // #define VOICE_CHAT 1
 

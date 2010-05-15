@@ -20,9 +20,8 @@ class Creature;
 class MovementInfo;
 struct TrainerSpell;
 
-//#define SESSION_CAP 5
+// #define SESSION_CAP 5
 
-// MovementFlags Contribution by Tenshi
 enum MovementFlags
 {
 	// Byte 1 (Resets on Movement Key Press)
@@ -40,9 +39,9 @@ enum MovementFlags
 	MOVEFLAG_WALK						= 0x100,		// verified
 	MOVEFLAG_TAXI						= 0x200,		
 	MOVEFLAG_NO_COLLISION				= 0x400,
-	MOVEFLAG_FLYING	    				= 0x800,		// verified
+	MOVEFLAG_FLYING						= 0x800,		// verified
 	MOVEFLAG_REDIRECTED					= 0x1000,		// Unconfirmed
-	MOVEFLAG_FALLING					= 0x2000,       // verified
+	MOVEFLAG_FALLING					= 0x2000,		// verified
 	MOVEFLAG_FALLING_FAR				= 0x4000,		// verified
 	MOVEFLAG_FREE_FALLING				= 0x8000,		// half verified
 
@@ -52,12 +51,12 @@ enum MovementFlags
 	MOVEFLAG_TB_PENDING_FALL			= 0x40000,		// (MOVEFLAG_PENDING_FALL)
 	MOVEFLAG_TB_PENDING_FORWARD			= 0x80000,		// (MOVEFLAG_PENDING_FORWARD)
 	MOVEFLAG_TB_PENDING_BACKWARD		= 0x100000,		// (MOVEFLAG_PENDING_BACKWARD)
-	MOVEFLAG_SWIMMING          		    = 0x200000,		//  verified
-	MOVEFLAG_FLYING_PITCH_UP	        = 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
+	MOVEFLAG_SWIMMING					= 0x200000,		//  verified
+	MOVEFLAG_FLYING_PITCH_UP			= 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
 	MOVEFLAG_TB_MOVED					= 0x800000,		// (half confirmed) gets called when landing (MOVEFLAG_MOVED)
 
 	// Byte 4 (Script Based Flags. Never reset, only turned on or off.)
-	MOVEFLAG_AIR_SUSPENSION	   	 		= 0x1000000,	// confirmed allow body air suspension(good name? lol).
+	MOVEFLAG_AIR_SUSPENSION				= 0x1000000,	// confirmed allow body air suspension(good name? lol).
 	MOVEFLAG_AIR_SWIMMING				= 0x2000000,	// confirmed while flying.
 	MOVEFLAG_SPLINE_MOVER				= 0x4000000,	// Unconfirmed
 	MOVEFLAG_IMMOBILIZED				= 0x8000000,
@@ -94,6 +93,7 @@ enum AreaTriggerFailures
 	AREA_TRIGGER_FAILURE_NO_CHECK		= 11,
 	AREA_TRIGGER_FAILURE_NO_WOTLK		= 12,
 	AREA_TRIGGER_FAILURE_IN_QUEUE		= 13,
+	AREA_TRIGGER_FAILURE_WRONG_GROUP	= 14,
 };
 
 struct OpcodeHandler
@@ -137,9 +137,11 @@ typedef struct Cords
 	float x,y,z;
 }Cords;
 
+
 class MovementInfo
 {
 public:
+	uint64 guid;
 	uint32 time;
 	float pitch;                            // -1.55=looking down, 0=looking forward, +1.55=looking up
 	float jump_sinAngle;                    // on slip 8 is zero, on jump some other number
@@ -153,33 +155,12 @@ public:
 	float x, y, z, orientation;
 	uint32 flags;
 	uint32 FallTime;
-	uint64 transGuid;
-	WoWGuid PlayerGUID;
-	WoWGuid TransportWoWGuid;
+	WoWGuid transGuid;
 	float transX, transY, transZ, transO, transTime;
 	uint8 transSeat;
 
 	void init(WorldPacket & data);
 	void write(WorldPacket & data);
-
-	MovementInfo()
-	{
-		time = 0;
-		pitch = jump_sinAngle = jump_cosAngle = jump_xySpeed = 0;
-		unk11 = 0;
-		spline_unk = 0;
-		unk13 = 0;
-		unklast = 0;
-		flag16 = 0;
-
-		x = y = z = orientation = 0;
-		flags = 0;
-		FallTime = 0;
-		transGuid = 0;
-
-		transX = transY = transZ = transO = transTime = 0;
-		transSeat = 0;
-	}
 };
 
 #define PLAYER_LOGOUT_DELAY (20*1000) // 20 seconds should be more than enough to gank ya.
@@ -187,7 +168,6 @@ public:
 #define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
 #define CHECK_GUID_EXISTS(guidx) if(_player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
-#define SKIP_READ_PACKET(pckt) pckt.rpos(pckt.wpos())
 
 #define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
 #define NOTIFICATION_MESSAGE_FAILURE "The requested action could not be performed."
@@ -206,15 +186,6 @@ public:
 	~WorldSession();
 
 	Player* m_loggingInPlayer;
-
-	bool portPlr;
-	LocationVector portVec;
-	uint32 portMap;
-	uint32 portInst;
- 
-	ARCTIC_INLINE void SetPortVec(uint32 map, uint32 iid, LocationVector vec) { portMap = map; portInst = iid; portVec = vec; portPlr = true; }
-
-
 	ARCTIC_INLINE void SendPacket(WorldPacket* packet)
 	{
 		if(_socket && _socket->IsConnected())
@@ -260,7 +231,7 @@ public:
 
 		return (strchr(permissions,'a')!=NULL) ? true : false;
 	}
-   
+
 	bool CanUseCommand(char cmdstr);
 
 	ARCTIC_INLINE void SetSocket(WorldSocket *sock)
@@ -662,6 +633,7 @@ protected:
 	void HandlePetRename(WorldPacket & recv_data);
 	void HandlePetAbandon(WorldPacket & recv_data);
 	void HandlePetUnlearn(WorldPacket & recv_data);
+	void HandlePetLearnTalent(WorldPacket & recv_data);
 
 	// Totems
 	void HandleTotemDestroyed(WorldPacket & recv_data);
@@ -736,9 +708,7 @@ protected:
 	// Voicechat
 	void HandleEnableMicrophoneOpcode(WorldPacket & recv_data);
 	void HandleVoiceChatQueryOpcode(WorldPacket & recv_data);
-	void HandleChannelVoiceOnOpcode(WorldPacket & recv_data); 
-	void HandleChannelWatchOpcode(WorldPacket & recv_data); 
-
+	void HandleChannelVoiceQueryOpcode(WorldPacket & recv_data);
 	// Auto Loot Pass 
 	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
 
@@ -769,7 +739,7 @@ public:
 	void SendSpiritHealerRequest(Creature* pCreature);
 	void FullLogin(Player* plr);
 	void SendAccountDataTimes(uint32 mask);
-	
+
 	float m_wLevel; // Level of water the player is currently in
 	bool m_bIsWLevelSet; // Does the m_wLevel variable contain up-to-date information about water level?
 
@@ -782,6 +752,7 @@ private:
 		
 	/* Preallocated buffers for movement handlers */
 	MovementInfo movement_info;
+	uint8 movement_packet[90];
 
 	bool m_isFalling;
 
@@ -800,14 +771,13 @@ private:
 	char *permissions;
 	int permissioncount;
 
-	bool _loggingOut; // Player will be logged out in 20 seconds
-	bool LoggingOut;  // Player is waiting to be logged out.
+	bool _loggingOut;
 	uint32 _latency;
 	uint32 client_build;
 	uint32 instanceId;
 	uint8 _updatecount;
+	uint8 CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo);
 public:
-	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid);
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
 	time_t floodTime;

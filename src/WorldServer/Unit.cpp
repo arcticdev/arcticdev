@@ -15,7 +15,7 @@ Unit::Unit()
 	m_attackTimer = 0;
 	m_attackTimer_1 = 0;
 	m_duelWield = false;
-	
+
 	memset(&movement_info, 0, sizeof(MovementInfo));
 	memset(movement_packet, 0, sizeof(movement_packet));
 	movement_info.FallTime = 0;

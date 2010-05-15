@@ -158,14 +158,14 @@ void Player::_InitialReputation()
 
 			// Visible-ness shit.
 			if((f->parentFaction == 469 && GetTeam() == 0) || // Alliance own faction.
-				(f->parentFaction == 67 && GetTeam() == 1) ) // Horde own faction.
+				(f->parentFaction == 67 && GetTeam() == 1) )  // Horde own faction.
 			{
 				SetFlagVisible(rep->flag);
 				SetFlagPeaceForced(rep->flag);
 			}
 
 			if((f->parentFaction == 469 && GetTeam() == 1) || // Alliance own faction.
-				(f->parentFaction == 67 && GetTeam() == 0) ) // Horde own faction.
+				(f->parentFaction == 67 && GetTeam() == 0) )  // Horde own faction.
 			{
 				SetForcedInvisible(rep->flag);
 			}
