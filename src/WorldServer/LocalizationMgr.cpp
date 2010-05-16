@@ -141,7 +141,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// Read Language Bindings From Config                                   //
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	string ls = Config.MainConfig.GetStringDefault("Localization", "LocaleBindings", "");
 	vector<string> tbindings = StrSplit(ls, " ");
 	for(vector<string>::iterator ztr = tbindings.begin(); ztr != tbindings.end(); ++ztr)
@@ -176,7 +176,7 @@ void LocalizationMgr::Reload(bool first)
 	pair<uint32,uint32> dpr;
 	for(set<string>::iterator sitr = languages.begin(); sitr != languages.end(); ++sitr)
 	{
-		if((*sitr)=="enus")		// Default
+		if((*sitr)=="enus") // Default
 		{
 			dpr.first = *(uint32*)sitr->c_str();
 			dpr.second = 0;
@@ -208,6 +208,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// Creature Names                                                       //
 	//////////////////////////////////////////////////////////////////////////
+
 	{
 		LocalizedCreatureName cn;
 		string str;
@@ -226,7 +227,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue; // no loading enus stuff.. lawl
 
 				cn.Name = strdup(f[2].GetString());
 				cn.SubName = strdup(f[3].GetString());
@@ -239,6 +240,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// GameObject Names                                                     //
 	//////////////////////////////////////////////////////////////////////////
+
 	{
 		LocalizedGameObjectName gn;
 		string str;
@@ -269,6 +271,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// Items                                                                //
 	//////////////////////////////////////////////////////////////////////////
+
 	{
 		LocalizedItem it;
 		string str;
@@ -305,6 +308,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// Quests                                                               //
 	//////////////////////////////////////////////////////////////////////////
+
 	{
 		LocalizedQuest q;
 		string str;
@@ -323,7 +327,7 @@ void LocalizationMgr::Reload(bool first)
 
 				lid = GetLanguageId(str);
 				if(lid == 0)
-					continue;		// no loading enus stuff.. lawl
+					continue; // no loading enus stuff.. lawl
 
 				q.Title = strdup(f[2].GetString());
 				q.Details = strdup(f[3].GetString());
@@ -345,6 +349,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// NPC Texts                                                            //
 	//////////////////////////////////////////////////////////////////////////
+
 	{
 		LocalizedNpcText nt;
 		string str;
@@ -378,9 +383,11 @@ void LocalizationMgr::Reload(bool first)
 			delete result;
 		}
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	// Item Pages                                                           //
 	//////////////////////////////////////////////////////////////////////////
+
 	{
 		LocalizedItemPage nt;
 		string str;
@@ -411,7 +418,7 @@ void LocalizationMgr::Reload(bool first)
 	//////////////////////////////////////////////////////////////////////////
 	// Apply all the language bindings.                                     //
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	for(map<string,string>::iterator itr = bound_languages.begin(); itr != bound_languages.end(); ++itr)
 	{
 		uint32 source_language_id = GetLanguageId(itr->second);

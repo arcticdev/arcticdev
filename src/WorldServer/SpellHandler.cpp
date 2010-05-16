@@ -49,8 +49,8 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		if( sQuestMgr.PlayerMeetsReqs(_player, qst, false) != QMGR_QUEST_AVAILABLE || qst->min_level > _player->getLevel() )
 			return;
 
-        WorldPacket data;
-        sQuestMgr.BuildQuestDetails(&data, qst, tmpItem, 0, language, _player);
+		WorldPacket data;
+		sQuestMgr.BuildQuestDetails(&data, qst, tmpItem, 0, language, _player);
 		SendPacket(&data);
 	}
 	
@@ -171,7 +171,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	if(_player->getDeathState()==CORPSE)
 		return;
 
@@ -192,14 +192,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		OUT_DEBUG("WORLD: unknown spell id %i\n", spellId);
 		return;
 	}
-	
-	if (spellInfo->Attributes & ATTRIBUTES_NO_CAST)
-	{
-		DEBUG_LOG("WORLD: attempt to cast spell %i, %s which has ATTRIBUTES_NO_CAST\n", spellId, spellInfo->Name);
-		return;
-	}
 
-	OUT_DEBUG("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
+	DEBUG_LOG("WORLD: Got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
 	
 	// Cheat Detection only if player and not from an item
@@ -237,7 +231,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			{
 			case 2:  // bows
 			case 3:  // guns
-            case 18: // crossbow
+			case 18: // crossbow
 				spellid = SPELL_RANGED_GENERAL;
 				break;
 			case 16: // thrown
@@ -250,7 +244,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				spellid = 0;
 				break;
 			}
-		   
+
 			if(!spellid) 
 				spellid = spellInfo->Id;
 			
@@ -268,7 +262,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			
 				_player->m_AutoShotSpell = sp;
 				_player->m_AutoShotDuration = duration;
-				// This will fix fast clicks
+				// This will fix fast clicks..
 				if(_player->m_AutoShotAttackTimer < 500)
 					_player->m_AutoShotAttackTimer = 500;
 				_player->m_onAutoShot = true;
@@ -277,8 +271,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			return;
 		}
 
-        if(_player->m_currentSpell)
-        {
+		if(_player->m_currentSpell)
+		{
 			if( _player->m_currentSpell->getState() == SPELL_STATE_CASTING )
 			{
 				// cancel the existing channel spell, cast this one
@@ -290,7 +284,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
 				return;
 			}
-        }
+		}
 
 		SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
 
@@ -386,7 +380,7 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 	sp = dbcSpell.LookupEntry(spellid);
 
 	// Summoned Elemental's Freeze
-    if (spellid == 33395)
+	if (spellid == 33395)
 	{
 		caster = _player->m_Summon;
 		if( caster && TO_PET(caster)->GetAISpellForSpellId(spellid) == NULL )

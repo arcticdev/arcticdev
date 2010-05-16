@@ -40,7 +40,7 @@ public:
 
 	void __fastcall OutPacket(uint16 opcode, size_t len, const void* data);
 	OUTPACKET_RESULT __fastcall _OutPacket(uint16 opcode, size_t len, const void* data);
-   
+
 	ARCTIC_INLINE uint32 GetLatency() { return _latency; }
 
 	void Authenticate();
@@ -72,7 +72,7 @@ private:
 	uint32 mClientBuild;
 	uint32 mRequestID;
 
-	WorldSession * mSession;
+	WorldSession *mSession;
 	WorldPacket * pAuthenticationPacket;
 	FastQueue<WorldPacket*, DummyLock> _queue;
 	Mutex queueLock;

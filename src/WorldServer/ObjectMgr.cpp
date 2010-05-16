@@ -1135,69 +1135,64 @@ void ObjectMgr::LoadAIThreatToSpellId()
 	delete result;
 }
 
-void ObjectMgr::LoadSpellProcOverride()
+void ObjectMgr::LoadSpellFixes()
 {
-	QueryResult * resultx = WorldDatabase.Query("SELECT * FROM spell_proc_override");
-	if( resultx != NULL )
+	SpellEntry* sp;
+	QueryResult * result = WorldDatabase.Query("SELECT * FROM spellfixes");
+	int i, j;
+
+	if(result)
 	{
-		uint32 spellid;
-		do 
+		if( result->GetFieldCount() != 13 )
 		{
-			Field * f;
-			f = resultx->Fetch();
-			spellid = f[0].GetUInt32();
-			SpellEntry * sp = dbcSpell.LookupEntryForced( spellid );
-			if( sp != NULL )
+			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Incorrect column count at spellfixes, skipping, please fix it.", "", NULL);
+			return;
+		}
+
+		Log.Notice("ObjectMgr","%u spell fixes from database...",result->GetRowCount());
+		do
+		{
+			Field * f = result->Fetch();
+			uint32 sf_spellId = f[0].GetUInt32();
+			uint32 sf_procFlags = f[1].GetUInt32();
+			uint32 sf_procChance = f[2].GetUInt32();
+			uint32 sf_procCharges = f[3].GetUInt32();
+			uint32 sf_effectClassMask[3][3];
+
+			sf_effectClassMask[0][0] = f[4].GetUInt32();
+			sf_effectClassMask[0][1] = f[5].GetUInt32();
+			sf_effectClassMask[0][2] = f[6].GetUInt32();
+			sf_effectClassMask[1][0] = f[7].GetUInt32();
+			sf_effectClassMask[1][1] = f[8].GetUInt32();
+			sf_effectClassMask[1][2] = f[9].GetUInt32();
+			sf_effectClassMask[2][0] = f[10].GetUInt32();
+			sf_effectClassMask[2][1] = f[11].GetUInt32();
+			sf_effectClassMask[2][2] = f[12].GetUInt32();
+
+			if( sf_spellId )
 			{
-				sp->procFlags = f[1].GetInt32();
-				sp->extra_proc = f[2].GetInt32();
-				sp->ProcsPerMinute = f[4].GetInt32();
-				sp->proc_interval = f[6].GetInt32();
-				sp->proc_modify = f[7].GetBool();
-				
-				if( f[3].GetInt32() >= 0 )
-					sp->procChance = f[3].GetInt32();
+				sp = dbcSpell.LookupEntryForced( sf_spellId );
+				if( sp != NULL )
+				{
+					if( sf_procFlags )
+						sp->procFlags = sf_procFlags;
 
-				if( f[5].GetInt32() >= 0 )
-					sp->procCharges = f[5].GetInt32();
+					if( sf_procChance )
+						sp->procChance = sf_procChance;
 
+					if ( sf_procCharges )
+						sp->procCharges = sf_procCharges;
 
-				if( f[8].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[0][0] = f[8].GetInt32();
-
-				if( f[9].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[0][1] = f[9].GetInt32();
-
-				if( f[10].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[0][2] = f[10].GetInt32();
-
-				if( f[11].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[1][0] = f[11].GetInt32();
-
-				if( f[12].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[1][1] = f[12].GetInt32();
-
-				if( f[13].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[1][2] = f[13].GetInt32();
-
-				if( f[14].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[2][0] = f[14].GetInt32();
-
-				if( f[15].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[2][1] = f[15].GetInt32();
-
-				if( f[16].GetInt32() >= 0 )
-					sp->EffectSpellClassMask[2][2] = f[16].GetInt32();
+					for (i=0; i<3; i++)
+						for (j=0; j<3; j++)
+							if (sf_effectClassMask[i][j])
+								sp->EffectSpellClassMask[i][j] = sf_effectClassMask[i][j];
+							
+				}
 			}
-			else
-			{
-				Log.Warning("SpellProcOverride", "Has nonexistant spell %u.", spellid);
-			}
-			spellid = 0;
-		} while( resultx->NextRow() );
-		Log.Notice("Database","%u spell proc overrides from database...",resultx->GetRowCount());
-		delete resultx;
-	}
+		}while(result->NextRow());
+		delete result;
+	}	
 }
 
 Item* ObjectMgr::CreateItem(uint32 entry,Player* owner)

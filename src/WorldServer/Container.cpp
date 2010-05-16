@@ -20,7 +20,6 @@ Container::Container(uint32 high,uint32 low) : Item()
 
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 ); // always 1
 
-
 	for(uint32 i = 0; i < 72; ++i)
 		m_Slot[i] = NULLITEM;
 
@@ -61,20 +60,15 @@ void Container::LoadFromDB( Field*fields )
 
 	SetUInt32Value( ITEM_FIELD_CREATOR, fields[5].GetUInt32() );
 	SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1);
-	
 	SetUInt32Value( ITEM_FIELD_FLAGS, fields[8].GetUInt32());
 	SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, fields[9].GetUInt32());
-
 	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability);
 	SetUInt32Value( ITEM_FIELD_DURABILITY, fields[12].GetUInt32());
-  
-
 	SetUInt32Value( CONTAINER_FIELD_NUM_SLOTS, m_itemProto->ContainerSlots);
 }
 
 void Container::Create( uint32 itemid, Player* owner )
 {
-
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 	ASSERT(m_itemProto);
 
@@ -103,7 +97,7 @@ int8 Container::FindFreeSlot()
 			return i; 
 		}
 	}
-	DEBUG_LOG( ZCONTAINERAI, ZWOWFINDFRAI); 
+	DEBUG_LOG( "Container","FindFreeSlot: no slot available" );
 	return ITEM_NO_SLOT_AVAILABLE;
 }
 
@@ -168,11 +162,11 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 	if( DstSlot < 0 || DstSlot >= (int8)m_itemProto->ContainerSlots )
 		return;
 	
-	if( m_Slot[DstSlot] &&  m_Slot[SrcSlot]&&m_Slot[DstSlot]->GetEntry()==m_Slot[SrcSlot]->GetEntry() && m_Slot[SrcSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->GetProto()->MaxCount>1 )
+	if(m_Slot[DstSlot] &&  m_Slot[SrcSlot]&&m_Slot[DstSlot]->GetEntry()==m_Slot[SrcSlot]->GetEntry() && m_Slot[SrcSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->GetProto()->MaxCount>1)
 	{
 		uint32 total=m_Slot[SrcSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT)+m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
 		m_Slot[DstSlot]->m_isDirty = m_Slot[SrcSlot]->m_isDirty = true;
-		if( total<=m_Slot[DstSlot]->GetProto()->MaxCount)
+		if(total<=m_Slot[DstSlot]->GetProto()->MaxCount)
 		{
 			m_Slot[DstSlot]->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,m_Slot[SrcSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT));
 			SafeFullRemoveItemFromSlot(SrcSlot);
@@ -180,7 +174,7 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 		}
 		else
 		{
-			if( m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT) == m_Slot[DstSlot]->GetProto()->MaxCount )
+			if(m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT) == m_Slot[DstSlot]->GetProto()->MaxCount)
 			{
 
 			}
@@ -193,7 +187,6 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 			}
 		}
 	}
-   
 	temp = m_Slot[SrcSlot];
 	m_Slot[SrcSlot] = m_Slot[DstSlot];
 	m_Slot[DstSlot] = temp;
@@ -221,12 +214,12 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 
 Item* Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
 {
-	if( slot < 0 || (uint32)slot >= GetProto()->ContainerSlots )
+	if(slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return NULLITEM;
 
 	Item* pItem = m_Slot[slot];
 
-	if( pItem == NULL || pItem == TO_ITEM(this) ) return NULLITEM;
+	if(pItem == NULL || pItem == TO_ITEM(this)) return NULLITEM;
 	m_Slot[slot] = NULLITEM;
 
 	if( pItem->GetOwner() == m_owner )
@@ -251,18 +244,18 @@ Item* Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
 
 bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 {
-	if( slot < 0 || (uint32)slot >= GetProto()->ContainerSlots )
+	if(slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return false;
 
 	Item* pItem = m_Slot[slot];
 
-	if( pItem == NULL ||pItem == TO_ITEM(this) ) return false;
+	if(pItem == NULL ||pItem == TO_ITEM(this)) return false;
 	m_Slot[slot] = NULLITEM;
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + slot*2, 0 );
 	pItem->SetUInt64Value(ITEM_FIELD_CONTAINED, 0);
 
-	if( pItem->IsInWorld() )
+	if(pItem->IsInWorld())
 	{
 		pItem->RemoveFromWorld();
 	}

@@ -63,7 +63,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	if(chn)
 	{
 		char msg[100];
-		snprintf(msg, 100, GMTICKETHAI, GetPlayer()->GetName());
+		snprintf(msg, 100, "GmTicket 5,%s", GetPlayer()->GetName());
 		chn->Say(_player, msg, NULLPLR, true);
 	}
 }
@@ -93,7 +93,7 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 	objmgr.AddGMTicket(ticket,false);
 
 	// Response - no errors
-	data << uint32( 2 );
+	data << uint32(2);
 
 	SendPacket(&data);
 }
@@ -122,15 +122,15 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 
 	if(!ticket) // no Current Ticket
 	{
-		data << uint32( 10 );
+		data << uint32(10);
 		SendPacket(&data);
 		return;
 	}
 
 	// Send current Ticket
-	data << uint32( 6 ); // unk
+	data << uint32(6); // unk
 	data << ticket->message.c_str();
-	data << uint8( ticket->type );
+	data << uint8(ticket->type);
 
 	SendPacket(&data);
 }

@@ -36,7 +36,7 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 					GetPlayer()->m_bg->RemovePlayer(GetPlayer(), true); // Send Logout = true so we can TP him now.
 				}
 
-				GetPlayer()->m_pendingBattleground[i]->PortPlayer(GetPlayer());
+				GetPlayer()->m_pendingBattleground[i]->PortPlayer(GetPlayer(),false);
 				return;
 			}
 		}
@@ -53,13 +53,14 @@ void WorldSession::HandleBattlefieldStatusOpcode(WorldPacket &recv_data)
 void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN;
+
 	uint32 battlegroundType;
 	uint8 requestType, unk1; // 0 = ShowBattlefieldList, 1 = RequestBattlegroundInstanceInfo
 
 	recv_data >> battlegroundType >> requestType >> unk1;
 
-	//if( GetPlayer()->HasBGQueueSlotOfType(type) == 4)
-		//return;
+	// if( GetPlayer()->HasBGQueueSlotOfType(type) == 4)
+	// return;
 	
 	BattlegroundManager.HandleBattlegroundListPacket(this, battlegroundType, false);
 }
@@ -89,41 +90,40 @@ int32 GetBattlegroundTypeFromCreature(Creature* pCreature)
 	}
 
 	// Arathi Basin
-	if( string(pCreature->GetCreatureInfo()->Name).find(ARATHIBASAI) != string::npos )
+	if( string(pCreature->GetCreatureInfo()->Name).find("Arathi Basin") != string::npos )
 		return BATTLEGROUND_ARATHI_BASIN;
-	else if( string(pCreature->GetCreatureInfo()->SubName).find(ARATHIBASAI) != string::npos )
+	else if( string(pCreature->GetCreatureInfo()->SubName).find("Arathi Basin") != string::npos )
 		return BATTLEGROUND_ARATHI_BASIN;
 
-	//Arena
+	// Arena
 	if( string(pCreature->GetCreatureInfo()->Name).find("Arena") != string::npos )
 		return BATTLEGROUND_ARENA_2V2;
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Arena") != string::npos )
 		return BATTLEGROUND_ARENA_2V2;
 
-	//Alterac Valley
-	if( string(pCreature->GetCreatureInfo()->Name).find(ALTERACVAAI) != string::npos )
+	// Alterac Valley
+	if( string(pCreature->GetCreatureInfo()->Name).find("Alterac Valley") != string::npos )
 		return BATTLEGROUND_ALTERAC_VALLEY;
-	else if( string(pCreature->GetCreatureInfo()->SubName).find(ALTERACVAAI) != string::npos )
+	else if( string(pCreature->GetCreatureInfo()->SubName).find("Alterac Valley") != string::npos )
 		return BATTLEGROUND_ALTERAC_VALLEY;
 
-    // schnek: Значения имен хранятся в ../locale/Common
-	if( string(pCreature->GetCreatureInfo()->Name).find(EYEAOFATHAI) != string::npos )
+	// Eye of the Storm
+	if( string(pCreature->GetCreatureInfo()->Name).find("Eye of the Storm") != string::npos )
+		return BATTLEGROUND_EYE_OF_THE_STORM;
+	else if( string(pCreature->GetCreatureInfo()->SubName).find("Eye of the Storm") != string::npos )
 		return BATTLEGROUND_EYE_OF_THE_STORM;
 
-	else if( string(pCreature->GetCreatureInfo()->SubName).find(EYEAOFATHAI) != string::npos )
-		return BATTLEGROUND_EYE_OF_THE_STORM;
-
-	//Strand of the Ancients
-	if( string(pCreature->GetCreatureInfo()->SubName).find(STRANDAOFAI) != string::npos )
+	// Strand of the Ancients
+	if( string(pCreature->GetCreatureInfo()->SubName).find("Strand of the Ancients") != string::npos )
 		return BATTLEGROUND_STRAND_OF_THE_ANCIENTS;
 
-	else if( string(pCreature->GetCreatureInfo()->Name).find(STRANDAOFAI) != string::npos )
+	else if( string(pCreature->GetCreatureInfo()->Name).find("Strand of the Ancients") != string::npos )
 		return BATTLEGROUND_STRAND_OF_THE_ANCIENTS;
 
-	//Warsong Gulch
-	if( string(pCreature->GetCreatureInfo()->Name).find(WARSONGGHAI) != string::npos )
+	// Warsong Gulch
+	if( string(pCreature->GetCreatureInfo()->Name).find("Warsong Gulch") != string::npos )
 		return BATTLEGROUND_WARSONG_GULCH;
-	else if( string(pCreature->GetCreatureInfo()->SubName).find(WARSONGGHAI) != string::npos )
+	else if( string(pCreature->GetCreatureInfo()->SubName).find("Warsong Gulch") != string::npos )
 		return BATTLEGROUND_WARSONG_GULCH;
 
 	return -1;
@@ -327,7 +327,7 @@ void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
 	data << player->GetUInt32Value( PLAYER_FIELD_KILLS );
 	data << player->GetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION );
 	data << player->GetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION );
-	data << player->GetUInt32Value( PLAYER_FIELD_LIFETIME_HONORABLE_KILLS );
+	data << player->GetUInt32Value( PLAYER_FIELD_LIFETIME_HONORBALE_KILLS );
 
 	SendPacket( &data );
 }
@@ -370,7 +370,7 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
 				data << team->m_stat_gamesplayedweek;
 				data << team->m_stat_gameswonweek;
 				data << team->m_stat_gamesplayedseason;
-				data << uint32( 0 );
+				data << uint32(0);
 			}
 			SendPacket( &data );
 		}

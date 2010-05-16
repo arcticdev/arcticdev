@@ -427,19 +427,22 @@ int32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outco
 	// -------------------------------------------
 	//                   (PB - PA)/400
 	//              1 + 10
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+
 	double power = (int)(opponentRating - oldRating) / 400.0f;
 	double divisor = pow(((double)(10.0)), power);
 	divisor += 1.0;
 
 	double winChance = 1.0 / divisor;
-    //////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////
 	// New Rating Calculation via Elo
 	// New Rating = Old Rating + K * (outcome - Expected Win Chance)
 	// outcome = 1 for a win and 0 for a loss (0.5 for a draw ... but we cant have that)
 	// K is the maximum possible change
 	// Through investigation, K was estimated to be 32 (same as chess)
 	//////////////////////////////////////////////////////////////////////////
+
 	double multiplier = (outcome ? 1.0 : 0.0) - winChance;
 	return long2int32(32.0 * multiplier);
 }

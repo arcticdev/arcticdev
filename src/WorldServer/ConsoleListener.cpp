@@ -64,7 +64,7 @@ public:
 		authmgrlock.Acquire();
 		n = highrequestid++;
 		authmgrlock.Release();
-        return n;
+		return n;
 	}
 
 	void SetRequest(uint32 id, ConsoleSocket * sock)
@@ -100,7 +100,7 @@ void ConsoleAuthCallback(uint32 request, uint32 result)
 	if(pSocket == NULL || !pSocket->IsConnected())
 		return;
 
-    if(result)
+	if(result)
 		pSocket->AuthCallback(true);
 	else
 		pSocket->AuthCallback(false);
@@ -204,29 +204,29 @@ void ConsoleSocket::OnRead()
 			{
 			case STATE_USER:
 				m_username = string(m_pBuffer);
-				m_pConsole->Write(WOWPASSWORLAI);
+				m_pConsole->Write("password: ");
 				m_state = STATE_PASSWORD;
 				break;
 
 			case STATE_PASSWORD:
 				m_password = string(m_pBuffer);
-				m_pConsole->Write(ATTMPLEMPEGAI);
+				m_pConsole->Write("\r\nAttempting to authenticate. Please wait.\r\n");
 				m_state = STATE_WAITING;
 
 				m_requestNo = ConsoleAuthMgr::getSingleton().GenerateRequestId();
 				ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, this);
 
-                TestConsoleLogin(m_username, m_password, m_requestNo);
+				TestConsoleLogin(m_username, m_password, m_requestNo);
 				break;
 
 			case STATE_LOGGED:
-				if( !strnicmp( m_pBuffer, QUITESWOWSEAI, 4 ) )
+				if( !strnicmp( m_pBuffer, "quit", 4 ) )
 				{
 					Disconnect();
 					break;
 				}
 
-                HandleConsoleInput(m_pConsole, m_pBuffer);
+				HandleConsoleInput(m_pConsole, m_pBuffer);
 				break;
 			}
 		}
@@ -249,9 +249,9 @@ void ConsoleSocket::OnRead()
 
 void ConsoleSocket::OnConnect()
 {
-	m_pConsole->Write(ZWELCOMETOSAI);
-	m_pConsole->Write(ZPLEAISEWOWAI);
-	m_pConsole->Write(WOWLOGONWWOAI);
+	m_pConsole->Write("Welcome to ArcTic's Remote Administration Console.\r\n");
+	m_pConsole->Write("Please authenticate to continue.\r\n\r\n");
+	m_pConsole->Write("login: ");
 }
 
 void ConsoleSocket::OnDisconnect()
@@ -270,16 +270,16 @@ void ConsoleSocket::AuthCallback(bool result)
 
 	if( !result )
 	{
-		m_pConsole->Write(ARCTHENSTIOAI);
+		m_pConsole->Write("Authentication failed.\r\n\r\n");
 		Disconnect();
 	}
 	else
 	{
-		m_pConsole->Write(PASSEVWOWSSAI);
-		m_pConsole->Write(YOUNOWLOGGEAI, m_username.c_str());
+		m_pConsole->Write("Authentication passed.\r\n");
+		m_pConsole->Write("You are now logged in under user `%s`.\r\n\r\n", m_username.c_str());
 		const char * argv[1];
 		HandleInfoCommand(m_pConsole,1, argv);
-		m_pConsole->Write(TYLESWOWASSAI);
+		m_pConsole->Write("Type ? to see commands, quit to end session.\r\n");
 		m_state = STATE_LOGGED;
 	}
 }
@@ -294,7 +294,7 @@ void RemoteConsole::Write(const char * Format, ...)
 	char obuf[65536];
 	va_list ap;
 
-    va_start(ap, Format);
+	va_start(ap, Format);
 	vsnprintf(obuf, 65536, Format, ap);
 	va_end(ap);
 
@@ -316,41 +316,40 @@ void RemoteConsole::WriteNA(const char * Format)
 struct ConsoleCommand
 {
 	bool(*CommandPointer)(BaseConsole*, int, const char*[]);
-	const char * Name;					// 10 chars
-	const char * ArgumentFormat;		// 30 chars
-	const char * Description;			// 40 chars
-										// = 70 chars
+	const char * Name;											// 10 chars
+	const char * ArgumentFormat;								// 30 chars
+	const char * Description;									// 40 chars
+																// = 70 chars
 };
 void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
-{	
-    static ConsoleCommand Commands[] = 
-	{   
-		{ &HandleAnnounceCommand, "a", GUFGDDGGOWAAI, SHOWSIAWOWSAI },
-		{ &HandleAnnounceCommand, "announce", GUFGDDGGOWAAI, SWOTHESMESSAI },
-		{ &HandleBanAccountCommand, "ban", ZDFGANSDAACAI, ZBANSTACCOUAI },
-		{ &HandleBanAccountCommand, "banaccount", ZDFGANSDAACAI, ZBANSTACCOUAI },
-		{ &HandleBackupDBCommand, "backupdb", ZNONEADFNOMAI, BACKUPSWOWSAI },
-		{ &HandleBPStatsCommand, "bpstats", ZNONEADFNOMAI, SHOWSBUFFPOAI },
-		{ &HandleCancelCommand, "cancel", ZNONEADFNOMAI, SHODFDUFFPOAI },
-		{ &HandleCreateAccountCommand, "createaccount", ZNAMESEMAILAI, TERDFDUFFPOAI },
-		{ &HandleInfoCommand, "info", ZNONEADFNOMAI, GUVEUSIWOWAAI },
-		{ &HandleGMsCommand, "gms", ZNONEADFNOMAI, SHOWSOONSSSAI },
-		{ &HandleKickCommand, "kick", REATONDFSAWAI, KIKCKSPLAYEAI },
-		{ &HandleMOTDCommand, "getmotd", ZNONEADFNOMAI, MOTDWOWARCTAI },
-		{ &HandleMOTDCommand, "setmotd", NEWSAMODSADAI, MOTDWODFRCTAI },
-		{ &HandleNameHashCommand, "getnamehash" , ZSPELLWOWSSAI, RETURNDAWOWAI } ,
-		{ &HandleOnlinePlayersCommand, "online", ZNONEADFNOMAI, SHOWOMLINESAI },
-		{ &HandlePlayerInfoCommand, "playerinfo", REAFGFDFSAWAI, SHOWSINFORDAI },
-		{ &HandleQuitCommand, "exit", DFGDGFDFSAWAI, DOWNSDWOWSAAI },
-		{ &HandleQuitCommand, "quit", DFGDGFDFSAWAI, DOWNSDWOWSAAI },
-		{ &HandleQuitCommand, "shutdown", DFGDGFDFSAWAI, DOWNSDWOWSAAI },
-		{ &HandleRehashCommand, "rehash", ZNONEADFNOMAI, MDFSTWWARCTAI },
-		{ &HandleUnbanAccountCommand, "unban", ACCOUNTSWPWAI, ZUNBANSDAACAI },
-		{ &HandleUnbanAccountCommand, "unbanaccount", ACCOUNTSWPWAI, ZUNBANSDAACAI },
-		{ &HandleWAnnounceCommand, "w", WANNUNTSWPWAI, CLIENTSDAREAI },
-		{ &HandleWAnnounceCommand, "wannounce", WANNUNTSWPWAI, CLIENTSDAREAI },
-		{ &HandleWhisperCommand, "whisper", FDGGHESMESSAI, DFSDFTSDAREAI },
-        
+{
+	static ConsoleCommand Commands[] = 
+	{
+		{ &HandleAnnounceCommand, "a", "<announce string>", "Shows the message in all client chat boxes." },
+		{ &HandleAnnounceCommand, "announce", "<announce string>", "Shows the message in all client chat boxes." },
+		{ &HandleBanAccountCommand, "ban", "<account> <timeperiod>", "Bans account x for time y." },
+		{ &HandleBanAccountCommand, "banaccount", "<account> <timeperiod>", "Bans account x for time y." },
+		{ &HandleBackupDBCommand, "backupdb", "none", "Backups Character Database" },
+		{ &HandleBPStatsCommand, "bpstats", "none", "Shows buffer pool stats" },
+		{ &HandleCancelCommand, "cancel", "none", "Cancels a pending shutdown." },
+		{ &HandleCreateAccountCommand, "createaccount", "<name> <pass> <email> <flags>", "Creates an account." },
+		{ &HandleInfoCommand, "info", "none", "Gives server runtime information." },
+		{ &HandleGMsCommand, "gms", "none", "Shows online GMs." },
+		{ &HandleKickCommand, "kick", "<plrname> <reason>", "Kicks player x for reason y." },
+		{ &HandleMOTDCommand, "getmotd", "none", "View the current MOTD" },
+		{ &HandleMOTDCommand, "setmotd", "<new motd>", "Sets a new MOTD" },
+		{ &HandleNameHashCommand, "getnamehash" , "<spell_id>" , "Returns the crc32 hash of <spell_id>" } ,
+		{ &HandleOnlinePlayersCommand, "online", "none", "Shows online players." },
+		{ &HandlePlayerInfoCommand, "playerinfo", "<plrname>", "Shows information about a player." },
+		{ &HandleQuitCommand, "exit", "[delay]", "Shuts down server with optional delay in seconds." },
+		{ &HandleQuitCommand, "quit", "[delay]", "Shuts down server with optional delay in seconds." },
+		{ &HandleQuitCommand, "shutdown", "[delay]", "Shuts down server with optional delay in seconds." },
+		{ &HandleRehashCommand, "rehash", "none", "Reloads the config file" },
+		{ &HandleUnbanAccountCommand, "unban", "<account>", "Unbans account x." },
+		{ &HandleUnbanAccountCommand, "unbanaccount", "<account>", "Unbans account x." },
+		{ &HandleWAnnounceCommand, "w", "<wannounce string>", "Shows the message in all client title areas." },
+		{ &HandleWAnnounceCommand, "wannounce", "<wannounce string>", "Shows the message in all client title areas." },
+		{ &HandleWhisperCommand, "whisper","<player> <message>", "Whispers a message to someone from the console." },
 		{ NULL, NULL, NULL, NULL },
 	};
 
@@ -380,15 +379,15 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 	if( !stricmp(tokens[0], "help") || tokens[0][0] == '?' )
 	{
 		pConsole->Write("=========================================================================================================\r\n");
-		pConsole->Write(WOWSPACKEREAI, WWOWNAMESAAAI, WOWARGUMENTAI, ZDESRIPTIONAI);
-		pConsole->Write("=========================================================================================================\r\n");		
+		pConsole->Write("| %15s | %30s | %50s |\r\n", "Name", "Arguments", "Description");
+		pConsole->Write("=========================================================================================================\r\n");
 		for(i = 0; Commands[i].Name != NULL; ++i)
 		{
-			pConsole->Write(WOWSPACKEREAI, Commands[i].Name, Commands[i].ArgumentFormat, Commands[i].Description);
+			pConsole->Write("| %15s | %30s | %50s |\r\n", Commands[i].Name, Commands[i].ArgumentFormat, Commands[i].Description);
 		}
-		pConsole->Write("=========================================================================================================\r\n");		
-		pConsole->Write(CONSOLESWOWAI);
-		pConsole->Write("=========================================================================================================\r\n");		
+		pConsole->Write("=========================================================================================================\r\n");
+		pConsole->Write("| type 'quit' to terminate a Remote Console Session                                                     |\r\n");
+		pConsole->Write("=========================================================================================================\r\n");
 	}
 	else
 	{
@@ -398,7 +397,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 			{
 				if( !Commands[i].CommandPointer( pConsole, (int)tokens.size(), &tokens[0] ) )
 				{
-					pConsole->Write(WOWEFDORCOMAI, Commands[i].Name, Commands[i].ArgumentFormat );
+					pConsole->Write("[!]Error, '%s' used an incorrect syntax, the correct syntax is: '%s'.\r\n\r\n", Commands[i].Name, Commands[i].ArgumentFormat );
 					return;
 				}
 				else
@@ -406,7 +405,7 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 			}
 		}
 
-		pConsole->Write(WOWERRORCOMAI, tokens[0]);
+		pConsole->Write("[!]Error, Command '%s' doesn't exist. Type '?' or 'help'to get a command overview.\r\n\r\n", tokens[0]);
 	}
 }
 

@@ -2820,7 +2820,7 @@ else
 			SpellCastTargets targets;
 			targets.m_unitTarget = pVictim->GetGUID();
 			targets.m_targetMask = 0x2;
-			Spell* cspell;
+			Spell* cspell = NULLSPELL;
 
 			// Loop on hit spells, and strike with those.
 			for( map< SpellEntry*, pair< uint32, uint32 > >::iterator itr = TO_PLAYER(this)->m_onStrikeSpells.begin();
@@ -2837,12 +2837,12 @@ else
 					}
 
 					// Cast.
-					cspell = Spell*(new Spell(TO_UNIT(this), itr->first, true, NULLAURA));
+					cspell = (new Spell(TO_UNIT(this), itr->first, true, NULLAURA));
 					cspell->prepare(&targets);
 				}
 				else
 				{
-					cspell = Spell*(new Spell(TO_UNIT(this), itr->first, true, NULLAURA));
+					cspell = (new Spell(TO_UNIT(this), itr->first, true, NULLAURA));
 					cspell->prepare(&targets);
 				}			
 			}
@@ -2868,28 +2868,15 @@ else
 			}
 		}
 
-		// ugly hack for shadowfiend restoring mana
+		//ugly hack for shadowfiend restoring mana
 		if( GetUInt64Value(UNIT_FIELD_SUMMONEDBY) != 0 && GetUInt32Value(OBJECT_FIELD_ENTRY) == 19668 )
 		{
 			Player* owner = GetMapMgr()->GetPlayer((uint32)GetUInt64Value(UNIT_FIELD_SUMMONEDBY));
 			if ( owner != NULL )	// restore 4% of max mana on each hit
 				Energize(owner, 34433, owner->GetUInt32Value(UNIT_FIELD_MAXPOWER1) / 25, POWER_TYPE_MANA );
 		}
-       // Spirit hunt
-       // Heal the spirit wolf and its owner by amount equal to 150% of damage done.
-		if( IsPet() && HasDummyAura( SPELL_HASH_SPIRIT_HUNT ) && TO_PET(this) )
-		{
-			Player* owner = TO_PET(this)->GetPetOwner();
-			uint32 heal_amount = realdamage * 1.5;
-			if( heal_amount > 0 )
-			{
-				Heal( TO_PET(this), 58877, heal_amount ); // Heal self
-				if(owner != NULL)
-					Heal( owner, 58877, heal_amount );
-			}
-		}
 	}
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	// Data Sending                                                         //
 	//////////////////////////////////////////////////////////////////////////

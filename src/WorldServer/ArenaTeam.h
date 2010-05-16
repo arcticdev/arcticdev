@@ -99,4 +99,4 @@ public:
 	}
 };
 
-#endif // ARCTIC_ARENATEAMS_H
+#endif // _ARENATEAMS_H

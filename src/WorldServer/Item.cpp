@@ -515,7 +515,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	if((int32)Enchantments.size()>Slot)
 		Enchantments[Slot] = Instance;
 	else
-		DEBUG_LOG(ERROORSWIOWAI, __FUNCTION__, __LINE__);
+		DEBUG_LOG("Error in item.cpp:%s (%d)", __FUNCTION__, __LINE__);
 
 	if( m_owner == NULL )
 		return Slot;
@@ -525,7 +525,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	// Add the removal event.
 	if( Duration )
 	{
-		sEventMgr.AddEvent( TO_ITEM(this), &Item::RemoveEnchantment, uint32(Slot), EVENT_REMOVE_ENCHANTMENT1 + Slot, Duration * 1000, 1, 0 );
+		sEventMgr.AddEvent(TO_ITEM(this), &Item::RemoveEnchantment, uint32(Slot), EVENT_REMOVE_ENCHANTMENT1 + Slot, Duration * 1000, 1, 0);
 	}
 
 	// No need to send the log packet, if the owner isn't in world (we're still loading)
@@ -639,14 +639,16 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 						else
 							TS.weapon_damage_type = 0; // Doesn't depend on weapon
 						TS.procCharges = 0;
+
 						/* This needs to be modified based on the attack speed of the weapon.
 						 * Secondly, need to assign some static chance for instant attacks (ss,
 						 * gouge, etc.) 
 						 */
+						
 						if( !Entry->min[c] && GetProto()->Class == ITEM_CLASS_WEAPON )
 						{
 							float speed = (float)GetProto()->Delay;
-							// ---- procChance calc ---- //
+							// procChance calc..
 							float ppm = 0;
 							SpellEntry* sp = dbcSpell.LookupEntry( Entry->spell[c] );
 							if( sp )
@@ -1016,14 +1018,22 @@ uint32 Item::GenerateRandomSuffixFactor( ItemPrototype* m_itemProto )
 //////////////////////////////////////////////////////////////////////////
 static const char *g_itemQualityColours[15] = 
 {
-	"|cff9d9d9d",		// Grey
-	"|cffffffff",		// White
-	"|cff1eff00",		// Green
-	"|cff0070dd",		// Blue
-	"|cffa335ee",		// Purple
-	"|cffff8000",		// Orange
-	"|cffe6cc80",		// Artifact
-	"|cffe5cc80",		// Heirloom	"|cff00ffff",		// Turquoise	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// 	"|cff00ffff",		// };
+	"|cff9d9d9d", /* Grey */
+	"|cffffffff", /* White */
+	"|cff1eff00", /* Green */
+	"|cff0070dd", /* Blue */
+	"|cffa335ee", /* Purple */
+	"|cffff8000", /* Orange */
+	"|cffe6cc80", /* Artifact */
+	"|cffe5cc80", /* Heirloom */
+	"|cff00ffff", /* Turquoise */
+	"|cff00ffff",
+	"|cff00ffff",
+	"|cff00ffff",
+	"|cff00ffff",
+	"|cff00ffff",
+	"|cff00ffff",
+};
 
 string ItemPrototype::ConstructItemLink(uint32 random_prop, uint32 random_suffix, uint32 stack)
 {

@@ -1624,14 +1624,14 @@ enum SpellDidHitResult
 };
 
 // Spell instance
-class ARCTIC_DECL Spell : public std::tr1::enable_shared_from_this<Spell>
+class ARCTIC_DECL Spell
 {
 public:
     friend class DummySpellHandler;
     Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
 
-	void Destructor();
+    void Destructor();
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -1689,7 +1689,7 @@ public:
 
     ARCTIC_INLINE uint32 getState() { return m_spellState; }
     ARCTIC_INLINE void SetUnitTarget(Unit* punit){unitTarget=punit;}
-	ARCTIC_INLINE SpellEntry *GetSpellProto() { return m_spellInfo; }
+    ARCTIC_INLINE SpellEntry *GetSpellProto() { return m_spellInfo; }
 
     // Send Packet functions
     void SendCastResult(uint8 result);
@@ -1700,9 +1700,8 @@ public:
     void SendChannelUpdate(uint32 time);
     void SendChannelStart(uint32 duration);
     void SendResurrectRequest(Player* target);
-	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
+    static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
     static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
-    
 
     void HandleAddAura(uint64 guid);
     void writeSpellGoTargets( WorldPacket * data );
@@ -1719,14 +1718,14 @@ public:
     void SpellEffectInstantKill(uint32 i);
     void SpellEffectSchoolDMG(uint32 i);
     void SpellEffectDummy(uint32 i);
-	void SpellEffectRestoreHealthPct(uint32 i);
-	void SpellEffectRestoreManaPct(uint32 i);
+    void SpellEffectRestoreHealthPct(uint32 i);
+    void SpellEffectRestoreManaPct(uint32 i);
     void SpellEffectTeleportUnits(uint32 i);
     void SpellEffectApplyAura(uint32 i);
     void SpellEffectPowerDrain(uint32 i);
     void SpellEffectHealthLeech(uint32 i);
     void SpellEffectHeal(uint32 i);
-	void SpellEffectBind(uint32 i);
+    void SpellEffectBind(uint32 i);
     void SpellEffectQuestComplete(uint32 i);
     void SpellEffectWeapondamageNoschool(uint32 i);
     void SpellEffectResurrect(uint32 i);
@@ -1736,7 +1735,7 @@ public:
     void SpellEffectParry(uint32 i);
     void SpellEffectCreateItem(uint32 i);
     void SpellEffectPersistentAA(uint32 i);
-	void SpellEffectSummon(uint32 i);
+    void SpellEffectSummon(uint32 i);
     void SummonCreature(uint32 i);
     void SpellEffectLeap(uint32 i);
     void SpellEffectEnergize(uint32 i);
@@ -1747,7 +1746,7 @@ public:
     void SpellEffectLearnSpell(uint32 i);
     void SpellEffectSpellDefense(uint32 i);
     void SpellEffectDispel(uint32 i);
-	void SpellEffectLanguage(uint32 i);
+    void SpellEffectLanguage(uint32 i);
     void SpellEffectSummonWildOld(uint32 i);
     void SummonGuardian(uint32 i);
     void SpellEffectSkillStep(uint32 i);
@@ -1768,7 +1767,7 @@ public:
     void SpellEffectPickpocket(uint32 i);
     void SpellEffectAddFarsight(uint32 i);
     void SummonPossessed(uint32 i);
-	void SpellEffectUseGlyph(uint32 i);
+    void SpellEffectUseGlyph(uint32 i);
     void SpellEffectHealMechanical(uint32 i);
     void SpellEffectSummonObjectWild(uint32 i);
     void SpellEffectScriptEffect(uint32 i);
@@ -1819,23 +1818,23 @@ public:
     void SpellEffectAddHonor(uint32 i);
     void SpellEffectSpawn(uint32 i);
     void SpellEffectApplyAura128(uint32 i);
-	void SpellEffectTriggerSpellWithValue(uint32 i);
-	void SpellEffectCreatePet(uint32 i);
+    void SpellEffectTriggerSpellWithValue(uint32 i);
+    void SpellEffectCreatePet(uint32 i);
     void SpellEffectTeachTaxiPath(uint32 i);
     void SpellEffectDualWield2H(uint32 i);
     void SpellEffectEnchantItemPrismatic(uint32 i);
-	void SpellEffectMegaJump(uint32 i);
-	void SpellEffectMilling(uint32 i);
-	void SpellEffectTitanGrip(uint32 i);
-	void SummonLightwell(uint32 i);
-	void SpellEffectCreateRandomItem(uint32 i);
-	void SpellEffectSendTaxi(uint32 i);
-	void SpellEffectKillCredit(uint32 i);
-	void SpellEffectForceCast(uint32 i);
-	void SpellEffectSetTalentSpecsCount(uint32 i);
-	void SpellEffectActivateTalentSpec(uint32 i);
-    void SpellEffectRenamePet(uint32 i);                                                   
-                            
+    void SpellEffectMegaJump(uint32 i);
+    void SpellEffectMilling(uint32 i);
+    void SpellEffectTitanGrip(uint32 i);
+    void SummonLightwell(uint32 i);
+    void SpellEffectCreateRandomItem(uint32 i);
+    void SpellEffectSendTaxi(uint32 i);
+    void SpellEffectKillCredit(uint32 i);
+    void SpellEffectForceCast(uint32 i);
+    void SpellEffectSetTalentSpecsCount(uint32 i);
+    void SpellEffectActivateTalentSpec(uint32 i);
+    void SpellEffectRenamePet(uint32 i);
+
     // Spell Targets Handlers
     void SpellTargetNULL(uint32 i, uint32 j);
     void SpellTargetDefault(uint32 i, uint32 j);
@@ -1875,10 +1874,10 @@ public:
     void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
     void SpellTargetTargetPartyMember(uint32 i, uint32 j);
     void SpellTargetSameGroupSameClass(uint32 i, uint32 j);
-	void SpellTargetPositionOfTarget(uint32 i, uint32 j);
-	void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
+    void SpellTargetPositionOfTarget(uint32 i, uint32 j);
+    void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
 
-	uint64 static FindLowestHealthRaidMember(Player* Target, uint32 dist);
+    uint64 static FindLowestHealthRaidMember(Player* Target, uint32 dist);
 
     void Heal(int32 amount);
 
@@ -1888,13 +1887,13 @@ public:
     Player*     p_caster;
     Object*     m_caster;
 
-	bool SpellEffectUpdateQuest(uint32 questid);
+    bool SpellEffectUpdateQuest(uint32 questid);
 
-	// 15007 = resurecting sickness
-	
-	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
-	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-	ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
+    // 15007 = resurecting sickness
+
+    // This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
+    // It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
+    ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
     ARCTIC_INLINE Item* GetItemTarget() { return itemTarget; }
     ARCTIC_INLINE Unit* GetUnitTarget() { return unitTarget; }
     ARCTIC_INLINE Player* GetPlayerTarget() { return playerTarget; }
@@ -1904,10 +1903,10 @@ public:
 
     bool IsAspect();
     
-	bool IsSeal();
+    bool IsSeal();
 
-	ARCTIC_INLINE SpellEntry* GetProto() { return m_spellInfo; }
-	bool static IsBinary(SpellEntry * sp);
+    ARCTIC_INLINE SpellEntry* GetProto() { return m_spellInfo; }
+    bool static IsBinary(SpellEntry * sp);
 
     uint32 GetDuration()
     {
@@ -1931,8 +1930,8 @@ public:
                     }
 
                     if((int32)this->Dur < 0)
-						this->Dur = 0;
-					c_dur = this->Dur;
+                        this->Dur = 0;
+                    c_dur = this->Dur;
                 }
                 if(sd->Duration1 >= 0 && !c_dur)
                 {
@@ -2074,14 +2073,14 @@ public:
     ARCTIC_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
     ARCTIC_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
 
-	Spell* m_reflectedParent;
+    Spell* m_reflectedParent;
 
    // Returns true iff spellEffect's effectNum effect affects testSpell based on EffectSpellClassMask
    ARCTIC_INLINE static bool EffectAffectsSpell(SpellEntry* spellEffect, uint32 effectNum, SpellEntry* WowTestSpell)
-	{
-	return (WowTestSpell->SpellGroupType[0] && (spellEffect->EffectSpellClassMask[effectNum][0] & WowTestSpell->SpellGroupType[0]) &&
-	        WowTestSpell->SpellGroupType[1] && (spellEffect->EffectSpellClassMask[effectNum][1] & WowTestSpell->SpellGroupType[1]) &&
-	        WowTestSpell->SpellGroupType[2] && (spellEffect->EffectSpellClassMask[effectNum][2] & WowTestSpell->SpellGroupType[2]));
+    {
+    return (WowTestSpell->SpellGroupType[0] && (spellEffect->EffectSpellClassMask[effectNum][0] & WowTestSpell->SpellGroupType[0]) &&
+            WowTestSpell->SpellGroupType[1] && (spellEffect->EffectSpellClassMask[effectNum][1] & WowTestSpell->SpellGroupType[1]) &&
+            WowTestSpell->SpellGroupType[2] && (spellEffect->EffectSpellClassMask[effectNum][2] & WowTestSpell->SpellGroupType[2]));
    }
 protected:
 

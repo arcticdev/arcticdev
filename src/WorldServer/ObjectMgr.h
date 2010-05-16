@@ -540,7 +540,7 @@ public:
 	void ReloadVendors();
 	void LoadTotemSpells();
 	void LoadAIThreatToSpellId();
-	void LoadSpellProcOverride();
+	void LoadSpellFixes();
 	void LoadReputationModifierTable(const char * tablename, ReputationModMap * dmap);
 	void LoadReputationModifiers();
 	ReputationModifier * GetReputationModifier(uint32 entry_id, uint32 faction_id);

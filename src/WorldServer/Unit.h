@@ -512,32 +512,32 @@ enum UnitFieldFlags // UNIT_FIELD_FLAGS #46 - these are client flags
 
 enum UnitFlags2
 {
-	UNIT_FLAG2_FEIGN_DEATH				= 0x00000001,
-	UNIT_FLAG2_UNK1						= 0x00000002, // Hide unit model (show only player equip)
-	UNIT_FLAG2_COMPREHEND_LANG			= 0x00000008,
-	UNIT_FLAG2_FORCE_MOVE				= 0x00000040,
-	UNIT_FLAG2_REGENERATE_POWER			= 0x00000800
+	UNIT_FLAG2_FEIGN_DEATH = 0x00000001,
+	UNIT_FLAG2_UNK1 = 0x00000002, // Hide unit model (show only player equip)
+	UNIT_FLAG2_COMPREHEND_LANG = 0x00000008,
+	UNIT_FLAG2_FORCE_MOVE = 0x00000040,
+	UNIT_FLAG2_REGENERATE_POWER = 0x00000800
 };
 
 enum UnitDynamicFlags
 {
-	U_DYN_FLAG_LOOTABLE				   = 0x01,
-	U_DYN_FLAG_UNIT_TRACKABLE		   = 0x02,
-	U_DYN_FLAG_TAGGED_BY_OTHER		   = 0x04,
-	U_DYN_FLAG_TAPPED_BY_PLAYER		   = 0x08,
-	U_DYN_FLAG_PLAYER_INFO			   = 0x10,
-	U_DYN_FLAG_DEAD					   = 0x20,
+	U_DYN_FLAG_LOOTABLE = 0x01,
+	U_DYN_FLAG_UNIT_TRACKABLE = 0x02,
+	U_DYN_FLAG_TAGGED_BY_OTHER = 0x04,
+	U_DYN_FLAG_TAPPED_BY_PLAYER = 0x08,
+	U_DYN_FLAG_PLAYER_INFO = 0x10,
+	U_DYN_FLAG_DEAD = 0x20,
 };
 
 enum DamageFlags
 {
-	DAMAGE_FLAG_MELEE   = 1,
-	DAMAGE_FLAG_HOLY	= 2,
-	DAMAGE_FLAG_FIRE	= 4,
-	DAMAGE_FLAG_NATURE  = 8,
-	DAMAGE_FLAG_FROST   = 16,
-	DAMAGE_FLAG_SHADOW  = 32,
-	DAMAGE_FLAG_ARCANE  = 64
+	DAMAGE_FLAG_MELEE = 1,
+	DAMAGE_FLAG_HOLY = 2,
+	DAMAGE_FLAG_FIRE = 4,
+	DAMAGE_FLAG_NATURE = 8,
+	DAMAGE_FLAG_FROST = 16,
+	DAMAGE_FLAG_SHADOW = 32,
+	DAMAGE_FLAG_ARCANE = 64
 };
 
 enum WeaponDamageType // this is NOT the same as SPELL_ENTRY_Spell_Dmg_Type, or Spell::GetType(), or SPELL_ENTRY_School !!
@@ -561,19 +561,19 @@ enum VisualState
 
 enum HitStatus
 {
-	HITSTATUS_unk			= 0x01,
-	HITSTATUS_HITANIMATION  = 0x02,
-	HITSTATUS_DUALWIELD     = 0x04,
-	HITSTATUS_MISS          = 0x10,
-	HITSTATUS_ABSORBED      = 0x20,
-	HITSTATUS_ABSORBED2		= 0x40,
-	HITSTATUS_RESIST        = 0x80,
-	HITSTATUS_RESIST2       = 0x100,
-	HITSTATUS_CRICTICAL     = 0x200,
-	HITSTATUS_BLOCK         = 0x2000,
-	HITSTATUS_CRUSHINGBLOW  = 0x8000,
-	HITSTATUS_GLANCING      = 0x10000,
-	HITSTATUS_NOACTION      = 0x10000,
+	HITSTATUS_unk = 0x01,
+	HITSTATUS_HITANIMATION = 0x02,
+	HITSTATUS_DUALWIELD = 0x04,
+	HITSTATUS_MISS = 0x10,
+	HITSTATUS_ABSORBED = 0x20,
+	HITSTATUS_ABSORBED2 = 0x40,
+	HITSTATUS_RESIST = 0x80,
+	HITSTATUS_RESIST2 = 0x100,
+	HITSTATUS_CRICTICAL = 0x200,
+	HITSTATUS_BLOCK = 0x2000,
+	HITSTATUS_CRUSHINGBLOW = 0x8000,
+	HITSTATUS_GLANCING = 0x10000,
+	HITSTATUS_NOACTION = 0x10000,
 	HITSTATUS_SWINGNOHITSOUND = 0x80000 // as in miss?
 };
 
@@ -606,9 +606,9 @@ struct AuraCheckResponse
 
 enum AURA_CHECK_RESULT
 {
-	AURA_CHECK_RESULT_NONE				  = 1,
-	AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT   = 2,
-	AURA_CHECK_RESULT_LOWER_BUFF_PRESENT	= 3,
+	AURA_CHECK_RESULT_NONE = 1,
+	AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT = 2,
+	AURA_CHECK_RESULT_LOWER_BUFF_PRESENT = 3,
 };
 
 enum CUSTOM_TIMERS
@@ -623,14 +623,14 @@ enum CUSTOM_TIMERS
 
 enum Powers
 {
-    POWER_MANA                          = 0,
-    POWER_RAGE                          = 1,
-    POWER_FOCUS                         = 2,
-    POWER_ENERGY                        = 3,
-    POWER_HAPPINESS                     = 4,
-    POWER_RUNE                          = 5,
-    POWER_RUNIC_POWER                   = 6,
-    POWER_HEALTH                        = 0xFFFFFFFE
+	POWER_MANA = 0,
+	POWER_RAGE = 1,
+	POWER_FOCUS = 2,
+	POWER_ENERGY = 3,
+	POWER_HAPPINESS = 4,
+	POWER_RUNE = 5,
+	POWER_RUNIC_POWER = 6,
+	POWER_HEALTH = 0xFFFFFFFE
 };
 
 typedef std::list<struct ProcTriggerSpellOnSpell> ProcTriggerSpellOnSpellList;
@@ -786,7 +786,7 @@ public:
 	bool isCasting();
 	bool IsInInstance();
 	double GetResistanceReducion(Unit* pVictim, uint32 type, float armorReducePct);
-    void CalculateResistanceReduction(Unit* pVictim,dealdamage *dmg,SpellEntry* ability, float armorreducepct) ;
+	void CalculateResistanceReduction(Unit* pVictim,dealdamage *dmg,SpellEntry* ability, float armorreducepct) ;
 	void RegenerateHealth();
 	void RegeneratePower(bool isinterrupted);
 	void SendPowerUpdate();
@@ -817,25 +817,25 @@ public:
 	uint8 m_invisFlag;
 	int32 m_invisDetect[INVIS_FLAG_TOTAL];
 
-    //////////////////////////////////////////////////////////////////////////
-    // Stun Immobilize                                                      //
-    //////////////////////////////////////////////////////////////////////////
-	
-	uint32 trigger_on_stun;				// second wind warrior talent
+	//////////////////////////////////////////////////////////////////////////
+	// Stun Immobilize                                                      //
+	//////////////////////////////////////////////////////////////////////////
+
+	uint32 trigger_on_stun; // second wind warrior talent
 	uint32 trigger_on_stun_chance;
 
 	void SetTriggerStunOrImmobilize(uint32 newtrigger,uint32 new_chance);
-    void EventStunOrImmobilize();
+	void EventStunOrImmobilize();
 
-    //////////////////////////////////////////////////////////////////////////
-    // Chill                                                                //
-    //////////////////////////////////////////////////////////////////////////
-	
-	uint32 trigger_on_chill;			//mage "Frostbite" talent chill
+	//////////////////////////////////////////////////////////////////////////
+	// Chill                                                                //
+	//////////////////////////////////////////////////////////////////////////
+
+	uint32 trigger_on_chill; //mage "Frostbite" talent chill
 	uint32 trigger_on_chill_chance;
 
 	void SetTriggerChill(uint32 newtrigger, uint32 new_chance);
-    void EventChill(Unit* proc_target);
+	void EventChill(Unit* proc_target);
 
 	bool HasAura(uint32 spellid);
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
@@ -880,7 +880,7 @@ public:
 	// Remove all auras
 	void RemoveAllAuras();
 	bool RemoveAllAuras(uint32 spellId,uint64 guid = 0);  // remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
-    void RemoveAllAurasOfType(uint32 auratype);           // ex:to remove morph spells
+	void RemoveAllAurasOfType(uint32 auratype);           // ex:to remove morph spells
 	bool RemoveAllAuraByNameHash(uint32 namehash);        // required to remove weaker instances of a spell
 	bool RemoveAllPosAuraByNameHash(uint32 namehash);     // required to remove weaker instances of a spell
 	bool RemoveAllNegAuraByNameHash(uint32 namehash);     // required to remove weaker instances of a spell
@@ -901,7 +901,7 @@ public:
 
 	// caller is the caster
 	int32 GetSpellBonusDamage(Unit* pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot, bool healing);
-   
+
 	// guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
 	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl);
 	void SummonExpireSlot(uint8 slot); // this is used to despawn all summoslots at once (for non players)
@@ -921,7 +921,7 @@ public:
 	std::list<struct DamageProc> m_damageShields;
 	std::list<struct ReflectSpellSchool*> m_reflectSpellSchool;
 	void RemoveReflect( uint32 spellid );
- 
+
 	std::list<struct ProcTriggerSpell> m_procSpells;
 	bool m_chargeSpellsInUse;
 	std::deque<Aura*> m_chargeSpellRemoveQueue;
@@ -1057,7 +1057,7 @@ public:
 	void RegisterPeriodicChatMessage(uint32 delay, uint32 msgid, std::string message, bool sendnotify);
 
 	ARCTIC_INLINE int32 GetHealthPct() { return (int32)(GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / std::max(1, (int32)GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
-    ARCTIC_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
+	ARCTIC_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
 	ARCTIC_INLINE int32 GetManaPct() { return (int32)(GetUInt32Value(UNIT_FIELD_POWER1) * 100 / std::max(1, (int32)GetUInt32Value(UNIT_FIELD_MAXPOWER1))); }
 		
 	uint32 GetResistance(uint32 type);	
@@ -1254,7 +1254,7 @@ public:
 	uint32 polySpell;
 	uint32 m_special_state; // flags for special states (stunned,rooted etc)
 	
-    // uint32 fearSpell;
+	// uint32 fearSpell;
 	CombatStatusHandler CombatStatus;
 	bool m_temp_summon;
 	bool m_mageInvisibility;
@@ -1285,9 +1285,6 @@ public:
 	//	custom functions for scripting
 	void SetWeaponDisplayId(uint8 slot, uint32 displayId);
 
-	// Movement Info.
-	MovementInfo* GetMovementInfo() { return &movement_info; }
-	MovementInfo movement_info;
 protected:
 	Unit ();
 
@@ -1298,7 +1295,7 @@ protected:
 	uint32 m_H_regenTimer;
 	uint32 m_P_regenTimer;
 	uint32 m_interruptedRegenTime; // PowerInterruptedegenTimer.
-	uint32 m_state;		           // flags for keeping track of some states
+	uint32 m_state;                // flags for keeping track of some states
 	uint32 m_attackTimer;          // timer for attack
 	uint32 m_attackTimer_1;
 	bool m_duelWield;
@@ -1308,7 +1305,7 @@ protected:
 
 	// Stealth
 	uint32 m_stealthLevel;
-	uint32 m_stealthDetectBonus;	
+	uint32 m_stealthDetectBonus;
 	
 	// DK:pet
 	// uint32 m_pet_state;
@@ -1322,7 +1319,7 @@ protected:
 
 	bool m_useAI;
 	bool m_spellsbusy;
-	bool can_parry;          // will be enabled by block spell
+	bool can_parry; // will be enabled by block spell
 	int32 m_threatModifyer;
 	int32 m_generatedThreatModifyer;
 

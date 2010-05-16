@@ -51,8 +51,8 @@ ArenaTeam::ArenaTeam(Field * f)
 	uint32 z = 0, i, guid;
 	const char * data;
 	int ret;
-	
-    m_memberCount = 0;
+
+	m_memberCount = 0;
 
 	m_id = f[z++].GetUInt32();
 	m_type = f[z++].GetUInt32();
@@ -148,12 +148,12 @@ bool ArenaTeam::AddMember(PlayerInfo * info)
 	m_members[m_memberCount++].Info = info;
 	SaveToDB();
 
-	if(plr)
+	if(plr!=NULL)
 	{
 		base_field = (m_type*7) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
 		plr->SetUInt32Value(base_field, m_id);
 		plr->SetUInt32Value(base_field+1,m_leader);
-		plr->GetSession()->SystemMessage(YOUARENOWMEMBERAI, m_name.c_str());
+		plr->GetSession()->SystemMessage("You are now a member of the arena team, '%s'.", m_name.c_str());
 	}
 
 	info->arenaTeam[m_type] = this;
@@ -297,16 +297,16 @@ void ArenaTeam::SetLeader(PlayerInfo * info)
 	uint32 old_leader = m_leader;
 	char buffer[1024];
 	WorldPacket * data;
-	snprintf(buffer, 1024,ZSNOWATHECAPTAIAI, info->name, m_name.c_str());
+	snprintf(buffer, 1024,"%s is now the captain of the arena team, '%s'.", info->name, m_name.c_str());
 	data = sChatHandler.FillSystemMessageData(buffer);
 	m_leader=info->guid;
-    SendPacket(data);
+	SendPacket(data);
 	delete data;
 
 	/* set the fields */
 	for(uint32 i = 0; i < m_memberCount; ++i)
 	{
-		if(m_members[i].Info == info)		/* new leader */
+		if(m_members[i].Info == info) /* new leader */
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
 				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 0);
@@ -314,7 +314,7 @@ void ArenaTeam::SetLeader(PlayerInfo * info)
 		else if(m_members[i].Info->guid == old_leader)
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 0);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 1);
 		}
 	}
 
@@ -395,37 +395,37 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 	Player* plr = objmgr.GetPlayer(player_name.c_str(), false);
 	if(plr == NULL)
 	{
-		SystemMessage(PLAYERSNONEXISTAI, player_name.c_str());
+		SystemMessage("Player `%s` is non-existent or not online.", player_name.c_str());
 		return;
 	}
 
 	if(pTeam->m_leader != _player->GetLowGUID())
 	{
-		SystemMessage(YOUHTECAPOTSOFAAI);
+		SystemMessage("You are not the captain of this arena team.");
 		return;
 	}
 
-	if(plr->getLevel() < 80)
+	if(plr->getLevel() < 70)
 	{
-		SystemMessage(PLAYERTSLELTOANAI);
+		SystemMessage("Player must be level 70 to join an arena team.");
 		return;
 	}
 
 	if(plr->m_playerInfo->arenaTeam[pTeam->m_type] != NULL)
 	{
-		SystemMessage(THATSEPLAYERSALAI);
+		SystemMessage("That player is already in an arena team of this type.");
 		return;
 	}
 
 	if(plr->m_arenateaminviteguid != 0)
 	{
-		SystemMessage(THATSUIIUYERSALAI);
+		SystemMessage("That player is already invited to an arena team");
 		return;
 	}
 
 	if(plr->GetTeam() != _player->GetTeam() && !HasGMPermissions())
 	{
-		SystemMessage(THATSHOUGYERSALAI);
+		SystemMessage("That player is a member of a different faction.");
 		return;
 	}
 
@@ -455,25 +455,25 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 
 	if( (team = _player->m_playerInfo->arenaTeam[slot]) == NULL )
 	{
-		SystemMessage(THATSHOUGYEMNHHAI);
+		SystemMessage("You are not in an arena team of this type.");
 		return;
 	}
 
 	if(team->m_leader != _player->GetLowGUID())
 	{
-		SystemMessage(THATSHOUGYESANVAI);
+		SystemMessage("You are not the leader of this team.");
 		return;
 	}
 
 	if( (inf = objmgr.GetPlayerInfoByName(name.c_str())) == NULL )
 	{
-		SystemMessage(UHKKSHOUGYESANVAI);
+		SystemMessage("That player cannot be found.");
 		return;
 	}
 
 	if(!team->HasMember(inf->guid))
 	{
-		SystemMessage(UIUOSHOUGYESANVAI);
+		SystemMessage("That player is not in your arena team.");
 		return;
 	}
 
@@ -481,11 +481,11 @@ void WorldSession::HandleArenaTeamRemoveMemberOpcode(WorldPacket & recv_data)
 	{
 		char buffer[1024];
 		WorldPacket * data;
-		snprintf(buffer,1024,REMOSDAARENASTEAI, inf->name, team->m_name.c_str());
+		snprintf(buffer,1024,"%s was removed from the arena team '%s'.", inf->name, team->m_name.c_str());
 		data = sChatHandler.FillSystemMessageData(buffer);
 		team->SendPacket(data);
 		delete data;
-		SystemMessage(HHOUGKAARENASTEAI, inf->name, team->m_name.c_str());
+		SystemMessage("Removed %s from the arena team '%s'.", inf->name, team->m_name.c_str());
 	}
 }
 
@@ -495,7 +495,7 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 
 	if(_player->m_arenateaminviteguid == 0)
 	{
-		SystemMessage(YOUKSHOUGYESANVAI);
+		SystemMessage("You have not been invited into another arena team.");
 		return;
 	}
 
@@ -503,19 +503,19 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 	_player->m_arenateaminviteguid=0;
 	if(team == 0)
 	{
-		SystemMessage(YOUKSHHJHTFYANVAI);
+		SystemMessage("That arena team no longer exists.");
 		return;
 	}
 
 	if(team->m_memberCount >= team->m_slots)
 	{
-		SystemMessage(YOUKSHHJRENASTEAI);
+		SystemMessage("That team is now full.");
 		return;
 	}
 
-	if(_player->m_playerInfo->arenaTeam[team->m_type] != NULL)		/* shouldn't happen */
+	if(_player->m_playerInfo->arenaTeam[team->m_type] != NULL) /* shouldn't happen */
 	{
-		SystemMessage(YOUKSHHJRHAVEDEAI);
+		SystemMessage("You have already been in an arena team of that size.");
 		return;
 	}
 
@@ -523,14 +523,14 @@ void WorldSession::HandleArenaTeamInviteAcceptOpcode(WorldPacket & recv_data)
 	{
 		char buffer[1024];
 		WorldPacket * data;
-		snprintf(buffer,1024,JOISERAREHAVEDEAI, _player->GetName(), team->m_name.c_str());
+		snprintf(buffer,1024,"%s joined the arena team, '%s'.", _player->GetName(), team->m_name.c_str());
 		data = sChatHandler.FillSystemMessageData(buffer);
 		team->SendPacket(data);
 		delete data;
 	}
 	else
 	{
-		SendNotification(INTERNAKERRORSFAI);
+		SendNotification("Internal error.");
 	}
 }
 
@@ -539,7 +539,7 @@ void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 	ArenaTeam * team;
 	if(_player->m_arenateaminviteguid == 0)
 	{
-		SystemMessage(WERESHOUGYESANVAI);
+		SystemMessage("You were not invited.");
 		return;
 	}
 
@@ -550,7 +550,7 @@ void WorldSession::HandleArenaTeamInviteDenyOpcode(WorldPacket & recv_data)
 
 	Player* plr = objmgr.GetPlayer(team->m_leader);
 	if(plr != NULL)
-		plr->GetSession()->SystemMessage(DENISWERESHSANVAI, _player->GetName(), team->m_name.c_str());
+		plr->GetSession()->SystemMessage("%s denied your arena team invitation for %s.", _player->GetName(), team->m_name.c_str());
 }
 
 void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
@@ -569,13 +569,13 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 
 	if( (team = _player->m_playerInfo->arenaTeam[team->m_type]) == NULL )
 	{
-		SystemMessage(DENISWYOUSHSANVAI);
+		SystemMessage("You are not in an arena team of this type.");
 		return;
 	}
 
 	if(team->m_leader == _player->GetLowGUID())
 	{
-		SystemMessage(YOURIVISDEDCANNAI);
+		SystemMessage("You cannot leave the team yet, promote someone else to captain first.");
 		return;
 	}
 
@@ -583,11 +583,11 @@ void WorldSession::HandleArenaTeamLeaveOpcode(WorldPacket & recv_data)
 	{
 		char buffer[1024];
 		WorldPacket * data;
-		snprintf(buffer,1024,SLETSZHTEARENASAI, _player->GetName(), team->m_name.c_str());
+		snprintf(buffer,1024,"%s left the arena team, '%s'.", _player->GetName(), team->m_name.c_str());
 		data = sChatHandler.FillSystemMessageData(buffer);
 		team->SendPacket(data);
 		delete data;
-		SystemMessage(YOUTSZHTEARENASAI, team->m_name.c_str());
+		SystemMessage("You have left the arena team, '%s'.", team->m_name.c_str());
 	}
 }
 
@@ -606,13 +606,13 @@ void WorldSession::HandleArenaTeamDisbandOpcode(WorldPacket & recv_data)
 
 	if( (team = _player->m_playerInfo->arenaTeam[team->m_type]) == NULL )
 	{
-		SystemMessage(YOUTSZHTEAROUYSAI);
+		SystemMessage("You are not in an arena team of this type.");
 		return;
 	}
 
 	if(team->m_leader != _player->GetLowGUID())
 	{
-		SystemMessage(ZOUTSZZTEARZUYSAI);
+		SystemMessage("You aren't the captain of this team.");
 		return;
 	}
 
@@ -642,25 +642,25 @@ void WorldSession::HandleArenaTeamPromoteOpcode(WorldPacket & recv_data)
 
 	if( (team = _player->m_playerInfo->arenaTeam[slot]) == NULL )
 	{
-		SystemMessage(THATSHOUGYEMNHHAI);
+		SystemMessage("You are not in an arena team of this type.");
 		return;
 	}
 
 	if(team->m_leader != _player->GetLowGUID())
 	{
-		SystemMessage(ZOUTSZZTEARZUYSAI);
+		SystemMessage("You aren't the captain of this team.");
 		return;
 	}
 
 	if( (inf = objmgr.GetPlayerInfoByName(name.c_str())) == NULL )
 	{
-		SystemMessage(UHKKSHOUGYESANVAI);
+		SystemMessage("That player cannot be found.");
 		return;
 	}
 
 	if(!team->HasMember(inf->guid))
 	{
-		SystemMessage(NOUTSZZTEARZUYSAI);
+		SystemMessage("That player is not a member of your arena team.");
 		return;
 	}
 

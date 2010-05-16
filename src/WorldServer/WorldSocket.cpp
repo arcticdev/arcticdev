@@ -194,7 +194,7 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 	ServerPktHeader Header;
 	Header.cmd = opcode;
 	Header.size = ntohs((uint16)len + 2);
-    _crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
+	_crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
 
 	// Pass the header to our send buffer
 	rv = BurstSend((const uint8*)&Header, 4);
@@ -215,20 +215,20 @@ void WorldSocket::OnConnect()
 	sWorld.mAcceptedConnections++;
 	_latency = getMSTime();
 	WorldPacket data (SMSG_AUTH_CHALLENGE, 25);
-	data << uint32( 1 );			// Unk
+	data << uint32(1);			// Unk
 	data << mSeed;
-	data << uint32( 0xF3539DA3 );	// Generated Random.
-	data << uint32( 0x6E8547B9 );	// 3.2.2
-	data << uint32( 0x9A6AA2F8 );	// 3.2.2
-	data << uint32( 0xA4F170F4 );	// 3.2.2
+	data << uint32(0xF3539DA3);	// Generated Random.
+	data << uint32(0x6E8547B9);	// 3.2.2
+	data << uint32(0x9A6AA2F8);	// 3.2.2
+	data << uint32(0xA4F170F4);	// 3.2.2
 	SendPacket(&data);
 }
 
 void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
 	std::string account;
-	uint64 unk1; // 3.2.2
 	uint32 unk2, unk3;
+	uint64 unk1; // 3.2.2 Unk..
 	_latency = getMSTime() - _latency;
 
 	try
@@ -238,7 +238,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		*recvPacket >> account;
 		*recvPacket >> unk3;
 		*recvPacket >> mClientSeed;
-	    *recvPacket >> unk1; // 3.2.2 
+	    *recvPacket >> unk1; // 3.2.2..
 	}
 	catch(ByteBuffer::error &)
 	{
@@ -527,7 +527,7 @@ void WorldSocket::OnRead()
 			readBuffer.Read(&Header, 6);
 
 			// Decrypt the header
-            _crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
+			_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
 			mRemaining = mSize = ntohs(Header.size) - 4;
 			mOpcode = Header.cmd;
 		}

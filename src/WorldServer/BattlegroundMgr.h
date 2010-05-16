@@ -113,11 +113,12 @@ static inline uint32 GetLevelGrouping(uint32 level)
 	else
 		return 8;
 }
+
 #define MAX_LEVEL_GROUP 9
 #define LEVEL_GROUP_RATED_ARENA 8
 #define BG_ANTI_CHEAT 1
 
-class ARCTIC_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject, public std::tr1::enable_shared_from_this<CBattlegroundManager>
+class ARCTIC_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
 {
 	/* Battleground Instance Map */
 	map<uint32, CBattleground* > m_instances[BATTLEGROUND_NUM_TYPES];
@@ -141,7 +142,6 @@ class ARCTIC_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 public:
 	CBattlegroundManager();
 	~CBattlegroundManager();
-
 	void Init();
 
 	/* Packet Handlers */
@@ -197,7 +197,7 @@ public:
 	void AddAverageQueueTime(uint32 BgType, uint32 queueTime);
 };
 
-class CBattleground : public EventableObject, public std::tr1::enable_shared_from_this<CBattleground>
+class CBattleground : public EventableObject
 {
 protected:
 	/* Groups */

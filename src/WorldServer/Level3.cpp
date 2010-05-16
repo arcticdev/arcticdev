@@ -1172,7 +1172,7 @@ bool ChatHandler::HandleLandCommand(const char* args, WorldSession* m_session)
 
 bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_session)
 {
-	char str[200];
+	char str[256];
 	int ret = 0;
 
 	if(!*args || strlen(args) < 3)
@@ -1188,9 +1188,9 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 		objmgr.ReloadDisabledSpells();
 		ret = 1;
 	} else
-	if (0 == stricmp(args, "spell_proc_override"))
+	if (0 == stricmp(args, "spellfixes"))
 	{
-		objmgr.LoadSpellProcOverride();
+		objmgr.LoadSpellFixes();
 		ret = 1;
 	} else
 	if (0 == stricmp(args, "vendors"))

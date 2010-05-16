@@ -414,7 +414,7 @@ struct ProcTriggerSpell
 
 typedef set<uint32> AreaAuraList;
 
-class ARCTIC_DECL Aura : public EventableObject, public std::tr1::enable_shared_from_this<Aura>
+class ARCTIC_DECL Aura : public EventableObject
 {
 	uint64 periodic_target;
 public:

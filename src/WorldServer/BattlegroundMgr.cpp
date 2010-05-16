@@ -6,64 +6,64 @@
 
 #include "StdAfx.h"
 
-initialiseSingleton(CBattlegroundManager);
 
+initialiseSingleton(CBattlegroundManager);
 typedef CBattleground*(*CreateBattlegroundFunc)( MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
 
 const static uint32 BGMapIds[BATTLEGROUND_NUM_TYPES] = 
 {
-    0,     // 0
-    30,    // AV
-    489,   // WSG
-    529,   // AB
-    0,     // 2v2
-    0,     // 3v3
-    0,     // 5v5
-    566,   // EOTS
-    0,     // 0
-    607,   // SOTA
+	0,								// 0
+	30,								// AV
+	489,							// WSG
+	529,							// AB
+	0,								// 2v2
+	0,								// 3v3
+	0,								// 5v5
+	566,							// EOTS
+	0,								// 0
+	607,							// SOTA
 };
 
 const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] = 
 {
-    NULL,                           // 0
-    &AlteracValley::Create,         // AV
-    &WarsongGulch::Create,          // WSG
-    &ArathiBasin::Create,           // AB
-    NULL,                           // 2v2
-    NULL,                           // 3v3
-    NULL,                           // 5v5
-    &EyeOfTheStorm::Create,         // EOTS
-    NULL,                           // 0
-    &StrandOfTheAncients::Create,   // SOTA
+	NULL,							// 0
+	&AlteracValley::Create,			// AV
+	&WarsongGulch::Create,			// WSG
+	&ArathiBasin::Create,			// AB
+	NULL,							// 2v2
+	NULL,							// 3v3
+	NULL,							// 5v5
+	&EyeOfTheStorm::Create,			// EOTS
+	NULL,							// 0
+	&StrandOfTheAncients::Create,	// SOTA
 };
 
 const static uint32 BGMinimumPlayers[BATTLEGROUND_NUM_TYPES] = 
 {
-	0,  // 0
-	20, // AV
-	5,  // WSG
-	7,  // AB
-	4,  // 2v2
-	6,  // 3v3
-	10, // 5v5
-	7,  // EOTS
-	0,  // 0
-	15, // SOTA
+	0,								// 0
+	20,								// AV
+	5,								// WSG
+	7,								// AB
+	4,								// 2v2
+	6,								// 3v3
+	10,								// 5v5
+	7,								// EOTS
+	0,								// 0
+	15,								// SOTA
 };
 
 const static uint32 BGPvPDataFieldCount[BATTLEGROUND_NUM_TYPES] =
 {
-	0, // NONE
-	5, // AV
-	2, // WSG
-	2, // AB
-	0, // 2v2
-	0, // 3v3
-	0, // 5v5
-	1, // EOTS
-	0, // 0 
-	0, // SOTA
+	0,								// NONE
+	5,								// AV
+	2,								// WSG
+	2,								// AB
+	0,								// 2v2
+	0,								// 3v3
+	0,								// 5v5
+	1,								// EOTS
+	0,								// 0 
+	0,								// SOTA
 };
 
 #define IS_ARENA(x) ( (x) >= BATTLEGROUND_ARENA_2V2 && (x) <= BATTLEGROUND_ARENA_5V5 )
@@ -141,13 +141,13 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 
 	uint32 LevelGroup = GetLevelGrouping(m_session->GetPlayer()->getLevel());
 	uint32 Count = 0;
-	WorldPacket data( SMSG_BATTLEFIELD_LIST, 200 );
+	WorldPacket data(SMSG_BATTLEFIELD_LIST, 200);
 	data << m_session->GetPlayer()->GetGUID();
-	data << uint8(!battlemaster); // unk
+	data << uint8(!battlemaster);						// unk
 	data << BattlegroundType;
-	data << uint8( 0 ); // unk
+	data << uint8(0);									// unk
 	size_t CountPos = data.wpos();
-	data << uint32( 0 ); // Count, will be replaced later
+	data << uint32(0);									// Count, will be replaced later
 
 	if(!IS_ARENA(BattlegroundType))
 	{
@@ -355,7 +355,7 @@ void CBattlegroundManager::AddGroupToArena(CBattleground* bg, Group * group, int
 	if (team == NULL) return;
 
 	GroupMembersSet::iterator itx;
-	for(itx = group->GetSubGroup( 0 )->GetGroupMembersBegin(); itx != group->GetSubGroup( 0 )->GetGroupMembersEnd(); ++itx)
+	for(itx = group->GetSubGroup(0)->GetGroupMembersBegin(); itx != group->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 	{
 		plr = (*itx)->m_loggedInPlayer;
 		if(plr && plr->m_playerInfo && team == plr->m_playerInfo->arenaTeam[bg->GetType()-BATTLEGROUND_ARENA_2V2])
@@ -385,7 +385,7 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 	Arena* ar = TO_ARENA(CreateInstance(type, LEVEL_GROUP_RATED_ARENA));
 	if (ar == NULL)
 	{
-		Log.Error(ZABATTLESGROUAI, AREAZSACOULDSAI, __FILE__, __LINE__);
+		Log.Error("BattlegroundMgr", "%s (%u): Couldn't create Arena Instance", __FILE__, __LINE__);
 		m_queueLock.Release();
 		m_instanceLock.Release();
 		return -1;
@@ -433,7 +433,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 	Player* plr;
 	CBattleground* bg;
 	list<uint32>::iterator it3, it4;
-	// vector<Player*  >::iterator it6;
+	// vector<Player* >::iterator it6;
 	map<uint32, CBattleground* >::iterator iitr;
 	Arena* arena;
 	int32 team;
@@ -453,11 +453,11 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			for(it3 = m_queuedPlayers[i][j].begin(); it3 != m_queuedPlayers[i][j].end();)
 			{
 				it4 = it3++;
-                plr = objmgr.GetPlayer(*it4);
+				plr = objmgr.GetPlayer(*it4);
 				
 				if(!plr || GetLevelGrouping(plr->getLevel()) != j)
 				{
-                    m_queuedPlayers[i][j].erase(it4);
+					m_queuedPlayers[i][j].erase(it4);
 					continue;
 				}
 
@@ -472,24 +472,24 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 				}
 
 				// queued to a specific instance id?
-				if(plr->m_bgQueueInstanceId[queueSlot] != 0 && plr->m_bgIsQueued[queueSlot]) 
+				if(plr->m_bgQueueInstanceId[queueSlot] != 0 && plr->m_bgIsQueued[queueSlot])
 				{
-				    if( m_instances[i].empty() ) 
-                            continue; 
- 	                                         
-                    iitr = m_instances[i].find( plr->m_bgQueueInstanceId[queueSlot] ); 
+					if( m_instances[i].empty() )
+						continue;
+					
+					iitr = m_instances[i].find( plr->m_bgQueueInstanceId[queueSlot] );
 					if(iitr == m_instances[i].end())
 					{
 						// queue no longer valid
 						plr->RemoveFromBattlegroundQueue(queueSlot);
 						// m_queuedPlayers[i][j].erase(it4);
 						SendBattlegroundQueueStatus(plr, queueSlot);
-					    continue; 
+						continue; 
 					}
 
 					// can we join?
-                    bg = (*iitr).second; 
-                    if(bg->CanPlayerJoin(plr)) 
+					bg = (*iitr).second;
+					if(bg->CanPlayerJoin(plr))
 					{
 						bg->AddPlayer(plr, plr->GetTeam());
 						m_queuedPlayers[i][j].erase(it4);
@@ -512,7 +512,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(IS_ARENA(i))
 				{
-                    arena = TO_ARENA(iitr->second);
+					arena = TO_ARENA(iitr->second);
 					if(arena->Rated())
 						continue;
 
@@ -579,9 +579,9 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 			else
 			{
 				if((forceStart == true &&
-				    (tempPlayerVec[0].size() >= 1 ||
+					(tempPlayerVec[0].size() >= 1 ||
 					tempPlayerVec[1].size() >= 1)) ||
-				    tempPlayerVec[0].size() >= BGMinimumPlayers[i] &&
+					tempPlayerVec[0].size() >= BGMinimumPlayers[i] &&
 					tempPlayerVec[1].size() >= BGMinimumPlayers[i])
 				{
 					if(CanCreateInstance(i,j))
@@ -601,7 +601,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 							}
 						}
 						else
-						{						
+						{
 							// push as many as possible in
 							if (forceStart)
 							{
@@ -654,7 +654,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 			if(itz == m_queuedGroups[i].end())
 			{
-				Log.Error(ZABATTLESGROUAI, INTERNETSERROAI, __FILE__, __LINE__);
+				Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 				m_queueLock.Release();
 				m_instanceLock.Release();
 				return;
@@ -704,7 +704,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 
 				if(itz == possibleGroups.end())
 				{
-					Log.Error(ZABATTLESGROUAI, INTERNETSERROAI, __FILE__, __LINE__);
+					Log.Error("BattlegroundMgr", "Internal error at %s:%u", __FILE__, __LINE__);
 					m_queueLock.Release();
 					m_instanceLock.Release();
 					return;
@@ -744,7 +744,7 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player* plr)
 			itr2++;
 			if((*itr) == plr->GetLowGUID())
 			{
-				OUT_DEBUG(BATTLELEGROMSAI, REMOSPLAEYRSFAI, plr->GetLowGUID(), plr->m_bgQueueInstanceId[i], plr->m_bgQueueType[i]);
+				OUT_DEBUG("BattlegroundManager", "Removing player %u from queue instance %u type %u", plr->GetLowGUID(), plr->m_bgQueueInstanceId[i], plr->m_bgQueueType[i]);
 				m_queuedPlayers[plr->m_bgQueueType[i]][lgroup].erase(itr);
 			}
 
@@ -757,7 +757,7 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player* plr)
 		plr->m_bgQueueInstanceId[i] = 0;
 		plr->m_bgQueueTime[i] = 0;
 	}
-    m_queueLock.Release();
+	m_queueLock.Release();
 }
 
 void CBattlegroundManager::RemoveGroupFromQueues(Group * grp)
@@ -894,17 +894,17 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 		if(teams[0])
 			*data << teams[0]->m_name;
 		else
-			*data << uint8( 0 );
-			*data << uint64( 0 ); // unknowns. maybe arena team ids?
+			*data << uint8(0);
+			*data << uint64(0); // unknowns. maybe arena team ids?
 
 		if(teams[1])
 			*data << teams[1]->m_name;
 		else
-			*data << uint8( 0 );
+			*data << uint8(0);
 	}
 	
-    *data << uint64( 0 ); // schnek: Arena team scores for 3.2..
-	*data << uint8( m_ended );
+	*data << uint64(0); // schnek: Arena team scores for 3.2..
+	*data << uint8(m_ended);
 	if(m_ended)
 	{
 		if(IsArena())	// Looks like for arena it should be winning team and not losing
@@ -914,7 +914,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 	}
 
 	size_t pos = data->wpos();
-	*data << uint32(0); // will be set to correct number later //uint32(m_players[0].size() + m_players[1].size());
+	*data << uint32(0); //will be set to correct number later //uint32(m_players[0].size() + m_players[1].size());
 
 	uint32 count = 0;
 	uint32 fcount = BGPvPDataFieldCount[GetType()];
@@ -938,7 +938,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 			*data << bs->DamageDone;
 			*data << bs->HealingDone;
 
-			*data << fcount;	// count of values after this
+			*data << fcount; // count of values after this
 			for(uint32 j = 0; j < fcount; ++j)
 				*data << bs->MiscData[j];
 
@@ -947,7 +947,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 	}
 	// Have to set correct number of players sent in log since we skip invisible GMs
 	*(uint32*)&data->contents()[pos] = count;
-    *data << uint32( 0 ); // unk
+	*data << uint32(0); // unk
 }
 
 void CBattleground::AddPlayer(Player* plr, uint32 team)
@@ -1028,7 +1028,7 @@ void CBattleground::PortPlayer(Player* plr, bool skip_teleport /* = false*/)
 				plr->m_bgIsQueued[i] = false;
 			}
 		}
-		sChatHandler.SystemMessage(plr->GetSession(), YOUSRAJOERTSFAI);
+		sChatHandler.SystemMessage(plr->GetSession(), "You cannot join this battleground as it has already ended.");
 		BattlegroundManager.SendBattlegroundQueueStatus(plr, 0);
 		BattlegroundManager.SendBattlegroundQueueStatus(plr, 1);
 		BattlegroundManager.SendBattlegroundQueueStatus(plr, 2);
@@ -1122,7 +1122,7 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 {
 	CreateBattlegroundFunc cfunc = BGCFuncs[Type];
 	MapMgr* mgr = NULLMAPMGR;
-	CBattleground* bg;
+	CBattleground* bg = NULL;
 	bool isWeekend = false;
 	struct tm tm;
 	time_t t;
@@ -1155,16 +1155,16 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 		case BATTLEGROUND_ARENA_5V5:
 			players_per_side = 5;
 			break;
-        default:
-            players_per_side = 0;
-            break;
+		default:
+			players_per_side = 0;
+			break;
 		}
 
 		iid = ++m_maxBattlegroundId;
-        bg = new Arena(mgr, iid, LevelGroup, Type, players_per_side);
+		bg = new Arena(mgr, iid, LevelGroup, Type, players_per_side);
 		bg->Init();
 		mgr->m_battleground = bg;
-		Log.Success(BATTLELEGROMSAI, WOWCREATYRESDAI, Type, LevelGroup, mapid);
+		Log.Success("BattlegroundManager", "Created arena battleground type %u for level group %u on map %u.", Type, LevelGroup, mapid);
 		sEventMgr.AddEvent(bg, &CBattleground::EventCreate, EVENT_BATTLEGROUNDMGR_QUEUE_UPDATE, 1, 1,0);
 		m_instanceLock.Acquire();
 		m_instances[Type].insert( make_pair(iid, bg) );
@@ -1174,7 +1174,7 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 
 	if(cfunc == NULL)
 	{
-		Log.Error(BATTLELEGROMSAI, WOWCOULDSNOTSAI, Type, LevelGroup);
+		Log.Error("BattlegroundManager", "Could not find CreateBattlegroundFunc pointer for type %u level group %u", Type, LevelGroup);
 		return NULLBATTLEGROUND;
 	}
 
@@ -1182,7 +1182,7 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 	mgr = sInstanceMgr.CreateBattlegroundInstance(BGMapIds[Type]);
 	if(mgr == NULL)
 	{
-		Log.Error(BATTLELEGROMSAI, CREATURESINSTAI, BGMapIds[Type], Type, LevelGroup);
+		Log.Error("BattlegroundManager", "CreateInstance() call failed for map %u, type %u, level group %u", BGMapIds[Type], Type, LevelGroup);
 		return NULLBATTLEGROUND; // Shouldn't happen
 	}
 
@@ -1215,7 +1215,7 @@ CBattleground* CBattlegroundManager::CreateInstance(uint32 Type, uint32 LevelGro
 	bg->SetIsWeekend(isWeekend);
 	mgr->m_battleground = bg;
 	sEventMgr.AddEvent(bg, &CBattleground::EventCreate, EVENT_BATTLEGROUNDMGR_QUEUE_UPDATE, 1, 1,0);
-	Log.Success(BATTLELEGROMSAI, WCREATYRESBATAI, Type, LevelGroup);
+	Log.Success("BattlegroundManager", "Created battleground type %u for level group %u.", Type, LevelGroup);
 
 	m_instanceLock.Acquire();
 	m_instances[Type].insert( make_pair(iid, bg) );
@@ -1270,10 +1270,10 @@ GameObject* CBattleground::SpawnGameObject(uint32 entry,float x, float y, float 
 	if(go == NULL || !go->CreateFromProto(entry, m_mapMgr->GetMapId(), x, y, z, o, 0.0f, 0.0f, 0.0f, 0.0f))
 		return NULLGOB;
 
-	go->SetUInt32Value( GAMEOBJECT_FACTION,faction );
-	go->SetFloatValue( OBJECT_FIELD_SCALE_X,scale );
-	go->SetUInt32Value( GAMEOBJECT_FLAGS, flags );
-	go->SetInstanceID( m_mapMgr->GetInstanceID() );
+	go->SetUInt32Value(GAMEOBJECT_FACTION,faction);
+	go->SetFloatValue(OBJECT_FIELD_SCALE_X,scale);
+	go->SetUInt32Value(GAMEOBJECT_FLAGS, flags);
+	go->SetInstanceID(m_mapMgr->GetInstanceID());
 	go->m_battleground = this;
 
 	return go;
@@ -1287,7 +1287,8 @@ Creature* CBattleground::SpawnCreature(uint32 entry,float x, float y, float z, f
 	if (cp && ci)
 	{
 		c = m_mapMgr->CreateCreature(entry);
-		if (c) {
+		if (c != NULLCREATURE)
+		{
 			c->Load(cp,x, y, z, o);
 			c->PushToWorld(m_mapMgr);
 		}
@@ -1351,25 +1352,25 @@ void CBattleground::PlaySoundToTeam(uint32 Team, uint32 Sound)
 void CBattlegroundManager::SendBattlegroundQueueStatus(Player* plr, uint32 queueSlot)
 {
 	if( queueSlot >= NUM_BG_QUEUE_SLOTS ) 
-	    return;
+		return;
 
 	WorldPacket data(SMSG_BATTLEFIELD_STATUS, 30);
 	if( plr->m_bg && plr->m_bgSlot == queueSlot)
 	{
 		// Perform a manual update: this BG
-		data << uint32( queueSlot );
-		data << uint8( 0 ) << uint8( 2 );
+		data << uint32(queueSlot);
+		data << uint8(0) << uint8(2);
 		data << plr->m_bg->GetType();
-		data << uint16( 0x1F90 );
+		data << uint16(0x1F90);
 		data << plr->m_bg->GetMapMgr()->GetInstanceID();
 		data << uint8(plr->m_bg->IsArena() ? 1 : 0);
-		data << uint32( 3 );
+		data << uint32(3);
 		data << plr->m_bg->GetMapMgr()->GetMapId();
-		data << uint32( 0 );
-		data << uint32( 60 );
-		data << uint8( 1 ); // Normal BG queue, 0 = arena?
+		data << uint32(0);
+		data << uint32(60);
+		data << uint8(1); // Normal BG queue, 0 = arena?
 		plr->GetSession()->SendPacket(&data);
-		    return;
+			return;
 	}
 	// We're no longer queued!
 	if( !plr->m_bgIsQueued[queueSlot] && !plr->m_pendingBattleground[queueSlot])
@@ -1377,7 +1378,7 @@ void CBattlegroundManager::SendBattlegroundQueueStatus(Player* plr, uint32 queue
 		// Log.Notice("BattlegroundManager", "No queue slot active for %u.", queueSlot);
 		data << uint32(queueSlot) << uint64(0);
 		plr->GetSession()->SendPacket(&data);
-		    return;
+			return;
 	}
 
 	uint32 Type = plr->m_bgQueueType[ queueSlot ];
@@ -1389,31 +1390,31 @@ void CBattlegroundManager::SendBattlegroundQueueStatus(Player* plr, uint32 queue
 		switch(Type)
 		{
 		case BATTLEGROUND_ARENA_2V2:
-			data << uint8( 2 );
+			data << uint8(2);
 			break;
 
 		case BATTLEGROUND_ARENA_3V3:
-			data << uint8( 3 );
+			data << uint8(3);
 			break;
 
 		case BATTLEGROUND_ARENA_5V5:
-			data << uint8( 5 );
+			data << uint8(5);
 			break;
 		}
-		data << uint8( 0xA );
-		data << uint32( 6 );
-		data << uint16( 0x1F90 );
-		data << uint32( 11 );
+		data << uint8(0xA);
+		data << uint32(6);
+		data << uint16(0x1F90);
+		data << uint32(11);
 		data << uint8(plr->m_bgRatedQueue ? 1 : 0); // Rated?
 	}
 	else
 	{
-		data << uint32( queueSlot );
-		data << uint8( 0 ) << uint8( 2 );
+		data << uint32(queueSlot);
+		data << uint8(0) << uint8(2);
 		data << Type;
-		data << uint16( 0x1F90 );
+		data << uint16(0x1F90);
 		data << plr->m_bgQueueInstanceId[queueSlot];
-		data << uint8( 0 );
+		data << uint8(0);
 	}
 	
 	// Im in a BG
@@ -1433,10 +1434,10 @@ void CBattlegroundManager::SendBattlegroundQueueStatus(Player* plr, uint32 queue
 		return;
 	}
 
-	data << uint32( 1 );
+	data << uint32(1);
 	// And we're waiting...
-	data << uint32( GetAverageQueueTime(Type)*1000 ); // average time in msec
-	data << uint32( 0 );
+	data << uint32(GetAverageQueueTime(Type)*1000); // average time in msec
+	data << uint32(0);
 	plr->GetSession()->SendPacket(&data);
 	
 }
@@ -1486,7 +1487,7 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 		// remove buffs.
 		plr->RemoveAura( 32727 ); // Arena preparation 
 		plr->RemoveAura( 44521 ); // BG preparation 
-	 
+
 	// teleport out.
 	if(!logout)
 	{
@@ -1509,22 +1510,22 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 		BattlegroundManager.SendBattlegroundQueueStatus(plr, 0);
 		BattlegroundManager.SendBattlegroundQueueStatus(plr, 1);
 		BattlegroundManager.SendBattlegroundQueueStatus(plr, 2);
-        
-		GetMapMgr()->GetStateManager().ClearWorldStates(plr); 
- 		 
-        if( !IS_INSTANCE( plr->m_bgEntryPointMap ) ) 
-        { 
- 		    LocationVector vec(plr->m_bgEntryPointX, plr->m_bgEntryPointY, plr->m_bgEntryPointZ, plr->m_bgEntryPointO); 
- 		    plr->SafeTeleport(plr->m_bgEntryPointMap, plr->m_bgEntryPointInstance, vec); 
- 		} 
- 		else 
- 		{ 
- 		    LocationVector vec(plr->GetBindPositionX(), plr->GetBindPositionY(), plr->GetBindPositionZ()); 
- 		    plr->SafeTeleport(plr->GetBindMapId(), 0, vec); 
- 	    } 
+
+		GetMapMgr()->GetStateManager().ClearWorldStates(plr);
+
+		if(!IS_INSTANCE(plr->m_bgEntryPointMap))
+		{
+			LocationVector vec(plr->m_bgEntryPointX, plr->m_bgEntryPointY, plr->m_bgEntryPointZ, plr->m_bgEntryPointO);
+			plr->SafeTeleport(plr->m_bgEntryPointMap, plr->m_bgEntryPointInstance, vec);
+		}
+		else
+		{
+			LocationVector vec(plr->GetBindPositionX(), plr->GetBindPositionY(), plr->GetBindPositionZ());
+			plr->SafeTeleport(plr->GetBindMapId(), 0, vec);
+		}
 	}
 
-	if( !m_ended && m_players[0].size() == 0 && m_players[1].size() == 0 ) 
+	if(!m_ended && m_players[0].size() == 0 && m_players[1].size() == 0)
 	{
 		/* create an inactive event */
 		sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);						// 10mins
@@ -1536,7 +1537,7 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 }
 
 void CBattleground::SendPVPData(Player* plr)
-{              
+{
 	m_mainLock.Acquire();
 	if( m_players[0].size() == 0 && m_players[1].size() == 0 )
 	{
@@ -1562,25 +1563,25 @@ int32 CBattleground::event_GetInstanceID()
 
 void CBattleground::EventCountdown()
 {
-	if( m_countdownStage == 1 )
+	if(m_countdownStage == 1)
 	{
 		m_countdownStage = 2;
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, ZONESAMINUTESAI, GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "One minute until the battle for %s begins!", GetName() );
 	}
 	else if(m_countdownStage == 2)
 	{
 		m_countdownStage = 3;
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, ZTRHIRHESECONAI, GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "Thirty seconds until the battle for %s begins!", GetName() );
 		sEventMgr.ModifyEventTimeAndTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
 	}
 	else if(m_countdownStage == 3)
 	{
 		m_countdownStage = 4;
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, FIFTEENSECONDAI, GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "Fifteen seconds until the battle for %s begins!", GetName() );
 	}
 	else
 	{
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, THEBATLEFORSDAI, GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The battle for %s has begun!", GetName() );
 		sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_COUNTDOWN);
 		Start();
 	}
@@ -1616,7 +1617,7 @@ void CBattleground::Close()
 			++it2;
 			plr = objmgr.GetPlayer(guid);
 
-			if(plr)
+			if(plr!=NULL)
 				RemovePendingPlayer(plr);
 			else
 				m_pendPlayers[i].erase(guid);
@@ -1645,17 +1646,18 @@ Creature* CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, ui
 	if( pProto == NULL )
 		return NULLCREATURE;
 
-	Creature* pCreature = m_mapMgr->CreateCreature(pInfo->Id);
-	if (pCreature == NULL)
+	Creature* pCreature = NULLCREATURE;
+	pCreature = m_mapMgr->CreateCreature(pInfo->Id);
+	if (pCreature == NULLCREATURE)
 		return NULLCREATURE;
 
 	pCreature->Create(pInfo->Name, m_mapMgr->GetMapId(), x, y, z, o);
 	pCreature->proto = pProto;
 	pCreature->creature_info = pInfo;
 
-	pCreature->SetInstanceID( m_mapMgr->GetInstanceID() );
-	pCreature->SetUInt32Value( OBJECT_FIELD_ENTRY, 13116 + horde );
-	pCreature->SetFloatValue( OBJECT_FIELD_SCALE_X, 1.0f );
+	pCreature->SetInstanceID(m_mapMgr->GetInstanceID());
+	pCreature->SetUInt32Value(OBJECT_FIELD_ENTRY, 13116 + horde);
+	pCreature->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
 
 	pCreature->SetUInt32Value(UNIT_FIELD_HEALTH, 100000);
 	pCreature->SetUInt32Value(UNIT_FIELD_POWER1, 4868);
@@ -1749,7 +1751,7 @@ void CBattleground::EventResurrectPlayers()
 	Player* plr;
 	set<uint32>::iterator itr;
 	map<Creature*,set<uint32> >::iterator i;
-	WorldPacket data( 50 );
+	WorldPacket data(50);
 	for(i = m_resurrectMap.begin(); i != m_resurrectMap.end(); ++i)
 	{
 		for(itr = i->second.begin(); itr != i->second.end(); ++itr)
@@ -1757,7 +1759,7 @@ void CBattleground::EventResurrectPlayers()
 			plr = m_mapMgr->GetPlayer(*itr);
 			if(plr && plr->isDead())
 			{
-                data.Initialize(SMSG_SPELL_START);
+				data.Initialize(SMSG_SPELL_START);
 				data << plr->GetNewGUID() << plr->GetNewGUID() << uint32(RESURRECT_SPELL) << uint8(0) << uint16(0) << uint32(0) << uint16(2) << plr->GetGUID();
 				plr->SendMessageToSet(&data, true);
 
@@ -1796,12 +1798,12 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 	{
 		if(pGroup->GetSubGroupCount() != 1)
 		{
-			m_session->SystemMessage(SORRYRAIDSGROAI);
+			m_session->SystemMessage("Sorry, raid groups joining battlegrounds are currently unsupported.");
 			return;
 		}
 		if(pGroup->GetLeader() != plr->m_playerInfo)
 		{
-			m_session->SystemMessage(YUORSMISTSBESAI);
+			m_session->SystemMessage("You must be the party leader to add a group to an arena.");
 			return;
 		}
 
@@ -1813,7 +1815,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			pGroup->Lock();
 			for(itx = pGroup->GetSubGroup(0)->GetGroupMembersBegin(); itx != pGroup->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 			{
-				if((*itx)->m_loggedInPlayer && ((*itx)->m_loggedInPlayer->m_bgIsQueued[0] ||(*itx)->m_loggedInPlayer->m_bgIsQueued[1]))
+				if((*itx)->m_loggedInPlayer && ((*itx)->m_loggedInPlayer->m_bgIsQueued[0] ||(*itx)->m_loggedInPlayer->m_bgIsQueued[1] || (*itx)->m_loggedInPlayer->m_bgIsQueued[2]))
 					isQueued = true;
 				if((*itx)->m_loggedInPlayer && !isQueued && !(*itx)->m_loggedInPlayer->m_bg)
 					HandleArenaJoin((*itx)->m_loggedInPlayer->GetSession(), BattlegroundType, 0, 0);
@@ -1825,7 +1827,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 		{
 			ArenaTeam * pTargetTeam = NULL;
 			uint32 teamType = 0;
-			// make sure all players are 80.
+
 			uint32 maxplayers;
 			switch(BattlegroundType)
 			{
@@ -1852,7 +1854,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			pTargetTeam = plr->m_playerInfo->arenaTeam[teamType];
 			if(!pTargetTeam)
 			{
-				m_session->SystemMessage(YUORSGGGHSBESAI);
+				m_session->SystemMessage("You must be a member of an arena team to do that.");
 				return;
 			}
 
@@ -1861,33 +1863,33 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			{
 				if(maxplayers == 0)
 				{
-					m_session->SystemMessage(YOUHATERSMANYAI);
+					m_session->SystemMessage("You have too many players in your party to join this type of arena.");
 					pGroup->Unlock();
 					return;
 				}
 
 				if((*itx)->lastLevel < 80)
 				{
-					m_session->SystemMessage(SORRYSOMESOFIAI);
+					m_session->SystemMessage("Sorry, some of your party members are not level 80.");
 					pGroup->Unlock();
 					return;
 				}
 
 				if((*itx)->m_loggedInPlayer)
 				{
-				   if( !(*itx)->m_loggedInPlayer->IsInWorld() ) 
-                   { 
-                          m_session->SystemMessage(DAZONERSMORESAI); 
-	                      pGroup->Unlock(); 
-                          return; 
-	                } 
- 		 
+					if( !(*itx)->m_loggedInPlayer->IsInWorld() )
+					{
+						m_session->SystemMessage("One or more of your party members are offline.");
+						pGroup->Unlock();
+						return;
+					}
+
 					bool isQueued = false;
 					if((*itx)->m_loggedInPlayer && ((*itx)->m_loggedInPlayer->m_bgIsQueued[0] || (*itx)->m_loggedInPlayer->m_bgIsQueued[1]))
 						isQueued = true;
 					if((*itx)->m_loggedInPlayer->m_bg || isQueued)
 					{
-						m_session->SystemMessage(OAEZONERSMOREAI);
+						m_session->SystemMessage("One or more of your party members are already queued or inside a battleground.");
 						pGroup->Unlock();
 						return;
 					}
@@ -1897,13 +1899,13 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 
 				if(pTargetTeam && (*itx)->arenaTeam[teamType] != pTargetTeam)
 				{
-					m_session->SystemMessage(ONESORMORESOFAI);
+					m_session->SystemMessage("One or more of your group members is not in your arena team.");
 					pGroup->Unlock();
 					return;
 				}
 			}
 			WorldPacket data(SMSG_GROUP_JOINED_BATTLEGROUND, 4);
-			data << uint32(6);		// all arenas
+			data << uint32(6); // all arenas
 
 			for(itx = pGroup->GetSubGroup(0)->GetGroupMembersBegin(); itx != pGroup->GetSubGroup(0)->GetGroupMembersEnd(); ++itx)
 			{
@@ -1930,7 +1932,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 			m_queueLock.Acquire();
 			m_queuedGroups[BattlegroundType].push_back(pGroup->GetID());
 			m_queueLock.Release();
-			Log.Success(ZABATTLESGROUAI, REMOSHGAEYRSFAI, pGroup->GetID(), BattlegroundType);
+			Log.Success("BattlegroundMgr", "Group %u is now in battleground queue for arena type %u", pGroup->GetID(), BattlegroundType);
 
 			// send the battleground status packet.
 
@@ -1940,7 +1942,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 	// Queue him.
 	m_queueLock.Acquire();
 	m_queuedPlayers[BattlegroundType][lgroup].push_back(pguid);
-	Log.Success(ZABATTLESGROUAI, ZAPLAYERSTNOWAI, plr->GetLowGUID(), BattlegroundType );
+	Log.Success("BattlegroundMgr", "Player %u is now in battleground queue for {Arena %u}", plr->GetLowGUID(), BattlegroundType );
 
 	// send the battleground status packet.
 	// use queueslot 0 since we can only join 1 arena :P
@@ -2000,23 +2002,23 @@ void CBattleground::QueueAtNearestSpiritGuide(Player* plr, Creature* old)
 
 void CBattleground::GiveHonorToTeam(uint32 team, uint32 amt)
 {
-    for(set<Player*  >::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
-    {
-        Player* plr = (*itx);
-        if(!plr) continue;
+	for(set<Player*  >::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
+	{
+		Player* plr = (*itx);
+		if(!plr) continue;
 
-        plr->m_bgScore.BonusHonor += amt;
-        HonorHandler::AddHonorPointsToPlayer( plr, amt);
-    }
+		plr->m_bgScore.BonusHonor += amt;
+		HonorHandler::AddHonorPointsToPlayer( plr, amt);
+	}
 }
 
 bool CBattleground::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
 {
-    if( pPlayer->m_CurrentVehicle )
-        pPlayer->m_CurrentVehicle->RemovePassenger(pPlayer);
+	if( pPlayer->m_CurrentVehicle )
+		pPlayer->m_CurrentVehicle->RemovePassenger(pPlayer);
 
-    if( pPlayer->m_stealth )
-        pPlayer->RemoveAura( pPlayer->m_stealth );
+	if( pPlayer->m_stealth )
+		pPlayer->RemoveAura( pPlayer->m_stealth );
 
-    return false;
+	return false;
 }
