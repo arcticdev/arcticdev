@@ -376,7 +376,6 @@ typedef unsigned __int16 uint16;
 typedef unsigned __int8 uint8;
 
 #else
-
 typedef int64_t int64;
 typedef int32_t int32;
 typedef int16_t int16;
@@ -386,7 +385,6 @@ typedef uint32_t uint32;
 typedef uint16_t uint16;
 typedef uint8_t uint8;
 typedef uint32_t DWORD;
-
 #endif
 
 // Scripting system exports/imports

@@ -64,7 +64,7 @@ enum EItemFields
     ITEM_FIELD_DURABILITY                     = OBJECT_END + 0x0036, // Size: 1, Type: INT, Flags: OWNER_ONLY, UNK2
     ITEM_FIELD_MAXDURABILITY                  = OBJECT_END + 0x0037, // Size: 1, Type: INT, Flags: OWNER_ONLY, UNK2
     ITEM_FIELD_CREATE_PLAYED_TIME             = OBJECT_END + 0x0038, // Size: 1, Type: INT, Flags: PUBLIC
-    ITEM_FIELD_ITEM_TEXT_ID                   = OBJECT_END + 0x0039, // Size: 1, Type: INT, Flags: OWNER_ONLY // THIS is wrong, but we shall store the dataz
+    ITEM_FIELD_PAD                            = OBJECT_END + 0x0039, // Size: 1, Type: INT, Flags: NONE
     ITEM_END                                  = OBJECT_END + 0x003A,
 };
 
