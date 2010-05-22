@@ -118,7 +118,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
 	m_owner = plr;
 
-	wrapped_item_id=fields[3].GetUInt32();
+	wrapped_item_id = fields[3].GetUInt32();
 	m_uint32Values[ITEM_FIELD_GIFTCREATOR] = fields[4].GetUInt32();
 	m_uint32Values[ITEM_FIELD_CREATOR] = fields[5].GetUInt32();
 
@@ -147,10 +147,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	else if( random_suffix )
 		SetRandomSuffix( random_suffix );
 
-	SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32() );
+	SetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32());
 
-	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability );
-	SetUInt32Value( ITEM_FIELD_DURABILITY, fields[12].GetUInt32() );
+	SetUInt32Value(ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability);
+	SetUInt32Value(ITEM_FIELD_DURABILITY, fields[12].GetUInt32());
 
 	if( light )
 		return;
@@ -278,7 +278,7 @@ void Item::SaveToDB( int16 containerslot, int16 slot, bool firstsave, QueryBuffe
 	ss << "REPLACE INTO playeritems VALUES(";
 
 	ss << m_uint32Values[ITEM_FIELD_OWNER] << ",";
-	ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
+    ss << m_uint32Values[OBJECT_FIELD_GUID] << ",";
 	ss << m_uint32Values[OBJECT_FIELD_ENTRY] << ",";
 	ss << wrapped_item_id << ",";
 	ss << m_uint32Values[ITEM_FIELD_GIFTCREATOR] << ",";
@@ -1100,11 +1100,3 @@ uint32 Item::CountGemsWithLimitId(uint32 LimitId)
 	} 
 	return result; 
 }
-
-bool ItemPrototype::ValidateItemSpell(uint32 SpellId)
-{
-	for(uint8 i = 0; i < 5; ++i)
-		if(Spells[i].Id == SpellId)
-			return true;
-	return false;
-} 

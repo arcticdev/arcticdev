@@ -407,15 +407,13 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 			// Minor Glyph Research + Northrend Inscription Research
 			case 61177:
 			case 61288:
-			case 60893:
-				{
-					sp->Effect[1] = 0;
-					sp->EffectBaseDice[1] = 0;
-					sp->EffectBasePoints[1]	= 0;
-					sp->EffectImplicitTargetA[1] = 0;
-					sp->EffectDieSides[1] = 0;
-				}break;
-
+		case 60893:
+			{
+				sp->Effect[1] = 0;
+				sp->EffectBasePoints[1] = 0;
+				sp->EffectImplicitTargetA[1] = 0;
+				sp->EffectDieSides[1] = 0;
+			}break;
 			// Shaman Totem items fixes
 			// Totem of	Survival, Totem of the Tundra
 			case 46097:
@@ -1525,8 +1523,6 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 					sp->Effect[1] = 108;
 					sp->EffectDieSides[0] = 1;
 					sp->EffectDieSides[1] = 1;
-					sp->EffectBaseDice[0] = 1;
-					sp->EffectBaseDice[1] = 1;
 					sp->EffectBasePoints[0] = 9;
 					sp->EffectBasePoints[1] = 9;
 					sp->EffectMiscValue[0] = 7;
@@ -1569,23 +1565,21 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 				}break;
 		
 			// warrior - Titan's Grip
-			case 46917: // main spell
+			case  46917:	// main	spell
 				{
-						SpellEntry * sp2 = dbcSpell.LookupEntryForced( 49152 );	// move	this aura into main spell
-						if(sp != NULL)
-						{
-							sp->Effect[1] = sp2->Effect[0];
-							sp->EffectApplyAuraName[1] = sp2->EffectApplyAuraName[0];
-							sp->EffectMiscValue[1] = sp2->EffectMiscValue[0];
-							sp->EffectSpellClassMask[1][0] = sp2->EffectSpellClassMask[0][0];
-							sp->EffectSpellClassMask[1][1] = sp2->EffectSpellClassMask[0][1];
-							sp->EffectSpellClassMask[1][2] = sp2->EffectSpellClassMask[0][2];
-							sp->EffectBasePoints[1] = sp2->EffectBasePoints[0];
-							sp->EffectDieSides[1]= sp2->EffectDieSides[0];
-							sp->EffectBaseDice[1]= sp2->EffectBaseDice[0] ;
-						}
+					SpellEntry * sp2 = dbcSpell.LookupEntryForced(	49152	);	// move	this aura	into main	spell
+					if(sp != NULL)
+					{
+						sp->Effect[1] = sp2->Effect[0];
+						sp->EffectApplyAuraName[1] = sp2->EffectApplyAuraName[0];
+						sp->EffectMiscValue[1] = sp2->EffectMiscValue[0];
+						sp->EffectSpellClassMask[1][0] = sp2->EffectSpellClassMask[0][0];
+						sp->EffectSpellClassMask[1][1] = sp2->EffectSpellClassMask[0][1];
+						sp->EffectSpellClassMask[1][2] = sp2->EffectSpellClassMask[0][2];
+						sp->EffectBasePoints[1] = sp2->EffectBasePoints[0];
+						sp->EffectDieSides[1]= sp2->EffectDieSides[0];
+					}
 				}break;
-		
 			// Charge - Changing from dummy for the power regen
 			case 100:
 			case 6178:
@@ -2416,10 +2410,8 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 				{
 					sp->Effect[0] = 2;
 					sp->Effect[1] = 0;
-					sp->EffectDieSides[1] = 0;
-					sp->EffectBaseDice[1] = 0;
 					sp->EffectBasePoints[0] = sp->EffectBasePoints[1];
-					sp->EffectBasePoints[1] = 0;                  
+					sp->EffectBasePoints[1] = 0;				  
 					sp->EffectImplicitTargetA[0] = 6;
 					sp->EffectImplicitTargetA[1] = 0;
 				}break;
@@ -2915,8 +2907,8 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 
 			case 16246:
 				{
-					sp->procFlags = PROC_ON_POS_SPELL_LAND;
-					sp->procCharges++; // first charge gets	lost when it gets procced
+				sp->procFlags = PROC_ON_CAST_SPELL;
+				sp->procCharges++; // first	charge gets	lost when	it gets	procced
 				}break;
 
 			// Ignite
@@ -3828,26 +3820,24 @@ void ApplyNormalFixes()
 				{
 					uint32 temp;
 					float ftemp;
-					temp = sp->Effect[col1_swap];		             	sp->Effect[col1_swap] = sp->Effect[col2_swap];						                    sp->Effect[col2_swap] = temp;
-					temp = sp->EffectDieSides[col1_swap];	            sp->EffectDieSides[col1_swap] = sp->EffectDieSides[col2_swap];		                    sp->EffectDieSides[col2_swap] = temp;
-					temp = sp->EffectBaseDice[col1_swap];	            sp->EffectBaseDice[col1_swap] = sp->EffectBaseDice[col2_swap];	                 	    sp->EffectBaseDice[col2_swap] = temp;
-					ftemp = sp->EffectDicePerLevel[col1_swap];			sp->EffectDicePerLevel[col1_swap] = sp->EffectDicePerLevel[col2_swap];				    sp->EffectDicePerLevel[col2_swap] = ftemp;
-					ftemp = sp->EffectRealPointsPerLevel[col1_swap];	sp->EffectRealPointsPerLevel[col1_swap] = sp->EffectRealPointsPerLevel[col2_swap];	    sp->EffectRealPointsPerLevel[col2_swap] = ftemp;
-					temp = sp->EffectBasePoints[col1_swap];	            sp->EffectBasePoints[col1_swap] = sp->EffectBasePoints[col2_swap];	                    sp->EffectBasePoints[col2_swap] = temp;
-					temp = sp->EffectMechanic[col1_swap];	            sp->EffectMechanic[col1_swap] = sp->EffectMechanic[col2_swap];	                        sp->EffectMechanic[col2_swap] = temp;
-					temp = sp->EffectImplicitTargetA[col1_swap];	    sp->EffectImplicitTargetA[col1_swap] = sp->EffectImplicitTargetA[col2_swap];	        sp->EffectImplicitTargetA[col2_swap] = temp;
-					temp = sp->EffectImplicitTargetB[col1_swap];	    sp->EffectImplicitTargetB[col1_swap] = sp->EffectImplicitTargetB[col2_swap];	        sp->EffectImplicitTargetB[col2_swap] = temp;
-					temp = sp->EffectRadiusIndex[col1_swap];	        sp->EffectRadiusIndex[col1_swap] = sp->EffectRadiusIndex[col2_swap];	                sp->EffectRadiusIndex[col2_swap] = temp;
-					temp = sp->EffectApplyAuraName[col1_swap];	        sp->EffectApplyAuraName[col1_swap] = sp->EffectApplyAuraName[col2_swap];	            sp->EffectApplyAuraName[col2_swap] = temp;
-					temp = sp->EffectAmplitude[col1_swap];		        sp->EffectAmplitude[col1_swap] = sp->EffectAmplitude[col2_swap];                	    sp->EffectAmplitude[col2_swap] = temp;
-					ftemp = sp->EffectMultipleValue[col1_swap];		    sp->EffectMultipleValue[col1_swap] = sp->EffectMultipleValue[col2_swap];	            sp->EffectMultipleValue[col2_swap] = ftemp;
-					temp = sp->EffectChainTarget[col1_swap];	        sp->EffectChainTarget[col1_swap] = sp->EffectChainTarget[col2_swap];	                sp->EffectChainTarget[col2_swap] = temp;
-					temp = sp->EffectSpellClassMask[col1_swap][0];	    sp->EffectSpellClassMask[col1_swap][0] = sp->EffectSpellClassMask[col2_swap][0];	    sp->EffectSpellClassMask[col2_swap][0] = temp;
-					temp = sp->EffectSpellClassMask[col1_swap][1];	    sp->EffectSpellClassMask[col1_swap][1] = sp->EffectSpellClassMask[col2_swap][1];	    sp->EffectSpellClassMask[col2_swap][1] = temp;
-					temp = sp->EffectSpellClassMask[col1_swap][2];	    sp->EffectSpellClassMask[col1_swap][2] = sp->EffectSpellClassMask[col2_swap][2];	    sp->EffectSpellClassMask[col2_swap][2] = temp;
-					temp = sp->EffectMiscValue[col1_swap];		        sp->EffectMiscValue[col1_swap] = sp->EffectMiscValue[col2_swap];	                    sp->EffectMiscValue[col2_swap] = temp;
-					temp = sp->EffectTriggerSpell[col1_swap];	        sp->EffectTriggerSpell[col1_swap] = sp->EffectTriggerSpell[col2_swap];               	sp->EffectTriggerSpell[col2_swap] = temp;
-					ftemp = sp->EffectPointsPerComboPoint[col1_swap];	sp->EffectPointsPerComboPoint[col1_swap] = sp->EffectPointsPerComboPoint[col2_swap];    sp->EffectPointsPerComboPoint[col2_swap] = ftemp;
+					temp = sp->Effect[col1_swap];                       sp->Effect[col1_swap] = sp->Effect[col2_swap];                                        sp->Effect[col2_swap] = temp;
+					temp = sp->EffectDieSides[col1_swap];               sp->EffectDieSides[col1_swap] = sp->EffectDieSides[col2_swap];                        sp->EffectDieSides[col2_swap] = temp;
+					ftemp = sp->EffectRealPointsPerLevel[col1_swap];	sp->EffectRealPointsPerLevel[col1_swap] = sp->EffectRealPointsPerLevel[col2_swap];    sp->EffectRealPointsPerLevel[col2_swap] = ftemp;
+					temp = sp->EffectBasePoints[col1_swap];             sp->EffectBasePoints[col1_swap] = sp->EffectBasePoints[col2_swap];                    sp->EffectBasePoints[col2_swap] = temp;
+					temp = sp->EffectMechanic[col1_swap];               sp->EffectMechanic[col1_swap] = sp->EffectMechanic[col2_swap];                        sp->EffectMechanic[col2_swap] = temp;
+					temp = sp->EffectImplicitTargetA[col1_swap];        sp->EffectImplicitTargetA[col1_swap] = sp->EffectImplicitTargetA[col2_swap];          sp->EffectImplicitTargetA[col2_swap] = temp;
+					temp = sp->EffectImplicitTargetB[col1_swap];        sp->EffectImplicitTargetB[col1_swap] = sp->EffectImplicitTargetB[col2_swap];          sp->EffectImplicitTargetB[col2_swap] = temp;
+					temp = sp->EffectRadiusIndex[col1_swap];            sp->EffectRadiusIndex[col1_swap] = sp->EffectRadiusIndex[col2_swap];                  sp->EffectRadiusIndex[col2_swap] = temp;
+					temp = sp->EffectApplyAuraName[col1_swap];          sp->EffectApplyAuraName[col1_swap] = sp->EffectApplyAuraName[col2_swap];              sp->EffectApplyAuraName[col2_swap] = temp;
+					temp = sp->EffectAmplitude[col1_swap];              sp->EffectAmplitude[col1_swap] = sp->EffectAmplitude[col2_swap];                      sp->EffectAmplitude[col2_swap] = temp;
+					ftemp = sp->EffectMultipleValue[col1_swap];         sp->EffectMultipleValue[col1_swap] = sp->EffectMultipleValue[col2_swap];              sp->EffectMultipleValue[col2_swap] = ftemp;
+					temp = sp->EffectChainTarget[col1_swap];            sp->EffectChainTarget[col1_swap] = sp->EffectChainTarget[col2_swap];                  sp->EffectChainTarget[col2_swap] = temp;
+					temp = sp->EffectSpellClassMask[col1_swap][0];      sp->EffectSpellClassMask[col1_swap][0] = sp->EffectSpellClassMask[col2_swap][0];      sp->EffectSpellClassMask[col2_swap][0] = temp;
+					temp = sp->EffectSpellClassMask[col1_swap][1];      sp->EffectSpellClassMask[col1_swap][1] = sp->EffectSpellClassMask[col2_swap][1];      sp->EffectSpellClassMask[col2_swap][1] = temp;
+					temp = sp->EffectSpellClassMask[col1_swap][2];      sp->EffectSpellClassMask[col1_swap][2] = sp->EffectSpellClassMask[col2_swap][2];      sp->EffectSpellClassMask[col2_swap][2] = temp;
+					temp = sp->EffectMiscValue[col1_swap];              sp->EffectMiscValue[col1_swap] = sp->EffectMiscValue[col2_swap];                      sp->EffectMiscValue[col2_swap] = temp;
+					temp = sp->EffectTriggerSpell[col1_swap];           sp->EffectTriggerSpell[col1_swap] = sp->EffectTriggerSpell[col2_swap];                sp->EffectTriggerSpell[col2_swap] = temp;
+					ftemp = sp->EffectPointsPerComboPoint[col1_swap];   sp->EffectPointsPerComboPoint[col1_swap] = sp->EffectPointsPerComboPoint[col2_swap];  sp->EffectPointsPerComboPoint[col2_swap] = ftemp;
 				}
 			}
 		}
@@ -4000,7 +3990,7 @@ void ApplyNormalFixes()
 			const char* ranktext = sp->Rank;
 			uint32 rank = 0;
 
-			//stupid spell ranking problem
+			// stupid spell ranking problem
 			if( strstr( ranktext, "Apprentice"))
 				rank = 1;
 			else if( strstr( ranktext, "Journeyman"))
@@ -4037,50 +4027,49 @@ void ApplyNormalFixes()
 				}
 			}
 		}
-		// find diminishing status
-		sp->DiminishStatus = GetDiminishingGroup(namehash);
+
 		sp->buffIndexType=0;
 		switch(namehash)
 		{
-		case SPELL_HASH_HUNTER_S_MARK:		// Hunter's mark
+		case SPELL_HASH_HUNTER_S_MARK: // Hunter's mark
 			sp->buffIndexType = SPELL_TYPE_INDEX_MARK;
 			break;
 
-		case SPELL_HASH_POLYMORPH:			// Polymorph
-		case SPELL_HASH_POLYMORPH__CHICKEN:	// Polymorph: Chicken
-		case SPELL_HASH_POLYMORPH__SHEEP:	// Polymorph: Sheep
+		case SPELL_HASH_POLYMORPH: // Polymorph
+		case SPELL_HASH_POLYMORPH__CHICKEN: // Polymorph: Chicken
+		case SPELL_HASH_POLYMORPH__SHEEP: // Polymorph: Sheep
 			sp->buffIndexType = SPELL_TYPE_INDEX_POLYMORPH;
 			break;
 
-		case SPELL_HASH_FEAR:				// Fear
+		case SPELL_HASH_FEAR: // Fear
 			sp->buffIndexType = SPELL_TYPE_INDEX_FEAR;
 			break;
 
-		case SPELL_HASH_SAP:				// Sap
+		case SPELL_HASH_SAP: // Sap
 			sp->buffIndexType = SPELL_TYPE_INDEX_SAP;
 			break;
 
-		case SPELL_HASH_SCARE_BEAST:		// Scare Beast
+		case SPELL_HASH_SCARE_BEAST: // Scare Beast
 			sp->buffIndexType = SPELL_TYPE_INDEX_SCARE_BEAST;
 			break;
 
-		case SPELL_HASH_HIBERNATE:			// Hibernate
+		case SPELL_HASH_HIBERNATE: // Hibernate
 			sp->buffIndexType = SPELL_TYPE_INDEX_HIBERNATE;
 			break;
 
-		case SPELL_HASH_EARTH_SHIELD:		// Earth Shield
+		case SPELL_HASH_EARTH_SHIELD: // Earth Shield
 			sp->buffIndexType = SPELL_TYPE_INDEX_EARTH_SHIELD;
 			break;
 
-		case SPELL_HASH_CYCLONE:			// Cyclone
+		case SPELL_HASH_CYCLONE: // Cyclone
 			sp->buffIndexType = SPELL_TYPE_INDEX_CYCLONE;
 			break;
 
-		case SPELL_HASH_BANISH:				// Banish
+		case SPELL_HASH_BANISH: // Banish
 			sp->buffIndexType = SPELL_TYPE_INDEX_BANISH;
 			break;
 
-		//case SPELL_HASH_JUDGEMENT_OF_VENGEANCE:
+		// case SPELL_HASH_JUDGEMENT_OF_VENGEANCE:
 		case SPELL_HASH_JUDGEMENT_OF_LIGHT:
 		case SPELL_HASH_JUDGEMENT_OF_WISDOM:
 		case SPELL_HASH_JUDGEMENT_OF_JUSTICE:
@@ -4116,7 +4105,6 @@ void ApplyNormalFixes()
 				sp->is_melee_spell = true;
 			if( ( sp->Effect[z] == SPELL_EFFECT_SCHOOL_DAMAGE && sp->Spell_Dmg_Type == SPELL_DMG_TYPE_RANGED ) )
 			{
-				// sLog.outString( "Ranged Spell: %u [%s]" , sp->Id , sp->Name );
 				sp->is_ranged_spell = true;
 			}
 
@@ -4296,7 +4284,7 @@ void ApplyNormalFixes()
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		// SPELL COEFFICIENT SETTINGS START                                     //
+		// Spell coefficient settings start                                     //
 		//////////////////////////////////////////////////////////////////////////
 
 		//Flag for DoT and HoT
@@ -4314,7 +4302,7 @@ void ApplyNormalFixes()
 			}
 		}
 
-		//Flag for DD or DH
+		// Flag for DD or DH
 		for( uint8 i = 0 ; i < 3 ; i++ )
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL && sp->EffectTriggerSpell[i] )
@@ -4340,7 +4328,7 @@ void ApplyNormalFixes()
 		{
 			switch (sp->EffectImplicitTargetA[i])
 			{
-				//AoE
+				// AoE
 			case EFF_TARGET_ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS:
 			case EFF_TARGET_ALL_ENEMY_IN_AREA:
 			case EFF_TARGET_ALL_ENEMY_IN_AREA_INSTANT:
@@ -4366,7 +4354,7 @@ void ApplyNormalFixes()
 		{
 			switch (sp->EffectImplicitTargetB[i])
 			{
-				//AoE
+				// AoE
 			case EFF_TARGET_ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS:
 			case EFF_TARGET_ALL_ENEMY_IN_AREA:
 			case EFF_TARGET_ALL_ENEMY_IN_AREA_INSTANT:
@@ -4389,7 +4377,7 @@ void ApplyNormalFixes()
 			if(sp->Effect[i] == 0)
 				continue;
 
-			//Apply aura fixes
+			// Apply aura fixes
 			if( sp->Effect[i] == SPELL_EFFECT_APPLY_AURA )
 			{
 				switch( sp->EffectApplyAuraName[i] )
@@ -4662,9 +4650,6 @@ void ApplyNormalFixes()
 			}
 		}
 
-		if( sp->NameHash == SPELL_HASH_REFLECTIVE_SHIELD )
-			sp->proc_modify = true;
-        
 		// Rogue - Master of Subtlety 
         sp = dbcSpell.LookupEntryForced( 31665 ); 
         if( sp != NULL )       
@@ -4738,14 +4723,15 @@ void ApplyNormalFixes()
 		//////////////////////////////////////////////////////////////////////////
 
 		// Insert mage spell fixes here
-
 		// Hypothermia: undispellable
 		if( sp->NameHash == SPELL_HASH_HYPOTHERMIA )
 			sp->c_is_flags |= SPELL_FLAG_IS_FORCEDDEBUFF;
 
-		if( sp->NameHash == SPELL_HASH_COMBUSTION )
-			sp->proc_modify = true;
-
+		if( sp->NameHash == SPELL_HASH_IMPROVED_COUNTERSPELL )
+		{
+			sp->procFlags = PROC_ON_CAST_SPELL;
+			sp->EffectSpellClassMask[0][0] = 0x00004000; // Proc on counterspell only
+		}
 
 		//////////////////////////////////////////////////////////////////////////
 		// WARLOCK								                                //

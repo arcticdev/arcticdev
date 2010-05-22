@@ -24,11 +24,8 @@ public:
 	//Init
 	void Init(uint32 x, uint32 y, uint32 mapid, MapMgr* mapmgr);
 
-	ARCTIC_INLINE void AquireLock(){ m_objectlock.Acquire(); } 
- 	ARCTIC_INLINE void ReleaseLock(){ m_objectlock.Release(); } 
-
 	// Object Managing
-	void AddObject(Object* obj);
+	void AddObject(Object* obj); 
 	void RemoveObject(Object* obj);
 	bool HasObject(Object* obj) { return (_objects.find(obj) != _objects.end()); }
 	bool HasPlayers() { return ((_playerCount > 0) ? true : false); }
@@ -76,7 +73,7 @@ private:
 	uint16 _playerCount;
 	MapMgr* _mapmgr;
 
-	Mutex m_objectlock;
+	//Mutex m_objectlock;
 };
 
 #endif

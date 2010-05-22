@@ -108,7 +108,7 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		hostile = true;
 
 	// check friend/enemy list
-	for(uint32 i = 0; i < 4; i++)
+	for(uint32 i = 0; i < 4; ++i)
 	{
 		if(objA->m_faction->EnemyFactions[i] == objB->m_faction->Faction)
 		{
@@ -201,15 +201,16 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		// Handle duels
 		if( player_objA->DuelingWith == player_objB && player_objA->GetDuelState() == DUEL_STATE_STARTED )
 			return true;
-		
+
+		// These area's are sanctuaries
 		for (uint32 i = 0; i < SANCTUARIES_NUM; ++i)
 		{
-			if (player_objA->GetAreaID() == SANCTUARY_ZONES[i] || player_objB->GetAreaID() == SANCTUARY_ZONES[i])
+			if(player_objA->GetAreaID() == SANCTUARY_ZONES[i] || player_objB->GetAreaID() == SANCTUARY_ZONES[i])
 				return false;
 		}
 
 		// schnek: Players with feign death flags can't be attacked
-		if( (objA->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || objB->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH)) && !objA->IsPlayer() ) 
+		if( (objA->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || objB->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH)) && !objA->IsPlayer() )
 			return false;
 
 		// do not let people attack each other in sanctuary
@@ -275,7 +276,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	{
 		hostile = true;
 		// check friend/enemy list
-		for(uint32 i = 0; i < 4; i++)
+		for(uint32 i = 0; i < 4; ++i)
 		{
 			if(objA->m_faction->EnemyFactions[i] == objB->m_faction->Faction)
 				hostile = true;
@@ -329,7 +330,7 @@ Player* GetPlayerFromObject(Object* obj)
 		// If it's not a player nor a pet, it can still be a totem.
 		Creature* creature_obj = TO_CREATURE(obj);
 		if( creature_obj && creature_obj->IsTotem()) 
-			player_obj =  creature_obj->GetTotemOwner();
+			player_obj = TO_PLAYER(creature_obj->GetSummonOwner());
 	}
 	return player_obj;
 }
@@ -355,7 +356,7 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 		combatSupport = true;
 
 	// check friend/enemy list
-	for(uint32 i = 0; i < 4; i++)
+	for(uint32 i = 0; i < 4; ++i)
 	{
 		if(objB->m_faction->EnemyFactions[i] == objA->m_faction->Faction)
 		{
@@ -376,36 +377,36 @@ bool isAlliance(Object* objA)
 	if(!objA || objA->m_factionDBC == NULL || objA->m_faction == NULL)
 		return true;
 
-	// Получить штормград фракции из DBC (11/72).
+	// Get stormwind faction frm dbc (11/72)
 	FactionTemplateDBC * m_sw_faction = dbcFactionTemplate.LookupEntry(11);
 	FactionDBC * m_sw_factionDBC = dbcFaction.LookupEntry(72);
 
 	if(m_sw_faction == objA->m_faction || m_sw_factionDBC == objA->m_factionDBC)
 		return true;
 
-	// Враждебно в штормграде по отношению к объектам...
+	// Is StormWind hostile to ObjectA?
 	uint32 faction = m_sw_faction->Faction;
 	uint32 host = objA->m_faction->HostileMask;
 
 	if(faction & host)
 		return false;
 
-	// Список друг/враг 
-	for(uint32 i = 0; i < 4; i++)
+	// check friend/enemy list
+	for(uint32 i = 0; i < 4; ++i)
 	{
 		if(objA->m_faction->EnemyFactions[i] == faction)
 			return false;
 	}
 
-	// Враждебно в штормграде по отношению к объектам...
+	// Is ObjectA hostile to StormWind?
 	faction = objA->m_faction->Faction;
 	host = m_sw_faction->HostileMask;
 
 	if(faction & host)
 		return false;
 
-	// Список друг/враг 
-	for(uint32 i = 0; i < 4; i++)
+	// check friend/enemy list
+	for(uint32 i = 0; i < 4; ++i)
 	{
 		if(objA->m_faction->EnemyFactions[i] == faction)
 			return false;

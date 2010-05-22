@@ -1561,7 +1561,8 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 
 	for(  itr = m_autoCastSpells[Type].begin(); itr != m_autoCastSpells[Type].end(); )
 	{
-		it2 = itr++;
+		it2 = itr;
+		++itr;
 		sp = *it2;
 
 		if( sp->spelltargetType == TTYPE_OWNER )
@@ -1569,7 +1570,7 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 		else
 		{
 			// modified by Zack: Spell targetting will be generated in the castspell function now.You cannot force to target self all the time
-			CastSpell( NULLUNIT, sp->spell, false);
+			CastSpell( TO_UNIT(NULLUNIT), sp->spell, false);
 		}
 	}
 }

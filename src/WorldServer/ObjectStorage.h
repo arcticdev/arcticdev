@@ -12,6 +12,7 @@ extern ARCTIC_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo
 extern ARCTIC_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >  			GameObjectNameStorage;
 extern ARCTIC_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >		    	CreatureProtoStorage;
 extern ARCTIC_DECL SQLStorage<CreatureStatsHeroic, HashMapStorageContainer<CreatureStatsHeroic> >   CreatureStatsHeroicStorage;
+extern ARCTIC_DECL SQLStorage<CreatureProtoVehicle, HashMapStorageContainer<CreatureProtoVehicle> >	CreatureProtoVehicleStorage;
 extern ARCTIC_DECL SQLStorage<AreaTrigger, HashMapStorageContainer<AreaTrigger> >		    		AreaTriggerStorage;
 extern ARCTIC_DECL SQLStorage<ItemPage, HashMapStorageContainer<ItemPage> >			    			ItemPageStorage;
 extern ARCTIC_DECL SQLStorage<Quest, HashMapStorageContainer<Quest> >								QuestStorage;

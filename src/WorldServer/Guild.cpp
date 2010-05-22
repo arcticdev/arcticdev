@@ -11,7 +11,7 @@ Guild::Guild()
 	m_commandLogging = true;
 	m_guildId = 0;
 	m_guildLeader = 0;
-	m_guildName=(char*)WOWGOOSEAI;
+	m_guildName = (char*)"Goose";
 	m_guildInfo = NULL;
 	m_motd = NULL;
 	m_backgroundColor = 0;
@@ -54,6 +54,12 @@ Guild::~Guild()
 
 	for(GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr)
 	{
+		for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
+			if((*itr)->pSlots[i] != NULL)
+			{
+				(*itr)->pSlots[i]->Destructor();
+			}
+
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
 			delete (*it2);
 
@@ -64,6 +70,12 @@ Guild::~Guild()
 		delete (*it2);
 
 	free(m_guildName);
+
+	if(m_motd)
+		free(m_motd);
+
+	if(m_guildInfo)
+		free(m_guildInfo);
 }
 
 void Guild::SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType)
@@ -171,14 +183,12 @@ void Guild::AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...)
 	m_lock.Release();
 }
 
-void Guild::SendPacketToAllButOne(WorldPacket * data, Player* pSkipTarget)
+void Guild::SendPacket(WorldPacket * data)
 {
-	if(!pSkipTarget)
-	return;
 	m_lock.Acquire();
 	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
 	{
-		if(itr->first->m_loggedInPlayer != NULL && itr->first->m_loggedInPlayer->GetSession()&& itr->first->m_loggedInPlayer != pSkipTarget)
+		if(itr->first->m_loggedInPlayer != NULL && itr->first->m_loggedInPlayer->GetSession())
 			itr->first->m_loggedInPlayer->GetSession()->SendPacket(data);
 	}
 	m_lock.Release();
@@ -222,7 +232,7 @@ GuildRank * Guild::CreateGuildRank(const char * szRankName, uint32 iPermissions,
 				r->iTabPermissions[4].iFlags, r->iTabPermissions[4].iStacksPerDay,
 				r->iTabPermissions[5].iFlags, r->iTabPermissions[5].iStacksPerDay);
 
-			DEBUG_LOG(GUILDSWOAI, CREAYEDEAI, i, m_guildId, szRankName);
+			DEBUG_LOG("Guild", "Created rank %u on guild %u (%s)", i, m_guildId, szRankName);
 
 			return r;
 		}
@@ -246,11 +256,11 @@ void Guild::CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn)
 	CreateInDB();
 
 	// rest of the fields have been nulled out, create some default ranks.
-	GuildRank * leaderRank = CreateGuildRank(GUILDMASAI, GR_RIGHT_ALL, true);
-	CreateGuildRank(OFFICERSAI, GR_RIGHT_ALL, true);
-	CreateGuildRank(VETERANSAI, GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
-	CreateGuildRank(ZMEMBERWAI, GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
-	GuildRank * defRank = CreateGuildRank(INITEATEAI, GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
+	GuildRank * leaderRank = CreateGuildRank("Guild Master", GR_RIGHT_ALL, true);
+	CreateGuildRank("Officer", GR_RIGHT_ALL, true);
+	CreateGuildRank("Veteran", GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
+	CreateGuildRank("Member", GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
+	GuildRank * defRank = CreateGuildRank("Initiate", GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
 
 	// turn off command logging, we don't wanna spam the logs
 	m_commandLogging = false;
@@ -290,7 +300,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		PlayerInfo * Initiator = pClient->GetPlayer()->m_playerInfo;
 		if( pMember->guildRank->iId <= Initiator->guildRank->iId+2 && Initiator->guildRank->iId != 0)
 		{
-			pClient->SystemMessage(YOUCANTSAI);
+			pClient->SystemMessage("You can\'t promote this character any further.");
 			return;
 		}
 	}
@@ -299,7 +309,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	if(pMember->guildRank->iId == 1)
 	{
 		if(pClient != NULL )
-			pClient->SystemMessage(YOUCANTSAI);
+			pClient->SystemMessage("You can\'t promote this character any further.");
 		return;
 	}
 
@@ -318,7 +328,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	{
 		m_lock.Release();
 		if(pClient != NULL )
-			pClient->SystemMessage(COLOULNOAI);
+			pClient->SystemMessage("Could not find a rank to promote this member to.");
 		return;
 	}
 
@@ -360,14 +370,14 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		return;
 	}
 
-	//as wowwiki says, a global rule should be set too: 
+	// as wowwiki says, a global rule should be set too: 
 	// Members of the guild can only perform promote/demote/remove actions on those of lower ranks than themselves. 
 	if(pClient != NULL )
 	{
 		PlayerInfo * Initiator = pClient->GetPlayer()->m_playerInfo;
 		if( pMember->guildRank->iId <= Initiator->guildRank->iId && Initiator->guildRank->iId != 0)
 		{
-			pClient->SystemMessage(YOUCEETSAI);
+			pClient->SystemMessage("You can only demote lower ranks then yourself.");
 			return;
 		}
 	}
@@ -388,7 +398,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	{
 		m_lock.Release();
 		if(pClient != NULL )
-			pClient->SystemMessage(COLOUDNOAI);
+			pClient->SystemMessage("Could not find a rank to demote this member to.");
 		return;
 	}
 
@@ -449,7 +459,7 @@ bool Guild::LoadFromDB(Field * f)
 		r->iId = f2[1].GetUInt32();
 		if(r->iId!=sid)
 		{
-			Log.Notice(GUILDSWOAI, RANAMINGAI, r->iId, m_guildName, sid);
+			Log.Notice("Guild", "Renaming rank %u of guild %s to %u.", r->iId, m_guildName, sid);
 			CharacterDatabase.Execute("UPDATE guild_ranks SET rankId = %u WHERE guildId = %u AND rankName = \"%s\"", r->iId,
 				m_guildId, CharacterDatabase.EscapeString(string(f2[2].GetString())).c_str());
 
@@ -568,11 +578,11 @@ bool Guild::LoadFromDB(Field * f)
 			if((sid++) != result->Fetch()[1].GetUInt32())
 			{
 #ifdef WIN32
-				MessageBox(0, INTEGERDAI, MB_OK);
+				MessageBox(0, "Guild bank tabs are out of order!", "Internal error", MB_OK);
 				TerminateProcess(GetCurrentProcess(), 0);
 				return false;
 #else
-				printf(GULDGERDAI);
+				printf("Guild bank tabs are out of order!\n");
 				exit(0);
 #endif
 			}
@@ -594,7 +604,7 @@ bool Guild::LoadFromDB(Field * f)
 					Item* pItem = objmgr.LoadItem(res2->Fetch()[3].GetUInt64());
 					if(pItem == NULL)
 					{
-						printf(GDELETESAI, GetGuildId(), res2->Fetch()[3].GetUInt32());
+						printf("Deleting guildbank item for invalid item %u (%u)\n", GetGuildId(), res2->Fetch()[3].GetUInt32());
 						CharacterDatabase.Execute("DELETE FROM guild_bankitems WHERE itemGuid = %u AND guildId = %u AND tabId = %u", res2->Fetch()[3].GetUInt32(), m_guildId, (uint32)pTab->iTabId);
 						continue;
 					}
@@ -649,7 +659,7 @@ bool Guild::LoadFromDB(Field * f)
 		delete result;
 	}
 
-	DEBUG_LOG(GUILDSWOAI, LOADEDSWAI, m_guildName, m_members.size());
+	DEBUG_LOG("Guild", "Loaded guild %s, %u members.", m_guildName, m_members.size());
 	return true;
 }
 
@@ -767,7 +777,7 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	if(pMember->guildRank->iId==0)
 	{
 		if(pClient != NULL)
-			pClient->SystemMessage(YOUCANNEAI);
+			pClient->SystemMessage("You cannot remove the guild master.");
 		return;
 	}
 
@@ -813,7 +823,7 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		if(pMember->m_loggedInPlayer)
 		{
 			Player* plr = objmgr.GetPlayer(pMember->guid);
-			sChatHandler.SystemMessageToPlr(plr, ZYOUSHAVAI, pClient->GetPlayer()->GetName());
+			sChatHandler.SystemMessageToPlr(plr, "You have been removed from the guild by %s", pClient->GetPlayer()->GetName());
 		}
 		LogGuildEvent(GUILD_EVENT_REMOVED, 2, pMember->name, pClient->GetPlayer()->GetName());
 		AddGuildLogEntry(GUILD_LOG_EVENT_REMOVAL, 2, pClient->GetPlayer()->GetLowGUID(), pMember->guid);
@@ -924,7 +934,7 @@ void Guild::RemoveGuildRank(WorldSession * pClient)
 	GuildRank * pLowestRank = FindLowestRank();
 	if(pLowestRank == NULL || pLowestRank->iId < 5)		// cannot delete default ranks.
 	{
-		pClient->SystemMessage(CANNETSDAI);
+		pClient->SystemMessage("Cannot find a rank to delete.");
 		m_lock.Release();
 		return;		
 	}
@@ -935,7 +945,7 @@ void Guild::RemoveGuildRank(WorldSession * pClient)
 	{
 		if(itr->second->pRank == pLowestRank)
 		{
-			pClient->SystemMessage(THESARESAI);
+			pClient->SystemMessage("There are still members using this rank. You cannot delete it yet!");
 			m_lock.Release();
 			return;
 		}
@@ -992,7 +1002,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	}
 
 	GuildMemberMap::iterator itr = m_members.find(pNewMaster);
-    GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->m_playerInfo);
+	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->m_playerInfo);
 	ASSERT(m_ranks[0]!=NULL);
 	if(itr==m_members.end() || itr2==m_members.end())
 	{
@@ -1396,7 +1406,7 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 
 	if(m_bankBalance < uAmount)
 	{
-		pClient->SystemMessage(GFOUSHAVAI);
+		pClient->SystemMessage("You cannot withdraw more money then the account holds.");
 		return;
 	}
 
@@ -1405,12 +1415,12 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	{
 		if(pMember->pRank->iGoldLimitPerDay > 0 && pMember->CalculateAvailableAmount() < uAmount )
 		{
-			pClient->SystemMessage(ZYOUFGAVAI);
+			pClient->SystemMessage("You have already withdrawn too much today.");
 			return;
 		}
 		if(pMember->pRank->iGoldLimitPerDay == 0 )
 		{
-			pClient->SystemMessage(YDOUFGAVAI);
+			pClient->SystemMessage("You don't have permission to withdraw money.");
 			return;
 		}
 	}

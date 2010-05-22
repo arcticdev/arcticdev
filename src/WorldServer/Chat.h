@@ -16,58 +16,58 @@ class Unit;
 
 enum ChatMsg
 {
-	CHAT_MSG_ADDON								= -1,
-	CHAT_MSG_SYSTEM								= 0,
-	CHAT_MSG_SAY								= 1,
-	CHAT_MSG_PARTY								= 2,
-	CHAT_MSG_RAID								= 3,
-	CHAT_MSG_GUILD								= 4,
-	CHAT_MSG_OFFICER							= 5,
-	CHAT_MSG_YELL								= 6,
-	CHAT_MSG_WHISPER							= 7,
-	CHAT_MSG_WHISPER_MOB						= 8,
-	CHAT_MSG_WHISPER_INFORM						= 9,
-	CHAT_MSG_EMOTE								= 10,
-	CHAT_MSG_TEXT_EMOTE							= 11,
-	CHAT_MSG_MONSTER_SAY						= 12,
-	CHAT_MSG_MONSTER_PARTY						= 13,
-	CHAT_MSG_MONSTER_YELL						= 14,
-	CHAT_MSG_MONSTER_WHISPER					= 15,
-	CHAT_MSG_MONSTER_EMOTE						= 16,
-	CHAT_MSG_CHANNEL							= 17,
-	CHAT_MSG_CHANNEL_JOIN						= 18,
-	CHAT_MSG_CHANNEL_LEAVE						= 19,
-	CHAT_MSG_CHANNEL_LIST						= 20,
-	CHAT_MSG_CHANNEL_NOTICE						= 21,
-	CHAT_MSG_CHANNEL_NOTICE_USER				= 22,
-	CHAT_MSG_AFK								= 23,
-	CHAT_MSG_DND								= 24,
-	CHAT_MSG_IGNORED							= 25,
-	CHAT_MSG_SKILL								= 26,
-	CHAT_MSG_LOOT								= 27,
-	CHAT_MSG_MONEY								= 28,
-	CHAT_MSG_OPENING							= 29,
-	CHAT_MSG_TRADESKILLS						= 30,
-	CHAT_MSG_PET_INFO							= 31,
-	CHAT_MSG_COMBAT_MISC_INFO					= 32,
-	CHAT_MSG_XP_GAIN							= 33,
-	CHAT_MSG_HONOR_GAIN							= 34,
-	CHAT_MSG_COMBAT_FACTION_CHANGE				= 35,
-	CHAT_MSG_BG_SYSTEM_NEUTRAL					= 36,
-	CHAT_MSG_BG_SYSTEM_ALLIANCE					= 37,
-	CHAT_MSG_BG_SYSTEM_HORDE					= 38,
-	CHAT_MSG_RAID_LEADER						= 39,
-	CHAT_MSG_RAID_WARNING						= 40,
-	CHAT_MSG_RAID_BOSS_EMOTE					= 41,
-	CHAT_MSG_RAID_BOSS_WHISPER					= 42,
-	CHAT_MSG_FILTERED							= 43,
-	CHAT_MSG_BATTLEGROUND						= 44,
-	CHAT_MSG_BATTLEGROUND_LEADER		  	    = 45,
-	CHAT_MSG_RESTRICTED				   		    = 46,
-	CHAT_MSG_UNKNOWN                            = 47,
-	CHAT_MSG_ACHIEVEMENT                        = 48,
-	CHAT_MSG_GUILD_ACHIEVEMENT                  = 49,
-
+	CHAT_MSG_ADDON									= -1,
+	CHAT_MSG_SYSTEM									= 0,
+	CHAT_MSG_SAY									= 1,
+	CHAT_MSG_PARTY									= 2,
+	CHAT_MSG_RAID									= 3,
+	CHAT_MSG_GUILD									= 4,
+	CHAT_MSG_OFFICER								= 5,
+	CHAT_MSG_YELL									= 6,
+	CHAT_MSG_WHISPER								= 7,
+	CHAT_MSG_WHISPER_MOB							= 8,
+	CHAT_MSG_WHISPER_INFORM							= 9,
+	CHAT_MSG_EMOTE									= 10,
+	CHAT_MSG_TEXT_EMOTE								= 11,
+	CHAT_MSG_MONSTER_SAY							= 12,
+	CHAT_MSG_MONSTER_PARTY							= 13,
+	CHAT_MSG_MONSTER_YELL							= 14,
+	CHAT_MSG_MONSTER_WHISPER						= 15,
+	CHAT_MSG_MONSTER_EMOTE							= 16,
+	CHAT_MSG_CHANNEL								= 17,
+	CHAT_MSG_CHANNEL_JOIN							= 18,
+	CHAT_MSG_CHANNEL_LEAVE							= 19,
+	CHAT_MSG_CHANNEL_LIST							= 20,
+	CHAT_MSG_CHANNEL_NOTICE							= 21,
+	CHAT_MSG_CHANNEL_NOTICE_USER					= 22,
+	CHAT_MSG_AFK									= 23,
+	CHAT_MSG_DND									= 24,
+	CHAT_MSG_IGNORED								= 25,
+	CHAT_MSG_SKILL									= 26,
+	CHAT_MSG_LOOT									= 27,
+	CHAT_MSG_MONEY									= 28,
+	CHAT_MSG_OPENING								= 29,
+	CHAT_MSG_TRADESKILLS							= 30,
+	CHAT_MSG_PET_INFO								= 31,
+	CHAT_MSG_COMBAT_MISC_INFO						= 32,
+	CHAT_MSG_XP_GAIN								= 33,
+	CHAT_MSG_HONOR_GAIN								= 34,
+	CHAT_MSG_COMBAT_FACTION_CHANGE					= 35,
+	CHAT_MSG_BG_SYSTEM_NEUTRAL						= 36,
+	CHAT_MSG_BG_SYSTEM_ALLIANCE						= 37,
+	CHAT_MSG_BG_SYSTEM_HORDE						= 38,
+	CHAT_MSG_RAID_LEADER							= 39,
+	CHAT_MSG_RAID_WARNING							= 40,
+	CHAT_MSG_RAID_BOSS_EMOTE						= 41,
+	CHAT_MSG_RAID_BOSS_WHISPER						= 42,
+	CHAT_MSG_FILTERED								= 43,
+	CHAT_MSG_BATTLEGROUND							= 44,
+	CHAT_MSG_BATTLEGROUND_LEADER					= 45,
+	CHAT_MSG_RESTRICTED								= 46,
+	CHAT_MSG_ACHIEVEMENT							= 47,
+	CHAT_MSG_GUILD_ACHIEVEMENT						= 48,
+	CHAT_MSG_UNK									= 50,
+	CHAT_MSG_PARTY_LEADER							= 51
 };
 
 enum Languages
@@ -91,7 +91,7 @@ enum Languages
 	LANG_ZOMBIE									= 0x24,
 	LANG_GNOMISHBINARY							= 0x25,
 	LANG_GOBLINBINARY							= 0x26,
-    NUM_LANGUAGES                               = 0x27
+	NUM_LANGUAGES								= 0x27
 };
 
 #define MSG_COLOR_LIGHTRED	    "|cffff6060"
@@ -150,6 +150,7 @@ class ARCTIC_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand * _CheatCommandTable;
 	ChatCommand * _honorCommandTable;
 	ChatCommand * _questCommandTable;
+	ChatCommand * _lookupCommandTable;
 	ChatCommand * _petCommandTable;
 	ChatCommand * _recallCommandTable;
 	ChatCommand * _commandTable;
@@ -424,25 +425,25 @@ protected:
 	bool HandlePetSpawnAIBot(const char * args, WorldSession * m_session);
 #endif
 
-	// shutdown
+	// Shutdown
 	bool HandleShutdownCommand(const char* args, WorldSession* m_session);
 	bool HandleShutdownRestartCommand(const char* args, WorldSession* m_session);
 
-	// whispers
+	// Whispers
 	bool HandleAllowWhispersCommand(const char* args, WorldSession* m_session);
 	bool HandleBlockWhispersCommand(const char* args, WorldSession* m_session);
 
-	// skills
+	// Skills
 	bool HandleAdvanceAllSkillsCommand(const char* args, WorldSession* m_session);
 
-	// kill
+	// Kill
 	bool HandleKillBySessionCommand(const char* args, WorldSession* m_session);
 	bool HandleKillByPlayerCommand(const char* args, WorldSession* m_session);
 
-	// castall
+	// Castall
 	bool HandleCastAllCommand(const char* args, WorldSession* m_session);
 
-	// recall
+	// Recall
 	bool HandleRecallListCommand(const char* args, WorldSession *m_session);
 	bool HandleRecallGoCommand(const char* args, WorldSession *m_session);
 	bool HandleRecallAddCommand(const char* args, WorldSession *m_session);
@@ -451,24 +452,25 @@ protected:
 	bool HandleGlobalPlaySoundCommand(const char* args, WorldSession * m_session);
 	bool HandleRecallPortPlayerCommand(const char* args, WorldSession * m_session);
 
-	// bans
+	// Bans
 	bool HandleIPBanCommand(const char * args, WorldSession * m_session);
 	bool HandleIPUnBanCommand(const char * args, WorldSession * m_session);
 	bool HandleAccountUnbanCommand(const char * args, WorldSession * m_session);
 
-	//
+	// Item removal
 	bool HandleRemoveItemCommand(const char * args, WorldSession * m_session);
 
-	//
+	// Rename 
 	bool HandleRenameCommand(const char * args, WorldSession * m_session);
 	bool HandleForceRenameCommand(const char * args, WorldSession * m_session);
+	bool HandleRecustomizeCharCommand(const char * args, WorldSession * m_session);
 
-	//
+	// Reputation
 	bool HandleGetStandingCommand(const char * args, WorldSession * m_session);
 	bool HandleSetStandingCommand(const char * args, WorldSession * m_session);
 	bool HandleGetBaseStandingCommand(const char * args, WorldSession * m_session);
 
-	// lookups
+	// Lookups
 	bool HandleLookupItemCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupCreatureCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupObjectCommand(const char * args, WorldSession * m_session);

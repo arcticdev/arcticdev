@@ -159,21 +159,20 @@ void DynamicObject::UpdateTargets()
 
 	if(m_aliveDuration >= 200)
 	{
-		unordered_set<Object* >::iterator itr = GetInRangeSetBegin(),itr2;
-		unordered_set<Object* >::iterator iend = GetInRangeSetEnd();
 		Unit* target;
+
 		float radius = m_floatValues[DYNAMICOBJECT_RADIUS]*m_floatValues[DYNAMICOBJECT_RADIUS];
 
-		while(itr != iend)
+		Object::InRangeSet::iterator itr,itr2;
+		for( itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 		{
 			itr2 = itr;
-			++itr;
 
 			if( !( (*itr2)->IsUnit() ) || ! TO_UNIT( *itr2 )->isAlive() || ((*itr2)->GetTypeId()==TYPEID_UNIT && TO_CREATURE(*itr2)->IsTotem() ) )
 				continue;
 
 			target = TO_UNIT( *itr2 );
-
+			
 			if( !isAttackable( m_caster, target, !(m_spellProto->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
 				continue;
 
@@ -184,6 +183,7 @@ void DynamicObject::UpdateTargets()
 			if(GetDistanceSq(target) <= radius)
 			{
 				Aura* pAura(new Aura(m_spellProto, m_aliveDuration, m_caster, target));
+
 				for(uint32 i = 0; i < 3; ++i)
 				{
 					if(m_spellProto->Effect[i] == 27)
@@ -195,11 +195,8 @@ void DynamicObject::UpdateTargets()
 				target->AddAura(pAura);
 				if( m_caster->IsPlayer() )
 				{
-					p_caster->HandleProc(PROC_ON_NEG_SPELL_LAND, EXTRA_NONE, target, m_spellProto);
+					p_caster->HandleProc(PROC_ON_CAST_SPECIFIC_SPELL | PROC_ON_CAST_SPELL, NULL, target, m_spellProto);
 					p_caster->m_procCounter = 0;
-
-					target->HandleProc(PROC_ON_NEG_SPELL_LAND_VICTIM, EXTRA_NONE, p_caster, m_spellProto);
-					target->m_procCounter = 0;
 				}
 
 				// add to target list
@@ -244,7 +241,6 @@ void DynamicObject::UpdateTargets()
 			++jtr;
 			target->RemoveAura(m_spellProto->Id);
 		}
-
 		Remove();
 	}
 }
@@ -253,5 +249,7 @@ void DynamicObject::Remove()
 {
 	if(IsInWorld())
 		RemoveFromWorld(true);
-	Destructor();
+
+	delete this;
 }
+

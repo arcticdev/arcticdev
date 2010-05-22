@@ -13,8 +13,6 @@ public:
 	Vehicle(uint64 guid);
 	~Vehicle();
 
-	virtual void Destructor();
-
 	void Init();
 	void InitSeats(uint32 vehicleEntry, Player* pRider = NULLPLR);
 	virtual void Update(uint32 time);
@@ -25,16 +23,17 @@ public:
 	void SafeDelete();
 	void MoveVehicle(float x, float y, float z, float o);
 	void AddPassenger(Unit* pPassenger);
+	void AddPassenger(Unit* pPassenger, uint8 requestedseat, bool force = false);
 	void RemovePassenger(Unit* pPassenger);
 	bool HasPassenger(Unit* pPassenger);
 	void SendSpells(uint32 entry, Player* plr);
 	void setDeathState(DeathState s);
 	void SetSpeed(uint8 SpeedType, float value);
+	void ChangeSeats(Unit* pPassenger, uint8 seatid);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Accessors                                                            //
 	//////////////////////////////////////////////////////////////////////////
-	
 	uint32 GetMaxPassengerCount() { return m_maxPassengers; }
 	uint32 GetPassengerCount() { return m_passengerCount; }
 
@@ -44,15 +43,26 @@ public:
 	Unit* GetControllingUnit() { return m_passengers[0]; }
 	void SetControllingUnit(Unit* pUnit) { m_controllingUnit = pUnit; }
 
+	int8 GetMaxSeat() { return m_seatSlotMax; }
+	Unit* GetPassenger(uint8 seat)
+	{
+		if(seat >= 8)
+			return NULL;
+
+		return m_passengers[seat] ? m_passengers[seat] : NULL;
+	}
+
 	uint8 GetPassengerSlot(Unit* pPassenger);
-	
+	void InstallAccessories();
+
 	//////////////////////////////////////////////////////////////////////////
 	// End accessors                                                        //
 	//////////////////////////////////////////////////////////////////////////
 
-	bool IsFull() { return m_passengerCount == m_maxPassengers; }
+	bool IsFull() { return m_passengerCount >= m_maxPassengers; }
 
-	VehicleSeatEntry * m_vehicleSeats[8];
+	VehicleSeatEntry* m_vehicleSeats[8];
+	bool seatisusable[8];
 	bool Initialised;
 	bool m_CreatedFromSpell;
 	uint32 m_mountSpell;
@@ -61,22 +71,14 @@ private:
 	void _AddToSlot(Unit* pPassenger, uint8 slot);
 
 protected:
+	uint64 vehicleguid;
 	Unit* m_controllingUnit;
-
 	Unit* m_passengers[8];
 
 	uint8 m_passengerCount;
 	uint8 m_maxPassengers;
+	int8 m_seatSlotMax;
 	uint32 m_vehicleEntry;
 };
-/*
-enum VehicleSeatFlags
-{
-    SEAT_FREE = 0x01,          // free seat
-    SEAT_FULL = 0x02,          // seat occupied by player/creature
-    // special cases
-    SEAT_VEHICLE_FREE = 0x04,  // seat occupied by vehicle, but that vehicle is free
-    SEAT_VEHICLE_FULL = 0x08   // seat occupied by vehicle and that vehicle is full too
-};
-*/
+
 #endif

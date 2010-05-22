@@ -63,7 +63,7 @@ void DayWatcherThread::load_settings()
 	}
 	else
 	{
-		DEBUG_LOG(DAYWATCHERTHREAI, INITILIAARENASAI);
+		DEBUG_LOG("DayWatcherThread", "Initialized Arena Updates.");
 		last_arena_time = 0;
 	}
 
@@ -75,7 +75,7 @@ void DayWatcherThread::load_settings()
 	}
 	else
 	{
-		DEBUG_LOG(DAYWATCHERTHREAI, INITILIADAIDASAI);
+		DEBUG_LOG("DayWatcherThread", "Initialized Daily Updates.");
 		last_daily_reset_time = 0;
 	}
 	
@@ -87,8 +87,8 @@ void DayWatcherThread::load_settings()
 	}
 	else
 	{
-		DEBUG_LOG(DAYWATCHERTHREAI, INITILIADAIDASAI);
-		last_premium_update_time = 0;
+		DEBUG_LOG("DayWatcherThread", "Initialized Daily Updates.");
+		last_daily_reset_time = 0;
 	}
 
 	result = CharacterDatabase.Query("SELECT setting_value FROM server_settings WHERE setting_id = \"last_eventid_time\"");
@@ -113,15 +113,15 @@ void DayWatcherThread::set_tm_pointers()
 
 uint32 DayWatcherThread::get_timeout_from_string(const char * string, uint32 def)
 {
-	if(!stricmp(string, WEEKLYWEEKLYWEAI))
+	if(!stricmp(string, "weekly"))
 		return WEEKLY;
-	else if(!stricmp(string, MONTHLIMONTHLIAI))
+	else if(!stricmp(string, "monthly"))
 		return MONTHLY;
-	else if(!stricmp(string, DAILEDAILESAIDAI))
+	else if(!stricmp(string, "daily"))
 		return DAILY;
-	else if(!stricmp(string, HOURLEHOURLEDDAI))
+	else if(!stricmp(string, "hourly"))
 		return HOURLY;
-	else if(!stricmp(string, MINUTELYMINUTEAI))
+	else if(!stricmp(string, "minutely"))
 		return MINUTELY;
 	else
 		return def;
@@ -152,9 +152,9 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 
 bool DayWatcherThread::run()
 {
-	SetThreadName(DAYSTEIAMWATCKAI);
+	SetThreadName("DayWatcher");
 
-	Log.Notice(DAYWATCHERTHREAI, STARTEDSTARTEDAI);
+	Log.Notice("DayWatcherThread", "Started.");
 	_loaded = false;
 	currenttime = UNIXTIME;
 	dupe_tm_pointer(localtime(&currenttime), &local_currenttime);
@@ -206,7 +206,7 @@ bool DayWatcherThread::run()
 		
 		if(has_timeout_expired(&local_currenttime, &local_last_eventid_time, HOURLY))
 		{
-			Log.Notice(DAYWATCHERTHREAI, RUNNINGHIURLYAAI);
+			Log.Notice("DayWatcherThread", "Running Hourly In Game Events checks...");
 			for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
 			{
 				if(!(*itr)->eventbyhour)
@@ -261,7 +261,7 @@ bool DayWatcherThread::run()
 			{
 				runEvents = false;
 				bool monthexpired = false;
-				Log.Notice(DAYWATCHERTHREAI, RUNNINGHIUJHYAAI);
+				Log.Notice("DayWatcherThread", "Running Daily In Game Events checks...");
 				for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
 				{
 					if((*itr)->eventbyhour)
@@ -364,7 +364,7 @@ bool DayWatcherThread::run()
 
 void DayWatcherThread::update_arena()
 {
-	Log.Notice(DAYWATCHERTHREAI, RUNNINGJJPJHYAAI);
+	Log.Notice("DayWatcherThread", "Running Weekly Arena Point Maintenance...");
 	QueryResult * result = CharacterDatabase.Query("SELECT guid, arenaPoints FROM characters");		/* this one is a little more intensive. */
 	Player* plr;
 	uint32 guid, arenapoints, orig_arenapoints;
@@ -398,10 +398,12 @@ void DayWatcherThread::update_arena()
 					ArenaTeamMember *member = team->GetMemberByGuid(guid);
 					if(member == NULL || team->m_stat_gamesplayedweek < 10 || ((member->Played_ThisWeek * 100) / team->m_stat_gamesplayedweek < 30))
  						continue;
+
 					//////////////////////////////////////////////////////////////////////////
 					// we're in an arena team of this type!                                 //
 					// Source: http://www.wowwiki.com/Arena_point                           //
 					//////////////////////////////////////////////////////////////////////////
+
 					X = (double)team->m_stat_rating;
 					if(X <= 510.0)  // "if X<=510"
 						continue;   // no change
@@ -422,8 +424,8 @@ void DayWatcherThread::update_arena()
 						
 						double power = ((-0.00412) * X);
 						
-						//if(power < 1.0)
-						//	power = 1.0;
+						// if(power < 1.0)
+						//   power = 1.0;
 
 						double divisor = pow(((double)(2.71828)), power);						
 						divisor *= 1639.28;
@@ -472,7 +474,7 @@ void DayWatcherThread::update_arena()
 					sEventMgr.AddEvent(plr, &Player::RecalculateHonor, EVENT_PLAYER_UPDATE, 100, 1, 0);
 	
 					/* send a little message :> */
-					sChatHandler.SystemMessage(plr->GetSession(), YOURARENAPOINCAI);
+					sChatHandler.SystemMessage(plr->GetSession(), "Your arena points have been updated! Check your PvP tab!");
 				}
 
 				/* update in sql */
@@ -491,7 +493,7 @@ void DayWatcherThread::update_arena()
 
 void DayWatcherThread::update_daily()
 {
-	Log.Notice(DAYWATCHERTHREAI, YOURARENAPOJKJAI);
+	Log.Notice("DayWatcherThread", "Running Daily Quest Reset...");
 	CharacterDatabase.WaitExecute("UPDATE characters SET finished_daily_quests = ''");
 	objmgr.ResetDailies();
 	last_daily_reset_time = UNIXTIME;
@@ -501,7 +503,7 @@ void DayWatcherThread::update_daily()
 
 void DayWatcherThread::update_premium()
 {
-	Log.Notice(DAYWATCHERTHREAI, RUNNINGSMONTHLAI);
+	Log.Notice("DayWatcherThread", "Running Monthly Premium Accounts Reset...");
 	CharacterDatabase.WaitExecute("UPDATE accounts SET premium = '0' WHERE premium='1'");
 	last_premium_update_time = UNIXTIME;
 	dupe_tm_pointer(localtime(&last_premium_update_time), &local_last_premium_update_time);
@@ -510,6 +512,6 @@ void DayWatcherThread::update_premium()
 
 void DayWatcherThread::Reset_Heroic_Instances()
 {
-	Log.Notice(DAYWATCHERTHREAI, WOWARCTICHEAROAI);
+	Log.Notice("DayWatcherThread", "Reseting heroic instances...");
 	sInstanceMgr.ResetHeroicInstances();
 }

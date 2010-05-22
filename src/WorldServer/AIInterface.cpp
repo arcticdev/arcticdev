@@ -1222,7 +1222,7 @@ Unit* AIInterface::FindTarget()
 	float crange;
 	float z_diff;
 
-	unordered_set<Object* >::iterator itr, it2;
+	unordered_set<Object*>::iterator itr, it2;
 	Object* pObj;
 	Unit* pUnit;
 	float dist;
@@ -1443,7 +1443,7 @@ bool AIInterface::FindFriends(float dist)
 	bool result = false;
 	TargetMap::iterator it;
 
-	unordered_set<Object* >::iterator itr;
+	unordered_set<Object*>::iterator itr;
 	Unit* pUnit;
 
 	for( itr = GetUnit()->GetInRangeSetBegin(); itr != GetUnit()->GetInRangeSetEnd(); itr++ )
@@ -1707,7 +1707,7 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 	if( GetUnit()->GetTypeId() == TYPEID_PLAYER )
 		TO_PLAYER(GetUnit())->GetSession()->SendPacket(&data);
 
-	for(unordered_set<Player*  >::iterator itr = GetUnit()->GetInRangePlayerSetBegin(); itr != GetUnit()->GetInRangePlayerSetEnd(); ++itr)
+	for(unordered_set<Player*>::iterator itr = GetUnit()->GetInRangePlayerSetBegin(); itr != GetUnit()->GetInRangePlayerSetEnd(); ++itr)
 	{
 		if( (*itr)->GetPositionNC().Distance2DSq( GetUnit()->GetPosition() ) >= World::m_movementCompressThresholdCreatures )
 			(*itr)->AppendMovementData( SMSG_MONSTER_MOVE, data.GetSize(), (const uint8*)data.GetBufferPointer() );

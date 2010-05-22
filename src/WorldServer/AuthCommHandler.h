@@ -57,7 +57,7 @@ class LogonCommHandler : public Singleton<LogonCommHandler>
 	Mutex mapLock;
 	Mutex pendingLock;
 	bool pings;
-	int8 ReConCounter; 
+	int8 ReConCounter;
 	uint32 _realmType;
 
 public:
@@ -109,7 +109,7 @@ public:
 		// pendingLock.Release();
 		return sock;
 	}
-	ARCTIC_INLINE Mutex & GetPendingLock() { return pendingLock; }		
+	ARCTIC_INLINE Mutex & GetPendingLock() { return pendingLock; }
 	const string* GetForcedPermissions(string& username);
 
 	void TestConsoleLogon(string& username, string& password, uint32 requestnum);

@@ -24,7 +24,7 @@ LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262
 	// do nothing
 	last_ping = last_pong = (uint32)UNIXTIME;
 	remaining = opcode = 0;
-	_id=0;
+	_id = 0;
 	latency = 0;
 	use_crypto = false;
 	authenticated = 0;
@@ -80,35 +80,35 @@ void LogonCommClientSocket::OnRead()
 
 void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 {
-	static logonpacket_handler Handlers[RMSG_COUNT] = 
+	static logonpacket_handler Handlers[RMSG_COUNT] =
 	{
-		NULL,												 // RMSG_NULL
-		NULL,												 // RCMSG_REGISTER_REALM
-		&LogonCommClientSocket::HandleRegister,				 // RSMSG_REALM_REGISTERED
-		NULL,												 // RCMSG_REQUEST_SESSION
-		&LogonCommClientSocket::HandleSessionInfo,			 // RSMSG_SESSION_RESULT
-		NULL,												 // RCMSG_PING
-		&LogonCommClientSocket::HandlePong,					 // RSMSG_PONG
-		NULL,												 // RCMSG_SQL_EXECUTE
-		NULL,												 // RCMSG_RELOAD_ACCOUNTS
-		NULL,												 // RCMSG_AUTH_CHALLENGE
-		&LogonCommClientSocket::HandleAuthResponse,			 // RSMSG_AUTH_RESPONSE
-		&LogonCommClientSocket::HandleRequestAccountMapping, // RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
-		NULL,												 // RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
-		NULL,												 // RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
-		&LogonCommClientSocket::HandleDisconnectAccount,	 // RSMSG_DISCONNECT_ACCOUNT
-		NULL,												 // RCMSG_TEST_CONSOLE_LOGIN
-		&LogonCommClientSocket::HandleConsoleAuthResult,	 // RSMSG_CONSOLE_LOGIN_RESULT
-		NULL,												 // RCMSG_MODIFY_DATABASE
-		&LogonCommClientSocket::HandleServerPing,			 // RCMSG_SERVER_PING
-		NULL,												 // RSMSG_SERVER_PONG
-		&LogonCommClientSocket::HandlePopulationRequest,	 // RSMSG_REALM_POP_REQ
-		NULL,												 // RCMSG_REALM_POP_RES
+		NULL,													// RMSG_NULL
+		NULL,													// RCMSG_REGISTER_REALM
+		&LogonCommClientSocket::HandleRegister,					// RSMSG_REALM_REGISTERED
+		NULL,													// RCMSG_REQUEST_SESSION
+		&LogonCommClientSocket::HandleSessionInfo,				// RSMSG_SESSION_RESULT
+		NULL,													// RCMSG_PING
+		&LogonCommClientSocket::HandlePong,						// RSMSG_PONG
+		NULL,													// RCMSG_SQL_EXECUTE
+		NULL,													// RCMSG_RELOAD_ACCOUNTS
+		NULL,													// RCMSG_AUTH_CHALLENGE
+		&LogonCommClientSocket::HandleAuthResponse,				// RSMSG_AUTH_RESPONSE
+		&LogonCommClientSocket::HandleRequestAccountMapping,	// RSMSG_REQUEST_ACCOUNT_CHARACTER_MAPPING
+		NULL,													// RCMSG_ACCOUNT_CHARACTER_MAPPING_REPLY
+		NULL,													// RCMSG_UPDATE_CHARACTER_MAPPING_COUNT
+		&LogonCommClientSocket::HandleDisconnectAccount,		// RSMSG_DISCONNECT_ACCOUNT
+		NULL,													// RCMSG_TEST_CONSOLE_LOGIN
+		&LogonCommClientSocket::HandleConsoleAuthResult,		// RSMSG_CONSOLE_LOGIN_RESULT
+		NULL,													// RCMSG_MODIFY_DATABASE
+		&LogonCommClientSocket::HandleServerPing,				// RCMSG_SERVER_PING
+		NULL,													// RSMSG_SERVER_PONG
+		&LogonCommClientSocket::HandlePopulationRequest,		// RSMSG_REALM_POP_REQ
+		NULL,													// RCMSG_REALM_POP_RES
 	};
 
 	if(recvData.GetOpcode() >= RMSG_COUNT || Handlers[recvData.GetOpcode()] == 0)
 	{
-		printf(GTAUNKNOWMSAI, recvData.GetOpcode());
+		printf("Got unknown packet from logoncomm: %u\n", recvData.GetOpcode());
 		return;
 	}
 
@@ -122,7 +122,7 @@ void LogonCommClientSocket::HandleRegister(WorldPacket & recvData)
 	string realmname;
 	recvData >> error >> realmlid >> realmname;
 
-	Log.Notice(ZDALOGONCOMAI, REALMREGISTAI, realmname.c_str(), realmlid);
+	Log.Notice("LogonCommClient", "Realm `%s` registered as realm %u.", realmname.c_str(), realmlid);
 	LogonCommHandler::getSingleton().AdditionAck(_id, realmlid);
 	realm_ids.insert(realmlid);
 }
@@ -199,14 +199,13 @@ void LogonCommClientSocket::OnDisconnect()
 {
 	if(_id != 0)
 	{
-		DEBUG_LOG(LOGONSCLIENAI, CANNECTIOSFAI);
+		DEBUG_LOG("LogonCommClientSocket","Calling ConnectionDropped() due to OnDisconnect().");
 		sLogonCommHandler.ConnectionDropped(_id);	
 	}
 }
 
 LogonCommClientSocket::~LogonCommClientSocket()
 {
-
 }
 
 void LogonCommClientSocket::SendChallenge()
@@ -226,7 +225,7 @@ void LogonCommClientSocket::SendChallenge()
 
 void LogonCommClientSocket::HandleAuthResponse(WorldPacket & recvData)
 {
-	uint8 result;
+	uint8 result = 0;
 	recvData >> result;
 	if(result != 1)
 	{
@@ -287,7 +286,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 	}
 
 	ByteBuffer uncompressed(40000 * 5 + 8);
-	//uint32 Count = 0;
+	// uint32 Count = 0;
 	uint32 Remaining = (uint32)mapping_to_send.size();
 	itr = mapping_to_send.begin();
 	for(;;)
@@ -302,7 +301,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 
 		for(uint32 i = 0; i < 40000; ++i, ++itr)
 		{
-            uncompressed << uint32(itr->first) << uint8(itr->second);
+			uncompressed << uint32(itr->first) << uint8(itr->second);
 			if(!--Remaining)
 				break;
 		}
@@ -313,7 +312,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 
 		uncompressed.clear();
 	}	
-	Log.Notice(ZDALOGONCOMAI, BUILDSCHARAAI, getMSTime()-t,mapping_to_send.size());
+	Log.Notice("LogonCommClient", "Build character mapping in %ums. (%u)", getMSTime()-t,mapping_to_send.size());
 }
 
 void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
@@ -332,7 +331,7 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 
 	if(deflateInit(&stream, 1) != Z_OK)
 	{
-		OUT_DEBUG(DEFLATEINITAI);
+		OUT_DEBUG("deflateInit failed.");
 		return;
 	}
 
@@ -346,21 +345,21 @@ void LogonCommClientSocket::CompressAndSend(ByteBuffer & uncompressed)
 	if(deflate(&stream, Z_NO_FLUSH) != Z_OK ||
 		stream.avail_in != 0)
 	{
-		OUT_DEBUG(DELETETINITAI);
+		OUT_DEBUG("deflate failed.");
 		return;
 	}
 
 	// finish the deflate
 	if(deflate(&stream, Z_FINISH) != Z_STREAM_END)
 	{
-		OUT_DEBUG(DELETESINITAI);
+		OUT_DEBUG("deflate failed: did not end stream");
 		return;
 	}
 
 	// finish up
 	if(deflateEnd(&stream) != Z_OK)
 	{
-		OUT_DEBUG(DELETESIXCCAI);
+		OUT_DEBUG("deflateEnd failed.");
 		return;
 	}
 
@@ -418,11 +417,27 @@ void LogonCommClientSocket::HandleServerPing(WorldPacket &recvData)
 }
 
 #else
-void LogonCommHandler::LogonDatabaseReloadAccounts()
+
+void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned, const char* reason)
 {
 }
 
-void LogonCommHandler::LogonDatabaseSQLExecute(const char* str, ...)
+void LogonCommHandler::Account_SetGM(const char * account, const char * flags)
+{
+}
+
+void LogonCommHandler::Account_SetMute(const char * account, uint32 muted)
+{
+}
+
+void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration)
+{
+}
+
+void LogonCommHandler::IPBan_Remove(const char *ip)
+{
+}
+void LogonCommHandler::TestConsoleLogon(std::string &username, std::string &password, uint32 requestnum)
 {
 }
 

@@ -414,9 +414,10 @@ void GameObject::EventCloseDoor()
 	SetUInt32Value(GAMEOBJECT_FLAGS, GetUInt32Value( GAMEOBJECT_FLAGS ) & ~1);
 }
 
+
 void GameObject::UseFishingNode(Player* player)
 {
-	sEventMgr.RemoveEvents(this);
+	sEventMgr.RemoveEvents( this );
 	if( GetUInt32Value( GAMEOBJECT_FLAGS ) != 32 ) // Clicking on the bobber before something is hooked
 	{
 		player->GetSession()->OutPacket( SMSG_FISH_NOT_HOOKED );
@@ -432,24 +433,28 @@ void GameObject::UseFishingNode(Player* player)
 		entry = FishingZoneStorage.LookupEntry( zone );
 		if( entry == NULL ) // No fishing information found for area, log an error
 		{
-			OUT_DEBUG( ARCTICWOWERROAI, zone );
+			if(sLog.IsOutDevelopement())
+				printf("ERROR: Fishing area information for area %d not found!\n", zone );
+			else
+				OUT_DEBUG( "ERROR: Fishing area information for area %d not found!", zone );
 		}
 	}
-	
 	if(zone == 0 || entry == NULL)
 	{
 		zone = player->GetZoneId();
 		entry = FishingZoneStorage.LookupEntry( zone );
 		if( entry == NULL ) // No fishing information found for area, log an error
 		{
-			OUT_DEBUG( ARCTICWOWERROAI, zone );
+			if(sLog.IsOutDevelopement())
+				printf("ERROR: Fishing zone information for zone %d not found!\n", zone);
+			else
+				OUT_DEBUG( "ERROR: Fishing zone information for zone %d not found!", zone );
 			EndFishing( player, true );
 			return;
 		}
 	}
 
 	uint32 maxskill = entry->MaxSkill;
-    // uint32 minskill = entry->MaxSkill;
 	uint32 minskill = entry->MinSkill;
 
 	if( player->_GetSkillLineCurrent( SKILL_FISHING, false ) < maxskill )	
@@ -459,7 +464,7 @@ void GameObject::UseFishingNode(Player* player)
 	if( Rand(((player->_GetSkillLineCurrent( SKILL_FISHING, true ) - minskill) * 100) / maxskill) )
 	{
 		lootmgr.FillFishingLoot( &m_loot, zone );
-		player->SendLoot( GetGUID(), LOOT_FISHING );
+		player->SendLoot( GetGUID(), GetMapId(), LOOT_FISHING );
 		EndFishing( player, false );
 	}
 	else // Failed
@@ -586,7 +591,7 @@ Unit* GameObject::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(guardian_entry);
 	if(!proto || !info)
 	{
-		OUT_DEBUG(EWOWWARNINGSWAI,guardian_entry);
+			OUT_DEBUG("Warning : Missing summon creature template %u !",guardian_entry);
 		return NULLUNIT;
 	}
 	uint32 lvl = u_caster->getLevel();

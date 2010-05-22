@@ -33,9 +33,7 @@ void MapCell::AddObject(Object* obj)
 	if(obj->IsPlayer())
 		++_playerCount;
 
-	AquireLock();
 	_objects.insert(obj);
-	ReleaseLock(); 
 }
 
 void MapCell::RemoveObject(Object* obj)
@@ -43,9 +41,7 @@ void MapCell::RemoveObject(Object* obj)
 	if(obj->IsPlayer())
 		--_playerCount;
 
-	AquireLock();
 	_objects.erase(obj);
-	ReleaseLock();
 }
 
 void MapCell::SetActivity(bool state)
@@ -173,8 +169,8 @@ void MapCell::LoadObjects(CellSpawns * sp)
 
 	if(sp->CreatureSpawns.size())//got creatures
 	{
-		Vehicle* v;
-		Creature* c;
+		Vehicle* v = NULLVEHICLE;
+		Creature* c = NULLCREATURE;
 		for(CreatureSpawnList::iterator i=sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
 		{
 			if(pInstance)
@@ -186,7 +182,9 @@ void MapCell::LoadObjects(CellSpawns * sp)
 			{
 				if((*i)->vehicle != 0)
 				{
-					v=_mapmgr->CreateVehicle((*i)->entry);
+				v =_mapmgr->CreateVehicle((*i)->entry);
+				if(v == NULLVEHICLE)
+					continue;
 
 					v->SetMapId(_mapmgr->GetMapId());
 					v->SetInstanceID(_mapmgr->GetInstanceID());
@@ -212,7 +210,9 @@ void MapCell::LoadObjects(CellSpawns * sp)
 				else
 				{
 					c=_mapmgr->CreateCreature((*i)->entry);
-
+					if(c == NULLCREATURE)
+						continue;
+	
 					c->SetMapId(_mapmgr->GetMapId());
 					c->SetInstanceID(_mapmgr->GetInstanceID());
 					c->m_loadedFromDB = true;

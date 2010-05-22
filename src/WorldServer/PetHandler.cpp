@@ -186,7 +186,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 		}break;
 	default:
 		{
-			DEBUG_LOG("WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X\n", action, misc);
+			DEBUG_LOG("Pet","WARNING: Unknown pet action received. Action = %.4X, Misc = %.4X\n", action, misc);
 		}break;
 	}
 

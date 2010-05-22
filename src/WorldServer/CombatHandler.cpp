@@ -8,7 +8,7 @@
 
 void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 8);
 	uint64 guid;
 	recv_data >> guid;
@@ -21,7 +21,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 	}
 
 	// AttackSwing
-	DEBUG_LOG( WOWWORLDAI, CMSGWATAAI );
+	DEBUG_LOG( "WORLD"," Recvd CMSG_ATTACKSWING Message" );
 
 	if(GetPlayer()->IsPacified() || GetPlayer()->IsStunned() || GetPlayer()->IsFeared())
 		return;
@@ -30,7 +30,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 
 	if(!pEnemy)
 	{
-		OUT_DEBUG(WORLDI64AI, guid);
+		OUT_DEBUG("WORLD: "I64FMT" does not exist.", guid);
 		return;
 	}
 
@@ -40,7 +40,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 	// Faction "Hack" by Deathshit
 	if( !isAttackable( GetPlayer(), pEnemy, false ) && !pEnemy->IsInRangeOppFactSet(_player) && !pEnemy->CombatStatus.DidDamageTo(GetPlayer()->GetGUID()))
 	{
-		GetPlayer()->BroadcastMessage(FACTOINEAI);
+		GetPlayer()->BroadcastMessage("Faction exploit detected. You will be disconnected in 5 seconds.");
 		GetPlayer()->Kick(5000);
 		return;
 	}
@@ -52,7 +52,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleAttackStopOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	uint64 guid = GetPlayer()->GetSelection();
 	Unit* pEnemy = NULLUNIT;
 

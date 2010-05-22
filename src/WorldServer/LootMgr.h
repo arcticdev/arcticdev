@@ -60,7 +60,6 @@ typedef struct __LootItem
 	uint32 ffa_loot;
 }__LootItem;
 
-
 typedef struct StoreLootItem
 {
 	_LootItem item;
@@ -70,7 +69,6 @@ typedef struct StoreLootItem
 	uint32 maxcount;
 	uint32 ffa_loot;
 }StoreLootItem;
-
 
 typedef struct StoreLootList
 {
@@ -97,21 +95,23 @@ struct tempy
 	uint32 ffa_loot;
 };
 
-
 typedef HM_NAMESPACE::hash_map<uint32, StoreLootList > LootStore;  
 
 enum PARTY_LOOT
 {
-	PARTY_LOOT_FFA		= 0,
-	PARTY_LOOT_RR		= 1,
-	PARTY_LOOT_MASTER	= 2,
-	PARTY_LOOT_GROUP	= 3,
-	PARTY_LOOT_NBG		= 4,
+	PARTY_LOOT_FFA = 0,
+	PARTY_LOOT_RR = 1,
+	PARTY_LOOT_MASTER = 2,
+	PARTY_LOOT_GROUP = 3,
+	PARTY_LOOT_NBG = 4,
 };
+
 enum PARTY_ROLL
 {
-	NEED	= 1,
-	GREED	= 2,
+	NEED = 1,
+	GREED = 2,
+	DISENCHANT = 3,
+	PASS = 4,
 };
 
 class ARCTIC_DECL LootMgr : public Singleton < LootMgr >
@@ -140,15 +140,15 @@ public:
 	void LoadCreatureLoot();
 	void LoadLootProp();
 	
-	LootStore	CreatureLoot;
-	LootStore	FishingLoot;
-	LootStore	GatheringLoot;
-	LootStore	GOLoot;
-	LootStore	ItemLoot;
-	LootStore	ProspectingLoot;
-	LootStore	DisenchantingLoot;
-	LootStore	PickpocketingLoot;
-	LootStore	MillingLoot;
+	LootStore CreatureLoot;
+	LootStore FishingLoot;
+	LootStore GatheringLoot;
+	LootStore GOLoot;
+	LootStore ItemLoot;
+	LootStore ProspectingLoot;
+	LootStore DisenchantingLoot;
+	LootStore PickpocketingLoot;
+	LootStore MillingLoot;
 	std::map<uint32, std::set<uint32> > quest_loot_go;
 
 	RandomProps * GetRandomProperties(ItemPrototype * proto);
@@ -167,5 +167,4 @@ private:
 };
 
 #define lootmgr LootMgr::getSingleton()
-
 #endif

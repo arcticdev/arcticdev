@@ -537,7 +537,7 @@ bool World::SetInitialWorldSettings()
 		Log.Notice("World", "Backgrounding loot loading...");
 
 		// loot background loading in a lower priority thread.
-		ThreadPool.ExecuteTask(new BasicTaskExecutor(new NoSharedPtrCallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadCreatureLoot), 
+		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadCreatureLoot), 
 			BTE_PRIORITY_LOW));
 	}
 	else

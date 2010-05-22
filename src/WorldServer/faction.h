@@ -9,6 +9,7 @@
 
 #include "Unit.h"
 #define SANCTUARIES_NUM 2
+
 static const uint32 SANCTUARY_ZONES[SANCTUARIES_NUM] =
 {
 	3703, /* Shattrath */
@@ -18,10 +19,9 @@ static const uint32 SANCTUARY_ZONES[SANCTUARIES_NUM] =
 ARCTIC_DECL bool isHostile(Object* objA, Object* objB);                               // B is hostile for A?
 ARCTIC_DECL bool isAttackable(Object* objA, Object* objB, bool CheckStealth = true);  // A can attack B?
 ARCTIC_DECL bool isCombatSupport(Object* objA, Object* objB);                         // B combat supports A?;
-ARCTIC_DECL bool isAlliance(Object* objA);                                                  // A is alliance?
-ARCTIC_DECL bool isHostileNonPvP(Object* objA, Object* objB);                         // B is hostile for A? (without PvP flag check)
+ARCTIC_DECL bool isAlliance(Object* objA);                                            // A is alliance?
 
-ARCTIC_INLINE bool isFriendly(Object* objA, Object* objB)                             // B is friendly to A if its not hostile
+ARCTIC_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A if its not hostile
 {
 	return !isHostile(objA, objB);
 }
@@ -34,5 +34,5 @@ ARCTIC_INLINE bool isSameFaction(Object* objA, Object* objB)
 
 	return (objB->m_faction->Faction == objA->m_faction->Faction);
 }
-ARCTIC_INLINE  Player* GetPlayerFromObject(Object* obj);  
+ARCTIC_INLINE Player* GetPlayerFromObject(Object* obj);
 #endif

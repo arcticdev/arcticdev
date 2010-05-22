@@ -19,7 +19,7 @@ bool ChatHandler::HandleDebugInFrontCommand(const char* args, WorldSession *m_se
 	{
 		if(!(obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)))
 		{
-			SystemMessage(m_session, YOUPSHOULDSSEAI);
+			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;
 		}
 	}
@@ -46,7 +46,7 @@ bool ChatHandler::HandleShowReactionCommand(const char* args, WorldSession *m_se
 
 	if(!obj)
 	{
-		SystemMessage(m_session, YOUPSDFULDSSEAI);
+		SystemMessage(m_session, "You should select a creature.");
 		return true;
 	}
 
@@ -62,7 +62,7 @@ bool ChatHandler::HandleShowReactionCommand(const char* args, WorldSession *m_se
 	m_session->SendPacket( &data );
 
 	std::stringstream sstext;
-	sstext << SENTSREACTIOSAI << Reaction << TOTZWOWTOTSWDAI << obj->GetUIdFromGUID() << '\0';
+	sstext << "Sent Reaction of " << Reaction << " to " << obj->GetUIdFromGUID() << '\0';
 
 	SystemMessage(m_session,  sstext.str().c_str());
 	return true;
@@ -77,7 +77,7 @@ bool ChatHandler::HandleDistanceCommand(const char* args, WorldSession *m_sessio
 	{
 		if(!(obj = TO_OBJECT(m_session->GetPlayer()->GetMapMgr()->GetUnit(guid))))
 		{
-			SystemMessage(m_session, YOUPSHOULDSSEAI);
+			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;
 		}
 	}
@@ -86,7 +86,7 @@ bool ChatHandler::HandleDistanceCommand(const char* args, WorldSession *m_sessio
 
 	float dist = m_session->GetPlayer()->CalcDistance(obj);
 	std::stringstream sstext;
-	sstext << DISTANCEWOWSAAI << dist <<'\0';
+	sstext << "Distance is: " << dist <<'\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
 	return true;
@@ -99,7 +99,7 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	uint64 guid = m_session->GetPlayer()->GetSelection();
 	if(!(obj = TO_OBJECT(m_session->GetPlayer())->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid))))
 	{
-		SystemMessage(m_session, YOUPSHOULDSSEAI);
+		SystemMessage(m_session, "You should select a character or a creature.");
 		return true;
 	}
 
@@ -111,7 +111,7 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	uint32 attackerscount = (uint32)TO_CREATURE(obj)->GetAIInterface()->getAITargetsCount();
 	uint32 creatureState = TO_CREATURE(obj)->GetAIInterface()->m_creatureState;
 	uint32 curwp = TO_CREATURE(obj)->GetAIInterface()->getCurrentWaypoint();
-	// Unit* unitToFollow = TO_CREATURE(obj)->GetAIInterface()->getUnitToFollow();
+	// Unit unitToFollow = TO_CREATURE(obj)->GetAIInterface()->getUnitToFollow();
 	uint32 aistate = TO_CREATURE(obj)->GetAIInterface()->getAIState();
 	uint32 aitype = TO_CREATURE(obj)->GetAIInterface()->getAIType();
 	uint32 aiagent = TO_CREATURE(obj)->GetAIInterface()->getCurrentAgent();
@@ -119,13 +119,13 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	uint32 highfollow = 0;
 
 	std::stringstream sstext;
-	sstext << ZFOLLOWUWINDSAI << lowfollow << HIGNGHASAIGINAI << highfollow << "\n";
-	sstext << DISTANCEWOWSDAI << dist << "\n";
-	sstext << MODFACINGWOWSAI << minfront << WOWPLAYERSMODAI << pinfront << "\n";
-	sstext << ATTATACKERSWOAI << attackerscount << "\n";
-	sstext << WOWCREATURESTAI << creatureState << WOWRUNWOWSEVRAI << run << "\n";
-	sstext << AISTATESFAWOWAI << aistate << AISTITYLEWOWDAI << aitype << AIAGEENSTAITEAI << aiagent << "\n";
-	sstext << MOVESTYLEWOWSAI << movetype << CRURRENTAWOWSAI << curwp << "\n";
+	sstext << "Following Unit: Low: " << lowfollow << " High: " << highfollow << "\n";
+	sstext << "Distance is: " << dist << "\n";
+	sstext << "Mob Facing Player: " << minfront << " Player Facing Mob: " << pinfront << "\n";
+	sstext << "Attackers Count: " << attackerscount << "\n";
+	sstext << "Creature State: " << creatureState << " Run: " << run << "\n";
+	sstext << "AIState: " << aistate << " AIType: " << aitype << " AIAgent: " << aiagent << "\n";
+	sstext << "MoveType: " << movetype << " Current Waypoint: " << curwp << "\n";
 
 	SendMultilineMessage(m_session, sstext.str().c_str());
 
@@ -140,19 +140,26 @@ bool ChatHandler::HandleDebugSetPhase(const char* args, WorldSession *m_session)
 		pUnit = getSelectedCreature(m_session, false);
 		if(!pUnit)
 		{
-			m_session->GetPlayer()->BroadcastMessage(YOUMISTSELESWAI);
+			m_session->GetPlayer()->BroadcastMessage("You must select a Unit.");
 			return true;
 		}
 	}
 
 	int32 phaseId = atoi(args);
-	if(phaseId == 0 || phaseId < -1)
+	if(phaseId < -1)
 	{
-		m_session->GetPlayer()->BroadcastMessage(YOUMISDFGFESWAI);
+		m_session->GetPlayer()->BroadcastMessage("You must specify a valid phase id.");
+		return true;
+	}
+	if(phaseId == 0)
+	{
+		pUnit->SetPhase(1);
+		m_session->GetPlayer()->BroadcastMessage("Resetting Phase.");
+		return true;
 	}
 
 	pUnit->SetPhase( phaseId );
-	m_session->GetPlayer()->BroadcastMessage(TARGERWOWPHASAI);
+	m_session->GetPlayer()->BroadcastMessage("Target's phase altered successfully.");
 	return true;
 }
 
@@ -168,14 +175,14 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 
 	if(obj == NULL)
 	{
-		SystemMessage(m_session, YOUPSDFULDSSEAI);
+		SystemMessage(m_session, "You should select a creature.");
 		return true;
 	}
 
 	// m_session->GetPlayer()->GetOrientation();
 
-	uint32 Move  = 1;
-	uint32 Run  = 0;
+	uint32 Move = 1;
+	uint32 Run = 0;
 	uint32 Time = 0;
 	uint32 Meth = 0;
 
@@ -199,8 +206,8 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 	float y = m_session->GetPlayer()->GetPositionY();
 	float z = m_session->GetPlayer()->GetPositionZ();
 	float o = m_session->GetPlayer()->GetOrientation();
-	TO_CREATURE(obj)->GetAIInterface()->setMoveRunFlag((Run>0?true:false));
-	float distance = TO_CREATURE(obj)->CalcDistance(x,y,z);
+	TO_CREATURE(obj)->GetAIInterface()->setMoveRunFlag((Run > 0 ? true : false));
+	float distance = TO_CREATURE(obj)->CalcDistance(x, y, z);
 	if(Move == 1)
 	{
 		if(Meth == 1)
@@ -252,7 +259,7 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 			y = (TO_CREATURE(obj)->GetPositionY()+y*q)/(1+q);
 			z = (TO_CREATURE(obj)->GetPositionZ()+z*q)/(1+q);
 		}
-		TO_CREATURE(obj)->GetAIInterface()->MoveTo(x,y,z,0);
+		TO_CREATURE(obj)->GetAIInterface()->MoveTo(x, y, z, 0);
 	}
 	else
 	{
@@ -262,7 +269,7 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 
 			if(!distance)
 			{
-				SystemMessage(m_session, TADASRGSAPHASAI);
+				SystemMessage(m_session, "The Creature is already there.");
 				return true;
 			}
 
@@ -283,7 +290,7 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 			moveTime = Time;
 		}
 		// TO_CREATURE(obj)->setMovementState(MOVING);
-		TO_CREATURE(obj)->GetAIInterface()->SendMoveToPacket(x,y,z,o,moveTime,Run);
+		TO_CREATURE(obj)->GetAIInterface()->SendMoveToPacket(x, y, z, o, moveTime, Run);
 	}
 	return true;
 }
@@ -301,7 +308,7 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession *m_session)
 
 	if(obj == NULL)
 	{
-		SystemMessage(m_session,  YOUSHOSHOLSELAI);
+		SystemMessage(m_session,  "You should select a creature.");
 		return true;
 	}
 
@@ -315,7 +322,7 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession *m_session)
 
 	obj->SetPosition(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), theOrientation, false);
 
-	OUT_DEBUG(FACINGSWOWARCAI);
+	OUT_DEBUG("facing sent");
 	return true;
 	// TO_CREATURE(obj)->AI_MoveTo(obj->GetPositionX()+0.1,obj->GetPositionY()+0.1,obj->GetPositionZ()+0.1,theOrientation);
 }
@@ -329,7 +336,7 @@ bool ChatHandler::HandleSetBytesCommand(const char* args, WorldSession *m_sessio
 	{
 		if(!(obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)))
 		{
-			SystemMessage(m_session, YOUPSHOULDSSEAI);
+			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;
 		}
 	}
@@ -367,7 +374,7 @@ bool ChatHandler::HandleSetBytesCommand(const char* args, WorldSession *m_sessio
 	uint8 Value4  = static_cast<uint8>(atol(pValue4));
 
 	std::stringstream sstext;
-	sstext << SWTAFIELDSAWOAI << BytesIndex << BYTESTOTWOWCAAI << uint16((uint8)Value1) << " " << uint16((uint8)Value2) << " " << uint16((uint8)Value3) << " " << uint16((uint8)Value4) << '\0';
+	sstext << "Set Field " << BytesIndex << " bytes to " << uint16((uint8)Value1) << " " << uint16((uint8)Value2) << " " << uint16((uint8)Value3) << " " << uint16((uint8)Value4) << '\0';
 	obj->SetUInt32Value(BytesIndex, ( ( Value1 ) | ( Value2 << 8 ) | ( Value3 << 16 ) | ( Value4 << 24 ) ) );
 	SystemMessage(m_session, sstext.str().c_str());
 	return true;
@@ -382,7 +389,7 @@ bool ChatHandler::HandleGetBytesCommand(const char* args, WorldSession *m_sessio
 	{
 		if(!(obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)))
 		{
-			SystemMessage(m_session, YOUSHOULDEADSAI);
+			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;
 		}
 	}
@@ -397,7 +404,7 @@ bool ChatHandler::HandleGetBytesCommand(const char* args, WorldSession *m_sessio
 	uint32 theBytes = obj->GetUInt32Value(BytesIndex);
 
 	std::stringstream sstext;
-	sstext << BYTFGFOTWOWCAAI << BytesIndex << AREWOWARESWOWAI << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
+	sstext << "bytes for Field " << BytesIndex << " are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
 	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
@@ -410,11 +417,11 @@ bool ChatHandler::HandleDebugLandWalk(const char* args, WorldSession *m_session)
 
 	if (chr == NULL) // Ignatich: what should NOT happen but just in case...
 	{
-		SystemMessage(m_session, NOCHARACTERWOAI);
+		SystemMessage(m_session, "No character selected.");
 		return false;
 	}
-	chr->SetMovement(MOVE_LAND_WALK,8);
-	snprintf((char*)buf,256, ZLANDWOWTESTSAI);
+	chr->SetMovement(MOVE_LAND_WALK, 8);
+	snprintf((char*)buf, 256, "Land Walk Test Ran.");
 	SystemMessage(m_session, buf);
 	return true;
 }
@@ -426,11 +433,11 @@ bool ChatHandler::HandleDebugWaterWalk(const char* args, WorldSession *m_session
 
 	if (chr == NULL) // Ignatich: what should NOT happen but just in case...
 	{
-		SystemMessage(m_session, NOCHARACTERWOAI);
+		SystemMessage(m_session, "No character selected.");
 		return false;
 	}
 	chr->SetMovement(MOVE_WATER_WALK, 4);
-	snprintf((char*)buf,256, WATESTESTREADAI);
+	snprintf((char*)buf, 256, "Water Walk Test Ran.");
 	SystemMessage(m_session,  buf);
 	return true;
 }
@@ -442,13 +449,13 @@ bool ChatHandler::HandleDebugUnroot(const char* args, WorldSession *m_session)
 
 	if (chr == NULL) // Ignatich: what should NOT happen but just in case...
 	{
-		SystemMessage(m_session,  NOCHARACTERWOAI);
+		SystemMessage(m_session,  "No character selected.");
 		return false;
 	}
 
-	chr->SetMovement(MOVE_UNROOT,5);
+	chr->SetMovement(MOVE_UNROOT, 5);
 
-	snprintf((char*)buf,256, UNTESTESTREADAI);
+	snprintf((char*)buf, 256, "UnRoot Test Ran.");
 	SystemMessage(m_session, buf);
 	return true;
 }
@@ -460,11 +467,11 @@ bool ChatHandler::HandleDebugRoot(const char* args, WorldSession *m_session)
 
 	if (chr == NULL) // Ignatich: what should NOT happen but just in case...
 	{
-		SystemMessage(m_session, NOCHARACTERWOAI);
+		SystemMessage(m_session, "No character selected.");
 		return true;
 	}
-	chr->SetMovement(MOVE_ROOT,1);
-	snprintf((char*)buf,256, ZROOTTESTRANSAI);
+	chr->SetMovement(MOVE_ROOT, 1);
+	snprintf((char*)buf,256, "Root Test Ran.");
 	SystemMessage(m_session, buf);
 	return true;
 }
@@ -478,19 +485,19 @@ bool ChatHandler::HandleAggroRangeCommand(const char* args, WorldSession *m_sess
 	{
 		if(!(obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)))
 		{
-			SystemMessage(m_session,  YOUSHOULDEADSAI);
+			SystemMessage(m_session,  "You should select a character or a creature.");
 			return true;
 		}
 	}
 	else
 	{
-		SystemMessage(m_session, YOUSHOULDEADSAI);
+		SystemMessage(m_session, "You should select a character or a creature.");
 		return true;
 	}
 
 	float aggroRange = obj->GetAIInterface()->_CalcAggroRange(m_session->GetPlayer());
 	std::stringstream sstext;
-	sstext << ZAAGGRORANGESAI << sqrtf(aggroRange) <<'\0';
+	sstext << "Aggrorange is: " << sqrtf(aggroRange) <<'\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
 
@@ -534,7 +541,7 @@ bool ChatHandler::HandleFadeCommand(const char* args, WorldSession *m_session)
 	target->ModThreatModifier(atoi(v));
 
 	std::stringstream sstext;
-	sstext << ZTHREATISNOWSAI << target->GetThreatModifier() <<'\0';
+	sstext << "threat is now reduced by: " << target->GetThreatModifier() <<'\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
 	return true;
@@ -552,7 +559,7 @@ bool ChatHandler::HandleThreatModCommand(const char* args, WorldSession *m_sessi
 	target->ModGeneratedThreatModifier(atoi(v));
 
 	std::stringstream sstext;
-	sstext << NEWREATISNOWSAI << target->GetGeneratedThreatModifier() << "%" <<'\0';
+	sstext << "new threat caused is now reduced by: " << target->GetGeneratedThreatModifier() << "%" <<'\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
 	return true;
@@ -563,7 +570,7 @@ bool ChatHandler::HandleCalcThreatCommand(const char* args, WorldSession *m_sess
 	Unit* target = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
 	if(!target)
 	{
-		SystemMessage(m_session,YOUSHOSHOLSELAI );
+		SystemMessage(m_session, "You should select a creature.");
 		return true;
 	}
 	char* dmg = strtok((char*)args, " ");
@@ -576,7 +583,7 @@ bool ChatHandler::HandleCalcThreatCommand(const char* args, WorldSession *m_sess
 	uint32 threat = target->GetAIInterface()->_CalcThreat(atol(dmg), dbcSpell.LookupEntry( atoi( spellId ) ), m_session->GetPlayer());
 
 	std::stringstream sstext;
-	sstext << WOWGERERATESSAI << threat <<'\0';
+	sstext << "generated threat is: " << threat <<'\0';
 
 	SystemMessage(m_session, sstext.str().c_str());
 	return true;
@@ -588,12 +595,12 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 	target = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
 	if(!target)
 	{
-		SystemMessage(m_session, YOUSHOSELESTEAI);
+		SystemMessage(m_session, "You should select a creature.");
 		return true;
 	}
 
 	std::stringstream sstext;
-	sstext << THEADLISTOFSSAI << GUID_LOPART(m_session->GetPlayer()->GetSelection()) << " " << GUID_HIPART(m_session->GetPlayer()->GetSelection()) << '\n';
+	sstext << "threatlist of creature: " << GUID_LOPART(m_session->GetPlayer()->GetSelection()) << " " << GUID_HIPART(m_session->GetPlayer()->GetSelection()) << '\n';
 	TargetMap::iterator itr;
 	for(itr = target->GetAIInterface()->GetAITargets()->begin(); itr != target->GetAIInterface()->GetAITargets()->end();)
 	{
@@ -602,7 +609,7 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 			++itr;
 			continue;
 		}
-		sstext << WOWARCTIEGUIDAI << itr->first->GetGUID() << ZELENTHEAREASAI << itr->second << ZELESAHEAREASAI << (itr->second + itr->first->GetThreatModifier()) << "\n";
+		sstext << "guid: " << itr->first->GetGUID() << " | threat: " << itr->second << "| threat after mod: " << (itr->second + itr->first->GetThreatModifier()) << "\n";
 		++itr;
 	}
 
@@ -623,19 +630,19 @@ bool ChatHandler::HandleSendItemPushResult(const char* args, WorldSession* m_ses
 	unk4 = atol(strtok(NULL, " "));
 
 	// lookup item
-    // ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(itemid);
+	// ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(itemid);
 
 	WorldPacket data;
 	data.SetOpcode(SMSG_ITEM_PUSH_RESULT);
 
-	data << m_session->GetPlayer()->GetGUID();			   // recivee_guid
-	data << type << uint32(1);  // unk
-	data << count;			    // count
-	data << uint8(0xFF);	    // uint8 unk const 0xFF
-	data << unk1;	            // unk
+	data << m_session->GetPlayer()->GetGUID();	// recivee_guid
+	data << type << uint32(1);					// unk
+	data << count;								// count
+	data << uint8(0xFF);						// uint8 unk const 0xFF
+	data << unk1;								// unk
 	data << itemid;
-	data << unk2;		        // unk
-	data << unk3;		        // random prop
+	data << unk2;								// unk
+	data << unk3;								// random prop
 	data << unk4;
 	m_session->SendPacket(&data);
 	return true;
@@ -652,7 +659,7 @@ bool ChatHandler::HandleModifyBitCommand(const char* args, WorldSession* m_sessi
 	{
 		if(!(obj = m_session->GetPlayer()->GetMapMgr()->GetUnit(guid)))
 		{
-			SystemMessage(m_session, YOUSHOULDEADSAI);
+			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;
 		}
 	}
@@ -668,31 +675,31 @@ bool ChatHandler::HandleModifyBitCommand(const char* args, WorldSession* m_sessi
 		return false;
 
 	uint16 field = atoi(pField);
-	uint32 bit   = atoi(pBit);
+	uint32 bit = atoi(pBit);
 
 	if (field < 1 || field >= PLAYER_END)
 	{
-		SystemMessage(m_session, DBAVALUESWOWSAI);
+		SystemMessage(m_session, "Incorrect values.");
 		return true;
 	}
 
 	if (bit < 1 || bit > 32)
 	{
-		SystemMessage(m_session, DBAVALUESWOWSAI);
+		SystemMessage(m_session, "Incorrect values.");
 		return true;
 	}
 
 	char buf[256];
 
-	if ( obj->HasFlag( field, (1<<(bit-1)) ) )
+	if ( obj->HasFlag( field, (1 << (bit-1)) ) )
 	{
-		obj->RemoveFlag( field, (1<<(bit-1)) );
-		snprintf((char*)buf,256, REMOVERDEVWOWAI, (unsigned int)bit, (unsigned int)field);
+		obj->RemoveFlag( field, (1 << (bit-1)) );
+		snprintf((char*)buf, 256, "Removed bit %i in field %i.", (unsigned int)bit, (unsigned int)field);
 	}
 	else
 	{
-		obj->SetFlag( field, (1<<(bit-1)) );
-		snprintf((char*)buf,256, SWTAFIELDDFWOAI, (unsigned int)bit, (unsigned int)field);
+		obj->SetFlag( field, (1 << (bit-1)) );
+		snprintf((char*)buf, 256, "Set bit %i in field %i.", (unsigned int)bit, (unsigned int)field);
 	}
 
 	SystemMessage(m_session, buf);
@@ -708,7 +715,7 @@ bool ChatHandler::HandleModifyValueCommand(const char* args,  WorldSession* m_se
 	{
 		if(!(obj = TO_OBJECT(m_session->GetPlayer())->GetMapMgr()->GetUnit(guid)))
 		{
-			SystemMessage(m_session, YOUSHOULDEADSAI);
+			SystemMessage(m_session, "You should select a character or a creature.");
 			return true;
 		}
 	}
@@ -724,7 +731,7 @@ bool ChatHandler::HandleModifyValueCommand(const char* args,  WorldSession* m_se
 		return false;
 
 	uint16 field = atoi(pField);
-	uint32 value   = atoi(pValue);
+	uint32 value = atoi(pValue);
 
 	if (field < 1 || field >= PLAYER_END)
 	{
@@ -734,9 +741,9 @@ bool ChatHandler::HandleModifyValueCommand(const char* args,  WorldSession* m_se
 
 	char buf[256];
 	uint32 oldValue = obj->GetUInt32Value(field);
-	obj->SetUInt32Value(field,value);
+	obj->SetUInt32Value(field, value);
 
-	snprintf((char*)buf,256,GDTERIELDSAWOAI, (unsigned int)field, (unsigned int)oldValue, (unsigned int)value);
+	snprintf((char*)buf,256,"Set Field %i from %i to %i.", (unsigned int)field, (unsigned int)oldValue, (unsigned int)value);
 
 	if( obj->IsPlayer() )
 		TO_PLAYER( obj )->UpdateChances();
@@ -766,16 +773,16 @@ bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_sessio
 	#ifdef _ONLY_FOOLS_TRY_THIS_
 	if(!*args)
 	{
-		RedSystemMessage(m_session, NOCHADSDSSRWOAI);
+		RedSystemMessage(m_session, "No query given.");
 		return false;
 	}
 	
 	bool isok = WorldDatabase.Execute(args);
 
 	if(isok)
-		GreenSystemMessage(m_session, QUERYWASEXECUAI);
+		GreenSystemMessage(m_session, "Query was executed successfully.");
 	else
-		RedSystemMessage(m_session, QUERYFAILEDTOAI);
+		RedSystemMessage(m_session, "Query failed to execute.");
 
 	#endif
 
@@ -788,68 +795,67 @@ bool ChatHandler::HandleSendpacket(const char * args, WorldSession * m_session)
 {
 #ifdef _ONLY_FOOLS_TRY_THIS_
 
-    uint32 arg_len = strlen(args);
-    char * xstring = new char [arg_len];
-    memcpy(xstring, args,arg_len);
+	uint32 arg_len = strlen(args);
+	char * xstring = new char [arg_len];
+	memcpy(xstring, args, arg_len);
 
-    for (uint32 i = 0; i < arg_len; i++)
-    {
-        if (xstring[i] == ' ')
-        {
-            xstring[i] = '\0';
-        }
-    }
+	for (uint32 i = 0; i < arg_len; i++)
+	{
+		if (xstring[i] == ' ')
+		{
+			xstring[i] = '\0';
+		}
+	}
 
-    // we receive our packet as hex, that means we get it like ff ff ff ff
-    // the opcode consists of 2 bytes
+	// we receive our packet as hex, that means we get it like ff ff ff ff
+	// the opcode consists of 2 bytes
 
-    if (!xstring)
-    {
-        OUT_DEBUG(DZEBUGSENDEPAAI);
-        return false;
-    }
+	if (!xstring)
+	{
+		OUT_DEBUG("[Debug][Sendpacket] Packet is invalid");
+		return false;
+	}
 
-    WorldPacket data(arg_len);
+	WorldPacket data(arg_len);
 
-    uint32 loop = 0;
-    uint16 opcodex = 0;
-    uint16 opcodez = 0;
+	uint32 loop = 0;
+	uint16 opcodex = 0;
+	uint16 opcodez = 0;
 
-    // get the opcode
-    sscanf(xstring , "%x", &opcodex);
+	// get the opcode
+	sscanf(xstring , "%x", &opcodex);
 
-    // should be around here
-    sscanf(&xstring[3] , "%x", &opcodez);
+	// should be around here
+	sscanf(&xstring[3] , "%x", &opcodez);
 
-    opcodex =  opcodex << 8;
-    opcodex |= opcodez;
-    data.Initialize(opcodex);
+	opcodex =  opcodex << 8;
+	opcodex |= opcodez;
+	data.Initialize(opcodex);
 
-    
-    int j = 3;
-    int x = 0;
-    do 
-    {
-        if (xstring[j] == '\0')
-        {
-            uint32 HexValue;
-            sscanf(&xstring[j+1], "%x", &HexValue);
-            if (HexValue > 0xFF)
-            {
-                OUT_DEBUG(DZEBUGSENDEPAAI);
-                return false;
-            }
-            data << uint8(HexValue);
-            // j++;
-        }
-        j++;
-    } while(j < arg_len);
+	int j = 3;
+	int x = 0;
+	do 
+	{
+		if (xstring[j] == '\0')
+		{
+			uint32 HexValue;
+			sscanf(&xstring[j+1], "%x", &HexValue);
+			if (HexValue > 0xFF)
+			{
+				OUT_DEBUG("[Debug][Sendpacket] Packet is invalid");
+				return false;
+			}
+			data << uint8(HexValue);
+			// j++;
+		}
+		j++;
+	} while(j < arg_len);
 
-    data.hexlike();
+	data.hexlike();
 
-    m_session->SendPacket(&data);
+	m_session->SendPacket(&data);
 
-    OUT_DEBUG(ZDEDUGPASTETWAI);
+	OUT_DEBUG("[Debug][Sendpacket] Packet was send");
 #endif
-    return true;
+	return true;
 }

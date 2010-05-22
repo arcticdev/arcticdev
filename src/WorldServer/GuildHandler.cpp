@@ -547,26 +547,26 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 
 		if( _player->m_playerInfo->arenaTeam[arena_type] )
 		{
-			SendNotification(YOUSARESALREAI);
+			SendNotification("You are already in an arena team.");
 			return;
 		}
 
 		if(_player->m_playerInfo->charterId[arena_index] != 0)
 		{
-			SendNotification(YOUSALRSALREAI);
+			SendNotification("You already have an arena charter of this type.");
 			return;
 		}
 
 		ArenaTeam * t = objmgr.GetArenaTeamByName(name, arena_type);
 		if(t != NULL)
 		{
-			sChatHandler.SystemMessage(this,THATNAMESISDAI);
+			sChatHandler.SystemMessage(this,"That name is already in use.");
 			return;
 		}
 
 		if(objmgr.GetCharterByName(name, (CharterTypes)arena_index))
 		{
-			sChatHandler.SystemMessage(this,THATNAMESISDAI);
+			sChatHandler.SystemMessage(this,"That name is already in use.");
 			return;
 		}
 
@@ -625,12 +625,12 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 	{
 		if( _player->GetUInt32Value(PLAYER_FIELD_COINAGE) < 1000 && !sWorld.free_guild_charters )
 		{
-			SendNotification(YOUDOTSNAHESAI);
+			SendNotification("You don't have enough money.");
 			return;
 		}
 		if(_player->m_playerInfo->charterId[CHARTER_TYPE_GUILD] != 0)
 		{
-			SendNotification(YOUSALRSGUILAI);
+			SendNotification("You already have a guild charter.");
 			return;
 		}
 
@@ -638,7 +638,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		Charter * c = objmgr.GetCharterByName(name, CHARTER_TYPE_GUILD);
 		if(g != 0 || c != 0)
 		{
-			SendNotification(ZAGUILDWITHDAI);
+			SendNotification("A guild with that name already exists.");
 			return;
 		}
 
@@ -819,19 +819,19 @@ void WorldSession::HandleCharterOffer( WorldPacket & recv_data )
 
 	if( pCharter == NULL )
 	{
-		SendNotification(CHARACAARCANAI);
+		SendNotification("Charter cannot be found.");
 		return;
 	}
 
 	if(pTarget == 0 || pTarget->GetTeam() != _player->GetTeam() || pTarget == _player)
 	{
-		SendNotification(TARGERSISOFSAI);
+		SendNotification("Target is of the wrong faction.");
 		return;
 	}
 
 	if(!pTarget->CanSignCharter(pCharter, _player))
 	{
-		SendNotification(PLAUERSTARGEAI);
+		SendNotification("Target player cannot sign your charter for one or more reasons.");
 		return;
 	}
 
@@ -852,7 +852,7 @@ void WorldSession::HandleCharterSign( WorldPacket & recv_data )
 
 	if( _player->m_playerInfo->charterId[c->CharterType] != 0 )
 	{
-		SendNotification(YOUCANNONTSDAI);
+		SendNotification("You cannot sign two charters of the same type.");
 		return;
 	}
 
@@ -860,7 +860,7 @@ void WorldSession::HandleCharterSign( WorldPacket & recv_data )
 	{
 		if(c->Signatures[i] == _player->GetGUID())
 		{
-			SendNotification(HAVESRALEREAAI);
+			SendNotification("You have already signed that charter.");
 			return;
 		}
 	}
@@ -901,9 +901,9 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 		if( gc->GetLeader() != _player->GetLowGUID() )
 			return;
 
-		if(gc->SignatureCount < 9 && Config.MainConfig.GetBoolDefault(WOWSERVERSTEAI, REQUREALLSINAI, false))
+		if(gc->SignatureCount < 9 && Config.MainConfig.GetBoolDefault("WoWArcTic Server", "RequireAllSignatures", false))
 		{
-			SendNotification(DOTSYUSHAVESAI);
+			SendNotification("You don't have the required amount of signatures to turn in this petition.");
 			return;
 		}
 
@@ -944,7 +944,7 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 			break;
 
 		default:
-			SendNotification(ZINTERNALLERAI);
+			SendNotification("Internal Error");
 			return;
 		}
 
@@ -953,13 +953,13 @@ void WorldSession::HandleCharterTurnInCharter(WorldPacket & recv_data)
 
 		if(_player->m_playerInfo->arenaTeam[pCharter->CharterType-1] != NULL)
 		{
-			sChatHandler.SystemMessage(this, YOUSARESALREAI);
+			sChatHandler.SystemMessage(this, "You are already in an arena team.");
 			return;
 		}
 
-		if(pCharter->SignatureCount < pCharter->GetNumberOfSlotsByType() && Config.MainConfig.GetBoolDefault(WOWSERVERSTEAI, REQUREALLSINAI, false))
+		if(pCharter->SignatureCount < pCharter->GetNumberOfSlotsByType() && Config.MainConfig.GetBoolDefault("Server", "RequireAllSignatures", false))
 		{
-			sChatHandler.SystemMessage(this, DOTSYUSHAVESAI);
+			sChatHandler.SystemMessage(this, "You don't have the required amount of signatures to turn in this petition.");
 			return;
 		}
 
@@ -1013,7 +1013,7 @@ void WorldSession::HandleCharterRename(WorldPacket & recv_data)
 	Charter * c = objmgr.GetCharterByName(name, (CharterTypes)pCharter->CharterType);
 	if(c || g)
 	{
-		SendNotification(THAURESMANESAI);
+		SendNotification("That name is in use by another guild.");
 		return;
 	}
 
@@ -1438,7 +1438,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 		{
 			if(pMember->pRank->iTabPermissions[dest_bank].iStacksPerDay == 0)
 			{
-				SystemMessage(ZPESMISSINSDAI);
+				SystemMessage("You don't have permission to do that.");
 				return;
 			}
 
@@ -1447,7 +1447,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				if(pMember->CalculateAllowedItemWithdraws(dest_bank) == 0)
 				{
 					// a "no permissions" notice would probably be better here
-					SystemMessage(YOUWITHDWARVAI);
+					SystemMessage("You have withdrawn the maximum amount for today.");
 					return;
 				}
 

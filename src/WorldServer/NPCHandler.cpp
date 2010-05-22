@@ -697,7 +697,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 	pCreature->CastSpell(_player->GetGUID(), BIND_SPELL_ID, true);
 	
 	// Animate and send the spell too
-	Spell* BindSpell = Spell*(new Spell(pCreature, dbcSpell.LookupEntry( BIND_SPELL_ID ), false, NULLAURA));
+	Spell* BindSpell = (new Spell(pCreature, dbcSpell.LookupEntry( BIND_SPELL_ID ), false, NULLAURA));
 	SpellCastTargets targets;
 	targets.m_unitTarget = GetPlayer()->GetGUID();
 	BindSpell->prepare(&targets);

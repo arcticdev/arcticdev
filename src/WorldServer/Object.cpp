@@ -420,7 +420,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	{
 		if(updateMask.GetBit(x))
 		{
-			*data << (uint8) UPDATETYPE_VALUES;		// update type == update
+			*data << (uint8) UPDATETYPE_VALUES; // update type == update
 			ASSERT(m_wowGuid.GetNewGuidLen());
 			*data << m_wowGuid;
 
@@ -497,11 +497,11 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 
 		if(splinebuf)
 		{
-			flags2 |= 0x08000001; // 1=move forward
+			flags2 |= 0x08000001; // 1 = move forward
 			if(GetTypeId() == TYPEID_UNIT)
 			{
 				if( TO_UNIT(this)->GetAIInterface()->m_moveRun == false)
-					flags2 |= 0x100; // 100=walk
+					flags2 |= 0x100; // 100 = walk
 			}			
 		}
 
@@ -538,7 +538,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		*data << (float)m_position.z;
 		*data << (float)m_position.o;
 
-		if ( flags2 & 0x0200 )	//BYTE1(flags2) & 2
+		if ( flags2 & 0x0200 )
 		{
 			if (IsUnit() && TO_UNIT(this)->m_CurrentVehicle != NULL)
 			{
@@ -588,13 +588,13 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		{
 			if(pThis && moveinfo)
 				*data << moveinfo->pitch;
-			*data << float(0); //pitch
+			*data << float(0); // pitch
 		}
 
 		if(pThis && moveinfo)
 			*data << moveinfo->FallTime;
 		else
-			*data << uint32(0); //last fall time
+			*data << uint32(0); // last fall time
 
 		if(flags2 & 0x1000) // BYTE1(flags2) & 0x10
 		{
@@ -625,7 +625,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		*data << m_turnRate;		// turn rate
 		*data << float(7);			// pitch rate
 
-		if(splinebuf)	// client expects that flags2 & 0x8000000 != 0 in this case
+		if(splinebuf) // client expects that flags2 & 0x8000000 != 0 in this case
 		{
 			data->append(*splinebuf);
 			delete splinebuf;
@@ -633,7 +633,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 	}
 	else if(flags & 0x100)
 	{
-		*data << uint8(0); // unk PGUID!
+		*data << uint8(0);
 		*data << float(m_position.x);
 		*data << float(m_position.y);
 		*data << float(m_position.z);
@@ -686,8 +686,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 }
 
 //////////////////////////////////////////////////////////////////////////
-//  Creates an update block with the values of this object as
-//  determined by the updateMask.
+// Creates an update block with the values of this object as            //
+// determined by the updateMask.                                        //
 //////////////////////////////////////////////////////////////////////////
 void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Player* target)
 {
@@ -922,14 +922,14 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 	if(bToSelf && m_objectTypeId == TYPEID_PLAYER)
 	{
 		if(TO_PLAYER(this)->GetSession())
-			TO_PLAYER(this)->GetSession()->SendPacket(data);		
+			TO_PLAYER(this)->GetSession()->SendPacket(data);
 	}
 
 	if(!IsInWorld())
 		return;
 
-	unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin();
-	unordered_set<Player*  >::iterator it_end = m_inRangePlayers.end();
+	unordered_set<Player*>::iterator itr = m_inRangePlayers.begin();
+	unordered_set<Player*>::iterator it_end = m_inRangePlayers.end();
 	bool gminvis = (m_objectTypeId == TYPEID_PLAYER ? TO_PLAYER(this)->m_isGmInvisible : false);
 	// Zehamster: Splitting into if/else allows us to avoid testing "gminvis==true" at each loop...
 	//		      saving cpu cycles. Chat messages will be sent to everybody even if player is invisible.
@@ -2420,13 +2420,12 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
  
 	uint32 school = spellInfo->School;
 	float res = float(damage);
-	uint32 aproc = PROC_ON_NEG_SPELL_LAND;
-	uint32 vproc = PROC_ON_NEG_SPELL_LAND_VICTIM;
-	uint32 extraproc = 0;
+	uint32 aproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_SPELL_LAND;
+	uint32 aproc2 = NULL;
+	uint32 vproc = PROC_ON_ANY_HOSTILE_ACTION | PROC_ON_ANY_DAMAGE_VICTIM | PROC_ON_SPELL_HIT_VICTIM;
+	uint32 vproc2 = NULL;
 	bool critical = false;
 	float dmg_reduction_pct;
-
-	uint32 base_damage = damage; // Needed for runeweapon.
 
 	float res_after_spelldmg;
 
@@ -2548,9 +2547,9 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 			//////////////////////////////////////////////////////////////////////////
 			// Spell Critical Hit                                                   //
 			//////////////////////////////////////////////////////////////////////////
+
 			if (critical)
 			{
-				extraproc |= EXTRA_ON_CRIT;
 				int32 critical_bonus = 100;
 				if( spellInfo->SpellGroupType )
 					SM_FIValue( caster->SM[SMT_CRITICAL_DAMAGE][1], &critical_bonus, spellInfo->SpellGroupType );
@@ -2573,24 +2572,25 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 							dmg_reduction_pct = 0.33f; // 3.0.3
 
 						res = res - res * dmg_reduction_pct;
-					}
-					
+					}			
 				}
 
 				pVictim->Emote( EMOTE_ONESHOT_WOUNDCRITICAL );
+				aproc2 |= PROC_ON_SPELL_CRIT_HIT;
+				vproc |= PROC_ON_SPELL_CRIT_HIT_VICTIM;
 			}
 		}
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	// Post Roll Calculations                                               //
 	//////////////////////////////////////////////////////////////////////////
 
-	// Special cases
 	if( spellInfo->NameHash == SPELL_HASH_ICE_LANCE &&
-		(( pVictim->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN)) ||
+	    (( pVictim->HasFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_FROZEN)) ||
 		(caster && caster->m_frozenTargetCharges > 0))) 
 	{
-		res *= 3; // Ice Lance deals 3x damage if target is frozen
+		res *= 3; //Ice Lance deals 3x damage if target is frozen
 	}
 
 	if (caster)
@@ -2603,8 +2603,23 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 		}
 
 		// [Mage] Hot Streak
-		if (!(extraproc & EXTRA_ON_CRIT))
+		if (!(aproc2 & PROC_ON_SPELL_CRIT_HIT))
 			caster->m_hotStreakCount = 0;
+
+		if( aproc2 & PROC_ON_SPELL_CRIT_HIT && caster->HasDummyAura(SPELL_HASH_ECLIPSE))
+		{
+			if( caster->m_CustomTimers[CUSTOM_TIMER_ECLIPSE] <= getMSTime() )
+			{
+				caster->m_CustomTimers[CUSTOM_TIMER_ECLIPSE] = getMSTime() + MSTIME_SECOND*30;
+				if( spellInfo->NameHash == SPELL_HASH_STARFIRE )
+				{
+					caster->CastSpell( caster, 48517, true );
+				}else if( spellInfo->NameHash == SPELL_HASH_WRATH )
+				{
+					caster->CastSpell( caster, 48518, true );
+				}
+			}
+		}
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -2702,12 +2717,12 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 			pVictim->GetCurrentSpell()->AddTime( school );
 	}
 
-//////////////////////////////////////////////////////////////////////////
-// Post Damage Processing                                               //
-//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Post Damage Processing                                               //
+	//////////////////////////////////////////////////////////////////////////
 
 	if( caster && (int32)dmg.resisted_damage == dmg.full_damage && !abs_dmg )
-		extraproc |= EXTRA_ON_RESIST;
+		caster->HandleProc(NULL, PROC_ON_FULL_RESIST, pVictim, spellInfo);
 
 	if( school == SHADOW_DAMAGE )
 	{
@@ -2716,10 +2731,10 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 
 		if( pVictim->isAlive() && IsUnit() )
 		{
-			// Shadow Word:Death
-			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 )  
+			//Shadow Word: Death
+			if( spellID == 32379 || spellID == 32996 || spellID == 48157 || spellID == 48158 ) 
 			{
-				uint32 damage = uint32( res + abs_dmg );
+				uint32 damage = (uint32)( res + abs_dmg );
 
 				if( TO_UNIT( this )->HasDummyAura(SPELL_HASH_PAIN_AND_SUFFERING) )
 					damage += float2int32(damage * ((TO_UNIT( this )->GetDummyAura(SPELL_HASH_PAIN_AND_SUFFERING)->EffectBasePoints[1]+1) / 100.0f));
@@ -2728,6 +2743,8 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 				DealDamage( TO_UNIT(this), damage, 2, 0, spellID );
 				SendSpellNonMeleeDamageLog( this, TO_UNIT(this), spellID, damage, school, absorbed, 0, false, 0, false, IsPlayer() );
 			}
+			else if( spellInfo->NameHash == SPELL_HASH_HAUNT )
+				caster->m_lastHauntInitialDamage = res;
 		}
 	}
 }

@@ -11,6 +11,7 @@ struct PlayerInfo;
 
 #define MAX_GUILD_RANKS 10
 #define MAX_GUILD_MEMBERS 500
+
 enum PETITION_TURNIN_ERRORS
 {
 	ERR_PETITION_OK,
@@ -164,13 +165,13 @@ enum GuildBankLogEvents
 	GUILD_BANK_LOG_EVENT_WITHDRAW_MONEY	= 5,
 };
 
-#define ITEM_ENTRY_GUILD_CHARTER 5863
-#define ARENA_TEAM_CHARTER_2v2      23560
-#define ARENA_TEAM_CHARTER_2v2_COST 800000  // 80 G
-#define ARENA_TEAM_CHARTER_3v3      23561
-#define ARENA_TEAM_CHARTER_3v3_COST 1200000 // 120 G
-#define ARENA_TEAM_CHARTER_5v5      23562
-#define ARENA_TEAM_CHARTER_5v5_COST 2000000 // 200 G
+#define ITEM_ENTRY_GUILD_CHARTER     5863
+#define ARENA_TEAM_CHARTER_2v2       23560
+#define ARENA_TEAM_CHARTER_2v2_COST  800000  // 80 G
+#define ARENA_TEAM_CHARTER_3v3       23561
+#define ARENA_TEAM_CHARTER_3v3_COST  1200000 // 120 G
+#define ARENA_TEAM_CHARTER_5v5       23562
+#define ARENA_TEAM_CHARTER_5v5_COST  2000000 // 200 G
 
 #define MAX_GUILD_BANK_SLOTS 98
 #define MAX_GUILD_BANK_TABS 6
@@ -313,32 +314,29 @@ public:
 	/* Guild event logging.*/
 	void AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...);
 
-	/* Creates a guild from a charter.*/
+	/* Creates a guild from a charter. */
 	void CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn);
 
 	/* Sends a packet to all online players. */
-   ARCTIC_INLINE void SendPacket(WorldPacket * data){ SendPacketToAllButOne(data, NULLPLR); }
-   
-   /* Sends a packet to all online players except by one. */
-   void SendPacketToAllButOne(WorldPacket * data, Player* pSkipTarget);
+	void SendPacket(WorldPacket * data);
 
-	/* Sends a guild chat message.*/
+	/* Sends a guild chat message. */
 	void GuildChat(const char * szMessage, WorldSession * pClient, int32 iType);
 
-	/* Sends an officer chat message.*/
+	/* Sends an officer chat message. */
 	void OfficerChat(const char * szMessage, WorldSession * pClient, int32 iType);
 
-	/* Sends the guild log to a player.*/
+	/* Sends the guild log to a player. */
 	void SendGuildLog(WorldSession * pClient);
 	void SendGuildBankLog(WorldSession * pClient, uint8 iSlot);
 
-	/* Sets the public note for a player.*/
+	/* Sets the public note for a player. */
 	void SetPublicNote(PlayerInfo * pMember, const char * szNewNote, WorldSession * pClient);
 
-	/* Sets the officer note for a player.*/
+	/* Sets the officer note for a player. */
 	void SetOfficerNote(PlayerInfo * pMember, const char * szNewNote, WorldSession * pClient);
 
-	/* Disbands a guild.*/
+	/* Disbands a guild. */
 	void Disband();
 
 	/* creation time stuff.*/
@@ -383,7 +381,7 @@ public:
 	}
 
 	/* Gets a guild bank tab for editing/viewing*/
-    ARCTIC_INLINE GuildBankTab * GetBankTab(uint32 Id)
+	ARCTIC_INLINE GuildBankTab * GetBankTab(uint32 Id)
 	{
 		if(Id >= m_bankTabCount)
 			return NULL;
@@ -463,6 +461,5 @@ protected:
 	GuildRank * FindLowestRank();
 	GuildRank * FindHighestRank();
 };
-
 
 #endif

@@ -4,12 +4,12 @@
  * See COPYING for license details.
  */
 
+#ifndef __WORLDSESSION_H
+#define __WORLDSESSION_H
+
 //////////////////////////////////////////////////////////////////////////
 // WorldSession.h                                                       //
 //////////////////////////////////////////////////////////////////////////
-
-#ifndef __WORLDSESSION_H
-#define __WORLDSESSION_H
 
 class Player;
 class WorldPacket;
@@ -25,7 +25,7 @@ struct TrainerSpell;
 enum MovementFlags
 {
 	// Byte 1 (Resets on Movement Key Press)
-	MOVEFLAG_MOVE_STOP                  = 0x00,			// verified
+	MOVEFLAG_MOVE_STOP					= 0x00,			// verified
 	MOVEFLAG_MOVE_FORWARD				= 0x01,			// verified
 	MOVEFLAG_MOVE_BACKWARD				= 0x02,			// verified
 	MOVEFLAG_STRAFE_LEFT				= 0x04,			// verified
@@ -51,9 +51,9 @@ enum MovementFlags
 	MOVEFLAG_TB_PENDING_FALL			= 0x40000,		// (MOVEFLAG_PENDING_FALL)
 	MOVEFLAG_TB_PENDING_FORWARD			= 0x80000,		// (MOVEFLAG_PENDING_FORWARD)
 	MOVEFLAG_TB_PENDING_BACKWARD		= 0x100000,		// (MOVEFLAG_PENDING_BACKWARD)
-	MOVEFLAG_SWIMMING					= 0x200000,		//  verified
-	MOVEFLAG_FLYING_PITCH_UP			= 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
-	MOVEFLAG_TB_MOVED					= 0x800000,		// (half confirmed) gets called when landing (MOVEFLAG_MOVED)
+	MOVEFLAG_SWIMMING          		    = 0x200000,		//  verified
+	MOVEFLAG_FLYING_PITCH_UP	        = 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
+	MOVEFLAG_TB_MOVED					= 0x800000,		// Send to client on entervehicle
 
 	// Byte 4 (Script Based Flags. Never reset, only turned on or off.)
 	MOVEFLAG_AIR_SUSPENSION				= 0x1000000,	// confirmed allow body air suspension(good name? lol).
@@ -105,11 +105,14 @@ struct OpcodeHandler
 enum SessionStatus
 {
 	STATUS_AUTHED = 0,
-	STATUS_LOGGEDIN
+	STATUS_LOGGEDIN,
+	STATUS_IN_OR_LOGGINGOUT,
+	STATUS_IGNORED
 };
 
 struct AccountDataEntry
 {
+	time_t Time;
 	char * data;
 	uint32 sz;
 	bool bIsDirty;
@@ -118,14 +121,14 @@ struct AccountDataEntry
 // New 3.2.2 Account DataType
 enum AccountDataTypes
 {
-	GLOBAL_CONFIG_CACHE				= 0,	// 0x01 
-	PER_CHARACTER_CONFIG_CACHE		= 1,	// 0x02 
-	GLOBAL_BINDINGS_CACHE			= 2,	// 0x04 
-	PER_CHARACTER_BINDINGS_CACHE	= 3,	// 0x08 
-	GLOBAL_MACROS_CACHE				= 4,	// 0x10 
-	PER_CHARACTER_MACROS_CACHE		= 5,	// 0x20 
-	PER_CHARACTER_LAYOUT_CACHE		= 6,	// 0x40 
-	PER_CHARACTER_CHAT_CACHE		= 7,	// 0x80 
+	GLOBAL_CONFIG_CACHE				= 0, // 0x01 
+	PER_CHARACTER_CONFIG_CACHE		= 1, // 0x02 
+	GLOBAL_BINDINGS_CACHE			= 2, // 0x04 
+	PER_CHARACTER_BINDINGS_CACHE	= 3, // 0x08 
+	GLOBAL_MACROS_CACHE				= 4, // 0x10 
+	PER_CHARACTER_MACROS_CACHE		= 5, // 0x20 
+	PER_CHARACTER_LAYOUT_CACHE		= 6, // 0x40 
+	PER_CHARACTER_CHAT_CACHE		= 7, // 0x80 
 	NUM_ACCOUNT_DATA_TYPES			= 8
 };
 
@@ -137,6 +140,7 @@ typedef struct Cords
 	float x,y,z;
 }Cords;
 
+#define PLAYER_LOGOUT_DELAY (20*1000)
 
 class MovementInfo
 {
@@ -168,6 +172,7 @@ public:
 #define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
 #define CHECK_GUID_EXISTS(guidx) if(_player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
+#define SKIP_READ_PACKET(pckt) pckt.rpos(pckt.wpos())
 
 #define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
 #define NOTIFICATION_MESSAGE_FAILURE "The requested action could not be performed."
@@ -208,6 +213,9 @@ public:
 
 	void SendChatPacket(WorldPacket * data, uint32 langpos, int32 lang, WorldSession * originator);
 
+	// Process Logs
+	void LogUnprocessedTail(WorldPacket *packet);
+
 	uint32 m_currMsTime;
 	uint32 m_lastPing;
 
@@ -239,7 +247,7 @@ public:
 		_socket = sock;
 	}
 	ARCTIC_INLINE void SetPlayer(Player* plr) { _player = plr; }
-	
+
 	ARCTIC_INLINE void SetAccountData(uint32 index, char* data, bool initial,uint32 sz)
 	{
 		ASSERT(index < 8);
@@ -247,12 +255,13 @@ public:
 			delete [] sAccountData[index].data;
 		sAccountData[index].data = data;
 		sAccountData[index].sz = sz;
+		sAccountData[index].Time = UNIXTIME;
 		if(!initial && !sAccountData[index].bIsDirty) // Mark as "changed" or "dirty"
 			sAccountData[index].bIsDirty = true;
 		else if(initial)
 			sAccountData[index].bIsDirty = false;
 	}
-	
+
 	ARCTIC_INLINE AccountDataEntry* GetAccountData(uint32 index)
 	{
 		ASSERT(index < 8);
@@ -272,7 +281,7 @@ public:
 		m_lastPing = (uint32)UNIXTIME;
 		_recvQueue.Push(packet);
 	}
-	
+
 	void OutPacket(uint16 opcode, uint16 len, const void* data)
 	{
 		if(_socket && _socket->IsConnected())
@@ -280,7 +289,7 @@ public:
 	}
 
 	ARCTIC_INLINE WorldSocket* GetSocket() { return _socket; }
-	
+
 	void Disconnect()
 	{
 		if(_socket && _socket->IsConnected())
@@ -293,6 +302,8 @@ public:
 	void SendBuyFailed(uint64 guid, uint32 itemid, uint8 error);
 	void SendSellItem(uint64 vendorguid, uint64 itemid, uint8 error);
 	void SendNotification(const char *message, ...);
+
+	void SendRefundInfo( uint64 GUID );
 
 	ARCTIC_INLINE void SetInstance(uint32 Instance) { instanceId = Instance; }
 	ARCTIC_INLINE uint32 GetLatency() { return _latency; }
@@ -332,6 +343,7 @@ protected:
 	void HandleCharEnumOpcode(WorldPacket& recvPacket);
 	void HandleCharDeleteOpcode(WorldPacket& recvPacket);
 	void HandleCharCreateOpcode(WorldPacket& recvPacket);
+	void HandleCharCustomizeOpcode(WorldPacket& recvPacket);
 	void HandlePlayerLoginOpcode(WorldPacket& recvPacket);
 	void HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data);
 
@@ -385,6 +397,7 @@ protected:
 	void HandleGMTicketGetTicketOpcode(WorldPacket& recvPacket);
 	void HandleGMTicketSystemStatusOpcode(WorldPacket& recvPacket);
 	void HandleGMTicketToggleSystemStatusOpcode(WorldPacket& recvPacket);
+	void HandleGMTicketSurveySubmitOpcode(WorldPacket& recvPacket);
 
 	// Opcodes implemented in QueryHandler.cpp:
 	void HandleNameQueryOpcode(WorldPacket& recvPacket);
@@ -499,6 +512,8 @@ protected:
 	void HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket);
 	void HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacket);
 	void HandleInsertGemOpcode(WorldPacket &recvPacket);
+	void HandleItemRefundInfoOpcode( WorldPacket& recvPacket );
+	void HandleItemRefundRequestOpcode( WorldPacket& recvPacket );
 
 	// Combat opcodes (CombatHandler.cpp)
 	void HandleAttackSwingOpcode(WorldPacket& recvPacket);
@@ -511,6 +526,7 @@ protected:
 	void HandleCancelAuraOpcode(WorldPacket& recvPacket);
 	void HandleCancelChannellingOpcode(WorldPacket& recvPacket);
 	void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data);
+	void HandleCharmForceCastSpell(WorldPacket & recvPacket);
 	void HandleAddDynamicTargetOpcode(WorldPacket & recvPacket);
 
 	// Skill opcodes (SkillHandler.spp)
@@ -518,6 +534,7 @@ protected:
 	void HandleLearnTalentOpcode(WorldPacket& recvPacket);
 	void HandleLearnPreviewTalents(WorldPacket& recv_data);
 	void HandleUnlearnTalents( WorldPacket & recv_data );
+	void HandleTalentWipeConfirmOpcode(WorldPacket &recv_data);
 
 	// Quest opcodes (QuestHandler.cpp)
 	void HandleQuestgiverStatusQueryOpcode(WorldPacket& recvPacket);
@@ -608,6 +625,8 @@ protected:
 	void HandleCharterSign(WorldPacket &recv_data);
 	void HandleCharterRename(WorldPacket & recv_data);
 	void HandleSetGuildInformation(WorldPacket & recv_data);
+	void HandleGuildBankQueryText(WorldPacket & recv_data);
+	void HandleSetGuildBankText(WorldPacket & recv_data);
 	void HandleGuildLog(WorldPacket & recv_data);
 	void HandleGuildBankViewTab(WorldPacket & recv_data);
 	void HandleGuildBankViewLog(WorldPacket & recv_data);
@@ -708,12 +727,14 @@ protected:
 	// Voicechat
 	void HandleEnableMicrophoneOpcode(WorldPacket & recv_data);
 	void HandleVoiceChatQueryOpcode(WorldPacket & recv_data);
-	void HandleChannelVoiceQueryOpcode(WorldPacket & recv_data);
-	// Auto Loot Pass 
+	void HandleChannelVoiceOnOpcode(WorldPacket & recv_data);
+	void HandleChannelWatchOpcode(WorldPacket & recv_data);
+
+	// Auto Loot Pass
 	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
 
 	void HandleSetFriendNote(WorldPacket & recv_data);
-	void Handle38C(WorldPacket & recv_data);
+	void HandleRealmSplit(WorldPacket & recv_data);
 	void HandleInrangeQuestgiverQuery(WorldPacket & recv_data);
 
 	// Misc Opcodes
@@ -724,6 +745,17 @@ protected:
 	// Vehicles
 	void HandleVehicleDismiss(WorldPacket & recv_data);
 	void HandleSpellClick( WorldPacket & recv_data );
+	void HandleRequestSeatChange( WorldPacket & recv_data );
+
+	// MISC
+	void HandleReadyForAccountDataTimes(WorldPacket &recv_data);
+	void HandleFarsightOpcode(WorldPacket &recv_data);
+	void HandleEquipmentSetSave(WorldPacket &recv_data);
+	void HandleEquipmentSetDelete(WorldPacket &recv_data);
+	void HandleEquipmentSetUse(WorldPacket &recv_data);
+
+	// Empty packets
+	void EmptyPacket(WorldPacket &recv_data);
 
 public:
 	void SendTradeStatus(uint32 TradeStatus);
@@ -743,16 +775,10 @@ public:
 	float m_wLevel; // Level of water the player is currently in
 	bool m_bIsWLevelSet; // Does the m_wLevel variable contain up-to-date information about water level?
 
-	MovementInfo* GetMovementInfo() { return &movement_info; }
-
 private:
 	friend class Player;
 	Player* _player;
 	WorldSocket *_socket;
-		
-	/* Preallocated buffers for movement handlers */
-	MovementInfo movement_info;
-	uint8 movement_packet[90];
 
 	bool m_isFalling;
 
@@ -772,11 +798,13 @@ private:
 	int permissioncount;
 
 	bool _loggingOut;
+	bool _recentlogout;
 	uint32 _latency;
 	uint32 client_build;
 	uint32 instanceId;
 	uint8 _updatecount;
 	uint8 CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo);
+	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo /*AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid*/);
 public:
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
