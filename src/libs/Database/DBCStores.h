@@ -1728,7 +1728,7 @@ extern ARCTIC_DECL DBCStorage<gtFloat> dbcHPRegen;
 extern ARCTIC_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 extern ARCTIC_DECL DBCStorage<SpellShapeshiftForm> dbcSpellShapeshiftForm;
 extern ARCTIC_DECL DBCStorage<AchievementEntry> dbcAchievement;
-extern ARCTIC_DECL DBCStorage<AchievementCriteriaEntry> dbcAchivementCriteria;
+extern ARCTIC_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteria;
 extern ARCTIC_DECL DBCStorage<VehicleEntry> dbcVehicle;
 extern ARCTIC_DECL DBCStorage<VehicleSeatEntry> dbcVehicleSeat;
 extern ARCTIC_DECL DBCStorage<WorldMapOverlayEntry> dbcWorldMapOverlay;
