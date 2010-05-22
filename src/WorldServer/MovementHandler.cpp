@@ -5,7 +5,6 @@
  */
 
 #include "StdAfx.h"
-
 #define SWIMMING_TOLERANCE_LEVEL -0.08f
 #define MOVEMENT_PACKET_TIME_DELAY 500
 
@@ -328,7 +327,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	WoWGuid wguid;
 	recv_data >> wguid; // active mover guid?
 	uint64 guid = wguid.GetOldGuid();
-	movement_info.init(recv_data);
+	_player->movement_info.init(recv_data);
 	m_MoverWoWGuid = guid;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -338,7 +337,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	if( sWorld.antihack_cheatengine && _player->m_lastMovementPacketTimestamp != 0 && (int32)mstime - (int32)_player->m_lastMovementPacketTimestamp != 0)
 	{
 		int32 server_delta = (int32)mstime - (int32)_player->m_lastMovementPacketTimestamp;
-		int32 client_delta = (int32)movement_info.time - (int32)_player->m_lastMoveTime;
+		int32 client_delta = (int32)_player->movement_info.time - (int32)_player->m_lastMoveTime;
 		int32 diff = client_delta - server_delta;
 		int32 threshold = int32( World::m_CEThreshold ) + int32( _player->GetSession()->GetLatency() );
 		if( diff >= threshold ) // replace with threshold var
@@ -360,7 +359,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	}
 
 	_player->m_lastMovementPacketTimestamp = mstime;
-	_player->m_lastMoveTime = movement_info.time;
+	_player->m_lastMoveTime = _player->movement_info.time;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Remove Emote State                                                   //
@@ -373,7 +372,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	// Make sure the co-ordinates are valid.                                //
 	//////////////////////////////////////////////////////////////////////////
 
-	if( !((movement_info.y >= _minY) && (movement_info.y <= _maxY)) || !((movement_info.x >= _minX) && (movement_info.x <= _maxX)) )
+	if( !((_player->movement_info.y >= _minY) && (_player->movement_info.y <= _maxY)) || !((_player->movement_info.x >= _minX) && (_player->movement_info.x <= _maxX)) )
 	{
 		//Disconnect();
 		return;
@@ -385,11 +384,11 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 #if 0
 	printf("=========================================================\n");
-	printf("Full movement flags: 0x%.8X\n", movement_info.flags);
+	printf("Full movement flags: 0x%.8X\n", _player->movement_info.flags);
 	uint32 z, b;
 	for(z = 1, b = 1; b < 32;)
 	{
-		if(movement_info.flags & z)
+		if(_player->movement_info.flags & z)
 			printf("   Bit %u (0x%.8X or %u) is set!\n", b, z, z);
 
 		z <<= 1;
@@ -404,7 +403,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 #if 0
 	printf("Packet: 0x%03X (%s)\n", recv_data.GetOpcode(), LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
-	printf("Orientation: %.10f\n", movement_info.orientation);
+	printf("Orientation: %.10f\n", _player->movement_info.orientation);
 #endif
 
 	//////////////////////////////////////////////////////////////////////////
@@ -417,7 +416,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		// Anti-Teleport                                                        //
 		//////////////////////////////////////////////////////////////////////////
 
-		if(sWorld.antihack_teleport && _player->m_position.Distance2DSq(movement_info.x, movement_info.y) > 5625.0f
+		if(sWorld.antihack_teleport && _player->m_position.Distance2DSq(_player->movement_info.x, _player->movement_info.y) > 5625.0f
 			&& _player->m_runSpeed < 50.0f && !_player->m_TransporterGUID)
 		{
 			sCheatLog.writefromsession(this, "Used teleport hack {3}, speed was %f", _player->m_runSpeed);
@@ -427,7 +426,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	}
 
 	// Water walk hack
-	if (movement_info.flags & MOVEFLAG_WATER_WALK && !GetPlayer()->m_isWaterWalking)
+	if (_player->movement_info.flags & MOVEFLAG_WATER_WALK && !GetPlayer()->m_isWaterWalking)
 	{
 	}
 
@@ -438,7 +437,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	size_t pos = (size_t)m_MoverWoWGuid.GetNewGuidLen() + 1;
 	int32 move_time;
 	if(m_clientTimeDelay == 0)
-		m_clientTimeDelay = mstime - movement_info.time;
+		m_clientTimeDelay = mstime - _player->movement_info.time;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Copy into the output buffer.                                         //
@@ -446,8 +445,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 	if(_player->m_inRangePlayers.size())
 	{
-		move_time = (movement_info.time - (mstime - m_clientTimeDelay)) + MOVEMENT_PACKET_TIME_DELAY + mstime;
-		memcpy(&movement_packet[0], recv_data.contents(), recv_data.size());
+		move_time = (_player->movement_info.time - (mstime - m_clientTimeDelay)) + MOVEMENT_PACKET_TIME_DELAY + mstime;
+		memcpy(&_player->movement_packet[0], recv_data.contents(), recv_data.size());
 		_player->movement_packet[pos+6] = 0;
 
 		//////////////////////////////////////////////////////////////////////////
@@ -483,7 +482,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	}
 	else
 	{
-		if (movement_info.flags & MOVEFLAG_FALLING)
+		if (_player->movement_info.flags & MOVEFLAG_FALLING)
 			m_isFalling = true;
 
 		if (recv_data.GetOpcode() == MSG_MOVE_JUMP)
@@ -498,11 +497,11 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			// player has finished falling
 			// if _player->z_axisposition contains no data then set to current position
 			if( !_player->z_axisposition )
-				_player->z_axisposition = movement_info.z;
+				_player->z_axisposition = _player->movement_info.z;
 
 			// calculate distance fallen
-			int32 falldistance = float2int32( _player->z_axisposition - movement_info.z );
-			if(movement_info.z > _player->z_axisposition)
+			int32 falldistance = float2int32( _player->z_axisposition - _player->movement_info.z );
+			if(_player->movement_info.z > _player->z_axisposition)
 				falldistance = 0;
 
 			/* if player is a rogue or druid(in cat form), then apply -17 modifier to fall distance.
@@ -520,17 +519,18 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 					toDamage = _player->m_CurrentVehicle;
 
 				if( _player->m_CurrentVehicle && _player->m_CurrentVehicle->GetControllingUnit() != _player )
-					return; // don't allow any player but the 'driver' to send for fall damage, or we could get duplicate fall dmg
+				{
+					uint32 health_loss = float2int32( float( toDamage->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
 
-				uint32 health_loss = float2int32( float( toDamage->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
-				if( health_loss >= toDamage->GetUInt32Value( UNIT_FIELD_HEALTH ) )
-					health_loss = toDamage->GetUInt32Value( UNIT_FIELD_HEALTH );
+					if( health_loss >= toDamage->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+						health_loss = toDamage->GetUInt32Value( UNIT_FIELD_HEALTH );
 
-				if( toDamage == _player )
-					_player->SendEnvironmentalDamageLog( toDamage->GetGUID(), DAMAGE_FALL, health_loss );
-				toDamage->DealDamage( toDamage, health_loss, 0, 0, 0 );
+					if( toDamage == _player )
+						_player->SendEnvironmentalDamageLog( toDamage->GetGUID(), DAMAGE_FALL, health_loss );
+					toDamage->DealDamage( toDamage, health_loss, 0, 0, 0 );
 
-				toDamage->RemoveStealth(); // Fall Damage will cause stealthed units to lose stealth. 
+					toDamage->RemoveStealth(); // Fall Damage will cause stealthed units to lose stealth.
+				}
 			}
 			_player->z_axisposition = 0.0f;
 		}
@@ -544,7 +544,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 		
 		if(!m_isFalling)
-			_player->z_axisposition = movement_info.z;
+			_player->z_axisposition = _player->movement_info.z;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -615,12 +615,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	//////////////////////////////////////////////////////////////////////////
 	
 	if( _player->m_CurrentCharm )
-		_player->m_CurrentCharm->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation);
+		_player->m_CurrentCharm->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation);
 	else
 	{
 		if(!_player->m_CurrentTransporter) 
 		{
-			if( !_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation) )
+			if( !_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation) )
 			{
 				_player->SetUInt32Value(UNIT_FIELD_HEALTH, 0);
 				_player->KillPlayer();
@@ -628,12 +628,12 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 		else
 		{
-			_player->SetPosition(movement_info.x, movement_info.y, movement_info.z, 
-				movement_info.orientation + movement_info.transO, false);
+			_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, 
+				_player->movement_info.orientation + _player->movement_info.transO, false);
 		}
 	}	
 
-	if(!(movement_info.flags & MOVEFLAG_MOTION_MASK))
+	if(  !(_player->movement_info.flags & MOVEFLAG_MOTION_MASK) )
 	{
 		if( _player->m_isMoving )
 		{
@@ -646,19 +646,24 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	{
 		if( !_player->m_isMoving )
 		{
+			//printf("MOVING: TRUE (Packet %s)\n", LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
 			_player->m_isMoving = true;
-			_player->m_startMoveTime = movement_info.time;
-			_player->m_lastHeartbeatPosition.ChangeCoords(movement_info.x, movement_info.y, movement_info.z);
+			_player->m_startMoveTime = _player->movement_info.time;
+			_player->m_lastHeartbeatPosition.ChangeCoords(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z);
 		}
 	}
 
 	// reset the period every 5 seconds, for a little more accuracy
 	if( _player->m_isMoving && (_player->m_lastMoveTime - _player->m_startMoveTime) >= 5000 )
 	{
-		_player->m_lastHeartbeatPosition.ChangeCoords(movement_info.x, movement_info.y, movement_info.z);
+		_player->m_lastHeartbeatPosition.ChangeCoords(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z);
 		_player->m_startMoveTime = _player->m_lastMoveTime;
 		_player->m_cheatEngineChances = 2;
 	}
+
+#if defined(_DEBUG)
+	// CollideInterface.setDebugPoint(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation);
+#endif
 }
 
 void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
@@ -684,23 +689,8 @@ void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
 }
 
 void WorldSession::HandleMoveNotActiveMoverOpcode( WorldPacket & recv_data )
-{/*
-	WoWGuid guid;
-	recv_data >> guid;
- 
-	if(guid == m_MoverWoWGuid)
-		return;
+{
 
-	movement_info.init(recv_data);
-
-	if(guid != uint64(0))
-		m_MoverWoWGuid = guid;
-	else
-		m_MoverWoWGuid.Init(_player->GetGUID());
-
-	// set up to the movement packet
-	// movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
-	// memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());*/
 }
 
 void WorldSession::HandleSetActiveMoverOpcode( WorldPacket & recv_data )
@@ -726,8 +716,8 @@ void WorldSession::HandleSetActiveMoverOpcode( WorldPacket & recv_data )
 			m_MoverWoWGuid.Init(_player->GetGUID());
 
 		// set up to the movement packet
-		movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
-		memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
+		_player->movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
+		memcpy(&_player->movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
 	}
 }
 

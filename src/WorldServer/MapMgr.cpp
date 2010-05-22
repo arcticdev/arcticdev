@@ -922,7 +922,7 @@ void MapMgr::_UpdateObjects()
 	Object* pObj;
 	Player* pOwner;
 	// std::set<Object* >::iterator it_start, it_end, itr;
-	unordered_set<Player*  >::iterator it_start, it_end, itr;
+	unordered_set<Player*>::iterator it_start, it_end, itr;
 	Player* lplr;
 	uint32 count = 0;
 	

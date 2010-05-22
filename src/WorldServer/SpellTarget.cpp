@@ -358,7 +358,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		uint32 jumps=m_spellInfo->EffectChainTarget[i]-1;
 		float range=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));//this is probably wrong
 		range*=range;
-		unordered_set<Object* >::iterator itr;
+		unordered_set<Object*>::iterator itr;
 		for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
 		{
 			if((*itr)->GetGUID()==m_targets.m_unitTarget)
@@ -415,7 +415,7 @@ void Spell::SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j)
 	if( p == NULL )
 	{
 		if( TO_CREATURE( u_caster)->IsTotem() )
-			p = TO_CREATURE( u_caster )->GetTotemOwner();
+			p = TO_PLAYER( TO_CREATURE(u_caster)->GetSummonOwner());
 		else if( u_caster->IsPet() && TO_PET( u_caster )->GetPetOwner() ) 
 			p = TO_PET( u_caster )->GetPetOwner();
 	}
@@ -464,8 +464,6 @@ void Spell::SpellTargetSingleTargetFriend(uint32 i, uint32 j)
 // Spell Target Handling for type 22: Enemy Targets around the Caster//changed party members around you
 // place around the target / near the target //targeted Area effect
 void Spell::SpellTargetAoE(uint32 i, uint32 j) // something special
-// grep: this is *totally* broken. AoE only attacking friendly party members and self
-// is NOT correct. // not correct at all:P
 {
 	FillAllTargetsInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetRadius(i));
 }
@@ -479,7 +477,7 @@ void Spell::SpellTargetSingleGameobjectTarget(uint32 i, uint32 j)
 // Spell Target Handling for type 24: Targets in Front of the Caster
 void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 {
-	unordered_set<Object* >::iterator itr,itr2;
+	unordered_set<Object*>::iterator itr,itr2;
 
 	if( m_spellInfo->cone_width == 0.0f )
 	{
@@ -652,12 +650,12 @@ void Spell::SpellTargetNearbyPartyMembers(uint32 i, uint32 j)
 	{
 		if( u_caster->GetTypeId()==TYPEID_UNIT)
 		{
-			if( TO_CREATURE( u_caster )->IsTotem() )
+			if(TO_CREATURE(u_caster)->IsTotem())
 			{
 				float r = GetRadius(i);
 				r *= r;
 
-				Player* p = TO_CREATURE( u_caster )->GetTotemOwner();
+				Player* p = TO_PLAYER(TO_CREATURE(u_caster)->GetSummonOwner());
 				
 				if( p == NULL)
 					return;
@@ -723,14 +721,14 @@ void Spell::SpellTargetPartyMember(uint32 i, uint32 j)
 
  	float rsqr = GetRadius( i );
 	if( rsqr == 0 )
-		rsqr = 40*40;//kinda like a bug. 0 range to target a party member ? Highly impossible
+		rsqr = 40*40; // kinda like a bug. 0 range to target a party member ? Highly impossible
 	else rsqr *= rsqr;
 	if(subgroup)
 	{
 		Target->GetGroup()->Lock();
 		for(GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr)
 		{
-		//if you are picky you could also check if on same map. Let's face it you won't similar positions on different maps
+		// if you are picky you could also check if on same map. Let's face it you won't similar positions on different maps
 		if((*itr)->m_loggedInPlayer && IsInrange(Target,(*itr)->m_loggedInPlayer, rsqr) )
 				_AddTargetForced( (*itr)->m_loggedInPlayer->GetGUID(), i );
 		}
@@ -743,7 +741,7 @@ void Spell::SpellTargetPartyMember(uint32 i, uint32 j)
 // Spell Target Handling for type 38: Dummy Target (Server-side script effect)
 void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 {
-	//TargetsList *tmpMap=&m_targetUnits[i];
+	// TargetsList *tmpMap=&m_targetUnits[i];
 	if( m_spellInfo->Id == 51699 )
 	{
 		if( p_caster )
@@ -758,7 +756,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 	}				
 	else if( m_spellInfo->Id == 12938 )
 	{
-		//FIXME:this ll be immortal targets
+		// FIXME: this ll be immortal targets
 		FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
 	}
 	_AddTargetForced(m_caster->GetGUID(), i);
@@ -849,7 +847,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	} // find nearby friendly target
 	else
 	{
-		unordered_set<Object* >::iterator itr;
+		unordered_set<Object*>::iterator itr;
 		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); itr++ )
 		{
 			if( !(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive())
@@ -927,10 +925,6 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 void Spell::SpellTarget56(uint32 i, uint32 j)
 {
 	SpellTargetAllPartyMembersRangeNR(i, j);
-	/*if(!m_caster->IsInWorld())
-		return;
-
-	_AddTargetForced(m_caster->GetGUID(), i);*/
 }
 
 // Spell Target Handling for type 57: Targeted Party Member

@@ -10,19 +10,19 @@ const char * AreaTriggerFailureMessages[] =
 {
 	"-",
 	"This instance is currently not available",                                         //AREA_TRIGGER_FAILURE_UNAVAILABLE	
-	"You must have the \"Burning Crusade\" expansion to access this content.",          //AREA_TRIGGER_FAILURE_NO_BC				
-	"Heroic mode currently not available for this instance.",                           //AREA_TRIGGER_FAILURE_NO_HEROIC		
-	"You must be in a raid group to pass through here.",                                //AREA_TRIGGER_FAILURE_NO_RAID			
-	"You must complete the quest \"%s\" to pass through here.",                         //AREA_TRIGGER_FAILURE_NO_ATTUNE_Q	
-	"You must have item \"%s\" to pass through here.",                                  //AREA_TRIGGER_FAILURE_NO_ATTUNE_I	
-	"You must have reached level %u before you can pass through here.",                 //AREA_TRIGGER_FAILURE_LEVEL				
-	"You must be in a party to pass through here.",                                     //AREA_TRIGGER_FAILURE_NO_GROUP			
-	"You do not have a required key(s) \"%s\" to pass through here.",                   //AREA_TRIGGER_FAILURE_NO_KEY				
-	"You must have reached level %u before you can enter heroic mode.",                 //AREA_TRIGGER_FAILURE_LEVEL_HEROIC	
-	"Don\'t have any idea why you can\'t pass through here.",                           //AREA_TRIGGER_FAILURE_NO_CHECK			
-	"You must have the \"Wrath of the Lich King\" expansion to access this content.",   //AREA_TRIGGER_FAILURE_NO_WOTLK			
+	"You must have the \"Burning Crusade\" expansion to access this content.",          //AREA_TRIGGER_FAILURE_NO_BC
+	"Heroic mode currently not available for this instance.",                           //AREA_TRIGGER_FAILURE_NO_HEROIC
+	"You must be in a raid group to pass through here.",                                //AREA_TRIGGER_FAILURE_NO_RAID
+	"You must complete the quest \"%s\" to pass through here.",                         //AREA_TRIGGER_FAILURE_NO_ATTUNE_Q
+	"You must have item \"%s\" to pass through here.",                                  //AREA_TRIGGER_FAILURE_NO_ATTUNE_I
+	"You must have reached level %u before you can pass through here.",                 //AREA_TRIGGER_FAILURE_LEVEL
+	"You must be in a party to pass through here.",                                     //AREA_TRIGGER_FAILURE_NO_GROUP
+	"You do not have a required key(s) \"%s\" to pass through here.",                   //AREA_TRIGGER_FAILURE_NO_KEY
+	"You must have reached level %u before you can enter heroic mode.",                 //AREA_TRIGGER_FAILURE_LEVEL_HEROIC
+	"Don\'t have any idea why you can\'t pass through here.",                           //AREA_TRIGGER_FAILURE_NO_CHECK
+	"You must have the \"Wrath of the Lich King\" expansion to access this content.",   //AREA_TRIGGER_FAILURE_NO_WOTLK
 	"You are in queue for this raid group.",                                            //AREA_TRIGGER_FAILURE_IN_QUEUE
-	"Another group is already active inside.",											//AREA_TRIGGER_FAILURE_WRONG_GROUP
+	"Another group is already active inside.",                                          //AREA_TRIGGER_FAILURE_WRONG_GROUP
 };
 
 void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
@@ -38,7 +38,6 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 {		
 	DEBUG_LOG( "WorldSession","HandleAreaTriggerOpcode: %u", id);
 
-	// Are we REALLY here?
 	CHECK_INWORLD_RETURN;
 
 	// Search quest log, find any exploration quests

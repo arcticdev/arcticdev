@@ -119,7 +119,7 @@ class MapMgr;
 // Base object for every item, unit, player, corpse, container, etc     //
 //////////////////////////////////////////////////////////////////////////
 
-class ARCTIC_DECL Object : public EventableObject, public std::tr1::enable_shared_from_this<Object>
+class ARCTIC_DECL Object : public EventableObject
 {
 public:
 	typedef unordered_set< Object* > InRangeSet;
@@ -132,7 +132,6 @@ public:
 	virtual void Update ( uint32 time ) { }
     // True if object exists in world
  
-	
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr* pMapMgr);
@@ -167,7 +166,7 @@ public:
 
 	// This includes any nested objects we have, inventory for example.
 	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
-	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, Player* target );
+	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer *buf, Player* target );
 	uint32 __fastcall BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, UpdateMask * mask );
 	uint32 __fastcall BuildOutOfRangeUpdateBlock( ByteBuffer *buf );
 
@@ -502,7 +501,7 @@ public:
 	Aura* m_phaseAura;
 
 protected:
-	Object (  );
+	Object();
 
 	// void _Create (uint32 guidlow, uint32 guidhigh);
 	void _Create( uint32 mapid, float x, float y, float z, float ang);
@@ -512,14 +511,14 @@ protected:
 	// Mark values that player should get when he/she/it sees object for first time.
 	virtual void _SetCreateBits(UpdateMask *updateMask, Player* target) const;
 
-	void _BuildMovementUpdate( ByteBuffer *data, uint16 flags, uint32 flags2, Player* target );
+	void _BuildMovementUpdate( ByteBuffer *data, uint32 flags, uint32 flags2, Player* target );
 	void _BuildValuesUpdate( ByteBuffer *data, UpdateMask *updateMask, Player* target );
 
 	/* Main Function called by isInFront(); */
 	bool inArc(float Position1X, float Position1Y, float FOV, float Orientation, float Position2X, float Position2Y );
 
 	int32 m_phaseMode;
-	int32 m_phaseMapId; // -1 = Disregard?
+	int32 m_phaseMapId;
 	LocationVector m_phaseLocation;
 	uint32 m_phaseDistanceLimit;
 
@@ -564,14 +563,14 @@ protected:
 
 	// Set of Objects in range.
 	// TODO: that functionality should be moved into WorldServer.
-	unordered_set<Object* > m_objectsInRange;
-	unordered_set<Player* > m_inRangePlayers;
-	unordered_set<Object* > m_oppFactsInRange;
+	unordered_set<Object*> m_objectsInRange;
+	unordered_set<Player*> m_inRangePlayers;
+	unordered_set<Object*> m_oppFactsInRange;
    
 	int32 m_instanceId;
 
 	ExtensionSet * m_extensions;
-	void _SetExtension(const string& name, void* ptr);		// so we can set from scripts. :)
+	void _SetExtension(const string& name, void* ptr); // so we can set from scripts. :)
 
 	bool m_sharedPtrDestructed;
 

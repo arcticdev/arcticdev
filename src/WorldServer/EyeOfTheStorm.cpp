@@ -8,10 +8,10 @@
 
 static const char * EOTSCPNames[EOTS_TOWER_COUNT] = 
 {
-	BLOODSELDFAI,
-	FELLREAVERAI,
-	WOWMAGETOWAI,
-	DRAENIERUSAI,
+	"Blood Elf Tower",
+	"Fel Reaver Ruins",
+	"Mage Tower",
+	"Draenei Ruins",
 };
 
 static float EOTSBuffCoordinates[4][4] = 
@@ -272,7 +272,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player* plr, uint32 id)
 #ifdef BG_ANTI_CHEAT
 	if(!m_started || m_ended)
 	{
-		SendChatMessage(CHAT_MSG_BG_SYSTEM_NEUTRAL, plr->GetGUID(), WHASBATSLEAI,  plr->GetName());
+		SendChatMessage(CHAT_MSG_BG_SYSTEM_NEUTRAL, plr->GetGUID(), "%s has removed from the battleground for cheating.",  plr->GetName());
 		plr->SoftDisconnect();
 		return;
 	}
@@ -311,7 +311,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player* plr, uint32 id)
 
 	// 25 is guessed
 	const static uint32 points[5] = { 25, 75, 85, 100, 500 };
-	const char * msgs[2] = { HTEALLIENCAI };
+	const char * msgs[2] = { "The Alliance have captured the flag.", "The Horde have captured the flag." };
 
 	plr->m_bgScore.MiscData[BG_SCORE_EOTS_FLAG_CAPTURES]++;
 	plr->m_bgHasFlag = false;
@@ -356,7 +356,7 @@ void EyeOfTheStorm::HookFlagDrop(Player* plr, GameObject* obj)
 
 	m_mapMgr->GetStateManager().UpdateWorldState( WORLDSTATE_EOTS_FLAG_NEUTRAL_DISPLAY, 0 );
 	PlaySoundToAll( 8212 );
-	SendChatMessage( CHAT_MSG_BG_SYSTEM_ALLIANCE + plr->GetTeam(), plr->GetGUID(), SNHAWFLANGAI );
+	SendChatMessage( CHAT_MSG_BG_SYSTEM_ALLIANCE + plr->GetTeam(), plr->GetGUID(), "$n has taken the flag!" );
 	m_flagHolder = plr->GetLowGUID();
 
 	event_RemoveEvents( EVENT_EOTS_RESET_FLAG );
@@ -411,7 +411,7 @@ bool EyeOfTheStorm::HookSlowLockOpen( GameObject* pGo, Player* pPlayer, Spell* p
 
 	m_mapMgr->GetStateManager().UpdateWorldState( WORLDSTATE_EOTS_FLAG_NEUTRAL_DISPLAY, 0 );
 	PlaySoundToAll( pPlayer->GetTeam() ? SOUND_HORDE_CAPTURE : SOUND_ALLIANCE_CAPTURE );
-	SendChatMessage( CHAT_MSG_BG_SYSTEM_ALLIANCE + pPlayer->GetTeam(), pPlayer->GetGUID(), SNHAWFLANGAI );
+	SendChatMessage( CHAT_MSG_BG_SYSTEM_ALLIANCE + pPlayer->GetTeam(), pPlayer->GetGUID(), "$n has taken the flag!" );
 	m_flagHolder = pPlayer->GetLowGUID();
 
 	CBattleground::HookSlowLockOpen(pGo, pPlayer, pSpell);
@@ -476,7 +476,7 @@ void EyeOfTheStorm::EventResetFlag()
 
 	m_mapMgr->GetStateManager().UpdateWorldState( WORLDSTATE_EOTS_FLAG_NEUTRAL_DISPLAY, 1 );
 	PlaySoundToAll( 8192 );
-	SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, ZTHESBEERSAI );
+	SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The flag has been reset." );
 	m_flagHolder = 0;
 }
 
@@ -566,7 +566,7 @@ void EyeOfTheStorm::OnCreate()
 		m_CPStatusGO[i] = m_mapMgr->CreateGameObject(EOTSTowerIds[i]);
 		if(m_CPStatusGO[i] == NULL || !m_CPStatusGO[i]->CreateFromProto( EOTSTowerIds[i], m_mapMgr->GetMapId(), EOTSCPLocations[i][0], EOTSCPLocations[i][1], EOTSCPLocations[i][2], 0.0f, 0.0f, 0.0f, 0.0f, 0.0f))
 		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, EOTSDEINGWAI, EOTSTowerIds[i]);
+			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "EOTS is being created and you are missing gameobject %u.", EOTSTowerIds[i]);
 			abort();
 			return;
 		}
@@ -575,7 +575,7 @@ void EyeOfTheStorm::OnCreate()
 		m_CPBanner[i] = m_mapMgr->CreateGameObject(EOTS_BANNER_NEUTRAL);
 		if( m_CPBanner[i] == NULL || !m_CPBanner[i]->CreateFromProto( EOTS_BANNER_NEUTRAL, m_mapMgr->GetMapId(), EOTSCPLocations[i][0], EOTSCPLocations[i][1], EOTSCPLocations[i][2], 0.0f, 0.0f, 0.0f, 0.0f, 0.0f))
 		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, EOTSDEINGSAI, EOTS_BANNER_NEUTRAL);
+			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "EOTS is being created and you are missing gameobjects %u", EOTS_BANNER_NEUTRAL);
 			abort();
 			return;
 		}
@@ -588,7 +588,7 @@ void EyeOfTheStorm::OnCreate()
 		m_bubbles[i] = m_mapMgr->CreateGameObject((uint32)EOTSBubbleLocations[i][0]);
 		if( m_bubbles[i] == NULL || !m_bubbles[i]->CreateFromProto( (uint32)EOTSBubbleLocations[i][0], m_mapMgr->GetMapId(), EOTSBubbleLocations[i][1], EOTSBubbleLocations[i][2], EOTSBubbleLocations[i][3], EOTSBubbleLocations[i][4], 0.0f, 0.0f, 0.0f, 0.0f ) )
 		{
-			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, EOTSTERMINAI);
+			Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "EOTS is being created and you are missing gameobjects. Terminating.");
 			abort();
 			return;
 		}
@@ -612,7 +612,7 @@ void EyeOfTheStorm::OnCreate()
 	m_standFlag = m_mapMgr->CreateGameObject(EOTS_STANDFLAG);
 	if( m_standFlag == NULL ||!	m_standFlag->CreateFromProto( EOTS_STANDFLAG, m_mapMgr->GetMapId(), 2174.782227f, 1569.054688f, 1160.361938f, -1.448624f, 0.0f, 0.0f, 0.0f, 0.0f ))
 	{
-		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, EOTSTERMIUAI,EOTS_STANDFLAG);
+		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "EOTS is being created and you are missing gameobject %u",EOTS_STANDFLAG);
 		abort();
 		return;
 	}
@@ -622,7 +622,7 @@ void EyeOfTheStorm::OnCreate()
 	m_dropFlag = m_mapMgr->CreateGameObject(EOTS_DROPFLAG);
 	if( m_dropFlag == NULL || !m_dropFlag->CreateFromProto( EOTS_DROPFLAG, m_mapMgr->GetMapId(), 2174.782227f, 1569.054688f, 1160.361938f, -1.448624f, 0.0f, 0.0f, 0.0f, 0.0f ))
 	{
-		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, EOTSTERMIUAI,EOTS_DROPFLAG);
+		Log.LargeErrorMessage(LARGERRORMESSAGE_ERROR, "EOTS is being created and you are missing gameobject %u",EOTS_DROPFLAG);
 		abort();
 		return;
 	}
@@ -648,8 +648,8 @@ void EyeOfTheStorm::UpdateCPs()
 	//   doing lookups of objects that have already been updated                           //
     /////////////////////////////////////////////////////////////////////////////////////////
 	
-	unordered_set<Player*  >::iterator itr;
-	unordered_set<Player*  >::iterator itrend;
+	unordered_set<Player*>::iterator itr;
+	unordered_set<Player*>::iterator itrend;
 	map<uint32,uint32>::iterator it2, it3;
 	uint32 timeptr = (uint32)UNIXTIME;
 	bool in_range;
@@ -722,7 +722,7 @@ void EyeOfTheStorm::UpdateCPs()
 
 				m_spiritGuides[i] = SpawnSpiritGuide( EOTSGraveyardLocations[i][0], EOTSGraveyardLocations[i][1], EOTSGraveyardLocations[i][2], 0, 1 );
 				AddSpiritGuide( m_spiritGuides[i] );
-				SendChatMessage(CHAT_MSG_BG_SYSTEM_HORDE, 0, THESHORDESAI, EOTSCPNames[i]);
+				SendChatMessage(CHAT_MSG_BG_SYSTEM_HORDE, 0, "The Horde have captured the %s.", EOTSCPNames[i]);
 
 				// set some world states
 				m_mapMgr->GetStateManager().UpdateWorldState(EOTSNeturalDisplayFields[i], 0);
@@ -747,7 +747,7 @@ void EyeOfTheStorm::UpdateCPs()
 
 				m_spiritGuides[i] = SpawnSpiritGuide( EOTSGraveyardLocations[i][0], EOTSGraveyardLocations[i][1], EOTSGraveyardLocations[i][2], 0, 0 );
 				AddSpiritGuide( m_spiritGuides[i] );
-				SendChatMessage(CHAT_MSG_BG_SYSTEM_ALLIANCE, 0, THESALLICSAI, EOTSCPNames[i]);
+				SendChatMessage(CHAT_MSG_BG_SYSTEM_ALLIANCE, 0, "The Alliance have captured the %s.", EOTSCPNames[i]);
 
 				// set some world states
 				m_mapMgr->GetStateManager().UpdateWorldState(EOTSNeturalDisplayFields[i], 0);
@@ -767,7 +767,7 @@ void EyeOfTheStorm::UpdateCPs()
 				{
 					if( m_CPBanner[i] && m_CPBanner[i]->GetEntry() == EOTS_BANNER_ALLIANCE )
 					{
-						SendChatMessage(CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, THESAREICSAI, EOTSCPNames[i]);
+						SendChatMessage(CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The Alliance have lost control of the %s.", EOTSCPNames[i]);
 						m_towerCount[0]--;
 						if( m_towerCount[0] < 0 )
 							m_towerCount[0] = 0;
@@ -776,7 +776,7 @@ void EyeOfTheStorm::UpdateCPs()
 					}
 					else
 					{
-						SendChatMessage(CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, THESHREICSAI, EOTSCPNames[i]);
+						SendChatMessage(CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The Horde have lost control of the %s.", EOTSCPNames[i]);
 						m_towerCount[1]--;
 						if( m_towerCount[1] < 0 )
 							m_towerCount[1] = 0;
@@ -960,7 +960,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					res = (*itr)->GetItemInterface()->FindFreeInventorySlot( ItemPrototypeStorage.LookupEntry(EOTS_MARK_ID) );
 					if( !res.Result )
 					{
-						(*itr)->BroadcastMessage(COULEADDSFAI);
+						(*itr)->BroadcastMessage("Could not add EOTS mark. Make sure you have room in your inventory.");
 						continue;
 					}
 

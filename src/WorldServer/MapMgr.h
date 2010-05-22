@@ -40,27 +40,23 @@ enum ObjectActiveState
 	OBJECT_STATE_ACTIVE = 2,
 };
 
-typedef unordered_set<Object* > ObjectSet;
-typedef unordered_set<Object* > UpdateQueue;
-typedef unordered_set<Player*  > PUpdateQueue;
-typedef unordered_set<Player*  > PlayerSet;
 typedef HM_NAMESPACE::hash_map<const uint32, Object* > StorageMap;
 typedef unordered_set<uint64> CombatProgressMap;
 typedef unordered_set<Vehicle*> VehicleSet;
 typedef unordered_set<Creature*> CreatureSet;
-typedef unordered_set<GameObject* > GameObjectSet;
+typedef unordered_set<GameObject*> GameObjectSet;
 typedef HM_NAMESPACE::hash_map<const uint32, Vehicle*> VehicleSqlIdMap;
 typedef HM_NAMESPACE::hash_map<const uint32, Creature*> CreatureSqlIdMap;
 typedef HM_NAMESPACE::hash_map<const uint32, GameObject* > GameObjectSqlIdMap;
 
 #define MAX_TRANSPORTERS_PER_MAP 25
+#define RESERVE_EXPAND_SIZE 1024
 
 class Transporter;
-#define RESERVE_EXPAND_SIZE 1024
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func
 
-class ARCTIC_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,public ThreadContext, public std::tr1::enable_shared_from_this<MapMgr>
+class ARCTIC_DECL MapMgr : public CellHandler <MapCell>, public EventableObject, public ThreadContext
 {
 	friend class UpdateObjectThread;
 	friend class ObjectUpdaterThread;
@@ -72,10 +68,10 @@ public:
 	ObjectSet m_objectinsertpool;
 	void AddObject(Object*);
 
-    //////////////////////////////////////////////////////////////////////////
-    // Local (mapmgr) storage/generation of GameObjects                     //
-    //////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of GameObjects                     //
+	//////////////////////////////////////////////////////////////////////////
+
 	typedef HM_NAMESPACE::hash_map<const uint32, GameObject* > GameObjectMap;
 	GameObjectMap m_gameObjectStorage;
 	uint32 m_GOHighGuid;
@@ -93,10 +89,10 @@ public:
 		return (itr != m_gameObjectStorage.end()) ? m_gameObjectStorage[guid] : NULLGOB;
 	}
 
-    //////////////////////////////////////////////////////////////////////////
-    // Local (mapmgr) storage/generation of Vehicles                        //
-    //////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of Vehicles                        //
+	//////////////////////////////////////////////////////////////////////////
+
 	uint32 m_VehicleArraySize;
 	uint32 m_VehicleHighGuid;
 	HM_NAMESPACE::unordered_map<const uint32,Vehicle*> m_VehicleStorage;
@@ -106,10 +102,10 @@ public:
 	{
 		return guid <= m_VehicleHighGuid ? m_VehicleStorage[guid] : NULLVEHICLE;
 	}
-    
+
 	//////////////////////////////////////////////////////////////////////////
-    // Local (mapmgr) storage/generation of Creatures                       //
-    //////////////////////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of Creatures                       //
+	//////////////////////////////////////////////////////////////////////////
 	
 	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
@@ -120,10 +116,10 @@ public:
 	{
 		return guid <= m_CreatureHighGuid ? m_CreatureStorage[guid] : NULLCREATURE;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    // Local (mapmgr) storage/generation of DynamicObjects                  //
-    //////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of DynamicObjects                  //
+	//////////////////////////////////////////////////////////////////////////
+
 	uint32 m_DynamicObjectHighGuid;
 	typedef HM_NAMESPACE::hash_map<const uint32, DynamicObject*> DynamicObjectStorageMap;
 	DynamicObjectStorageMap m_DynamicObjectStorage;
@@ -135,9 +131,9 @@ public:
 		return (itr != m_DynamicObjectStorage.end()) ? m_DynamicObjectStorage[guid] : NULLDYN;
 	}
 
-    //////////////////////////////////////////////////////////////////////////
-    // Local (mapmgr) storage of pets                                       //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Local (mapmgr) storage of pets                                       //
+	//////////////////////////////////////////////////////////////////////////
 	
 	typedef HM_NAMESPACE::hash_map<const uint32, Pet*> PetStorageMap;
 	PetStorageMap m_PetStorage;
@@ -147,11 +143,11 @@ public:
 		return (itr != m_PetStorage.end()) ? m_PetStorage[guid] : NULLPET;
 	}
 
-    //////////////////////////////////////////////////////////////////////////
-    // Local (mapmgr) storage of players for faster lookup                  //
-    //////////////////////////////////////////////////////////////////////////
-    
-    // double typedef lolz// a compile breaker..
+	//////////////////////////////////////////////////////////////////////////
+	// Local (mapmgr) storage of players for faster lookup                  //
+	//////////////////////////////////////////////////////////////////////////
+
+	// double typedef lolz// a compile breaker..
 	typedef HM_NAMESPACE::hash_map<const uint32, Player*> PlayerStorageMap;
 
 	Mutex PlayerStorageMaplock;
@@ -170,10 +166,10 @@ public:
 		return NULLPLR;
 	}
 
-    //////////////////////////////////////////////////////////////////////////
-    // Local (MapMgr) storage of combats in progress                        //
-    //////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Local (MapMgr) storage of combats in progress                        //
+	//////////////////////////////////////////////////////////////////////////
+
 	CombatProgressMap _combatProgress;
 	void AddCombatInProgress(uint64 guid)
 	{
@@ -194,10 +190,10 @@ public:
 		return (_combatProgress.size() > 0);
 	}
 
-    //////////////////////////////////////////////////////////////////////////
-    // Lookup Wrappers                                                      //
-    //////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Lookup Wrappers                                                      //
+	//////////////////////////////////////////////////////////////////////////
+
 	Unit* GetUnit(const uint64 & guid);
 	Object* _GetObject(const uint64 & guid);
 
@@ -271,7 +267,7 @@ public:
 	void EventCorpseDespawn(uint64 guid);
 
 	time_t InactiveMoveTime;
-    uint32 iInstanceMode;
+	uint32 iInstanceMode;
 
 	void UnloadCell(uint32 x,uint32 y);
 	void EventRespawnVehicle(Vehicle* v, MapCell * p);
@@ -310,7 +306,7 @@ protected:
 
 private:
 	// Objects that exist on map
- 
+
 	uint32 _mapId;
 	set<Object* > _mapWideStaticObjects;
 
@@ -318,8 +314,8 @@ private:
 	void UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell);
 
 public:
-	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)
 	float m_UpdateDistance;
+	bool collisionloaded;
 
 private:
 	// Update System.
