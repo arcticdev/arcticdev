@@ -34,16 +34,16 @@ AchievementInterface::~AchievementInterface()
 
 void AchievementInterface::LoadFromDB( QueryResult * pResult )
 {
-    // don't allow GMs to complete achievements
-    if( m_player->GetSession()->HasGMPermissions() )
-    {
-        CharacterDatabase.Query("DELETE FROM achievements WHERE player = %u;", m_player->GetGUID());
-            return;
-    }
-     
+	// don't allow GMs to complete achievements
+	if( m_player->GetSession()->HasGMPermissions() )
+	{
+		CharacterDatabase.Execute("DELETE FROM achievements WHERE player = %u;", m_player->GetGUID());
+		return;
+	}
+
 	if( !pResult )
-        return;
-		
+		return;
+
 	do 
 	{
 		Field * fields = pResult->Fetch();
@@ -54,21 +54,24 @@ void AchievementInterface::LoadFromDB( QueryResult * pResult )
 		AchievementEntry * ae = dbcAchievement.LookupEntry( achievementid );
 		AchievementData * ad = new AchievementData;
 		memset(ad, 0, sizeof(AchievementData));
-		if( !completed ) // if( completed == NULL ) 
+
+		ad->id = achievementid;
+		ad->num_criterias = ae->AssociatedCriteriaCount;
+		if(!completed) // save us memory! don't allocate our counters unless we're actually still working. :D
 		{
 			ad->counter = new uint32[ae->AssociatedCriteriaCount];
 			memset(ad->counter, 0, sizeof(uint32)*ae->AssociatedCriteriaCount);
 		}
-		ad->id = achievementid;
-		ad->num_criterias = ae->AssociatedCriteriaCount;
 		ad->completed = completed;
 		ad->date = fields[3].GetUInt32();
-		
-		if( ad->completed && string(ae->name).find("Realm First!") != string::npos )
+		ad->groupid = fields[4].GetUInt64();
+
+		if( ad->completed && string(ae->name).find("Realm First!") != string::npos ||
+			(ae->flags & ACHIEVEMENT_FLAG_REALM_FIRST_OBTAIN) || (ae->flags & ACHIEVEMENT_FLAG_REALM_FIRST_KILL))
 			m_completedRealmFirstAchievements.insert( ae->ID );
 
 		vector<string> Delim = StrSplit( criteriaprogress, "," );
-		for( uint32 i = 0; !completed && i < ae->AssociatedCriteriaCount; ++i )
+		for( uint32 i = 0; !completed && i < ae->AssociatedCriteriaCount; ++i)
 		{
 			if( i >= Delim.size() )
 				continue;
@@ -87,9 +90,9 @@ void AchievementInterface::LoadFromDB( QueryResult * pResult )
 
 void AchievementInterface::SaveToDB(QueryBuffer * buffer)
 {
-    // don't allow GMs to save achievements
-    if( m_player->GetSession()->HasGMPermissions() )
-        return;
+	// don't allow GMs to save achievements
+	if( m_player->GetSession()->HasGMPermissions() )
+		return;
 	bool NewBuffer = false;
 	if( !buffer )
 	{
@@ -100,12 +103,12 @@ void AchievementInterface::SaveToDB(QueryBuffer * buffer)
 	map<uint32,AchievementData*>::iterator itr = m_achivementDataMap.begin();
 	for(; itr != m_achivementDataMap.end(); ++itr)
 	{
-		AchievementData * ad = itr->second;
+		AchievementData* ad = itr->second;
 		if( !ad->m_isDirty )
 			continue;
 
 		std::stringstream ss;
-		ss << "REPLACE INTO achievements (player,achievementid,progress,completed) VALUES (";
+		ss << "REPLACE INTO achievements (player,achievementid,progress,completed,groupid) VALUES (";
 		ss << GetPlayer()->GetLowGUID() << ",";
 		ss << ad->id << ",";
 		ss << "'";
@@ -114,7 +117,8 @@ void AchievementInterface::SaveToDB(QueryBuffer * buffer)
 			ss << ad->counter[i] << ",";
 		}
 		ss << "',";
-		ss << ad->date << ")";
+		ss << ad->date << ",";
+		ss << ad->groupid << ")";
 		buffer->AddQueryStr( ss.str().c_str() );
 
 		ad->m_isDirty = false;
@@ -180,29 +184,38 @@ void AchievementInterface::GiveRewardsForAchievement(AchievementEntry * ae)
 	// Reward: Item
 	if( ar->ItemID )
 	{
-		// Just use the in-game mail system and mail it to him.
-		MailMessage msg;
-		memset(&msg, 0, sizeof(MailMessage));
-		
-		Item* pItem = objmgr.CreateItem( ar->ItemID, NULLPLR );
-		if(!pItem) return;
+		m_player->GetGUID();
+		Item* pItem = objmgr.CreateItem(ar->ItemID, m_player);
+		m_player->GetItemInterface()->AddItemToFreeSlot(pItem);
+		if( !m_player->GetItemInterface()->AddItemToFreeSlot(pItem) )
+		{
+			// Inventory full? Send it by mail.
+			m_player->GetSession()->SendNotification("No free slots were found in your inventory, item has been mailed.");
+			sMailSystem.DeliverMessage(MAILTYPE_NORMAL, m_player->GetGUID(), m_player->GetGUID(), "Achievement Reward", "Here is your reward.", 0, 0, ar->ItemID, 1, true);
+			pItem->Destructor();
+		}
+	}
 
-		pItem->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
-		msg.items.push_back(pItem->GetUInt32Value(OBJECT_FIELD_GUID));
+	// Define: Alliance Title
+	if(m_player->GetTeam() == ALLIANCE)
+	{
+		if( ar->AllianceTitle )
+		{
+			m_player->SetKnownTitle(ar->AllianceTitle, true);
+			// Set title to Alliance Reward, forced by Blizzard.
+			m_player->SetUInt32Value( PLAYER_CHOSEN_TITLE, ar->AllianceTitle);
+		}
+	}
 
-		msg.body = string( ar->text );
-		msg.subject = string( ar->subject );
-
-		msg.sender_guid = uint64( ar->sender );
-		msg.player_guid = uint64( GetPlayer()->GetGuid() );
-		msg.delivery_time = uint32 ( UNIXTIME );
-		msg.expire_time = 0; // This message NEVER expires.
-		
-		// fixed deliver message system..
-		sMailSystem.DeliverMessage(&msg);
-
-		pItem->Destructor();
-		pItem = NULLITEM;
+	// Define: Horde Title
+	if(m_player->GetTeam() == HORDE)
+	{
+		if( ar->HordeTitle )
+		{
+			m_player->SetKnownTitle(ar->HordeTitle, true);
+			// Set title to Horde Reward, forced by Blizzard.
+			m_player->SetUInt32Value( PLAYER_CHOSEN_TITLE, ar->HordeTitle);
+		}
 	}
 }
 
@@ -236,7 +249,7 @@ void AchievementInterface::EventAchievementEarned(AchievementData * pData)
 		data << GetPlayer()->GetName();
 		data << GetPlayer()->GetGUID();
 		data << ae->ID;
-		data << uint32( 1 );
+		data << uint32(1);
 		sWorld.SendFactionMessage(&data, GetPlayer()->GetTeam());
 
 		// Send to the other team (no clickable link)
@@ -244,7 +257,7 @@ void AchievementInterface::EventAchievementEarned(AchievementData * pData)
 		data2 << GetPlayer()->GetName();
 		data2 << GetPlayer()->GetGUID();
 		data2 << ae->ID;
-		data2 << uint32( 0 );
+		data2 << uint32(0);
 		sWorld.SendFactionMessage(&data2, GetPlayer()->GetTeam() ? 0 : 1);
 	}
 }
@@ -256,7 +269,7 @@ WorldPacket* AchievementInterface::BuildAchievementEarned(AchievementData * pDat
 	*data << GetPlayer()->GetNewGUID();
 	*data << pData->id;
 	*data << uint32( unixTimeToTimeBitfields(time(NULL)) );
-	*data << uint32( 0 );
+	*data << uint32(0);
 
 	if( m_achievementInspectPacket )
 	{
@@ -285,23 +298,33 @@ bool AchievementInterface::CanCompleteAchievement(AchievementData * ad)
 	if( GetPlayer()->GetSession()->HasGMPermissions() )
 		return false;
 
-	if( ad->completed ) 
-	    return false;
+	if(!m_player)
+		return false;
+
+	if( ad->completed )
+		return false;
 
 	bool hasCompleted = false;
 	AchievementEntry * ach = dbcAchievement.LookupEntry(ad->id);
-	if( ach->flags & ACHIEVEMENT_FLAG_COUNTER )
+
+	if( ach->categoryId == 1 || ach->flags & ACHIEVEMENT_FLAG_COUNTER ) // We cannot complete statistics
 		return false;
 
 	// realm first achievements
 	if( m_completedRealmFirstAchievements.find(ad->id) != m_completedRealmFirstAchievements.end() )
 		return false;
 
+	for(uint32 i = 0; i < ad->num_criterias; ++i)
+	{
+		if(ad->counter[i] == 0)
+			return false;
+	}
+
 	bool failedOne = false;
 	for(uint32 i = 0; i < ad->num_criterias; ++i)
 	{
 		bool thisFail = false;
-		AchievementCriteriaEntry * ace = dbcAchivementCriteria.LookupEntry( ach->AssociatedCriteria->at(i) ); 
+		AchievementCriteriaEntry * ace = dbcAchievementCriteria.LookupEntry(ach->AssociatedCriteria[i]);
 		uint32 ReqCount = ace->raw.field4 ? ace->raw.field4 : 1;
 
 		if( ace->groupFlag & ACHIEVEMENT_CRITERIA_GROUP_NOT_IN_GROUP && GetPlayer()->GetGroup() )
@@ -329,6 +352,31 @@ bool AchievementInterface::CanCompleteAchievement(AchievementData * ad)
 	}
 
 	if( failedOne && !hasCompleted )
+		return false;
+
+	return true;
+}
+
+bool AchievementInterface::HandleBeforeChecks(AchievementData * ad)
+{
+	AchievementEntry * ach = dbcAchievement.LookupEntry(ad->id);
+
+	// Difficulty checks
+	if(string(ach->description).find("25-player heroic mode") != string::npos)
+		if(m_player->iRaidType < MODE_25PLAYER_HEROIC)
+			return false;
+	if(string(ach->description).find("10-player heroic mode") != string::npos)
+		if(m_player->iRaidType < MODE_10PLAYER_HEROIC)
+			return false;
+	if(string(ach->description).find("25-player mode") != string::npos)
+		if(m_player->iRaidType < MODE_25PLAYER_NORMAL)
+			return false;
+	if((string(ach->description).find("Heroic Difficulty") != string::npos) || ach->ID == 4526)
+		if(m_player->iInstanceType < MODE_5PLAYER_HEROIC)
+			return false;
+	if(m_player->getLevel() < 10) // Blizzard says no.
+		return false;
+	if(m_player->GetSession()->HasGMPermissions())
 		return false;
 
 	return true;
@@ -390,11 +438,8 @@ void AchievementInterface::HandleAchievementCriteriaConditionDeath()
 	for(; itr != m_achivementDataMap.end(); ++itr)
 	{
 		AchievementData * ad = itr->second;
-		if(ad->completed)
-			continue;
+		if(ad->completed) continue;
 		AchievementEntry * ae = dbcAchievement.LookupEntry( ad->id );
-		if(ae == NULL)
-			continue;
 		for(uint32 i = 0; i < ad->num_criterias; ++i)
 		{
 			uint32 CriteriaID = ae->AssociatedCriteria[i];
@@ -440,7 +485,7 @@ void AchievementInterface::HandleAchievementCriteriaKillCreature(uint32 killedMo
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -487,7 +532,7 @@ void AchievementInterface::HandleAchievementCriteriaWinBattleground(uint32 bgMap
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				if( compareCriteria->raw.additionalRequirement1_type && scoreMargin < compareCriteria->raw.additionalRequirement1_type ) // BG Score Requirement.
@@ -567,7 +612,7 @@ void AchievementInterface::HandleAchievementCriteriaRequiresAchievement(uint32 a
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -625,14 +670,11 @@ void AchievementInterface::HandleAchievementCriteriaLevelUp(uint32 level)
 					break;
 				}
 			}
-
 			if( ReqClass && m_player->getClass() != ReqClass )
 				continue;
-
 			if( ReqRace && m_player->getRace() != ReqRace )
 				continue;
 		}
-
 		AchievementCriteriaEntry * compareCriteria = NULL;
 		AchievementData * ad = GetAchievementDataByAchievementID(AchievementID);
 		if(ad->completed)
@@ -642,14 +684,13 @@ void AchievementInterface::HandleAchievementCriteriaLevelUp(uint32 level)
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = m_player->getLevel() > ReqLevel ? ReqLevel : m_player->getLevel();
 				SendCriteriaUpdate(ad, i); break;
 			}
 		}
-
 		if( CanCompleteAchievement(ad) )
 			EventAchievementEarned(ad);
 	}
@@ -672,13 +713,11 @@ void AchievementInterface::HandleAchievementCriteriaOwnItem(uint32 itemId, uint3
 		uint32 AchievementID = ace->referredAchievement;
 		uint32 ReqItemId = ace->own_item.itemID;
 		uint32 ReqItemCount = ace->own_item.itemCount;
-
 		AchievementEntry * pAchievementEntry = dbcAchievement.LookupEntryForced(AchievementID);
 		if(pAchievementEntry == NULL)
 			continue;
 		if( itemId != ReqItemId )
 			continue;
-
 		AchievementCriteriaEntry * compareCriteria = NULL;
 		AchievementData * ad = GetAchievementDataByAchievementID(AchievementID);
 		if( ad->completed )
@@ -688,18 +727,16 @@ void AchievementInterface::HandleAchievementCriteriaOwnItem(uint32 itemId, uint3
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + stack;
 				SendCriteriaUpdate(ad, i); break;
 			}
 		}
-
 		if( CanCompleteAchievement(ad) )
 			EventAchievementEarned(ad);
 	}
-
 	HandleAchievementCriteriaLootItem(itemId, stack);
 }
 
@@ -720,13 +757,11 @@ void AchievementInterface::HandleAchievementCriteriaLootItem(uint32 itemId, uint
 		uint32 AchievementID = ace->referredAchievement;
 		uint32 ReqItemId = ace->loot_item.itemID;
 		uint32 ReqItemCount = ace->loot_item.itemCount;
-
 		AchievementEntry * pAchievementEntry = dbcAchievement.LookupEntryForced(AchievementID);
 		if(pAchievementEntry == NULL)
 			continue;
 		if( itemId != ReqItemId )
 			continue;
-
 		AchievementCriteriaEntry * compareCriteria = NULL;
 		AchievementData * ad = GetAchievementDataByAchievementID(AchievementID);
 		if(ad->completed)
@@ -736,14 +771,13 @@ void AchievementInterface::HandleAchievementCriteriaLootItem(uint32 itemId, uint
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + stack;
 				SendCriteriaUpdate(ad, i); break;
 			}
 		}
-
 		if( CanCompleteAchievement(ad) )
 			EventAchievementEarned(ad);
 	}
@@ -779,7 +813,7 @@ void AchievementInterface::HandleAchievementCriteriaQuestCount(uint32 questCount
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = questCount;
@@ -825,7 +859,7 @@ void AchievementInterface::HandleAchievementCriteriaHonorableKillClass(uint32 cl
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -871,7 +905,7 @@ void AchievementInterface::HandleAchievementCriteriaHonorableKillRace(uint32 rac
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -912,7 +946,7 @@ void AchievementInterface::HandleAchievementCriteriaTalentResetCostTotal(uint32 
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + cost;
@@ -953,7 +987,7 @@ void AchievementInterface::HandleAchievementCriteriaTalentResetCount()
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -995,7 +1029,7 @@ void AchievementInterface::HandleAchievementCriteriaBuyBankSlot(bool retroactive
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				if( retroactive )
@@ -1044,7 +1078,7 @@ void AchievementInterface::HandleAchievementCriteriaFlightPathsTaken()
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -1104,7 +1138,7 @@ void AchievementInterface::HandleAchievementCriteriaExploreArea(uint32 areaId, u
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = 1;
@@ -1149,7 +1183,7 @@ void AchievementInterface::HandleAchievementCriteriaHonorableKill()
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -1235,7 +1269,7 @@ void AchievementInterface::HandleAchievementCriteriaDoEmote(uint32 emoteId, Unit
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -1282,7 +1316,7 @@ void AchievementInterface::HandleAchievementCriteriaCompleteQuestsInZone(uint32 
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -1329,7 +1363,7 @@ void AchievementInterface::HandleAchievementCriteriaReachSkillLevel(uint32 skill
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = skillLevel;
@@ -1372,7 +1406,7 @@ void AchievementInterface::HandleAchievementCriteriaWinDuel()
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -1414,7 +1448,7 @@ void AchievementInterface::HandleAchievementCriteriaLoseDuel()
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = ad->counter[i] + 1;
@@ -1459,7 +1493,7 @@ void AchievementInterface::HandleAchievementCriteriaKilledByCreature(uint32 kill
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i]++;
@@ -1500,7 +1534,7 @@ void AchievementInterface::HandleAchievementCriteriaKilledByPlayer()
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i]++;
@@ -1528,20 +1562,21 @@ void AchievementInterface::HandleAchievementCriteriaDeath()
 	{
 		AchievementCriteriaEntry * ace = (*citr);
 		uint32 AchievementID = ace->referredAchievement;
-
 		AchievementEntry * pAchievementEntry = dbcAchievement.LookupEntryForced(AchievementID);
 		if(pAchievementEntry == NULL)
 			continue;
+
 		AchievementCriteriaEntry * compareCriteria = NULL;
 		AchievementData * ad = GetAchievementDataByAchievementID(AchievementID);
 		if(ad->completed)
 			continue;
 		if(!HandleBeforeChecks(ad))
 			continue;
+
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i]++;
@@ -1579,24 +1614,529 @@ void AchievementInterface::HandleAchievementCriteriaDeathAtMap(uint32 mapId)
 		AchievementEntry * pAchievementEntry = dbcAchievement.LookupEntryForced(AchievementID);
 		if(pAchievementEntry == NULL)
 			continue;
+
 		AchievementCriteriaEntry * compareCriteria = NULL;
 		AchievementData * ad = GetAchievementDataByAchievementID(AchievementID);
 		if(ad->completed)
 			continue;
 		if(!HandleBeforeChecks(ad))
 			continue;
+
 		// Figure out our associative ID.
 		for(uint32 i = 0; i < pAchievementEntry->AssociatedCriteriaCount; ++i)
 		{
-			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );			
+			compareCriteria = dbcAchievementCriteria.LookupEntry( pAchievementEntry->AssociatedCriteria[i] );
 			if( compareCriteria == ace )
 			{
 				ad->counter[i]++;
 				SendCriteriaUpdate(ad, i); break;
 			}
 		}
+	}
+}
 
-		if( CanCompleteAchievement(ad) )
-			EventAchievementEarned(ad);
+void AchievementInterface::HandleAchievementsFromAchievements(AchievementData * pData, uint32 mapId, uint32 classId, uint32 raceId, uint32 itemId, uint32 killedMonster, uint32 ID, uint32 stack)
+{
+	AchievementEntry * pAchievementEntry = dbcAchievement.LookupEntryForced(ID);
+	{
+		switch(ID)
+		{
+		case 913: // To Honor One's Elders
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (912 && 911 && 910 && 914 && 915 && 1396 && 609 && 626 && 1281 && 1552 && 937))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1693: // Fool For Love
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (260 && 1188 && 1280 && 1291 && 1695 && 1696 && 1698 && 1699 && 1702 && 1701 && 1703 && 1704))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1707: // Fool For Love
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (260 && 1188 && 1279 && 1291 && 1695 && 1697 && 1696 && 1699 && 1702 && 1701 && 1703 && 1704))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2798: // Noble Gardener
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2676 && 2418 && 2436 && 2576 && 2416 && 2497 && 2420 && 2422))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2797: // Noble Gardener
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2676 && 2418 && 2416 && 2419 && 2421 && 2422 && 2436 && 2576))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1793: // FOR THE CHILDREN!!!
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1791 && 1788 && 1789 && 1792 && 1786 && 1790))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1039: // The Flame Keeper
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1036 && 1037 && 271 && 263 && 1145 && 272))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1038: // The Flame Warden
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1034 && 1035 && 263 && 271 && 1145 && 272))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1683: // Brewmaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1203 && 1185 && 2796 && 1260 && 295 && 1186 && 293 && 303 && 1936))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1684: // Brewmaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1184 && 1185 && 2796 && 1260 && 295 && 1186 && 293 && 1936 && 303))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1657: // Hallowed be thy Name
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (972 && 288 && 255 && 289 && 981 && 1041 && 1261 && 291 && 283 && 292 && 971))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1656: // Hallowed be thy Name
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (972 && 288 && 255 && 289 && 981 && 1040 && 1261 && 291 && 283 && 292 && 970))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1691: // Merrymaker
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (273 && 252 && 259 && 1282 && 277 && 1295 && 279 && 1687 && 1685 && 1688 && 1689 && 1690))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1692: // Merrymaker
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (273 && 252 && 1255 && 1282 && 277 && 1295 && 279 && 1687 && 1686 && 1688 && 1689 && 1690))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2145: // What a Long, Strange Trip Its Been.
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (913 && 1693 && 2798 && 1793 && 1039 && 1683 && 1657 && 1691))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+					m_player->addSpell(60024);
+			}break;
+		case 2144: // What a Long, Strange Trip Its Been.
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (913 && 1707 && 2797 && 1793 && 1038 && 1684 && 1656 && 1692))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+					m_player->addSpell(60024);
+			}break;
+		case 1036: // The Fires of Azeroth
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1025 && 1026 && 1027))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1034: // The Fires of Azeroth
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1022 && 1023 && 1024))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1037: // Desecration of the Alliance
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1031 && 1032 && 1033))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1035: // Desecration of the Horde
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1028 && 1029 && 1030))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 971: // Tricks and Treats of Azeroth
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (965 && 967 && 968))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 970: // Tricks and Treats of Azeroth
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (963 && 966 && 969))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 730: // Skills to pay the Bills
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (130 && 135 && 125))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1784: // Hail to the Chef
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (125 && 877 && 906 && 1779 && 1780 && 1781 && 1783 && 1798 && 1801 && 1800))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1563: // Hail to the Chef
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (125 && 877 && 906 && 1779 && 1780 && 1781 && 1782 && 1798 && 1801 && 1800))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2096: // The Coin Master
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2094 && 2095 && 1957))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1516: // Accomplished Angler
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (130 && 153 && 1257 && 150 && 306 && 726 && 878 && 905 && 560 && 144 && 1225 && 1517 && 1243 && 1561 && 2096))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 945: // The Argent Champion
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (946 && 947))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 952: // Mercenary of Sholazar
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (951 && 950))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1010: // Northrend Vanguard
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (947 && 1007 && 1008 && 1009))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1283: // Classic DungeonMaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (628 && 629 && 630 && 631 && 632 && 633 && 634 && 635 && 636 && 637 && 638 && 639 && 640 && 641 && 642 && 643 && 644 && 645 && 646))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1285: // Classic Raider
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (684 && 685 && 686 && 687 && 688 && 689))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1284: // Outland DungeonMaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (647 && 648 && 649 && 650 && 651 && 652 && 653 && 654 && 655 && 656 && 657 && 658 && 659 && 660 && 661 && 666))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1287: // Outland Dungeon Hero
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (667 && 668 && 669 && 670 && 671 && 673 && 674 && 675 && 676 && 677 && 678 && 679 && 680 && 681 && 682 && 672))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1286: // Outland Raider
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (690 && 691 && 692 && 693 && 694 && 695 && 696 && 697 && 698))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1288: // Northrend DungeonMaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (477 && 478 && 479 && 480 && 481 && 482 && 483 && 484 && 485 && 486 && 487 && 488))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1289: // Northrend Dungeon Hero
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (489 && 490 && 500 && 491 && 492 && 493 && 494 && 495 && 496 && 497 && 498 && 499))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2136: // Glory of the Hero
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1919 && 2150 && 2036 && 2037 && 1296 && 1297 && 1860 && 1861 && 1862 && 2038 && 2056 && 2151 && 2039 && 2057 && 1816 && 1865 && 2041 && 2153 && 1864 && 2152 && 2040 && 2058 && 1866 && 2154 && 2155 && 1867 && 1834 && 2042 && 1817 && 1872 && 2043 && 1873 && 2156 && 2157 && 1871 && 1868 && 2044 && 2045 && 2046))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2137: // Glory of the Raider
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (578 && 1858 && 1856 && 1996 && 1997 && 2178 && 2180 && 622 && 1874 && 1869 && 2047 && 2051 && 2146 && 2176 && 2148 && 2187 && 2184))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2138: // Glory of the Raider
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (579 && 1859 && 1857 && 2139 && 2140 && 2186 && 2179 && 2177 && 2181 && 623 && 1875 && 1870 && 2048 && 2149 && 2054 && 2147 && 2185))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2957: // Glory of the Ulduar Raider
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (3056 && 2930 && 2923 && 3058 && 2941 && 2953 && 3006 && 3182 && 3176 && 3179 && 3180 && 3181 && 3158))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2958: // Glory of the Ulduar Raider
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (3057 && 2929 && 2924 && 3059 && 2944 && 2954 && 3007 && 3184 && 3183 && 3187 && 3189 && 3188 && 3163))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 714: // The Conqueror
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (708 && 710 && 712))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1175: // The Battlemaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1168 && 1170 && 1173 && 1171 && 2195))
+				&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1174: // The Arena Master
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (699 && 876 && 1159 && 1160 && 1161 && 408 && 1162 && 409))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1168: // Master of Alterac Valley
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (219 && 221 && 222 && 224 && 1164 && 226 && 223 && 873 && 582 && 706 && 708 && 1166))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1170: // Master of Arathi Basin
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (155 && 165 && 158 && 73 && 1153 && 157 && 161 && 156 && 159 && 162 && 710 && 583 && 584))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1171: // Master of Eye of the Storm
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (209 && 783 && 784 && 214 && 213 && 212 && 216 && 233))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1173: // Master of Warsong Gulch
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (167 && 199 && 200 && 872 && 168 && 201 && 204 && 712 && 1251 && 1502 && 1252 && 207))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2195: // Master of Stand of the Ancients
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1309 && 1310 && 1765 && 1761 && 2193 && 2192 && 1763 && 2189 && 1764 && 2190 && 1766 && 2191 && 2200))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2776: // Master of Wintergrasp
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1718 && 1755 && 2199 && 2080 && 2089 && 1722 && 1721 && 2476 && 1723 && 1727 && 1751))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 3957: // Master of Isle of ConQuest
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (3777 && 4177 && 3847 && 3848 && 3849 && 3850 && 3852 && 3853 && 3854 && 4256 && 3855))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 907: // The Justicar
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (709 && 711 && 713))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 230: // The Battlemaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1167 && 1169 && 1172 && 1171 && 2194))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1167: // Master of Alterac Valley
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (219 && 221 && 222 && 1151 && 225 && 226 && 223 && 220 && 582 && 707 && 709 && 1166))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1169: // Master of Arathi Basin
+		{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (155 && 165 && 158 && 73 && 1153 && 157 && 161 && 156 && 159 && 162 && 711 && 583 && 584))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+		}break;
+		case 1172: // Master of Warsong Gulch
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (167 && 199 && 200 && 872 && 168 && 201 && 204 && 713 && 203 && 202 && 206 && 207))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2194: // Master of Stand of the Ancients
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1309 && 1310 && 1765 && 1761 && 2193 && 1762 && 1763 && 2189 && 1764 && 2190 && 1766 && 2191 && 1757))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1752: // Master of Wintergrasp
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1718 && 1755 && 2199 && 2080 && 2089 && 1722 && 1721 && 1737 && 1723 && 1727 && 1751))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 3857: // Master of Isle of ConQuest
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (3777 && 3851 && 3847 && 3848 && 3849 && 3850 && 3852 && 3853 && 3854 && 3856 && 3855))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 42: // Explore Eastern Kingdoms
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (776 && 760 && 761 && 765 && 766 && 775 && 627 && 778 && 772 && 779 && 780 && 768 && 859 && 774 && 769 && 858 && 781 && 782 && 773 && 802 && 841 && 777 && 770 && 771 && 868))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 43: // Explore Kalimdor
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (728 && 736 && 842 && 860 && 750 && 844 && 861 && 845 && 846 && 847 && 848 && 850 && 849 && 851 && 852 && 853 && 854 && 855 && 856 && 857))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 44: // Explore Outland
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (862 && 863 && 867 && 866 && 865 && 843 && 864))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 45: // Explore Northrend
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1264 && 1263 && 1265 && 1266 && 1267 && 1268 && 1457 && 1269 && 1270))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 46: // World Explorer
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (42 && 43 && 44 && 45))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1682: // The Loremaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1360 && 1274 && 1677 && 1680))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1681: // The Loremaster
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (41 && 1262 && 1676 && 1678))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1274: // Loremaster of Outland
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1271 && 1272 && 1273 && 1190 && 1193 && 1194 && 1195))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1262: // Loremaster of Outland
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (1189 && 1190 && 1191 && 1192 && 1193 && 1194 && 1195))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 1360: // Loremaster of Northrend
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (36 && 38 && 39 && 40 && 1356 && 1357 && 1358 && 1359))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 41: // Loremaster of Northrend
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (33 && 34 && 35 && 36 && 37 && 38 && 39 && 40))
+					&AchievementInterface::EventAchievementEarned;
+				pData->completed = true;
+			}break;
+		case 941: // Hemet Nesingwary: The Collected Quests
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (938 && 939 && 940))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 614: // For The Alliance!
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (610 && 611 && 612 && 613))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 619: // For The Horde!
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (615 && 616 && 617 && 618))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 3656: // Horde Pilgrim
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (3579 && 3557 && 3597 && 3582 && 3559 && 3577 && 3581 && 3558 && 3578))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+					m_player->addSpell(61773);
+			}break;
+		case 3478: // Alliance Pilgrim
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (3579 && 3556 && 3596 && 3582 && 3559 && 3576 && 3580 && 3558 && 3578))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+					m_player->addSpell(61773);
+			}break;
+		case 2788: // Champion of the Horde
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2783 && 2784 && 2785 && 2786 && 2787))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2771: // Exalted Champion of the Horde
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2765 && 2766 && 2767 && 2768 && 2769))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2816: // Exalted Argent Champion of the Horde
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (947 && 2765 && 2766 && 2767 && 2768 && 2769))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2782: // Champion of the Alliance
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2777 && 2778 && 2779 && 2780 && 2781))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2770: // Exalted Champion of the Alliance
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (2760 && 2761 && 2762 && 2763 && 2764))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		case 2817: // Exalted Argent Champion of the Alliance
+			{
+				if(m_player->GetAchievementInterface()->HasAchievements() == (947 && 2760 && 2761 && 2762 && 2763 && 2764))
+					&AchievementInterface::EventAchievementEarned;
+					pData->completed = true;
+			}break;
+		}
 	}
 }
