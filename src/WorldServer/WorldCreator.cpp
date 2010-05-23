@@ -28,7 +28,7 @@ void InstanceMgr::Load(TaskList * l)
 
 	// Create all non-instance type maps.
 	result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
-	if( result )
+	if(result)
 	{
 		m_InstanceHigh = result->Fetch()[0].GetUInt32()+1;
 		delete result;
@@ -42,7 +42,7 @@ void InstanceMgr::Load(TaskList * l)
 	{
 		do 
 		{
-			if( !WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) )
+			if(WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL)
 				continue;
 
 			if( result->Fetch()[0].GetUInt32() >= NUM_MAPS )
@@ -51,8 +51,8 @@ void InstanceMgr::Load(TaskList * l)
 				continue;
 			}
 
-			//_CreateMap(result->Fetch()[0].GetUInt32());
-			l->AddTask(new Task(new NoSharedPtrCallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, result->Fetch()[0].GetUInt32())));
+			// _CreateMap(result->Fetch()[0].GetUInt32());
+			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, result->Fetch()[0].GetUInt32())));
 		} while(result->NextRow());
 		delete result;
 	}
@@ -81,7 +81,7 @@ void InstanceMgr::Load(TaskList * l)
 #endif
 		if(m_maps[itr->Get()->mapid] == NULL)
 		{
-			l->AddTask(new Task(new NoSharedPtrCallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, itr->Get()->mapid)));
+			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, itr->Get()->mapid)));
 		}
 
 		if( itr->Get()->flags != 1 && itr->Get()->cooldown == 0 )
@@ -487,9 +487,8 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 
 MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 {
-	MapInfo * inf = WorldMapInfoStorage.LookupEntry(mapid);
-
-	ASSERT(inf && inf->type == INSTANCE_NULL);
+	MapInfo* inf = WorldMapInfoStorage.LookupEntry(mapid);
+	ASSERT(inf != NULL && inf->type == INSTANCE_NULL);
 	ASSERT(mapid < NUM_MAPS && m_maps[mapid] != NULL);
 
 	Log.Notice("InstanceMgr", "Creating continent %s.", m_maps[mapid]->GetName());
@@ -498,25 +497,42 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 	ret->Init();
 
 	// start its thread
-	ThreadPool.ExecuteTask(ret.get());
+	ThreadPool.ExecuteTask(ret);
 
 	// assign pointer
 	m_singleMaps[mapid] = ret;
+
+	if(sWorld.Collision && ret->IsCollisionEnabled())
+	{
+		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid);
+		ret->collisionloaded = false;
+		for(uint32 x = 0; x < _sizeX; ++x) 
+		{
+			for(uint32 y = 0; y < _sizeY; ++y)
+				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y))
+					ret->collisionloaded = true;
+		}
+		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (ret->collisionloaded == true ? "Successfully" : "Unsuccessfully"));
+	}
 	return ret;
 }
 
 MapMgr* InstanceMgr::_CreateInstance(Instance * in)
 {
-	Log.Notice("InstanceMgr", "Creating saved instance %u (%s)", in->m_instanceId, m_maps[in->m_mapId]->GetName());
-	ASSERT(in->m_mapMgr==NULL);
+	ASSERT(in->m_mapMgr == NULL);
+
+	if(!dbcMap.LookupEntry(in->m_mapId))
+		return NULL;
+
+	Log.Notice("InstanceMgr", "Creating %s %u (%s)", dbcMap.LookupEntry(in->m_mapId)->israid() ? "Raid" : "Instance", in->m_instanceId, m_maps[in->m_mapId]->GetName());
 
 	// we don't have to check for world map info here, since the instance wouldn't have been saved if it didn't have any.
-	in->m_mapMgr = MapMgr* (new MapMgr(m_maps[in->m_mapId], in->m_mapId, in->m_instanceId));
+	in->m_mapMgr = (new MapMgr(m_maps[in->m_mapId], in->m_mapId, in->m_instanceId));
 	in->m_mapMgr->Init();
 	in->m_mapMgr->pInstance = in;
 	in->m_mapMgr->iInstanceMode = in->m_difficulty;
 	in->m_mapMgr->InactiveMoveTime = 60+UNIXTIME;
-	ThreadPool.ExecuteTask(in->m_mapMgr.get());
+	ThreadPool.ExecuteTask(in->m_mapMgr);
 	return in->m_mapMgr;
 }
 
@@ -583,13 +599,12 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	strcpy(tmp, "");
 #define pushline strcat(m_file, tmp)
 
-	snprintf(tmp, 200, " <instance>\n");																												pushline;
-	snprintf(tmp, 200, " <map>%u</map>\n", mgr->GetMapId());																						pushline;
-	snprintf(tmp, 200, " <maptype>%u</maptype>\n", inf->type);																						pushline;
-	snprintf(tmp, 200, " <players>%u</players>\n", (unsigned int)mgr->GetPlayerCount());																			pushline;
-	snprintf(tmp, 200, " <maxplayers>%u</maxplayers>\n", inf->playerlimit);																		pushline;
+	snprintf(tmp, 200, " <instance>\n"); pushline;
+	snprintf(tmp, 200, " <map>%u</map>\n", mgr->GetMapId()); pushline;
+	snprintf(tmp, 200, " <maptype>%u</maptype>\n", inf->type); pushline;
+	snprintf(tmp, 200, " <players>%u</players>\n", (unsigned int)mgr->GetPlayerCount()); pushline;
+	snprintf(tmp, 200, " <maxplayers>%u</maxplayers>\n", inf->playerlimit); pushline;
 
-	//<creationtime>
 	if (inst)
 	{
 		tm *ttime = localtime( &inst->m_creation );
@@ -602,7 +617,6 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 		pushline;
 	}
 
-	//<expirytime>
 	if (inst && inst->m_expiration)
 	{
 		tm *ttime = localtime( &inst->m_expiration );
@@ -615,7 +629,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 		pushline;
 
 	}
-	//<idletime>
+
 	if (mgr->InactiveMoveTime)
 	{
 		tm *ttime = localtime( &mgr->InactiveMoveTime );
@@ -628,7 +642,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 		pushline;
 	}
 
-	snprintf(tmp, 200, " </instance>\n");																											pushline;
+	snprintf(tmp, 200, " </instance>\n"); pushline;
 #undef pushline
 }
 
@@ -1124,7 +1138,7 @@ MapMgr* InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 			return NULLMAPMGR;
 	}
 
-	MapMgr* ret = MapMgr* (new MapMgr(m_maps[mapid],mapid,GenerateInstanceID()));
+	MapMgr* ret = (new MapMgr(m_maps[mapid], mapid, GenerateInstanceID()));
 	ret->Init();
 	Instance * pInstance = new Instance();
 	pInstance->m_creation = UNIXTIME;
@@ -1143,7 +1157,7 @@ MapMgr* InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 
 	m_instances[mapid]->insert( make_pair( pInstance->m_instanceId, pInstance ) );
 	m_mapLock.Release();
-	ThreadPool.ExecuteTask(ret.get());
+	ThreadPool.ExecuteTask(ret);
 	return ret;
 }
 

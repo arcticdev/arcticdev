@@ -249,7 +249,7 @@ void StrandOfTheAncients::HookFlagStand(Player* plr, GameObject* obj)
 {
 }
 
-bool StrandOfTheAncients::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
+bool StrandOfTheAncients::HookSlowLockOpen(GameObject* pGo, Player* plr, Spell* pSpell)
 {
 	Respawn();
 	OnStart();
@@ -257,16 +257,16 @@ bool StrandOfTheAncients::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spe
 	{
 		sEventMgr.RemoveEvents(TO_SOTA( this ), EVENT_SOTA_TIMER);
 		PlaySoundToAll( 8212 );
-		pPlayer->CastSpell(pPlayer,52459,true);
-		if(pPlayer->GetTeam() == Attackers)
+		plr->CastSpell(plr,52459,true);
+		if(plr->GetTeam() == Attackers)
 		{
-			pPlayer->SetTeam(1);
-			pPlayer->SafeTeleport(pPlayer->GetMapId(),pPlayer->GetInstanceID(),SOTAStartLocations[0][0],SOTAStartLocations[0][1],SOTAStartLocations[0][2],0.0f);
+			plr->SetTeam(1);
+			plr->SafeTeleport(plr->GetMapId(),plr->GetInstanceID(),SOTAStartLocations[0][0],SOTAStartLocations[0][1],SOTAStartLocations[0][2],0.0f);
 		}
 		else
 		{
-			pPlayer->SetTeam(0);
-			pPlayer->SafeTeleport(pPlayer->GetMapId(),pPlayer->GetInstanceID(),SOTAStartLocations[1][0],SOTAStartLocations[1][1],SOTAStartLocations[1][2],0.0f);
+			plr->SetTeam(0);
+			plr->SafeTeleport(plr->GetMapId(),plr->GetInstanceID(),SOTAStartLocations[1][0],SOTAStartLocations[1][1],SOTAStartLocations[1][2],0.0f);
 		}
 		if(Attackers == HORDE)
 		{
@@ -499,18 +499,18 @@ void StrandOfTheAncients::TimeTick()
 		sEventMgr.RemoveEvents(TO_SOTA( this ), EVENT_SOTA_TIMER);
 		if(BattleRound == 1)
 		{
-			Player* pPlayer;
+			Player* plr;
 			PlaySoundToAll( 8212 );
-			pPlayer->CastSpell(pPlayer,52459,true);
-			if(pPlayer->GetTeam() == Attackers)
+			plr->CastSpell(plr,52459,true);
+			if(plr->GetTeam() == Attackers)
 			{
-				pPlayer->SetTeam(1);
-				pPlayer->SafeTeleport(pPlayer->GetMapId(),pPlayer->GetInstanceID(),SOTAStartLocations[0][0],SOTAStartLocations[0][1],SOTAStartLocations[0][2],0.0f);
+				plr->SetTeam(1);
+				plr->SafeTeleport(plr->GetMapId(),plr->GetInstanceID(),SOTAStartLocations[0][0],SOTAStartLocations[0][1],SOTAStartLocations[0][2],0.0f);
 			}
 			else
 			{
-				pPlayer->SetTeam(0);
-				pPlayer->SafeTeleport(pPlayer->GetMapId(),pPlayer->GetInstanceID(),SOTAStartLocations[1][0],SOTAStartLocations[1][1],SOTAStartLocations[1][2],0.0f);
+				plr->SetTeam(0);
+				plr->SafeTeleport(plr->GetMapId(),plr->GetInstanceID(),SOTAStartLocations[1][0],SOTAStartLocations[1][1],SOTAStartLocations[1][2],0.0f);
 			}
 			Respawn();
 			OnStart();

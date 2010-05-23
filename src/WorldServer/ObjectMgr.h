@@ -321,9 +321,9 @@ public:
 	ARCTIC_INLINE bool IsFull() { return (SignatureCount == Slots); }
 };
 
-typedef std::map<uint32, uint32>                                    OverrideIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, Player*  >             PlayerStorageMap;
-typedef std::list<GM_Ticket*>                                       GmTicketList;
+typedef std::map<uint32, uint32>                      OverrideIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, Player*  >     PlayerStorageMap;
+typedef std::list<GM_Ticket*>                         GmTicketList;
 
 #ifndef WIN32
 #define ARCTIC_USE_MAP_PLAYER_INDEX
@@ -369,19 +369,19 @@ public:
 	typedef std::set<AchievementCriteriaEntry*>							AchievementCriteriaSet;
 	
     // HashMap typedef's
-    typedef HM_NAMESPACE::hash_map<uint64, Item* >                ItemMap;
+    typedef HM_NAMESPACE::hash_map<uint64, Item* >                      ItemMap;
 	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>                 CorpseCollectorMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PlayerInfo*>                 PlayerNameMap;
 	typedef HM_NAMESPACE::hash_map<uint32, PlayerCreateInfo*>           PlayerCreateInfoMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Guild*>                      GuildMap;
 	typedef HM_NAMESPACE::hash_map<uint32, skilllinespell*>             SLMap;
 	typedef HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>*>  VendorMap;
-    typedef HM_NAMESPACE::hash_map<uint32, Transporter* >         TransportMap;
+    typedef HM_NAMESPACE::hash_map<uint32, Transporter* >               TransportMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Trainer*>                    TrainerMap;
 	typedef HM_NAMESPACE::hash_map<uint32, std::vector<TrainerSpell*> > TrainerSpellMap;
     typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>         ReputationModMap;
-    typedef HM_NAMESPACE::hash_map<uint32, Corpse* >              CorpseMap;
-	typedef HM_NAMESPACE::hash_map<uint32, Group*>						GroupMap;
+    typedef HM_NAMESPACE::hash_map<uint32, Corpse* >                    CorpseMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Group*>                      GroupMap;
     
     // Map typedef's
     typedef std::map<uint32, LevelInfo*>                                LevelMap;
@@ -391,7 +391,7 @@ public:
 	typedef std::map<uint32, set<SpellEntry*> >                         PetDefaultSpellMap;
 	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
 	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
-	typedef std::map<uint32, AchievementCriteriaSet*>					AchievementCriteriaMap;
+	typedef std::map<uint32, AchievementCriteriaSet*>                   AchievementCriteriaMap;
 
     // object holders
 	GmTicketList GM_TicketList;
@@ -546,13 +546,14 @@ public:
 	ReputationModifier * GetReputationModifier(uint32 entry_id, uint32 faction_id);
 
 	void SetHighestGuids();
+	void ListGuidAmounts();
 	uint32 GenerateLowGuid(uint32 guidhigh);
 	uint32 GenerateMailID();
 	
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
-    void AddTransport(Transporter* pTransporter);
-   
+	void AddTransport(Transporter* pTransporter);
+
 	void LoadTrainers();
 	Trainer* GetTrainer(uint32 Entry);
 
@@ -564,6 +565,7 @@ public:
 	void LoadScrollCreation();
 	void CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, Player* Plr); 
 
+	QueryResult* SQLCheckExists(const char* tablename, const char* columnname, uint64 columnvalue);
 	LevelInfo * GetLevelInfo(uint32 Race, uint32 Class, uint32 Level);
 	void GenerateLevelUpInfo();
 	uint32 GetPetSpellCooldown(uint32 SpellId);

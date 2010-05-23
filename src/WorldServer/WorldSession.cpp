@@ -5,18 +5,19 @@
  */
 
 #include "StdAfx.h"
+
 #define WORLDSOCKET_TIMEOUT	80
 
 OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
 WorldSession::WorldSession(uint32 id, string Name, WorldSocket *sock) : _socket(sock), _accountId(id), _accountName(Name),
-_logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), instanceId(0)
+_logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), instanceId(0), _recentlogout(false)
 {
 	_player = NULLPLR;
 	m_hasDeathKnight = false;
 	m_highestLevel = 0;
 	m_asyncQuery = false;
-	memset(movement_packet, 0, sizeof(movement_packet));
+	portPlr = false; 
 	m_currMsTime = getMSTime();
 	bDeleted = false;
 	m_bIsWLevelSet = false;
@@ -29,7 +30,6 @@ _logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), insta
 	language = 0;
 	m_muted = 0;
 	_side = -1;
-	movement_info.FallTime = 0;
 	m_lastEnumTime = 0;
 	m_repeatTime = 0;
 	m_repeatEmoteTime = 0;
@@ -92,8 +92,6 @@ int WorldSession::Update(uint32 InstanceID)
 
 	if(InstanceID != instanceId)
 	{
-		// We're being updated by the wrong thread.
-		// "Remove us from this mapsession list!" - 2
 		return 2;
 	}
 
@@ -105,7 +103,7 @@ int WorldSession::Update(uint32 InstanceID)
 		if(_player && _player->m_beingPushed) // check timeout
 		{
 			// Timeout client after 2 minutes, in case AddToWorld failed (f.e. client crash)
-			if(  (uint32)UNIXTIME - m_lastPing > 120 )
+			if( (uint32)UNIXTIME - m_lastPing > 120 )
 			{
 				DEBUG_LOG("WorldSession","Removing InQueue player due to socket timeout.");
 				LogoutPlayer(true);
@@ -118,44 +116,47 @@ int WorldSession::Update(uint32 InstanceID)
 			SetLogoutTimer(PLAYER_LOGOUT_DELAY);
 	}
 
- 	if (portPlr && _player)
- 	{
-		_player->SafeTeleport(portMap, portInst, portVec);
- 		portPlr = false;
- 	}
-
-	if(InstanceID != instanceId)
-	{
-		// If we hit this -> means a packet has changed our map.
-		return 2;
-	}
-	
-
 	while ((packet = _recvQueue.Pop()))
 	{
 		ASSERT(packet);
 
 		if(packet->GetOpcode() >= NUM_MSG_TYPES)
-			Log.Error("WorldSession","Received out of range packet with opcode 0x%.4X", packet->GetOpcode());
+			Log.Error("WorldSession", "Received out of range packet with opcode 0x%.4X", packet->GetOpcode());
 		else
 		{
 			Handler = &WorldPacketHandlers[packet->GetOpcode()];
-			if(Handler->status == STATUS_LOGGEDIN && !_player && Handler->handler != 0)
+			if(Handler->status != STATUS_IGNORED)
 			{
-				Log.Warning("WorldSession","Received unexpected/wrong state packet with opcode %s (0x%.4X)",
-					LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
-			}
-			else
-			{
-				// Valid Packet :>
-				if(Handler->handler == 0)
+				if(Handler->status == STATUS_LOGGEDIN && !_player && Handler->handler != 0)
 				{
-					Log.Warning("WorldSession","Received unhandled packet with opcode %s (0x%.4X)",
+					Log.Warning("WorldSession", "Received unexpected/wrong state packet(Logged In) with opcode %s (0x%.4X)",
+						LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
+				}
+				else if(Handler->status == STATUS_IN_OR_LOGGINGOUT && !_player && !_recentlogout && Handler->handler != 0)
+				{
+					Log.Warning("WorldSession", "Received unexpected/wrong state packet(In or Out) with opcode %s (0x%.4X)",
 						LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
 				}
 				else
 				{
-					(this->*Handler->handler)(*packet);
+					if(Handler->handler == 0)
+					{
+						Log.Warning("WorldSession", "Received unhandled packet with opcode %s (0x%.4X)",
+							LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
+					}
+					else
+					{
+						packet->opcodename = LookupOpcodeName(packet->GetOpcode()); // Needed for ByteBuffer
+
+						(this->*Handler->handler)(*packet);
+
+						if(sLog.IsOutProccess() && (packet->rpos() < packet->wpos()))
+							LogUnprocessedTail(packet);
+
+						if(Handler->status == STATUS_AUTHED)
+							if(packet->GetOpcode() != CMSG_SET_ACTIVE_VOICE_CHANNEL)
+								_recentlogout = false;
+					}
 				}
 			}
 		}
@@ -904,7 +905,7 @@ void WorldSession::InitPacketHandlerTable()
 	// WorldPacketHandlers[CMSG_CHANNEL_VOICE_QUERY].handler					= &WorldSession::HandleChannelVoiceQueryOpcode;		// couldnt find new opcode
 	WorldPacketHandlers[CMSG_OPT_OUT_OF_LOOT].handler							= &WorldSession::HandleSetAutoLootPassOpcode;
 
-	WorldPacketHandlers[CMSG_REALM_SPLIT].handler								= &WorldSession::Handle38C;
+	WorldPacketHandlers[CMSG_REALM_SPLIT].handler								= &WorldSession::HandleRealmSplit;
 	WorldPacketHandlers[CMSG_REALM_SPLIT].status								= STATUS_AUTHED;
 
 	WorldPacketHandlers[CMSG_QUESTGIVER_STATUS_MULTIPLE_QUERY].handler			= &WorldSession::HandleInrangeQuestgiverQuery;
@@ -1021,7 +1022,7 @@ void WorldSession::Delete()
 	delete this;
 }
 
-void WorldSession::Handle38C(WorldPacket & recv_data)
+void WorldSession::HandleRealmSplit(WorldPacket & recv_data)
 {
 	uint32 v;
 	recv_data >> v;
@@ -1047,9 +1048,12 @@ void WorldSession::HandleAchievementInspect(WorldPacket &recv_data)
 	}
 }
 
-uint8 WorldSession::CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo)
+uint8 WorldSession::CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid)
 {
-	//is this map enabled?
+	MapInfo* pMapInfo = WorldMapInfoStorage.LookupEntry(mapid);
+	MapEntry* map = dbcMap.LookupEntry(mapid);
+
+	// is this map enabled?
 	if( pMapInfo  == NULL || !pMapInfo->HasFlag(WMI_INSTANCE_ENABLED))
 		return AREA_TRIGGER_FAILURE_UNAVAILABLE;
 
@@ -1065,14 +1069,18 @@ uint8 WorldSession::CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldS
 	if( pAreaTrigger != NULL && pAreaTrigger->required_level && pPlayer->getLevel() < pAreaTrigger->required_level)
 		return AREA_TRIGGER_FAILURE_LEVEL;
 
-	//Do we meet the map level requirements?
+	// Do we meet the map level requirements?
 	if( pPlayer->getLevel() < pMapInfo->minlevel )
 		return AREA_TRIGGER_FAILURE_LEVEL;
+
+	// Are we trying to enter a non-heroic instance in heroic mode?
+	if((map->israid() ? (pPlayer->iRaidType >= MODE_10PLAYER_HEROIC) : (pPlayer->iInstanceType >= MODE_5PLAYER_HEROIC)) && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
+		return AREA_TRIGGER_FAILURE_NO_HEROIC;
 
 	// These can be overridden by cheats/GM
 	if(!pPlayer->triggerpass_cheat)
 	{
-		//Do we need any quests?
+		// Do we need any quests?
 		if( pMapInfo->required_quest && !( pPlayer->HasFinishedDailyQuest(pMapInfo->required_quest) || pPlayer->HasFinishedDailyQuest(pMapInfo->required_quest)))
 			return AREA_TRIGGER_FAILURE_NO_ATTUNE_Q;
 
@@ -1081,30 +1089,26 @@ uint8 WorldSession::CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldS
 			return AREA_TRIGGER_FAILURE_NO_ATTUNE_I;
 
 		// Do we need to be in a group?
-		if((pMapInfo->type == INSTANCE_RAID || pMapInfo->type == INSTANCE_MULTIMODE ) && !pPlayer->GetGroup())
+		if((map->israid() || pMapInfo->type == INSTANCE_MULTIMODE ) && !pPlayer->GetGroup())
 			return AREA_TRIGGER_FAILURE_NO_GROUP;
 
 		// Does the group have to be a raid group?
-		if( pMapInfo->type == INSTANCE_RAID && pPlayer->GetGroup()->GetGroupType() != GROUP_TYPE_RAID )
+		if( map->israid() && pPlayer->GetGroup()->GetGroupType() != GROUP_TYPE_RAID )
 			return AREA_TRIGGER_FAILURE_NO_RAID;
 
-		//Are we trying to enter a non-heroic instance in heroic mode?
-		if( pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
+		// Need http://www.wowhead.com/?spell=46591 to enter Magisters Terrace
+		if( mapid == 585 && pPlayer->iInstanceType >= MODE_5PLAYER_HEROIC && !pPlayer->HasSpell(46591)) // Heroic Countenance
 			return AREA_TRIGGER_FAILURE_NO_HEROIC;
 
 		// Are we trying to enter a saved raid/heroic instance?
-		if( pMapInfo->type == INSTANCE_RAID || pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_NULL )
+		if(map->israid())
 		{
 			// Raid queue, did we reach our max amt of players?
 			if( pPlayer->m_playerInfo && pMapInfo->playerlimit >= 5 && (int32)((pMapInfo->playerlimit - 5)/5) < pPlayer->m_playerInfo->subGroup)
 				return AREA_TRIGGER_FAILURE_IN_QUEUE;
 
-			// Need http://www.wowhead.com/?spell=46591 to enter Magisters Terrace
-			if( pMapInfo->mapid == 585 && pPlayer->iInstanceType >= MODE_HEROIC && !pPlayer->HasSpell(46591)) // Heroic Countenance
-				return AREA_TRIGGER_FAILURE_NO_HEROIC;
-
 			//All Heroic instances are automatically unlocked when reaching lvl 80, no keys needed here.
-			if( pPlayer->getLevel()< 80)
+			if( pPlayer->getLevel() < 80)
 			{
 				//otherwise we still need to be lvl 65 for heroic.
 				if( pPlayer->iInstanceType && pPlayer->getLevel() < uint32(pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02) ? 80 : 70))

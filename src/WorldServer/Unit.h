@@ -9,22 +9,20 @@
 
 class AIInterface;
 
-#define MAX_AURAS 96             // 40 buff slots, 46 debuff slots.
-#define MAX_POSITIVE_AURAS 40    // ?
-#define MAX_PASSIVE_AURAS 192    // grep: i mananged to break this.. :p seems we need more
+#define MAX_AURAS 96 // 40 buff slots, 46 debuff slots.
+#define MAX_POSITIVE_AURAS 40 // ?
+#define MAX_PASSIVE_AURAS 192   // grep: i mananged to break this.. :p seems we need more
 
 bool ARCTIC_DECL Rand(float);
-
+#define MAKE_ACTION_BUTTON(A,T) (uint32(A) | (uint32(T) << 24))
 #define UF_TARGET_DIED  1
-#define UF_ATTACKING	2        // this unit is attacking it's selection
-#define SPELL_GROUPS	96
+#define UF_ATTACKING    2 // this unit is attacking it's selection
+#define SPELL_GROUPS    96
 #define SPELL_MODIFIERS 30
 #define DIMINISH_GROUPS	13
 #define NUM_MECHANIC 32
-                                                    
-#define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) // should get computed by precompiler ;)
 
-class Aura;
+#define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) //should get computed by precompiler ;)class Aura;
 class Spell;
 class AIInterface;
 class GameObject;
@@ -34,14 +32,13 @@ struct CreatureInfo;
 struct FactionTemplateDBC;
 struct FactionDBC;
 
-
 struct ReflectSpellSchool
 {
 	uint32 spellId;
 	int32 school;
 	int32 chance;
 	int32 require_aura_hash;
-	int32 charges;
+	bool infinity;
 	bool infront;
 };
 
@@ -64,11 +61,11 @@ typedef struct
 
 struct DamageSplitTarget
 {
-	uint64 m_target;          // we store them
+	uint64 m_target; // we store them
 	uint32 m_spellId;
-	float m_pctDamageSplit;   // % of taken damage to transfer (i.e. Soul Link)
+	float m_pctDamageSplit; // % of taken damage to transfer (i.e. Soul Link)
 	uint32 m_flatDamageSplit; // flat damage to transfer (i.e. Blessing of Sacrifice)
-	uint8 damage_type;        // bitwise 0-127 thingy
+	uint8 damage_type; // bitwise 0-127 thingy
 	bool active;
 };
 
@@ -95,15 +92,24 @@ typedef struct
 
 enum DeathState
 {
-	ALIVE = 0,  // Unit is alive and well
-	JUST_DIED,  // Unit has JUST died
-	CORPSE,	    // Unit has died but remains in the world as a corpse
-	DEAD		// Unit is dead and his corpse is gone from the world
+	ALIVE = 0, // Unit is alive and well
+	JUST_DIED, // Unit has JUST died
+	CORPSE,    // Unit has died but remains in the world as a corpse
+	DEAD       // Unit is dead and his corpse is gone from the world
 };
 
-#define HIGHEST_FACTION = 46
+enum PowerType{	POWER_TYPE_HEALTH = -2,
+	POWER_TYPE_MANA = 0,
+	POWER_TYPE_RAGE = 1,
+	POWER_TYPE_FOCUS = 2,
+	POWER_TYPE_ENERGY = 3,
+	POWER_TYPE_HAPPINESS = 4, // Not used in creature powertypes.
+	POWER_TYPE_RUNE = 5,
+	POWER_TYPE_RUNIC = 6,
+	MAX_POWER_TYPE = 7
+};// Vehicle DBC Power Types#define POWER_TYPE_PYRITE 41#define POWER_TYPE_STEAM 61#define HIGHEST_FACTION = 46
 
-enum Factions 
+enum Factions
 {
 	FACTION_BLOODSAIL_BUCCANEERS,
 	FACTION_BOOTY_BAY,
@@ -635,6 +641,33 @@ enum Powers
 
 typedef std::list<struct ProcTriggerSpellOnSpell> ProcTriggerSpellOnSpellList;
 
+
+class MovementInfo
+{
+public:
+	uint64 guid;
+	uint32 time;
+	float pitch; // -1.55=looking down, 0=looking forward, +1.55=looking up
+	float jump_sinAngle; // on slip 8 is zero, on jump some other number
+	float jump_cosAngle, jump_xySpeed;//9,10 changes if you are not on foot
+	float jumpspeed; // something related to collision, CROW: Might be used for other knockback information.
+	uint32 unk11;
+	uint32 spline_unk;
+	uint8 unk13;
+	uint16 flag16;
+
+	float x, y, z, orientation;
+	uint32 flags;
+	uint32 FallTime;
+	WoWGuid transGuid;
+	float transX, transY, transZ, transO;
+	uint32 transTime;
+	uint8 transSeat;
+
+	void init(WorldPacket & data);
+	void write(WorldPacket & data);
+};
+
 //////////////////////////////////////////////////////////////////////////
 // "In-Combat" Handler                                                  //
 //////////////////////////////////////////////////////////////////////////
@@ -644,7 +677,7 @@ class ARCTIC_DECL CombatStatusHandler
 {
 	typedef set<uint64> AttackerMap;
 	typedef map<uint64, uint32> AttackTMap;
-	typedef set<uint32> HealedSet;		// Must Be Players!
+	typedef set<uint32> HealedSet; // Must Be Players!
 	AttackerMap m_attackers;
 	HealedSet m_healers;
 	HealedSet m_healed;
@@ -664,18 +697,18 @@ public:
 		DamageMap.clear();
 	}
 
-	Unit* GetKiller();													// Gets this unit's current killer.
+	Unit* GetKiller();											// Gets this unit's current killer.
 
-	void OnDamageDealt(Unit* pTarget, uint32 damage);				    	// this is what puts the other person in combat.
-	void WeHealed(Unit* pHealTarget);								    	// called when a player heals another player, regardless of combat state.
-	void RemoveAttackTarget(Unit* pTarget);						    	// means our DoT expired.
-	void ForceRemoveAttacker(const uint64& guid);						        // when target is invalid pointer
+	void OnDamageDealt(Unit* pTarget, uint32 damage);			// this is what puts the other person in combat.
+	void WeHealed(Unit* pHealTarget);							// called when a player heals another player, regardless of combat state.
+	void RemoveAttackTarget(Unit* pTarget);						// means our DoT expired.
+	void ForceRemoveAttacker(const uint64& guid);				// when target is invalid pointer
 
-	void UpdateFlag();													        // detects if we have changed combat state (in/out), and applies the flag.
+	void UpdateFlag();											// detects if we have changed combat state (in/out), and applies the flag.
 
-	ARCTIC_INLINE bool IsInCombat() { return m_lastStatus; }			        // checks if we are in combat or not.
+	ARCTIC_INLINE bool IsInCombat() { return m_lastStatus; }	// checks if we are in combat or not.
 
-	void OnRemoveFromWorld();											        // called when we are removed from world, kills all references to us.
+	void OnRemoveFromWorld();									// called when we are removed from world, kills all references to us.
 	
 	ARCTIC_INLINE void Vanished()
 	{
@@ -703,18 +736,13 @@ public:
 	void UpdateTargets();
 
 protected:
-	bool InternalIsInCombat();											    // called by UpdateFlag, do not call from anything else!
-	bool IsAttacking(Unit* pTarget);									// internal function used to determine if we are still attacking target x.
-	void RemoveHealed(Unit* pHealTarget);								// usually called only by updateflag
-	void ClearHealers();												    // this is called on instance change.
-	void ClearAttackers();												    // means we vanished, or died.
+	bool InternalIsInCombat();				// called by UpdateFlag, do not call from anything else!
+	bool IsAttacking(Unit* pTarget);		// internal function used to determine if we are still attacking target x.
+	void RemoveHealed(Unit* pHealTarget);	// usually called only by updateflag
+	void ClearHealers();					// this is called on instance change.
+	void ClearAttackers();					// means we vanished, or died.
 	void ClearMyHealers();
 };
-
-////////////////////////////////////////////
-//  Unit                                  //
-//  Base object for Players and Creatures //
-////////////////////////////////////////////
 
 class ARCTIC_DECL Unit : public Object
 {
@@ -722,8 +750,6 @@ public:
 	void CombatStatusHandler_UpdateTargets();
 
 	virtual ~Unit ( );
-
-	virtual void Destructor();
 	virtual void Init();
 
 	friend class AIInterface;
@@ -765,8 +791,8 @@ public:
 	void Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability, int32 add_damage, int32 pct_dmg_mod, uint32 exclusive_damage, bool disable_proc, bool skip_hit_check, bool proc_extrastrike = false );
 
 	uint32 m_procCounter;
-	uint32 HandleProc(uint32 flag, uint32 extraproc, Unit* victim, SpellEntry* CastingSpell,uint32 dmg=-1,uint32 abs=0, uint32 weapon_damage_type=0);
-	void HandleProcDmgShield(uint32 flag, uint32 extraproc, Unit* attacker);//almost the same as handleproc :P
+	uint32 HandleProc(uint32 flag, uint32 flag2, Unit* victim, SpellEntry* CastingSpell,uint32 dmg=-1,uint32 abs=0, uint32 weapon_damage_type=0);
+	void HandleProcDmgShield(uint32 flag, Unit* attacker);//almost the same as handleproc :P
 
 	void RemoveExtraStrikeTarget(SpellEntry *spell_info);
 	void AddExtraStrikeTarget(SpellEntry *spell_info, uint32 charges);
@@ -786,7 +812,7 @@ public:
 	bool isCasting();
 	bool IsInInstance();
 	double GetResistanceReducion(Unit* pVictim, uint32 type, float armorReducePct);
-	void CalculateResistanceReduction(Unit* pVictim,dealdamage *dmg,SpellEntry* ability, float armorreducepct) ;
+    void CalculateResistanceReduction(Unit* pVictim,dealdamage *dmg,SpellEntry* ability, float armorreducepct) ;
 	void RegenerateHealth();
 	void RegeneratePower(bool isinterrupted);
 	void SendPowerUpdate();
@@ -803,7 +829,7 @@ public:
 	float CalculateDazeCastChance(Unit* target);
 
 	// Stealth  
-	ARCTIC_INLINE int32 GetStealthLevel() { return m_stealthLevel; }
+	ARCTIC_INLINE int32 GetStealthLevel() { return (m_stealthLevel + (getLevel() * 5)); }
 	ARCTIC_INLINE int32 GetStealthDetectBonus() { return m_stealthDetectBonus; }
 	ARCTIC_INLINE void SetStealth(uint32 id) { m_stealth = id; }
 	ARCTIC_INLINE bool InStealth() { return (m_stealth!=0 ? true : false); }
@@ -820,7 +846,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Stun Immobilize                                                      //
 	//////////////////////////////////////////////////////////////////////////
-
 	uint32 trigger_on_stun; // second wind warrior talent
 	uint32 trigger_on_stun_chance;
 
@@ -830,12 +855,11 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Chill                                                                //
 	//////////////////////////////////////////////////////////////////////////
-
-	uint32 trigger_on_chill; //mage "Frostbite" talent chill
+	uint32 trigger_on_chill; // mage "Frostbite" talent chill
 	uint32 trigger_on_chill_chance;
 
 	void SetTriggerChill(uint32 newtrigger, uint32 new_chance);
-	void EventChill(Unit* proc_target);
+    void EventChill(Unit* proc_target);
 
 	bool HasAura(uint32 spellid);
 	bool HasAuraVisual(uint32 visualid);//not spell id!!!
@@ -861,9 +885,8 @@ public:
 	// Add Aura to unit
 	void AddAura(Aura* aur);
 	// Remove aura from unit
-	void RemoveAuraBySlot(uint16 Slot);
+	void RemoveAura(Aura* aur);	void RemoveAuraBySlot(uint16 Slot);
 	void RemoveAuraNoReturn(uint32 spellId);
-	bool RemoveAura(Aura* aur);
 	bool RemovePositiveAura(uint32 spellId);
 	bool RemoveNegativeAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid = 0);
@@ -903,12 +926,11 @@ public:
 	int32 GetSpellBonusDamage(Unit* pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot, bool healing);
 
 	// guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
-	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl);
-	void SummonExpireSlot(uint8 slot); // this is used to despawn all summoslots at once (for non players)
+	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, uint8 Slot);
 
 	uint32 m_addDmgOnce;
 	Creature* m_SummonSlots[7];
-	uint32 m_ObjectSlots[4];
+	void SummonExpireSlot(uint8 slot); // Empties just slot x.	void SummonExpireAll(bool clearowner); //Empties all slots (NPC's + GameObjects	uint32 m_ObjectSlots[4];
 	uint32 m_triggerSpell;
 	uint32 m_triggerDamage;
 	uint32 m_canMove;
@@ -920,7 +942,6 @@ public:
 	bool m_damgeShieldsInUse;
 	std::list<struct DamageProc> m_damageShields;
 	std::list<struct ReflectSpellSchool*> m_reflectSpellSchool;
-	void RemoveReflect( uint32 spellid );
 
 	std::list<struct ProcTriggerSpell> m_procSpells;
 	bool m_chargeSpellsInUse;
@@ -930,7 +951,7 @@ public:
 	ARCTIC_INLINE uint32 GetOnMeleeSpell() { return m_meleespell; }
 
 	// On Aura Remove Procs
-	map_t m_onAuraRemoveSpells;
+	HM_NAMESPACE::hash_map<uint32, onAuraRemove* > m_onAuraRemoveSpells;
 
 	void AddOnAuraRemoveSpell(uint32 NameHash, uint32 procSpell, uint32 procChance, bool procSelf);
 	void RemoveOnAuraRemoveSpell(uint32 NameHash);
@@ -1016,7 +1037,7 @@ public:
 	uint32 MechanicsDispels[NUM_MECHANIC];
 	float MechanicsResistancesPCT[NUM_MECHANIC]; 
 	float ModDamageTakenByMechPCT[NUM_MECHANIC];
-	// int32 RangedDamageTakenPct; 
+	float DispelResistancesPCT[10];
 
 	// SM
 	int32 * SM[SPELL_MODIFIERS][2]; // 0 = flat, 1 = percent
@@ -1060,13 +1081,13 @@ public:
 	ARCTIC_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
 	ARCTIC_INLINE int32 GetManaPct() { return (int32)(GetUInt32Value(UNIT_FIELD_POWER1) * 100 / std::max(1, (int32)GetUInt32Value(UNIT_FIELD_MAXPOWER1))); }
 		
-	uint32 GetResistance(uint32 type);	
+	uint32 GetResistance(uint32 type);
 
 	uint32 m_teleportAckCounter;
 	// Vehicle
 	uint8 m_inVehicleSeatId;
 	Vehicle* m_CurrentVehicle;
-
+	ARCTIC_INLINE int8 GetSeatID() { return m_inVehicleSeatId; }
 	// Pet
 	ARCTIC_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
 	
@@ -1103,8 +1124,6 @@ public:
 	int32 PctRegenModifier;
 	float m_toRegen;
 	float PctPowerRegenModifier[4];
-	ARCTIC_INLINE uint32 GetPowerType(){ return (GetByte(UNIT_FIELD_BYTES_0,3));}
-    void UpdatePowerAmm();
 	void RemoveSoloAura(uint32 type);
 
 	void RemoveAurasByInterruptFlag(uint32 flag);
@@ -1145,7 +1164,7 @@ public:
 	void RemoveStealth();
 	void RemoveInvisibility();
 
-	bool m_isPet;
+	void ChangePetTalentPointModifier(bool Increment) { Increment ? m_PetTalentPointModifier++ : m_PetTalentPointModifier-- ; };	bool m_isPet;
 	uint32 m_stealth;
 	bool m_can_stealth;
 
@@ -1159,8 +1178,6 @@ public:
 
 	ARCTIC_INLINE void DisableAI() { m_useAI = false; }
 	ARCTIC_INLINE void EnableAI() { m_useAI = true; }
-
-	void SetPowerType(uint8 type);
 
 	ARCTIC_INLINE bool IsSpiritHealer()
 	{
@@ -1214,9 +1231,9 @@ public:
 	void RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid);
 	void RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
 	bool HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip);
-	int	 GetAuraSpellIDWithNameHash(uint32 name_hash);
+	int GetAuraSpellIDWithNameHash(uint32 name_hash);
 	bool HasNegativeAuraWithNameHash(uint32 name_hash); // just to reduce search range in some cases
-	bool HasNegativeAura(uint32 spell_id);              // just to reduce search range in some cases
+	bool HasNegativeAura(uint32 spell_id); // just to reduce search range in some cases
 	bool IsPoisoned();
 	uint32 GetPoisonDosesCount( uint32 poison_type );
 
@@ -1225,7 +1242,7 @@ public:
 	uint16 m_diminishCount[DIMINISH_GROUPS];
 	uint8  m_diminishAuraCount[DIMINISH_GROUPS];
 	uint16 m_diminishTimer[DIMINISH_GROUPS];
-	bool   m_diminishActive;
+	bool m_diminishActive;
 
 	void SetDiminishTimer(uint32 index);
 
@@ -1246,6 +1263,12 @@ public:
 	// Removal
 	void RemovePvPFlag();
 
+	struct 
+	{
+		uint32 amt;
+		uint32 max;
+	}m_soulSiphon;
+
 	// solo target auras
 	uint32 m_hotStreakCount;
 	uint32 m_incanterAbsorption;
@@ -1257,7 +1280,6 @@ public:
 	// uint32 fearSpell;
 	CombatStatusHandler CombatStatus;
 	bool m_temp_summon;
-	bool m_mageInvisibility;
 
 	// Redirect Threat shit
 	Unit* mThreatRTarget;
@@ -1269,7 +1291,7 @@ public:
 	void EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage);
 	void DispelAll(bool positive);
 
-	void SetPower(uint32 type, int32 value);
+	void SetPowerType(uint8 type);	ARCTIC_INLINE uint32 GetPowerType(){ return (GetByte(UNIT_FIELD_BYTES_0,3));}	uint32 GetPower(uint8 power) const { return GetUInt32Value(UNIT_FIELD_POWER1 + power); }	void SetPower(uint32 type, int32 value);
 
 	bool HasAurasOfNameHashWithCaster(uint32 namehash, Unit* caster);
 	bool mAngerManagement;
@@ -1285,18 +1307,19 @@ public:
 	//	custom functions for scripting
 	void SetWeaponDisplayId(uint8 slot, uint32 displayId);
 
-protected:
-	Unit ();
-
-	uint32 m_meleespell;
+	// Transporters
+	WoWGuid m_transportNewGuid;	uint64 m_TransporterGUID;	LocationVector* m_transportPosition;	float m_TransporterUnk;	bool m_lockTransportVariables;	// Movement Info.	MovementInfo* GetMovementInfo() { return &movement_info; }	MovementInfo movement_info;protected:
+	/* Preallocated buffers for movement handlers */
+	uint8 movement_packet[90];
+	Unit();	uint32 m_meleespell;
 	uint8 m_meleespell_cn;
 	void _UpdateSpells(uint32 time);
 
 	uint32 m_H_regenTimer;
 	uint32 m_P_regenTimer;
 	uint32 m_interruptedRegenTime; // PowerInterruptedegenTimer.
-	uint32 m_state;                // flags for keeping track of some states
-	uint32 m_attackTimer;          // timer for attack
+	uint32 m_state; // flags for keeping track of some states
+	uint32 m_attackTimer; // timer for attack
 	uint32 m_attackTimer_1;
 	bool m_duelWield;
 
@@ -1310,7 +1333,7 @@ protected:
 	// DK:pet
 	// uint32 m_pet_state;
 	// uint32 m_pet_action;
-
+	uint8 m_PetTalentPointModifier;
 	// Spell currently casting
 	Spell* m_currentSpell;
 
@@ -1336,6 +1359,5 @@ protected:
 
 	std::map<uint32, SpellEntry*> m_DummyAuras;
 };
-
 
 #endif

@@ -3,7 +3,9 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
+#include "DBCEnums.h"
+
 #ifndef WOWARCTIC_AIINTERFACE_H
 #define WOWARCTIC_AIINTERFACE_H
 
@@ -12,7 +14,7 @@
 #endif
 
 #define M_PI 3.14159265358979323846f
-#define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400 /*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
+#define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400 // 750 - ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL 600             // ms
 #define oocr 50.0f                             // out of combat range
 #define PLAYER_SIZE 1.5f
@@ -29,125 +31,6 @@ class Unit;
 class Player;
 class WorldSession;
 class SpellCastTargets;
-
-
-enum AIType
-{
-	AITYPE_LONER,
-	AITYPE_AGRO,
-	AITYPE_SOCIAL,
-	AITYPE_PET,
-	AITYPE_TOTEM,
-	AITYPE_GUARDIAN, // we got a master but he cannot control us, we follow and battle oposite factions
-};
-
-enum MovementType
-{
-	MOVEMENTTYPE_NONE,
-	MOVEMENTTYPE_RANDOMWP,
-	MOVEMENTTYPE_CIRCLEWP,
-	MOVEMENTTYPE_WANTEDWP,
-	MOVEMENTTYPE_DONTMOVEWP,
-	MOVEMENTTYPE_QUEST = 10,
-	MOVEMENTTYPE_FORWARDTHANSTOP = 11,
-};
-
-enum LimitedMovementFlag
-{
-	LIMIT_ROOT		= 0x0,
-	LIMIT_GROUND	= 0x1,
-	LIMIT_WATER		= 0x2,
-	LIMIT_AIR		= 0x4,
-	LIMIT_ANYWHERE= LIMIT_GROUND | LIMIT_WATER | LIMIT_AIR
-};
-
-
-enum AI_Agent
-{
-	AGENT_NULL,
-	AGENT_MELEE,
-	AGENT_RANGED,
-	AGENT_FLEE,
-	AGENT_SPELL,
-	AGENT_CALLFORHELP
-};
-
-enum AI_SpellType
-{
-	STYPE_NULL,
-	STYPE_ROOT,
-	STYPE_DAMAGE,
-	STYPE_AOEDAMAGE,
-	STYPE_INTERRUPT,
-	STYPE_FEAR,
-	STYPE_STUN,
-	STYPE_BUFF,
-	STYPE_DEBUFF,
-	STYPE_SUMMON,
-	STYPE_HEAL,
-};
-
-enum AI_SpellTargetType
-{
-	TTYPE_NULL,
-	TTYPE_SINGLETARGET,
-	TTYPE_DESTINATION,
-	TTYPE_SOURCE,
-	TTYPE_CASTER,
-	TTYPE_OWNER,
-};
-
-enum AI_State
-{
-	STATE_IDLE,
-	STATE_ATTACKING,
-	STATE_CASTING,
-	STATE_FLEEING,
-	STATE_FOLLOWING,
-	STATE_EVADE,
-	STATE_MOVEWP,
-	STATE_FEAR,
-	STATE_WANDER,
-	STATE_STOPPED,
-	STATE_SCRIPTMOVE,
-	STATE_SCRIPTIDLE
-};
-
-enum MovementState
-{
-	MOVEMENTSTATE_MOVE,
-	MOVEMENTSTATE_FOLLOW,
-	MOVEMENTSTATE_STOP,
-	MOVEMENTSTATE_FOLLOW_OWNER
-};
-
-enum MonsterMoveFlags	// for AIInterface::SendMoveToPacket
-{
-	MONSTER_MOVE_FLAG_WALK		= 0x0,
-	MONSTER_MOVE_FLAG_RUN		= 0x1000,
-	MONSTER_MOVE_FLAG_TELEPORT	= 0x100,
-	MONSTER_MOVE_FLAG_FLY		= 0x3000,
-};
-
-enum CreatureState
-{
-	STOPPED,
-	MOVING,
-	ATTACKING
-};
-
-enum AiEvents
-{
-	EVENT_ENTERCOMBAT,
-	EVENT_LEAVECOMBAT,
-	EVENT_DAMAGETAKEN,
-	EVENT_FEAR,
-	EVENT_UNFEAR,
-	EVENT_FOLLOWOWNER,
-	EVENT_WANDER,
-	EVENT_UNWANDER,
-	EVENT_UNITDIED,
-};
 
 struct SpellEntry;
 
@@ -267,6 +150,7 @@ public:
 	// Event Handler
 	void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
 	void OnDeath(Object* pKiller);
+	void OnRespawn(Unit* unit); // We don't really need the unit anymore.
 	void AttackReaction( Unit* pUnit, uint32 damage_dealt, uint32 spellId = 0);
 	bool HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellEntry * sp);
 	//Note//
@@ -436,7 +320,7 @@ protected:
 	float FollowDistance_backup;
 	float m_fallowAngle;
 
-	//std::set<AI_Target> m_aiTargets;
+	// std::set<AI_Target> m_aiTargets;
 	TargetMap m_aiTargets;
 	AssistTargetSet m_assistTargets;
 	AIType m_AIType;
@@ -467,6 +351,7 @@ protected:
 
 	float m_lastFollowX;
 	float m_lastFollowY;
+	// typedef std::map<uint32, WayPoint*> WayPointMap;
 	Unit* UnitToFollow;
 	Unit* UnitToFollow_backup; // used unly when forcing creature to wander (blind spell) so when effect wears off we can follow our master again (guardian)
 	Unit* UnitToFear;
@@ -480,6 +365,7 @@ protected:
 	MovementState m_MovementState;
 	uint32 m_guardTimer;
 	int32 m_currentHighestThreat;
+
 public:
 	bool m_is_in_instance;
 	bool skip_reset_hp;

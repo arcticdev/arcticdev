@@ -497,19 +497,16 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 
 		if(splinebuf)
 		{
-			flags2 |= 0x08000001; // 1 = move forward
+			flags2 |= 0x08000001;
 			if(GetTypeId() == TYPEID_UNIT)
 			{
 				if( TO_UNIT(this)->GetAIInterface()->m_moveRun == false)
-					flags2 |= 0x100; // 100 = walk
+					flags2 |= 0x100;
 			}			
 		}
 
 		if(GetTypeId() == TYPEID_UNIT)
 		{
-			// Don't know what this is, but I've only seen it applied to spirit healers.
-			// maybe some sort of invisibility flag? :/
-
 			switch(GetEntry())
 			{
 			case 6491:  // Spirit Healer
@@ -521,8 +518,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 			}
 
 			if( TO_UNIT(this)->GetAIInterface()->IsFlying())
-				// flags2 |= 0x800; // in 2.3 this is some state that i was not able to decode yet
-				flags2 |= 0x400; // Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
+				flags2 |= 0x400; //Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if( TO_CREATURE(this)->proto && TO_CREATURE(this)->proto->extra_a9_flags)
 			{
 				if(!(flags2 & 0x0200))
@@ -531,7 +527,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		}
 		*data << uint32(flags2);
 		*data << uint16(flag16);
-		*data << getMSTime(); // this appears to be time in ms but can be any thing
+		*data << getMSTime();
 
 		*data << (float)m_position.x;
 		*data << (float)m_position.y;
@@ -584,7 +580,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 			}
 		}
 
-		if(flags2 & 0x2200000 || flag16 & 0x20) // flying/swimming, && unk sth to do with vehicles?
+		if(flags2 & 0x2200000 || flag16 & 0x20)
 		{
 			if(pThis && moveinfo)
 				*data << moveinfo->pitch;
@@ -625,7 +621,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		*data << m_turnRate;		// turn rate
 		*data << float(7);			// pitch rate
 
-		if(splinebuf) // client expects that flags2 & 0x8000000 != 0 in this case
+		if(splinebuf)
 		{
 			data->append(*splinebuf);
 			delete splinebuf;
@@ -672,7 +668,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 	if(flags & 2)
 		*data << (uint32)getMSTime();
 
-	if (flags & 0x80) // if ((_BYTE)flags_ < 0)
+	if (flags & 0x80)
 		*data << TO_VEHICLE(this)->GetVehicleEntry() << float(0.0f);
 
 	// 0x200

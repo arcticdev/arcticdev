@@ -5,7 +5,6 @@
  */
 
 #include "StdAfx.h"
-
 Mutex m_transportGuidGen;
 uint32 m_transportGuidMax = 50;
 
@@ -39,17 +38,17 @@ bool FillPathVector(uint32 PathID, TransportPath & Path)
 	Path.Resize(dbcTaxiPathNode.GetNumRows());
 	uint32 i = 0;
 
-	for(uint32 j = 0; j < dbcTaxiPathNode.GetNumRows(); ++j)
+	for(uint32 j = 0; j < dbcTaxiPathNode.GetNumRows(); j++)
 	{
 		DBCTaxiPathNode *pathnode = dbcTaxiPathNode.LookupRow(j);
 		if(pathnode->path == PathID)
 		{
-			Path[i].mapid	   = pathnode->mapid;
-			Path[i].x		   = pathnode->x;
-			Path[i].y		   = pathnode->y;
-			Path[i].z		   = pathnode->z;
+			Path[i].mapid = pathnode->mapid;
+			Path[i].x = pathnode->x;
+			Path[i].y = pathnode->y;
+			Path[i].z = pathnode->z;
 			Path[i].actionFlag = pathnode->unk1;
-			Path[i].delay	   = pathnode->waittime;
+			Path[i].delay = pathnode->waittime;
 			++i;
 		}
 	}
@@ -113,7 +112,7 @@ bool Transporter::GenerateWaypoints()
 		}
 		if (keyFrames[i].actionflag == 2) 
 		{
-            if(firstStop < 0)
+			if(firstStop < 0)
 				firstStop=(int)i;
 
 			lastStop = (int)i;
@@ -123,7 +122,7 @@ bool Transporter::GenerateWaypoints()
 	float tmpDist = 0;
 	for (int i = 0; i < (int)keyFrames.size(); ++i)
 	{
-		if( lastStop < 0 || firstStop < 0 ) // IT NEVER STOPS :O
+		if( lastStop < 0 || firstStop < 0 )
 			continue;
 
 		int j = (i + lastStop) % (int)keyFrames.size();
@@ -160,12 +159,6 @@ bool Transporter::GenerateWaypoints()
 		keyFrames[i].tTo *= 1000;
 	}
 
-	//	for (int i = 0; i < keyFrames.size(); i++) {
-	//		sLog.outString("%f, %f, %f, %f, %f, %f, %f", keyFrames[i].x, keyFrames[i].y, keyFrames[i].distUntilStop, keyFrames[i].distSinceStop, keyFrames[i].distFromPrev, keyFrames[i].tFrom, keyFrames[i].tTo);
-	//	}
-
-	// Now we're completely set up; we can move along the length of each waypoint at 100 ms intervals
-	// speed = max(30, t) (remember x = 0.5s^2, and when accelerating, a = 1 unit/s^2
 	int t = 0;
 	bool teleport = false;
 	if (keyFrames[keyFrames.size() - 1].mapid != keyFrames[0].mapid)
@@ -177,7 +170,7 @@ bool Transporter::GenerateWaypoints()
 	t += keyFrames[0].delay * 1000;
 
 	int cM = keyFrames[0].mapid;
-	for (size_t i = 0; i < keyFrames.size() - 1; i++)	   
+	for (size_t i = 0; i < keyFrames.size() - 1; ++i)
 	{
 		float d = 0;
 		float tFrom = keyFrames[i].tFrom;
@@ -205,7 +198,6 @@ bool Transporter::GenerateWaypoints()
 						cM = keyFrames[i].mapid;
 					}
 
-					// sLog.outString("T: %d, D: %f, x: %f, y: %f, z: %f", t, d, newX, newY, newZ);
 					TWayPoint pos(keyFrames[i].mapid, newX, newY, newZ, teleport);
 					if (teleport || ((t - last_t) >= 1000))
 					{
@@ -270,7 +262,6 @@ bool Transporter::GenerateWaypoints()
 	uint32 timer = t;
 
 	mCurrentWaypoint = m_WayPoints.begin();
-	// mCurrentWaypoint = GetNextWaypoint();
 	mNextWaypoint = GetNextWaypoint();
 	m_pathTime = timer;
 	m_timer = 0;
@@ -303,8 +294,6 @@ void Transporter::UpdatePosition()
 		mNextWaypoint = GetNextWaypoint();
 		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport) 
 		{
-			// mCurrentWaypoint = mNextWaypoint;
-			// mNextWaypoint = GetNextWaypoint();
 			TransportPassengers(mNextWaypoint->second.mapid, GetMapId(),
 				mNextWaypoint->second.x, mNextWaypoint->second.y, mNextWaypoint->second.z);
 			break;
@@ -317,7 +306,7 @@ void Transporter::UpdatePosition()
 
 		if(mCurrentWaypoint->second.delayed)
 		{
-			PlaySoundToSet(5495);		// BoatDockedWarning.wav
+			PlaySoundToSet(5495);
 		}
 	}
 }
@@ -352,9 +341,9 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			if(!plr->GetSession() || !plr->IsInWorld()) 
 				continue;
 
-			v.x = x + plr->m_TransporterX;
-			v.y = y + plr->m_TransporterY;
-			v.z = z + plr->m_TransporterZ;
+			v.x = x + plr->m_transportPosition->x;
+			v.y = y + plr->m_transportPosition->y;
+			v.z = z + plr->m_transportPosition->z;
 			v.o = plr->GetOrientation();
 
 			if(mapid == 530 && !plr->GetSession()->HasFlag(ACCOUNT_FLAG_XPACK_01))
@@ -425,23 +414,26 @@ void ObjectMgr::LoadTransporters()
 #endif
 	Log.Notice("ObjectMgr", "Loading Transports...");
 	QueryResult * QR = WorldDatabase.Query("SELECT entry FROM gameobject_names WHERE type = %u", GAMEOBJECT_TYPE_MO_TRANSPORT);
-	if(!QR) return;
 
+	if(!QR) return;
 	int64 total = QR->GetRowCount();
-	TransportersCount=total;
+	TransportersCount = total;
+	uint32 entry = NULL;
+	Transporter* pTransporter = NULL;
 	do 
 	{
-		uint32 entry = QR->Fetch()[0].GetUInt32();
+		entry = QR->Fetch()[0].GetUInt32();
 
-		Transporter* pTransporter(new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 |entry));
+		pTransporter = new Transporter((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 | entry);
 		if(!pTransporter->CreateAsTransporter(entry, ""))
 		{
 			Log.Warning("ObjectMgr","Skipped invalid transporterid %d.", entry);
 			pTransporter->Destructor();
-			pTransporter = NULLTRANSPORT;
-		}else
+			pTransporter = NULL;
+		}
+		else
 		{
-            AddTransport(pTransporter);
+			AddTransport(pTransporter);
 
 			QueryResult * result2 = WorldDatabase.Query("SELECT * FROM transport_creatures WHERE transport_entry = %u", entry);
 			if(result2)
@@ -469,6 +461,9 @@ void Transporter::OnPushToWorld()
 
 void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offsetZ, float offsetO)
 {
+	if(!this)
+		return;
+
 	uint32 guid;
 	m_transportGuidGen.Acquire();
 	guid = ++m_transportGuidMax;
@@ -481,9 +476,10 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 
 	Creature* pCreature(new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER << 32 | guid));
 	pCreature->Init();
-	pCreature->Load(proto, m_position.x, m_position.y, m_position.z, 0.0f);
+	pCreature->Load(proto, offsetX, offsetY, offsetZ, offsetO);
+	pCreature->m_TransporterUnk = UNIXTIME;
 	pCreature->m_transportPosition = new LocationVector(offsetX, offsetY, offsetZ, offsetO);
-	pCreature->m_transportGuid = GetUIdFromGUID();
+	pCreature->m_TransporterGUID = GetGUID();
 	pCreature->m_transportNewGuid = GetNewGUID();
 	m_npcs.insert(make_pair(guid,pCreature));
 }
@@ -506,7 +502,11 @@ uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* ta
 	// add all the npcs to the packet
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
-		itr->second->SetPosition(GetPosition(), false);
+		LocationVector v_offset = GetPosition();
+		v_offset.x = v_offset.x + TO_CREATURE(itr->second)->m_transportPosition->x;
+		v_offset.y = v_offset.y + TO_CREATURE(itr->second)->m_transportPosition->y;
+		v_offset.z = v_offset.z + TO_CREATURE(itr->second)->m_transportPosition->z;
+		itr->second->SetPosition(v_offset, false);
 		cnt += itr->second->BuildCreateUpdateBlockForPlayer(data, target);
 	}
 

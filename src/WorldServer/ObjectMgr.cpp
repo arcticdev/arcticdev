@@ -49,12 +49,6 @@ ObjectMgr::~ObjectMgr()
 		delete i->second;
 	}
 
-	Log.Notice("ObjectMgr", "Deleting Spell Override...");
-	for(OverrideIdMap::iterator i = mOverrideIdMap.begin(); i != mOverrideIdMap.end(); ++i)
-	{
-		delete i->second;
-	}
-
 	Log.Notice("ObjectMgr", "Deleting Trainers...");
 	for( TrainerMap::iterator i = mTrainers.begin( ); i != mTrainers.end( ); ++ i) {
 		Trainer * t = i->second;
@@ -171,13 +165,25 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("Destructor", "Deleting Profession Discoveries...");
 	std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin();
 	for ( ; itr != ProfessionDiscoveryTable.end(); ++itr )
-		delete (*itr);	
+		delete (*itr);
 
 	Log.Notice("Destructor", "Deleting Achievement Cache...");
 	for(AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.begin(); itr != m_achievementCriteriaMap.end(); ++itr)
 		delete (itr->second);
 
-	Log.Notice("Destructor", "Deleting Pet Levelup Spells...");
+	Log.Notice("Destructor", "Deleting Achievement Map...");
+	AchievementEntry* ae;
+	for(uint32 i = 0; i < dbcAchievementCriteria.GetNumRows(); ++i)
+	{
+		ae = dbcAchievement.LookupRow(i);
+		if(ae)
+			if(ae->AssociatedCriteria)
+				/*delete ae->AssociatedCriteria;
+			else*/
+				free(ae->AssociatedCriteria);
+	}
+
+	Log.Notice("ObjectMgr", "Deleting Pet Levelup Spells...");
 	for(PetLevelupSpellMap::iterator itr = mPetLevelupSpellMap.begin(); itr != mPetLevelupSpellMap.end(); ++itr)
 	{
 		itr->second.clear();
@@ -191,14 +197,12 @@ void ObjectMgr::LoadAchievements()
 	{
 		AchievementEntry * ae = dbcAchievement.LookupRow(i);
 		if(ae)
-		{
 			ae->AssociatedCriteriaCount = 0;
-		}
 	}
 
-	for(uint32 i = 0; i < dbcAchivementCriteria.GetNumRows(); ++i)
+	for(uint32 i = 0; i < dbcAchievementCriteria.GetNumRows(); ++i)
 	{
-		AchievementCriteriaEntry * ace = dbcAchivementCriteria.LookupRow( i );
+		AchievementCriteriaEntry * ace = dbcAchievementCriteria.LookupRow( i );
 		if( ace )
 		{
 			AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.find( ace->requiredType );
@@ -219,7 +223,9 @@ void ObjectMgr::LoadAchievements()
 			AchievementEntry * ae = dbcAchievement.LookupEntryForced( ace->referredAchievement );
 			if( ae )
 			{
-				ae->AssociatedCriteria->push_back( ace->ID );
+				if(ae->AssociatedCriteriaCount >= 32)
+					continue;
+				ae->AssociatedCriteria[ ae->AssociatedCriteriaCount ] = ace->ID;
 				ae->AssociatedCriteriaCount++;
 			}
 		}
@@ -229,6 +235,7 @@ void ObjectMgr::LoadAchievements()
 //////////////////////////////////////////////////////////////////////////
 // Groups                                                               //
 //////////////////////////////////////////////////////////////////////////
+
 Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 {
 	GroupMap::iterator itr;
@@ -236,7 +243,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 	m_groupLock.AcquireReadLock();
 	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
-		if(itr->second->GetLeader()==pPlayer->m_playerInfo)
+		if(itr->second->GetLeader() == pPlayer->m_playerInfo)
 		{
 			ret = itr->second;
 			break;
@@ -253,7 +260,7 @@ Group * ObjectMgr::GetGroupById(uint32 id)
 	Group * ret = NULL;
 	m_groupLock.AcquireReadLock();
 	itr = m_groups.find(id);
-	if(itr!=m_groups.end())
+	if(itr != m_groups.end())
 		ret = itr->second;
 
 	m_groupLock.ReleaseReadLock();
@@ -349,8 +356,6 @@ void ObjectMgr::RenamePlayerInfo(PlayerInfo * pn, const char * oldname, const ch
 void ObjectMgr::LoadSpellSkills()
 {
 	uint32 i;
-    // int total = sSkillStore.GetNumRows();
-
 	for(i = 0; i < dbcSkillLineSpell.GetNumRows(); i++)
 	{
 		skilllinespell *sp = dbcSkillLineSpell.LookupRow(i);
@@ -602,10 +607,11 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 	if( !result )
 		return NULLCORPSE;
 	
+	Field *fields = NULL;
 	do
 	{
-		Field *fields = result->Fetch();
-		pCorpse = Corpse* (new Corpse(HIGHGUID_TYPE_CORPSE,fields[0].GetUInt32()));
+		fields = result->Fetch();
+		pCorpse = new Corpse(HIGHGUID_TYPE_CORPSE,fields[0].GetUInt32());
 		pCorpse->Init();
 		pCorpse->SetPosition(fields[1].GetFloat(), fields[2].GetFloat(), fields[3].GetFloat(), fields[4].GetFloat());
 		pCorpse->SetZoneId(fields[5].GetUInt32());
@@ -792,6 +798,78 @@ void ObjectMgr::SetHighestGuids()
 	Log.Notice("Database", "Total Guilds = %u", m_hiGuildId);
 }
 
+void ObjectMgr::ListGuidAmounts()
+{
+	QueryResult *result;
+	uint32 amount[9];
+	std::string name[9] = {"Characters", "Player Items", "Corpses", "Groups", "Charters", "Guilds", "Creatures", "Gameobjects", "Vehicles"};
+
+	result = CharacterDatabase.Query("SELECT guid FROM characters");
+	if(result)
+	{
+		amount[0] = result->GetRowCount();
+		delete result;
+	}
+
+	result = CharacterDatabase.Query("SELECT guid FROM playeritems");
+	if(result)
+	{
+		amount[1] = result->GetRowCount();
+		delete result;
+	}
+
+	result = CharacterDatabase.Query( "SELECT guid FROM corpses" );
+	if(result)
+	{
+		amount[2] = result->GetRowCount();
+		delete result;
+	}
+
+	result = CharacterDatabase.Query("SELECT group_id FROM groups");
+	if(result)
+	{
+		amount[3] = result->GetRowCount();
+		delete result;
+	}
+
+	result = CharacterDatabase.Query("SELECT charterId FROM charters");
+	if(result)
+	{
+		amount[4] = result->GetRowCount();
+		delete result;
+	}
+
+	result = CharacterDatabase.Query("SELECT guildId FROM guilds");
+	if(result)
+	{
+		amount[5] = result->GetRowCount();
+		delete result;
+	}
+
+	result = WorldDatabase.Query("SELECT id FROM creature_spawns");
+	if(result)
+	{
+		amount[6] = result->GetRowCount();
+		delete result;
+	}
+
+	result = WorldDatabase.Query("SELECT id FROM gameobject_spawns");
+	if(result)
+	{
+		amount[7] = result->GetRowCount();
+		delete result;
+	}
+
+	result = WorldDatabase.Query("SELECT id FROM creature_spawns WHERE vehicle > '0'");
+	if(result)
+	{
+		amount[8] = result->GetRowCount();
+		delete result;
+	}
+
+	for(int i = 0; i < 9; ++i)
+		Log.Notice("ObjectMgr", "Load Amount(%s) = %u", name[i].c_str(), amount[i] ? amount[i] : 0);
+}
 
 uint32 ObjectMgr::GenerateMailID()
 {
@@ -1253,10 +1331,11 @@ void ObjectMgr::LoadCorpses(MapMgr* mgr)
 
 	if(result)
 	{
+		Field *fields = NULL;
 		do
 		{
-			Field *fields = result->Fetch();
-			pCorpse = Corpse* (new Corpse(HIGHGUID_TYPE_CORPSE,fields[0].GetUInt32()));
+			fields = result->Fetch();
+			pCorpse = new Corpse(HIGHGUID_TYPE_CORPSE,fields[0].GetUInt32());
 			pCorpse->Init();
 			pCorpse->SetPosition(fields[1].GetFloat(), fields[2].GetFloat(), fields[3].GetFloat(), fields[4].GetFloat());
 			pCorpse->SetZoneId(fields[5].GetUInt32());
@@ -1266,7 +1345,6 @@ void ObjectMgr::LoadCorpses(MapMgr* mgr)
 			if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
 			{
 				pCorpse->Destructor();
-				pCorpse = NULLCORPSE;
 				continue;
 			}
 
@@ -2632,10 +2710,13 @@ void ObjectMgr::ResetDailies()
 {
 	_playerslock.AcquireReadLock();
 	PlayerStorageMap::iterator itr = _players.begin();
-	for(; itr != _players.end(); itr++)
+	for(; itr != _players.end(); ++itr)
 	{
- 		Player* pPlayer = itr->second;
-		sEventMgr.AddEvent(pPlayer, &Player::ResetDailyQuests, EVENT_DAILY_QUEST_RESET, 100, 0, 0);
+		Player* pPlayer = itr->second;
+		uint8 eflags = 0;
+		if( pPlayer->IsInWorld() )
+			eflags = EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT;
+		sEventMgr.AddEvent(pPlayer, &Player::ResetDailyQuests, EVENT_PLAYER_UPDATE, 100, 0, eflags);
 	}
 	_playerslock.ReleaseReadLock();
 }
@@ -2649,7 +2730,6 @@ void ObjectMgr::GroupVoiceReconnected()
 	m_groupLock.ReleaseReadLock();
 }
 #endif
-
 void ObjectMgr::LoadPetLevelupSpellMap()
 {
 	CreatureFamilyEntry	* creatureFamily;
@@ -2659,226 +2739,227 @@ void ObjectMgr::LoadPetLevelupSpellMap()
 
 	for	(uint32	i =	0; i < dbcCreatureFamily.GetNumRows(); ++i)
 	{
-		// Valid hunter pet family?
+		//Valid hunter pet family?
 		creatureFamily = dbcCreatureFamily.LookupEntry(i);
 		if(!creatureFamily || creatureFamily->pettalenttype < 0)
 			continue;
 
 		for(uint32 j = 0; j < dbcSkillLineSpell.GetNumRows(); ++j)
 		{
-			// Valid skill line?
+			//Valid skill line?
 			sk = dbcSkillLineSpell.LookupEntry(j);
 			if(!sk || sk->racemask != 0 || sk->classmask != 0)
 				continue;
 
-			// Vaild pet-family spell?
+			//Vaild pet-family spell?
 			sp = dbcSpell.LookupEntry(sk->spell);
 			if(!sp || sp->SpellFamilyName != SPELLFAMILY_HUNTER)
 				continue;
 
 			switch(sk->skilline)
 			{
-				case SKILL_PET_IMP:
+			case SKILL_PET_IMP:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_IMP][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_VOIDWALKER:
+			case SKILL_PET_VOIDWALKER:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_VOIDWALKER][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_SUCCUBUS:
+			case SKILL_PET_SUCCUBUS:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_SUCCUBUS][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_FELHUNTER:
+			case SKILL_PET_FELHUNTER:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_FELHUNTER][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_FELGUARD:
+			case SKILL_PET_FELGUARD:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_FELGUARD][sp->spellLevel] = sk->spell;
 				}break;
-				case SPELL_HASH_GROWL:
+			case SPELL_HASH_GROWL:
 				{
 					mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel] = sk->spell;
 				}break;
-				case SPELL_HASH_COWER:
+			case SPELL_HASH_COWER:
 				{
 					mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel] = sk->spell;
 				}break;
 			}
+
 			switch(creatureFamily->ID)
 			{
-				case FAMILY_BAT:
+			case FAMILY_BAT:
 				{
 					if(sk->skilline !=	SKILL_PET_BAT)
 						continue;
 				}break;
-				case FAMILY_BEAR:
+			case FAMILY_BEAR:
 				{
 					if(sk->skilline !=	SKILL_PET_BEAR)
 						continue;
 				}break;
-				case FAMILY_BIRD_OF_PREY:
+			case FAMILY_BIRD_OF_PREY:
 				{
 					if(sk->skilline !=	SKILL_PET_OWL)
 						continue;
 				}break;
-				case FAMILY_BOAR:	
+			case FAMILY_BOAR:	
 				{
 					if(sk->skilline	!= SKILL_PET_BOAR)
 						continue;
 				}break;
-				case FAMILY_CARRION_BIRD:
+			case FAMILY_CARRION_BIRD:
 				{
 					if(sk->skilline !=	SKILL_PET_CARRION_BIRD)
 						continue;
 				}break;
-				case FAMILY_CAT:
+			case FAMILY_CAT:
 				{
 					if(sk->skilline !=	SKILL_PET_CAT)
 						continue;
 				}break;
-				case FAMILY_CHIMAERA:
+			case FAMILY_CHIMAERA:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_CHIMAERA)
 						continue;
 				}break;
-				case FAMILY_CORE_HOUND:
+			case FAMILY_CORE_HOUND:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_CORE_HOUND)
 						continue;
 				}break;
-				case FAMILY_CRAB:
+			case FAMILY_CRAB:
 				{
 					if(sk->skilline !=	SKILL_PET_CRAB)
 						continue;
 				}break;
-				case FAMILY_CROCOLISK:
+			case FAMILY_CROCILISK:
 				{
 					if(sk->skilline !=	SKILL_PET_CROCILISK)
 						continue;
 				}break;
-				case FAMILY_DEVILSAUR:
+			case FAMILY_DEVILSAUR:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_DEVILSAUR)
 						continue;
 				}break;
-				case FAMILY_DRAGONHAWK:
+			case FAMILY_DRAGONHAWK:
 				{
 					if(sk->skilline !=	SKILL_PET_DRAGONHAWK)
 						continue;
 				}break;
-				case FAMILY_GORILLA:
+			case FAMILY_GORILLA:
 				{
 					if(sk->skilline !=	SKILL_PET_GORILLA)
 						continue;
 				}break;
-				case FAMILY_HYENA:
+			case FAMILY_HYENA:
 				{
 					if(sk->skilline !=	SKILL_PET_HYENA)
 						continue;
 				}break;
-				case FAMILY_MOTH:
+			case FAMILY_MOTH:
 				{
 					if(sk->skilline !=	SKILL_PET_MOTH)
 						continue;
 				}break;
-				case FAMILY_NETHER_RAY:
+			case FAMILY_NETHER_RAY:
 				{
 					if(sk->skilline !=	SKILL_PET_NETHER_RAY)
 						continue;
 				}break;
-				case FAMILY_RAPTOR:
+			case FAMILY_RAPTOR:
 				{
 					if(sk->skilline !=	SKILL_PET_RAPTOR)
 						continue;
 				}break;
-				case FAMILY_RAVAGER:
+			case FAMILY_RAVAGER:
 				{
 					if(sk->skilline !=	SKILL_PET_RAVAGER)
 						continue;
 				}break;
-				case FAMILY_RHINO:
+			case FAMILY_RHINO:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_RHINO)
 						continue;
 				}break;
-				case FAMILY_SCORPID:
+			case FAMILY_SCORPID:
 				{
 					if(sk->skilline !=	SKILL_PET_SCORPID)
 						continue;
 				}break;
-				case FAMILY_SERPENT:
+			case FAMILY_SERPENT:
 				{
 					if(sk->skilline !=	SKILL_PET_SERPENT)
 						continue;
 				}break;
-				case FAMILY_SILITHID:
+			case FAMILY_SILITHID:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_SILITHID)
 						continue;
 				}break;
-				case FAMILY_SPIDER:
+			case FAMILY_SPIDER:
 				{
 					if(sk->skilline !=	SKILL_PET_SPIDER)
 						continue;
 				}break;
-				case FAMILY_SPIRIT_BEAST:
+			case FAMILY_SPIRIT_BEAST:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_SPIRIT_BEAST)
 						continue;
 				}break;
-				case FAMILY_SPOREBAT:
+			case FAMILY_SPOREBAT:
 				{
 					if(sk->skilline !=	SKILL_PET_SPOREBAT)
 						continue;
 				}break;
-				case FAMILY_TALLSTRIDER:
+			case FAMILY_TALLSTRIDER:
 				{
 					if(sk->skilline !=	SKILL_PET_TALLSTRIDER)
 						continue;
 				}break;
-				case FAMILY_TURTLE:
+			case FAMILY_TURTLE:
 				{
 					if(sk->skilline !=	SKILL_PET_TURTLE)
 						continue;
 				}break;
-				case FAMILY_WARP_STALKER:
+			case FAMILY_WARP_STALKER:
 				{
 					if(sk->skilline !=	SKILL_PET_WARP_STALKER)
 						continue;
 				}break;
-				case FAMILY_WASP:
+			case FAMILY_WASP:
 				{
 					if(sk->skilline !=	SKILL_PET_WASP)
 						continue;
 				}break;
-				case FAMILY_WIND_SERPENT:
+			case FAMILY_WIND_SERPENT:
 				{
 					if(sk->skilline !=	SKILL_PET_WIND_SERPENT)
 						continue;
 				}break;
-				case FAMILY_WOLF:
+			case FAMILY_WOLF:
 				{
 					if(sk->skilline !=	SKILL_PET_WOLF)
 						continue;
 				}break;
-				case FAMILY_WORM:
+			case FAMILY_WORM:
 				{
 					if(sk->skilline !=	SKILL_PET_EXOTIC_WORM)
 						continue;
 				}break;
-				default:
+			default:
 				{
-					Log.Error("DBC","Unhandled creature	family %u",	creatureFamily->ID);
+					Log.Error("ObjectMgr",	"Unhandled creature	family %u",	creatureFamily->ID);
 				}break;
 			}
-			mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel]	=	sk->spell;
-			count++;
+			mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel]	= sk->spell;
+			++count;
 		}
 	}
-	Log.Notice("DBC", "%u Pet LevelUp Spells loaded.",	count);
+	Log.Notice("ObjectMgr", "%u Pet LevelUp Spells loaded.",	count);
 }
 
 PetLevelupSpellSet const* ObjectMgr::GetPetLevelupSpellList(uint32 petFamily)	const
@@ -2887,4 +2968,13 @@ PetLevelupSpellSet const* ObjectMgr::GetPetLevelupSpellList(uint32 petFamily)	co
 	if(itr != mPetLevelupSpellMap.end())
 		return &itr->second;
 	return NULL;
+}
+
+QueryResult* ObjectMgr::SQLCheckExists(const char* tablename, const char* columnname, uint64 columnvalue)
+{
+	if(!tablename || !columnname || !columnvalue)
+		return NULL;
+
+	QueryResult* result = WorldDatabase.Query("SELECT %s FROM %s WHERE %s = '%u' LIMIT 1", columnname, tablename, columnname, columnvalue);
+	return result;
 }

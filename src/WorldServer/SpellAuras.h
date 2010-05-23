@@ -236,31 +236,31 @@ enum MOD_TYPES
     SSPELL_AURA_INCREASE_SPELL_HIT_PCT                         = 199,
 	SPELL_AURA_CANNOT_BE_DODGED                                = 201,
 	SPELL_AURA_FINISHING_MOVES_CANNOT_BE_DODGED                = 202,
-    SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT  = 203,
-    SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_RANGED_PCT = 204,
-    SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT             = 212,
-    SPELL_AURA_INCREASE_RAGE_FROM_DAMAGE_DEALT_PCT             = 213,
-    SPELL_AURA_INCREASE_CASTING_TIME_PCT                       = 216,
-    SPELL_AURA_REGEN_MANA_STAT_PCT                             = 219,
-    SPELL_AURA_HEALING_STAT_PCT                                = 220,
+	SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_MELEE_PCT  = 203,
+	SPELL_AURA_REDUCE_ATTACKER_CRICTICAL_HIT_DAMAGE_RANGED_PCT = 204,
+	SPELL_AURA_MOD_RANGED_ATTACK_POWER_BY_STAT_PCT             = 212,
+	SPELL_AURA_INCREASE_RAGE_FROM_DAMAGE_DEALT_PCT             = 213,
+	SPELL_AURA_INCREASE_CASTING_TIME_PCT                       = 216,
+	SPELL_AURA_REGEN_MANA_STAT_PCT                             = 219,
+	SPELL_AURA_HEALING_STAT_PCT                                = 220,
 	SPELL_AURA_PERIODIC_TRIGGER_SPELL_WITH_VALUE               = 227,
 	SPELL_AURA_REDUCE_AOE_DAMAGE_TAKEN                         = 229,
-    SPELL_AURA_INCREASE_MAX_HEALTH                             = 230,
+	SPELL_AURA_INCREASE_MAX_HEALTH                             = 230,
 	SPELL_AURA_MECHANIC_DURATION_MOD                           = 232,
 	SPELL_AURA_MOD_HEALING_BY_AP                               = 237,
 	SPELL_AURA_MOD_SPELL_DAMAGE_BY_AP                          = 238,
 	SPELL_AURA_EXPERTISE                                       = 240,
 	SPELL_AURA_241                                             = 241,
-    SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING                   = 242,
-    SPELL_AURA_243                                             = 243,
-    SPELL_AURA_244                                             = 244,
-    SPELL_AURA_MOD_DURATION_OF_MAGIC_EFFECTS                   = 245,
-    SPELL_AURA_246                                             = 246,
-    SPELL_AURA_247                                             = 247,
-    SPELL_AURA_MOD_COMBAT_RESULT_CHANCE                        = 248,
-    SPELL_AURA_249                                             = 249,
-    SPELL_AURA_MOD_INCREASE_HEALTH_2                           = 250,
-    SPELL_AURA_MOD_ENEMY_DODGE                                 = 251,
+	SPELL_AURA_MOD_SPELL_DAMAGE_FROM_HEALING                   = 242,
+	SPELL_AURA_243                                             = 243,
+	SPELL_AURA_244                                             = 244,
+	SPELL_AURA_MOD_DURATION_OF_MAGIC_EFFECTS                   = 245,
+	SPELL_AURA_246                                             = 246,
+	SPELL_AURA_247                                             = 247,
+	SPELL_AURA_MOD_COMBAT_RESULT_CHANCE                        = 248,
+	SPELL_AURA_249                                             = 249,
+	SPELL_AURA_MOD_INCREASE_HEALTH_2                           = 250,
+	SPELL_AURA_MOD_ENEMY_DODGE                                 = 251,
 	SPELL_AURA_252                                             = 252,
 	SPELL_AURA_BLOCK_MULTIPLE_DAMAGE                           = 253,
 	SPELL_AURA_254                                             = 254,
@@ -316,28 +316,28 @@ enum MOD_TYPES
 	SPELL_AURA_304                                             = 304,
 	SPELL_AURA_305                                             = 305,
 	SPELL_AURA_306                                             = 306,
-    TOTAL_SPELL_AURAS                                          = 307,
+	TOTAL_SPELL_AURAS                                          = 307,
 };
 enum AuraTickFlags
 {
-    FLAG_PERIODIC_DAMAGE    = 3, // also 89
-    FLAG_PERIODIC_HEAL      = 8, // also 20
-    FLAG_PERIODIC_ENERGIZE  = 21, // also 24
-	FLAG_PERIODIC_LEECH     = 64,
+    FLAG_PERIODIC_DAMAGE = 3, // also 89
+    FLAG_PERIODIC_HEAL = 8, // also 20
+    FLAG_PERIODIC_ENERGIZE = 21, // also 24
+    FLAG_PERIODIC_LEECH = 64,
 };
 enum AuraFlags
 {
-    AFLAG_NONE              = 0x00,
-    AFLAG_VISIBLE           = 0x01,
-    AFLAG_EFF_INDEX_1       = 0x02,
-    AFLAG_EFF_INDEX_2       = 0x04,
-    AFLAG_NOT_GUID          = 0x08,
-    AFLAG_CANCELLABLE       = 0x10,
-    AFLAG_HAS_DURATION      = 0x20,
-    AFLAG_UNK2              = 0x40,
-    AFLAG_NEGATIVE          = 0x80,
-    AFLAG_POSITIVE          = 0x1F,
-    AFLAG_MASK              = 0xFF
+    AFLAG_NONE = 0x00,
+    AFLAG_VISIBLE = 0x01,
+    AFLAG_EFF_INDEX_1 = 0x02,
+    AFLAG_EFF_INDEX_2 = 0x04,
+    AFLAG_NOT_GUID = 0x08,
+    AFLAG_CANCELLABLE = 0x10,
+    AFLAG_HAS_DURATION = 0x20,
+    AFLAG_UNK2 = 0x40,
+    AFLAG_NEGATIVE = 0x80,
+    AFLAG_POSITIVE = 0x1F,
+    AFLAG_MASK = 0xFF
 };
 
 enum AURAIMMUNE_FLAG
@@ -350,7 +350,7 @@ enum AURAIMMUNE_FLAG
 	AURAIMMUNE_PACIFY		= 0x10,			// SPELL_AURA_MOD_PACIFY = 25
 	AURAIMMUNE_ROOT			= 0x20,			// SPELL_AURA_MOD_ROOT = 26	
 	AURAIMMUNE_SILENCE		= 0x40,			// SPELL_AURA_MOD_SILENCE = 27
-	AURAIMMUNE_INCSPEED		= 0x80,         // SPELL_AURA_MOD_INCREASE_SPEED = 31
+	AURAIMMUNE_INCSPEED		= 0x80,			// SPELL_AURA_MOD_INCREASE_SPEED = 31
 	AURAIMMUNE_DECSPEED		= 0x100,		// SPELL_AURA_MOD_DECREASE_SPEED = 33
 	AURAIMMUNE_TRANSFORM	= 0x200,		// SPELL_AURA_TRANSFORM = 56
 	AURAIMMUNE_TAUNT		= 0x400,		// SPELL_AURA_MOD_TAUNT = 11
@@ -367,21 +367,21 @@ enum AURAIMMUNE_FLAG
 
 struct Modifier
 {
-    // uint32 m_actamt;      // actual amt, for percent and stuff
-    uint32 m_type;           // What does it modify? (str,int,hp)
-    int32 m_amount;          // By how much does it mod?	always should be m_baseAmount * stackSize
-	int32 m_baseAmount;		 // amount per one stack
-    int32 m_miscValue;       // Misc Value
+    // uint32 m_actamt;  // actual amt, for percent and stuff
+    uint32 m_type;       // What does it modify? (str,int,hp)
+    int32 m_amount;      // By how much does it mod?	always should be m_baseAmount * stackSize
+    int32 m_baseAmount;  // amount per one stack
+    int32 m_miscValue;   // Misc Value
     uint32 i;
 
     // needed for per level effect
     int32 realamount;
     
-	// need this to store % values or they cannot be reverted corectly (i think :D )
+    // need this to store % values or they cannot be reverted corectly (i think :D )
     int32 fixed_amount[7];
 
-	// float fixed amounts
-	float fixed_float_amount[7];
+    // float fixed amounts
+    float fixed_float_amount[7];
 };
 
 struct DamageProc
@@ -391,25 +391,25 @@ struct DamageProc
     // uint64 m_caster; // log is: some reflects x arcane/nature damage to 'attacker' no matter who casted
     uint32 m_school;
     uint32 m_flags;
-	uint32 m_extraflags;
+    uint32 m_extraflags;
     void  *owner; // mark the owner of this proc to know which one to delete
 };
 
 struct ProcTriggerSpell
 {
-	uint32 origId;
-	uint32 spellId;
-	uint64 caster;
-	uint32 procChance;
-	uint32 procFlags;
-	uint32 ExtraProc;
-	uint32 procCharges;
-	bool procModify;
-	uint32 LastTrigger;
-	uint32 ProcType; // 0 = triggerspell/1 = triggerclassspell
-	uint32 SpellClassMask[3];
-	uint32 weapon_damage_type; // 0 = Any, 1 = Main hand, 2 = off hand
-	bool deleted;
+    uint32 origId;
+    uint32 spellId;
+    uint64 caster;
+    uint32 procChance;
+    uint32 procFlags;
+    uint32 ExtraProc;
+    uint32 procCharges;
+    bool procModify;
+    uint32 LastTrigger;
+    uint32 ProcType; // 0 = triggerspell/1 = triggerclassspell
+    uint32 SpellClassMask[3];
+    uint32 weapon_damage_type; // 0 = Any, 1 = Main hand, 2 = off hand
+    bool deleted;
 };
 
 typedef set<uint32> AreaAuraList;

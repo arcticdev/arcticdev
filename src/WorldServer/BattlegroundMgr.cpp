@@ -6,7 +6,6 @@
 
 #include "StdAfx.h"
 
-
 initialiseSingleton(CBattlegroundManager);
 typedef CBattleground*(*CreateBattlegroundFunc)( MapMgr* mgr,uint32 iid,uint32 group, uint32 type);
 

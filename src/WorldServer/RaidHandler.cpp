@@ -114,23 +114,21 @@ void WorldSession::HandleGroupPromote(WorldPacket& recv_data)
 
 void WorldSession::HandleRequestRaidInfoOpcode(WorldPacket & recv_data)
 {
-	//            SMSG_RAID_INSTANCE_INFO = 716, //(0x2CC)
+	//			  SMSG_RAID_INSTANCE_INFO = 716, //(0x2CC)
 	sInstanceMgr.BuildSavedRaidInstancesForPlayer(_player);
 }
 
 void WorldSession::HandleReadyCheckOpcode(WorldPacket& recv_data)
 {
 	Group * pGroup  = _player->GetGroup();
-
 	if(!pGroup || ! _player->IsInWorld())
 		return;
 
-
 	if(recv_data.size() == 0)
 	{
-	if(pGroup->GetLeader() == _player->m_playerInfo ||
-		pGroup->GetAssistantLeader() == _player->m_playerInfo)
+		if(pGroup->GetLeader() == _player->m_playerInfo || pGroup->GetAssistantLeader() == _player->m_playerInfo)
 		{
+			// send packet to group..
 			WorldPacket data(MSG_RAID_READY_CHECK, 9);
 			data << _player->GetGUID();
 			pGroup->SendPacketToAll(&data);

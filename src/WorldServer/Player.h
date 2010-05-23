@@ -6,22 +6,26 @@
  
 #ifndef _PLAYER_H
 #define _PLAYER_H
+
 #define MAX_PET_NO 3
 #define PLAYER_NORMAL_RUN_SPEED 7.0f
 #define PLAYER_NORMAL_SWIM_SPEED 4.722222f
 #define PLAYER_NORMAL_FLIGHT_SPEED 7.0f
 #define PLAYER_HONORLESS_TARGET_SPELL 2479
 #define MONSTER_NORMAL_RUN_SPEED 8.0f
+
 // action button defines.
 #define PLAYER_ACTION_BUTTON_COUNT 132
 #define PLAYER_ACTION_BUTTON_SIZE PLAYER_ACTION_BUTTON_COUNT * sizeof(ActionButton)
 #define MAX_SPEC_COUNT 2
 #define GLYPHS_COUNT 6
+
 #define ALLIANCE 0
 #define HORDE 1
 
 // gold cap
 #define PLAYER_MAX_GOLD 0x7FFFFFFF
+
 struct BGScore;
 class Channel;
 class Creature;
@@ -321,11 +325,11 @@ enum LootType
 	LOOT_CORPSE = 1,
 	LOOT_SKINNING = 2,
 	LOOT_FISHING = 3,
-	LOOT_PICKPOCKETING = 2,   // 4 unsupported by client, sending LOOT_SKINNING instead
-	LOOT_DISENCHANTING = 2,   // 5 unsupported by client, sending LOOT_SKINNING instead
-	LOOT_PROSPECTING = 2,     // 6 unsupported by client, sending LOOT_SKINNING instead
-	LOOT_INSIGNIA = 2,        // 7 unsupported by client, sending LOOT_SKINNING instead
-	LOOT_MILLING = 2          // 7 unsupported by client, sending LOOT_SKINNING instead
+	LOOT_PICKPOCKETING = 2, // 4 unsupported by client, sending LOOT_SKINNING instead
+	LOOT_DISENCHANTING = 2, // 5 unsupported by client, sending LOOT_SKINNING instead
+	LOOT_PROSPECTING = 2,   // 6 unsupported by client, sending LOOT_SKINNING instead
+	LOOT_INSIGNIA = 2,      // 7 unsupported by client, sending LOOT_SKINNING instead
+	LOOT_MILLING = 2        // 7 unsupported by client, sending LOOT_SKINNING instead
 };
 
 struct spells
@@ -339,66 +343,66 @@ enum DrunkenState
 	DRUNKEN_SOBER = 0,
 	DRUNKEN_TIPSY = 1,
 	DRUNKEN_DRUNK = 2,
-	DRUNKEN_SMASHED	= 3
+	DRUNKEN_SMASHED = 3
 };
 
 #pragma pack(push,1)
 struct ActionButton
 {
-	uint16  Action;
-	uint8   Misc;
-	uint8   Type;
+	uint16 Action;
+	uint8 Misc;
+	uint8 Type;
 };
 #pragma pack(pop)
 
 struct CreateInfo_ItemStruct
 {
-	uint32  protoid;
-	uint8   slot;
-	uint32  amount;
+	uint32 protoid;
+	uint8 slot;
+	uint32 amount;
 };
 
 struct CreateInfo_SkillStruct
 {
-	uint32  skillid;
-	uint32  currentval;
-	uint32  maxval;
+	uint32 skillid;
+	uint32 currentval;
+	uint32 maxval;
 };
 
 struct CreateInfo_ActionBarStruct
 {
-	uint32  button;
-	uint32  action;
-	uint32  type;
-	uint32  misc;
+	uint32 button;
+	uint32 action;
+	uint32 type;
+	uint32 misc;
 };
 
 struct PlayerCreateInfo
 {
-	uint8   index;
-	uint8   race;
-	uint32  factiontemplate;
-	uint8   class_;
-	uint32  mapId;
-	uint32  zoneId;
-	float   positionX;
-	float   positionY;
-	float   positionZ;
-	uint16  displayId;
-	uint8   strength;
-	uint8   ability;
-	uint8   stamina;
-	uint8   intellect;
-	uint8   spirit;
-	uint32  health;
+	uint8 index;
+	uint8 race;
+	uint32 factiontemplate;
+	uint8 class_;
+	uint32 mapId;
+	uint32 zoneId;
+	float positionX;
+	float positionY;
+	float positionZ;
+	uint16 displayId;
+	uint8 strength;
+	uint8 ability;
+	uint8 stamina;
+	uint8 intellect;
+	uint8 spirit;
+	uint32 health;
 	uint32  mana;
-	uint32  rage;
-	uint32  focus;
-	uint32  energy;
-	uint32  runic;
-	uint32  attackpower;
-	float   mindmg;
-	float   maxdmg;
+	uint32 rage;
+	uint32 focus;
+	uint32 energy;
+	uint32 runic;
+	uint32 attackpower;
+	float mindmg;
+	float maxdmg;
 	std::list<CreateInfo_ItemStruct> items;
 	std::list<CreateInfo_SkillStruct> skills;
 	std::list<CreateInfo_ActionBarStruct> actionbars;
@@ -526,18 +530,17 @@ const float dodgeRatio[80][12] =
     {0.000000f , 31.600000f , 26.600000f , 26.600000f , 21.000000f , 26.600000f , 26.600000f , 26.600000f , 26.600000f , 26.600000f , 0.000000f , 15.505900f , } ,    // Level 78
     {0.000000f , 31.800000f , 26.800000f , 26.800000f , 21.100000f , 26.800000f , 26.800000f , 26.800000f , 26.800000f , 26.800000f , 0.000000f , 15.605900f , } ,    // Level 79
     {0.000000f , 84.74576271f , 59.88023952f , 86.20689655f , 47.84688995f , 59.88023952f , 84.74576271f , 59.88023952f , 58.82352941f , 59.88023952f , 0.000000f , 47.84688995f , } , // Level 80 from 3.2.0
-
 };
 
 /*
-Exalted	        1,000	 Access to racial mounts. Capped at 999.7
-Revered	        21,000	 Heroic mode keys for Outland dungeons
-Honored	        12,000	 10% discount from faction vendors
-Friendly	    6,000    -
-Neutral	        3,000    -
-Unfriendly	    3,000	 Cannot buy, sell or interact.
-Hostile	        3,000	 You will always be attacked on sight
-Hated	        36,000 
+	Exalted         1,00     Access to racial mounts. Capped at 999.7
+	Revered         21,000   Heroic mode keys for Outland dungeons
+	Honored         12,000   10% discount from faction vendors
+	Friendly         6,00    -
+	Neutral         3,000    -
+	Unfriendly      3,000    Cannot buy, sell or interact.
+	Hostile	        3,000    You will always be attacked on sight
+	Hated           36,000 
 */
 
 enum FactionRating
@@ -551,6 +554,7 @@ enum FactionRating
 	REVERED,
 	EXALTED
 };
+
 enum RuneTypes
 {
 	RUNE_TYPE_BLOOD = 0,
@@ -559,6 +563,7 @@ enum RuneTypes
 	RUNE_TYPE_DEATH = 3,
 	RUNE_TYPE_RECHARGING = 4
 };
+
 struct FactionReputation
 {
 	int32 standing;
@@ -595,6 +600,7 @@ struct PlayerInfo
 	ArenaTeam * arenaTeam[NUM_ARENA_TEAM_TYPES];
 	uint32 charterId[NUM_CHARTER_TYPES];
 };
+
 struct PlayerPet
 {
 	string name;
@@ -613,31 +619,36 @@ struct PlayerPet
 	uint32 loyaltyupdate;
 	char loyaltylvl;
 };
+
 enum MeetingStoneQueueStatus
 {
-	MEETINGSTONE_STATUS_NONE								= 0,
-	MEETINGSTONE_STATUS_JOINED_MEETINGSTONE_QUEUE_FOR	    = 1,
-	MEETINGSTONE_STATUS_PARTY_MEMBER_LEFT_LFG			    = 2,
-	MEETINGSTONE_STATUS_PARTY_MEMBER_REMOVED_PARTY_REMOVED  = 3,
-	MEETINGSTONE_STATUS_LOOKING_FOR_NEW_PARTY_IN_QUEUE	    = 4,
-	MEETINGSTONE_STATUS_NONE_UNK							= 5,
+	MEETINGSTONE_STATUS_NONE = 0,
+	MEETINGSTONE_STATUS_JOINED_MEETINGSTONE_QUEUE_FOR = 1,
+	MEETINGSTONE_STATUS_PARTY_MEMBER_LEFT_LFG = 2,
+	MEETINGSTONE_STATUS_PARTY_MEMBER_REMOVED_PARTY_REMOVED = 3,
+	MEETINGSTONE_STATUS_LOOKING_FOR_NEW_PARTY_IN_QUEUE = 4,
+	MEETINGSTONE_STATUS_NONE_UNK = 5,
 };
+
 enum ItemPushResultTypes
 {
 	ITEM_PUSH_TYPE_LOOT = 0x00000000,
 	ITEM_PUSH_TYPE_RECEIVE = 0x00000001,
 	ITEM_PUSH_TYPE_CREATE = 0x00000002,
 };
+
 struct WeaponModifier
 {
 	uint32 wclass;
 	uint32 subclass;
 	float value;
 };
+
 struct PetActionBar
 {
 	uint32 spell[10];
 };
+
 struct SpellOverride
 {
 	uint32 miscHP;
@@ -645,9 +656,9 @@ struct SpellOverride
 	uint32 reqaura;
 	uint32 addreqaura;
 	uint32 miscCheck[3];
-	uint32 overridemask; //1 - percent, 2 - selfcheck, 4 - spellpower, 8 - checkclassmask, 
-						 //16 - reqaurafromcaster, 256 - heal only
-						 //32 - MISC FLAG (64 - nourish heal boost, 128 - soul siphon)
+	uint32 overridemask; // 1 - percent, 2 - selfcheck, 4 - spellpower, 8 - checkclassmask, 
+						 // 16 - reqaurafromcaster, 256 - heal only
+						 // 32 - MISC FLAG (64 - nourish heal boost, 128 - soul siphon)
 
 };
 class Spell;
@@ -661,35 +672,35 @@ struct TaxiPathNode;
 
 #define RESTSTATE_RESTED			 1
 #define RESTSTATE_NORMAL			 2
-#define RESTSTATE_TIRED100		     3
+#define RESTSTATE_TIRED100			 3
 #define RESTSTATE_TIRED50			 4
-#define RESTSTATE_EXHAUSTED		     5
+#define RESTSTATE_EXHAUSTED			 5
 #define UNDERWATERSTATE_NONE		 0
 #define UNDERWATERSTATE_SWIMMING	 1
-#define UNDERWATERSTATE_UNDERWATER   2
-#define UNDERWATERSTATE_RECOVERING   4
+#define UNDERWATERSTATE_UNDERWATER	 2
+#define UNDERWATERSTATE_RECOVERING	 4
 #define UNDERWATERSTATE_TAKINGDAMAGE 8
-#define UNDERWATERSTATE_FATIGUE	     16
+#define UNDERWATERSTATE_FATIGUE		 16
 #define UNDERWATERSTATE_LAVA		 32
 #define UNDERWATERSTATE_SLIME		 64
 
 enum TRADE_STATUS
 {
-	TRADE_STATUS_PLAYER_BUSY	    = 0x00,
-	TRADE_STATUS_PROPOSED		    = 0x01,
-	TRADE_STATUS_INITIATED		    = 0x02,
-	TRADE_STATUS_CANCELLED		    = 0x03,
-	TRADE_STATUS_ACCEPTED		    = 0x04,
-	TRADE_STATUS_ALREADY_TRADING    = 0x05,
-	TRADE_STATUS_PLAYER_NOT_FOUND   = 0x06,
-	TRADE_STATUS_STATE_CHANGED	    = 0x07,
-	TRADE_STATUS_COMPLETE		    = 0x08,
-	TRADE_STATUS_UNACCEPTED		    = 0x09,
-	TRADE_STATUS_TOO_FAR_AWAY	    = 0x0A,
-	TRADE_STATUS_WRONG_FACTION	    = 0x0B,
-	TRADE_STATUS_FAILED			    = 0x0C,
-	TRADE_STATUS_UNK2			    = 0x0D,
-	TRADE_STATUS_PLAYER_IGNORED	    = 0x0E,
+	TRADE_STATUS_PLAYER_BUSY		= 0x00,
+	TRADE_STATUS_PROPOSED			= 0x01,
+	TRADE_STATUS_INITIATED			= 0x02,
+	TRADE_STATUS_CANCELLED			= 0x03,
+	TRADE_STATUS_ACCEPTED			= 0x04,
+	TRADE_STATUS_ALREADY_TRADING	= 0x05,
+	TRADE_STATUS_PLAYER_NOT_FOUND	= 0x06,
+	TRADE_STATUS_STATE_CHANGED		= 0x07,
+	TRADE_STATUS_COMPLETE			= 0x08,
+	TRADE_STATUS_UNACCEPTED			= 0x09,
+	TRADE_STATUS_TOO_FAR_AWAY		= 0x0A,
+	TRADE_STATUS_WRONG_FACTION		= 0x0B,
+	TRADE_STATUS_FAILED				= 0x0C,
+	TRADE_STATUS_UNK2				= 0x0D,
+	TRADE_STATUS_PLAYER_IGNORED		= 0x0E,
 	TRADE_STATUS_YOU_STUNNED		= 0x0F,
 	TRADE_STATUS_TARGET_STUNNED		= 0x10,
 	TRADE_STATUS_DEAD				= 0x11,
@@ -744,7 +755,7 @@ enum SPELL_INDEX
 	SPELL_TYPE_INDEX_EARTH_SHIELD = 7,
 	SPELL_TYPE_INDEX_CYCLONE = 8,
 	SPELL_TYPE_INDEX_BANISH = 9,
-	SPELL_TYPE_INDEX_JUDGEMENT = 10,	
+	SPELL_TYPE_INDEX_JUDGEMENT = 10,
 	SPELL_TYPE_INDEX_REPENTANCE = 11,
 	SPELL_TYPE_INDEX_SLOW = 12,
 	NUM_SPELL_TYPE_INDEX = 13,
@@ -800,7 +811,7 @@ typedef std::map<uint32, uint64>                      SoloSpells;
 typedef std::map<SpellEntry*, pair<uint32, uint32> >  StrikeSpellMap;
 typedef std::map<uint32, OnHitSpell >                 StrikeSpellDmgMap;
 typedef std::map<uint32, PlayerSkill>                 SkillMap;
-typedef std::set<Player* *>                     ReferenceSet;
+typedef std::set<Player* *>                           ReferenceSet;
 typedef std::map<uint32, PlayerCooldown>              PlayerCooldownMap;
 
 // #define OPTIMIZED_PLAYER_SAVING
@@ -828,7 +839,7 @@ public:
 	void GroupUninvite(Player* player, PlayerInfo *info);
 
 	//////////////////////////////////////////////////////////////////////////
-	// Skill System															//
+	// Skill System                                                         //
 	//////////////////////////////////////////////////////////////////////////
 
 	void _AdvanceSkillLine(uint32 SkillLine, uint32 Count = 1);
@@ -846,7 +857,6 @@ public:
 	void _AddLanguages(bool All);
 	void _AdvanceAllSkills(uint32 count);
 	void _ModifySkillMaximum(uint32 SkillLine, uint32 NewMax);
-
 
 	void RecalculateHonor();
 
@@ -875,8 +885,8 @@ public:
 	void Cooldown_AddItem(ItemPrototype * pProto, uint32 x);
 	bool Cooldown_CanCast(SpellEntry * pSpell);
 	bool Cooldown_CanCast(ItemPrototype * pProto, uint32 x);
-    void UpdatePotionCooldown();
-	
+	void UpdatePotionCooldown();
+
 protected:
 	void _Cooldown_Add(uint32 Type, uint32 Misc, uint32 Time, uint32 SpellId, uint32 ItemId);
 	void _LoadPlayerCooldowns(QueryResult * result);
@@ -907,7 +917,7 @@ public:
 	
 	void Update( uint32 time );
 	
-    void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
+	void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
 	std::string m_afk_reason;
 	void SetAFKReason(std::string reason) { m_afk_reason = reason; };
 	ARCTIC_INLINE const char* GetName() { return m_name.c_str(); }
@@ -918,41 +928,41 @@ public:
 	void ModifyBonuses(uint32 type,int32 val);
 	std::map<uint32, uint32> m_wratings;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Taxi                                                                 //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Taxi                                                                 //
+	//////////////////////////////////////////////////////////////////////////
 
-    ARCTIC_INLINE TaxiPath* GetTaxiPath() { return m_CurrentTaxiPath; }
-    ARCTIC_INLINE bool GetTaxiState() { return m_onTaxi; }
-    const uint32& GetTaximask( uint8 index ) const { return m_taximask[index]; }
-    void LoadTaxiMask(const char* data);
-    void TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node);
-    void JumpToEndTaxiNode(TaxiPath * path);
-    void EventDismount(uint32 money, float x, float y, float z);
-    void EventTaxiInterpolate();
+	ARCTIC_INLINE TaxiPath* GetTaxiPath() { return m_CurrentTaxiPath; }
+	ARCTIC_INLINE bool GetTaxiState() { return m_onTaxi; }
+	const uint32& GetTaximask( uint8 index ) const { return m_taximask[index]; }
+	void LoadTaxiMask(const char* data);
+	void TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node);
+	void JumpToEndTaxiNode(TaxiPath * path);
+	void EventDismount(uint32 money, float x, float y, float z);
+	void EventTaxiInterpolate();
 
-    ARCTIC_INLINE void SetTaxiState (bool state) { m_onTaxi = state; }
-    ARCTIC_INLINE void SetTaximask (uint8 index, uint32 value ) { m_taximask[index] = value; }
-    ARCTIC_INLINE void SetTaxiPath (TaxiPath *path) { m_CurrentTaxiPath = path; }
-    ARCTIC_INLINE void SetTaxiPos() {m_taxi_pos_x = m_position.x; m_taxi_pos_y = m_position.y; m_taxi_pos_z = m_position.z;}
-    ARCTIC_INLINE void UnSetTaxiPos() {m_taxi_pos_x = 0; m_taxi_pos_y = 0; m_taxi_pos_z = 0; }
+	ARCTIC_INLINE void SetTaxiState (bool state) { m_onTaxi = state; }
+	ARCTIC_INLINE void SetTaximask (uint8 index, uint32 value ) { m_taximask[index] = value; }
+	ARCTIC_INLINE void SetTaxiPath (TaxiPath *path) { m_CurrentTaxiPath = path; }
+	ARCTIC_INLINE void SetTaxiPos() {m_taxi_pos_x = m_position.x; m_taxi_pos_y = m_position.y; m_taxi_pos_z = m_position.z;}
+	ARCTIC_INLINE void UnSetTaxiPos() {m_taxi_pos_x = 0; m_taxi_pos_y = 0; m_taxi_pos_z = 0; }
  
 	// Taxi related variables
 	vector<TaxiPath*> m_taxiPaths;
-    TaxiPath* m_CurrentTaxiPath;
-    uint32 taxi_model_id;
+	TaxiPath* m_CurrentTaxiPath;
+	uint32 taxi_model_id;
 	uint32 lastNode;
-    uint32 m_taxi_ride_time;
-    uint32 m_taximask[12];
-    float m_taxi_pos_x;
-    float m_taxi_pos_y;
-    float m_taxi_pos_z;
-    bool m_onTaxi;
+	uint32 m_taxi_ride_time;
+	uint32 m_taximask[12];
+	float m_taxi_pos_x;
+	float m_taxi_pos_y;
+	float m_taxi_pos_z;
+	bool m_onTaxi;
 	uint32 m_taxiMapChangeNode;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Quests                                                               //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Quests                                                               //
+	//////////////////////////////////////////////////////////////////////////
 
 	bool HasQuests() 
 	{
@@ -1025,13 +1035,13 @@ public:
 
     const uint64& GetSelection( ) const { return m_curSelection; }
 	void SetSelection(const uint64 &guid) { m_curSelection = guid; }
-	
-    //////////////////////////////////////////////////////////////////////////
-    // Spells                                                               //
-    //////////////////////////////////////////////////////////////////////////
-	
+
+	//////////////////////////////////////////////////////////////////////////
+	// Spells                                                               //
+	//////////////////////////////////////////////////////////////////////////
+
 	bool HasSpell(uint32 spell);
-    bool HasTalentWithSpellID( uint32 SpellId );
+	bool HasTalentWithSpellID( uint32 SpellId );
 	bool HasDeletedSpell(uint32 spell);
 	void smsg_InitialSpells();
 	void smsg_TalentsInfo(bool update, uint32 newTalentId, uint8 newTalentRank);
@@ -1128,10 +1138,9 @@ public:
 	}
 	uint32 GetMaxPersonalRating();
 
-
-    //////////////////////////////////////////////////////////////////////////
-    // Groups                                                               //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Groups                                                               //
+	//////////////////////////////////////////////////////////////////////////
 	
 	void  SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
 	ARCTIC_INLINE uint32  GetInviter() { return m_GroupInviter; }
@@ -1148,7 +1157,7 @@ public:
 
 	bool IsGroupMember(Player* plyr);
 	ARCTIC_INLINE int HasBeenInvited() { return m_GroupInviter != 0; }
- 	ARCTIC_INLINE Group* GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
+	ARCTIC_INLINE Group* GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
 	ARCTIC_INLINE uint32  GetGroupID() { return m_playerInfo != NULL ? m_playerInfo->m_Group != NULL ? m_playerInfo->m_Group->GetID(): NULL: NULL; }
 	ARCTIC_INLINE int8 GetSubGroup() { return m_playerInfo->subGroup; }
 	ARCTIC_INLINE bool IsBanned()
@@ -1160,7 +1169,7 @@ public:
 		}
 		return false;
 	}
-    ARCTIC_INLINE void  SetBanned() { m_banned = 4;}
+	ARCTIC_INLINE void  SetBanned() { m_banned = 4;}
 	ARCTIC_INLINE void  SetBanned(string Reason) { m_banned = 4; m_banreason = Reason;}
 	ARCTIC_INLINE void  SetBanned(uint32 timestamp, string& Reason) { m_banned = timestamp; m_banreason = Reason; }
 	ARCTIC_INLINE void  UnSetBanned() { m_banned = 0; }
@@ -1175,9 +1184,9 @@ public:
 
 	uint32 m_hasInRangeGuards;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Guilds                                                               //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Guilds                                                               //
+	//////////////////////////////////////////////////////////////////////////
 	
 	ARCTIC_INLINE  bool  IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
 	ARCTIC_INLINE uint32  GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
@@ -1187,12 +1196,12 @@ public:
 	uint32  GetGuildInvitersGuid() { return m_invitersGuid; }
 	void  SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
 	void  UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
-  
-    //////////////////////////////////////////////////////////////////////////
-    // Duel                                                                 //
-    //////////////////////////////////////////////////////////////////////////
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Duel                                                                 //
+	//////////////////////////////////////////////////////////////////////////
 
-    void  RequestDuel(Player* pTarget);
+	void  RequestDuel(Player* pTarget);
 	void  DuelBoundaryTest();
 	void  EndDuel(uint8 WinCondition);
 	void  DuelCountdown();
@@ -1200,12 +1209,12 @@ public:
 	ARCTIC_INLINE uint8  GetDuelStatus() { return m_duelStatus; }
 	void  SetDuelState(uint8 state) { m_duelState = state; }
 	ARCTIC_INLINE uint8  GetDuelState() { return m_duelState; }
-    // duel variables
-    Player*  DuelingWith;
+	// duel variables
+	Player*  DuelingWith;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Trade                                                                //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Trade                                                                //
+	//////////////////////////////////////////////////////////////////////////
 	
 	void  SendTradeUpdate(void);
 	void  ResetTradeVariables()
@@ -1219,9 +1228,9 @@ public:
 		m_tradeSequence = 2;
 	}
 	
-    //////////////////////////////////////////////////////////////////////////
-    // Pets                                                                 //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Pets                                                                 //
+	//////////////////////////////////////////////////////////////////////////
 	
 	ARCTIC_INLINE void  SetSummon(Pet* pet) { m_Summon = pet; }
 	ARCTIC_INLINE Pet*  GetSummon(void) { return m_Summon; }
@@ -1258,20 +1267,21 @@ public:
 	void  EventSummonPet(Pet* new_pet); // if we charmed or simply summoned a pet, this function should get called
 	void  EventDismissPet(); // if pet/charm died or whatever happned we should call this function
 
-    //////////////////////////////////////////////////////////////////////////
-    // Item Interface                                                       //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Item Interface                                                       //
+	//////////////////////////////////////////////////////////////////////////
 	
 	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
 	ARCTIC_INLINE void  ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
-    // item interface variables
-    ItemInterface *     m_ItemInterface;
+
+	// item interface variables
+	ItemInterface * m_ItemInterface;
 
 	ARCTIC_INLINE AchievementInterface* GetAchievementInterface() { return m_achievementInterface; }
 	AchievementInterface * m_achievementInterface;
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Dancing Rune Weapon Crap			                                    //
+	// Dancing Rune Weapon Crap                                             //
 	//////////////////////////////////////////////////////////////////////////
 	
 	ARCTIC_INLINE  void SetDancingRuneWeaponMod(int32 mod) { m_DancingRuneWeaponBonus = mod; }
@@ -1279,21 +1289,22 @@ public:
 	ARCTIC_INLINE  void SetDancingRuneWeapon(Creature* cp) { m_DancingRuneWeapon = cp; }
 	ARCTIC_INLINE  Creature* GetDancingRuneWeapon() { return m_DancingRuneWeapon; }
 
-    //////////////////////////////////////////////////////////////////////////
-    // Loot                                                                 //
-    //////////////////////////////////////////////////////////////////////////
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Loot                                                                 //
+	//////////////////////////////////////////////////////////////////////////
+
 	ARCTIC_INLINE const uint64& GetLootGUID() const { return m_lootGuid; }
 	ARCTIC_INLINE void  SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
-	void  SendLoot(uint64 guid,uint8 loot_type);
-    // loot variables
-    uint64  m_lootGuid;
-    uint64  m_currentLoot;
-    bool  m_insigniaTaken;
+	void SendLoot(uint64 guid, uint32 mapid, uint8 loot_type);
 
-    //////////////////////////////////////////////////////////////////////////
-    // World Session                                                        //
-    //////////////////////////////////////////////////////////////////////////
+	// loot variables
+	uint64  m_lootGuid;
+	uint64  m_currentLoot;
+	bool  m_insigniaTaken;
+
+	//////////////////////////////////////////////////////////////////////////
+	// World Session                                                        //
+	//////////////////////////////////////////////////////////////////////////
 
 	ARCTIC_INLINE WorldSession* GetSession() const { return m_session; }
 	void SetSession(WorldSession *s) { m_session = s; }
@@ -1310,20 +1321,19 @@ public:
 	int32 GetSpellManaMod(uint32 id);
 	
 	// Talents
-	// These functions build a specific type of A9 packet
 	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
 	void DestroyForPlayer( Player* target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
-	void EventTalentHearthOfWildChange(bool apply);
-	
+	void EventTalentHeartOfWildChange(bool apply);
+
 	std::list<LoginAura> loginauras;
 
-    std::set<uint32> OnMeleeAuras;
-
-    //////////////////////////////////////////////////////////////////////////
-    // Player loading and savings                                           //
-    // Serialize character to db                                            //
-    //////////////////////////////////////////////////////////////////////////
+	std::set<uint32> OnMeleeAuras;
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Player loading and savings                                           //
+	// Serialize character to db                                            //
+	//////////////////////////////////////////////////////////////////////////
 	
 	void SaveToDB(bool bNewCharacter);
 	void SaveAuras(stringstream&);
@@ -1345,9 +1355,9 @@ public:
 	uint32 m_drunkTimer;
 	uint16 m_drunk;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Death system                                                         //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Death system                                                         //
+	//////////////////////////////////////////////////////////////////////////
 	
 	void SpawnCorpseBones();
 	Corpse* CreateCorpse();
@@ -1362,9 +1372,9 @@ public:
 	void DeathDurabilityLoss(double percent);
 	void RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid);
 	
-    //////////////////////////////////////////////////////////////////////////
-    // Movement system                                                      //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Movement system                                                      //
+	//////////////////////////////////////////////////////////////////////////
 	
 	void SetMovement(uint8 pType, uint32 flag);
 	void SetPlayerSpeed(uint8 SpeedType, float value);
@@ -1375,9 +1385,9 @@ public:
 	// Invisibility stuff
 	bool m_isGmInvisible;
 	
-    //////////////////////////////////////////////////////////////////////////
-    // Channel stuff                                                        //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Channel stuff                                                        //
+	//////////////////////////////////////////////////////////////////////////
 	
 	void JoinedChannel(Channel *c);
 	void LeftChannel(Channel *c);
@@ -1395,7 +1405,7 @@ public:
 	void UpdateChances();
 	void UpdateStats();
 	void UpdateHit(int32 hit);
-   
+
 	bool canCast(SpellEntry *m_spellInfo);
 	ARCTIC_INLINE float GetBlockFromSpell() { return m_blockfromspell; }
 	ARCTIC_INLINE float GetSpellCritFromSpell() { return m_spellcritfromspell; }
@@ -1630,7 +1640,7 @@ public:
 	int32 rageFromDamageDealt;
 	// GameObject commands
 	GameObject* m_GM_SelectedGO;
-	
+
 #ifndef CLUSTERING
 	void _Relocate(uint32 mapid,const LocationVector & v, bool sendpending, bool force_new_world, uint32 instance_id);
 #else
@@ -1638,6 +1648,8 @@ public:
 #endif
 	void AddItemsToWorld();
 	void RemoveItemsFromWorld();
+	uint32 GetTotalItemLevel();
+	void UpdateKnownCurrencies(uint32 itemId, bool apply);
 	
 	uint32 m_ShapeShifted;
 	uint32 m_MountSpellId;
@@ -1830,6 +1842,7 @@ public:
 	stringstream LoadAuras;
 	bool resend_speed;
 	bool rename_pending;
+	bool customizable;
 	uint32 iInstanceType;
 	uint32 iRaidType;
 	ARCTIC_INLINE void SetName(string& name) { m_name = name; }
@@ -2275,12 +2288,18 @@ public:
 
 	uint32 m_deathRuneMasteryChance;
 
+	// Equipment Sets
+	void SendEquipmentSets();
+	void DeleteEquipmentSet(uint64 setGuid);
+	void _LoadEquipmentSets(QueryResult *result);
+	void _SaveEquipmentSets();
+
 private:
 	// Stuff for "Talent Inspect"
 	#define TALENT_INSPECT_BYTES 71
 	uint8 m_talentInspectBuffer[TALENT_INSPECT_BYTES];
-    bool SetTaximaskNode(uint32 nodeidx); 
-	
+	bool SetTaximaskNode(uint32 nodeidx); 
+
 public:
 	ARCTIC_INLINE const uint8 *GetTalentInspectBuffer() { return m_talentInspectBuffer; }
 	void UpdateTalentInspectBuffer();

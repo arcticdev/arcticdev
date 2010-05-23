@@ -153,6 +153,11 @@ public:
 		return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_QUEST | ITEM_FLAG_SOULBOUND );
 	}
 
+	ARCTIC_INLINE bool IsAccountbound()
+	{
+		return HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_BINDONACC );
+	}
+
 	ARCTIC_INLINE uint32 GetChargesLeft()
 	{
 		for( uint32 x = 0; x < 5; x++ )

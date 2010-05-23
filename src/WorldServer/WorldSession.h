@@ -142,33 +142,6 @@ typedef struct Cords
 
 #define PLAYER_LOGOUT_DELAY (20*1000)
 
-class MovementInfo
-{
-public:
-	uint64 guid;
-	uint32 time;
-	float pitch;                            // -1.55=looking down, 0=looking forward, +1.55=looking up
-	float jump_sinAngle;                    // on slip 8 is zero, on jump some other number
-	float jump_cosAngle, jump_xySpeed;      // 9,10 changes if you are not on foot
-	uint32 unk11;
-	uint32 spline_unk;
-	uint8 unk13;
-	uint32 unklast;                         // something related to collision
-	uint16 flag16;
-
-	float x, y, z, orientation;
-	uint32 flags;
-	uint32 FallTime;
-	WoWGuid transGuid;
-	float transX, transY, transZ, transO, transTime;
-	uint8 transSeat;
-
-	void init(WorldPacket & data);
-	void write(WorldPacket & data);
-};
-
-#define PLAYER_LOGOUT_DELAY (20*1000) // 20 seconds should be more than enough to gank ya.
-
 #define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
 #define CHECK_GUID_EXISTS(guidx) if(_player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
@@ -191,6 +164,14 @@ public:
 	~WorldSession();
 
 	Player* m_loggingInPlayer;
+	
+	bool portPlr;
+	LocationVector portVec; 
+	uint32 portMap;
+	uint32 portInst;
+
+	ARCTIC_INLINE void SetPortVec(uint32 map, uint32 iid, LocationVector vec) { portMap = map; portInst = iid; portVec = vec; portPlr = true; } 
+
 	ARCTIC_INLINE void SendPacket(WorldPacket* packet)
 	{
 		if(_socket && _socket->IsConnected())
@@ -797,7 +778,8 @@ private:
 	char *permissions;
 	int permissioncount;
 
-	bool _loggingOut;
+	bool LoggingOut;  // Player is waiting to be logged out. 
+	bool _loggingOut; // Player will be logged out in 20 seconds 
 	bool _recentlogout;
 	uint32 _latency;
 	uint32 client_build;

@@ -47,9 +47,9 @@ Arena::Arena( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	m_buffs[0] = m_buffs[1] = NULLGOB;
 	m_playersCount[0] = m_playersCount[1] = 0;
 
-	m_playersAlive = hashmap_new();
-	m_players2[0] = hashmap_new();
-	m_players2[1] = hashmap_new();
+	m_playersAlive.clear();
+	m_players2[0].clear();
+	m_players2[1].clear();
 	m_teams[0] = m_teams[1] = -1;
 	m_deltaRating[0] = m_deltaRating[1] = 0;
 }
@@ -73,17 +73,12 @@ Arena::~Arena()
 		}
 	}
 
-	if (m_playersAlive) {
-		hashmap_free(m_playersAlive);
-		m_playersAlive = NULL;
-	}
+	m_playersAlive.clear();
+	m_players2[0].clear();
+	m_players2[1].clear();
 
-	for (i=0; i<2; i++) {
-		if (m_players2[i]) {
-			hashmap_free(m_players2[i]);
-			m_players2[i] = NULL;
-		}
-	}
+	m_pvpData.clear();
+	m_resurrectMap.clear();
 }
 
 void Arena::OnAddPlayer(Player* plr)
@@ -122,11 +117,11 @@ void Arena::OnAddPlayer(Player* plr)
 	// Set FFA PvP Flag.
 	plr->SetFFAPvPFlag();
 
-	hashmap_put(m_playersAlive, plr->GetLowGUID(), (any_t)1);
+	m_playersAlive.insert(plr->GetLowGUID());
 	if(Rated())
 	{
 		// Store the players who join so that we can change their rating even if they leave before arena finishes
-		hashmap_put(m_players2[plr->GetTeam()], plr->GetLowGUID(), (any_t)1);
+		m_players2[plr->GetTeam()].insert(plr->GetLowGUID());
 		if(m_teams[plr->GetTeam()] == -1 && plr->m_playerInfo && plr->m_playerInfo->arenaTeam[m_arenateamtype] != NULL)
 		{
 			m_teams[plr->GetTeam()] = plr->m_playerInfo->arenaTeam[m_arenateamtype]->m_id;
@@ -170,10 +165,11 @@ void Arena::HookOnPlayerDeath(Player* plr)
 {
 	ASSERT(plr != NULL);
 
-	if (hashmap_get(m_playersAlive, plr->GetLowGUID(), NULL) == MAP_OK) {
+	if (m_playersAlive.find(plr->GetLowGUID()) != m_playersAlive.end())
+	{
 		m_playersCount[plr->GetTeam()]--;
 		UpdatePlayerCounts();
-		hashmap_remove(m_playersAlive, plr->GetLowGUID());
+		m_playersAlive.erase(plr->GetLowGUID());
 	}
 }
 
@@ -435,13 +431,13 @@ int32 Arena::CalcDeltaRating(uint32 oldRating, uint32 opponentRating, bool outco
 
 	double winChance = 1.0 / divisor;
 
-	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////
 	// New Rating Calculation via Elo
 	// New Rating = Old Rating + K * (outcome - Expected Win Chance)
 	// outcome = 1 for a win and 0 for a loss (0.5 for a draw ... but we cant have that)
 	// K is the maximum possible change
 	// Through investigation, K was estimated to be 32 (same as chess)
-	//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////
 
 	double multiplier = (outcome ? 1.0 : 0.0) - winChance;
 	return long2int32(32.0 * multiplier);
@@ -471,21 +467,23 @@ void Arena::Finish()
 			teams[i]->m_stat_rating += m_deltaRating[i];
 			if ((int32)teams[i]->m_stat_rating < 0) teams[i]->m_stat_rating = 0;
 
-			for (int x=0; x<hashmap_length(m_players2[i]); x++) {
-				uint32 key;
-				if (MAP_OK == hashmap_get_index(m_players2[i], x, (int*)&key, (any_t*) NULL)) {
-					PlayerInfo * info = objmgr.GetPlayerInfo(key);
-					if (info) {
-						ArenaTeamMember * tp = teams[i]->GetMember(info);
+			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
+			{
+				PlayerInfo * info = objmgr.GetPlayerInfo(*itr);
+				if (info)
+				{
+					ArenaTeamMember * tp = teams[i]->GetMember(info);
+					if(tp != NULL)
+					{
+						tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, teams[j]->m_stat_rating, outcome);
+						
+						if ((int32)tp->PersonalRating < 0)
+							tp->PersonalRating = 0;
 
-						if(tp != NULL) {
-							tp->PersonalRating += CalcDeltaRating(tp->PersonalRating, teams[j]->m_stat_rating, outcome);
-							if ((int32)tp->PersonalRating < 0) tp->PersonalRating = 0;
-
-							if(outcome) {
-								tp->Won_ThisWeek++;
-								tp->Won_ThisSeason++;
-							}
+						if(outcome)
+						{
+							tp->Won_ThisWeek++;
+							tp->Won_ThisSeason++;
 						}
 					}
 				}
@@ -580,23 +578,6 @@ LocationVector Arena::GetStartingCoords(uint32 Team)
 
 bool Arena::HookHandleRepop(Player* plr)
 {
-	// 559, 562, 572
-	/*
-	A start
-	H start
-	Repop
-	572 1295.322388 1585.953369 31.605387
-	572 1277.105103 1743.956177 31.603209
-	572 1286.112061 1668.334961 39.289127
-
-	562 6184.806641 236.643463 5.037095
-	562 6292.032227 287.570343 5.003577
-	562 6241.171875 261.067322 0.891833
-
-	559 4085.861328 2866.750488 12.417445
-	559 4027.004883 2976.964844 11.600499
-	559 4057.042725 2918.686523 13.051933
-	*/
 	LocationVector dest(0,0,0,0);
 	switch(m_mapMgr->GetMapId())
 	{

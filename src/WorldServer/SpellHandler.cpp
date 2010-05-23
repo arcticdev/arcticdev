@@ -12,6 +12,11 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	
 	Player* p_User = GetPlayer();
 	DEBUG_LOG("WORLD","Received use Item packet, data length = %i",recvPacket.size());
+
+	// can't use items while dead.
+	if(_player->getDeathState()==CORPSE)
+		return;
+
 	int8 tmp1,slot;
 	uint8 unk; // 3.0.2 added unk
 	uint64 item_guid;
@@ -28,9 +33,6 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		return;
 	ItemPrototype *itemProto = tmpItem->GetProto();
 	if(!itemProto)
-		return;
-
-	if(_player->getDeathState()==CORPSE)
 		return;
 
 	if(itemProto->Bonding == ITEM_BIND_ON_USE)
@@ -86,7 +88,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 			return;
 		}
 	
-		if(p_User->GetStandState()!=1)
+		if(p_User->GetStandState()!= STANDSTATE_SIT)
 			p_User->SetStandState(STANDSTATE_SIT);
 	}
 
@@ -161,7 +163,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	Spell* spell(new Spell(_player, spellInfo, false, NULLAURA));
+	Spell* spell = new Spell(_player, spellInfo, false, NULLAURA);
 	spell->extra_cast_number=cn;
 	spell->m_glyphIndex = glyphIndex;
 	spell->i_caster = tmpItem;
@@ -172,11 +174,11 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_RETURN;
-	if(_player->getDeathState()==CORPSE)
+	if(_player->getDeathState() == CORPSE)
 		return;
 
 	uint32 spellId;
-	uint8 cn, unk; // 3.0.2 unk
+	uint8 cn, unk; // cn: Cast count. 3.0.2 unk
 
 	recvPacket >> cn >> spellId  >> unk;
 	if(!spellId)
@@ -193,12 +195,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	DEBUG_LOG("WORLD: Got cast spell packet, spellId - %i (%s), data length = %i",
+	DEBUG_LOG("WORLD","Received cast_spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
-	
-	// Cheat Detection only if player and not from an item
-	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
-	// WPE allows them to mod the outgoing packet and basicly choose what ever spell they want :(
 
 	if( !GetPlayer()->HasSpell(spellId) || spellInfo->Attributes & ATTRIBUTES_PASSIVE )
 	{
@@ -219,12 +217,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 	if (GetPlayer()->GetOnMeleeSpell() != spellId)
 	{
-		// autoshot 75
 		if((spellInfo->Flags3 & FLAGS3_ACTIVATE_AUTO_SHOT) /*spellInfo->Attributes == 327698*/)	// auto shot..
 		{
-			// sLog.outString( "HandleSpellCast: Auto Shot-type spell cast (id %u, name %s)" , spellInfo->Id , spellInfo->Name );
 			Item* weapon = GetPlayer()->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
-			if(!weapon) 
+			if(!weapon)
 				return;
 			uint32 spellid;
 			switch(weapon->GetProto()->SubClass)
@@ -245,7 +241,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				break;
 			}
 
-			if(!spellid) 
+			if(!spellid)
 				spellid = spellInfo->Id;
 			
 			if(!_player->m_onAutoShot)
@@ -262,7 +258,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			
 				_player->m_AutoShotSpell = sp;
 				_player->m_AutoShotDuration = duration;
-				// This will fix fast clicks..
+				// This will fix fast clicks
 				if(_player->m_AutoShotAttackTimer < 500)
 					_player->m_AutoShotAttackTimer = 500;
 				_player->m_onAutoShot = true;
@@ -270,6 +266,8 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 			return;
 		}
+
+		SpellCastTargets targets(recvPacket, GetPlayer()->GetGUID());
 
 		if(_player->m_currentSpell)
 		{
@@ -285,8 +283,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				return;
 			}
 		}
-
-		SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
 
 		// some anticheat stuff
 		if( spellInfo->self_cast_only )
@@ -304,16 +300,13 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit( targets.m_unitTarget );
 			if( pUnit && pUnit != GetPlayer() && !isAttackable( GetPlayer(), pUnit, false ) && !pUnit->IsInRangeOppFactSet(GetPlayer()) && !pUnit->CombatStatus.DidDamageTo(GetPlayer()->GetGUID()))
 			{
-				//GetPlayer()->BroadcastMessage("Faction exploit detected. You will be disconnected in 5 seconds.");
-				//GetPlayer()->Kick(5000);
-				// Just cancel the cast
 				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_BAD_TARGETS, cn, 0);
 				return;
 			}
 		}
 
-		Spell* spell(new Spell(GetPlayer(), spellInfo, false, NULLAURA));
-		spell->extra_cast_number=cn;
+		Spell* spell = new Spell(GetPlayer(), spellInfo, false, NULLAURA);
+		spell->extra_cast_number = cn;
 		spell->prepare(&targets);
 	}
 }
@@ -362,25 +355,21 @@ void WorldSession::HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data)
 	_player->m_onAutoShot = false;
 }
 
-void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
+void WorldSession::HandleCharmForceCastSpell(WorldPacket & recvPacket)
 {
-
 	DEBUG_LOG( "WORLD"," got CMSG_PET_CAST_SPELL." );
 	uint64 guid;
-	uint8 counter;
 	uint32 spellid;
-	uint8 flags;
+	uint8 counter, flags;
 	Unit* caster;
 	SpellCastTargets targets;
-	SpellEntry *sp;
-	Spell* pSpell;
 	list<AI_Spell*>::iterator itr;
 
 	recvPacket >> guid >> counter >> spellid >> flags;
-	sp = dbcSpell.LookupEntry(spellid);
+	SpellEntry *sp = dbcSpell.LookupEntry(spellid);
 
 	// Summoned Elemental's Freeze
-	if (spellid == 33395)
+	if( spellid == 33395 )
 	{
 		caster = _player->m_Summon;
 		if( caster && TO_PET(caster)->GetAISpellForSpellId(spellid) == NULL )
@@ -388,26 +377,71 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 	}
 	else
 	{
-		caster = _player->m_CurrentCharm;
+		if(_player->m_CurrentVehicle)
+			caster = _player->m_CurrentVehicle;
+		else
+			caster = _player->m_CurrentCharm;
 		if( caster != NULL )
 		{
-			for(itr = caster->GetAIInterface()->m_spells.begin(); itr != caster->GetAIInterface()->m_spells.end(); ++itr)
+			if(caster->IsVehicle() && !caster->IsPlayer())
 			{
-				if( (*itr)->spell->Id == spellid )
-					break;
-			}
+				CreatureProtoVehicle* vehpro = CreatureProtoVehicleStorage.LookupEntry(caster->GetEntry());
+				bool hasspell = false;
 
-			if( itr == caster->GetAIInterface()->m_spells.end() )
-				return;
+				for(int i = 0; i < 6; ++i)
+				{
+					if(vehpro->VehicleSpells[i] = spellid)
+					{
+						hasspell = true;
+						break;
+					}
+				}
+				if(!hasspell)
+				{
+					WorldPacket data(SMSG_PET_CAST_FAILED, 1 + 4 + 1);
+					data << uint8(0);
+					data << uint32(spellid);
+					data << uint8(SPELL_FAILED_NOT_KNOWN);
+					SendPacket(&data); // Send packet to owner
+					return;
+				}
+			}
+			else
+			{
+				for(itr = caster->GetAIInterface()->m_spells.begin(); itr != caster->GetAIInterface()->m_spells.end(); ++itr)
+				{
+					if( (*itr)->spell->Id == spellid )
+						break;
+				}
+
+				if( itr == caster->GetAIInterface()->m_spells.end() )
+					return;
+			}
 		}
 	}
 
 	if( caster == NULL || guid != caster->GetGUID() )
+	{
+		WorldPacket data(SMSG_PET_CAST_FAILED, 1 + 4 + 1);
+		data << uint8(0);
+		data << uint32(spellid);
+		data << uint8(SPELL_FAILED_SPELL_UNAVAILABLE);
+		SendPacket(&data); // Send packet to owner
 		return;
-	
+	}
+
+	if( caster->IsVehicle() && !_player->m_CurrentVehicle)
+	{
+		WorldPacket data(SMSG_PET_CAST_FAILED, 1 + 4 + 1);
+		data << uint8(0);
+		data << uint32(spellid);
+		data << uint8(SPELL_FAILED_NOT_ON_TRANSPORT);
+		SendPacket(&data); // Send packet to owner
+		return;
+	}
+
 	targets.read(recvPacket, _player->GetGUID());
 
-	pSpell = Spell*(new Spell(caster, sp, false, NULLAURA));
-	pSpell->extra_cast_number = counter;
+	Spell* pSpell = new Spell(caster, sp, false, NULLAURA);
 	pSpell->prepare(&targets);
 }

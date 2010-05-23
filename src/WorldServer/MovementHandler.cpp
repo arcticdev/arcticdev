@@ -374,7 +374,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 	if( !((_player->movement_info.y >= _minY) && (_player->movement_info.y <= _maxY)) || !((_player->movement_info.x >= _minX) && (_player->movement_info.x <= _maxX)) )
 	{
-		//Disconnect();
+		Disconnect();
 		return;
 	}
 
@@ -420,7 +420,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			&& _player->m_runSpeed < 50.0f && !_player->m_TransporterGUID)
 		{
 			sCheatLog.writefromsession(this, "Used teleport hack {3}, speed was %f", _player->m_runSpeed);
-			//Disconnect();
+			Disconnect();
 			return;
 		}
 	}
@@ -453,7 +453,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		// Distribute to all inrange players.                                   //
 		//////////////////////////////////////////////////////////////////////////
 
-		for(unordered_set<Player*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
+		for(unordered_set<Player*  >::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 		{
 			if( (*itr)->GetSession() && (*itr)->IsInWorld() )
 			{

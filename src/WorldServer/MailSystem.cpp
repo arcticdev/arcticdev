@@ -150,30 +150,32 @@ void Mailbox::Load(QueryResult * result)
 
 WorldPacket * Mailbox::MailboxListingPacket()
 {
-	WorldPacket * data = new WorldPacket(SMSG_MAIL_LIST_RESULT, 500);
-	MessageMap::iterator itr;
+ 	WorldPacket * data = new WorldPacket(SMSG_MAIL_LIST_RESULT, 500);
+ 	MessageMap::iterator itr;
 	uint32 realcount = 0;
  	uint32 count = 0;
-	uint32 t = uint32( UNIXTIME );
- 	*data << uint32( 0 );  // Mailbox Is Full.
-	*data << uint8( 0 );   // Place Holder For Mail Size.
+	uint32 t = uint32(UNIXTIME);
+ 	*data << uint32(0); // Mailbox Is Full.
+	*data << uint8(0);  // Place Holder For Mail Size.
+ 
+ 	for(itr = Messages.begin(); itr != Messages.end(); ++itr)
+ 	{
 
-	for(itr = Messages.begin(); itr != Messages.end(); ++itr)
-	{
 		if(count >= 50)
-	    {
-		    ++realcount;
-		    continue;
-	    }
-		if(AddMessageToListingPacket(*data, &itr->second))
-			++count;	
 		{
+			++realcount;
+			continue;
+		}
+
+ 		if(AddMessageToListingPacket(*data, &itr->second))
+		{
+ 			++count;
 			++realcount;
 		}
 	}
 
 	data->put<uint32>(0, realcount); 
-	data->put<uint8>(4, count);
+	data->put<uint8>(4, count); 
 
 	return data;
 }
@@ -190,25 +192,25 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 	if(msg->deleted_flag || msg->Expired() || (uint32)UNIXTIME < msg->delivery_time)
 		return false;
 
-	data << uint16( 0x0032 );
+	data << uint16(0x0032);
 	data << msg->message_id;
-	data << uint8( msg->message_type );
+	data << uint8(msg->message_type);
 	if(msg->message_type)
 		data << uint32(msg->sender_guid);
 	else
 		data << msg->sender_guid;
 
-	data << msg->cod;			// cod
-	data << msg->message_id;	// itempageid
-	data << uint32( 0 );          
-	data << msg->stationary;    
-	data << msg->money;		    // money
-	data << uint32( 0x10 );
-	data << float( float(msg->expire_time - (uint32)UNIXTIME) / 86400.0f );
-	data << uint32( 0 );
+	data << msg->cod; // cod
+	data << uint32(0);
+	data << msg->stationary;
+	data << msg->money; // money
+	data << uint32(0x10);
+	data << float(float(msg->expire_time - (uint32)UNIXTIME) / 86400.0f);
+	data << uint32(0);
 	data << msg->subject;
+	data << msg->body;
 	pos = data.wpos();
-	data << uint8( 0 ); // item count
+	data << uint8(0); // item count
 
 	if( !msg->items.empty( ) )
 	{
@@ -219,19 +221,19 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 				continue;
 
 			data << uint8(i++);
-			data << pItem->GetLowGUID(); 
+			data << pItem->GetUInt32Value(OBJECT_FIELD_GUID);
 			data << pItem->GetEntry();
 
 			for( j = 0; j < 6; ++j )
 			{
 				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + ( j * 3 ) );
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_2_1 + ( j * 3 ) );
-				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_3_1 + ( j * 3 ) );
+				data << pItem->GetUInt32Value( (ITEM_FIELD_ENCHANTMENT_1_1 + 1) + ( j * 3 ) );
+				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_3 + ( j * 3 ) );
 			}
 
 			data << pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID );
 			if( ( (int32)pItem->GetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID ) ) < 0 )
-                data << pItem->GetItemRandomSuffixFactor();
+				data << pItem->GetItemRandomSuffixFactor();
 			else
 				data << uint32( 0 );
 
@@ -287,9 +289,9 @@ bool Mailbox::AddMessageToTimePacket(WorldPacket& data,MailMessage *msg)
 	// unread message, w00t.
 	data << uint64(msg->sender_guid);
 	data << uint32(0);
-	data << uint32(0);      // money or smth?
+	data << uint32(0);   // money or smth?
 	data << uint32(msg->stationary);
-	data << float(-9.0f);	// maybe the above?
+	data << float(-9.0f); // maybe the above?
 
 	return true;
 }
@@ -301,8 +303,8 @@ void Mailbox::OnMessageCopyDeleted(uint32 msg_id)
 
 	msg->copy_made = false;
 
-	if(msg->deleted_flag)     // we've deleted from inbox
-		DeleteMessage(msg);   // wipe the message
+	if(msg->deleted_flag)   // we've deleted from inbox
+		DeleteMessage(msg); // wipe the message
 	else
 		msg->SaveToDB();
 }
@@ -430,7 +432,6 @@ void MailSystem::UpdateMessages()
 	delete result;
 }
 
-// delete
 void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body,
 									  uint32 money, uint32 cod, uint64 item_guid, uint32 stationary)
 {
@@ -456,7 +457,6 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 	// Send the message.
 	DeliverMessage(&msg);
 }
-// delete
 
 void WorldSession::HandleSendMail(WorldPacket & recv_data )
 {
@@ -493,9 +493,18 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 		recv_data >> itemslot;
 		recv_data >> itemguid;
 
-        pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
+		pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
 		real_item_slot = _player->GetItemInterface()->GetInventorySlotByGuid( itemguid );
-		if( pItem == NULL || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) || 
+		if(pItem->IsAccountbound())
+		{
+			if(player->acct != _player->GetSession()->GetAccountId())
+			{
+				SendMailError(MAIL_ERR_ITEM_IS_ACCOUNT_BOUND);
+				return;
+			}
+		}
+
+		if( pItem == NULL || !pItem->IsAccountbound() || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) || 
 			( pItem->IsContainer() && (TO_CONTAINER( pItem ))->HasItems() ) || real_item_slot >= 0 && real_item_slot < INVENTORY_SLOT_ITEM_START )
 		{
 			SendMailError(MAIL_ERR_INTERNAL_ERROR);
@@ -524,10 +533,14 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	}
 
 	// Check stationary
-	if( msg.stationary == 0x3d && !HasGMPermissions())
+	if(msg.stationary != STATIONERY_GM && HasGMPermissions())
 	{
-		SendMailError(MAIL_ERR_INTERNAL_ERROR);
-		return;
+		msg.stationary = STATIONERY_GM; // GM mail always has GM Stationary.
+	}
+	
+	if( msg.stationary == STATIONERY_GM && !HasGMPermissions())
+	{
+		msg.stationary = STATIONERY_NORMAL; // Send stationary as normal instead.
 	}
 
 	// Set up the cost
@@ -577,7 +590,6 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	}
 
 	msg.expire_time = 0;
-	
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
 	{
 		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * 30);
@@ -598,7 +610,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 			pItem->RemoveFromWorld();
 			pItem->SetOwner( NULLPLR );
 			pItem->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
-			msg.items.push_back( pItem->GetLowGUID() ); 
+			msg.items.push_back( pItem->GetUInt32Value(OBJECT_FIELD_GUID) );
 				
 			if( GetPermissionCount() > 0 )
 			{
@@ -640,7 +652,8 @@ void WorldSession::HandleMailDelete(WorldPacket & recv_data )
 {
 	uint64 mailbox;
 	uint32 message_id;
-	recv_data >> mailbox >> message_id;
+	uint32 mailtemplet;
+	recv_data >> mailbox >> message_id >> mailtemplet;
 
 	WorldPacket data(SMSG_SEND_MAIL_RESULT, 12);
 	data << message_id << uint32(MAIL_RES_DELETED);
@@ -743,12 +756,12 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 			return;
 		}
 	}
-	else												// true so it waitexecute's
+	else // true so it waitexecute's
 		item->SaveToDB(result.ContainerSlot, result.Slot, true, NULL);
 
 	// send complete packet
 	data << uint32(MAIL_OK);
-	data << item->GetLowGUID(); 
+	data << item->GetUInt32Value(OBJECT_FIELD_GUID);
 	data << item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
 
 	message->items.erase( itr );
@@ -765,7 +778,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -int32(message->cod));
 		string subject = "COD Payment: ";
 		subject += message->subject;
-		sMailSystem.DeliverMessage(NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, 1, true);
+		sMailSystem.DeliverMessage(MAILTYPE_NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, 1, true);
 
 		message->cod = 0;
 	}
@@ -829,7 +842,8 @@ void WorldSession::HandleReturnToSender(WorldPacket & recv_data )
 {
 	uint64 mailbox;
 	uint32 message_id;
-	recv_data >> mailbox >> message_id;
+	uint64 returntoguid;
+	recv_data >> mailbox >> message_id >> returntoguid;
 
 	WorldPacket data(SMSG_SEND_MAIL_RESULT, 12);
 	data << message_id << uint32(MAIL_RES_RETURNED_TO_SENDER);
@@ -906,17 +920,19 @@ void WorldSession::HandleMailCreateTextItem(WorldPacket & recv_data )
 
 void WorldSession::HandleItemTextQuery(WorldPacket & recv_data)
 {
-	uint32 message_id;
-	recv_data >> message_id;
+	uint64 itemGuid;
+	recv_data >> itemGuid;
 
 	string body = "Internal Error";
 
-	MailMessage * msg = _player->m_mailBox->GetMessage(message_id);
-	if(msg)
-		body = msg->body;
-
-	WorldPacket data(SMSG_ITEM_TEXT_QUERY_RESPONSE, body.length() + 5);
-	data << message_id << body;
+	Item* item = _player->GetItemInterface()->GetItemByGUID(itemGuid);
+	WorldPacket data(SMSG_ITEM_TEXT_QUERY_RESPONSE, body.length() + 9);
+	if(!item)
+		data << uint8(1);
+	else
+	{
+		data << uint8(0) << itemGuid << body;
+	}
 	SendPacket(&data);
 }
 
@@ -930,7 +946,7 @@ void WorldSession::HandleMailTime(WorldPacket & recv_data)
 void WorldSession::SendMailError(uint32 error)
 {
 	WorldPacket data(SMSG_SEND_MAIL_RESULT, 12);
-	data << uint32( 0 );
+	data << uint32(0);
 	data << uint32(MAIL_RES_MAIL_SENT);
 	data << error;
 	SendPacket(&data);
@@ -942,3 +958,4 @@ void WorldSession::HandleGetMail(WorldPacket & recv_data )
 	SendPacket(data);
 	delete data;
 }
+

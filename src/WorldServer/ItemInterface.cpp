@@ -161,7 +161,6 @@ Item* ItemInterface::SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot)
 //////////////////////////////////////////////////////////////////////////
 // Description: Creates and adds a item that can be manipulated after	//
 //////////////////////////////////////////////////////////////////////////
-
 AddItemResult ItemInterface::SafeAddItem( Item* pItem, int8 ContainerSlot, int8 slot)
 {
 	return m_AddItem( pItem, ContainerSlot, slot );
@@ -170,16 +169,16 @@ AddItemResult ItemInterface::SafeAddItem( Item* pItem, int8 ContainerSlot, int8 
 //////////////////////////////////////////////////////////////////////////
 // adds items to player inventory, this includes all types of slots     //
 //////////////////////////////////////////////////////////////////////////
-AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slot)
+AddItemResult ItemInterface::m_AddItem( Item* item, int16 ContainerSlot, int16 slot)
 {
 	if ( slot >= MAX_INVENTORY_SLOT )
 	{
-		sLog.outString(SMAXSISLOTAI, __FUNCTION__, slot, MAX_INVENTORY_SLOT);
+		sLog.outString("%s: slot (%d) >= MAX_INVENTORY_SLOT (%d)", __FUNCTION__, slot, MAX_INVENTORY_SLOT);
 		return ADD_ITEM_RESULT_ERROR;
 	}
 	if ( ContainerSlot >= MAX_INVENTORY_SLOT )
 	{
-		sLog.outString(SMAFSISLOTAI, __FUNCTION__, ContainerSlot, MAX_INVENTORY_SLOT);
+		sLog.outString("%s: ContainerSlot (%d) >= MAX_INVENTORY_SLOT (%d)", __FUNCTION__, ContainerSlot, MAX_INVENTORY_SLOT);
 		return ADD_ITEM_RESULT_ERROR;
 	}
 
@@ -211,8 +210,6 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 		{
 			if( tempitem == item )
 			{
-#ifdef WIN32
-#endif
 				return ADD_ITEM_RESULT_DUPLICATED;
 			}
 
@@ -223,8 +220,6 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 				{
 					if( TO_CONTAINER(tempitem)->GetItem( j ) == item )
 					{
-#ifdef WIN32
-#endif
 						return ADD_ITEM_RESULT_DUPLICATED;
 					}
 				}
@@ -232,19 +227,18 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 		}
 	}
 
-	if( item->GetProto() )
+	if(item->GetProto())
 	{
 		//case 1, item is from backpack container
-		if( ContainerSlot == INVENTORY_SLOT_NOT_SET )
+		if(ContainerSlot == INVENTORY_SLOT_NOT_SET)
 		{
-			//ASSERT(m_pItems[slot] == NULL);
-			if( GetInventoryItem(slot) != NULL )
+			// ASSERT(m_pItems[slot] == NULL);
+			if(GetInventoryItem(slot) != NULL)
 			{
-				//sLog.outError("bugged inventory: %u %u", m_pOwner->GetName(), item->GetGUID());
 				result = this->FindFreeInventorySlot(item->GetProto());
-				
+
 				// send message to player
-				sChatHandler.BlueSystemMessageToPlr(m_pOwner, ADUPLICATEAI,
+				sChatHandler.BlueSystemMessageToPlr(m_pOwner, "A duplicated item, `%s` was found in your inventory. We've attempted to add it to a free slot in your inventory, if there is none this will fail. It will be attempted again the next time you log on.",
 					item->GetProto()->Name1);
 				if(result.Result == true)
 				{
@@ -254,7 +248,6 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 				}
 				else
 				{
-					
 					return ADD_ITEM_RESULT_ERROR;
 				}
 			}
@@ -265,12 +258,12 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 				item->SetUInt64Value(ITEM_FIELD_CONTAINED, m_pOwner->GetGUID());
 				m_pItems[(int)slot] = item;
 
-				if ( item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP ) 
+				if (item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP) 
 					item->SoulBind();
 
-				if( m_pOwner->IsInWorld() && !item->IsInWorld() )
+				if( m_pOwner->IsInWorld() && !item->IsInWorld())
 				{
-					//item->AddToWorld();
+					// item->AddToWorld();
 					item->PushToWorld(m_pOwner->GetMapMgr());
 					ByteBuffer buf(2500);
 					uint32 count = item->BuildCreateUpdateBlockForPlayer( &buf, m_pOwner );
@@ -286,7 +279,7 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 		else // case 2: item is from a bag container
 		{
 			if( GetInventoryItem(ContainerSlot) && GetInventoryItem(ContainerSlot)->IsContainer() &&
-				slot < (int32)GetInventoryItem(ContainerSlot)->GetProto()->ContainerSlots) // container exists
+				slot < (int32)GetInventoryItem(ContainerSlot)->GetProto()->ContainerSlots) //container exists
 			{
 				bool result = TO_CONTAINER(m_pItems[(int)ContainerSlot])->AddItem(slot, item);
 				if( !result )
@@ -310,8 +303,8 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 		int VisibleBase = PLAYER_VISIBLE_ITEM_1_ENTRYID + (slot * PLAYER_VISIBLE_ITEM_LENGTH);
 		if( VisibleBase > PLAYER_VISIBLE_ITEM_19_ENTRYID )
 		{
-			printf(SLOTWARNINAI, slot);
-			OutputCrashLogLine(SLOTWARNINAI, slot);
+			printf("Slot warning: slot: %d\n", slot);
+			OutputCrashLogLine("Slot warning: slot: %d\n", slot);
 		}
 		else
 		{
@@ -323,6 +316,11 @@ AddItemResult ItemInterface::m_AddItem( Item* item, int8 ContainerSlot, int8 slo
 	if( m_pOwner->IsInWorld() && slot < INVENTORY_SLOT_BAG_END && ContainerSlot == INVENTORY_SLOT_NOT_SET )
 	{
 		m_pOwner->ApplyItemMods( item, slot, true );
+	}
+	
+	if(slot >= CURRENCYTOKEN_SLOT_START && slot < CURRENCYTOKEN_SLOT_END)
+	{
+		m_pOwner->UpdateKnownCurrencies(item->GetEntry(), true);
 	}
 
 	if( ContainerSlot == INVENTORY_SLOT_NOT_SET && slot == EQUIPMENT_SLOT_OFFHAND && item->GetProto()->Class == ITEM_CLASS_WEAPON )
@@ -2529,7 +2527,7 @@ void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 	{
 		if( (m_pOwner->GetUInt32Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i) == 0) || (m_pBuyBack[i/2] == NULL) )
 		{
-			OUT_DEBUG(SLOTWARNHOAI,i/2);
+			OUT_DEBUG("setting buybackslot %u\n",i/2);
 			m_pBuyBack[i >> 1] = it;
 
 			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i,m_pBuyBack[i >> 1]->GetGUID());
@@ -2563,7 +2561,7 @@ void ItemInterface::RemoveBuyBackItem(uint32 index)
 						m_pBuyBack[j] = NULLITEM;
 				}
 
-				OUT_DEBUG( WLWTWARNHOAI, j );
+				OUT_DEBUG( "nulling %u\n", j );
 			}
 		}
 		else
@@ -2596,7 +2594,7 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	Item* SrcItem = GetInventoryItem( srcslot );
 	Item* DstItem = GetInventoryItem( dstslot );
 
-	DEBUG_LOG( ITEMINTERFAI, srcslot , dstslot );
+	DEBUG_LOG( "ItemInterface","SwapItemSlots(%u, %u);" , srcslot , dstslot );
 
 	// Force GM robes on all GM's execpt 'az' status, if set in world config
 	if( m_pOwner->GetSession()->HasGMPermissions() && sWorld.gm_force_robes )
@@ -2815,18 +2813,18 @@ void ItemInterface::SwapItemSlots(int8 srcslot, int8 dstslot)
 	}
 
 	// src item is equiped now
-	if( srcslot < INVENTORY_SLOT_BAG_END ) 
+	if( srcslot < INVENTORY_SLOT_BAG_END )
  	{
-		if( m_pItems[(int)srcslot] != NULL )		
+		if( m_pItems[(int)srcslot] != NULL )
 			m_pOwner->ApplyItemMods( m_pItems[(int)srcslot], srcslot, true );
 		else if( srcslot == EQUIPMENT_SLOT_MAINHAND || srcslot == EQUIPMENT_SLOT_OFFHAND )
 			m_pOwner->CalcDamage();
  	}
 
 	// dst item is equiped now
-	if( dstslot < INVENTORY_SLOT_BAG_END ) 
+	if( dstslot < INVENTORY_SLOT_BAG_END )
 	{
-		if( m_pItems[(int)dstslot] != NULL )		
+		if( m_pItems[(int)dstslot] != NULL )
 			m_pOwner->ApplyItemMods( m_pItems[(int)dstslot], dstslot, true );
 		else if( dstslot == EQUIPMENT_SLOT_MAINHAND || dstslot == EQUIPMENT_SLOT_OFFHAND )
 			m_pOwner->CalcDamage();
@@ -2871,10 +2869,10 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 
 				}
 				if( SafeAddItem( item, containerslot, slot ) )
-				    item->m_isDirty = false;
+					item->m_isDirty = false;
 				else
 				{
-					item->DeleteMe();
+					item->Destructor();
 					item = NULLITEM;
 				}
 			}

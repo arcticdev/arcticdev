@@ -23,36 +23,23 @@ class CBattleground;
 class Instance;
 class InstanceScript;
 
-enum MapMgrTimers
-{
-	MMUPDATE_OBJECTS = 0,
-	MMUPDATE_SESSIONS = 1,
-	MMUPDATE_FIELDS = 2,
-	MMUPDATE_IDLE_OBJECTS = 3,
-	MMUPDATE_ACTIVE_OBJECTS = 4,
-	MMUPDATE_COUNT = 5
-};
-
-enum ObjectActiveState
-{
-	OBJECT_STATE_NONE = 0,
-	OBJECT_STATE_INACTIVE = 1,
-	OBJECT_STATE_ACTIVE = 2,
-};
-
-typedef HM_NAMESPACE::hash_map<const uint32, Object* > StorageMap;
+typedef unordered_set<Object*> ObjectSet;
+typedef unordered_set<Object*> UpdateQueue;
+typedef unordered_set<Player*> PUpdateQueue;
+typedef unordered_set<Player*> PlayerSet;
+typedef HM_NAMESPACE::hash_map<uint32, Object* > StorageMap;
 typedef unordered_set<uint64> CombatProgressMap;
 typedef unordered_set<Vehicle*> VehicleSet;
 typedef unordered_set<Creature*> CreatureSet;
 typedef unordered_set<GameObject*> GameObjectSet;
-typedef HM_NAMESPACE::hash_map<const uint32, Vehicle*> VehicleSqlIdMap;
-typedef HM_NAMESPACE::hash_map<const uint32, Creature*> CreatureSqlIdMap;
-typedef HM_NAMESPACE::hash_map<const uint32, GameObject* > GameObjectSqlIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, Vehicle*> VehicleSqlIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, GameObject* > GameObjectSqlIdMap;
 
 #define MAX_TRANSPORTERS_PER_MAP 25
-#define RESERVE_EXPAND_SIZE 1024
 
 class Transporter;
+#define RESERVE_EXPAND_SIZE 1024
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func
 
@@ -77,13 +64,13 @@ public:
 	uint32 m_GOHighGuid;
 	GameObject* CreateGameObject(uint32 entry);
 
-	ARCTIC_INLINE uint32 GenerateGameobjectGuid()
+	ARCTIC_INLINE const uint32 GenerateGameobjectGuid()
 	{
 		m_GOHighGuid &= 0x00FFFFFF;
 		return ++m_GOHighGuid;
 	}
 
-	ARCTIC_INLINE GameObject* GetGameObject(uint32 guid)
+	ARCTIC_INLINE GameObject* GetGameObject(const uint32 guid)
 	{
 		GameObjectMap::iterator itr = m_gameObjectStorage.find(guid);
 		return (itr != m_gameObjectStorage.end()) ? m_gameObjectStorage[guid] : NULLGOB;
@@ -95,10 +82,10 @@ public:
 
 	uint32 m_VehicleArraySize;
 	uint32 m_VehicleHighGuid;
-	HM_NAMESPACE::unordered_map<const uint32,Vehicle*> m_VehicleStorage;
+	HM_NAMESPACE::hash_map<const uint32,Vehicle*> m_VehicleStorage;
 	Vehicle* CreateVehicle(uint32 entry);
 
-	__inline Vehicle* GetVehicle(uint32 guid)
+	__inline Vehicle* GetVehicle(const uint32 guid)
 	{
 		return guid <= m_VehicleHighGuid ? m_VehicleStorage[guid] : NULLVEHICLE;
 	}
@@ -106,13 +93,13 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Local (mapmgr) storage/generation of Creatures                       //
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
-	HM_NAMESPACE::unordered_map<const uint32,Creature*> m_CreatureStorage;
+	HM_NAMESPACE::hash_map<const uint32,Creature*> m_CreatureStorage;
 	Creature* CreateCreature(uint32 entry);
 
-	__inline Creature* GetCreature(uint32 guid)
+	__inline Creature* GetCreature(const uint32 guid)
 	{
 		return guid <= m_CreatureHighGuid ? m_CreatureStorage[guid] : NULLCREATURE;
 	}
@@ -125,7 +112,7 @@ public:
 	DynamicObjectStorageMap m_DynamicObjectStorage;
 	DynamicObject* CreateDynamicObject();
 	
-	ARCTIC_INLINE DynamicObject* GetDynamicObject(uint32 guid)
+	ARCTIC_INLINE DynamicObject* GetDynamicObject(const uint32 guid)
 	{
 		DynamicObjectStorageMap::iterator itr = m_DynamicObjectStorage.find(guid);
 		return (itr != m_DynamicObjectStorage.end()) ? m_DynamicObjectStorage[guid] : NULLDYN;
@@ -134,10 +121,9 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Local (mapmgr) storage of pets                                       //
 	//////////////////////////////////////////////////////////////////////////
-	
 	typedef HM_NAMESPACE::hash_map<const uint32, Pet*> PetStorageMap;
 	PetStorageMap m_PetStorage;
-	__inline Pet* GetPet(uint32 guid)
+	__inline Pet* GetPet(const uint32 guid)
 	{
 		PetStorageMap::iterator itr = m_PetStorage.find(guid);
 		return (itr != m_PetStorage.end()) ? m_PetStorage[guid] : NULLPET;
@@ -150,26 +136,16 @@ public:
 	// double typedef lolz// a compile breaker..
 	typedef HM_NAMESPACE::hash_map<const uint32, Player*> PlayerStorageMap;
 
-	Mutex PlayerStorageMaplock;
-
 	PlayerStorageMap m_PlayerStorage;
-	__inline Player* GetPlayer(uint32 guid)
+	__inline Player* GetPlayer(const uint32 guid)
 	{
-		PlayerStorageMaplock.Acquire();
 		PlayerStorageMap::iterator itr = m_PlayerStorage.find(guid);
-		if (itr != m_PlayerStorage.end())
-		{
-			PlayerStorageMaplock.Release();
-			return m_PlayerStorage[guid];
-		}
-		PlayerStorageMaplock.Release();
-		return NULLPLR;
+		return (itr != m_PlayerStorage.end()) ? m_PlayerStorage[guid] : NULLPLR;
 	}
 
 	//////////////////////////////////////////////////////////////////////////
 	// Local (MapMgr) storage of combats in progress                        //
 	//////////////////////////////////////////////////////////////////////////
-
 	CombatProgressMap _combatProgress;
 	void AddCombatInProgress(uint64 guid)
 	{
@@ -200,9 +176,8 @@ public:
 	bool run();
 	bool Do();
 
-	MapMgr(Map * map, uint32 mapid, uint32 instanceid);
+	MapMgr(Map *map, uint32 mapid, uint32 instanceid);
 	~MapMgr();
-
 	void Init();
 	void Destructor();
 
@@ -222,15 +197,14 @@ public:
 	ARCTIC_INLINE float  GetWaterHeight(float x, float y) { return GetBaseMap()->GetWaterHeight(x, y); }
 	ARCTIC_INLINE uint8  GetWaterType(float x, float y) { return GetBaseMap()->GetWaterType(x, y); }
 	ARCTIC_INLINE uint8  GetWalkableState(float x, float y) { return GetBaseMap()->GetWalkableState(x, y); }
-	ARCTIC_INLINE uint16 GetAreaID(float x, float y, float z)
+	ARCTIC_INLINE uint16 GetAreaID(float x, float y, float z =0)
 	{
 		uint16 aid = GetBaseMap()->GetAreaID(x, y);
-		if (GetMapId() == 571)
+		if(GetMapId() == 571)
 		{
-			if (z > 500.0f && (aid == 4551 || aid == 4553 || aid == 4556 || aid == 2817))
-			{
+			// dirty fix for Dalaran sanctuary
+			if( z > 500.0f && (aid == 4551 || aid == 4553 || aid == 4556 || aid == 2817))
 				return 4395;
-			}
 		}
 		return aid;
 	}
@@ -267,7 +241,7 @@ public:
 	void EventCorpseDespawn(uint64 guid);
 
 	time_t InactiveMoveTime;
-	uint32 iInstanceMode;
+    uint32 iInstanceMode;
 
 	void UnloadCell(uint32 x,uint32 y);
 	void EventRespawnVehicle(Vehicle* v, MapCell * p);
@@ -300,13 +274,13 @@ public:
 	}
 
 protected:
-	bool m_sharedPtrDestructed;
+
 	// Collect and send updates to clients
 	void _UpdateObjects();
 
 private:
 	// Objects that exist on map
-
+ 
 	uint32 _mapId;
 	set<Object* > _mapWideStaticObjects;
 
@@ -314,37 +288,37 @@ private:
 	void UpdateInRangeSet(Object* obj, Player* plObj, MapCell* cell);
 
 public:
+	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)
 	float m_UpdateDistance;
 	bool collisionloaded;
 
 private:
-	// Update System.
-	FastMutex m_updateMutex; // use a user-mode mutex for extra speed
-	UpdateQueue _updates;
-	PUpdateQueue _processQueue;
-
-	// Sessions..
-	Mutex MapSessionsMutex; // For Maps !
-	SessionSet MapSessions;
-
-	// Map Information.
+	/* Map Information */
+	bool collision;
 	MapInfo *pMapInfo;
 	uint32 m_instanceID;
 
 	MapScriptInterface * ScriptInterface;
 
-	bool collision;
+	/* Update System */
+	FastMutex m_updateMutex; // use a user-mode mutex for extra speed
+	UpdateQueue _updates;
+	PUpdateQueue _processQueue;
+
+	/* Sessions */
+	SessionSet MapSessions;
 
 public:
 #ifdef WIN32
 	DWORD threadid;
 #endif
+
 	GameObjectSet activeGameObjects;
 	CreatureSet activeCreatures;
 	VehicleSet activeVehicles;
 	EventableObjectHolder eventHolder;
 	CBattleground* m_battleground;
-	set<Corpse* > m_corpses;
+	unordered_set<Corpse* > m_corpses;
 	VehicleSqlIdMap _sqlids_vehicles;
 	CreatureSqlIdMap _sqlids_creatures;
 	GameObjectSqlIdMap _sqlids_gameobjects;
@@ -401,7 +375,7 @@ public:
 	void CallScriptUpdate();
 
 protected:
-	InstanceScript * mInstanceScript;
+	InstanceScript* mInstanceScript;
 };
 
 #endif

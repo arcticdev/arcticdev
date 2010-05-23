@@ -55,8 +55,9 @@ Creature::Creature(uint64 guid)
 		FlatStatMod[x] = 0;
 	}
 
-	totemOwner = NULLPLR;
-	totemSlot = -1;
+	SummonOwner = 0;
+	SummonSlot = -1;
+	Totem = false;
 
 	m_PickPocketed = false;
 	m_SellItems = NULL;
@@ -82,9 +83,7 @@ Creature::Creature(uint64 guid)
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
 	m_noRespawn = false;
-    m_canRegenerateHP = true;
-	m_transportGuid = 0;
-	m_transportPosition = NULL;
+	m_canRegenerateHP = true;
 	BaseAttackType = SCHOOL_NORMAL;
 
 	m_taggingPlayer = m_taggingGroup = 0;
@@ -101,16 +100,10 @@ void Creature::Init()
 
 void Creature::Destructor()
 {
-	sEventMgr.RemoveEvents(TO_CREATURE(this));
+	sEventMgr.RemoveEvents(this);
 
 	if(m_escorter)
 		m_escorter = NULLPLR;
-
-	if(IsTotem() && totemSlot >= 0 && totemOwner)
-	{
-		totemOwner->m_SummonSlots[totemSlot] = NULLCREATURE;
-		totemOwner = NULLPLR;
-	}
 
 	if(_myScriptClass != 0)
 		_myScriptClass->Destroy();
@@ -122,7 +115,7 @@ void Creature::Destructor()
 		delete m_custom_waypoint_map;
 	}
 	if(m_respawnCell!=NULL)
-		m_respawnCell->_respawnObjects.erase(TO_OBJECT(this));
+		m_respawnCell->_respawnObjects.erase(this);
 
 	Unit::Destructor();
 }
@@ -180,7 +173,7 @@ void Creature::OnRemoveCorpse()
 	if (IsInWorld() && (int32)m_mapMgr->GetInstanceID() == m_instanceId)
 	{
 
-		OUT_DEBUG(ZREMOVIERAI, GetGUID());
+		DEBUG_LOG("Creature","OnRemoveCorpse Removing corpse of "I64FMT"...", GetGUID());
 	   
 			if((GetMapMgr()->GetMapInfo() && GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID && proto && proto->boss) || m_noRespawn)
 			{
@@ -207,7 +200,7 @@ void Creature::OnRemoveCorpse()
 
 void Creature::OnRespawn( MapMgr* m )
 {
-	OUT_DEBUG(ZRESTAUSEAI, GetGUID());
+	OUT_DEBUG("Respawning "I64FMT"...", GetGUID());
 	SetUInt32Value(UNIT_FIELD_HEALTH, GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 	SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0); // not tagging shiat
 	if(proto && m_spawn)
@@ -219,7 +212,7 @@ void Creature::OnRespawn( MapMgr* m )
 
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
 	Skinned = false;
-	// ClearTag();
+
 	m_taggingGroup = m_taggingPlayer = 0;
 	m_lootMethod = -1;
 
@@ -282,7 +275,7 @@ void Creature::GenerateLoot()
 			else
 				m_loot.gold = uint32((info->Rank+1)*getLevel()*(rand()%5 + 1)*(GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.0006)); //generate copper
 		}
-		else //Beast don't drop money
+		else // Beast don't drop money
 			m_loot.gold = 0;
 	}
 	else
@@ -409,12 +402,12 @@ void Creature::setDeathState(DeathState s)
 {
 	if(s != JUST_DIED) 
 		m_deathState = s;
-	else 
+	else
 	{
-
 		GetAIInterface()->SetUnitToFollow(NULLUNIT);
-		m_deathState = CORPSE;
-		m_corpseEvent=true;
+
+		// despawn all summons we created
+		SummonExpireAll(true);
 
 		if(m_enslaveSpell)
 			RemoveEnslave();
@@ -422,26 +415,8 @@ void Creature::setDeathState(DeathState s)
 		if(m_currentSpell)
 			m_currentSpell->cancel();
 
-		// remove summoned totems/summons/go's
-		for(uint32 x=0;x<7;++x)
-		{
-			if(m_SummonSlots[x] && m_SummonSlots[x]->IsTotem() )
-				m_SummonSlots[x]->TotemExpire();
-			else if( m_SummonSlots[x] )
-				m_SummonSlots[x]->SafeDelete();
-
-			m_SummonSlots[x] = NULLCREATURE;
-
-			if(x < 4 && TO_UNIT(this)->m_ObjectSlots[x])
-			{
-				GameObject* obj = NULLGOB;
-				obj = m_mapMgr->GetGameObject(m_ObjectSlots[x]);
-				if(obj != NULLGOB)
-					obj->ExpireAndDelete();
-
-				m_ObjectSlots[x] = 0;
-			}
-		}
+		m_deathState = CORPSE;
+		m_corpseEvent = true;
 	}
 }
 
@@ -568,7 +543,7 @@ void Creature::AddInRangeObject(Object* pObj)
 
 void Creature::OnRemoveInRangeObject(Object* pObj)
 {
-	if(totemOwner == pObj)		// player gone out of range of the totem
+	if(IsTotem() && SummonOwner && SummonOwner == pObj->GetLowGUID()) // player gone out of range of the totem
 	{
 		// Expire next loop.
 		event_ModifyTimeLeft(EVENT_TOTEM_EXPIRE, 1);
@@ -577,7 +552,7 @@ void Creature::OnRemoveInRangeObject(Object* pObj)
 	if(m_escorter == pObj)
 	{
 		// we lost our escorter, return to the spawn.
-		GetAIInterface()->StopMovement(10000);
+		m_aiInterface->StopMovement(10000);
 		DestroyCustomWaypointMap();
 		Despawn(1000, 1000);
 	}
@@ -630,7 +605,7 @@ void Creature::RegenerateHealth(bool isinterrupted)
 	// Apply shit from conf file
 	amt*=sWorld.getRate(RATE_HEALTH);
 	
-	if(amt<=1.0f)//this fixes regen like 0.98
+	if(amt<=1.0f) // this fixes regen like 0.98
 		cur++;
 	else
 		cur+=(uint32)amt;
@@ -704,9 +679,9 @@ void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 		{
 			if(itr->available_amount)
 			{
-				if(value > itr->available_amount)	// shouldnt happen
+				if(value > itr->available_amount) // shouldnt happen
 				{
-					itr->available_amount=0;
+					itr->available_amount = 0;
 					return;
 				}
 				else
@@ -737,23 +712,9 @@ void Creature::UpdateItemAmount(uint32 itemid)
 	}
 }
 
-void Creature::TotemExpire()
-{
-	//free up owners slot;
-	totemOwner->m_SummonSlots[totemSlot] = NULLCREATURE;
-	
-	totemSlot = -1;
-	totemOwner = NULLPLR;
-
-	if( IsInWorld() )
-		RemoveFromWorld(false, true);
-
-	SafeDelete();
-}
-
 void Creature::FormationLinkUp(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr) // shouldnt happen
 		return;
 
 	Creature* creature = NULLCREATURE;
@@ -768,7 +729,7 @@ void Creature::FormationLinkUp(uint32 SqlId)
 
 void Creature::ChannelLinkUpGO(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr)
 		return;
 
 	GameObject* go = m_mapMgr->GetSqlIdGameObject(SqlId);
@@ -782,7 +743,7 @@ void Creature::ChannelLinkUpGO(uint32 SqlId)
 
 void Creature::ChannelLinkUpCreature(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr)
 		return;
 
 	Creature* go = m_mapMgr->GetSqlIdCreature(SqlId);
@@ -796,14 +757,12 @@ void Creature::ChannelLinkUpCreature(uint32 SqlId)
 
 void Creature::LoadAIAgents()
 {
-// moved to ObjectStorage
 }
 
 WayPoint * Creature::CreateWaypointStruct()
 {
 	return new WayPoint();
 }
-// #define SAFE_FACTIONS
 
 bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 {
@@ -890,12 +849,11 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))));
 
 	SetFloatValue( OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))));
-	DEBUG_LOG(ZCREATYREAI, proto->Id, spawn->displayid, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))); 
+	DEBUG_LOG("Creatures","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, spawn->displayid, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))); 
 
 	SetUInt32Value(UNIT_NPC_EMOTESTATE, original_emotestate);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,original_MountedDisplayID);
 
-    // SetUInt32Value(UNIT_FIELD_LEVEL, (mode ? proto->Level + (info ? info->lvl_mod_a : 0) : proto->Level));
 	SetUInt32Value(UNIT_FIELD_LEVEL, level);
 
 	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
@@ -933,10 +891,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	}
 	else
 	{
-		sLog.outString(ZWARNINSDAI, spawn->entry);
+		Log.Warning("Creature","Creature is missing a valid faction template for entry %u.", spawn->entry);
 	}
 
-// SETUP NPC FLAGS
 	SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
@@ -1130,7 +1087,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	setGender(gender);
 
 	SetFloatValue(OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))));
-	DEBUG_LOG(CREADSADEAI, proto->Id, model, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))); 
+	DEBUG_LOG("Creature","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, model, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))); 
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
@@ -1202,10 +1159,10 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	BaseAttackType=proto->AttackType;
 
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
-    
+
 	//////////////////////////////////////////////////////////////
 	// AI                                                       //
-    //////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////
 
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
@@ -1274,9 +1231,9 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_aiInterface->m_isNeutralGuard = false;
 
 	if( proto->GuardType & 1 )
-        m_aiInterface->m_isGuard = true;
-    if( proto->GuardType & 2 )
-        m_aiInterface->m_isNeutralGuard = true;
+		m_aiInterface->m_isGuard = true;
+	if( proto->GuardType & 2 )
+		m_aiInterface->m_isNeutralGuard = true;
 
 	// CanMove (overrules AI)
 	if(!proto->CanMove)
@@ -1378,29 +1335,12 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	if(!IsInWorld())
 		return;
 
-	// Should all be gone when npc died, but better make sure all summoned totems/summons/GO's are removed.
-	for(uint8 x = 0; x < 7 ; x++)
-	{
-		if(m_SummonSlots[x] && m_SummonSlots[x]->IsTotem() )
-			m_SummonSlots[x]->TotemExpire();
-		else if( m_SummonSlots[x] )
-			m_SummonSlots[x]->SafeDelete();
-		m_SummonSlots[x] = NULLCREATURE;
-
-		if(x < 4 && TO_UNIT(this)->m_ObjectSlots[x])
-		{
-			GameObject* obj = NULLGOB;
-			obj = m_mapMgr->GetGameObject(m_ObjectSlots[x]);
-			if(obj != NULLGOB)
-				obj->ExpireAndDelete();
-
-			m_ObjectSlots[x] = 0;
-		}
-	}
+	// Better make sure all summoned totems/summons/GO's created by this creature spawned removed.
+	SummonExpireAll(true);
 
 	if(respawntime)
 	{
-		// get the cell with our SPAWN location. if we've moved cell this might break :P 
+		/* get the cell with our SPAWN location. if we've moved cell this might break :P */
 		MapCell * pCell = m_mapMgr->GetCellByCoords(m_spawnLocation.x, m_spawnLocation.y);
 		if(!pCell)
 			pCell = m_mapCell;
@@ -1416,7 +1356,6 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 	else
 	{
 		Unit::RemoveFromWorld(true);
-		SafeDelete();
 	}
 }
 
@@ -1502,9 +1441,9 @@ void Creature::SetGuardWaypoints()
 uint32 Creature::GetRequiredLootSkill()
 {
 	if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_HERBLOOT)
-		return SKILL_HERBALISM;		// herbalism
+		return SKILL_HERBALISM; // herbalism
 	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_MININGLOOT)
-		return SKILL_MINING;		// mining
+		return SKILL_MINING; // mining
 	else if(GetCreatureInfo()->Flags1 & CREATURE_FLAG1_ENGINEERLOOT)
 		return SKILL_ENGINEERING;
 	else

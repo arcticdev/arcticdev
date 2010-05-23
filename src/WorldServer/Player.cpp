@@ -2695,7 +2695,8 @@ void Player::RemovePendingPlayer()
 
 bool Player::LoadFromDB(uint32 guid)
 {
-	AsyncQuery * q = new AsyncQuery( new SQLClassCallbackP0<Player>(TO_PLAYER(this), &Player::LoadFromDBProc) );
+	AsyncQuery * q = NULL;
+	q = new AsyncQuery( new SQLClassCallbackP0<Player>(TO_PLAYER(this), &Player::LoadFromDBProc) );
 	q->AddQuery("SELECT * FROM characters WHERE guid=%u AND forced_rename_pending = 0",guid);
 	q->AddQuery("SELECT * FROM tutorials WHERE playerId=%u",guid);
 	q->AddQuery("SELECT cooldown_type, cooldown_misc, cooldown_expire_time, cooldown_spellid, cooldown_itemid FROM playercooldowns WHERE player_guid=%u", guid);
@@ -2716,14 +2717,20 @@ bool Player::LoadFromDB(uint32 guid)
 	// skills
 	q->AddQuery("SELECT * FROM playerskills WHERE player_guid = %u AND type <> %u ORDER BY skill_id ASC, currentlvl DESC", guid,SKILL_TYPE_LANGUAGE ); //load skill, skip languages
 
+	// pet action bar
+	q->AddQuery("SELECT * FROM playerpetactionbar WHERE ownerguid=%u ORDER BY petnumber", guid);
+
 	//Talents
 	q->AddQuery("SELECT spec, tid, rank FROM playertalents WHERE guid = %u", guid);
 	
-	//Glyphs
+	// Glyphs
 	q->AddQuery("SELECT * FROM playerglyphs WHERE guid = %u", guid);
 
-	//Spells
+	// Spells
 	q->AddQuery("SELECT spellid FROM playerspells WHERE guid = %u", guid);
+
+	// Spells
+	q->AddQuery("SELECT * FROM equipmentsets WHERE guid = %u", guid);
 
 	// queue it!
 	m_uint32Values[OBJECT_FIELD_GUID] = guid;
@@ -2744,7 +2751,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	if(GetSession() == NULL || results.size() < 8)		// should have 8 query results for aplayer load.
+	if(GetSession() == NULL || results.size() < 8)		// should have 8 query results for a player load.
 	{
 		RemovePendingPlayer();
 		return;
@@ -2768,7 +2775,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		return;
 	}
 
-	uint32 banned = fields[33].GetUInt32();
+	uint32 banned = fields[36].GetUInt32();
 	if(banned && (banned < 100 || banned > (uint32)UNIXTIME))
 	{
 		RemovePendingPlayer();
@@ -2777,20 +2784,21 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// Load name
 	m_name = get_next_field.GetString();
-   
+
 	// Load race/class from fields
 	setRace(get_next_field.GetUInt8());
 	setClass(get_next_field.GetUInt8());
 	setGender(get_next_field.GetUInt8());
+	customizable = get_next_field.GetBool();
 	uint32 cfaction = get_next_field.GetUInt32();
 	
 	// set race dbc
 	myRace = dbcCharRace.LookupEntryForced(getRace());
 	myClass = dbcCharClass.LookupEntryForced(getClass());
-	if(!myClass || !myRace)
+	if( myClass == NULL || myRace == NULL )
 	{
 		// bad character
-		printf("guid %u failed to login, no race or class dbc found. (race %u class %u)\n", (unsigned int)GetLowGUID(), (unsigned int)getRace(), (unsigned int)getClass());
+		printf("guid %u failed to login, no race or class dbc found. (race %u class %u)\n", uint(GetLowGUID()), uint(getRace()), uint(getClass()));
 		RemovePendingPlayer();
 		return;
 	}
@@ -2811,24 +2819,24 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// obtain player create info
 	info = objmgr.GetPlayerCreateInfo(getRace(), getClass());
-	if(!info)
+	if( info == NULL )
 	{
-		sLog.outError("%s: player guid %u has no playerCreateInfo!\n", (unsigned int)GetLowGUID());
+		Log.Error("PlayerCreateInfo", "Character of guid %u creation failed due to non existant or invalid playercreateinfo.", uint(GetLowGUID()));
 		RemovePendingPlayer();
 		return;
 	}
+	assert(info);
 
 	// set level
-	uint8 plvl = get_next_field.GetUInt32(); 
-	m_uint32Values[UNIT_FIELD_LEVEL] = plvl; 
-	 
-	// level dependant taxi node 
-	if(plvl >= 68) 
-	        SetTaximaskNode(213);   // schnek: Shattered Sun Staging Area 
+	uint8 plvl = get_next_field.GetUInt32();
+	m_uint32Values[UNIT_FIELD_LEVEL] = plvl;
+
+	// level dependant taxi node
+	SetTaximaskNode( 213, plvl >= 68 ? false : true );	//Add 213 (Shattered Sun Staging Area) if lvl >=68
 
 	// obtain level/stats information
 	lvlinfo = objmgr.GetLevelInfo(getRace(), getClass(), getLevel());
-	if(!lvlinfo)
+	if( lvlinfo == NULL )
 	{
 		printf("guid %u level %u class %u race %u levelinfo not found!\n", (unsigned int)GetLowGUID(), (unsigned int)getLevel(), (unsigned int)getClass(), (unsigned int)getRace());
 		RemovePendingPlayer();
@@ -2837,7 +2845,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	CalculateBaseStats();
 
-
+	m_XPoff = get_next_field.GetBool();
 	// set xp
 	m_uint32Values[PLAYER_XP] = get_next_field.GetUInt32();
 	
@@ -2845,7 +2853,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	uint32 Counter = 0;
 	char * end;
 	char * start = (char*)get_next_field.GetString();//buff;
-	while(Counter < 64) 
+	while(Counter < 128) 
 	{
 		end = strchr(start,',');
 		if(!end)break;
@@ -2862,7 +2870,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		field_index++;
 		DEBUG_LOG("WorldSession","Skills loaded");
 	}
-	else 
+	else
 	{
 		// old format
 		Counter = 0;
@@ -2874,7 +2882,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			for(std::list<CreateInfo_SkillStruct>::iterator ss = info->skills.begin(); ss!=info->skills.end(); ss++)
 			{
 				if(ss->skillid && ss->currentval && ss->maxval && !::GetSpellForLanguage(ss->skillid))
-					_AddSkillLine(ss->skillid, ss->currentval, ss->maxval);		
+					_AddSkillLine(ss->skillid, ss->currentval, ss->maxval);
 			}
 		}
 		else
@@ -2934,12 +2942,13 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			DEBUG_LOG("Player","loaded old style skills for player %s", m_name.c_str());
 		}
 	}
-	
+
 	// set the rest of the shit
 	m_uint32Values[PLAYER_FIELD_WATCHED_FACTION_INDEX] = get_next_field.GetUInt32();
 	m_uint32Values[ PLAYER_CHOSEN_TITLE ] = get_next_field.GetUInt32();
 	SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES, get_next_field.GetUInt64() );
 	SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES1, get_next_field.GetUInt64() );
+	SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES2, get_next_field.GetUInt64() );
 	m_uint32Values[PLAYER_FIELD_COINAGE] = get_next_field.GetUInt32();
 	m_uint32Values[PLAYER_AMMO_ID] = get_next_field.GetUInt32();
 	m_uint32Values[PLAYER_CHARACTER_POINTS2] = get_next_field.GetUInt32();
@@ -2947,15 +2956,11 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	load_health = get_next_field.GetUInt32();
 	load_mana = get_next_field.GetUInt32();
 	uint8 pvprank = get_next_field.GetUInt8();
-	SetUInt32Value(PLAYER_BYTES, get_next_field.GetUInt32());
-	SetUInt32Value(PLAYER_BYTES_2, get_next_field.GetUInt32());
-	SetUInt32Value(PLAYER_BYTES_3, getGender() | (pvprank << 24));
-	SetUInt32Value(PLAYER_FLAGS, get_next_field.GetUInt32());
-	SetUInt32Value(PLAYER_FIELD_BYTES, get_next_field.GetUInt32());
-
-	// We're players!
-	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
-	// m_uint32Values[0x22]=(m_uint32Values[0x22]>0x46)?0x46:m_uint32Values[0x22];
+	SetUInt32Value( PLAYER_BYTES, get_next_field.GetUInt32() );
+	SetUInt32Value( PLAYER_BYTES_2, get_next_field.GetUInt32() );
+	SetUInt32Value( PLAYER_BYTES_3, getGender() | ( pvprank << 24 ) );
+	SetUInt32Value( PLAYER_FLAGS, get_next_field.GetUInt32() );
+	SetUInt32Value( PLAYER_FIELD_BYTES, get_next_field.GetUInt32() );
 
 	m_position.x = get_next_field.GetFloat();
 	m_position.y = get_next_field.GetFloat();
@@ -2973,13 +2978,13 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		SetFloatValue(x, 1.0f);
 
 	// Normal processing...
-    // UpdateMaxSkills();
+	// UpdateMaxSkills();
 	UpdateStats();
 	// UpdateChances();
 
 	// Initialize 'normal' fields
-	// SetFloatValue( OBJECT_FIELD_SCALE_X, ((getRace()==RACE_TAUREN)?1.3f:1.0f) );
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1.0f );
+	// SetFloatValue(OBJECT_FIELD_SCALE_X, ((getRace()==RACE_TAUREN)?1.3f:1.0f));
+	SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
 	// SetUInt32Value(UNIT_FIELD_POWER2, 0);
 	SetUInt32Value(UNIT_FIELD_POWER3, info->focus);
 	SetUInt32Value(UNIT_FIELD_POWER4, info->energy );
@@ -2998,17 +3003,19 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, 0.388999998569489f );
 	SetFloatValue(UNIT_FIELD_COMBATREACH, 1.5f   );
 
-	if(getRace() != 10)
+	if( getRace() != RACE_BLOODELF )
 	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId + getGender() );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId + getGender() );
-	} else	{
+	}
+	else
+	{
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId - getGender() );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId - getGender() );
 	}
 
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
-	// SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.m_levelCap);
+
 	SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, info->factiontemplate);
 	if(cfaction)
 	{
@@ -3020,7 +3027,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		case 3:   // dwarf
 		case 4:   // ne
 		case 8:   // gnome
-		case 927: // dreinei
+		case 927: // draenei
 			m_team = m_bgTeam = 0;
 			break;
 
@@ -3029,14 +3036,14 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			break;
 		}
 	}
- 
+
 	LoadTaxiMask( get_next_field.GetString() );
 
-	m_banned = get_next_field.GetUInt32(); // Character ban
+	m_banned = get_next_field.GetUInt32(); //Character ban
 	m_banreason = get_next_field.GetString();
 	m_timeLogoff = get_next_field.GetUInt32();
 	field_index++;
-	
+
 	m_bind_pos_x = get_next_field.GetFloat();
 	m_bind_pos_y = get_next_field.GetFloat();
 	m_bind_pos_z = get_next_field.GetFloat();
@@ -3046,6 +3053,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_isResting = get_next_field.GetUInt8();
 	m_restState = get_next_field.GetUInt8();
 	m_restAmount = get_next_field.GetUInt32();
+
 
 	std::string tmpStr = get_next_field.GetString();
 	m_playedtime[0] = (uint32)atoi((const char*)strtok((char*)tmpStr.c_str()," "));
@@ -3071,7 +3079,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	m_bgEntryPointY = get_next_field.GetFloat();
 	m_bgEntryPointZ = get_next_field.GetFloat();
 	m_bgEntryPointO = get_next_field.GetFloat();
-	m_bgEntryPointInstance = get_next_field.GetUInt32();	
+	m_bgEntryPointInstance = get_next_field.GetUInt32();
 
 	uint32 taxipath = get_next_field.GetUInt32();
 	TaxiPath *path = NULL;
@@ -3086,12 +3094,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 			m_onTaxi = true;
 		}
 		else
-			field_index++;
+			++field_index;
 	}
 	else
 	{
-		field_index++;
-		field_index++;
+		++field_index;
+		++field_index;
 	}
 
 	m_TransporterGUID = get_next_field.GetUInt32();
@@ -3101,19 +3109,16 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		m_TransporterGUID = t ? t->GetGUID() : 0;
 	}
 
-	m_TransporterX = get_next_field.GetFloat();
-	m_TransporterY = get_next_field.GetFloat();
-	m_TransporterZ = get_next_field.GetFloat();
+	m_transportPosition = new LocationVector(get_next_field.GetFloat(), get_next_field.GetFloat(), get_next_field.GetFloat());
 
-	SpellEntry * spProto;
-
-
-	start = (char*)get_next_field.GetString(); // buff;
-	while(true) 
+	start = (char*)get_next_field.GetString();//buff;
+	while(true)
 	{
 		end = strchr(start,',');
-		if(!end)break;
-		*end = 0;
+		if(!end)
+			break;
+		*end=0;
+		SpellEntry * spProto = NULL;
 		spProto = dbcSpell.LookupEntryForced(atol(start));
 		if(spProto)
 			mDeletedSpells.insert(spProto->Id);
@@ -3128,11 +3133,12 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	int32 basestanding;
 	int32 standing;
 	uint32 fflag;
-	while(true) 
+	while(true)
 	{
 		end = strchr(start,',');
-		if(!end)break;
-		*end = 0;
+		if(!end)
+			break;
+		*end=0;
 		id = atol(start);
 		start = end +1;
 
@@ -3141,17 +3147,19 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		*end = 0;
 		fflag = atol(start);
 		start = end +1;
-		
+
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
-		basestanding = atoi(start); // atol(start);
+		basestanding = atoi(start);//atol(start);
 		start = end +1;
-		
+
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
-		standing  = atoi(start); // atol(start);
+		standing  = atoi(start);// atol(start);
 		start = end +1;
 
 		// listid stuff
@@ -3161,6 +3169,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		if(rtr != m_reputation.end())
 			delete rtr->second;
 
+		rep = NULL;
 		rep = new FactionReputation;
 		rep->baseStanding = basestanding;
 		rep->standing = standing;
@@ -3181,17 +3190,20 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	while(Counter < PLAYER_ACTION_BUTTON_COUNT)
 	{
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
 		mActions[Counter].Action = (uint16)atol(start);
 		start = end +1;
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
 		mActions[Counter].Type = (uint8)atol(start);
 		start = end +1;
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
 		mActions[Counter++].Misc = (uint8)atol(start);
 		start = end +1;
@@ -3199,16 +3211,18 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	// LoadAuras = get_next_field.GetString();
 	start = (char*)get_next_field.GetString();//buff;
-	do 
+	do
 	{
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
 		LoginAura la;
 		la.id = atol(start);
 		start = end +1;
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
 		la.dur = atol(start);
 		start = end +1;
@@ -3222,73 +3236,70 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	while(true)
 	{
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
 		m_finishedQuests.insert(atol(start));
 		start = end +1;
 	}
-	GetAchievementInterface()->HandleAchievementCriteriaQuestCount( m_finishedQuests.size() );
+	GetAchievementInterface()->HandleAchievementCriteriaQuestCount( uint32(m_finishedQuests.size()));
 
-	start =  (char*)get_next_field.GetString();
+	DailyMutex.Acquire();
+	start = (char*)get_next_field.GetString();
 	while(true)
 	{
 		end = strchr(start,',');
-		if(!end)break;
+		if(!end)
+			break;
 		*end = 0;
-		SetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1 + m_finishedDailyQuests.size(), atol(start));
+		SetUInt32Value(PLAYER_FIELD_DAILY_QUESTS_1 + uint32(m_finishedDailyQuests.size()), atol(start));
 		m_finishedDailyQuests.insert(atol(start));
 		start = end +1;
 	}
+	DailyMutex.Release();
 
 	m_honorRolloverTime = get_next_field.GetUInt32();
 	m_killsToday = get_next_field.GetUInt32();
 	m_killsYesterday = get_next_field.GetUInt32();
 	m_killsLifetime = get_next_field.GetUInt32();
-	
+
 	m_honorToday = get_next_field.GetUInt32();
 	m_honorYesterday = get_next_field.GetUInt32();
 	m_honorPoints = get_next_field.GetUInt32();
 
 	RolloverHonor();
-    iInstanceType = get_next_field.GetUInt32();
- 
-	// Load drunk value and calculate sobering. after 15 minutes logged out, the player will be sober again
-	uint32 timediff = (uint32)UNIXTIME - m_timeLogoff;
-	uint32 soberFactor;
-	if(timediff > 900)
-		soberFactor = 0;
-	else
-		soberFactor = 1-timediff/900;
-	SetDrunkValue(uint16(soberFactor*get_next_field.GetUInt32()));
+	iInstanceType = get_next_field.GetUInt32();
+	iRaidType = get_next_field.GetUInt32();
 
 	HonorHandler::RecalculateHonorFields(TO_PLAYER(this));
-	
-	for(uint32 x = 0;x < 5; ++x)
+
+	for(uint8 x = 0; x < 5; x++ )
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
-  
+
 	_setFaction();
 	InitGlyphSlots();
 	InitGlyphsForLevel();
-   
+
 	// class fixes
 	switch(getClass())
 	{
 	case PALADIN:
-		armor_proficiency|=(1<<7);  // LIBRAM
+		armor_proficiency |= ( 1 << 7 ); // LIBRAM
 		break;
 	case DRUID:
-		armor_proficiency|=(1<<8);  // IDOL
+		armor_proficiency |= ( 1 << 8 ); // IDOL
 		break;
 	case SHAMAN:
-		armor_proficiency|=(1<<9);  // TOTEM
+		armor_proficiency |= ( 1 << 9 ); // TOTEM
 		break;
-	case DEATHKNIGHT: 
-		armor_proficiency|=(1<<10); // SIGILS
+	case DEATHKNIGHT:
+		armor_proficiency |= ( 1 << 10 ); // SIGIL
 		break;
 	case WARLOCK:
 	case HUNTER:
 		_LoadPet(results[5].result);
-        _LoadPetSpells(results[6].result);
+		_LoadPetSpells(results[6].result);
+		_LoadPetActionBar(results[13].result);
 	break;
 	}
 
@@ -3317,9 +3328,10 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 #undef get_next_field
 
 	// load properties
-	_LoadTalents(results[13].result);
-	_LoadGlyphs(results[14].result);
-	_LoadSpells(results[15].result);
+	_LoadTalents(results[14].result);
+	_LoadGlyphs(results[15].result);
+	_LoadSpells(results[16].result);
+	_LoadEquipmentSets(results[17].result);
 	_LoadTutorials(results[1].result);
 	_LoadPlayerCooldowns(results[2].result);
 	_LoadQuestLogEntry(results[3].result);
@@ -3330,7 +3342,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if( results[8].result != NULL ) // this query is "who are our friends?"
 	{
 		result = results[8].result;
-		do 
+		do
 		{
 			fields = result->Fetch();
 			if( strlen( fields[1].GetString() ) )
@@ -3344,7 +3356,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if( results[9].result != NULL ) // this query is "who has us in their friends?"
 	{
 		result = results[9].result;
-		do 
+		do
 		{
 			m_hasFriendList.insert( result->Fetch()[0].GetUInt32() );
 		} while (result->NextRow());
@@ -3353,7 +3365,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	if( results[10].result != NULL ) // this query is "who are we ignoring"
 	{
 		result = results[10].result;
-		do 
+		do
 		{
 			m_ignores.insert( result->Fetch()[0].GetUInt32() );
 		} while (result->NextRow());
@@ -3365,20 +3377,18 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	GetAchievementInterface()->LoadFromDB( results[11].result );
 
 	// Set correct maximum level
-	uint32 maxLevel = sWorld.GetMaxLevel(TO_PLAYER(this));
+	uint32 maxLevel = sWorld.GetMaxLevel(this);
 	SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, maxLevel);
-	
-    SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
-	
+
 	UpdateTalentInspectBuffer();
 	SetFlag(UNIT_FIELD_FLAGS_2,UNIT_FLAG2_REGENERATE_POWER); // enables automatic power regen
-	m_session->FullLogin(TO_PLAYER(this));
+	m_session->FullLogin(this);
 	if(m_session)
 		m_session->m_loggingInPlayer=NULLPLR;
 
 	if( !isAlive() )
 		myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
-	
+
 }
 
 void Player::RolloverHonor()
@@ -4262,14 +4272,14 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 	else
 	{
 		data << GetNewGUID();
-		data << uint32( 0 );
-		data << uint8( 0 );
+		data << uint32(0);
+		data << uint8(0);
 		data << uint32(getMSTime());
 		data << m_position.x;
 		data << m_position.y;
 		data << m_position.z;
 		data << m_position.o;
-		data << uint32( 0 );
+		data << uint32(0);
 		data << value;
 	}
 	
@@ -4325,32 +4335,35 @@ void Player::SetPlayerSpeed(uint8 SpeedType, float value)
 	
 	SendMessageToSet(&data , true);
 
-	// dont mess up on these
+	// dont mess up on these..
 	m_speedChangeInProgress = true;
 }
 
 void Player::BuildPlayerRepop()
 {
-	SetUInt32Value( UNIT_FIELD_HEALTH, 1 );
+	SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 
 	// 8326 --for all races but ne,  9036 20584--ne
 	SpellCastTargets tgt;
 	tgt.m_unitTarget=this->GetGUID();
-   
+
 	if(getRace()==RACE_NIGHTELF)
 	{
 		SpellEntry *inf = dbcSpell.LookupEntry(20584);
-		Spell* sp(new Spell(TO_PLAYER(this),inf,true,NULLAURA));
+		Spell* sp = NULLSPELL;
+		sp = (new Spell(TO_PLAYER(this), inf, true, NULLAURA));
 		sp->prepare(&tgt);
-		inf=dbcSpell.LookupEntry(9036);
-		sp = Spell*(new Spell(TO_PLAYER(this),inf,true,NULLAURA));
+
+		inf = dbcSpell.LookupEntry(9036);
+		sp = (new Spell(TO_PLAYER(this), inf, true, NULLAURA));
 		sp->prepare(&tgt);
 	}
 	else
 	{
 	
 		SpellEntry *inf=dbcSpell.LookupEntry(8326);
-		Spell* sp(new Spell(TO_PLAYER(this),inf,true,NULLAURA));
+		Spell* sp = NULLSPELL;
+		sp = (new Spell(TO_PLAYER(this),inf,true,NULLAURA));
 		sp->prepare(&tgt);
 	}
 
@@ -4358,7 +4371,7 @@ void Player::BuildPlayerRepop()
 	StopMirrorTimer(1);
 	StopMirrorTimer(2);
 	
-	SetFlag(PLAYER_FLAGS, 0x10);
+	SetFlag(PLAYER_FLAGS, PLAYER_FLAG_DEATH_WORLD_ENABLE);
 
 	SetMovement(MOVE_UNROOT, 1);
 	SetMovement(MOVE_WATER_WALK, 1);
@@ -4382,20 +4395,10 @@ Corpse* Player::RepopRequestedPlayer()
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 		return NULLCORPSE;
 	}
+	/* in case somebody resurrected us before this event happened */
+	sEventMgr.RemoveEvents(TO_PLAYER(this), EVENT_PLAYER_FORECED_RESURECT );
 
-	if( m_CurrentVehicle != NULL )
-	{
-		m_CurrentVehicle->RemovePassenger( TO_PLAYER(this) );
-		m_CurrentVehicle = NULLVEHICLE;
-
-		ResurrectPlayer(NULLPLR);
-		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
-		return NULLCORPSE;
-	}
-
-	sEventMgr.RemoveEvents(TO_PLAYER(this), EVENT_PLAYER_FORECED_RESURECT ); // in case somebody resurrected us before this event happened
-
-	// Set death state to corpse, that way players will lose visibility
+	/* Set death state to corpse, that way players will lose visibility */
 	setDeathState( CORPSE );
 	
 	// Update visibility, that way people wont see running corpses :P
@@ -4445,7 +4448,6 @@ Corpse* Player::RepopRequestedPlayer()
 	{
 		RepopAtGraveyard( GetPositionX(), GetPositionY(), GetPositionZ(), GetMapId() );
 	}
-
 	return ret;
 }
 
@@ -4453,7 +4455,7 @@ void Player::ResurrectPlayer(Player* pResurrector)
 {
 	sEventMgr.RemoveEvents(TO_PLAYER(this),EVENT_PLAYER_FORECED_RESURECT); //in case somebody resurected us before this event happened
 	if( m_resurrectHealth )
-		SetUInt32Value( UNIT_FIELD_HEALTH, (uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
+		SetUInt32Value(UNIT_FIELD_HEALTH, (uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
 	if( m_resurrectMana )
 		SetUInt32Value( UNIT_FIELD_POWER1, (uint32)min( m_resurrectMana, m_uint32Values[UNIT_FIELD_MAXPOWER1] ) );
 
@@ -4467,7 +4469,7 @@ void Player::ResurrectPlayer(Player* pResurrector)
 	}else
 		RemoveAura(8326);
 
-	RemoveFlag(PLAYER_FLAGS, 0x10);
+	RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_DEATH_WORLD_ENABLE);
 	setDeathState(ALIVE);
 	UpdateVisibility();
 	SetMovement(MOVE_LAND_WALK, 1);
@@ -4488,7 +4490,7 @@ void Player::ResurrectPlayer(Player* pResurrector)
 	{
 		// update player counts in arenas
 		if( m_bg != NULL && m_bg->IsArena() )
-			TO_ARENA(m_bg)->UpdatePlayerCounts();			
+			TO_ARENA(m_bg)->UpdatePlayerCounts();
 	}
 }
 
@@ -5776,8 +5778,8 @@ void Player::SetDrunkValue(uint16 newDrunkenValue, uint32 itemId)
 
 void Player::TriggerMovie(uint32 movieID)
 {
-   if( m_session )
-       m_session->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &movieID);
+	if( m_session )
+		m_session->OutPacket(SMSG_TRIGGER_MOVIE, sizeof(uint32), &movieID);
 }
 
 void Player::LoadTaxiMask(const char* data)
@@ -5817,7 +5819,7 @@ bool Player::HasQuestForItem(uint32 itemid)
 			if( !qst->count_required_item )
 				continue;
 
-			for( uint32 j = 0; j < 4 && j < 4; ++j )
+			for( uint8 j = 0; j < 6; ++j )
 				if( qst->required_item[j] == itemid && ( GetItemInterface()->GetItemCount( itemid ) < qst->required_itemcount[j] ) )
 					return true;
 		}
@@ -5826,18 +5828,18 @@ bool Player::HasQuestForItem(uint32 itemid)
 }
 
 /*
-Loot type MUST be
-1-corpse, go
-2-skinning/herbalism/minning
-3-Fishing
-*/
+ * Loot type MUST be
+ * 1 - corpse, go
+ * 2 - skinning/herbalism/minning
+ * 3 - Fishing
+ */
 
-void Player::SendLoot(uint64 guid,uint8 loot_type)
+void Player::SendLoot(uint64 guid, uint32 mapid, uint8 loot_type)
 {	
 	Group * m_Group = m_playerInfo->m_Group;
 	if(!IsInWorld()) return;
 	Object* lootObj;
-	
+
 	// handle items
 	if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_ITEM)
 	{
@@ -5852,8 +5854,16 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		return;
 
 	int8 loot_method = -1;
+
+	// lootsteal fix
 	if( lootObj->GetTypeId() == TYPEID_UNIT )
-		loot_method = TO_CREATURE(lootObj)->m_lootMethod;
+	{
+		Creature* LootOwner = TO_CREATURE( lootObj );
+		uint32 GroupId = LootOwner->m_taggingGroup;
+		if ( GroupId != 0 && ( m_Group == NULL || GroupId != m_Group->GetID() ) )
+			return;
+		loot_method = LootOwner->m_lootMethod;
+	};
 
 	if( loot_method < 0 )
 	{
@@ -5863,31 +5873,25 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		else
 			loot_method = PARTY_LOOT_FFA;
 	}
- 
-    if( lootObj->IsCreature() && TO_CREATURE(lootObj)->m_taggingGroup && (!m_Group || TO_CREATURE(lootObj)->m_taggingGroup != m_Group->GetID()) )
-        return;
 
 	// add to looter set
 	lootObj->m_loot.looters.insert(GetLowGUID());
 		
 	WorldPacket data, data2(32);
 	data.SetOpcode (SMSG_LOOT_RESPONSE);
-   
-   
+
 	m_lootGuid = guid;
 
-			
 	data << guid;
-	data << loot_type;           // loot_type;
+	data << loot_type; // loot_type;
 	data << lootObj->m_loot.gold;
-	data << (uint8) 0;           // loot size reserve
+	data << (uint8) 0; // loot size reserve
 
-	  
 	std::vector<__LootItem>::iterator iter=lootObj->m_loot.items.begin();
-	uint32 count = 0;
+	uint32 count=0;
 	uint8 slottype = 0;
-   
-	for(uint32 x = 0; iter!=lootObj->m_loot.items.end();iter++,x++)
+
+	for(uint32 x=0;iter!=lootObj->m_loot.items.end();iter++,x++)
 	{ 
 		if (iter->iItemsCount == 0)
 			continue;
@@ -5899,47 +5903,49 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		ItemPrototype* itemProto =iter->item.itemproto;
 		if (!itemProto)		   
 			continue;
-        // quest items check. type 4/5
-        // quest items that dont start quests.
-        if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
-            continue;
-        if((itemProto->Bonding == ITEM_BIND_QUEST2) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
-            continue;
 
-        // quest items that start quests need special check to avoid drops all the time.
-        if((itemProto->Bonding == ITEM_BIND_QUEST) && (itemProto->QuestId) && GetQuestLogForEntry(itemProto->QuestId))
-            continue;
-        if((itemProto->Bonding == ITEM_BIND_QUEST2) && (itemProto->QuestId) && GetQuestLogForEntry(itemProto->QuestId))
-            continue;
+		// quest items check. type 4/5
+		// quest items that dont start quests.
+		if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
+			continue;
+		if((itemProto->Bonding == ITEM_BIND_QUEST2) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
+			continue;
 
-        if((itemProto->Bonding == ITEM_BIND_QUEST) && (itemProto->QuestId) && HasFinishedQuest(itemProto->QuestId))
-            continue;
-        if((itemProto->Bonding == ITEM_BIND_QUEST2) && (itemProto->QuestId) && HasFinishedQuest(itemProto->QuestId))
-            continue;
+		// quest items that start quests need special check to avoid drops all the time.
+		if((itemProto->Bonding == ITEM_BIND_QUEST) && (itemProto->QuestId) && GetQuestLogForEntry(itemProto->QuestId))
+			continue;
+		if((itemProto->Bonding == ITEM_BIND_QUEST2) && (itemProto->QuestId) && GetQuestLogForEntry(itemProto->QuestId))
+			continue;
 
-        // check for starting item quests that need questlines.
-        if((itemProto->QuestId && itemProto->Bonding != ITEM_BIND_QUEST && itemProto->Bonding != ITEM_BIND_QUEST2))
-        {
-            bool HasRequiredQuests = true;
-            Quest * pQuest = QuestStorage.LookupEntry(itemProto->QuestId);
-            if(pQuest)
-            {
-                // check if its a questline.
-                for(uint32 i = 0; i < pQuest->count_requiredquests; i++)
-                {
-                    if(pQuest->required_quests[i])
-                    {
-                        if(!HasFinishedQuest(pQuest->required_quests[i]) || GetQuestLogForEntry(pQuest->required_quests[i]))
-                        {
-                            HasRequiredQuests = false;
-                            break;
-                        }
-                    }
-                }
-                if(!HasRequiredQuests)
-                    continue;
-            }
-        } 
+		if((itemProto->Bonding == ITEM_BIND_QUEST) && (itemProto->QuestId) && HasFinishedQuest(itemProto->QuestId))
+			continue;
+		if((itemProto->Bonding == ITEM_BIND_QUEST2) && (itemProto->QuestId) && HasFinishedQuest(itemProto->QuestId))
+			continue;
+
+		// check for starting item quests that need questlines.
+		if((itemProto->QuestId && itemProto->Bonding != ITEM_BIND_QUEST && itemProto->Bonding != ITEM_BIND_QUEST2))
+		{
+			bool HasRequiredQuests = true;
+			Quest * pQuest = QuestStorage.LookupEntry(itemProto->QuestId);
+			if(pQuest)
+			{
+				// check if its a questline.
+				for(uint32 i = 0; i < pQuest->count_requiredquests; ++i)
+				{
+					if(pQuest->required_quests[i])
+					{
+						if(!HasFinishedQuest(pQuest->required_quests[i]) || GetQuestLogForEntry(pQuest->required_quests[i]))
+						{
+							HasRequiredQuests = false;
+							break;
+						}
+					}
+				}
+				if(!HasRequiredQuests)
+					continue;
+			}
+		}
+
 		slottype = 0;
 		if(m_Group != NULL && loot_type < 2)
 		{
@@ -5963,7 +5969,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				slottype = 0;
 			}
 
-			// if all people passed anyone can loot it? :P
+			/* if all people passed anyone can loot it? :P */
 			if(iter->passed)
 				slottype = 0; // All players passed on the loot
 
@@ -5976,7 +5982,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		data << uint32(itemProto->ItemId);
 		data << uint32(iter->iItemsCount); // nr of items of this type
 		data << uint32(iter->item.displayid); 
-		
+
 		if(iter->iRandomSuffix)
 		{
 			data << Item::GenerateRandomSuffixFactor(itemProto);
@@ -5984,13 +5990,13 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		}
 		else if(iter->iRandomProperty)
 		{
-			data << uint32( 0 );
-			data << uint32( iter->iRandomProperty->ID );
+			data << uint32(0);
+			data << uint32(iter->iRandomProperty->ID);
 		}
 		else
 		{
-			data << uint32( 0 );
-			data << uint32( 0 );
+			data << uint32(0);
+			data << uint32(0);
 		}
 
 		data << slottype; // "still being rolled for" flag
@@ -6011,22 +6017,25 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 				if(iter->item.itemproto)
 				{
-					iter->roll = LootRoll* (new LootRoll);
+					iter->roll = new LootRoll;
 					iter->roll->Init(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, iter->item.itemproto->ItemId, factor, uint32(ipid), GetMapMgr());
-					
+
 					data2.Initialize(SMSG_LOOT_START_ROLL);
 					data2 << guid;
+					data2 << mapid;
 					data2 << x;
 					data2 << uint32(iter->item.itemproto->ItemId);
 					data2 << uint32(factor);
 					if(iter->iRandomProperty)
 						data2 << uint32(iter->iRandomProperty->ID);
 					else if(iter->iRandomSuffix)
-						data2 << uint32( ipid );
+						data2 << uint32(ipid);
 					else
-						data2 << uint32( 0 );   
-     				data2 << uint32( iter->iItemsCount );
-					data2 << uint32( 60000 );
+						data2 << uint32(0);
+
+					data2 << iter->iItemsCount;
+					data2 << uint32(60000); // countdown
+					data2 << uint8(7);
 				}
 
 				Group * pGroup = m_playerInfo->m_Group;
@@ -6040,7 +6049,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 							if((*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->GetItemInterface()->CanReceiveItem(itemProto, iter->iItemsCount, NULL) == 0)
 							{
 								if( (*itr)->m_loggedInPlayer->m_passOnLoot )
-									iter->roll->PlayerRolled( (*itr)->m_loggedInPlayer, 3 );		// passed
+									iter->roll->PlayerRolled( (*itr)->m_loggedInPlayer, PASS ); // passed
 								else
 									(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data2);
 							}
@@ -6052,7 +6061,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				{
 					GetSession()->SendPacket(&data2);
 				}
-			}			
+			}
 		}
 		count++;
 	}
@@ -6539,19 +6548,19 @@ void Player::ResetTitansGrip()
 			offhand->RemoveFromWorld();
 			offhand->SetOwner( NULLPLR );
 			offhand->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
-			sMailSystem.DeliverMessage( NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetUInt32Value(OBJECT_FIELD_GUID), 1, true );
+			sMailSystem.DeliverMessage(MAILTYPE_NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetUInt32Value(OBJECT_FIELD_GUID), 1, true);
 			offhand->Destructor();
 			offhand = NULLITEM;
-        }
-        else if( !GetItemInterface()->SafeAddItem(offhand, result.ContainerSlot, result.Slot) )
-        {
-            if( !GetItemInterface()->AddItemToFreeSlot(offhand) ) // shouldn't happen either.
-            {
-                offhand->Destructor();
-                offhand = NULLITEM;
-            }
-        }
-    }
+		}
+		else if( !GetItemInterface()->SafeAddItem(offhand, result.ContainerSlot, result.Slot) )
+		{
+			if( !GetItemInterface()->AddItemToFreeSlot(offhand) ) // shouldn't happen either.
+			{
+				offhand->Destructor();
+				offhand = NULLITEM;
+			}
+		}
+	}
 }
 
 void Player::Reset_Talents()
@@ -6986,9 +6995,9 @@ void Player::EventTaxiInterpolate()
 void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 {
 	int32 mapchangeid = -1;
-	float mapchangex = 0;
-	float mapchangey = 0;
-	float mapchangez = 0;
+	float mapchangex;
+	float mapchangey;
+	float mapchangez;
 	float orientation = 0;
 	uint32 cn = m_taxiMapChangeNode;
 
@@ -7013,7 +7022,6 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 	SetTaxiState(true);
 	m_taxi_ride_time = getMSTime();
 
-	// uint32 traveltime = uint32(path->getLength() * TAXI_TRAVEL_SPEED); // 36.7407
 	float traveldist = 0;
 
 	// temporary workaround for taximodes with changing map 
@@ -7082,7 +7090,9 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 			lastx = pn->x;
 			lasty = pn->y;
 			lastz = pn->z;
-		} else {			
+		}
+		else
+		{
 			float dist = CalcDistance(lastx,lasty,lastz,
 				pn->x,pn->y,pn->z);
 			traveldist += dist;
@@ -7099,21 +7109,19 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 
 	WorldPacket data(SMSG_MONSTER_MOVE, 38 + ( (endn - start_node) * 12 ) );
 	data << GetNewGUID();
-	data << uint8( 0 );
+	data << uint8(0);
 	data << firstNode->x << firstNode->y << firstNode->z;
 	data << m_taxi_ride_time;
 	data << uint8( 0 );
-	data << uint32( 0x00003000 );
+	data << uint32( MONSTER_MOVE_FLAG_FLY );
 	data << uint32( traveltime );
 
 	if(!cn)
 		m_taxi_ride_time -= add_time;
-	
-	data << uint32( endn - start_node );
-    // uint32 timer = 0, nodecount = 0;
-    // TaxiPathNode *lastnode = NULL;
 
-	for(uint32 i = start_node; i < endn; i++)
+	data << uint32( endn - start_node );
+
+	for(uint32 i = start_node; i < endn; ++i)
 	{
 		TaxiPathNode *pn = path->GetPathNode(i);
 		if(!pn)
@@ -7126,21 +7134,19 @@ void Player::TaxiStart(TaxiPath *path, uint32 modelid, uint32 start_node)
 	}
 
 	SendMessageToSet(&data, true);
-  
-	sEventMgr.AddEvent(TO_PLAYER(this), &Player::EventTaxiInterpolate, 
+
+	sEventMgr.AddEvent(TO_PLAYER(this), &Player::EventTaxiInterpolate,
 		EVENT_PLAYER_TAXI_INTERPOLATE, 900, 0,0);
 
 	if( mapchangeid < 0 )
 	{
 		TaxiPathNode *pn = path->GetPathNode((uint32)path->GetNodeCount() - 1);
-		sEventMgr.AddEvent(TO_PLAYER(this), &Player::EventDismount, path->GetPrice(), 
-			pn->x, pn->y, pn->z, EVENT_PLAYER_TAXI_DISMOUNT, traveltime, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); 
+		sEventMgr.AddEvent(TO_PLAYER(this), &Player::EventDismount, path->GetPrice(),
+			pn->x, pn->y, pn->z, EVENT_PLAYER_TAXI_DISMOUNT, traveltime, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 	else
 	{
-		if (GetSession())
-			GetSession()->SetPortVec((uint32)mapchangeid, 0, LocationVector(mapchangex, mapchangey, mapchangez));
-
+		sEventMgr.AddEvent(TO_PLAYER(this), &Player::EventTeleport, (uint32)mapchangeid, mapchangex, mapchangey, mapchangez, orientation, EVENT_PLAYER_TELEPORT, traveltime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
 
@@ -7227,7 +7233,7 @@ void Player::RegenerateMana(bool is_interrupted)
 		cur++;
 	}
 	else
-		cur += float2int32(amt);	
+		cur += float2int32(amt);
 
 	SetUInt32Value(UNIT_FIELD_POWER1,(cur >= mm) ? mm : cur);
 }
@@ -9352,10 +9358,10 @@ void Player::SetShapeShift(uint8 ss)
 			{
 				if( old_ss > 0 && old_ss != 28)
 				{
-					if(  ( ((uint32)1 << (old_ss-1)) & reqss ) &&		// we were in the form that required it
-						!( ((uint32)1 << (ss-1) & reqss) ) )			// new form doesnt have the right form
+					if( ( ((uint32)1 << (old_ss-1)) & reqss ) &&	// we were in the form that required it
+						!( ((uint32)1 << (ss-1) & reqss) ) )		// new form doesnt have the right form
 					{
-						m_auras[x]->Remove();
+						RemoveAuraBySlot(x);
 						continue;
 					}
 				}
@@ -9388,17 +9394,17 @@ void Player::SetShapeShift(uint8 ss)
 	// apply any talents/spells we have that apply only in this form.
 	set<uint32>::iterator itr;
 	SpellEntry * sp;
-	Spell* spe;
+	Spell* spe = NULLSPELL;
 	SpellCastTargets t(GetGUID());
 
 	for( itr = mSpells.begin(); itr != mSpells.end(); ++itr )
 	{
 		sp = dbcSpell.LookupEntry( *itr );
-		if( sp->apply_on_shapeshift_change || sp->Attributes & 64 )		// passive/talent
+		if( sp->apply_on_shapeshift_change || sp->Attributes & 64 ) // passive/talent
 		{
 			if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 			{
-				spe = Spell*(new Spell( TO_PLAYER(this), sp, true, NULLAURA ));
+				spe = (new Spell( TO_PLAYER(this), sp, true, NULLAURA ));
 				spe->prepare( &t );
 			}
 		}
@@ -9412,7 +9418,7 @@ void Player::SetShapeShift(uint8 ss)
 
 		if( sp->RequiredShapeShift && ((uint32)1 << (ss-1)) & sp->RequiredShapeShift )
 		{
-			spe = Spell*(new Spell( TO_PLAYER(this), sp, true, NULLAURA ));
+			spe = (new Spell( TO_PLAYER(this), sp, true, NULLAURA ));
 			spe->prepare( &t );
 		}
 	}
@@ -9432,14 +9438,14 @@ void Player::CalcDamage()
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Main hand                                                            //
-    //////////////////////////////////////////////////////////////////////////
-
+	//////////////////////////////////////////////////////////////////////////
+	
 	float ap_bonus = GetAP()/14000.0f;
 	delta = (float)GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS ) - (float)GetUInt32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_NEG );
-
+	
 	if(IsInFeralForm())
 	{
-	    uint32 lev = getLevel();
+		uint32 lev = getLevel();
 
 		if(ss == FORM_CAT)
 		    r = lev + delta + ap_bonus * 1000.0f;
@@ -9451,11 +9457,13 @@ void Player::CalcDamage()
 
 		SetFloatValue(UNIT_FIELD_MINDAMAGE,r>0?r:0);
 		SetFloatValue(UNIT_FIELD_MAXDAMAGE,r>0?r:0);
-            return;
+			return;
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	// No druid ss                                                          //
-    //////////////////////////////////////////////////////////////////////////	
+	//////////////////////////////////////////////////////////////////////////
+
 	uint32 speed=2000;
 	Item* it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
 		
@@ -9537,16 +9545,16 @@ void Player::CalcDamage()
 	// Second hand end                                                      //
     //////////////////////////////////////////////////////////////////////////
 
-    //////////////////////////////////////////////////////////////////////////
-    // Ranged                                                               //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Ranged                                                               //
+	//////////////////////////////////////////////////////////////////////////
 	
 	cr = 0;
 	if((it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED)))
 	{
 		if(it->GetProto()->SubClass != 19)//wands do not have bonuses from RAP & ammo
 		{
-            // ap_bonus = (GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER)+(int32)GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS))/14000.0;
+			// ap_bonus = (GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER)+(int32)GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS))/14000.0;
 			// modified by Zack : please try to use premade functions if possible to avoid forgetting stuff
 			ap_bonus = GetRAP()/14000.0f;
 			bonus = ap_bonus*it->GetProto()->Delay;
@@ -9581,9 +9589,9 @@ void Player::CalcDamage()
 	}
 	SetUInt32Value( PLAYER_RATING_MODIFIER_RANGED_SKILL, cr );
 
-    //////////////////////////////////////////////////////////////////////////
-    // Ranged end                                                           //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Ranged end                                                           //
+	//////////////////////////////////////////////////////////////////////////
 }
 
 uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
@@ -9593,9 +9601,9 @@ uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
 	float r;
 	int ss = GetShapeShift();
 
-    //////////////////////////////////////////////////////////////////////////
-    // Main hand                                                            //
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// Main hand                                                            //
+	//////////////////////////////////////////////////////////////////////////
 	
 	float ap_bonus;
 	if(AP_owerride) 
@@ -10431,8 +10439,7 @@ void Player::RecalculateHonor()
 	HonorHandler::RecalculateHonorFields(TO_PLAYER(this));
 }
 
-// wooot, crapy code rulez.....NOT
-void Player::EventTalentHearthOfWildChange(bool apply)
+void Player::EventTalentHeartOfWildChange(bool apply)
 {
 	if(!hearth_of_wild_pct)
 		return;
@@ -10446,15 +10453,15 @@ void Player::EventTalentHearthOfWildChange(bool apply)
 	uint32 SS=GetShapeShift();
 
 	// increase stamina if :
-	if(SS==FORM_BEAR || SS==FORM_DIREBEAR)
+	if(SS == FORM_BEAR || SS == FORM_DIREBEAR)
 	{
-		TotalStatModPctPos[STAT_STAMINA] += tval; 
-		CalcStat(STAT_STAMINA);	
+		TotalStatModPctPos[STAT_STAMINA] += tval;
+		CalcStat(STAT_STAMINA);
 		UpdateStats();
 		UpdateChances();
 	}
 	// increase attackpower if :
-	else if(SS==FORM_CAT)
+	else if(SS == FORM_CAT)
 	{
 		SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
 		SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));

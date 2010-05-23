@@ -18,7 +18,6 @@ class StrandOfTheAncients : public CBattleground
 public:
 	StrandOfTheAncients(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
 	~StrandOfTheAncients();
-
 	virtual void Init();
 
 	void HookOnPlayerDeath(Player* plr);
@@ -37,8 +36,8 @@ public:
 	void CaptureControlPoint(uint32 Id, uint32 Team);
 	void SOTARebuild(bool m_reliccaptured);
 	void OnPlatformTeleport(Player* plr);
-    void Respawn();
-	
+	void Respawn();
+
 	LocationVector GetStartingCoords(uint32 Team);
 
 	static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new StrandOfTheAncients(m, i, l, t); }
@@ -47,8 +46,8 @@ public:
 	void OnStart();
 
 	bool SupportsPlayerLoot() { return true; }
-	bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell);
-
+	bool HookSlowLockOpen(GameObject* pGo, Player* plr, Spell* pSpell)
+	
 	void HookGenerateLoot(Player* plr, Corpse* pCorpse);
 
 	void SetIsWeekend(bool isweekend);
@@ -57,19 +56,19 @@ public:
 	void SetRoundTime(uint32 secs){ RoundTime = secs; };
 	void TimeTick();
 	void PrepareRound();
-    void EndGame();
+	void EndGame();
 protected:
 	uint32 Attackers; // 0 - horde / 1 - alliance
 	uint32 BattleRound;
 	uint32 RoundTime;
-    Creature* m_cannons[10];
-    GameObject* m_relic;
-    GameObject* m_endgate;
-    GameObject* m_gates[5];
-    GameObject* m_gateSigils[5];
-    GameObject* m_gateTransporters[5];
-    uint8 hordewins;
-    uint8 allywins;
+	Creature* m_cannons[10];
+	GameObject* m_relic;
+	GameObject* m_endgate;
+	GameObject* m_gates[5];
+	GameObject* m_gateSigils[5];
+	GameObject* m_gateTransporters[5];
+	uint8 hordewins;
+	uint8 allywins;
 };
 
 #endif // _SOTA_H

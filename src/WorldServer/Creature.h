@@ -4,8 +4,10 @@
  * See COPYING for license details.
  */
  
-#ifndef WOWSERVER_CREATURE_H
-#define WOWSERVER_CREATURE_H
+#include "Map.h"
+
+#ifndef WOWARCTIC_CREATURE_H
+#define WOWARCTIC_CREATURE_H
 
 class CreatureTemplate;
 class GossipScript;
@@ -14,30 +16,7 @@ class GossipScript;
 #define MAX_CREATURE_LOOT 8
 #define MAX_PET_SPELL 4
 #define VENDOR_ITEMS_UPDATE_TIME 3600000
-#include "Map.h"
-/*
-enum Gossip_Option
-{
-    GOSSIP_OPTION_NONE              = 0,                    // UNIT_NPC_FLAG_NONE              = 0,
-    GOSSIP_OPTION_GOSSIP            = 1,                    // UNIT_NPC_FLAG_GOSSIP            = 1,
-    GOSSIP_OPTION_QUESTGIVER        = 2,                    // UNIT_NPC_FLAG_QUESTGIVER        = 2,
-    GOSSIP_OPTION_VENDOR            = 3,                    // UNIT_NPC_FLAG_VENDOR            = 4,
-    GOSSIP_OPTION_TAXIVENDOR        = 4,                    // UNIT_NPC_FLAG_TAXIVENDOR        = 8,
-    GOSSIP_OPTION_TRAINER           = 5,                    // UNIT_NPC_FLAG_TRAINER           = 16,
-    GOSSIP_OPTION_SPIRITHEALER      = 6,                    // UNIT_NPC_FLAG_SPIRITHEALER      = 32,
-    GOSSIP_OPTION_SPIRITGUIDE       = 7,                    // UNIT_NPC_FLAG_SPIRITGUIDE       = 64,
-    GOSSIP_OPTION_INNKEEPER         = 8,                    // UNIT_NPC_FLAG_INNKEEPER         = 128,
-    GOSSIP_OPTION_BANKER            = 9,                    // UNIT_NPC_FLAG_BANKER            = 256,
-    GOSSIP_OPTION_PETITIONER        = 10,                   // UNIT_NPC_FLAG_PETITIONER        = 512,
-    GOSSIP_OPTION_TABARDDESIGNER    = 11,                   // UNIT_NPC_FLAG_TABARDDESIGNER    = 1024,
-    GOSSIP_OPTION_BATTLEFIELD       = 12,                   // UNIT_NPC_FLAG_BATTLEFIELDPERSON = 2048,
-    GOSSIP_OPTION_AUCTIONEER        = 13,                   // UNIT_NPC_FLAG_AUCTIONEER        = 4096,
-    GOSSIP_OPTION_STABLEPET         = 14,                   // UNIT_NPC_FLAG_STABLE            = 8192,
-    GOSSIP_OPTION_ARMORER           = 15,                   // UNIT_NPC_FLAG_ARMORER           = 16384,
-    GOSSIP_OPTION_UNLEARNTALENTS    = 16,                   // UNIT_NPC_FLAG_TRAINER (bonus option for GOSSIP_OPTION_TRAINER)
-    GOSSIP_OPTION_UNLEARNPETSKILLS  = 17                    // UNIT_NPC_FLAG_TRAINER (bonus option for GOSSIP_OPTION_TRAINER)
-};
-*/
+
 struct CreatureItem
 {
 	uint32 itemid;
@@ -51,7 +30,6 @@ struct CreatureItem
 ARCTIC_DECL bool Rand(float chance);
 ARCTIC_DECL bool Rand(uint32 chance);
 ARCTIC_DECL bool Rand(int32 chance);
-
 #pragma pack(push,1)
 
 struct CreatureInfo
@@ -160,10 +138,11 @@ struct CreatureProto
 	uint32 extra_a9_flags;
 	uint32 auraimmune_flag;
 	int32 vehicle_entry;
+	uint32 SpellClickid;
 	uint8 CanMove;
-    uint32 GuardType; // 0 - nothing, 1 - normal city guard, 2 - neutral guard, 3 - neutra city guard
-	
-    // AI Stuff.
+	uint32 GuardType; // 0 - nothing, 1 - normal city guard, 2 - neutral guard, 3 - neutra city guard
+
+	// AI Stuff.
 	bool m_canRangedAttack;
 	uint32 m_RangedAttackSpell;
 	uint32 m_SpellSoundid;
@@ -194,6 +173,15 @@ struct CreatureStatsHeroic
 	unordered_set<uint32> start_auras;
 };
 
+struct CreatureProtoVehicle
+{
+	uint32 vehicle_creature_entry; // Entry.
+	bool healthfromdriver; // Effects only driver.
+	uint32 healthunitfromitemlev;
+	uint32 VehicleSpells[6]; // Vehicle spells.
+	uint32 accessoryentry[8]; // Accessories.
+};
+
 #pragma pack(pop)
 
 struct Formation
@@ -205,51 +193,51 @@ struct Formation
 
 enum FAMILY
 {
-	FAMILY_WOLF             = 1,
-	FAMILY_CAT              = 2,
-	FAMILY_SPIDER           = 3,
-	FAMILY_BEAR             = 4,
-	FAMILY_BOAR             = 5,
-	FAMILY_CROCOLISK        = 6,
-	FAMILY_CARRION_BIRD     = 7,
-	FAMILY_CRAB             = 8,
-	FAMILY_GORILLA          = 9,
-	FAMILY_RAPTOR           = 11,
-	FAMILY_TALLSTRIDER      = 12 ,
-	FAMILY_FELHUNTER        = 15,
-	FAMILY_VOIDWALKER       = 16,
-	FAMILY_SUCCUBUS         = 17,
-	FAMILY_DOOMGUARD        = 19,
-	FAMILY_SCORPID          = 20,
-	FAMILY_TURTLE           = 21,
-	FAMILY_IMP              = 23,
-	FAMILY_BAT              = 24,
-	FAMILY_HYENA            = 25,
-	FAMILY_BIRD_OF_PREY     = 26,
-	FAMILY_WIND_SERPENT     = 27,
-	FAMILY_REMOTE_CONTROL   = 28,
-	FAMILY_FELGUARD         = 29,
-	FAMILY_DRAGONHAWK       = 30,
-	FAMILY_RAVAGER          = 31,
-	FAMILY_WARP_STALKER     = 32,
-	FAMILY_SPOREBAT         = 33,
-	FAMILY_NETHER_RAY       = 34,
-	FAMILY_SERPENT          = 35,
-	FAMILY_MOTH             = 37,
-	FAMILY_CHIMAERA         = 38,
-	FAMILY_DEVILSAUR        = 39,
-	FAMILY_GHOUL            = 40, // DK's minion
-	FAMILY_SILITHID         = 41,
-	FAMILY_WORM             = 42,
-	FAMILY_RHINO            = 43,
-	FAMILY_WASP             = 44,
-	FAMILY_CORE_HOUND       = 45,
-	FAMILY_SPIRIT_BEAST     = 46,
-	FAMILY_FAKE_IMP         = 416,
-    FAMILY_FAKE_VOIDWALKER  = 1860,
-    FAMILY_FAKE_SUCCUBUS    = 1863,
-    FAMILY_FAKE_FELHUNTER   = 417,
-    FAMILY_FAKE_FELGUARD    = 17252
+	FAMILY_WOLF				= 1,
+	FAMILY_CAT,
+	FAMILY_SPIDER,
+	FAMILY_BEAR,
+	FAMILY_BOAR,
+	FAMILY_CROCILISK,
+	FAMILY_CARRION_BIRD,
+	FAMILY_CRAB,
+	FAMILY_GORILLA,
+	FAMILY_RAPTOR			= 11,
+	FAMILY_TALLSTRIDER ,
+	FAMILY_FELHUNTER		= 15,
+	FAMILY_VOIDWALKER,
+	FAMILY_SUCCUBUS,
+	FAMILY_DOOMGUARD		= 19,
+	FAMILY_SCORPID,
+	FAMILY_TURTLE, 
+	FAMILY_IMP				= 23,
+	FAMILY_BAT,
+	FAMILY_HYENA,
+	FAMILY_BIRD_OF_PREY,
+	FAMILY_WIND_SERPENT,
+	FAMILY_REMOTE_CONTROL,
+	FAMILY_FELGUARD,
+	FAMILY_DRAGONHAWK,
+	FAMILY_RAVAGER,
+	FAMILY_WARP_STALKER,
+	FAMILY_SPOREBAT,
+	FAMILY_NETHER_RAY,
+	FAMILY_SERPENT,
+	FAMILY_MOTH				= 37,
+	FAMILY_CHIMAERA,
+	FAMILY_DEVILSAUR,
+	FAMILY_GHOUL,
+	FAMILY_SILITHID,
+	FAMILY_WORM,
+	FAMILY_RHINO,
+	FAMILY_WASP,
+	FAMILY_CORE_HOUND,
+	FAMILY_SPIRIT_BEAST,
+	FAMILY_FAKE_IMP			= 416,
+	FAMILY_FAKE_FELHUNTER,
+	FAMILY_FAKE_VOIDWALKER	= 1860,
+	FAMILY_FAKE_SUCCUBUS	= 1863,
+	FAMILY_FAKE_FELGUARD	= 17252
 };
 
 enum ELITE
@@ -269,9 +257,9 @@ enum TIME_REMOVE_CORPSE
  
 enum CreatureTypeFlags
 {
-    CREATURE_TYPEFLAGS_TAMEABLE = 0x0001,
-    CREATURE_TYPEFLAGS_HERBLOOT = 0x0100,
-    CREATURE_TYPEFLAGS_MININGLOOT = 0x0200,
+	CREATURE_TYPEFLAGS_TAMEABLE = 0x0001,
+	CREATURE_TYPEFLAGS_HERBLOOT = 0x0100,
+	CREATURE_TYPEFLAGS_MININGLOOT = 0x0200,
 };
 
 enum CreatureFlag1
@@ -298,6 +286,7 @@ class CreatureAIScript;
 class GossipScript;
 class AuctionHouse;
 struct Trainer;
+
 #define CALL_SCRIPT_EVENT(obj, func) if(obj->GetTypeId() == TYPEID_UNIT && TO_CREATURE(obj)->GetScript() != NULL) TO_CREATURE(obj)->GetScript()->func
 
 //////////////////////////////////////////////////////////////
@@ -307,14 +296,14 @@ struct Trainer;
 class ARCTIC_DECL Creature : public Unit
 {
 public:
+	friend class Player;
 
 	Creature(uint64 guid);
 	virtual ~Creature();
-
 	virtual void Init();
 	virtual void Destructor();
 
-    bool Load(CreatureSpawn * spawn, uint32 mode, MapInfo * info);
+	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
 	void Load(CreatureProto * proto_, float x, float y, float z, float o = 0.0f);
 
 	void AddToWorld();
@@ -327,7 +316,9 @@ public:
 	bool canWalk() const { return ( proto->CanMove & LIMIT_GROUND)!= 0; }
 	bool canSwim() const { return ( proto->CanMove & LIMIT_WATER)!= 0; }
 	bool canFly()  const { return ( proto->CanMove & LIMIT_AIR)!= 0; }
-	
+
+	// Arena organizers
+	ARCTIC_INLINE bool ArenaOrganizersFlags() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDCHANGER ); }
 
 	// Updates
 	virtual void Update( uint32 time );
@@ -349,7 +340,7 @@ public:
 			if(itr->itemid == itemid)
 				return slot;
 			else
-				++slot;			
+				++slot;
 		}
 		return -1;
 	}
@@ -484,7 +475,7 @@ public:
 		return true;
 	}
 
-	//Make this unit face another unit
+	// Make this unit face another unit
 	bool setInFront(Unit* target);
 
 	bool Skinned;
@@ -499,8 +490,7 @@ public:
 	// Serialization
 	void SaveToDB();
 	void SaveToFile(std::stringstream & name);
-	// bool LoadFromDB(uint32 guid);
-	// bool LoadFromDB(CreatureTemplate *t);
+
 	void LoadAIAgents(CreatureTemplate * t);
 	void LoadAIAgents();
 	void DeleteFromDB();
@@ -528,26 +518,15 @@ public:
 	void SetEnslaveSpell(uint32 spellId) { m_enslaveSpell = spellId; }
 	bool RemoveEnslave();
 
-	ARCTIC_INLINE Player* GetTotemOwner() { return totemOwner; }
-	ARCTIC_INLINE void SetTotemOwner(Player* owner) { totemOwner = owner; }
-	ARCTIC_INLINE int32 GetTotemSlot() { return totemSlot; }
-	ARCTIC_INLINE void SetTotemSlot(int32 slot) { totemSlot = slot; }
-	ARCTIC_INLINE bool IsExotic(CreatureFamilyEntry * family )
-	{
-		switch(family->ID)
-		{
-		case FAMILY_CHIMAERA:
-		case FAMILY_CORE_HOUND:
-		case FAMILY_DEVILSAUR:
-		case FAMILY_RHINO:
-		case FAMILY_SILITHID:
-		case FAMILY_SPIRIT_BEAST:
-		case FAMILY_WORM:
-			return true;
-			break;
-		}
-		return false;
-	}
+	// General vars for summoned creatures
+	Unit* GetSummonOwner();
+	ARCTIC_INLINE int32 GetSummonSlot() { return SummonSlot; }
+	ARCTIC_INLINE bool IsSummon() { return SummonOwner && SummonSlot > -1; }
+	ARCTIC_INLINE void SetSummonOwnerSlot(uint64 ownerguid, int8 slot) { SummonOwner = ownerguid; SummonSlot = slot;}
+
+	// Special summons, Totems
+	ARCTIC_INLINE bool IsTotem() { return Totem;}
+	ARCTIC_INLINE void SetTotem(bool totem) { Totem = totem;}
 
 	ARCTIC_INLINE bool IsPickPocketed() { return m_PickPocketed; }
 	ARCTIC_INLINE void SetPickPocketed(bool val = true) { m_PickPocketed = val; }
@@ -558,7 +537,8 @@ public:
 	void CallScriptUpdate();
 
 	uint32 m_TaxiNode;
-	CreatureInfo * creature_info;
+	CreatureInfo *creature_info;
+
 	ARCTIC_INLINE CreatureInfo *GetCreatureName()
 	{
 		return creature_info; 
@@ -566,10 +546,11 @@ public:
 	ARCTIC_INLINE void SetCreatureName(CreatureInfo *ci) { creature_info = ci; }
 	ARCTIC_INLINE Trainer* GetTrainer() { return mTrainer; }
 	void RegenerateFocus();
+	
+	void RegenerateEnergy();
 
 	CreatureFamilyEntry * myFamily;
-	ARCTIC_INLINE bool IsTotem() { return totemOwner != NULLPLR && totemSlot != -1; }
-	void TotemExpire();
+
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
 	void ChannelLinkUpCreature(uint32 SqlId);
@@ -605,38 +586,37 @@ public:
 	bool m_corpseEvent;
 	MapCell * m_respawnCell;
 	bool m_noRespawn;
-	LocationVector * m_transportPosition;
-	uint32 m_transportGuid;
-	WoWGuid m_transportNewGuid;
+
 protected:
-	CreatureAIScript * _myScriptClass;
+	CreatureAIScript *_myScriptClass;
 	bool m_limbostate;
-	Trainer * mTrainer;
+	Trainer* mTrainer;
 
 	void _LoadGoods();
 	void _LoadGoods(std::list<CreatureItem*>* lst);
 	void _LoadMovement();
 
 	// Vendor data
-	std::vector<CreatureItem> * m_SellItems;
+	std::vector<CreatureItem>* m_SellItems;
 
 	// Taxi data
 	uint32 mTaxiNode;
 
 	// Quest data
-	std::list<QuestRelation *> * m_quests;
-   
+	std::list<QuestRelation *>* m_quests;
+
 	// Pet
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
 
-	Player* totemOwner;
-	int32 totemSlot;
+	uint32 SummonOwner;
+	int32 SummonSlot;
+	bool Totem;
 
 	bool m_PickPocketed;
 	uint32 _fields[UNIT_END];
 public:
-	//	custom functions for scripting
+	// custom functions for scripting
 	ARCTIC_INLINE uint32 GetProtoItemDisplayId(uint8 i) { return GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + i); }
 
 	// loooooot
