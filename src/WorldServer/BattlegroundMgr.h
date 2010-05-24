@@ -16,17 +16,24 @@ class Corpse;
 
 enum BattleGroundTypes
 {
+	BATTLEGROUND_NULL = 0,
 	BATTLEGROUND_ALTERAC_VALLEY = 1,
-	BATTLEGROUND_WARSONG_GULCH,
-	BATTLEGROUND_ARATHI_BASIN,
-	BATTLEGROUND_ARENA_2V2,
-	BATTLEGROUND_ARENA_3V3,
-	BATTLEGROUND_ARENA_5V5,
-	BATTLEGROUND_EYE_OF_THE_STORM,
-	BATTLEGROUND_ARENA,
-	BATTLEGROUND_STRAND_OF_THE_ANCIENTS,
-	BATTLEGROUND_NUM_TYPES,
+	BATTLEGROUND_WARSONG_GULCH = 2,
+	BATTLEGROUND_ARATHI_BASIN = 3,
+	BATTLEGROUND_ARENA_2V2 = 4,
+	BATTLEGROUND_ARENA_3V3 = 5,
+	BATTLEGROUND_ARENA_5V5 = 6,
+	BATTLEGROUND_EYE_OF_THE_STORM = 7,
+	BATTLEGROUND_ARENA = 8,
+	BATTLEGROUND_STRAND_OF_THE_ANCIENTS = 9,
+	BATTLEGROUND_DALARAN_SEWER = 10,
+	BATTLEGROUND_RING_OF_VALOR = 11,
+	BATTLEGROUND_ISLE_OF_CONQUEST = 30,
+	BATTLEGROUND_RANDOM = 32,
+	BATTLEGROUND_NUM_TYPES = 33,
 };
+
+#define USABLEBSGS 10
 
 struct BGScore
 {
@@ -113,7 +120,6 @@ static inline uint32 GetLevelGrouping(uint32 level)
 	else
 		return 8;
 }
-
 #define MAX_LEVEL_GROUP 9
 #define LEVEL_GROUP_RATED_ARENA 8
 #define BG_ANTI_CHEAT 1
@@ -145,7 +151,7 @@ public:
 	void Init();
 
 	/* Packet Handlers */
-	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, bool battlemaster = true);
+	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, bool battlemaster = true, bool random = false);
 	void HandleArenaJoin(WorldSession * m_session, uint32 BattlegroundType, uint8 as_group, uint8 rated_match);
 
 	/* Player Logout Handler */
@@ -359,7 +365,7 @@ public:
 	ARCTIC_INLINE uint32 GetStartTime() { return m_startTime; }
 	ARCTIC_INLINE uint32 GetType() { return m_type; }
 
-	/* events should execute in the correct context */
+	// events should execute in the correct context
 	int32 event_GetInstanceID();
 	void EventCreate();
 
