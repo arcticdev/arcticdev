@@ -63,5 +63,5 @@ public:
 
 #define sVoiceChatHandler VoiceChatHandler::getSingleton()
 
-#endif		// VOICE_CHAT
-#endif		// _VOICECHATHANDLER_H
+#endif // VOICE_CHAT
+#endif // _VOICECHATHANDLER_H

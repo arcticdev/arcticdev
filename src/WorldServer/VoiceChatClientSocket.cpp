@@ -77,4 +77,4 @@ void VoiceChatClientSocket::SendPacket(WorldPacket* data)
 	BurstEnd();
 }
 
-#endif // Voice_Chat
+#endif // VOICE_CHAT

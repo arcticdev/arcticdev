@@ -77,7 +77,6 @@ void WorldSession::HandleChannelWatchOpcode(WorldPacket & recv_data)
 //////////////////////////////////////////////////////////////////////////
 // Singleton Stuff                                                      //
 //////////////////////////////////////////////////////////////////////////
-
 initialiseSingleton(VoiceChatHandler);
 
 VoiceChatHandler::VoiceChatHandler()

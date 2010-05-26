@@ -363,7 +363,7 @@ void Vehicle::AddPassenger(Unit* pPassenger, uint8 requestedseat, bool force /*=
 		}
 	}
 	else
-	{ 	// Find us a slot!
+	{	// Find us a slot!
 		for(uint8 i = 0; i < m_seatSlotMax; ++i)
 		{
 			if(pPassenger->IsPlayer())
