@@ -993,7 +993,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		SystemMessage(m_session, "You cannot add waypoints to a creature that is not saved.");
 		return true;
 	}
-	if(cr->GetAIInterface()->GetWayPointsCount()) // ALREADY HAVE WAYPOINTS
+	if(cr->GetAIInterface()->GetWayPointsCount()) // Already have waypoints
 	{	
 		SystemMessage(m_session, "The creature already has waypoints");
 		return false;
@@ -1025,7 +1025,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 	}
 	int n = atol(pC);
 
-	for(int i=0;i<n;i++)
+	for(int i=0;i<n;++i)
 	{
 		float ang = rand()/100.0f;
 		float ran = (rand()%(r*10))/10.0f;
@@ -1228,6 +1228,6 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 	}
 
 	plr->SetSelection(un->GetGUID());
-	SystemMessage(m_session, "Set selection to "I64FMT" (%s)", un->GetGUID(), un->GetCreatureName() ? un->GetCreatureName()->Name : "Unknown");
+	SystemMessage(m_session, "Set selection to "I64FMT" (%s)", un->GetGUID(), un->GetCreatureInfo() ? un->GetCreatureInfo()->Name : "Unknown");
 	return true;
 }

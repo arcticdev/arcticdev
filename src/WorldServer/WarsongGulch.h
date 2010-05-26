@@ -4,6 +4,9 @@
  * See COPYING for license details.
  */
 
+#ifndef WARSONG_GULCH_H
+#define WARSONG_GULCH_H
+
 #define BUFF_RESPAWN_TIME 90000
 
 class WarsongGulch : public CBattleground
@@ -22,7 +25,6 @@ class WarsongGulch : public CBattleground
 public:
 	WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
 	~WarsongGulch();
-
 	virtual void Init();
 
 	void HookOnPlayerDeath(Player* plr);
@@ -55,3 +57,5 @@ public:
 
 	void SetIsWeekend(bool isweekend);
 };
+
+#endif // WARSONG_GULCH_H

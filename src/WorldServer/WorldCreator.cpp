@@ -13,7 +13,7 @@ InstanceMgr::InstanceMgr()
 {
 	memset(m_maps, 0, sizeof(Map*)* NUM_MAPS);
 	memset(m_instances, 0, sizeof(InstanceMap*) * NUM_MAPS);
-	
+
 	for(uint32 i = 0; i < NUM_MAPS; ++i)
 		m_singleMaps[i] = NULLMAPMGR;
 }
@@ -28,7 +28,7 @@ void InstanceMgr::Load(TaskList * l)
 
 	// Create all non-instance type maps.
 	result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
-	if(result)
+	if( result )
 	{
 		m_InstanceHigh = result->Fetch()[0].GetUInt32()+1;
 		delete result;
@@ -42,7 +42,7 @@ void InstanceMgr::Load(TaskList * l)
 	{
 		do 
 		{
-			if(WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL)
+			if( !WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) )
 				continue;
 
 			if( result->Fetch()[0].GetUInt32() >= NUM_MAPS )
@@ -131,7 +131,7 @@ void InstanceMgr::Shutdown()
 			ptr->KillThread();
 			ptr->Destructor();
 			ptr = NULLMAPMGR;
-			m_singleMaps[i]=NULLMAPMGR; // and it dies :)
+			m_singleMaps[i] = NULLMAPMGR; // and it dies :)
 		}
 
 		if(m_maps[i] != NULL)
@@ -176,7 +176,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 	else if(plr->iInstanceType && inf->type != INSTANCE_MULTIMODE)
 		return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
 
-	//do we need addition raid/heroic checks?
+	// do we need addition raid/heroic checks?
 	Group * pGroup = plr->GetGroup() ;
 	if( !plr->triggerpass_cheat )
 	{
@@ -185,12 +185,12 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 			return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
 
 
-		//and has the required level
+		// and has the required level
 		if( plr->getLevel() < 80)
 		{
 			if(!map->israid())
 			{
-				//otherwise we still need to be lvl 70/80 for heroic.
+				// otherwise we still need to be lvl 70/80 for heroic.
 				if( plr->iInstanceType && plr->getLevel() < uint32(inf->HasFlag(WMI_INSTANCE_XPACK_02) ? 80 : 70))
 					return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
 			}
@@ -236,7 +236,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 					// If the map is active and has players
 					if(in->m_mapMgr && in->m_mapMgr->HasPlayers() && !plr->triggerpass_cheat)
 					{
-						//check if combat is in progress
+						// check if combat is in progress
 						if( in->m_mapMgr->IsCombatInProgress())
 						{
 							m_mapLock.Release();
@@ -254,7 +254,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 					uint32 plrdiff = map->israid() ? plr->iRaidType : plr->iInstanceType;
 					if(in->m_difficulty == plrdiff)
 					{
-						//wakeup call for saved instances
+						// wakeup call for saved instances
 						if(!in->m_mapMgr)
 							in->m_mapMgr = _CreateInstance(in);
 
@@ -286,7 +286,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 			{
 				in = itr->second;
 				++itr;
-				//we have an instance,but do we own it?
+				// we have an instance,but do we own it?
 				uint8 owns = PlayerOwnsInstance(in, plr);
 				if( owns >= OWNER_CHECK_OK )
 				{
@@ -309,7 +309,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 					uint32 plrdiff = map->israid() ? plr->iRaidType : plr->iInstanceType;
 					if(in->m_difficulty == plrdiff)
 					{
-						//wakeup call for saved instances
+						// wakeup call for saved instances
 						if(!in->m_mapMgr)
 							in->m_mapMgr = _CreateInstance(in);
 
@@ -353,8 +353,8 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 	in->m_mapId = mapid;
 	in->m_mapMgr = NULLMAPMGR; // always start off without a map manager, it is created in _CreateInstance(in)
 
-	//crash fix; GM's without group will start up raid instances as if they where nonraids
-	//this to avoid exipring check, this is mainly for developers purpose; GM's should NOT invite any players here!
+	// crash fix; GM's without group will start up raid instances as if they where nonraids
+	// this to avoid exipring check, this is mainly for developers purpose; GM's should NOT invite any players here!
 	if( plr->triggerpass_cheat && !plr->GetGroup() && inf->type == INSTANCE_RAID)
 	{
 		const char * message = "Started this instance for development purposes only, do not invite players!!";
@@ -384,10 +384,11 @@ MapMgr* InstanceMgr::GetMapMgr(uint32 mapId)
 
 MapMgr* InstanceMgr::GetInstance(Object* obj)
 {
-	Player* plr;
+	Player* plr = NULL;
 	InstanceMap::iterator itr;
-	InstanceMap * instancemap;
-	MapInfo * inf = WorldMapInfoStorage.LookupEntry(obj->GetMapId());
+	InstanceMap * instancemap = NULL;
+	MapInfo * inf = NULL;
+	inf = WorldMapInfoStorage.LookupEntry(obj->GetMapId());
 
 	// we can *never* teleport to maps without a mapinfo.
 	if( inf == NULL || obj->GetMapId() >= NUM_MAPS )
@@ -412,11 +413,11 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 			{
 				if(itr->second)
 				{
-					//we have an instance,but can we enter it?
+					// we have an instance,but can we enter it?
 					uint8 owns =  PlayerOwnsInstance( itr->second, plr );
 					if( owns >= OWNER_CHECK_OK )
 					{
-						//wakeup call for saved instances
+						// wakeup call for saved instances
 						if(itr->second->m_mapMgr == NULL)
 							itr->second->m_mapMgr = _CreateInstance(itr->second);
 
@@ -438,7 +439,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 				uint8 owns = PlayerOwnsInstance(itr->second, plr);
 				if(owns >= OWNER_CHECK_OK )
 				{
-					//wakeup call for saved instances
+					// wakeup call for saved instances
 					if(itr->second->m_mapMgr == NULL)
 						itr->second->m_mapMgr = _CreateInstance(itr->second);
 
@@ -599,33 +600,33 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	strcpy(tmp, "");
 #define pushline strcat(m_file, tmp)
 
-	snprintf(tmp, 200, " <instance>\n"); pushline;
-	snprintf(tmp, 200, " <map>%u</map>\n", mgr->GetMapId()); pushline;
-	snprintf(tmp, 200, " <maptype>%u</maptype>\n", inf->type); pushline;
-	snprintf(tmp, 200, " <players>%u</players>\n", (unsigned int)mgr->GetPlayerCount()); pushline;
-	snprintf(tmp, 200, " <maxplayers>%u</maxplayers>\n", inf->playerlimit); pushline;
+	snprintf(tmp, 200, "  <instance>\n"); pushline;
+	snprintf(tmp, 200, "	<map>%u</map>\n", mgr->GetMapId()); pushline;
+	snprintf(tmp, 200, "	<maptype>%u</maptype>\n", inf->type); pushline;
+	snprintf(tmp, 200, "	<players>%u</players>\n", (unsigned int)mgr->GetPlayerCount()); pushline;
+	snprintf(tmp, 200, "	<maxplayers>%u</maxplayers>\n", inf->playerlimit); pushline;
 
 	if (inst)
 	{
 		tm *ttime = localtime( &inst->m_creation );
-		snprintf(tmp, 200, " <creationtime>%02u:%02u:%02u %02u/%02u/%u</creationtime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
+		snprintf(tmp, 200, "	<creationtime>%02u:%02u:%02u %02u/%02u/%u</creationtime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
 		pushline;
 	}
 	else
 	{
-		snprintf(tmp, 200, " <creationtime>N/A</creationtime>\n");
+		snprintf(tmp, 200, "	<creationtime>N/A</creationtime>\n");
 		pushline;
 	}
 
 	if (inst && inst->m_expiration)
 	{
 		tm *ttime = localtime( &inst->m_expiration );
-		snprintf(tmp, 200, " <expirytime>%02u:%02u:%02u %02u/%02u/%u</expirytime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
+		snprintf(tmp, 200, "	<expirytime>%02u:%02u:%02u %02u/%02u/%u</expirytime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
 		pushline;
 	}
 	else
 	{
-		snprintf(tmp, 200, " <expirytime>N/A</expirytime>\n");
+		snprintf(tmp, 200, "	<expirytime>N/A</expirytime>\n");
 		pushline;
 
 	}
@@ -633,16 +634,16 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	if (mgr->InactiveMoveTime)
 	{
 		tm *ttime = localtime( &mgr->InactiveMoveTime );
-		snprintf(tmp, 200, " <idletime>%02u:%02u:%02u %02u/%02u/%u</idletime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
+		snprintf(tmp, 200, "	<idletime>%02u:%02u:%02u %02u/%02u/%u</idletime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
 		pushline;
 	}
 	else
 	{
-		snprintf(tmp, 200, " <idletime>N/A</idletime>\n");
+		snprintf(tmp, 200, "	<idletime>N/A</idletime>\n");
 		pushline;
 	}
 
-	snprintf(tmp, 200, " </instance>\n"); pushline;
+	snprintf(tmp, 200, "	</instance>\n"); pushline;
 #undef pushline
 }
 
@@ -867,8 +868,6 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 
 	if(in->m_mapMgr)
 	{
-
-		// "ForcePlayersOut" will teleport the players in this instance to their entry point/hearthstone.
 		// otherwise, they will get a 60 second timeout telling them they are not in this instance's group.
 		if(in->m_mapMgr->HasPlayers())
 		{
@@ -973,7 +972,7 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player* plr)
 						data.Initialize(SMSG_UPDATE_INSTANCE_OWNERSHIP);
 						data << uint32(0x01);
 						plr->GetSession()->SendPacket(&data);
-						break; //next mapid
+						break; // next mapid
 					}
 				}
 			}

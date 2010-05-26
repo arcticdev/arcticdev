@@ -37,7 +37,7 @@ enum MovementFlags
 
 	// Byte 2 (Resets on Situation Change)
 	MOVEFLAG_WALK						= 0x100,		// verified
-	MOVEFLAG_TAXI						= 0x200,		
+	MOVEFLAG_TAXI						= 0x200,
 	MOVEFLAG_NO_COLLISION				= 0x400,
 	MOVEFLAG_FLYING						= 0x800,		// verified
 	MOVEFLAG_REDIRECTED					= 0x1000,		// Unconfirmed
@@ -51,8 +51,8 @@ enum MovementFlags
 	MOVEFLAG_TB_PENDING_FALL			= 0x40000,		// (MOVEFLAG_PENDING_FALL)
 	MOVEFLAG_TB_PENDING_FORWARD			= 0x80000,		// (MOVEFLAG_PENDING_FORWARD)
 	MOVEFLAG_TB_PENDING_BACKWARD		= 0x100000,		// (MOVEFLAG_PENDING_BACKWARD)
-	MOVEFLAG_SWIMMING          		    = 0x200000,		//  verified
-	MOVEFLAG_FLYING_PITCH_UP	        = 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
+	MOVEFLAG_SWIMMING					= 0x200000,		//  verified
+	MOVEFLAG_FLYING_PITCH_UP			= 0x400000,		// (half confirmed)(MOVEFLAG_PENDING_STR_RGHT)
 	MOVEFLAG_TB_MOVED					= 0x800000,		// Send to client on entervehicle
 
 	// Byte 4 (Script Based Flags. Never reset, only turned on or off.)
@@ -79,21 +79,21 @@ enum MovementFlags
 
 enum AreaTriggerFailures
 {
-	AREA_TRIGGER_FAILURE_OK				= 0,
-	AREA_TRIGGER_FAILURE_UNAVAILABLE	= 1,
-	AREA_TRIGGER_FAILURE_NO_BC			= 2,
-	AREA_TRIGGER_FAILURE_NO_HEROIC		= 3,
-	AREA_TRIGGER_FAILURE_NO_RAID		= 4,
-	AREA_TRIGGER_FAILURE_NO_ATTUNE_Q	= 5,
-	AREA_TRIGGER_FAILURE_NO_ATTUNE_I	= 6,
-	AREA_TRIGGER_FAILURE_LEVEL			= 7,
-	AREA_TRIGGER_FAILURE_NO_GROUP		= 8,
-	AREA_TRIGGER_FAILURE_NO_KEY			= 9,
-	AREA_TRIGGER_FAILURE_LEVEL_HEROIC	= 10,
-	AREA_TRIGGER_FAILURE_NO_CHECK		= 11,
-	AREA_TRIGGER_FAILURE_NO_WOTLK		= 12,
-	AREA_TRIGGER_FAILURE_IN_QUEUE		= 13,
-	AREA_TRIGGER_FAILURE_WRONG_GROUP	= 14,
+	AREA_TRIGGER_FAILURE_OK = 0,
+	AREA_TRIGGER_FAILURE_UNAVAILABLE = 1,
+	AREA_TRIGGER_FAILURE_NO_BC = 2,
+	AREA_TRIGGER_FAILURE_NO_HEROIC = 3,
+	AREA_TRIGGER_FAILURE_NO_RAID = 4,
+	AREA_TRIGGER_FAILURE_NO_ATTUNE_Q = 5,
+	AREA_TRIGGER_FAILURE_NO_ATTUNE_I = 6,
+	AREA_TRIGGER_FAILURE_LEVEL = 7,
+	AREA_TRIGGER_FAILURE_NO_GROUP = 8,
+	AREA_TRIGGER_FAILURE_NO_KEY = 9,
+	AREA_TRIGGER_FAILURE_LEVEL_HEROIC = 10,
+	AREA_TRIGGER_FAILURE_NO_CHECK = 11,
+	AREA_TRIGGER_FAILURE_NO_WOTLK = 12,
+	AREA_TRIGGER_FAILURE_IN_QUEUE = 13,
+	AREA_TRIGGER_FAILURE_WRONG_GROUP = 14,
 };
 
 struct OpcodeHandler
@@ -132,8 +132,8 @@ enum AccountDataTypes
 	NUM_ACCOUNT_DATA_TYPES			= 8
 };
 
-#define GLOBAL_CACHE_MASK           0x15
-#define PER_CHARACTER_CACHE_MASK    0xEA
+#define GLOBAL_CACHE_MASK			0x15
+#define PER_CHARACTER_CACHE_MASK	0xEA
 
 typedef struct Cords 
 {
@@ -164,14 +164,6 @@ public:
 	~WorldSession();
 
 	Player* m_loggingInPlayer;
-	
-	bool portPlr;
-	LocationVector portVec; 
-	uint32 portMap;
-	uint32 portInst;
-
-	ARCTIC_INLINE void SetPortVec(uint32 map, uint32 iid, LocationVector vec) { portMap = map; portInst = iid; portVec = vec; portPlr = true; } 
-
 	ARCTIC_INLINE void SendPacket(WorldPacket* packet)
 	{
 		if(_socket && _socket->IsConnected())
@@ -229,7 +221,7 @@ public:
 	}
 	ARCTIC_INLINE void SetPlayer(Player* plr) { _player = plr; }
 
-	ARCTIC_INLINE void SetAccountData(uint32 index, char* data, bool initial,uint32 sz)
+	ARCTIC_INLINE void SetAccountData(uint32 index, char* data, bool initial, uint32 sz)
 	{
 		ASSERT(index < 8);
 		if(sAccountData[index].data)
@@ -326,7 +318,6 @@ protected:
 	void HandleCharCreateOpcode(WorldPacket& recvPacket);
 	void HandleCharCustomizeOpcode(WorldPacket& recvPacket);
 	void HandlePlayerLoginOpcode(WorldPacket& recvPacket);
-	void HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data);
 
 	// Authentification and misc opcodes (MiscHandler.cpp):
 	void HandlePingOpcode(WorldPacket& recvPacket);
@@ -413,7 +404,6 @@ protected:
 
 	// Raid
 	void HandleConvertGroupToRaidOpcode(WorldPacket& recvPacket);
-	void HandleWorldStateUITimerUpdate(WorldPacket& recv_data);
 	void HandleGroupChangeSubGroup(WorldPacket& recvPacket);
 	void HandleGroupAssistantLeader(WorldPacket& recvPacket);
 	void HandleRequestRaidInfoOpcode(WorldPacket& recvPacket);
@@ -508,7 +498,6 @@ protected:
 	void HandleCancelChannellingOpcode(WorldPacket& recvPacket);
 	void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data);
 	void HandleCharmForceCastSpell(WorldPacket & recvPacket);
-	void HandleAddDynamicTargetOpcode(WorldPacket & recvPacket);
 
 	// Skill opcodes (SkillHandler.spp)
 	//void HandleSkillLevelUpOpcode(WorldPacket& recvPacket);
@@ -579,7 +568,6 @@ protected:
 
 	// Guild
 	void HandleGuildQuery(WorldPacket & recv_data);
-	void HandleCreateGuild(WorldPacket & recv_data);
 	void HandleInviteToGuild(WorldPacket & recv_data);
 	void HandleGuildAccept(WorldPacket & recv_data);
 	void HandleGuildDecline(WorldPacket & recv_data);
@@ -728,8 +716,9 @@ protected:
 	void HandleSpellClick( WorldPacket & recv_data );
 	void HandleRequestSeatChange( WorldPacket & recv_data );
 
-	// MISC
+	// Misc
 	void HandleReadyForAccountDataTimes(WorldPacket &recv_data);
+	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
 	void HandleFarsightOpcode(WorldPacket &recv_data);
 	void HandleEquipmentSetSave(WorldPacket &recv_data);
 	void HandleEquipmentSetDelete(WorldPacket &recv_data);
@@ -751,7 +740,6 @@ public:
 	void SendAuctionList(Creature* pCreature);
 	void SendSpiritHealerRequest(Creature* pCreature);
 	void FullLogin(Player* plr);
-	void SendAccountDataTimes(uint32 mask);
 
 	float m_wLevel; // Level of water the player is currently in
 	bool m_bIsWLevelSet; // Does the m_wLevel variable contain up-to-date information about water level?
@@ -778,16 +766,14 @@ private:
 	char *permissions;
 	int permissioncount;
 
-	bool LoggingOut;  // Player is waiting to be logged out. 
-	bool _loggingOut; // Player will be logged out in 20 seconds 
+	bool _loggingOut;
 	bool _recentlogout;
 	uint32 _latency;
 	uint32 client_build;
 	uint32 instanceId;
 	uint8 _updatecount;
-	uint8 CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo);
-	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo /*AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid*/);
 public:
+	uint8 CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid);
 	static void InitPacketHandlerTable();
 	uint32 floodLines;
 	time_t floodTime;

@@ -5,13 +5,10 @@
  */
 
 #include "StdAfx.h"
-
 initialiseSingleton(WorldStateTemplateManager);
-
 //////////////////////////////////////////////////////////////////////////
 // World State Manager Implementation Class                             //
 //////////////////////////////////////////////////////////////////////////
-
 // creates world state structure
 void WorldStateManager::CreateWorldState( uint32 uWorldStateId, uint32 uInitialValue, int32 iFactionMask /* = FACTION_MASK_ALL */, int32 iZoneMask /* = ZONE_MASK_ALL */ )
 {
@@ -20,8 +17,6 @@ void WorldStateManager::CreateWorldState( uint32 uWorldStateId, uint32 uInitialV
 
 	// lockit!
 	// m_lock.Acquire();
-
-	if( m_states.empty() ) return;
 
 	// search away, for naughty people
 	itr = m_states.find(uWorldStateId);
@@ -45,7 +40,7 @@ void WorldStateManager::CreateWorldState( uint32 uWorldStateId, uint32 uInitialV
 	}
 
 	// release the lock
-	//m_lock.Release();
+	// m_lock.Release();
 }
 
 // updates a world state with a new value
@@ -58,24 +53,21 @@ void WorldStateManager::UpdateWorldState( uint32 uWorldStateId, uint32 uValue )
 	// lockit!
 	//m_lock.Acquire();
 
-	if( m_states.empty() ) return;
+	if( !m_states.size() ) return;
+
 	// we should be existant.
 	itr = m_states.find( uWorldStateId );
-
-	// otherwise abort
 	if( itr == m_states.end() )
 	{
-		printf( "WARNING: We are setting world state %u to %u on map %u, but uninitialized. \n", uWorldStateId, uValue, m_mapMgr->GetMapId() );
-		CreateWorldState( uWorldStateId, uValue );
-		itr = m_states.find( uWorldStateId );
+		// otherwise try to create it
+		DEBUG_LOG("WorldState","Creating new world state %u with value %u for map %u.", uWorldStateId, uValue, m_mapMgr->GetMapId());
+		CreateWorldState(uWorldStateId, uValue);
+		itr = m_states.find(uWorldStateId);
 		if( itr == m_states.end() )
 		{
-			//m_lock.Release();
+			Log.Error("WorldState","Creation of world state %u with value %u for map %u failed!", uWorldStateId, uValue, m_mapMgr->GetMapId());
 			return;
 		}
-
-		//m_lock.Release();
-		//return;
 	}
 
 	// set the new value
@@ -88,15 +80,17 @@ void WorldStateManager::UpdateWorldState( uint32 uWorldStateId, uint32 uValue )
 	m_mapMgr->SendPacketToPlayers( itr->second.ZoneMask, itr->second.FactionMask, &data );
 
 	// release the lock
-	//m_lock.Release();
+	// m_lock.Release();
 }
 
 void WorldStateManager::SendWorldStates( Player* pPlayer )
 {
 	// be threadsafe! wear a mutex!
-	//m_lock.Acquire();
+	// m_lock.Acquire();
 
-	WorldPacket data( SMSG_INIT_WORLD_STATES, ( m_states.size() * 8 ) + 32 );
+	if( !m_states.size() ) return;
+
+	WorldPacket data(SMSG_INIT_WORLD_STATES, (m_states.size() * 8) + 32);
 	WorldStateMap::iterator itr;
 	uint32 state_count = 0;
 
@@ -106,7 +100,7 @@ void WorldStateManager::SendWorldStates( Player* pPlayer )
 	data << pPlayer->GetAreaID();
 
 	// set this to zero, since the count can be variable
-	data << uint16( 0 );
+	data << uint16(0);
 
 	// add states to packet
 	for(itr = m_states.begin(); itr != m_states.end(); ++itr)
@@ -125,7 +119,7 @@ void WorldStateManager::SendWorldStates( Player* pPlayer )
 	}
 
 	// unlock
-	//m_lock.Release();
+	// m_lock.Release();
 
 	// append the count, and send away
 	*(uint16*)(&data.contents()[12]) = state_count;
@@ -142,10 +136,7 @@ void WorldStateManager::ClearWorldStates( Player* pPlayer )
 	// data1 = 0
 	// data2 = 0
 	// valcount = 0
-	data << uint32( 0 ); 
-	data << uint16( 0 ); 
-	data << uint16( 0 ); 
-	data << uint16( 0 ); 
+	data << uint32(0) << uint16(0) << uint16(0) << uint16(0);
 
 	// send
 	pPlayer->GetSession()->SendPacket(&data);
@@ -178,6 +169,7 @@ void WorldStateManager::SetPersistantSetting( const char *szKeyName, const char 
 //////////////////////////////////////////////////////////////////////////
 // Template Manager                                                     //
 //////////////////////////////////////////////////////////////////////////
+
 void WorldStateTemplateManager::LoadFromDB()
 {
 	QueryResult * pResult = WorldDatabase.Query("SELECT * FROM worldstate_template");

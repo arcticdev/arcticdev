@@ -8,7 +8,9 @@
 
 initialiseSingleton( World );
 
+DayWatcherThread* dw = NULL;
 CharacterLoaderThread* ctl = NULL;
+WintergraspInternal* wgi = NULL;
 
 float World::m_movementCompressThreshold;
 float World::m_movementCompressThresholdCreatures;
@@ -29,7 +31,7 @@ World::World()
 	GmClientChannel = "";
 
 	m_StartTime = 0;
-	eventholder = new EventableObjectHolder(WORLD_INSTANCE);
+	eventholder = new EventableObjectHolder(-1);
 	m_holder = eventholder;
 	m_event_Instanceid = eventholder->GetInstanceID();
 
@@ -42,6 +44,7 @@ World::World()
 	gm_skip_attunement = false;
 	gm_force_robes = false;
 	CheckProfessions = false;
+	AHEnabled = true;
 
 	show_gm_in_who_list = true;
 	map_unload_time = 0;
@@ -75,7 +78,7 @@ uint32 World::GetMaxLevel(Player* plr)
 void World::LogoutPlayers()
 {
 	Log.Notice("World", "Logging out players...");
-	for(SessionMap::iterator i=m_sessions.begin();i!=m_sessions.end();i++)
+	for(SessionMap::iterator i=m_sessions.begin();i!=m_sessions.end();++i)
 	{
 		(i->second)->LogoutPlayer(true);
 	}
@@ -103,10 +106,10 @@ World::~World()
 
 	Log.Notice("ObjectMgr", "~ObjectMgr()");
 	delete ObjectMgr::getSingletonPtr();
-	
+
 	Log.Notice("LootMgr", "~LootMgr()");
 	delete LootMgr::getSingletonPtr();
-	
+
 	Log.Notice("LfgMgr", "~LfgMgr()");
 	delete LfgMgr::getSingletonPtr();
 
@@ -115,7 +118,7 @@ World::~World()
 
 	Log.Notice("QuestMgr", "~QuestMgr()");
 	delete QuestMgr::getSingletonPtr();
-  
+
 	Log.Notice("WeatherMgr", "~WeatherMgr()");
 	delete WeatherMgr::getSingletonPtr();
 
@@ -128,8 +131,6 @@ World::~World()
 	Log.Notice("InstanceMgr", "~InstanceMgr()");
 	sInstanceMgr.Shutdown();
 
-	//sLog.outString("Deleting Thread Manager..");
-	//delete ThreadMgr::getSingletonPtr();
 	Log.Notice("WordFilter", "~WordFilter()");
 	delete g_chatFilter;
 	delete g_characterNameFilter;
@@ -139,7 +140,6 @@ World::~World()
 		delete i->second;
 	}
 
-	//eventholder = 0;
 	delete eventholder;
 
 	Storage_Cleanup();
@@ -152,7 +152,7 @@ World::~World()
 
 void World::Destructor()
 {
-    delete this;
+	delete this;
 }
 
 WorldSession* World::FindSession(uint32 id)
@@ -176,7 +176,7 @@ void World::RemoveSession(uint32 id)
 	m_sessionlock.AcquireWriteLock();
 	if(itr != m_sessions.end())
 	{
-		//If it's a GM, remove him from GM session map
+		// If it's a GM, remove him from GM session map
 		if(itr->second->HasGMPermissions())
 		{
 			gmList_lock.AcquireWriteLock();
@@ -195,16 +195,16 @@ void World::AddSession(WorldSession* s)
 		return;
 	ASSERT(s);
 
-	//add this session to the big session map
+	// add this session to the big session map
 	m_sessionlock.AcquireWriteLock();
 	m_sessions[s->GetAccountId()] = s;
 	m_sessionlock.ReleaseWriteLock();
 
-	//check max online counter, update when necessary
+	// check max online counter, update when necessary
 	if(m_sessions.size() >  PeakSessionCount)
 		PeakSessionCount = (uint32)m_sessions.size();
 
-	//If it's a GM, add to GM session map
+	// If it's a GM, add to GM session map
 	if(s->HasGMPermissions())
 	{
 		gmList_lock.AcquireWriteLock();
@@ -244,7 +244,7 @@ bool BasicTaskExecutor::run()
 			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
 			break;
 
-		default:		// BTW_PRIORITY_MED
+		default:
 			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_NORMAL );
 			break;
 	}
@@ -260,7 +260,7 @@ bool BasicTaskExecutor::run()
 		param.sched_priority = 10;
 		break;
 
-	default:		// BTW_PRIORITY_MED
+	default:
 		param.sched_priority = 5;
 		break;
 	}
@@ -323,7 +323,6 @@ bool World::SetInitialWorldSettings()
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
 
 	Log.Notice("WoWArcTic", "I'm starting up!");  
-	Log.Line(); 
 
 	Player::InitVisibleUpdateBits();
 
@@ -377,7 +376,6 @@ bool World::SetInitialWorldSettings()
 	mPrices[60] = 72000;
 
 	// Start
-
 	uint32 start_time = getMSTime();
 	if( !LoadDBCs() )
 	{
@@ -387,7 +385,6 @@ bool World::SetInitialWorldSettings()
 
 	/* Convert area table ids/flags */
 	DBCFile area;
-
 	if( !area.open( "DBC/AreaTable.dbc" ) )
 	{
 		Log.Error( "World", "Cannot find file ./DBC/AreaTable.dbc" );
@@ -427,16 +424,8 @@ bool World::SetInitialWorldSettings()
 	new WorldLog;
 	new ChatHandler;
 
-	ThreadPool.ExecuteTask( new DayWatcherThread() );
-
-	// grep: this only has to be done once between version updates
-	// to re-fill the table.
-
-	/*sLog.outString("Filling spell replacements table...");
-	FillSpellReplacementsTable();
-	sLog.outString("");*/
-
 #define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
+
 	// Fill the task list with jobs to do.
 	TaskList tl;
 	Storage_FillTaskList(tl);
@@ -497,7 +486,7 @@ bool World::SetInitialWorldSettings()
 
 	Log.Success("World", "Database loaded in %ums.", getMSTime() - start_time);
 
-	if (sWorld.Collision)
+	if(sWorld.Collision)
 		CollideInterface.Init();
 	sScriptMgr.LoadScripts();
 
@@ -531,19 +520,28 @@ bool World::SetInitialWorldSettings()
 	new AuctionMgr;
 	sAuctionMgr.LoadAuctionHouses();
 
+	dw = new DayWatcherThread();
+	ThreadPool.ExecuteTask( dw );
+
+	if(wg_enabled)
+	{
+		wgi = new WintergraspInternal();
+		ThreadPool.ExecuteTask( wgi );
+	}
+
 	m_queueUpdateTimer = mQueueUpdateInterval;
 	if(Config.MainConfig.GetBoolDefault("Startup", "BackgroundLootLoading", true))
 	{
 		Log.Notice("World", "Backgrounding loot loading...");
 
 		// loot background loading in a lower priority thread.
-		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadCreatureLoot), 
+		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadDelayedLoot), 
 			BTE_PRIORITY_LOW));
 	}
 	else
 	{
 		Log.Notice("World", "Loading loot in foreground...");
-		lootmgr.LoadCreatureLoot();
+		lootmgr.LoadDelayedLoot();
 	}
 
 	Log.Notice("World", "Loading Channel config...");
@@ -564,30 +562,31 @@ bool World::SetInitialWorldSettings()
 	ThreadPool.ExecuteTask( MovementCompressor );
 #endif
 
-	// Preload and compile talent and talent tab data to speed up talent inspect
-
 	uint32 talent_max_rank;
 	uint32 talent_pos;
 	uint32 talent_class;
 
-    for( uint32 i = 0; i < dbcTalent.GetNumRows(); ++i )
-    {
-        TalentEntry const* talent_info = dbcTalent.LookupRow( i );
-		if( talent_info == NULL )
+	TalentEntry const* talent_info = NULL;
+	TalentTabEntry const* tab_info = NULL;
+	for( uint32 i = 0; i < dbcTalent.GetNumRows(); ++i )
+	{
+		talent_info = dbcTalent.LookupRow( i );
+		if(!talent_info)
 			continue;
 
-		TalentTabEntry const* tab_info = dbcTalentTab.LookupEntry( talent_info->TalentTree );
-		if( tab_info == NULL )
+		tab_info = dbcTalentTab.LookupEntry( talent_info->TalentTree );
+
+		if(!tab_info)
 			continue;
 
-        talent_max_rank = 0;
-        for( uint32 j = 5; j > 0; --j )
-        {
-            if( talent_info->RankID[j - 1] )
-            {
-                talent_max_rank = j;
-                break;
-            }
+		talent_max_rank = 0;
+		for( uint32 j = 5; j > 0; --j )
+		{
+			if( talent_info->RankID[j - 1] )
+			{
+				talent_max_rank = j;
+				break;
+			}
 		}
 
 		InspectTalentTabBit[( talent_info->Row << 24 ) + ( talent_info->Col << 16 ) + talent_info->TalentID] = talent_max_rank;
@@ -596,12 +595,12 @@ bool World::SetInitialWorldSettings()
 
 	for( uint32 i = 0; i < dbcTalentTab.GetNumRows(); ++i )
 	{
-		TalentTabEntry const* tab_info = dbcTalentTab.LookupRow( i );
+		tab_info = dbcTalentTab.LookupRow(i);
 		if( tab_info == NULL )
 			continue;
 
 		talent_pos = 0;
-        
+
 		for( talent_class = 0; talent_class < 12; ++talent_class )
 		{
 			if( tab_info->ClassMask & ( 1 << talent_class ) )
@@ -613,7 +612,7 @@ bool World::SetInitialWorldSettings()
 		for( std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); ++itr )
 		{
 			uint32 talent_id = itr->first & 0xFFFF;
-			TalentEntry const* talent_info = dbcTalent.LookupEntry( talent_id );
+			talent_info = dbcTalent.LookupEntry( talent_id );
 			if( talent_info == NULL )
 				continue;
 
@@ -654,7 +653,7 @@ void World::SendMessageToGMs(WorldSession *self, const char * text, ...)
 	WorldPacket *data = sChatHandler.FillSystemMessageData(buf);
 	gmList_lock.AcquireReadLock();	
 	SessionSet::iterator itr;
-	for (itr = gmList.begin(); itr != gmList.end();itr++)
+	for (itr = gmList.begin(); itr != gmList.end();++itr)
 	{
 		gm_session = (*itr);
 		if(gm_session->GetPlayer() != NULL && gm_session != self)  // dont send to self!)
@@ -669,11 +668,11 @@ void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self)
 	m_sessionlock.AcquireReadLock();
 
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
 	{
 		if (itr->second->GetPlayer() &&
 			itr->second->GetPlayer()->IsInWorld()
-			&& (self && itr->second != self))  // dont send to self!
+			&& itr->second != self)  // dont send to self!
 		{
 			itr->second->SendPacket(packet);
 		}
@@ -686,7 +685,7 @@ void World::SendFactionMessage(WorldPacket *packet, uint8 teamId)
 	m_sessionlock.AcquireReadLock();
 	SessionMap::iterator itr;
 	Player* plr;
-	for(itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
 	{
 		plr = itr->second->GetPlayer();
 		if(!plr || !plr->IsInWorld())
@@ -703,7 +702,7 @@ void World::SendZoneMessage(WorldPacket *packet, uint32 zoneid, WorldSession *se
 	m_sessionlock.AcquireReadLock();
 
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
 	{
 		if (itr->second->GetPlayer() && itr->second->GetPlayer()->IsInWorld() && itr->second != self)  // dont send to self!
 		{
@@ -720,7 +719,7 @@ void World::SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSes
 	m_sessionlock.AcquireReadLock();
 
 	SessionMap::iterator itr;
-	for (itr = m_sessions.begin(); itr != m_sessions.end(); itr++)
+	for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
 	{
 		if (itr->second->GetPlayer() &&
 			itr->second->GetPlayer()->IsInWorld()
@@ -736,14 +735,14 @@ void World::SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSes
 
 void World::SendWorldText(const char* text, WorldSession *self)
 {
-    uint32 textLen = (uint32)strlen((char*)text) + 1;
+	uint32 textLen = (uint32)strlen((char*)text) + 1;
 
-    WorldPacket data(textLen + 40);
+	WorldPacket data(textLen + 40);
 
 	data.Initialize(SMSG_MESSAGECHAT);
 	data << uint8(CHAT_MSG_SYSTEM);
 	data << uint32(LANG_UNIVERSAL);
-	
+
 	data << uint64(0); // Who cares about guid when there's no nickname displayed heh ?
 	data << uint32(0); 
 	data << uint64(0);
@@ -755,6 +754,56 @@ void World::SendWorldText(const char* text, WorldSession *self)
 	SendGlobalMessage(&data, self);
 
 	sLog.outString("> %s", text);
+}
+
+void World::SendGMWorldText(const char* text, bool admin)
+{
+	uint32 textLen = (uint32)strlen((char*)text) + 1;
+
+	WorldPacket data(textLen + 40);
+	data.Initialize(SMSG_MESSAGECHAT);
+	data << uint8(CHAT_MSG_SYSTEM);
+	data << uint32(LANG_UNIVERSAL);
+	data << uint64(0);
+	data << uint32(0);
+	data << uint64(0);
+	data << textLen;
+	data << text;
+	data << uint8(0);
+	if(admin)
+		SendAdministratorMessage(&data);
+	else
+		SendGamemasterMessage(&data);
+}
+
+void World::SendAdministratorMessage(WorldPacket *packet)
+{
+	m_sessionlock.AcquireReadLock();
+	SessionMap::iterator itr;
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+	{
+		if (itr->second->GetPlayer() && itr->second->GetPlayer()->IsInWorld())
+		{
+			if(itr->second->CanUseCommand('z'))
+				itr->second->SendPacket(packet);
+		}
+	}
+	m_sessionlock.ReleaseReadLock();
+}
+
+void World::SendGamemasterMessage(WorldPacket *packet)
+{
+	m_sessionlock.AcquireReadLock();
+	SessionMap::iterator itr;
+	for(itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+	{
+		if (itr->second->GetPlayer() &&	itr->second->GetPlayer()->IsInWorld())
+		{
+			if(itr->second->GetPermissions())
+				itr->second->SendPacket(packet);
+		}
+	}
+	m_sessionlock.ReleaseReadLock();
 }
 
 void World::SendWorldWideScreenText(const char *text, WorldSession *self)
@@ -926,9 +975,8 @@ void World::UpdateQueuedSessions(uint32 diff)
 		uint32 Position = 1;
 		while(iter != mQueuedSessions.end())
 		{
-			WorldSocket *tmpSocket = *iter;
+			(*iter)->UpdateQueuePosition(Position++);
 			++iter;
-			tmpSocket->UpdateQueuePosition(Position++);
 		}
 		queueMutex.Release();
 	} 
@@ -950,7 +998,7 @@ void World::SaveAllPlayers()
 		// Servers started and obviously runing. lets save all players.
 	uint32 mt;
 	objmgr._playerslock.AcquireReadLock();   
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 		{
 			if(itr->second->GetSession())
 			{
@@ -989,7 +1037,7 @@ void World::GetStats(uint32 * GMCount, float * AverageLatency)
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -1057,7 +1105,7 @@ void TaskList::spawn()
 		SYSTEM_INFO s;
 		GetSystemInfo(&s);
 		threadcount = s.dwNumberOfProcessors * 2;
-		if(threadcount>8)
+		if(threadcount > 8)
 			threadcount = 8;
 #endif
 	}
@@ -1065,7 +1113,7 @@ void TaskList::spawn()
 		threadcount = 1;
 
 	Log.Line();
-	Log.Notice("World", "Beginning %s server startup with %u threads.", (threadcount == 1) ? "progressive" : "parallel", threadcount);
+	Log.Notice("World", "Beginning %s server startup with %u thread(s).", (threadcount == 1) ? "progressive" : "parallel", threadcount);
 	Log.Line();
 
 	for(uint32 x = 0; x < threadcount; ++x)
@@ -1089,6 +1137,7 @@ void TaskList::wait()
 			}
 		}
 		queueLock.Release();
+
 		// keep updating time lol
 		t = time(NULL);
 		if( UNIXTIME != t )
@@ -1096,6 +1145,7 @@ void TaskList::wait()
 			UNIXTIME = t;
 			g_localTime = *localtime(&t);
 		}
+
 		Sleep(20);
 	}
 }
@@ -1166,6 +1216,14 @@ void World::Rehash(bool load)
 	display_free_items = Config.MainConfig.GetBoolDefault("Server", "DisplayFreeItems", false);
 
 	StartLevel = Config.MainConfig.GetIntDefault("Server", "StartLevel", 1);
+	StartGold = Config.MainConfig.GetIntDefault("Server", "StartGold", 1);
+
+	// Battlegrounds
+	wg_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "EnableWG", false);
+	av_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "EnableAV", true);
+	ab_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "EnableAB", true);
+	wsg_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "EnableWSG", true);
+	eots_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "EnableEOTS", true);
 
 	// load regeneration rates.
 	setRate(RATE_HEALTH,Config.MainConfig.GetFloatDefault("Rates", "Health",1));
@@ -1202,6 +1260,7 @@ void World::Rehash(bool load)
 	SetPlayerLimit(Config.MainConfig.GetIntDefault("Server", "PlayerLimit", 10000));
 
 	SetMotd(Config.MainConfig.GetStringDefault("Server", "Motd", "WoWArcTic foundation").c_str());
+	SetMotd2(Config.MainConfig.GetStringDefault("Server", "Motd2", "").c_str());
 	mQueueUpdateInterval = Config.MainConfig.GetIntDefault("Server", "QueueUpdateInterval", 5000);
 	SetKickAFKPlayerTime(Config.MainConfig.GetIntDefault("Server", "KickAFKPlayers", 0));
 	gm_skip_attunement = Config.MainConfig.GetBoolDefault("Server", "SkipAttunementsForGM", true);
@@ -1325,7 +1384,7 @@ void World::Rehash(bool load)
 	m_limitedNames = Config.MainConfig.GetBoolDefault("Server", "LimitedNames", true);
 	m_useAccountData = Config.MainConfig.GetBoolDefault("Server", "UseAccountData", false);
 
-    m_movementCompressInterval = Config.MainConfig.GetIntDefault("Movement", "FlushInterval", 1000);
+	m_movementCompressInterval = Config.MainConfig.GetIntDefault("Movement", "FlushInterval", 1000);
 	m_movementCompressRate = Config.MainConfig.GetIntDefault("Movement", "CompressRate", 1);
 	
 	m_movementCompressThresholdCreatures = Config.MainConfig.GetFloatDefault("Movement", "CompressThresholdCreatures", 15.0f);
@@ -1341,7 +1400,7 @@ void World::Rehash(bool load)
 	m_CEThreshold = Config.MainConfig.GetIntDefault("AntiHack", "CheatEngineTimeDiff", 10000);
 	m_wallhackthreshold = Config.MainConfig.GetFloatDefault("AntiHack", "WallHackThreshold", 5.0f);
 
-    m_deathKnightOnePerAccount = Config.MainConfig.GetBoolDefault("DeathKnight", "OnePerRealm", true);
+	m_deathKnightOnePerAccount = Config.MainConfig.GetBoolDefault("DeathKnight", "OnePerRealm", true);
 	m_deathKnightReqLevel = Config.MainConfig.GetIntDefault("DeathKnight", "RequiredLevel", 55);
 
 	// LevelCaps
@@ -1352,6 +1411,7 @@ void World::Rehash(bool load)
 	LatencyKickMax = Config.MainConfig.GetIntDefault("Server", "LatencyKickMax", 700); // Если не задано зн-е, то мы устанавливаем 700ms
 	LatencyTimer = Config.MainConfig.GetIntDefault("Server", "LatencyTimer", 120); // Значение в секундах
 
+	// Dual Talent Specialization costs
 	dualTalentTrainCost = Config.MainConfig.GetIntDefault("Server", "DualTalentPrice", 1000);
 	if(dualTalentTrainCost)
 		dualTalentTrainCost *= 10000; // Convert to gold
@@ -1634,7 +1694,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 
 	bool has_results = false;
 
-	//The format of our character database (applies to revision 1740)
+	// The format of our character database (applies to revision 1740)
 	static const char * characterTableFormat = "xuSuuuuuussuuuuuuuuuuuuuuuffffuususuufffuuuuusuuuUuuuuffffuuuuufffssssssuuuuuuuuuuu";
 
 	// Lock the tables to prevent any more inserts
@@ -1650,7 +1710,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			f = result->Fetch();
 			
 			ipi.ownerguid = f[0].GetUInt32();
-			//skip itemguid, we'll generate a new one.
+			// skip itemguid, we'll generate a new one.
 			ipi.entry = f[2].GetUInt32();
 			ipi.wrapped_item_id = f[3].GetUInt32();
 			ipi.wrapped_creator = f[4].GetUInt32();
@@ -1920,7 +1980,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 
 				case 'x':
 					{
-				    // players guid (we generate a new one) 
+					// players guid (we generate a new one) 
 					}break;
 				default:
 					ss << "," << f[i].GetUInt32();
@@ -1979,7 +2039,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerskill>::iterator vtr1 = itr1->second.begin(); vtr1 != itr1->second.end(); ++vtr1)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -1989,7 +2049,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr1).type << ","
 						<< (*vtr1).currentlvl << ","
 						<< (*vtr1).maxlvl << " )";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2000,7 +2060,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerquest>::iterator vtr2 = itr2->second.begin(); vtr2 != itr2->second.end(); ++vtr2)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2053,7 +2113,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playertalent>::iterator vtr4 = itr4->second.begin(); vtr4 != itr4->second.end(); ++vtr4)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2073,14 +2133,14 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerspell>::iterator vtr5 = itr5->second.begin(); vtr5 != itr5->second.end(); ++vtr5)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
 					ss << "INSERT INTO playerspells VALUES(";
 					ss << new_guid << ","
 						<< (*vtr5).spellid << " )";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2282,16 +2342,17 @@ void World::BackupDB()
 #ifndef WIN32
 	const char *tables[] =
 	{ 
-        "account_data", "account_forced_permissions", "achievements", "arenateams", "auctions",
-        "banned_names", "characters", "characters_insert_queue", "charters", "corpses", "gm_tickets",
-        "groups", "guild_bankitems", "guild_banklogs", "guild_banktabs",
-        "guild_data", "guild_logs", "guild_ranks", "guilds",
-        "instances", "mailbox", "mailbox_insert_queue", "news_timers",
-        "playercooldowns", "playeritems", "playeritems_insert_queue", "playerpets",
-        "playerpetspells", "playerpettalents", "playersummons", "playersummonspells", "questlog",
-        "server_settings", "social_friends", "social_ignores", "tutorials",
-        "worldstate_save_data", NULL 
-    };
+		"account_data", "account_forced_permissions", "achievements", "arenateams", "auctions",
+		"banned_names", "characters", "characters_insert_queue", "charters", "corpses", "gm_tickets",
+		"groups", "guild_bankitems", "guild_banklogs", "guild_banktabs",
+		"guild_data", "guild_logs", "guild_ranks", "guilds",
+		"instances", "mailbox", "mailbox_insert_queue", "news_timers",
+		"playercooldowns", "playeritems", "playeritems_insert_queue", "playerpets",
+		"playerpetspells", "playerpettalents", "playersummons", "playersummonspells", "questlog",
+		"server_settings", "social_friends", "social_ignores", "tutorials",
+		"worldstate_save_data", NULL 
+	};
+
 	char cmd[1024];
 	char datestr[256];
 	char path[256];
@@ -2314,7 +2375,7 @@ void World::BackupDB()
 
 	sLog.outString("Backing up character db into %s", path);
 
-	for (i=0; tables[i] != NULL; i++)
+	for (i = 0; tables[i] != NULL; ++i)
 	{
 		snprintf(cmd, 1024, "mkdir -p %s", path);
 		system(cmd);
@@ -2392,6 +2453,8 @@ void NewsAnnouncer::_SendMessage(NewsAnnouncement *ann)
 
 	// send it to the console too
 	puts(buf);
+
+	delete data_to_send;
 }
 
 void NewsAnnouncer::_ReloadMessages()
@@ -2439,7 +2502,9 @@ void NewsAnnouncer::_ReloadMessages()
 
 	for(itr = m_announcements.begin(); itr != m_announcements.end();)
 	{
-		itr2 = itr++;
+		itr2 = itr;
+		++itr;
+
 		if( db_msgs.find(itr2->second.m_id) == db_msgs.end() )
 		{
 			// message no longer exists

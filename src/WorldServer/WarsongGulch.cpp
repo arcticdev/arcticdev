@@ -6,10 +6,10 @@
 
 #include "StdAfx.h"
 
-//										   <10 	<20 <30	<40 <50 <60 <70 70 	>70  80
+//											<10 <20 <30	<40 <50 <60 <70 70  >70  80
 static int flagHonorTable[10]			= {  0,  5,  8, 14, 23, 38, 40, 40, 41, 42 };
 static int winHonorTable[10]			= {  0,  2,  4,  7, 11, 19, 20, 20, 21, 22 };
-static int extraCompleteHonorTable[10]	= {  0,  7, 12, 20, 34, 57, 59, 59, 60, 62 }; // extras only for weekends
+static int extraCompleteHonorTable[10]	= {  0,  7, 12, 20, 34, 57, 59, 59, 60, 62 };
 static int extraWinHonorTable[10]		= {  0,  5,  8, 14, 23, 38, 40, 40, 41, 42 };
 
 WarsongGulch::WarsongGulch(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBattleground(mgr, id, lgroup, t)
@@ -61,7 +61,6 @@ void WarsongGulch::Init()
 
 	// dropped flags
 	m_dropFlags[1] = m_mapMgr->CreateGameObject(179786);
-	
 	if( m_dropFlags[1] == NULL || !m_dropFlags[1]->CreateFromProto(179785, 489, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f))
 		Log.Warning("WarsongGulch", "Could not create dropped flag 1");
 
@@ -95,22 +94,22 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 	int32 buffslot = -1;
 	switch(id)
 	{
-	case 3686:	  // Speed
+	case 3686: // Speed
 		buffslot = 0;
 		break;
-	case 3687:	  // Speed (Horde)
+	case 3687: // Speed (Horde)
 		buffslot = 1;
 		break;
-	case 3706:	  // Restoration
+	case 3706: // Restoration
 		buffslot = 2;
 		break;
-	case 3708:	  // Restoration (Horde)
+	case 3708: // Restoration (Horde)
 		buffslot = 3;
 		break;
-	case 3707:	  // Berserking
+	case 3707: // Berserking
 		buffslot = 4;
 		break;
-	case 3709:	  // Berserking (Horde)
+	case 3709: // Berserking (Horde)
 		buffslot = 5;
 		break;
 	}
@@ -179,6 +178,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
 			sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+			SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 
 			m_mainLock.Acquire();
 			// add the marks of honor to all players 
@@ -186,11 +186,11 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);
 			for(uint32 i = 0; i < 2; ++i)
 			{
-				for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+				for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				{
 					(*itr)->Root();
 
-					if( (*itr)->HasFlag(PLAYER_FLAGS, 0x2) )
+					if( (*itr)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_AFK) )
 						continue;
 
 					if(i == m_losingteam)
@@ -212,7 +212,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			m_mainLock.Release();
 		}
 
-		// increment the score world state 
+		// increment the score world state..
 		m_mapMgr->GetStateManager().UpdateWorldState(plr->GetTeam() ? WORLDSTATE_WSG_HORDE_SCORE : WORLDSTATE_WSG_ALLIANCE_SCORE, m_scores[plr->GetTeam()]);
 
 		UpdatePvPData();
@@ -588,7 +588,6 @@ void WarsongGulch::HookOnShadowSight()
 void WarsongGulch::SetIsWeekend(bool isweekend) 
 {
 	m_isWeekend = isweekend;
-
 	if (isweekend)
 	{
 		m_FlagCaptureHonor = 2*HonorHandler::CalculateHonorPointsFormula(m_lgroup*10,m_lgroup*10);

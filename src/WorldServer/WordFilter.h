@@ -11,10 +11,10 @@ struct WordFilterMatch
 {
 	char * szMatch;
 	char * szIgnoreMatch;
-	void * pCompiledExpression;
-	void * pCompiledIgnoreExpression;
-	void * pCompiledExpressionOptions;
-	void * pCompiledIgnoreExpressionOptions;
+	void* pCompiledExpression;
+	void* pCompiledIgnoreExpression;
+	void* pCompiledExpressionOptions;
+	void* pCompiledIgnoreExpressionOptions;
 	int iType;
 };
 
@@ -36,4 +36,4 @@ public:
 extern WordFilter * g_characterNameFilter;
 extern WordFilter * g_chatFilter;
 
-#endif		// _WORDFILTER_H
+#endif // _WORDFILTER_H

@@ -7,9 +7,9 @@
 #ifndef __WORLD_STATE_MANAGER_H
 #define __WORLD_STATE_MANAGER_H
 
-/*
- * World State Manager Class
- */
+//////////////////////////////////////////////////////////////////////////
+// World State Manager Class                                            //
+//////////////////////////////////////////////////////////////////////////
 
 // forward declaration for mapmgr
 class MapMgr;
@@ -88,7 +88,6 @@ class WorldStateTemplateManager : public Singleton<WorldStateTemplateManager>
 	typedef list<WorldStateTemplate> WorldStateTemplateList;
 	WorldStateTemplateList m_templatesForMaps[NUM_MAPS];
 	WorldStateTemplateList m_general;
-
 public:
 
 	// loads predefined fields from database 

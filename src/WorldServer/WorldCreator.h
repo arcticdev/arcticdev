@@ -4,8 +4,6 @@
  * See COPYING for license details.
  */
 
-// WorldCreator.h
-
 #ifndef __WORLDCREATOR_H
 #define __WORLDCREATOR_H
 
@@ -20,17 +18,17 @@ enum INSTANCE_TYPE
 
 enum MAPENTRY_TYPE
 {
-	BATTLEGROUND	= 0,
-	INSTANCE		= 1,
-	RAID			= 2,
-	ARENA			= 4,
+	BATTLEGROUND = 0,
+	INSTANCE = 1,
+	RAID = 2,
+	ARENA = 4,
 };
 
 enum INSTANCE_MODE
 {
-	MODE_5PLAYER_NORMAL	= 0,
-	MODE_5PLAYER_HEROIC	= 1,
-	MODE_5PLAYER_EPIC	= 2
+	MODE_5PLAYER_NORMAL = 0,
+	MODE_5PLAYER_HEROIC = 1,
+	MODE_5PLAYER_EPIC = 2
 };
 
 enum RAID_MODE
@@ -87,7 +85,7 @@ class ARCTIC_DECL FormationMgr : public Singleton < FormationMgr >
 	map<uint32, Formation*> m_formations;
 public:
 	typedef std::map<uint32, Formation*> FormationMap;
-    FormationMgr();
+	FormationMgr();
 	~FormationMgr();
 
 	Formation * GetFormation(uint32 sqlid)
@@ -119,13 +117,13 @@ public:
 	void DeleteFromDB();
 };
 
-typedef HM_NAMESPACE::hash_map<uint32, Instance*> InstanceMap; 
+typedef HM_NAMESPACE::hash_map<uint32, Instance*> InstanceMap;
 
 class ARCTIC_DECL InstanceMgr
 {
 	friend class MapMgr;
 public:
-	InstanceMgr();	
+	InstanceMgr();
 	~InstanceMgr();
 
 	ARCTIC_INLINE Map* GetMap(uint32 mapid)
@@ -170,15 +168,15 @@ public:
 		if( pInstance->m_difficulty != (dbcMap.LookupEntry(pInstance->m_mapId)->israid() ? pPlayer->iRaidType : pPlayer->iInstanceType) )
 			return OWNER_CHECK_DIFFICULT;
 
-		//Reached player limit?
+		// Reached player limit?
 		if( pInstance->m_mapMgr && pInstance->m_mapInfo->playerlimit < uint32(pInstance->m_mapMgr->GetPlayerCount()))
 			return OWNER_CHECK_MAX_LIMIT;
 
-		//Meet level requirements?
+		// Meet level requirements?
 		if( pInstance->m_mapMgr && pPlayer->getLevel() < pInstance->m_mapInfo->minlevel )
 			return OWNER_CHECK_MIN_LEVEL;
 
-		//Need to be in group?
+		// Need to be in group?
 		if(!pPlayer->GetGroup() && pInstance->m_mapInfo->type == INSTANCE_RAID )
 			return OWNER_CHECK_NO_GROUP;
 
@@ -191,7 +189,7 @@ public:
 		}
 		pInstance->m_SavedLock.Release();
 
-		// Active raid?
+		// Active raid..
 		if( pInstance->m_mapMgr && pInstance->m_mapMgr->HasPlayers() )
 		{
 			//we have ensured the groupid is valid when it was created.
@@ -209,7 +207,7 @@ public:
 					return OWNER_CHECK_WRONG_GROUP;
 			}
 		}
-		//nothing left to check, should be OK then
+		// nothing left to check, should be OK then
 		return OWNER_CHECK_OK;
 	}
 

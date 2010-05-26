@@ -28,7 +28,7 @@ private:
 	std::map<uint32, WeatherInfo* > m_zoneWeathers;
 };
 
-class WeatherInfo : public EventableObject, public std::tr1::enable_shared_from_this<WeatherInfo>
+class WeatherInfo : public EventableObject
 {
 	friend class WeatherMgr;
 public:
@@ -36,9 +36,8 @@ public:
 	~WeatherInfo();
 
 	void Destructor();
-
 	void BuildUp();
-	void Update();	
+	void Update();
 	void SendUpdate();
 	void SendUpdate(Player* plr);
 
@@ -58,5 +57,4 @@ protected:
 };
 
 #define sWeatherMgr WeatherMgr::getSingleton()
-
 #endif

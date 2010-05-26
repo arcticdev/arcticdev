@@ -12,8 +12,11 @@
 #include "StdAfx.h"
 #include "AuthCodes.h"
 
-/* echo send/received packets to console */
-//#define ECHO_PACKET_LOG_TO_CONSOLE 1
+//////////////////////////////////////////////////////////////////////////
+// echo send/received packets to console                                //
+//////////////////////////////////////////////////////////////////////////
+
+// #define ECHO_PACKET_LOG_TO_CONSOLE 1
 
 #ifndef CLUSTERING
 #pragma pack(push, 1)
@@ -64,7 +67,7 @@ WorldSocket::~WorldSocket()
 	if(mSession)
 	{
 		mSession->SetSocket(NULL);
-		mSession=NULL;
+		mSession = NULL;
 	}
 
 	if( m_fullAccountName != NULL )
@@ -79,7 +82,7 @@ void WorldSocket::OnDisconnect()
 	if(mSession)
 	{
 		mSession->SetSocket(0);
-		mSession=NULL;
+		mSession = NULL;
 	}
 
 	if(mRequestID != 0)
@@ -107,7 +110,7 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	OUTPACKET_RESULT res;
 	if( (len + 10) > WORLDSOCKET_SENDBUF_SIZE )
 	{
-		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
+		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", uint(len), uint(opcode), uint(opcode));
 		return;
 	}
 
@@ -215,12 +218,12 @@ void WorldSocket::OnConnect()
 	sWorld.mAcceptedConnections++;
 	_latency = getMSTime();
 	WorldPacket data (SMSG_AUTH_CHALLENGE, 25);
-	data << uint32(1);			// Unk
+	data << uint32(1);          // Unk
 	data << mSeed;
-	data << uint32(0xF3539DA3);	// Generated Random.
-	data << uint32(0x6E8547B9);	// 3.2.2
-	data << uint32(0x9A6AA2F8);	// 3.2.2
-	data << uint32(0xA4F170F4);	// 3.2.2
+	data << uint32(0xF3539DA3); // Generated Random.
+	data << uint32(0x6E8547B9); // 3.2.2
+	data << uint32(0x9A6AA2F8); // 3.2.2
+	data << uint32(0xA4F170F4); // 3.2.2
 	SendPacket(&data);
 }
 
@@ -259,7 +262,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	m_fullAccountName = new string( account );
 
 	// Set the authentication packet 
-    pAuthenticationPacket = recvPacket;
+	pAuthenticationPacket = recvPacket;
 }
 
 void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid)
@@ -366,7 +369,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	mSession = pSession;
 	ASSERT(mSession);
 	pSession->deleteMutex.Acquire();
-	
+
 	// Set session properties
 	pSession->permissioncount = 0; // just to make sure it's 0
 	pSession->SetClientBuild(mClientBuild);

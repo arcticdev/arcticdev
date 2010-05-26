@@ -4,13 +4,13 @@
  * See COPYING for license details.
  */
 
-// Class WorldSocket - Main network code functions, handles
-// reading/writing of all packets.
-
 #ifndef __WORLDSOCKET_H
 #define __WORLDSOCKET_H
 
-/* Normal WorldSocket when not using clustering */
+//////////////////////////////////////////////////////////////////////////
+// Normal WorldSocket when not using clustering                         //
+//////////////////////////////////////////////////////////////////////////
+
 #ifndef CLUSTERING
 
 #define WORLDSOCKET_SENDBUF_SIZE 131078

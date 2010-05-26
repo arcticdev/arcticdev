@@ -4,10 +4,7 @@
  * See COPYING for license details.
  */
 
-// WorldRunnable.cpp
-
 #include "StdAfx.h"
-
 #define WORLD_UPDATE_DELAY 50
 
 WorldRunnable::WorldRunnable() : ThreadContext()
@@ -43,7 +40,7 @@ bool WorldRunnable::run()
 		else
 			diff=now-LastSessionsUpdate;
 		
-		LastSessionsUpdate=now;
+		LastSessionsUpdate = now;
 		sWorld.UpdateSessions( diff );
 		
 		now = getMSTime();
@@ -54,7 +51,8 @@ bool WorldRunnable::run()
 		else
 			diff=now-execution_start; // time used for updating 
 
-		/* This is execution time compensating system if execution took more than default delay no need to make this sleep */
+		/* This is execution time compensating system if execution 
+		took more than default delay no need to make this sleep */
 		if(diff<WORLD_UPDATE_DELAY)
 		Sleep(WORLD_UPDATE_DELAY-diff);
 	}

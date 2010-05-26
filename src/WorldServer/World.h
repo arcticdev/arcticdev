@@ -23,49 +23,49 @@ class Battleground;
 
 enum Rates
 {
-    RATE_HEALTH = 0,
-    RATE_POWER1,
-    RATE_POWER2,
-    RATE_POWER3,
-    RATE_DROP0,                     // Separate rates for each quality level.
-    RATE_DROP1,
-    RATE_DROP2,
-    RATE_DROP3,
-    RATE_DROP4,
-    RATE_DROP5,
-    RATE_DROP6,
-    RATE_MONEY,
-    RATE_QUEST_MONEY,               // Quest Money rate.  
-    RATE_XP,
-    RATE_RESTXP,
-    RATE_QUESTXP,
-    RATE_HONOR,
-    RATE_QUESTREPUTATION,
-    RATE_KILLREPUTATION,
-    RATE_SKILLCHANCE,
-    RATE_SKILLRATE,
-    RATE_ARENAPOINTMULTIPLIER2X,
-    RATE_ARENAPOINTMULTIPLIER3X,
-    RATE_ARENAPOINTMULTIPLIER5X,
-    RATE_EOTS_CAPTURERATE,
-    MAX_RATES
+	RATE_HEALTH = 0,
+	RATE_POWER1,
+	RATE_POWER2,
+	RATE_POWER3,
+	RATE_DROP0,
+	RATE_DROP1,
+	RATE_DROP2,
+	RATE_DROP3,
+	RATE_DROP4,
+	RATE_DROP5,
+	RATE_DROP6,
+	RATE_MONEY,
+	RATE_QUEST_MONEY,
+	RATE_XP,
+	RATE_RESTXP,
+	RATE_QUESTXP,
+	RATE_HONOR,
+	RATE_QUESTREPUTATION,
+	RATE_KILLREPUTATION,
+	RATE_SKILLCHANCE,
+	RATE_SKILLRATE,
+	RATE_ARENAPOINTMULTIPLIER2X,
+	RATE_ARENAPOINTMULTIPLIER3X,
+	RATE_ARENAPOINTMULTIPLIER5X,
+	RATE_EOTS_CAPTURERATE,
+	MAX_RATES
 };
 
 enum IntRates
 {
-    INTRATE_SAVE = 0,
-    INTRATE_COMPRESSION,
-    INTRATE_PVPTIMER,
-    MAX_INTRATES
+	INTRATE_SAVE = 0,
+	INTRATE_COMPRESSION,
+	INTRATE_PVPTIMER,
+	MAX_INTRATES
 };
 
 enum EventIdFlags
 {
-    EVENTID_FLAG_NONE = 0,
-    EVENTID_FLAG_PHASE = 1,
-    EVENTID_FLAG_MODELID = 2,
-    EVENTID_FLAG_EQUIP = 4, // this obviously cannot be used for gameobjects
-    EVENTID_FLAG_SPAWN = 8
+	EVENTID_FLAG_NONE = 0,
+	EVENTID_FLAG_PHASE = 1,
+	EVENTID_FLAG_MODELID = 2,
+	EVENTID_FLAG_EQUIP = 4,
+	EVENTID_FLAG_SPAWN = 8
 };
 
 enum EnviromentalDamage
@@ -147,7 +147,7 @@ enum CharCreateErrors
 	NO_INSTANCE_SERVER_AVAIBLE,
 	LOGIN_FAILED,
 	LOGIN_FOR_THAT_RACE_DISABLED,
-	LOGIN_FOR_THAT_RACE_CLASS_DISABLED, // check
+	LOGIN_FOR_THAT_RACE_CLASS_DISABLED,
 	ENTER_NAME_FOR_CHARACTER,
 	NAME_AT_LEAST_TWO_CHARACTER,
 	NAME_AT_MOST_12_CHARACTER,
@@ -168,40 +168,40 @@ enum CharCreateErrors
 // ServerMessages.dbc
 enum ServerMessageType
 {
-    SERVER_MSG_SHUTDOWN_TIME = 1,
-    SERVER_MSG_RESTART_TIME = 2,
-    SERVER_MSG_STRING = 3,
-    SERVER_MSG_SHUTDOWN_CANCELLED = 4,
-    SERVER_MSG_RESTART_CANCELLED = 5,
+	SERVER_MSG_SHUTDOWN_TIME = 1,
+	SERVER_MSG_RESTART_TIME = 2,
+	SERVER_MSG_STRING = 3,
+	SERVER_MSG_SHUTDOWN_CANCELLED = 4,
+	SERVER_MSG_RESTART_CANCELLED = 5,
 
-    SERVER_MSG_BATTLEGROUND_SHUTDOWN = 6,
-    SERVER_MSG_BATTLEGROUND_RESTART = 7,
-    SERVER_MSG_INSTANCE_SHUTDOWN = 8,
-    SERVER_MSG_INSTANCE_RESTART = 9
+	SERVER_MSG_BATTLEGROUND_SHUTDOWN = 6,
+	SERVER_MSG_BATTLEGROUND_RESTART = 7,
+	SERVER_MSG_INSTANCE_SHUTDOWN = 8,
+	SERVER_MSG_INSTANCE_RESTART = 9,
 };
 
 enum ServerShutdownType
 {
-    SERVER_SHUTDOWN_TYPE_SHUTDOWN = 1,
-    SERVER_SHUTDOWN_TYPE_RESTART = 2,
+	SERVER_SHUTDOWN_TYPE_SHUTDOWN = 1,
+	SERVER_SHUTDOWN_TYPE_RESTART = 2,
 };
 
 enum WorldMapInfoFlag
 {
-    WMI_INSTANCE_ENABLED = 0x1,
-    WMI_INSTANCE_WELCOME = 0x2,
-    WMI_INSTANCE_MULTIMODE = 0x4,
-    WMI_INSTANCE_XPACK_01 = 0x8,  // The Burning Crusade expansion
-    WMI_INSTANCE_XPACK_02 = 0x10, // Wrath of the Lich King expansion
+	WMI_INSTANCE_ENABLED = 0x1,
+	WMI_INSTANCE_WELCOME = 0x2,
+	WMI_INSTANCE_MULTIMODE = 0x4,
+	WMI_INSTANCE_XPACK_01 = 0x8,  // The Burning Crusade expansion
+	WMI_INSTANCE_XPACK_02 = 0x10, // Wrath of the Lich King expansion
 };
 
 enum AccountFlags
 {
-    ACCOUNT_FLAG_VIP = 0x1,
-    ACCOUNT_FLAG_NO_AUTOJOIN = 0x2,
-    // ACCOUNT_FLAG_XTEND_INFO = 0x4,
-    ACCOUNT_FLAG_XPACK_01 = 0x8,
-    ACCOUNT_FLAG_XPACK_02 = 0x10,
+	ACCOUNT_FLAG_VIP = 0x1,
+	ACCOUNT_FLAG_NO_AUTOJOIN = 0x2,
+	// ACCOUNT_FLAG_XTEND_INFO = 0x4,
+	ACCOUNT_FLAG_XPACK_01 = 0x8,
+	ACCOUNT_FLAG_XPACK_02 = 0x10,
 };
 
 #pragma pack(push,1)
@@ -211,7 +211,6 @@ struct MapInfo
 	uint32 screenid;
 	uint32 type;
 	uint32 playerlimit;
-	uint32 playerlimit_heroic;
 	uint32 minlevel;
 	float repopx;
 	float repopy;
@@ -220,13 +219,14 @@ struct MapInfo
 	char * name;
 	uint32 flags;
 	uint32 cooldown;
-    uint32 lvl_mod_a;
 	uint32 required_quest;
 	uint32 required_item;
 	uint32 heroic_key[2];
 	float update_distance;
 	uint32 checkpoint_id;
 	bool collision;
+	uint32 phasehorde;
+	uint32 phasealliance;
 
 	bool HasFlag(uint32 flag)
 	{
@@ -363,7 +363,7 @@ typedef set<WorldSession*> SessionSet;
 // The maximum level attainable, period, regardless of flags on your account.
 #define MAXIMUM_ATTAINABLE_LEVEL 80
 
-class ARCTIC_DECL World : public Singleton<World>, public EventableObject, public std::tr1::enable_shared_from_this<World>
+class ARCTIC_DECL World : public Singleton<World>, public EventableObject
 {
 public:
 	World();
@@ -373,6 +373,7 @@ public:
 	uint32 GetMaxLevel(Player* plr);
 
 	/* Reloads the config and sets all of the setting variables.*/
+
 	void Rehash(bool load);
 
 	void CleanupCheaters();
@@ -408,6 +409,10 @@ public:
 	void SetMotd(const char *motd) { m_motd = motd; }
 	ARCTIC_INLINE const char* GetMotd() const { return m_motd.c_str(); }
 
+	// MOTD line 2
+	void SetMotd2(const char *motd2) { m_motd2 = motd2; }
+	ARCTIC_INLINE const char* GetMotd2() const { return m_motd2.c_str(); }
+
 	ARCTIC_INLINE time_t GetGameTime() const { return m_gameTime; }
 
 	bool SetInitialWorldSettings();
@@ -418,6 +423,9 @@ public:
 	void SendZoneMessage(WorldPacket *packet, uint32 zoneid, WorldSession *self = 0);
 	void SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSession *self = 0);
 	void SendFactionMessage(WorldPacket *packet, uint8 teamId);
+	void SendGMWorldText(const char* text, bool admin = false);
+	void SendAdministratorMessage(WorldPacket *packet);
+	void SendGamemasterMessage(WorldPacket *packet);
 	void SendMessageToGMs(WorldSession *self, const char * text, ...);
 
 	ARCTIC_INLINE void SetStartTime(uint32 val) { m_StartTime = val; }
@@ -507,6 +515,7 @@ public:
 	bool BreathingEnabled;
 	bool SpeedhackProtection;
 	bool Collision;
+	bool AHEnabled;
 	uint32 mInWorldPlayerCount;
 	uint32 mAcceptedConnections;
 	uint32 SocketSendBufSize;
@@ -526,11 +535,12 @@ public:
 	uint32 compression_threshold;
 
 	uint8 StartLevel;
+	uint32 StartGold;
 
-	void	SetKickAFKPlayerTime(uint32 idletimer) { m_KickAFKPlayers=idletimer; }
-	uint32	GetKickAFKPlayerTime() { return m_KickAFKPlayers; }
+	void SetKickAFKPlayerTime(uint32 idletimer){m_KickAFKPlayers=idletimer;}
+	uint32 GetKickAFKPlayerTime(){return m_KickAFKPlayers;}
 
-    uint32 GetRealmType() { return realmtype; }
+	uint32 GetRealmType() { return realmtype; }
 
 	uint32 flood_lines;
 	uint32 flood_seconds;
@@ -549,7 +559,6 @@ public:
 	bool antihack_teleport;
 	bool antihack_speed;
 	bool antihack_flight;
-    bool antihack_flydisconnect;
 	bool antihack_cheatengine;
 	bool no_antihack_on_gm;
 
@@ -558,10 +567,11 @@ public:
 	bool display_free_items;
 
 	// Enable/Disable specific battlegrounds/arenas
-	bool av_disabled;
-	bool wsg_disabled;
-	bool eots_disabled;
-	bool ab_disabled;
+	bool wg_enabled;
+	bool av_enabled;
+	bool ab_enabled;
+	bool wsg_enabled;
+	bool eots_enabled;
 
 	// Level Caps
 	uint32 LevelCap_Custom_All;
@@ -585,91 +595,132 @@ public:
 	void BackupDB();
 
 protected:
-    // update Stuff, FIXME: use diff
-    time_t _UpdateGameTime()
-    {
-        // Update Server time
-        time_t thisTime = UNIXTIME;
-        m_gameTime += thisTime - m_lastTick; // in seconds
+	// update Stuff, FIXME: use diff
+	time_t _UpdateGameTime()
+	{
+		// Update Server time
+		time_t thisTime = UNIXTIME;
+		m_gameTime += thisTime - m_lastTick; // in seconds
 
-        if(m_gameTime >= 86400) // One day has passed
-            m_gameTime -= 86400;
+		if(m_gameTime >= 86400) // One day has passed
+			m_gameTime -= 86400;
 
-        m_lastTick = thisTime;
+		m_lastTick = thisTime;
 
-        return m_gameTime;
-    }
-    void FillSpellReplacementsTable();
+		return m_gameTime;
+	}
+	void FillSpellReplacementsTable();
 
 private:
-    EventableObjectHolder * eventholder;
-    // Timers
-    typedef HM_NAMESPACE::hash_map<uint32, WorldSession*> SessionMap;
-    SessionMap m_sessions;
-    RWLock m_sessionlock;
+	EventableObjectHolder * eventholder;
+	// Timers
+	typedef HM_NAMESPACE::hash_map<uint32, WorldSession*> SessionMap;
+	SessionMap m_sessions;
+	RWLock m_sessionlock;
 
-    typedef HM_NAMESPACE::hash_map<uint32, AreaTrigger*> AreaTriggerMap;
-    AreaTriggerMap m_AreaTrigger;
+	typedef HM_NAMESPACE::hash_map<uint32, AreaTrigger*> AreaTriggerMap;
+	AreaTriggerMap m_AreaTrigger;
 
 protected:
-    Mutex SessionsMutex; // For global !
-    SessionSet GlobalSessions;
+	Mutex SessionsMutex; // For global !
+	SessionSet GlobalSessions;
 
-    float regen_values[MAX_RATES];
-    uint32 int_rates[MAX_INTRATES];
+	float regen_values[MAX_RATES];
+	uint32 int_rates[MAX_INTRATES];
 
-    uint32 m_playerLimit;
-    bool m_allowMovement;
-    bool m_gmTicketSystem;
-    std::string m_motd;
-   
-    uint32 realmtype;
+	uint32 m_playerLimit;
+	bool m_allowMovement;
+	bool m_gmTicketSystem;
+	std::string m_motd;
+	std::string m_motd2;
 
-    time_t m_gameTime;
-    time_t m_lastTick;
-    uint32 TimeOut;
+	uint32 realmtype;
 
-    uint32 m_StartTime;
-    uint32 m_queueUpdateTimer;
+	time_t m_gameTime;
+	time_t m_lastTick;
+	uint32 TimeOut;
 
-    QueueSet mQueuedSessions;
+	uint32 m_StartTime;
+	uint32 m_queueUpdateTimer;
 
-    uint32 m_KickAFKPlayers; // don't lag the server if you are useless anyway :P
+	QueueSet mQueuedSessions;
+
+	uint32 m_KickAFKPlayers; // don't lag the server if you are useless anyway :P
 
 public:
-    std::string GmClientChannel;
-    bool m_reqGmForCommands;
-    bool m_lfgForNonLfg;
-    list<SpellEntry*> dummyspells;
-    bool m_limitedNames;
-    bool m_useAccountData;
+	std::string GmClientChannel;
+	bool m_reqGmForCommands;
+	bool m_lfgForNonLfg;
+	list<SpellEntry*> dummyspells;
+	bool m_limitedNames;
+	bool m_useAccountData;
 
-    char * m_banTable;
+	char * m_banTable;
 
-    static float m_movementCompressThreshold;
-    static float m_movementCompressThresholdCreatures;
-    static uint32 m_movementCompressRate;
-    static uint32 m_movementCompressInterval;
-    static float m_speedHackThreshold;
-    static float m_speedHackLatencyMultiplier;
-    static uint32 m_speedHackResetInterval;
-    static uint32 m_CEThreshold;
-    static float m_wallhackthreshold;
+	static float m_movementCompressThreshold;
+	static float m_movementCompressThresholdCreatures;
+	static uint32 m_movementCompressRate;
+	static uint32 m_movementCompressInterval;
+	static float m_speedHackThreshold;
+	static float m_speedHackLatencyMultiplier;
+	static uint32 m_speedHackResetInterval;
+	static uint32 m_CEThreshold;
+	static float m_wallhackthreshold;
 
-    // Kick players with a great ping
-    bool LatencyKickEnabled;
-    uint32 LatencyKickMax;
-    uint32 LatencyTimer;
+	// Kick players with a great ping
+	bool LatencyKickEnabled;
+	uint32 LatencyKickMax;
+	uint32 LatencyTimer;
 
-    // shutdown
-    uint32 m_shutdownTime;
-    uint32 m_shutdownType;
-    uint32 m_shutdownLastTime;
+	// shutdown
+	uint32 m_shutdownTime;
+	uint32 m_shutdownType;
+	uint32 m_shutdownLastTime;
 
-    void QueueShutdown(uint32 delay, uint32 type);
-    void CancelShutdown();
-    void UpdateShutdownStatus();
+	void QueueShutdown(uint32 delay, uint32 type);
+	void CancelShutdown();
+	void UpdateShutdownStatus();
+
+	bool VerifyName(const char * name, size_t nlen)
+	{
+		const char * p;
+		size_t i;
+
+		static const char * bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\?<>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
+		static const char * allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+		if(m_limitedNames)
+		{
+			for(i = 0; i < nlen; ++i)
+			{
+				p = allowedCharacters;
+				for(; *p != 0; ++p)
+				{
+					if(name[i] == *p)
+						goto cont;
+				}
+
+				return false;
+cont:
+				continue;
+			}
+		}
+		else
+		{
+			for(i = 0; i < nlen; ++i)
+			{
+				p = bannedCharacters;
+				while(*p != 0 && name[i] != *p && name[i] != 0)
+					++p;
+
+				if(*p != 0)
+					return false;
+			}
+		}
+
+		return true;
+	}
 };
 
 #define sWorld World::getSingleton()
+
 #endif
