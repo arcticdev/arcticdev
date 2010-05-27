@@ -97,7 +97,7 @@ Unit::Unit()
 	for( uint32 x = 0; x < 10; ++x )
 		dispels[x]=0;
 
-	for(uint32 x=0;x<12;x++)
+	for(uint32 x = 0; x < 12; x++)
 	{
 		CreatureAttackPowerMod[x] = 0;
 		CreatureRangedAttackPowerMod[x] = 0;
@@ -508,7 +508,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 				xp_mod = 1.3f;
 			else if(active_player_count == 5)
 				xp_mod = 1.4f;
-			else xp_mod=1;// in case we have only 2 members ;)
+			else xp_mod=1; // in case we have only 2 members ;)
 		}
 		else if(pGroup->GetGroupType() == GROUP_TYPE_RAID)
 			xp_mod = 0.5f;
@@ -995,7 +995,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 						case 31125:
 							{
 								if( CastingSpell == NULL )
-									continue;// this should not ocur unless we made a fuckup somewhere
+									continue; // this should not ocur unless we made a fuckup somewhere
 								// only trigger effect for specified spells
 								if( CastingSpell->NameHash != SPELL_HASH_BACKSTAB && // backstab
 									CastingSpell->NameHash != SPELL_HASH_SINISTER_STRIKE && // sinister strike
@@ -1377,7 +1377,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 						case 15269:
 							{
 								if( CastingSpell == NULL )
-									continue;// this should not ocur unless we made a fuckup somewhere
+									continue; // this should not ocur unless we made a fuckup somewhere
 								if( CastingSpell->School != SCHOOL_SHADOW || !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) )
 									continue;
 							}break;
@@ -2224,7 +2224,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 							{
 								uint32 minDistance = spe->EffectBasePoints[0] + 1;
 								if(!victim || GetDistanceSq(victim) < minDistance * minDistance)
-									continue;	// victim not far enough
+									continue; // victim not far enough
 							}break;
 						case 63375: // Improved Stormstrike
 							{
@@ -2637,7 +2637,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 			Creature* c = TO_CREATURE(pVictim);
 			if(c&&c->GetCreatureInfo()&&c->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 			{
-				victim_skill = std::max(victim_skill,((int32)getLevel()+3)*5); //used max to avoid situation when lowlvl hits boss.
+				victim_skill = std::max(victim_skill,((int32)getLevel()+3)*5); // used max to avoid situation when lowlvl hits boss.
 			}
 		} 
 	}
@@ -3164,7 +3164,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 	{
 		it = TO_PLAYER(this)->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 		if( it != NULL && (it->GetProto()->InventoryType == INVTYPE_WEAPON ||
-			it->GetProto()->InventoryType == INVTYPE_2HWEAPON) && !ability )//dualwield to-hit penalty
+			it->GetProto()->InventoryType == INVTYPE_2HWEAPON) && !ability ) // dualwield to-hit penalty
 		{
 			hitmodifier -= 19.0f;
 		}
@@ -3843,7 +3843,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		}
 	}
 
-	if(ability && realdamage==0)
+	if(ability && realdamage == 0)
 	{	
 		SendSpellLog(TO_OBJECT(this),pVictim,ability->Id,SPELL_LOG_RESIST);
 	}
@@ -4314,7 +4314,7 @@ void Unit::AddAura(Aura* aur)
 	// Send log to client
 	if (target != NULL)
 	{
-		//send the aura log
+		// send the aura log
 		WorldPacket data(SMSG_AURACASTLOG, 28);
 
 		data << aur->GetCasterGUID();
@@ -5767,14 +5767,14 @@ void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 					// priest - holy conc
 					case 34754:
 						{
-							if( m_currentSpell!=NULL && 
+							if( m_currentSpell != NULL && 
 									!(m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_FLASH_HEAL ||
 									m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_BINDING_HEAL ||
 									m_currentSpell->m_spellInfo->NameHash == SPELL_HASH_GREATER_HEAL))
 								continue;
 							SpellEntry *spi = NULL;
 							spi = dbcSpell.LookupEntry( skip );
-							if( spi!=NULL  && spi->NameHash != SPELL_HASH_FLASH_HEAL && spi->NameHash != SPELL_HASH_BINDING_HEAL && spi->NameHash != SPELL_HASH_GREATER_HEAL)
+							if( spi != NULL  && spi->NameHash != SPELL_HASH_FLASH_HEAL && spi->NameHash != SPELL_HASH_BINDING_HEAL && spi->NameHash != SPELL_HASH_GREATER_HEAL)
 								continue;
 						}break;
 					// Arcane Potency

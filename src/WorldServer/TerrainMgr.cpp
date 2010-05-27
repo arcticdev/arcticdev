@@ -18,7 +18,6 @@ TerrainMgr::TerrainMgr(string MapPath, uint32 MapId, bool Instanced) : mapPath(M
 
 TerrainMgr::~TerrainMgr()
 {
-
 #ifndef USE_MEMORY_MAPPING_FOR_MAPS
 	if(FileDescriptor)
 	{
@@ -342,12 +341,6 @@ float TerrainMgr::GetLandHeight(float x, float y)
 	uint32 YOffset = FL2UINT(TempFloat);
 	if((TempFloat - (YOffset * _cellSize)) >= 0.5f)
 		++YOffset;
-		
-	//ignore precision in case it would lead to bad values 
-	if( XOffset > 31 )
-		XOffset = 31;
-	if( YOffset > 31 )
-		YOffset = 31;
 
 	// Return our cached information.
 	return GetCellInformation(CellX, CellY)->Z[XOffset][YOffset];

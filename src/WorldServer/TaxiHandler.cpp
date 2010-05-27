@@ -8,7 +8,7 @@
 
 void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	DEBUG_LOG( "WORLD"," Received CMSG_TAXINODE_STATUS_QUERY" );
 
 	uint64 guid;
@@ -29,7 +29,7 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
+	{
 		data << uint8( 0 );	
 	}
 	else
@@ -44,7 +44,7 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleTaxiQueryAvaibleNodesOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	DEBUG_LOG( "WORLD"," Received CMSG_TAXIQUERYAVAILABLENODES" );
 	uint64 guid;
 	recv_data >> guid;
@@ -70,7 +70,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 	submask = 1<<((curloc-1)%32);
 
 	// Check for known nodes
-	if (!(GetPlayer( )->GetTaximask(field) & submask))
+	if(!(GetPlayer()->GetTaximask(field) & submask))
 	{
 		GetPlayer()->SetTaximask(field, (submask | GetPlayer( )->GetTaximask(field)) );
 
@@ -80,6 +80,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 		WorldPacket update(SMSG_TAXINODE_STATUS, 9);
 		update << guid << uint8( 1 );
 		SendPacket( &update );
+		return;
 	}
 
 	//Set Mask
@@ -108,7 +109,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 
 void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	DEBUG_LOG( "WORLD"," Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
@@ -211,15 +212,12 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// 0x000008 seems to enable detailed collision checking
 
 	// check for a summon -> if we do, remove.
-    // Check if the player is casting, obviously they should not be able to cast on a taxi 
- 	if( _player->GetCurrentSpell() != NULL ) 
- 	_player->GetCurrentSpell()->cancel(); 
 	if(_player->GetSummon() != NULL)
 	{
 		if(_player->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-			_player->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
+			_player->GetSummon()->Dismiss(false); // warlock summon -> dismiss
 		else
-			_player->GetSummon()->Remove(false, true, true);					  // hunter pet -> just remove for later re-call
+			_player->GetSummon()->Remove(false, true, true); // hunter pet -> just remove for later re-call
 	}
 
 	_player->taxi_model_id = modelid;
@@ -231,7 +229,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	DEBUG_LOG( "WORLD"," Received CMSG_ACTIVATETAXI" );
 
 	uint64 guid;
@@ -249,7 +247,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 
 	if(nodecount>12)
 	{
-		printf("CMSG_ACTIVATETAXI: Client disconnected, nodecount: %u", nodecount);
+		DEBUG_LOG("WorldSession","CMSG_ACTIVATETAXI: Client disconnected, nodecount: %u", nodecount);
 		Disconnect();
 		return;
 	}
@@ -270,7 +268,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
+	{
 		data << uint32( 1 );
 		SendPacket( &data );
 		return;
@@ -315,12 +313,6 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 		return;
 	}
 
-	// MOUNTDISPLAYID
-	// bat: 1566
-	// gryph: 1147
-	// wyvern: 295
-	// hippogryph: 479
-
 	uint32 modelid = 0;
 	if( _player->GetTeam() )
 	{
@@ -356,9 +348,9 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	if(_player->GetSummon() != NULL)
 	{
 		if(_player->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-			_player->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
+			_player->GetSummon()->Dismiss(false); // warlock summon -> dismiss
 		else
-			_player->GetSummon()->Remove(false, true, true);			   // hunter pet -> just remove for later re-call
+			_player->GetSummon()->Remove(false, true, true); // hunter pet -> just remove for later re-call
 	}
 
 	_player->taxi_model_id = modelid;

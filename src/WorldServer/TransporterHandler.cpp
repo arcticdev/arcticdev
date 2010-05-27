@@ -110,7 +110,7 @@ bool Transporter::GenerateWaypoints()
 				pow(keyFrames[i].y - keyFrames[i - 1].y, 2) +
 				pow(keyFrames[i].z - keyFrames[i - 1].z, 2));
 		}
-		if (keyFrames[i].actionflag == 2) 
+		if (keyFrames[i].actionflag == 2)
 		{
 			if(firstStop < 0)
 				firstStop=(int)i;
@@ -292,13 +292,13 @@ void Transporter::UpdatePosition()
 
 		mCurrentWaypoint = mNextWaypoint;
 		mNextWaypoint = GetNextWaypoint();
-		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport) 
+		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport)
 		{
 			TransportPassengers(mNextWaypoint->second.mapid, GetMapId(),
 				mNextWaypoint->second.x, mNextWaypoint->second.y, mNextWaypoint->second.z);
 			break;
-		} 
-		else 
+		}
+		else
 		{
 			SetPosition(mNextWaypoint->second.x, mNextWaypoint->second.y,
 				mNextWaypoint->second.z, m_position.o, false);
@@ -395,7 +395,7 @@ Transporter::~Transporter()
 
 void Transporter::Destructor()
 {
-	sEventMgr.RemoveEvents(TO_TRANSPORT(this));
+	sEventMgr.RemoveEvents(this);
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
 		if(itr->second->GetTypeId()==TYPEID_UNIT)

@@ -13,6 +13,8 @@ public:
 	Vehicle(uint64 guid);
 	~Vehicle();
 
+	virtual void Destructor();
+
 	void Init();
 	void InitSeats(uint32 vehicleEntry, Player* pRider = NULLPLR);
 	virtual void Update(uint32 time);

@@ -286,7 +286,7 @@ void Vehicle::DeleteMe()
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
 
-	delete this;
+	Destructor();
 }
 
 void Vehicle::AddPassenger(Unit* pPassenger)

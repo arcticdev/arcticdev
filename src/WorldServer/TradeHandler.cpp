@@ -13,8 +13,7 @@ void WorldSession::SendTradeStatus(uint32 TradeStatus)
 
 void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 {
-	if(!_player->IsInWorld()) 
-		return;
+	CHECK_INWORLD_RETURN;
 
 	CHECK_PACKET_SIZE(recv_data, 8);
 
@@ -37,7 +36,7 @@ void WorldSession::HandleInitiateTrade(WorldPacket & recv_data)
 			TradeStatus = TRADE_STATUS_ALREADY_TRADING;
 		else if(pTarget->GetTeam() != _player->GetTeam() && GetPermissionCount() == 0)
 			TradeStatus = TRADE_STATUS_WRONG_FACTION;
-		else if(_player->CalcDistance(pTarget) > 10.0f)		// This needs to be checked
+		else if(_player->CalcDistance(pTarget) > 10.0f) // This needs to be checked
 			TradeStatus = TRADE_STATUS_TOO_FAR_AWAY;
 	}	
 
@@ -83,7 +82,7 @@ void WorldSession::HandleBeginTrade(WorldPacket & recv_data)
 	}
 
 	//Abort if not ok
-	if( TradeStatus != TRADE_STATUS_INITIATED)	
+	if( TradeStatus != TRADE_STATUS_INITIATED)
 	{
 		TradeStatus = TRADE_STATUS_PLAYER_NOT_FOUND;
 		_player->ResetTradeVariables();
