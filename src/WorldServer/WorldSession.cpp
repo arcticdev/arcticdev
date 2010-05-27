@@ -432,7 +432,7 @@ void WorldSession::LoadSecurity(std::string securitystring)
 		char c = securitystring.at(i);
 		c = tolower(c);
 		if(c == '4' || c == '3')
-			c = 'a';	// for the lazy people
+			c = 'a'; // for the lazy people
 
 		if(c == 'a')
 		{
@@ -1083,7 +1083,6 @@ void WorldSession::SendItemPushResult(Item* pItem, bool Created, bool Received, 
 
 void WorldSession::Delete()
 {
-	// deleteMutex.Acquire();
 	delete this;
 }
 
@@ -1172,14 +1171,14 @@ uint8 WorldSession::CheckTeleportPrerequisites(AreaTrigger * pAreaTrigger, World
 			if( pPlayer->m_playerInfo && pMapInfo->playerlimit >= 5 && (int32)((pMapInfo->playerlimit - 5)/5) < pPlayer->m_playerInfo->subGroup)
 				return AREA_TRIGGER_FAILURE_IN_QUEUE;
 
-			//All Heroic instances are automatically unlocked when reaching lvl 80, no keys needed here.
+			// All Heroic instances are automatically unlocked when reaching lvl 80, no keys needed here.
 			if( pPlayer->getLevel() < 80)
 			{
-				//otherwise we still need to be lvl 65 for heroic.
+				// otherwise we still need to be lvl 65 for heroic.
 				if( pPlayer->iRaidType && pPlayer->getLevel() < uint32(pMapInfo->HasFlag(WMI_INSTANCE_XPACK_02) ? 80 : 70))
 					return AREA_TRIGGER_FAILURE_LEVEL_HEROIC;
 
-				//and we might need a key too.
+				// and we might need a key too.
 				bool reqkey = (pMapInfo->heroic_key[0]||pMapInfo->heroic_key[1])?true:false;
 				bool haskey = (pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[0], false) || pPlayer->GetItemInterface()->GetItemCount(pMapInfo->heroic_key[1], false))?true:false;
 				if(reqkey && !haskey)

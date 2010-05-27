@@ -224,7 +224,7 @@ void WarsongGulch::DropFlag(Player* plr)
 	if(!plr->m_bgHasFlag || m_dropFlags[plr->GetTeam()]->IsInWorld())
 		return;
 
-	plr->m_bgHasFlag = false;	// don't want to get here second time when doing RemoveAura
+	plr->m_bgHasFlag = false; // don't want to get here second time when doing RemoveAura
 
 	plr->RemoveAura(23333+(plr->GetTeam() * 2));
 
@@ -278,7 +278,9 @@ void WarsongGulch::HookFlagDrop(Player* plr, GameObject* obj)
 
 	// check forcedreaction 1059, meaning do we recently dropped a flag?
 	map<uint32,uint32>::iterator itr = plr->m_forcedReactions.find(1059);
-	if (itr != plr->m_forcedReactions.end()) {
+	if (itr != plr->m_forcedReactions.end()) 
+	{
+		// cheater!
 		return;
 	}
 
@@ -401,9 +403,9 @@ void WarsongGulch::OnRemovePlayer(Player* plr)
 
 LocationVector WarsongGulch::GetStartingCoords(uint32 Team)
 {
-	if(Team)		// Horde
+	if(Team) // Horde
 		return LocationVector(933.989685f, 1430.735840f, 345.537140f, 3.141593f);
-	else			// Alliance
+	else // Alliance
 		return LocationVector(1519.530273f, 1481.868408f, 352.023743f, 3.141593f);
 }
 
@@ -574,7 +576,7 @@ void WarsongGulch::OnStart()
 void WarsongGulch::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 {
 	// add some money
-	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f;			// fix this later
+	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f; // fix this later
 	gold *= sWorld.getRate(RATE_MONEY);
 
 	// set it

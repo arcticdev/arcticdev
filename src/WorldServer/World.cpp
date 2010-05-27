@@ -624,7 +624,7 @@ bool World::SetInitialWorldSettings()
 		}
 	}
 
-	sEventMgr.AddEvent(CAST(World,this), &World::CheckForExpiredInstances, EVENT_WORLD_UPDATEAUCTIONS, 120000, 0, 0);
+	sEventMgr.AddEvent(CAST(World, this), &World::CheckForExpiredInstances, EVENT_WORLD_UPDATEAUCTIONS, 120000, 0, 0);
 	return true;
 }
 
@@ -1012,7 +1012,7 @@ void World::SaveAllPlayers()
 	sLog.outString("Saved %u players.", count);
 }
 
-WorldSession* World::FindSessionByName(const char * Name)//case insensetive
+WorldSession* World::FindSessionByName(const char * Name) // case insensetive
 {
 	m_sessionlock.AcquireReadLock();
 

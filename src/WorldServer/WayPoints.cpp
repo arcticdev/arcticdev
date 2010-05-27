@@ -252,14 +252,14 @@ bool ChatHandler::HandleWPDeleteCommand(const char* args, WorldSession *m_sessio
 	uint32 wpid = GUID_LOPART(guid);
 	if(wpid)
 	{
-		//Refresh client
-		//Hide all
+		// Refresh client
+		// Hide all
 		bool show = ai->m_WayPointsShowing;
 		if(show == true)
 			ai->hideWayPoints(pPlayer);
 
 		ai->deleteWayPoint(wpid);
-		//Show All again after delete
+		// Show All again after delete
 		if(show == true)
 			ai->showWayPoints(pPlayer,ai->m_WayPointsShowBackwards);
 
@@ -297,7 +297,7 @@ bool ChatHandler::HandleWPChangeNoCommand(const char* args, WorldSession *m_sess
 	}
 	std::stringstream ss;
 
-	//get newid
+	// get newid
 	char* pNewID = strtok((char*)args, " ");
 	uint32 NewID = (pNewID)? atoi(pNewID) : 0;
 
@@ -305,17 +305,17 @@ bool ChatHandler::HandleWPChangeNoCommand(const char* args, WorldSession *m_sess
 	if(NewID == wpid) return false;
 	if(wpid)
 	{
-		//Refresh client
-		//Hide all
+		// Refresh client
+		// Hide all
 
 		bool show = ai->m_WayPointsShowing;
 		if(show == true)
 			ai->hideWayPoints(pPlayer);
 
-		//update to new id
+		// update to new id
 		ai->changeWayPointID(wpid,NewID);
 
-		//Show All again after update
+		// Show All again after update
 		if(show == true)
 			ai->showWayPoints(pPlayer,ai->m_WayPointsShowBackwards);
 
@@ -365,7 +365,7 @@ bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession *m_session
 
 		wp->flags = NewFlags;
 
-		//save wp
+		// save wp
 		ai->saveWayPoints();
 
 		ss << "Waypoint " << wpid << " flags changed from " << flags << " to " << NewFlags;
@@ -414,10 +414,10 @@ bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_sess
 			wp->z = pPlayer->GetPositionZ();
 			wp->o = pPlayer->GetOrientation();
 
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
-		//Refresh client
+		// Refresh client
 		if(ai->m_WayPointsShowing == true)
 		{
 			ai->hideWayPoints(pPlayer);
@@ -476,7 +476,7 @@ bool ChatHandler::HandleWPWaitCommand(const char* args, WorldSession *m_session)
 			}
 			wp->waittime = Wait;
 
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
 
@@ -573,7 +573,7 @@ bool ChatHandler::HandleWaypointForwardTextCommand(const char* args, WorldSessio
 			wp->forwardSayText = string(pAnnounce);
 			ss << "Forward SayText for Waypoint " << wpid << " is now " << string(pAnnounce);
 
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
 
@@ -620,7 +620,7 @@ bool ChatHandler::HandleWaypointBackwardTextCommand(const char* args, WorldSessi
 
 			wp->backwardSayText = string(pAnnounce);
 			ss << "Backward SayText for Waypoint " << wpid << " is now " << string(pAnnounce);
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
 
@@ -678,7 +678,7 @@ bool ChatHandler::HandleWPSpellToCastCommand(const char* args, WorldSession *m_s
 				wp->forwardSpellToCast = SpellToCast;
 				ss << "Forward SpellToCast for Waypoint " << wpid << " is now " << SpellToCast;
 			}
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
 
@@ -737,7 +737,7 @@ bool ChatHandler::HandleWPStandStateCommand(const char* args, WorldSession *m_se
 				wp->forwardStandState = StandState;
 				ss << "Forward StandState for Waypoint " << wpid << " is now " << StandState;
 			}
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
 
@@ -797,7 +797,7 @@ bool ChatHandler::HandleWPEmoteCommand(const char* args, WorldSession *m_session
 				wp->forwardemoteoneshot = OneShot;
 			}
 
-			//save wp
+			// save wp
 			ai->saveWayPoints();
 		}
 
@@ -1025,7 +1025,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 	}
 	int n = atol(pC);
 
-	for(int i=0;i<n;++i)
+	for(int i = 0; i < n; ++i)
 	{
 		float ang = rand()/100.0f;
 		float ran = (rand()%(r*10))/10.0f;
@@ -1062,7 +1062,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		cr->GetAIInterface()->addWayPoint(wp);
 	}
 
-	if(cr->m_spawn && cr->m_spawn->movetype != 1)		/* move random */
+	if(cr->m_spawn && cr->m_spawn->movetype != 1) /* move random */
 	{
 		cr->m_spawn->movetype = 1;
 		cr->GetAIInterface()->m_moveType = 1;
@@ -1085,7 +1085,6 @@ bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession * m_session
 	cr->GetAIInterface()->saveWayPoints();
 	return true;
 }
-
 
 bool ChatHandler::HandleDeleteWaypoints(const char* args, WorldSession * m_session)
 {

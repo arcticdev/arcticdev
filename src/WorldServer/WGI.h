@@ -61,4 +61,4 @@ public:
 
 #define sWintergraspI WintergraspInternal::getSingleton()
 
-#endif // WINTERGRASPINTERNAL_H
+#endif // WGI_H

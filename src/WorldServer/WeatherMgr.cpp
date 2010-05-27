@@ -170,7 +170,7 @@ void WeatherInfo::_GenerateWeather()
 	m_currentDensity = 0.20f; // Starting Offset (don't go below, it's annoying fog)
 	float fd = RandomFloat();
 	m_maxDensity = fd+1; // 1 - 2
-	m_totalTime = (RandomUInt(11) + 5)*1000*120;// update approx. every 1-2 minutes
+	m_totalTime = (RandomUInt(11) + 5)*1000*120; // update approx. every 1-2 minutes
 
 	uint32 rv = RandomUInt(100);
 

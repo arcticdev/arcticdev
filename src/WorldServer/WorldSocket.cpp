@@ -231,7 +231,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
 	std::string account;
 	uint32 unk2, unk3;
-	uint64 unk1; // 3.2.2 Unk..
+	uint64 unk1; // 3.2.2 unk1..
 	_latency = getMSTime() - _latency;
 
 	try
@@ -241,7 +241,7 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		*recvPacket >> account;
 		*recvPacket >> unk3;
 		*recvPacket >> mClientSeed;
-	    *recvPacket >> unk1; // 3.2.2..
+	    *recvPacket >> unk1; // 3.2.2 unk1..
 	}
 	catch(ByteBuffer::error &)
 	{
@@ -746,13 +746,13 @@ void FastGUIDPack(ByteBuffer & buf, const uint64 & oldguid)
 		guidmask |= 16;
 		j++;
 	}
-	if (*(test+5))// 2*8
+	if (*(test+5)) // 2*8
 	{
 		guidfields[j] = *(test+5);
 		guidmask |= 32;
 		j++;
 	}
-	if (*(test+6))// 1*8
+	if (*(test+6)) // 1*8
 	{
 		guidfields[j] = *(test+6);
 		guidmask |= 64;
@@ -808,13 +808,13 @@ void FastGUIDPack(StackBuffer & buf, const uint64 & oldguid)
 		guidmask |= 16;
 		j++;
 	}
-	if (*(test+5))// 2*8
+	if (*(test+5)) // 2*8
 	{
 		guidfields[j] = *(test+5);
 		guidmask |= 32;
 		j++;
 	}
-	if (*(test+6))// 1*8
+	if (*(test+6)) // 1*8
 	{
 		guidfields[j] = *(test+6);
 		guidmask |= 64;

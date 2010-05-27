@@ -8,21 +8,22 @@
 #define __UNIT_H
 
 class AIInterface;
-
-#define MAX_AURAS 96 // 40 buff slots, 46 debuff slots.
-#define MAX_POSITIVE_AURAS 40 // ?
-#define MAX_PASSIVE_AURAS 192   // grep: i mananged to break this.. :p seems we need more
-
 bool ARCTIC_DECL Rand(float);
-#define MAKE_ACTION_BUTTON(A,T) (uint32(A) | (uint32(T) << 24))
-#define UF_TARGET_DIED  1
-#define UF_ATTACKING    2 // this unit is attacking it's selection
-#define SPELL_GROUPS    96
-#define SPELL_MODIFIERS 30
-#define DIMINISH_GROUPS	13
-#define NUM_MECHANIC 32
 
-#define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) //should get computed by precompiler ;)class Aura;
+#define MAX_AURAS           96 // 40 buff slots, 46 debuff slots.
+#define MAX_POSITIVE_AURAS  40
+#define MAX_PASSIVE_AURAS  192 // grep: i mananged to break this.. :p seems we need more
+#define UF_TARGET_DIED       1
+#define UF_ATTACKING         2 // this unit is attacking it's selection
+#define SPELL_GROUPS        96
+#define SPELL_MODIFIERS     30
+#define DIMINISH_GROUPS     13
+#define NUM_MECHANIC        32
+
+#define MAKE_ACTION_BUTTON(A,T) (uint32(A) | (uint32(T) << 24))
+#define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) //should get computed by precompiler ;)
+
+class Aura;
 class Spell;
 class AIInterface;
 class GameObject;
@@ -94,11 +95,13 @@ enum DeathState
 {
 	ALIVE = 0, // Unit is alive and well
 	JUST_DIED, // Unit has JUST died
-	CORPSE,    // Unit has died but remains in the world as a corpse
-	DEAD       // Unit is dead and his corpse is gone from the world
+	CORPSE, // Unit has died but remains in the world as a corpse
+	DEAD // Unit is dead and his corpse is gone from the world
 };
 
-enum PowerType{	POWER_TYPE_HEALTH = -2,
+enum PowerType
+{
+	POWER_TYPE_HEALTH = -2,
 	POWER_TYPE_MANA = 0,
 	POWER_TYPE_RAGE = 1,
 	POWER_TYPE_FOCUS = 2,
@@ -107,7 +110,12 @@ enum PowerType{	POWER_TYPE_HEALTH = -2,
 	POWER_TYPE_RUNE = 5,
 	POWER_TYPE_RUNIC = 6,
 	MAX_POWER_TYPE = 7
-};// Vehicle DBC Power Types#define POWER_TYPE_PYRITE 41#define POWER_TYPE_STEAM 61#define HIGHEST_FACTION = 46
+};
+
+// Vehicle DBC Power Types
+#define POWER_TYPE_PYRITE 41
+#define POWER_TYPE_STEAM 61
+#define HIGHEST_FACTION = 46
 
 enum Factions
 {
@@ -159,6 +167,7 @@ enum Factions
 	FACTION_SILVERWING_SENTINELS,
 	FACTION_WARSONG_OUTRIDERS
 };
+
 typedef enum
 {
 	TEXTEMOTE_AGREE			= 1,
@@ -169,7 +178,7 @@ typedef enum
 	TEXTEMOTE_BASHFUL		= 6,
 	TEXTEMOTE_BECKON		= 7,
 	TEXTEMOTE_BEG			= 8,
-	TEXTEMOTE_BITE		    = 9,
+	TEXTEMOTE_BITE			= 9,
 	TEXTEMOTE_BLEED			= 10,
 	TEXTEMOTE_BLINK			= 11,
 	TEXTEMOTE_BLUSH			= 12,
@@ -320,11 +329,11 @@ typedef enum
 typedef enum
 {
 	EMOTE_ONESHOT_NONE = 0,
-	EMOTE_ONESHOT_TALK = 1,   
+	EMOTE_ONESHOT_TALK = 1,
 	EMOTE_ONESHOT_BOW = 2,
-	EMOTE_ONESHOT_WAVE = 3,   
-	EMOTE_ONESHOT_CHEER = 4,   
-	EMOTE_ONESHOT_EXCLAMATION = 5,   
+	EMOTE_ONESHOT_WAVE = 3,
+	EMOTE_ONESHOT_CHEER = 4,
+	EMOTE_ONESHOT_EXCLAMATION = 5,
 	EMOTE_ONESHOT_QUESTION = 6,
 	EMOTE_ONESHOT_EAT = 7,
 	EMOTE_STATE_DANCE = 10,
@@ -422,30 +431,30 @@ typedef enum
 	EMOTE_ONESHOT_JUMPSTART = 399,
 	EMOTE_STATE_DANCESPECIAL = 400,
 	EMOTE_ONESHOT_DANCESPECIAL = 401,
-	EMOTE_ONESHOT_CUSTOMSPELL01	= 402,
-	EMOTE_ONESHOT_CUSTOMSPELL02	= 403,
-	EMOTE_ONESHOT_CUSTOMSPELL03	= 404,
-	EMOTE_ONESHOT_CUSTOMSPELL04	= 405,
-	EMOTE_ONESHOT_CUSTOMSPELL05	= 406,
-	EMOTE_ONESHOT_CUSTOMSPELL06	= 407,
-	EMOTE_ONESHOT_CUSTOMSPELL07	= 408,
-	EMOTE_ONESHOT_CUSTOMSPELL08	= 409,
-	EMOTE_ONESHOT_CUSTOMSPELL09	= 410,
-	EMOTE_ONESHOT_CUSTOMSPELL10	= 411,
+	EMOTE_ONESHOT_CUSTOMSPELL01 = 402,
+	EMOTE_ONESHOT_CUSTOMSPELL02 = 403,
+	EMOTE_ONESHOT_CUSTOMSPELL03 = 404,
+	EMOTE_ONESHOT_CUSTOMSPELL04 = 405,
+	EMOTE_ONESHOT_CUSTOMSPELL05 = 406,
+	EMOTE_ONESHOT_CUSTOMSPELL06 = 407,
+	EMOTE_ONESHOT_CUSTOMSPELL07 = 408,
+	EMOTE_ONESHOT_CUSTOMSPELL08 = 409,
+	EMOTE_ONESHOT_CUSTOMSPELL09 = 410,
+	EMOTE_ONESHOT_CUSTOMSPELL10 = 411,
 	EMOTE_STATE_EXCLAIM = 412,
 } EmoteType;
 
 enum StandState
 {
-	STANDSTATE_STAND			= 0,
-	STANDSTATE_SIT			    = 1,
-	STANDSTATE_SIT_CHAIR		= 2,
-	STANDSTATE_SLEEP			= 3,
-	STANDSTATE_SIT_LOW_CHAIR	= 4,
+	STANDSTATE_STAND = 0,
+	STANDSTATE_SIT = 1,
+	STANDSTATE_SIT_CHAIR = 2,
+	STANDSTATE_SLEEP = 3,
+	STANDSTATE_SIT_LOW_CHAIR = 4,
 	STANDSTATE_SIT_MEDIUM_CHAIR = 5,
-	STANDSTATE_SIT_HIGH_CHAIR   = 6,
-	STANDSTATE_DEAD			    = 7,
-	STANDSTATE_KNEEL			= 8
+	STANDSTATE_SIT_HIGH_CHAIR = 6,
+	STANDSTATE_DEAD = 7,
+	STANDSTATE_KNEEL = 8
 };
 
 enum UnitSpecialStates
@@ -640,7 +649,6 @@ enum Powers
 };
 
 typedef std::list<struct ProcTriggerSpellOnSpell> ProcTriggerSpellOnSpellList;
-
 
 class MovementInfo
 {
@@ -885,15 +893,16 @@ public:
 	// Add Aura to unit
 	void AddAura(Aura* aur);
 	// Remove aura from unit
-	void RemoveAura(Aura* aur);	void RemoveAuraBySlot(uint16 Slot);
+	void RemoveAura(Aura* aur);
+	void RemoveAuraBySlot(uint16 Slot);
 	void RemoveAuraNoReturn(uint32 spellId);
 	bool RemovePositiveAura(uint32 spellId);
 	bool RemoveNegativeAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid = 0);
-	bool RemoveAuraByNameHash(uint32 namehash);    // required to remove weaker instances of a spell
+	bool RemoveAuraByNameHash(uint32 namehash); // required to remove weaker instances of a spell
 	bool RemoveAuraPosByNameHash(uint32 namehash); // required to remove weaker instances of a spell
 	bool RemoveAuraNegByNameHash(uint32 namehash); // required to remove weaker instances of a spell
-	bool RemoveAuras(uint32 SpellIds);
+	bool RemoveAuras(uint32 * SpellIds);
 
 	void EventRemoveAura(uint32 SpellId)
 	{
@@ -902,11 +911,11 @@ public:
 
 	// Remove all auras
 	void RemoveAllAuras();
-	bool RemoveAllAuras(uint32 spellId,uint64 guid = 0);  // remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
-	void RemoveAllAurasOfType(uint32 auratype);           // ex:to remove morph spells
-	bool RemoveAllAuraByNameHash(uint32 namehash);        // required to remove weaker instances of a spell
-	bool RemoveAllPosAuraByNameHash(uint32 namehash);     // required to remove weaker instances of a spell
-	bool RemoveAllNegAuraByNameHash(uint32 namehash);     // required to remove weaker instances of a spell
+	bool RemoveAllAuras(uint32 spellId,uint64 guid = 0); // remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
+	void RemoveAllAurasOfType(uint32 auratype); // to remove morph spells
+	bool RemoveAllAuraByNameHash(uint32 namehash); // required to remove weaker instances of a spell
+	bool RemoveAllPosAuraByNameHash(uint32 namehash); // required to remove weaker instances of a spell
+	bool RemoveAllNegAuraByNameHash(uint32 namehash); // required to remove weaker instances of a spell
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
 	
 	void RemoveAllNegativeAuras();
@@ -930,7 +939,10 @@ public:
 
 	uint32 m_addDmgOnce;
 	Creature* m_SummonSlots[7];
-	void SummonExpireSlot(uint8 slot); // Empties just slot x.	void SummonExpireAll(bool clearowner); //Empties all slots (NPC's + GameObjects	uint32 m_ObjectSlots[4];
+	void SummonExpireSlot(uint8 slot); // Empties just slot x.
+	void SummonExpireAll(bool clearowner); // Empties all slots (NPC's + GameObjects
+
+	uint32 m_ObjectSlots[4];
 	uint32 m_triggerSpell;
 	uint32 m_triggerDamage;
 	uint32 m_canMove;
@@ -988,7 +1000,7 @@ public:
 	// Beacon of Light
 	Unit* BeaconCaster; // if we receive heal from him
 	Unit* BeaconTarget; // heal him for this same value
-	void RemoveBeacons(); 
+	void RemoveBeacons();
 
 	// AIInterface
 	AIInterface *GetAIInterface() { return m_aiInterface; }
@@ -1078,7 +1090,7 @@ public:
 	void RegisterPeriodicChatMessage(uint32 delay, uint32 msgid, std::string message, bool sendnotify);
 
 	ARCTIC_INLINE int32 GetHealthPct() { return (int32)(GetUInt32Value(UNIT_FIELD_HEALTH) * 100 / std::max(1, (int32)GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
-	ARCTIC_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
+    ARCTIC_INLINE void SetHealthPct(uint32 val) { if (val>0) SetUInt32Value(UNIT_FIELD_HEALTH,float2int32(val*0.01f*GetUInt32Value(UNIT_FIELD_MAXHEALTH))); }
 	ARCTIC_INLINE int32 GetManaPct() { return (int32)(GetUInt32Value(UNIT_FIELD_POWER1) * 100 / std::max(1, (int32)GetUInt32Value(UNIT_FIELD_MAXPOWER1))); }
 		
 	uint32 GetResistance(uint32 type);
@@ -1088,6 +1100,7 @@ public:
 	uint8 m_inVehicleSeatId;
 	Vehicle* m_CurrentVehicle;
 	ARCTIC_INLINE int8 GetSeatID() { return m_inVehicleSeatId; }
+
 	// Pet
 	ARCTIC_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
 	
@@ -1114,7 +1127,7 @@ public:
 	uint32 SchoolImmunityList[7];
 	float SpellCritChanceSchool[7];
 	int32 PowerCostMod[7];
-	float PowerCostPctMod[7];  // armor penetration & spell penetration
+	float PowerCostPctMod[7]; // armor penetration & spell penetration
 	int32 AttackerCritChanceMod[7];
 	uint32 SpellDelayResist[7];
 	int32 CreatureAttackPowerMod[12];
@@ -1134,7 +1147,7 @@ public:
 	int32 m_resistChance;
 	int32 m_powerRegenPCT;
 	int32 m_stunned;
-	int32 m_extraattacks[2];   
+	int32 m_extraattacks[2];
 	int32 m_extrastriketarget;
 	int32 m_extrastriketargetc;
 	std::list<ExtraStrike*> m_extraStrikeTargets;
@@ -1164,7 +1177,8 @@ public:
 	void RemoveStealth();
 	void RemoveInvisibility();
 
-	void ChangePetTalentPointModifier(bool Increment) { Increment ? m_PetTalentPointModifier++ : m_PetTalentPointModifier-- ; };	bool m_isPet;
+	void ChangePetTalentPointModifier(bool Increment) { Increment ? m_PetTalentPointModifier++ : m_PetTalentPointModifier-- ; };
+	bool m_isPet;
 	uint32 m_stealth;
 	bool m_can_stealth;
 
@@ -1291,7 +1305,10 @@ public:
 	void EventStrikeWithAbility(uint64 guid, SpellEntry * sp, uint32 damage);
 	void DispelAll(bool positive);
 
-	void SetPowerType(uint8 type);	ARCTIC_INLINE uint32 GetPowerType(){ return (GetByte(UNIT_FIELD_BYTES_0,3));}	uint32 GetPower(uint8 power) const { return GetUInt32Value(UNIT_FIELD_POWER1 + power); }	void SetPower(uint32 type, int32 value);
+	void SetPowerType(uint8 type);
+	ARCTIC_INLINE uint32 GetPowerType(){ return (GetByte(UNIT_FIELD_BYTES_0,3));}
+	uint32 GetPower(uint8 power) const { return GetUInt32Value(UNIT_FIELD_POWER1 + power); }
+	void SetPower(uint32 type, int32 value);
 
 	bool HasAurasOfNameHashWithCaster(uint32 namehash, Unit* caster);
 	bool mAngerManagement;
@@ -1308,10 +1325,22 @@ public:
 	void SetWeaponDisplayId(uint8 slot, uint32 displayId);
 
 	// Transporters
-	WoWGuid m_transportNewGuid;	uint64 m_TransporterGUID;	LocationVector* m_transportPosition;	float m_TransporterUnk;	bool m_lockTransportVariables;	// Movement Info.	MovementInfo* GetMovementInfo() { return &movement_info; }	MovementInfo movement_info;protected:
+	WoWGuid m_transportNewGuid;
+	uint64 m_TransporterGUID;
+	LocationVector* m_transportPosition;
+	float m_TransporterUnk;
+	bool m_lockTransportVariables;
+
+	// Movement Info.
+	MovementInfo* GetMovementInfo() { return &movement_info; }
+	MovementInfo movement_info;
+
+protected:
 	/* Preallocated buffers for movement handlers */
 	uint8 movement_packet[90];
-	Unit();	uint32 m_meleespell;
+
+	Unit();
+	uint32 m_meleespell;
 	uint8 m_meleespell_cn;
 	void _UpdateSpells(uint32 time);
 
@@ -1346,7 +1375,7 @@ public:
 	int32 m_threatModifyer;
 	int32 m_generatedThreatModifyer;
 
-	// float getDistance( float Position1X, float Position1Y, float Position2X, float Position2Y );	
+	// float getDistance( float Position1X, float Position1Y, float Position2X, float Position2Y );
 
 	int32 m_manashieldamt;
 	SpellEntry * m_manaShieldSpell;
