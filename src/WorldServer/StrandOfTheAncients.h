@@ -9,7 +9,7 @@
 
 static const float SOTAStartLocations[2][3] = 
 {
-    { 1601.004395f, -105.182663f, 8.873691f }, // attackers
+	{ 1601.004395f, -105.182663f, 8.873691f }, // attackers
 	{ 922.102234f, -111.102646f, 97.178421f }, // defenders
 };
 
@@ -46,8 +46,8 @@ public:
 	void OnStart();
 
 	bool SupportsPlayerLoot() { return true; }
-	bool HookSlowLockOpen(GameObject* pGo, Player* plr, Spell* pSpell)
-	
+	bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell);
+
 	void HookGenerateLoot(Player* plr, Corpse* pCorpse);
 
 	void SetIsWeekend(bool isweekend);

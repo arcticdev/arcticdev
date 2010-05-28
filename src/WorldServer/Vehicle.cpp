@@ -33,6 +33,15 @@ Vehicle::~Vehicle()
 		RemoveFromWorld(false, true);
 }
 
+void Vehicle::Destructor()
+{
+	m_passengerCount = 0;
+	if( IsInWorld() )
+		RemoveFromWorld(false, true);
+
+	Creature::Destructor();
+}
+
 void Vehicle::Init()
 {
 	Creature::Init();
@@ -46,10 +55,7 @@ void Vehicle::InitSeats(uint32 vehicleEntry, Player* pRider)
 	VehicleEntry * ve = dbcVehicle.LookupEntry( vehicleEntry );
 	if(!ve)
 	{
-		if(sLog.IsOutDevelopement())
-			printf("Attempted to create non-existant vehicle %u.\n", vehicleEntry);
-		else
-			OUT_DEBUG("Attempted to create non-existant vehicle %u.", vehicleEntry);
+		OUT_DEBUG("Attempted to create non-existant vehicle %u.\n", vehicleEntry);
 		return;
 	}
 
@@ -92,10 +98,7 @@ void Vehicle::Load(CreatureProto * proto_, float x, float y, float z, float o /*
 	else
 	{
 		m_vehicleEntry = 124;
-		if(sLog.IsOutDevelopement())
-			printf("Attempted to create vehicle %u with invalid vehicle_entry, defaulting to 124, check your creature_proto table.\n", proto->Id);
-		else
-			OUT_DEBUG("Attempted to create vehicle %u with invalid vehicle_entry, defaulting to 124, check your creature_proto table.", proto->Id);
+		OUT_DEBUG("Attempted to create vehicle %u with invalid vehicle_entry, defaulting to 124, check your creature_proto table.\n", proto->Id);
 	}
 
 	m_maxPassengers = 0;
@@ -103,10 +106,7 @@ void Vehicle::Load(CreatureProto * proto_, float x, float y, float z, float o /*
 	VehicleEntry * ve = dbcVehicle.LookupEntry( m_vehicleEntry );
 	if(!ve)
 	{
-		if(sLog.IsOutDevelopement())
-			printf("Attempted to create non-existant vehicle %u.\n", GetVehicleEntry());
-		else
-			OUT_DEBUG("Attempted to create non-existant vehicle %u.", GetVehicleEntry());
+		OUT_DEBUG("Attempted to create non-existant vehicle %u.\n", GetVehicleEntry());
 		return;
 	}
 
@@ -143,10 +143,7 @@ bool Vehicle::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	else
 	{
 		m_vehicleEntry = 124;
-		if(sLog.IsOutDevelopement())
-			printf("Attempted to create vehicle %u with invalid vehicle_entry, defaulting to 124, check your creature_proto table.\n", proto->Id);
-		else
-			OUT_DEBUG("Attempted to create vehicle %u with invalid vehicle_entry, defaulting to 124, check your creature_proto table.", proto->Id);
+		OUT_DEBUG("Attempted to create vehicle %u with invalid vehicle_entry, defaulting to 124, check your creature_proto table.", proto->Id);
 	}
 
 	m_maxPassengers = 0;
@@ -154,10 +151,7 @@ bool Vehicle::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	VehicleEntry * ve = dbcVehicle.LookupEntry( m_vehicleEntry );
 	if(!ve)
 	{
-		if(sLog.IsOutDevelopement())
-			printf("Attempted to create non-existant vehicle %u.\n", GetVehicleEntry());
-		else
-			OUT_DEBUG("Attempted to create non-existant vehicle %u.", GetVehicleEntry());
+		OUT_DEBUG("Attempted to create non-existant vehicle %u.", GetVehicleEntry());
 		return false;
 	}
 
@@ -842,10 +836,7 @@ void WorldSession::HandleSpellClick( WorldPacket & recv_data )
 				ctr->CastSpell(pPlayer, ctr->GetProto()->SpellClickid, true);
 			else
 			{
-				if(sLog.IsOutDevelopement())
-					printf("[SPELL][CLICK]: Unknown spell click spell on creature %u\n", ctr->GetEntry());
-				else
-					OUT_DEBUG("[SPELL][CLICK]: Unknown spell click spell on creature %u", ctr->GetEntry());
+				OUT_DEBUG("[SPELL][CLICK]: Unknown spell click spell on creature %u", ctr->GetEntry());
 			}
 		}
 		return;

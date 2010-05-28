@@ -6,14 +6,12 @@
 
 #include "StdAfx.h"
 
-// Рейты для премиум акков
+// Rates of premium for the acc 
 #define PREMIUM_ACC_KILL_EXP 3
 
 uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl)
 {
-
-  // const uint32 grayLevel[sWorld.LevelCap+1] = {0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,13,14,15,16,17,18,19,20,21,22,22,23,24,25,26,27,28,29,30,31,31,32,33,34,35,35,36,37,38,39,39,40,41,42,43,43,44,45,46,47,47,48,49,50,51,51,52,53,54,55,55};
-#define PLAYER_LEVEL_CAP 80
+#define PLAYER_LEVEL_CAP 70
 	const uint32 grayLevel[PLAYER_LEVEL_CAP+1] = {0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,13,14,15,16,17,18,19,20,21,22,22,23,24,25,26,27,28,29,30,31,31,32,33,34,35,35,36,37,38,39,39,40,41,42,43,43,44,45,46,47,47,48,49,50,51,51,52,53,54,55,55};
 	if(AttackerLvl + 5 <= VictimLvl)
 	{
@@ -47,7 +45,7 @@ uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl)
 			else
 			{
 				if(AttackerLvl > PLAYER_LEVEL_CAP)
-					return 1;//gm
+					return 1; // gm
 				if(AttackerLvl<PLAYER_LEVEL_CAP && VictimLvl <= grayLevel[AttackerLvl])
 					return 0;
 				else
@@ -60,9 +58,9 @@ uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl)
 
 uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 {
-	
+
 	uint32 premium = 0;
-	
+
 	if(pVictim->IsPlayer())
 		return 0;
 
@@ -73,7 +71,7 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 	victimI = TO_CREATURE(pVictim)->GetCreatureInfo();
 
 	if(victimI)
-		if(victimI->Type == UNIT_TYPE_CRITTER)
+		if(victimI->Type == CRITTER)
 			return 0;
 	uint32 VictimLvl = pVictim->getLevel();
 	uint32 AttackerLvl = pAttacker->getLevel();
@@ -85,14 +83,11 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 		VictimLvl += ownerLvl - AttackerLvl;
 		AttackerLvl = ownerLvl;
 	}
-	else if( (int32)VictimLvl - (int32)AttackerLvl > 10 ) //not wowwikilike but more balanced
+	else if( (int32)VictimLvl - (int32)AttackerLvl > 10 ) // not wowwikilike but more balanced
 		return 0;
 
 	float zd = 5;
 	float g = 5;
-
-	// get zero diff
-	// get grey diff
 
 	if(AttackerLvl >= 70)
 	{
@@ -206,7 +201,7 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 	xp *= (sWorld.getRate(RATE_XP) * PREMIUM_ACC_KILL_EXP);
 	else
 	xp *= sWorld.getRate(RATE_XP);
-	
+
 	// elite boss multiplier
 	if(victimI)
 	{
@@ -223,16 +218,15 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 		case 3: // world boss
 			xp *= 2.5f;
 			break;
-		default:	// rare or higher
+		default: // rare or higher
 			// xp *= 7.0f;
 			break;
 		}
 	}
-	if( xp < 0 )//probably caused incredible wrong exp
+	if( xp < 0 ) // probably caused incredible wrong exp
 		xp = 0;
 
 	return (uint32)xp;
-
 }
 
 uint32 CalculateStat(uint16 level, float inc)
@@ -252,11 +246,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 2.56f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 1.64f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 2.36f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 0.4f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 0.76f); } break;
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 2.56f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 1.64f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 2.36f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 0.4f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 0.76f); } break;
 			}
 		}break;
 
@@ -264,11 +258,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 0.2875f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 0.3875f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 0.5875f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 1.9f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 2.0875f); } break;
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 0.2875f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 0.3875f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 0.5875f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 1.9f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 2.0875f); } break;
 			}
 		}break;
 
@@ -276,11 +270,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 2.0125f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 1.1625f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 1.825f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 0.2f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 0.4875f); } break;	
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 2.0125f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 1.1625f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 1.825f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 0.2f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 0.4875f); } break;
 			}
 		}break;
 
@@ -288,11 +282,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 0.4875f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 0.5875f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 0.95f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 1.7125f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 1.8f); } break;		
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 0.4875f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 0.5875f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 0.95f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 1.7125f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 1.8f); } break;
 			}
 		}break;
 
@@ -300,11 +294,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 0.85f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 0.775f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 0.975f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 1.5125f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 2.0f); } break;	
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 0.85f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 0.775f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 0.975f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 1.5125f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 2.0f); } break;
 			}
 		}break;
 
@@ -312,11 +306,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 1.8875f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 0.875f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 1.5125f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 0.975f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 1.05f); } break;
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 1.8875f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 0.875f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 1.5125f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 0.975f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 1.05f); } break;
 			}
 		}break;
 
@@ -324,11 +318,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 0.675f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 1.975f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 1.3375f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 0.875f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 0.95f); } break;	
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 0.675f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 1.975f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 1.3375f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 0.875f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 0.95f); } break;
 			}
 		}break;
 
@@ -336,11 +330,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 0.2f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 0.2875f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 0.4875f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 1.975f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 1.9625f); } break;		
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 0.2f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 0.2875f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 0.4875f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 1.975f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 1.9625f); } break;
 			}
 		}break;
 
@@ -349,10 +343,10 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			switch(Stat)
 			{
 			case STAT_STRENGTH:  { gain = CalculateStat(level, 1.2375f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 0.675f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 1.4375f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 1.4875f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 1.5125f); } break;	
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 0.675f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 1.4375f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 1.4875f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 1.5125f); } break;
 			}
 		}break;
 
@@ -360,11 +354,11 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 		{
 			switch(Stat)
 			{
-			case STAT_STRENGTH:  { gain = CalculateStat(level, 1.15f); } break;
-			case STAT_AGILITY:   { gain = CalculateStat(level, 2.075f); } break;
-			case STAT_STAMINA:   { gain = CalculateStat(level, 1.1f); } break;
-			case STAT_INTELLECT: { gain = CalculateStat(level, 0.2875f); } break;
-			case STAT_SPIRIT:	 { gain = CalculateStat(level, 0.6125f); } break;
+			case STAT_STRENGTH:		{ gain = CalculateStat(level, 1.15f); } break;
+			case STAT_AGILITY:		{ gain = CalculateStat(level, 2.075f); } break;
+			case STAT_STAMINA:		{ gain = CalculateStat(level, 1.1f); } break;
+			case STAT_INTELLECT:	{ gain = CalculateStat(level, 0.2875f); } break;
+			case STAT_SPIRIT:		{ gain = CalculateStat(level, 0.6125f); } break;
 			}
 		}break;
 	}
@@ -374,15 +368,17 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 
 uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability ) // spellid is used only for 2-3 spells, that have AP bonus
 {
+	//////////////////////////////////////////////////////////////////////////
 	// TODO:
-   	//  Some awesome formula to determine how much damage to deal
-	//  consider this is melee damage
-	//  weapon_damage_type: 0 = melee, 1 = offhand(dualwield), 2 = ranged
-
+	// Some awesome formula to determine how much damage to deal
+	// consider this is melee damage
+	// weapon_damage_type: 0 = melee, 1 = offhand(dualwield), 2 = ranged
+	
+	//////////////////////////////////////////////////////////////////////////	
 	// Attack Power increases your base damage-per-second (DPS) by 1 for every 14 attack power.
 	// (c) wowwiki
 
-	//type of this UNIT_FIELD_ATTACK_POWER_MODS is unknown, not even uint32 disabled for now.
+	// type of this UNIT_FIELD_ATTACK_POWER_MODS is unknown, not even uint32 disabled for now.
 
 	uint32 offset;
 	Item* it = NULLITEM;
@@ -432,13 +428,11 @@ uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_typ
 
 	if(offset == UNIT_FIELD_MINRANGEDDAMAGE)
 	{
-		// starting from base attack power then we apply mods on it
-		// ap += pAttacker->GetRAP();
 		ap += pVictim->RAPvModifier;
 
-		if(!pVictim->IsPlayer() && TO_CREATURE(pVictim)->GetCreatureName())
+		if(!pVictim->IsPlayer() && TO_CREATURE(pVictim)->GetCreatureInfo())
 		{
-			uint32 creatType = TO_CREATURE(pVictim)->GetCreatureName()->Type;
+			uint32 creatType = TO_CREATURE(pVictim)->GetCreatureInfo()->Type;
 			ap += (float)pAttacker->CreatureRangedAttackPowerMod[creatType];
 
 			if(pAttacker->IsPlayer())
@@ -497,14 +491,11 @@ uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_typ
 	}
 	else
 	{
-		// MinD = AP(28AS-(WS/7))-MaxD
-		// starting from base attack power then we apply mods on it
-		// ap += pAttacker->GetAP();
 		ap += pVictim->APvModifier;
 
-		if(!pVictim->IsPlayer() && TO_CREATURE(pVictim)->GetCreatureName())
+		if(!pVictim->IsPlayer() && TO_CREATURE(pVictim)->GetCreatureInfo())
 		{
-			uint32 creatType = TO_CREATURE(pVictim)->GetCreatureName()->Type;
+			uint32 creatType = TO_CREATURE(pVictim)->GetCreatureInfo()->Type;
 			ap += (float)pAttacker->CreatureAttackPowerMod[creatType];
 
 			if(pAttacker->IsPlayer())
@@ -573,11 +564,11 @@ uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_typ
 		}
 
 		if( offset == UNIT_FIELD_MINDAMAGE )
-			bonus = (wspeed-pAttacker->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME)) / 14000.0f*ap;
+			bonus = (wspeed-pAttacker->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME))/14000.0f*ap;
 		else if( offset == UNIT_FIELD_MINOFFHANDDAMAGE )
 			bonus = (wspeed-pAttacker->GetUInt32Value(UNIT_FIELD_BASEATTACKTIME + 1)) / 14000.0f*ap;
 		else
-			bonus = (wspeed-pAttacker->GetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME)) / 14000.0f*ap;
+			bonus = (wspeed-pAttacker->GetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME))/14000.0f*ap;
 		min_damage += bonus;
 		max_damage += bonus;
 	}

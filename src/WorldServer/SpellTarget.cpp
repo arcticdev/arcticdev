@@ -9,107 +9,107 @@
 // Function pointer holder
 pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET] = 
 {
-	&Spell::SpellTargetDefault,				       // 0
-	&Spell::SpellTargetSelf,					   // 1
-	&Spell::SpellTargetNULL,					   // 2 Not handled (Test spells)
-	&Spell::SpellTargetInvisibleAOE,			   // 3
-	&Spell::SpellTargetFriendly,				   // 4
-	&Spell::SpellTargetPet,					       // 5
-	&Spell::SpellTargetSingleTargetEnemy,	       // 6
-	&Spell::SpellTargetNULL,					   // 7
-	&Spell::SpellTargetCustomAreaOfEffect,	       // 8
-	&Spell::SpellTargetNULL,					   // 9  Not handled (no spells)
-	&Spell::SpellTargetNULL,					   // 10 Not handled (no spells)
-	&Spell::SpellTargetNULL,					   // 11 Not handled (Test spells)
-	&Spell::SpellTargetNULL,					   // 12 Not handled (no spells)
-	&Spell::SpellTargetNULL,					   // 13 Not handled (no spells)
-	&Spell::SpellTargetNULL,					   // 14 Not handled (no spells)
-	&Spell::SpellTargetAreaOfEffect,			   // 15
-	&Spell::SpellTargetAreaOfEffect,			   // 16
-	&Spell::SpellTargetNULL,					   // 17 Target is a location
-	&Spell::SpellTargetLandUnderCaster,		       // 18
-	&Spell::SpellTargetNULL,					   // 19 Not handled (Test spells)
-	&Spell::SpellTargetAllPartyMembersRangeNR,     // 20
-	&Spell::SpellTargetSingleTargetFriend,	       // 21
-	&Spell::SpellTargetAoE,					       // 22
-	&Spell::SpellTargetSingleGameobjectTarget,     // 23
-	&Spell::SpellTargetInFrontOfCaster,		       // 24
-	&Spell::SpellTargetSingleFriend,			   // 25
-	&Spell::SpellTargetGameobject_itemTarget,      // 26
-	&Spell::SpellTargetPetOwner,				   // 27
-	&Spell::SpellTargetEnemysAreaOfEffect,	       // 28 channeled
-	&Spell::SpellTargetTypeTAOE,				   // 29
-	&Spell::SpellTargetAllyBasedAreaEffect,	       // 30
-	&Spell::SpellTargetScriptedEffects,		       // 31
-	&Spell::SpellTargetSummon,				       // 32
-	&Spell::SpellTargetNearbyPartyMembers,	       // 33
-	&Spell::SpellTargetNULL,					   // 34 Not handled (No spells)
-	&Spell::SpellTargetSingleTargetPartyMember,    // 35
-	&Spell::SpellTargetScriptedEffects2,		   // 36
-	&Spell::SpellTargetPartyMember,			       // 37
-	&Spell::SpellTargetDummyTarget,			       // 38
-	&Spell::SpellTargetFishing,			    	   // 39
-	&Spell::SpellTargetType40,				       // 40
-	&Spell::SpellTargetTotem,				       // 41
-	&Spell::SpellTargetTotem,				       // 42
-	&Spell::SpellTargetTotem,				       // 43
-	&Spell::SpellTargetTotem,				       // 44
-	&Spell::SpellTargetChainTargeting,		       // 45
-	&Spell::SpellTargetSimpleTargetAdd,		       // 46
-	&Spell::SpellTargetSimpleTargetAdd,		       // 47
-	&Spell::SpellTargetSimpleTargetAdd,		       // 48
-	&Spell::SpellTargetSimpleTargetAdd,		       // 49
-	&Spell::SpellTargetSimpleTargetAdd,		       // 50
-	&Spell::SpellTargetNULL,					   // 51
-	&Spell::SpellTargetSimpleTargetAdd,		       // 52
-	&Spell::SpellTargetTargetAreaSelectedUnit,     // 53
-	&Spell::SpellTargetInFrontOfCaster2,	       // 54
-	&Spell::SpellTargetNULL,					   // 55 Not handled (Not realy handled by the current spell system)
-	&Spell::SpellTarget56,						   // 56
-	&Spell::SpellTargetTargetPartyMember,	       // 57
-	&Spell::SpellTargetNULL,					   // 58
-	&Spell::SpellTargetNULL,					   // 59
-	&Spell::SpellTargetNULL,					   // 60 // scripted target fill..
-	&Spell::SpellTargetSameGroupSameClass,	       // 61
-	&Spell::SpellTargetNULL,					   // 62 // targets the priest champion, big range..
-	&Spell::SpellTargetScriptedEffects,		       // 63 // summon [] creature
-	&Spell::SpellTargetSimpleTargetAdd,		       // 64 // summon [] creature
-	&Spell::SpellTargetSimpleTargetAdd,		       // 65 // summon [] creature
-	&Spell::SpellTargetSimpleTargetAdd,		       // 66 // summon [] creature
-	&Spell::SpellTargetSimpleTargetAdd,		       // 67 // summon [] creature
-	&Spell::SpellTargetNULL,					   // 68 Not handled (No spells)
-	&Spell::SpellTargetTotem,				       // 69 // Spitfire totem
-	&Spell::SpellTargetNULL,					   // 70 Not handled (No spells)
-	&Spell::SpellTargetNULL,					   // 71 Not handled (No spells)
-	&Spell::SpellTargetSimpleTargetAdd,		       // 72 // summon [] creature + trow items
-	&Spell::SpellTargetSummon,				       // 73
-	&Spell::SpellTargetNULL,					   // 74
-	&Spell::SpellTargetNULL,					   // 75
-	&Spell::SpellTargetNULL,					   // 76
-	&Spell::SpellTargetSingleTargetEnemy,	       // 77
-	&Spell::SpellTargetNULL,					   // 78
-	&Spell::SpellTargetNULL,					   // 79
-	&Spell::SpellTargetNULL,					   // 80
-	&Spell::SpellTargetNULL,					   // 81
-	&Spell::SpellTargetNULL,					   // 82
-	&Spell::SpellTargetNULL,					   // 83
-	&Spell::SpellTargetNULL,					   // 84
-	&Spell::SpellTargetNULL,					   // 85
-	&Spell::SpellTargetNULL,					   // 86
-	&Spell::SpellTargetAreaOfEffect87,			   // 87
-	&Spell::SpellTargetNULL,					   // 88
-	&Spell::SpellTargetNULL,					   // 89
-	&Spell::SpellTargetNULL,					   // 90
-	&Spell::SpellTargetNULL,					   // 91
-	&Spell::SpellTargetNULL,					   // 92
-	&Spell::SpellTargetNULL,					   // 93
-	&Spell::SpellTargetNULL,					   // 94
-	&Spell::SpellTargetNULL,					   // 95
-	&Spell::SpellTargetNULL,					   // 96
-	&Spell::SpellTargetNULL,					   // 97
-	&Spell::SpellTargetNULL,					   // 98
-	&Spell::SpellTargetNULL,					   // 99
-	&Spell::SpellTargetNULL,					   // 100
+	&Spell::SpellTargetDefault,						// 0
+	&Spell::SpellTargetSelf,						// 1
+	&Spell::SpellTargetNULL,						// 2 Not handled (Test spells)
+	&Spell::SpellTargetInvisibleAOE,				// 3
+	&Spell::SpellTargetFriendly,					// 4
+	&Spell::SpellTargetPet,							// 5
+	&Spell::SpellTargetSingleTargetEnemy,			// 6
+	&Spell::SpellTargetNULL,						// 7
+	&Spell::SpellTargetCustomAreaOfEffect,			// 8
+	&Spell::SpellTargetNULL,						// 9  Not handled (no spells)
+	&Spell::SpellTargetNULL,						// 10 Not handled (no spells)
+	&Spell::SpellTargetNULL,						// 11 Not handled (Test spells)
+	&Spell::SpellTargetNULL,						// 12 Not handled (no spells)
+	&Spell::SpellTargetNULL,						// 13 Not handled (no spells)
+	&Spell::SpellTargetNULL,						// 14 Not handled (no spells)
+	&Spell::SpellTargetAreaOfEffect,				// 15
+	&Spell::SpellTargetAreaOfEffect,				// 16
+	&Spell::SpellTargetNULL,						// 17 Target is a location
+	&Spell::SpellTargetLandUnderCaster,				// 18
+	&Spell::SpellTargetNULL,						// 19 Not handled (Test spells)
+	&Spell::SpellTargetAllPartyMembersRangeNR,		// 20
+	&Spell::SpellTargetSingleTargetFriend,			// 21
+	&Spell::SpellTargetAoE,							// 22
+	&Spell::SpellTargetSingleGameobjectTarget,		// 23
+	&Spell::SpellTargetInFrontOfCaster,				// 24
+	&Spell::SpellTargetSingleFriend,				// 25
+	&Spell::SpellTargetGameobject_itemTarget,		// 26
+	&Spell::SpellTargetPetOwner,					// 27
+	&Spell::SpellTargetEnemysAreaOfEffect,			// 28 channeled
+	&Spell::SpellTargetTypeTAOE,					// 29
+	&Spell::SpellTargetAllyBasedAreaEffect,			// 30
+	&Spell::SpellTargetScriptedEffects,				// 31
+	&Spell::SpellTargetSummon,						// 32
+	&Spell::SpellTargetNearbyPartyMembers,			// 33
+	&Spell::SpellTargetNULL,						// 34 Not handled (No spells)
+	&Spell::SpellTargetSingleTargetPartyMember,		// 35
+	&Spell::SpellTargetScriptedEffects2,			// 36
+	&Spell::SpellTargetPartyMember,					// 37
+	&Spell::SpellTargetDummyTarget,					// 38
+	&Spell::SpellTargetFishing,						// 39
+	&Spell::SpellTargetType40,						// 40
+	&Spell::SpellTargetTotem,						// 41
+	&Spell::SpellTargetTotem,						// 42
+	&Spell::SpellTargetTotem,						// 43
+	&Spell::SpellTargetTotem,						// 44
+	&Spell::SpellTargetChainTargeting,				// 45
+	&Spell::SpellTargetSimpleTargetAdd,				// 46
+	&Spell::SpellTargetSimpleTargetAdd,				// 47
+	&Spell::SpellTargetSimpleTargetAdd,				// 48
+	&Spell::SpellTargetSimpleTargetAdd,				// 49
+	&Spell::SpellTargetSimpleTargetAdd,				// 50
+	&Spell::SpellTargetNULL,						// 51
+	&Spell::SpellTargetSimpleTargetAdd,				// 52
+	&Spell::SpellTargetTargetAreaSelectedUnit,		// 53
+	&Spell::SpellTargetInFrontOfCaster2,			// 54
+	&Spell::SpellTargetNULL,						// 55 Not handled (Not realy handled by the current spell system)
+	&Spell::SpellTarget56,							// 56
+	&Spell::SpellTargetTargetPartyMember,			// 57
+	&Spell::SpellTargetNULL,						// 58
+	&Spell::SpellTargetNULL,						// 59
+	&Spell::SpellTargetNULL,						// 60 // scripted target fill..
+	&Spell::SpellTargetSameGroupSameClass,			// 61
+	&Spell::SpellTargetNULL,						// 62 // targets the priest champion, big range..
+	&Spell::SpellTargetScriptedEffects,				// 63 // summon [] creature
+	&Spell::SpellTargetSimpleTargetAdd,				// 64 // summon [] creature
+	&Spell::SpellTargetSimpleTargetAdd,				// 65 // summon [] creature
+	&Spell::SpellTargetSimpleTargetAdd,				// 66 // summon [] creature
+	&Spell::SpellTargetSimpleTargetAdd,				// 67 // summon [] creature
+	&Spell::SpellTargetNULL,						// 68 Not handled (No spells)
+	&Spell::SpellTargetTotem,						// 69 // Spitfire totem
+	&Spell::SpellTargetNULL,						// 70 Not handled (No spells)
+	&Spell::SpellTargetNULL,						// 71 Not handled (No spells)
+	&Spell::SpellTargetSimpleTargetAdd,				// 72 // summon [] creature + trow items
+	&Spell::SpellTargetSummon,						// 73
+	&Spell::SpellTargetNULL,						// 74
+	&Spell::SpellTargetNULL,						// 75
+	&Spell::SpellTargetAllTargetsInArea,			// 76
+	&Spell::SpellTargetSingleTargetEnemy,			// 77
+	&Spell::SpellTargetNULL,						// 78
+	&Spell::SpellTargetNULL,						// 79
+	&Spell::SpellTargetNULL,						// 80
+	&Spell::SpellTargetNULL,						// 81
+	&Spell::SpellTargetNULL,						// 82
+	&Spell::SpellTargetNULL,						// 83
+	&Spell::SpellTargetNULL,						// 84
+	&Spell::SpellTargetNULL,						// 85
+	&Spell::SpellTargetNULL,						// 86
+	&Spell::SpellTargetAreaOfEffect87,				// 87
+	&Spell::SpellTargetNULL,						// 88
+	&Spell::SpellTargetNULL,						// 89
+	&Spell::SpellTargetNULL,						// 90
+	&Spell::SpellTargetNULL,						// 91
+	&Spell::SpellTargetNULL,						// 92
+	&Spell::SpellTargetNULL,						// 93
+	&Spell::SpellTargetVehicle,						// 94
+	&Spell::SpellTargetNULL,						// 95
+	&Spell::SpellTargetNULL,						// 96
+	&Spell::SpellTargetNULL,						// 97
+	&Spell::SpellTargetNULL,						// 98
+	&Spell::SpellTargetNULL,						// 99
+	&Spell::SpellTargetNULL,						// 100
 	// all 100 > n spelltargettype's are from test spells
 };
 
@@ -221,7 +221,7 @@ void Spell::FillTargetMap(uint32 i)
 	if(!TypeB)
 	{
 		if(TypeA < TOTAL_SPELL_TARGET)
-			(this->*SpellTargetHandler[TypeA])(i, 0);		// 0=A
+			(this->*SpellTargetHandler[TypeA])(i, 0); // 0=A
 
 		return;
 	}
@@ -230,7 +230,7 @@ void Spell::FillTargetMap(uint32 i)
 	if(!TypeA)
 	{
 		if(TypeB < TOTAL_SPELL_TARGET)
-			(this->*SpellTargetHandler[TypeB])(i, 1);		 // 1=B
+			(this->*SpellTargetHandler[TypeB])(i, 1); // 1=B
 
 		return;
 	}
@@ -239,14 +239,14 @@ void Spell::FillTargetMap(uint32 i)
 	cur = m_spellInfo->EffectImplicitTargetA[i];
 	if (cur < TOTAL_SPELL_TARGET)
 	{
-		(this->*SpellTargetHandler[cur])(i,0);	             // 0=A
+		(this->*SpellTargetHandler[cur])(i,0); // 0=A
 	}
 
 	// j = 1
 	cur = m_spellInfo->EffectImplicitTargetB[i];
 	if (cur < TOTAL_SPELL_TARGET)
 	{
-		(this->*SpellTargetHandler[cur])(i,1);	             // 1=B
+		(this->*SpellTargetHandler[cur])(i,1); // 1=B
 	}
 }
 
@@ -316,8 +316,8 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		if( cr == NULL )
 			return;
 
-		if( cr->GetCreatureName() )
-			if(!(1<<(cr->GetCreatureName()->Type-1) & m_spellInfo->TargetCreatureType))
+		if( cr->GetCreatureInfo() )
+			if(!(1<<(cr->GetCreatureInfo()->Type-1) & m_spellInfo->TargetCreatureType))
 				return;
 	}
 
@@ -359,7 +359,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		float range=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));//this is probably wrong
 		range*=range;
 		unordered_set<Object*>::iterator itr;
-		for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+		for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 		{
 			if((*itr)->GetGUID()==m_targets.m_unitTarget)
 				continue;
@@ -487,7 +487,7 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 			++itr;
 			if(!((*itr2)->IsUnit()) || !TO_UNIT(*itr2)->isAlive())
 				continue;
-			//is Creature in range
+			// is Creature in range
 			if(m_caster->isInRange((*itr2),GetRadius(i)))
 			{
 				if(m_caster->isInFront(*itr2))
@@ -557,10 +557,10 @@ void Spell::SpellTargetEnemysAreaOfEffect(uint32 i, uint32 j)
 
 +-------+-----------------------------------------------+
 | 23467 | Tower Buff									|
-| 32087 | Putrid Cloud				    				|
-| 34378 | Thrall Calls Thunder						    |
-| 35487 | Seed of Revitalization Lightning Cloud Visual |
-| 36037 | Rina's Bough Lightning Cloud Visual		    |
+| 32087 | Putrid Cloud									|
+| 34378 | Thrall Calls Thunder							|
+| 35487 | Seed of Revitalization Lightning Cloud Visual	|
+| 36037 | Rina's Bough Lightning Cloud Visual			|
 +-------+-----------------------------------------------+
 
 Spell Target Handling for type 29: all object around the the caster / object (so it seems)
@@ -650,12 +650,12 @@ void Spell::SpellTargetNearbyPartyMembers(uint32 i, uint32 j)
 	{
 		if( u_caster->GetTypeId()==TYPEID_UNIT)
 		{
-			if(TO_CREATURE(u_caster)->IsTotem())
+			if( TO_CREATURE( u_caster )->IsTotem() )
 			{
 				float r = GetRadius(i);
 				r *= r;
 
-				Player* p = TO_PLAYER(TO_CREATURE(u_caster)->GetSummonOwner());
+				Player* p = TO_PLAYER( TO_CREATURE(u_caster)->GetSummonOwner());
 				
 				if( p == NULL)
 					return;
@@ -719,17 +719,12 @@ void Spell::SpellTargetPartyMember(uint32 i, uint32 j)
 	SubGroup * subgroup = Target->GetGroup() ?
 		Target->GetGroup()->GetSubGroup(Target->GetSubGroup()) : 0;
 
- 	float rsqr = GetRadius( i );
-	if( rsqr == 0 )
-		rsqr = 40*40; // kinda like a bug. 0 range to target a party member ? Highly impossible
-	else rsqr *= rsqr;
 	if(subgroup)
 	{
 		Target->GetGroup()->Lock();
 		for(GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr)
 		{
-		// if you are picky you could also check if on same map. Let's face it you won't similar positions on different maps
-		if((*itr)->m_loggedInPlayer && IsInrange(Target,(*itr)->m_loggedInPlayer, rsqr) )
+			if((*itr)->m_loggedInPlayer)
 				_AddTargetForced( (*itr)->m_loggedInPlayer->GetGUID(), i );
 		}
 		Target->GetGroup()->Unlock();
@@ -798,8 +793,9 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	firstTarget = m_caster->GetMapMgr()->GetPlayer((uint32)m_targets.m_unitTarget);
 	if( firstTarget && p_caster != NULL )
 	{
+		if( p_caster->InGroup() )
 			if( p_caster->GetSubGroup() == TO_PLAYER( firstTarget )->GetSubGroup() )
-				PartyOnly=true;					
+				PartyOnly=true;
 	}
 	else
 	{
@@ -848,7 +844,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	else
 	{
 		unordered_set<Object*>::iterator itr;
-		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); itr++ )
+		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); ++itr )
 		{
 			if( !(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive())
 				continue;
@@ -905,7 +901,7 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 {
 	unordered_set<Object* >::iterator itr;
 
-	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if(!((*itr)->IsUnit()) || !TO_UNIT(*itr)->isAlive())
 			continue;
@@ -1016,5 +1012,24 @@ void Spell::SpellTargetAreaOfEffect87(uint32 i, uint32 j)
 		return;
 
 	_AddTargetForced(m_caster->GetGUID(), i);
-	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
 }
+
+// Spell Target Handling for type 76 All targets in area
+void Spell::SpellTargetAllTargetsInArea(uint32 i, uint32 j)
+{
+	if( !m_caster || !m_caster->IsInWorld() )
+		return;
+
+	FillAllTargetsInArea(i, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, GetRadius(i));
+}
+
+// Spell Target Handling for type 94: Target: Vehicle
+void Spell::SpellTargetVehicle(uint32 i, uint32 j)
+{
+	if(p_caster)
+	{
+		if( p_caster->m_CurrentVehicle != NULL )
+			_AddTargetForced( p_caster->m_CurrentVehicle->GetGUID(), i );
+	}
+}
+

@@ -36,7 +36,8 @@ Unit::Unit()
 
 	// Pet
 	m_isPet = false;
-	// Pet Talents...WOOT!
+
+	// Pet Talents...
 	m_PetTalentPointModifier = 0;
 
 	// Vehicle
@@ -44,7 +45,7 @@ Unit::Unit()
 	m_inVehicleSeatId = 0xFF;
 	m_CurrentVehicle = NULLVEHICLE;
 
-	// transport shit
+	// Transport shit
 	m_transportPosition = new LocationVector(0,0,0);
 	m_TransporterGUID = NULL;
 	m_TransporterUnk = 0.0f;
@@ -933,7 +934,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 								}
 								else continue; // no weapon no joy
 							}
-							else continue; //no weapon no joy
+							else continue; // no weapon no joy
 						}break;
 						// warrior - Blood Frenzy
 						case 30069:
@@ -1066,10 +1067,10 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 						case 17941:
 							{
 								if( CastingSpell == NULL )
-									continue;// this should not ocur unless we made a fuckup somewhere
+									continue; // this should not ocur unless we made a fuckup somewhere
 								// only trigger effect for specified spells
-								if( CastingSpell->NameHash != SPELL_HASH_CORRUPTION && //Corruption
-									CastingSpell->NameHash != SPELL_HASH_DRAIN_LIFE )//Drain Life								
+								if( CastingSpell->NameHash != SPELL_HASH_CORRUPTION && // Corruption
+									CastingSpell->NameHash != SPELL_HASH_DRAIN_LIFE ) // Drain Life								
 									continue;
 							}break;
 						case 32386: // Shadow Embrace
@@ -1088,7 +1089,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 						case 18118:
 							{
 								if( CastingSpell == NULL )
-									continue;// this should not ocur unless we made a fuckup somewhere
+									continue; // this should not ocur unless we made a fuckup somewhere
 								// only trigger effect for specified spells
 								skilllinespell* skillability = objmgr.GetSpellSkill(CastingSpell->Id);
 								if( !skillability )
@@ -1147,7 +1148,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 							{
 								if( CastingSpell == NULL )
 									continue; // this should not ocur unless we made a fuckup somewhere
-								if( CastingSpell->School != SCHOOL_SHADOW || !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) ) //we need damaging spells for this, so we suppose all shadow spells casted on target are dmging spells = Wrong
+								if( CastingSpell->School != SCHOOL_SHADOW || !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) ) // we need damaging spells for this, so we suppose all shadow spells casted on target are dmging spells = Wrong
 									continue;
 							}break;
 						// priest - Inspiration
@@ -1217,7 +1218,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 								if( CastingSpell == NULL )
 									continue; // this should not ocur unless we made a fuckup somewhere
 								// only trigger effect for specified spells
-								if( CastingSpell->NameHash != SPELL_HASH_HEALING_WAVE ) //healing wave
+								if( CastingSpell->NameHash != SPELL_HASH_HEALING_WAVE ) // healing wave
 									continue;
 							}break;
 						case 16180:
@@ -1608,7 +1609,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 							{
 								if( CastingSpell == NULL )
 									continue;
-								if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) ) //requires offensive spell. ! might not cover all spells
+								if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) ) // requires offensive spell. ! might not cover all spells
 									continue;
 							}break;
 						// Fingers of Frost
@@ -1860,7 +1861,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 								if(!CastingSpell || CastingSpell->NameHash != SPELL_HASH_REND)
 									continue;
 							}break;
-						case 46989: //improved blink
+						case 46989: // improved blink
 						case 47000:
 							{
 								if ( !CastingSpell || CastingSpell->NameHash != SPELL_HASH_BLINK )
@@ -1893,7 +1894,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 									Heal( TO_UNIT(this), 50475, toheal );
 								}
 							}break;
-						case 54741: //Firestarter
+						case 54741: // Firestarter
 							{
 								if (!CastingSpell )
 									continue;
@@ -2295,7 +2296,8 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 					SpellEntry * spe = aura->m_spellProto;
 					uint32 *SpellClassMask = spe->EffectSpellClassMask[0];
 
-					if (SpellClassMask && (SpellClassMask[0] || SpellClassMask[1] || SpellClassMask[2])) {
+					if (SpellClassMask && (SpellClassMask[0] || SpellClassMask[1] || SpellClassMask[2])) 
+					{
 						if (!Spell::EffectAffectsSpell(spe, 0, CastingSpell))
 							continue;
 					}
@@ -2338,7 +2340,7 @@ uint32 Unit::HandleProc( uint32 flag, uint32 flag2, Unit* victim, SpellEntry* Ca
 						}break;
 					}
 					if(spe->NameHash == SPELL_HASH_FLURRY)
-						continue;  // only removed on auto attack swings not abilities
+						continue; // only removed on auto attack swings not abilities
 				}
 				aura->ModProcCharges(-1);
 			}
@@ -2749,7 +2751,7 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	{
 		it = TO_PLAYER(this)->GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_OFFHAND );
 		if( it != NULL && (it->GetProto()->InventoryType == INVTYPE_WEAPON ||
-			it->GetProto()->InventoryType == INVTYPE_2HWEAPON) && !ability )//dualwield to-hit penalty
+			it->GetProto()->InventoryType == INVTYPE_2HWEAPON) && !ability ) // dualwield to-hit penalty
 		{
 			hitmodifier -= 19.0f;
 		}
@@ -2914,7 +2916,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				// dodge chance                                                         //
 				//////////////////////////////////////////////////////////////////////////
 
-				if(pVictim->m_stunned<=0) 
+				if(pVictim->m_stunned <= 0) 
 				{
 					dodge = pVictim->GetFloatValue( PLAYER_DODGE_PERCENTAGE );
 				}
@@ -2935,7 +2937,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				// dodge chance                                                         //
 				//////////////////////////////////////////////////////////////////////////
 
-				if(pVictim->m_stunned<=0) 
+				if(pVictim->m_stunned <= 0) 
 				{
 					dodge = pVictim->GetFloatValue( PLAYER_DODGE_PERCENTAGE );
 				}
@@ -4527,7 +4529,7 @@ bool Unit::RemoveAllNegAuraByNameHash(uint32 namehash)
 
 void Unit::RemoveAllNegativeAuras()
 {
-	for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++)
+	for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL)
 		{
@@ -4723,7 +4725,6 @@ int32 Unit::GetSpellBonusDamage(Unit* pVictim, SpellEntry *spellInfo,int32 base_
 	// victim type                                                          //
 	//////////////////////////////////////////////////////////////////////////
 
-attribute
 	if( pVictim->IsCreature() && TO_CREATURE(pVictim)->GetCreatureInfo() && caster->IsPlayer() && !pVictim->IsPlayer() )
 		bonus_damage += TO_PLAYER(caster)->IncreaseDamageByType[TO_CREATURE(pVictim)->GetCreatureInfo()->Type];
 
