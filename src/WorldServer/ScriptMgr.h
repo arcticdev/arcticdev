@@ -10,11 +10,11 @@
 #define SCRIPT_MODULE void*
 #define ADD_CREATURE_FACTORY_FUNCTION(cl) static CreatureAIScript * Create(Creature* c) { return new cl(c); }
 #define ADD_INSTANCE_FACTORY_FUNCTION( ClassName ) static InstanceScript* Create( MapMgr* pMapMgr ) { return new ClassName( pMapMgr ); };
+#define ADD_GAMEOBJECT_FACTORY_FUNCTION(cl) static GameObjectAIScript * Create(GameObject* go) { return new cl(go); }
 
 class Channel;
 class Guild;
 struct Quest;
-
 enum ServerHookEvents
 {
 	SERVER_HOOK_EVENT_ON_NEW_CHARACTER = 1,
@@ -45,11 +45,11 @@ enum ServerHookEvents
 	SERVER_HOOK_EVENT_ON_AREATRIGGER = 27,
 	SERVER_HOOK_EVENT_ON_PLAYER_SAVE_TO_DB = 28,
 	SERVER_HOOK_EVENT_ON_AURA_REMOVE = 29,
-    SERVER_HOOK_EVENT_ON_DESTROY_BUILDING = 30,
-    SERVER_HOOK_EVENT_ON_DAMAGE_BUILDING = 31,
-    SERVER_HOOK_EVENT_ON_MOUNT_FLYING = 32,
-    SERVER_HOOK_EVENT_ON_PRE_AURA_REMOVE = 33,
-    SERVER_HOOK_EVENT_ON_SLOW_LOCK_OPEN = 34,
+	SERVER_HOOK_EVENT_ON_DESTROY_BUILDING = 30,
+	SERVER_HOOK_EVENT_ON_DAMAGE_BUILDING = 31,
+	SERVER_HOOK_EVENT_ON_MOUNT_FLYING = 32,
+	SERVER_HOOK_EVENT_ON_PRE_AURA_REMOVE = 33,
+	SERVER_HOOK_EVENT_ON_SLOW_LOCK_OPEN = 34,
 	NUM_SERVER_HOOKS,
 };
 
@@ -91,11 +91,13 @@ typedef void(*tOnPostSpellCast)(Player* pPlayer, SpellEntry * pSpell, Unit* pTar
 typedef void(*tOnAreaTrigger)(Player* plr, uint32 areatrigger);
 typedef void(*tOnPlayerSaveToDB)(Player* pPlayer, QueryBuffer* buf);
 typedef void(*tOnAuraRemove)(Player* pPlayer, uint32 spellID);
-typedef void(*tOnDestroyBuilding)(GameObject* go);
-typedef void(*tOnDamageBuilding)(GameObject* go);
-typedef bool(*tOnMountFlying) (Player* plr);
-typedef bool(*tOnPreAuraRemove)(Player* plr,uint32 spellID);
-typedef void(*tOnSlowLockOpen)(GameObject* go,Player* plr);
+
+// Destructable building
+typedef void(*tOnDestroyBuilding)(GameObject* go); 
+typedef void(*tOnDamageBuilding)(GameObject* go); 
+typedef bool(*tOnMountFlying) (Player* plr); 
+typedef bool(*tOnPreAuraRemove)(Player* plr,uint32 spellID); 
+typedef void(*tOnSlowLockOpen)(GameObject* go,Player* plr); 
 
 class Spell;
 class Aura;
@@ -164,7 +166,6 @@ public:
 	ARCTIC_INLINE GossipScript * GetDefaultGossipScript() { return DefaultGossipScript; }
 
 protected:
-
 	InstanceCreateMap mInstances;
 	CreatureCreateMap _creatures;
 	GameObjectCreateMap _gameobjects;
@@ -350,12 +351,14 @@ public:
 	void OnPostSpellCast(Player* pPlayer, SpellEntry * pSpell, Unit* pTarget);
 	void OnAreaTrigger(Player* plr, uint32 areatrigger);
 	void OnPlayerSaveToDB(Player* pPlayer, QueryBuffer* buf);
-    void OnAuraRemove(Player* pPlayer, uint32 spellID);
-    void OnDestroyBuilding(GameObject* go);
-    void OnDamageBuilding(GameObject* go);
-    bool OnMountFlying(Player* plr);
-    bool OnPreAuraRemove(Player* remover,uint32 spellID);
-    void OnSlowLockOpen(GameObject* go,Player* plr);
+	void OnAuraRemove(Player* pPlayer, uint32 spellID);
+
+	// Destructable buildings
+	void OnDestroyBuilding(GameObject* go);
+	void OnDamageBuilding(GameObject* go);
+	bool OnMountFlying(Player* plr);
+	bool OnPreAuraRemove(Player* remover,uint32 spellID);
+	void OnSlowLockOpen(GameObject* go,Player* plr);
 };
 
 #define sScriptMgr ScriptMgr::getSingleton()

@@ -23,9 +23,11 @@
 #define SKILL_2H_SWORDS                 55
 #define SKILL_HOLY                      56
 #define SKILL_SHADOW                    78
+#define SKILL_DODGE                     81
 #define SKILL_DEFENSE                   95
 #define SKILL_LANG_COMMON               98
 #define SKILL_RACIAL_DWARVEN            101
+#define SKILL_BLOCK                     107
 #define SKILL_LANG_ORCISH               109
 #define SKILL_LANG_DWARVEN              111
 #define SKILL_LANG_DARNASSIAN           113
@@ -65,7 +67,7 @@
 #define SKILL_PET_IMP                   188
 #define SKILL_PET_FELHUNTER             189
 #define SKILL_TAILORING                 197
-#define SKILL_ENGINEERING               202
+#define SKILL_ENGINERING                202
 #define SKILL_PET_SPIDER                203
 #define SKILL_PET_VOIDWALKER            204
 #define SKILL_PET_SUCCUBUS              205
@@ -156,29 +158,30 @@
 #define SKILL_BLOOD                     770
 #define SKILL_DK_FROST                  771
 #define SKILL_UNHOLY                    772
-#define SKILL_INSCRIPTION				773
-#define SKILL_PET_MOTH					775
-#define SKILL_RUNEFORGING				776
-#define SKILL_MOUNTS					777
-#define SKILL_COMPANIONS				778
-#define SKILL_PET_EXOTIC_CHIMAERA		780
-#define SKILL_PET_EXOTIC_DEVILSAUR		781
-#define SKILL_PET_GHOUL					782
-#define SKILL_PET_EXOTIC_SILITHID		783
-#define SKILL_PET_EXOTIC_WORM			784
-#define SKILL_PET_WASP					785
-#define SKILL_PET_EXOTIC_RHINO			786
-#define SKILL_PET_EXOTIC_CORE_HOUND		787
-#define SKILL_PET_EXOTIC_SPIRIT_BEAST	788
+#define SKILL_INSCRIPTION               773
+#define SKILL_PET_MOTH                  775
+#define SKILL_RUNEFORGING               776
+#define SKILL_MOUNTS                    777
+#define SKILL_COMPANIONS                778
+#define SKILL_PET_EXOTIC_CHIMAERA       780
+#define SKILL_PET_EXOTIC_DEVILSAUR      781
+#define SKILL_PET_GHOUL                 782
+#define SKILL_PET_EXOTIC_SILITHID       783
+#define SKILL_PET_EXOTIC_WORM           784
+#define SKILL_PET_WASP                  785
+#define SKILL_PET_EXOTIC_RHINO          786
+#define SKILL_PET_EXOTIC_CORE_HOUND     787
+#define SKILL_PET_EXOTIC_SPIRIT_BEAST   788
+#define SKILL_PARRY                    3127
 
-#define SKILL_TYPE_ATTRIBUTES           5
-#define SKILL_TYPE_WEAPON               6
-#define SKILL_TYPE_CLASS                7
-#define SKILL_TYPE_ARMOR                8
-#define SKILL_TYPE_SECONDARY            9
-#define SKILL_TYPE_LANGUAGE             10
-#define SKILL_TYPE_PROFESSION           11
-#define SKILL_TYPE_NA                   12
+#define SKILL_TYPE_ATTRIBUTES             5
+#define SKILL_TYPE_WEAPON                 6
+#define SKILL_TYPE_CLASS                  7
+#define SKILL_TYPE_ARMOR                  8
+#define SKILL_TYPE_SECONDARY              9
+#define SKILL_TYPE_LANGUAGE              10
+#define SKILL_TYPE_PROFESSION            11
+#define SKILL_TYPE_NA                    12
 
 typedef struct
 {

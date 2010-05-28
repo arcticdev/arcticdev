@@ -7,13 +7,13 @@
 #include "StdAfx.h"
 
 #ifndef WIN32
-    #include <dlfcn.h>
-    #include <unistd.h>
-    #include <dirent.h>
-    #include <sys/types.h>
-    #include <sys/stat.h>
-    #include <cstdlib>
-    #include <cstring>
+#include <dlfcn.h>
+#include <unistd.h>
+#include <dirent.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <cstdlib>
+#include <cstring>
 #endif
 
 #include <svn_revision.h>
@@ -21,9 +21,6 @@
 #define SCRIPTLIB_LOPART(x) ((x & 0x0000ffff))
 #define SCRIPTLIB_VERSION_MINOR (BUILD_REVISION % 1000)
 #define SCRIPTLIB_VERSION_MAJOR (BUILD_REVISION / 1000)
-
-#define REQ_DUAL_SPEC_LVL 40 
-#define MAX_SPECS 2
 
 initialiseSingleton(ScriptMgr);
 initialiseSingleton(HookInterface);
@@ -80,7 +77,7 @@ void ScriptMgr::LoadScripts()
 				Log.Error("ScriptMgr","Loading %s failed, crc=0x%p", data.cFileName, reinterpret_cast< uint32* >( mod ));
 			else
 			{
-			    // find version import
+				// find version import
 				exp_get_version vcall = (exp_get_version)GetProcAddress(mod, "_exp_get_version");
 				exp_script_register rcall = (exp_script_register)GetProcAddress(mod, "_exp_script_register");
 				exp_get_script_type scall = (exp_get_script_type)GetProcAddress(mod, "_exp_get_script_type");
@@ -91,11 +88,11 @@ void ScriptMgr::LoadScripts()
 				}
 				else
 				{
-				    uint32 version = vcall();
+					uint32 version = vcall();
 					uint32 stype = scall();
 					if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
 					{
-					    std::stringstream cmsg; 
+						std::stringstream cmsg; 
 						cmsg << "Loading " << data.cFileName << ", crc:0x" << reinterpret_cast< uint32* >( mod );
 
 						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
@@ -166,7 +163,7 @@ void ScriptMgr::LoadScripts()
 				FreeLibrary( itr->Handle );
 			}
 		}
-		Log.Notice("ScriptMgr","Done loading script engines...");
+		Log.Success("ScriptMgr","Done loading script engines...");
 		sLog.outString("");
 	}
 #else
@@ -184,106 +181,109 @@ char *ext;
 		{
 			ext = strrchr(list[filecount]->d_name, '.');
 #ifdef HAVE_DARWIN
-			if (ext != NULL && strstr(list[filecount]->d_name, ".0.dylib") == NULL && !strcmp(ext, ".dylib")) {
+			if (ext != NULL && strstr(list[filecount]->d_name, ".0.dylib") == NULL && !strcmp(ext, ".dylib")) 
+			{
 #else
-                        if (ext != NULL && !strcmp(ext, ".so")) {
-#endif
-				string full_path = "../lib/" + string(list[filecount]->d_name);
-				SCRIPT_MODULE mod = dlopen(full_path.c_str(), RTLD_NOW);
-				printf("  %s : 0x%p : ", list[filecount]->d_name, mod);
-				if(mod == 0)
-					printf("error! [%s]\n", dlerror());
-				else
+				if (ext != NULL && !strcmp(ext, ".so")) 
 				{
-					// find version import
-					exp_get_version vcall = (exp_get_version)dlsym(mod, "_exp_get_version");
-					exp_script_register rcall = (exp_script_register)dlsym(mod, "_exp_script_register");
-					exp_get_script_type scall = (exp_get_script_type)dlsym(mod, "_exp_get_script_type");
-					if(vcall == 0 || rcall == 0 || scall == 0)
-					{
-						printf("version functions not found!\n");
-						dlclose(mod);
-					}
+#endif
+					string full_path = "../lib/" + string(list[filecount]->d_name);
+					SCRIPT_MODULE mod = dlopen(full_path.c_str(), RTLD_NOW);
+					printf("  %s : 0x%p : ", list[filecount]->d_name, mod);
+					if(mod == 0)
+						printf("error! [%s]\n", dlerror());
 					else
 					{
-						int32 version = vcall();
-						uint32 stype = scall();
-						if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
+						// find version import
+						exp_get_version vcall = (exp_get_version)dlsym(mod, "_exp_get_version");
+						exp_script_register rcall = (exp_script_register)dlsym(mod, "_exp_script_register");
+						exp_get_script_type scall = (exp_get_script_type)dlsym(mod, "_exp_get_script_type");
+						if(vcall == 0 || rcall == 0 || scall == 0)
 						{
-							if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
-							{
-								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-								printf("delayed load.\n");
-
-								ScriptingEngine se;
-								se.Handle = mod;
-								se.InitializeCall = rcall;
-								se.Type = stype;
-
-								ScriptEngines.push_back( se );
-							}
-							else
-							{
-								_handles.push_back(((SCRIPT_MODULE)mod));
-								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
-								rcall(this);
-								printf("loaded.\n");						
-							}
-
-							++count;
+							printf("version functions not found!\n");
+							dlclose(mod);
 						}
 						else
 						{
-							dlclose(mod);
-							printf("version mismatch!\n");						
+							int32 version = vcall();
+							uint32 stype = scall();
+							if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
+							{
+								if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
+								{
+									printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+									printf("delayed load.\n");
+
+									ScriptingEngine se;
+									se.Handle = mod;
+									se.InitializeCall = rcall;
+									se.Type = stype;
+
+									ScriptEngines.push_back( se );
+								}
+								else
+								{
+									_handles.push_back(((SCRIPT_MODULE)mod));
+									printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+									rcall(this);
+									printf("loaded.\n");
+								}
+
+								++count;
+							}
+							else
+							{
+								dlclose(mod);
+								printf("version mismatch!\n");
+							}
 						}
 					}
 				}
+				free(list[filecount]);
 			}
-			free(list[filecount]);
-		}
-		free(list);
-		sLog.outString("");
-		sLog.outString("Loaded %u external libraries.", count);
-		sLog.outString("");
+			free(list);
+			sLog.outString("");
+			sLog.outString("Loaded %u external libraries.", count);
+			sLog.outString("");
 
-		sLog.outString("Loading optional scripting engines...");
-		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
-		{
-			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
+			sLog.outString("Loading optional scripting engines...");
+			for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
 			{
-				// lua :O
-				if( Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false) )
+				if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_LUA )
 				{
-					sLog.outString("   Initializing LUA script engine...");
-					itr->InitializeCall(this);
-					_handles.push_back( (SCRIPT_MODULE)itr->Handle );
+					// lua :O
+					if( Config.MainConfig.GetBoolDefault("ScriptBackends", "LUA", false) )
+					{
+						sLog.outString(" Initializing LUA script engine...");
+						itr->InitializeCall(this);
+						_handles.push_back( (SCRIPT_MODULE)itr->Handle );
+					}
+					else
+					{
+						dlclose( itr->Handle );
+					}
+				}
+				else if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_AS )
+				{
+					if( Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false) )
+					{
+						sLog.outString(" Initializing AngelScript script engine...");
+						itr->InitializeCall(this);
+						_handles.push_back( (SCRIPT_MODULE)itr->Handle );
+					}
+					else
+					{
+						dlclose( (*itr).Handle );
+					}
 				}
 				else
 				{
+					sLog.outString(" Unknown script engine type: 0x%.2X, please contact developers.", (*itr).Type );
 					dlclose( itr->Handle );
 				}
 			}
-			else if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_AS )
-			{
-				if( Config.MainConfig.GetBoolDefault("ScriptBackends", "AS", false) )
-				{
-					sLog.outString("   Initializing AngelScript script engine...");
-					itr->InitializeCall(this);
-					_handles.push_back( (SCRIPT_MODULE)itr->Handle );
-				}
-				else
-				{
-					dlclose( (*itr).Handle );
-				}
-			}
-			else
-			{
-				sLog.outString("  Unknown script engine type: 0x%.2X, please contact developers.", (*itr).Type );
-				dlclose( itr->Handle );
-			}
+			Log.Success("ArcTic ScriptMgr","Done loading script engines...");
 		}
-		sLog.outString("Done loading script engines...");
 	}
 #endif
 }
@@ -466,10 +466,8 @@ void CreatureAIScript::RemoveAIUpdateEvent()
 }
 
 // GameObjectAI Stuff.
-
 GameObjectAIScript::GameObjectAIScript(GameObject* goinstance) : _gameobject(goinstance)
 {
-
 }
 
 void GameObjectAIScript::RegisterAIUpdateEvent(uint32 frequency)
@@ -478,12 +476,10 @@ void GameObjectAIScript::RegisterAIUpdateEvent(uint32 frequency)
 }
 
 // QuestScript Stuff.
-
 // Gossip Stuff.
 
 GossipScript::GossipScript()
 {
-	
 }
 
 void GossipScript::GossipEnd(Object* pObject, Player* Plr)
@@ -495,7 +491,7 @@ bool CanTrainAt(Player* plr, Trainer * trn);
 void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 {
 	GossipMenu *Menu;
-	uint32 TextID = 68; // Hi there how can I help you $N	Greetings $N
+	uint32 TextID = 68; // Hi there how can I help you $N Greetings $N
 
 	Creature* pCreature = (pObject->GetTypeId()==TYPEID_UNIT)?TO_CREATURE( pObject ):NULLCREATURE;
 	if(!pCreature)
@@ -516,13 +512,13 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	
 	uint32 flags = pCreature->GetUInt32Value(UNIT_NPC_FLAGS);
 
-	if( (flags & UNIT_NPC_FLAG_VENDOR || flags & UNIT_NPC_FLAG_VENDOR_AMMO || flags & UNIT_NPC_FLAG_VENDOR_FOOD || flags & UNIT_NPC_FLAG_VENDOR_POISON || flags & UNIT_NPC_FLAG_VENDOR_REAGENT) && !pCreature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE))
+	if( flags & UNIT_NPC_FLAG_VENDOR && !pCreature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE))
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_VENDOR, "I would like to browse your goods", 1);
 
-	if(pTrainer != NULL && (flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_CLASS || flags & UNIT_NPC_FLAG_TRAINER_PROFESSION))
+	if(pTrainer != NULL && (flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_PROF))
 	{
-		string name = pCreature->GetCreatureName()->Name;
-		string::size_type pos = name.find(" ");	  // only take first name
+		string name = pCreature->GetCreatureInfo()->Name;
+		string::size_type pos = name.find(" "); // only take first name
 		if(pos != string::npos)
 			name = name.substr(0, pos);
 
@@ -563,7 +559,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 					msg += "priest";
 					break;
 				case DEATHKNIGHT:
-					msg += "death knigh";
+					msg += "death knight";
 					break;
 				case SHAMAN:
 					msg += "shaman";
@@ -609,31 +605,31 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_TABARD, "I want to create a guild crest.", 9);
 
 	if(flags & UNIT_NPC_FLAG_BATTLEFIELDPERSON)
-		Menu->AddItem(0, "I would like to go to the battleground.", 10);
+		Menu->AddItem(GOSSIP_ICON_GOSSIP_ARENA, "I would like to go to the battleground.", 10);
 
-	if( pTrainer && !(flags & UNIT_NPC_FLAG_TRAINER_PROF) &&
-		pCreature->getLevel() > 10 &&				   // creature level
-		Plr->getLevel() > 10 )						   // player level
+	if( pTrainer && pTrainer->RequiredClass )
 	{
-		if(pTrainer->RequiredClass)
+		if( pTrainer->RequiredClass == Plr->getClass() && pCreature->getLevel() > 10 && Plr->getLevel() > 11 )
 		{
-			if(pTrainer->RequiredClass == Plr->getClass())
-			{
-				Menu->AddItem(0, "I would like to reset my talents.", 11);
-			}
+			Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "I would like to reset my talents.", 11);
+			if( Plr->getLevel() >= 40 && Plr->m_talentSpecsCount < 2)
+				Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "Learn about Dual Talent Specialization.", 16);
 		}
-		else
-			Menu->AddItem(0, "I would like to reset my talents.", 11);
-
 	}
 	
 	if( pTrainer &&
-		pTrainer->TrainerType == TRAINER_TYPE_PET &&	// pet trainer type
-		Plr->getClass() == HUNTER &&					// hunter class
-		Plr->GetSummon() != NULL )						// have pet
+		pTrainer->TrainerType == TRAINER_TYPE_PET && // pet trainer type
+		Plr->getClass() == HUNTER &&                 // hunter class
+		Plr->GetSummon() != NULL )                   // have pet
 	{
 		Menu->AddItem(0, "I would like to untrain my pet.", 13); // TODO: Find proper message
 	}
+
+	if( pCreature->GetEntry() == 35364 || pCreature->GetEntry() == 35365 )
+		if(Plr->m_XPoff)
+			Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "I wish to start gaining experience again.", 18, false, 100000, "Are you certain you wish to start gaining experience?" );
+		else
+			Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "I no longer wish to gain experience.", 18, false, 100000, "Are you certain you wish to stop gaining experience?" );
 
 	if(AutoSend)
 		Menu->SendTo(Plr);
@@ -730,8 +726,8 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 	case 16:
 		{
 			GossipMenu *Menu;
-			objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 30000, Plr);
-			Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "Purchase a Dual Talent Specialization.", 17);
+			objmgr.CreateGossipMenuForPlayer(&Menu, pCreature->GetGUID(), 14391, Plr);
+			Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "Purchase a Dual Talent Specialization.", 17, false, sWorld.dualTalentTrainCost, "Are you sure you would like to purchase your second talent specialization?" );
 			Menu->SendTo(Plr);
 		}break;
 	case 17:
@@ -739,7 +735,12 @@ void GossipScript::GossipSelectOption(Object* pObject, Player* Plr, uint32 Id, u
 			Plr->Gossip_Complete();
 			Plr->SendDualTalentConfirm();
 		}break;
-	case 99:		// Aborting current action
+	case 18: // Enable and disable XP.
+		{
+			Plr->Gossip_Complete();
+			Plr->SendXPToggleConfirm();
+		}break;
+	case 99: // Aborting current action
 		{
 			Plr->Gossip_Complete();
 		}break;
@@ -755,7 +756,6 @@ void GossipScript::Destroy()
 }
 
 // InstanceAI Stuff.
-
 InstanceScript::InstanceScript( MapMgr* pMapMgr ) : mInstance( pMapMgr )
 {
 };
@@ -776,7 +776,6 @@ void InstanceScript::RemoveUpdateEvent()
 };
 
 // Hook Stuff.
-
 void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 {
 	ASSERT(event < NUM_SERVER_HOOKS);
@@ -989,6 +988,7 @@ void HookInterface::OnAuraRemove(Player* pPlayer, uint32 spellID)
 		(call)(pPlayer, spellID);
 	OUTER_LOOP_END
 }
+
 void HookInterface::OnDestroyBuilding(GameObject* go)
 {
 	OUTER_LOOP_BEGIN(SERVER_HOOK_EVENT_ON_DESTROY_BUILDING,tOnDestroyBuilding)

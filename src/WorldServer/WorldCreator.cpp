@@ -42,7 +42,7 @@ void InstanceMgr::Load(TaskList * l)
 	{
 		do 
 		{
-			if( !WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) )
+			if( WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL )
 				continue;
 
 			if( result->Fetch()[0].GetUInt32() >= NUM_MAPS )

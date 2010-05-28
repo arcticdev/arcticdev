@@ -16,7 +16,7 @@ void WorldSession::HandleLearnTalentOpcode( WorldPacket & recv_data )
 	_player->LearnTalent(talent_id, requested_rank);
 
 	_player->UpdateTalentInspectBuffer();
-	_player->smsg_TalentsInfo(true, talent_id, requested_rank);
+	_player->smsg_TalentsInfo(false);
 }
 
 void WorldSession::HandleLearnPreviewTalents( WorldPacket & recv_data )
@@ -30,7 +30,7 @@ void WorldSession::HandleLearnPreviewTalents( WorldPacket & recv_data )
 		_player->LearnTalent(talent_id, requested_rank);
 	}
 	_player->UpdateTalentInspectBuffer();
-	_player->smsg_TalentsInfo(false, 0, 0);
+	_player->smsg_TalentsInfo(false);
 }
 
 void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
