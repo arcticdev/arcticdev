@@ -7,14 +7,14 @@
 #ifndef OBJECT_STORAGE_H
 #define OBJECT_STORAGE_H
 
-extern ARCTIC_DECL SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >			    	ItemPrototypeStorage;
-extern ARCTIC_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >		    		CreatureNameStorage;
-extern ARCTIC_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >  			GameObjectNameStorage;
-extern ARCTIC_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >		    	CreatureProtoStorage;
-extern ARCTIC_DECL SQLStorage<CreatureStatsHeroic, HashMapStorageContainer<CreatureStatsHeroic> >   CreatureStatsHeroicStorage;
+extern ARCTIC_DECL SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >					ItemPrototypeStorage;
+extern ARCTIC_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >					CreatureNameStorage;
+extern ARCTIC_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >				GameObjectNameStorage;
+extern ARCTIC_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >				CreatureProtoStorage;
+extern ARCTIC_DECL SQLStorage<CreatureProtoHeroic, HashMapStorageContainer<CreatureProtoHeroic> >	CreatureProtoHeroicStorage;
 extern ARCTIC_DECL SQLStorage<CreatureProtoVehicle, HashMapStorageContainer<CreatureProtoVehicle> >	CreatureProtoVehicleStorage;
-extern ARCTIC_DECL SQLStorage<AreaTrigger, HashMapStorageContainer<AreaTrigger> >		    		AreaTriggerStorage;
-extern ARCTIC_DECL SQLStorage<ItemPage, HashMapStorageContainer<ItemPage> >			    			ItemPageStorage;
+extern ARCTIC_DECL SQLStorage<AreaTrigger, HashMapStorageContainer<AreaTrigger> >					AreaTriggerStorage;
+extern ARCTIC_DECL SQLStorage<ItemPage, HashMapStorageContainer<ItemPage> >							ItemPageStorage;
 extern ARCTIC_DECL SQLStorage<Quest, HashMapStorageContainer<Quest> >								QuestStorage;
 extern ARCTIC_DECL SQLStorage<GossipText, HashMapStorageContainer<GossipText> >						NpcTextStorage;
 extern ARCTIC_DECL SQLStorage<GraveyardTeleport, HashMapStorageContainer<GraveyardTeleport> >		GraveyardStorage;
