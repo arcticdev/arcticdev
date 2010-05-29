@@ -15,14 +15,33 @@ ARCTIC_INLINE bool FindXinYString(std::string& x, std::string& y)
 struct GM_Ticket
 {
 	uint64 guid;
+	uint64 playerGuid;
 	std::string name;
 	uint32 level;
-	uint32 type;
+	uint32 map;
 	float posX;
 	float posY;
 	float posZ;
 	std::string message;
 	uint32 timestamp;
+	bool deleted;
+	uint64 assignedToPlayer;
+	std::string comment;
+};
+
+enum
+{
+	GM_TICKET_CHAT_OPCODE_NEWTICKET			= 1,
+	GM_TICKET_CHAT_OPCODE_LISTSTART			= 2,
+	GM_TICKET_CHAT_OPCODE_LISTENTRY			= 3,
+	GM_TICKET_CHAT_OPCODE_CONTENT			= 4,
+	GM_TICKET_CHAT_OPCODE_APPENDCONTENT		= 5,
+	GM_TICKET_CHAT_OPCODE_REMOVED			= 6,
+	GM_TICKET_CHAT_OPCODE_UPDATED			= 7, 
+	GM_TICKET_CHAT_OPCODE_ASSIGNED			= 8,
+	GM_TICKET_CHAT_OPCODE_RELEASED			= 9, 
+	GM_TICKET_CHAT_OPCODE_COMMENT			= 10,
+	GM_TICKET_CHAT_OPCODE_ONLINESTATE		= 11
 };
 
 #pragma pack(push,1)
@@ -46,9 +65,6 @@ struct AchievementReward
 	uint32 AllianceTitle;
 	uint32 HordeTitle;
 	uint32 ItemID;
-	uint32 sender;
-	char * subject;
-	char * text;
 };
 
 struct ProfessionDiscovery
@@ -82,14 +98,14 @@ struct ScrollCreation
 
 struct ItemPage
 {
-    uint32 id;
+	uint32 id;
 	char * text;
 	uint32 next_page;
 };
 
 struct ItemQuestRelation
 {
-    uint32 item_id;
+	uint32 item_id;
 	uint32 quest_id;
 	uint32 itemcount;
 };
@@ -134,7 +150,7 @@ struct Trainer
 	uint32 SpellCount;
 	vector<TrainerSpell> Spells;
 	char* UIMessage;
-    uint32 RequiredSkill;
+	uint32 RequiredSkill;
 	uint32 RequiredSkillLine;
 	uint32 RequiredClass;
 	uint32 TrainerType;
@@ -164,13 +180,13 @@ struct InstanceReputationMod
 	uint32 mapid;
 	uint32 mob_rep_reward;
 	uint32 mob_rep_reward_heroic;
- 	uint32 mob_rep_limit;
+	uint32 mob_rep_limit;
 	uint32 mob_rep_limit_heroic;
- 	uint32 boss_rep_reward;
+	uint32 boss_rep_reward;
 	uint32 boss_rep_reward_heroic;
- 	uint32 boss_rep_limit;
+	uint32 boss_rep_limit;
 	uint32 boss_rep_limit_heroic;
- 	uint32 faction[2];
+	uint32 faction[2];
 };
 
 struct ReputationModifier
@@ -204,6 +220,7 @@ enum MONSTER_SAY_EVENTS
 	MONSTER_SAY_EVENT_ON_COMBAT_STOP = 3,
 	MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN = 4,
 	MONSTER_SAY_EVENT_ON_DIED = 5,
+	MONSTER_SAY_EVENT_ON_SPAWN = 6,
 	NUM_MONSTER_SAY_EVENTS,
 };
 
@@ -224,10 +241,10 @@ enum AREATABLE_FLAGS
 
 enum AREATABLE_CATEGORY
 {
-    AREAC_CONTESTED = 0,
-    AREAC_ALLIANCE_TERRITORY = 2,
-    AREAC_HORDE_TERRITORY = 4,
-    AREAC_SANCTUARY = 6,
+	AREAC_CONTESTED = 0,
+	AREAC_ALLIANCE_TERRITORY = 2,
+	AREAC_HORDE_TERRITORY = 4,
+	AREAC_SANCTUARY = 6,
 };
 
 #define MAX_PREDEFINED_NEXTLEVELXP 80
@@ -308,7 +325,7 @@ public:
 	{
 		delete [] Signatures;
 	}
-
+	
 	void SaveToDB();
 	void Destroy(); // When item is deleted.
 
@@ -321,37 +338,30 @@ public:
 	ARCTIC_INLINE bool IsFull() { return (SignatureCount == Slots); }
 };
 
-typedef std::map<uint32, uint32>                      OverrideIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, Player*  >     PlayerStorageMap;
-typedef std::list<GM_Ticket*>                         GmTicketList;
+typedef std::map<uint32, std::list<SpellEntry*>* >	OverrideIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, Player* >	PlayerStorageMap;
+typedef std::list<GM_Ticket*>						GmTicketList;
 
 #ifndef WIN32
-#define ARCTIC_USE_MAP_PLAYER_INDEX
-#ifdef ARCTIC_USE_MAP_PLAYER_INDEX
-
-// you can use the string map (slower)
-typedef map<string, PlayerInfo*> PlayerNameStringIndexMap;
-
-
-#else			// or
-
+#ifndef TRHAX
 // gcc has no default hash for string type,
 // so we have to make an explicit hash template here
-template<>
-struct __gnu_cxx::hash<string>
+namespace __gnu_cxx
 {
-	size_t operator()(string& tbh) const
+	template<> struct hash<string>
 	{
-		// simple crc32 hash for now, we may need to change this later however
-		return size_t( crc32( (const unsigned char*)tbh.c_str(), tbh.length() ) );
+		size_t operator()(string& tbh) const
+		{
+			// simple crc32 hash for now, we may need to change this later however
+			return size_t( crc32( (const unsigned char*)tbh.c_str(), tbh.length() ) );
+		}
 	}
 }
-
 #endif
 #endif
-
 // vc++ has the type for a string hash already, so we don't need to do anything special
 typedef HM_NAMESPACE::hash_map<string, PlayerInfo*> PlayerNameStringIndexMap;
+
 typedef std::map<uint32, uint32> PetLevelupSpellSet;
 typedef std::map<uint32, PetLevelupSpellSet> PetLevelupSpellMap;
 
@@ -360,43 +370,41 @@ class ARCTIC_DECL ObjectMgr : public Singleton < ObjectMgr >
 public:
 	ObjectMgr();
 	~ObjectMgr();
-
 	void LoadCreatureWaypoints();
 
 	// other objects
-    
-    // Set typedef's
+
+	// Set typedef's
 	typedef std::set<AchievementCriteriaEntry*>							AchievementCriteriaSet;
 	
-    // HashMap typedef's
-    typedef HM_NAMESPACE::hash_map<uint64, Item* >                      ItemMap;
-	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>                 CorpseCollectorMap;
-	typedef HM_NAMESPACE::hash_map<uint32, PlayerInfo*>                 PlayerNameMap;
-	typedef HM_NAMESPACE::hash_map<uint32, PlayerCreateInfo*>           PlayerCreateInfoMap;
-	typedef HM_NAMESPACE::hash_map<uint32, Guild*>                      GuildMap;
-	typedef HM_NAMESPACE::hash_map<uint32, skilllinespell*>             SLMap;
-	typedef HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>*>  VendorMap;
-    typedef HM_NAMESPACE::hash_map<uint32, Transporter* >               TransportMap;
-	typedef HM_NAMESPACE::hash_map<uint32, Trainer*>                    TrainerMap;
-	typedef HM_NAMESPACE::hash_map<uint32, std::vector<TrainerSpell*> > TrainerSpellMap;
-    typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>         ReputationModMap;
-    typedef HM_NAMESPACE::hash_map<uint32, Corpse* >                    CorpseMap;
-	typedef HM_NAMESPACE::hash_map<uint32, Group*>                      GroupMap;
-    
-    // Map typedef's
-    typedef std::map<uint32, LevelInfo*>                                LevelMap;
-	typedef std::map<pair<uint32, uint32>, LevelMap* >                  LevelInfoMap;
-    typedef std::map<uint32, std::list<ItemPrototype*>* >               ItemSetContentMap;
-	typedef std::map<uint32, uint32>                                    NpcToGossipTextMap;
-	typedef std::map<uint32, set<SpellEntry*> >                         PetDefaultSpellMap;
-	typedef std::map<uint32, uint32>                                    PetSpellCooldownMap;
-	typedef std::map<uint32, SpellEntry*>                               TotemSpellMap;
-	typedef std::map<uint32, AchievementCriteriaSet*>                   AchievementCriteriaMap;
+	// HashMap typedef's
+	typedef HM_NAMESPACE::hash_map<uint64, Item* >						ItemMap;
+	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>					CorpseCollectorMap;
+	typedef HM_NAMESPACE::hash_map<uint32, PlayerInfo*>					PlayerNameMap;
+	typedef HM_NAMESPACE::hash_map<uint32, PlayerCreateInfo*>			PlayerCreateInfoMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Guild*>						GuildMap;
+	typedef HM_NAMESPACE::hash_map<uint32, skilllinespell*>				SLMap;
+	typedef HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>* >	VendorMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Transporter* >				TransportMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Trainer*>					TrainerMap;
+	typedef HM_NAMESPACE::hash_map<uint32, std::vector<TrainerSpell*> >	TrainerSpellMap;
+	typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>			ReputationModMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Corpse* >					CorpseMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Group*>						GroupMap;
 
-    // object holders
-	GmTicketList GM_TicketList;
-	TotemSpellMap m_totemSpells;
-	OverrideIdMap mOverrideIdMap;
+	// Map typedef's
+	typedef std::map<uint32, LevelInfo*>								LevelMap;
+	typedef std::map<pair<uint32, uint32>, LevelMap* >					LevelInfoMap;
+	typedef std::map<uint32, std::list<ItemPrototype*>* >				ItemSetContentMap;
+	typedef std::map<uint32, uint32>									NpcToGossipTextMap;
+	typedef std::map<uint32, uint32>									PetSpellCooldownMap;
+	typedef std::map<uint32, SpellEntry*>								TotemSpellMap;
+	typedef std::map<uint32, AchievementCriteriaSet*>					AchievementCriteriaMap;
+
+	// object holders
+	GmTicketList        GM_TicketList;
+	TotemSpellMap       m_totemSpells;
+	OverrideIdMap       mOverrideIdMap;
 
 	Player* GetPlayer(const char* name, bool caseSensitive = true);
 	Player* GetPlayer(uint32 guid);
@@ -404,7 +412,7 @@ public:
 	CorpseMap m_corpses;
 	Mutex _corpseslock;
 	Mutex m_corpseguidlock;
-    Mutex _TransportLock;
+	Mutex _TransportLock;
 	uint32 m_hiCorpseGuid;
 	uint32 m_hiGuildId;
 
@@ -413,7 +421,7 @@ public:
 	
 	Item* CreateItem(uint32 entry,Player* owner);
 	Item* LoadItem(uint64 guid);
-  
+
 	// Groups
 	Group * GetGroupByLeader(Player* pPlayer);
 	Group * GetGroupById(uint32 id);
@@ -455,24 +463,23 @@ public:
 
 	// Player names
 	void AddPlayerInfo(PlayerInfo *pn);
-	PlayerInfo * GetPlayerInfo(uint32 guid );
-	PlayerInfo * GetPlayerInfoByName(const char * name);
+	PlayerInfo *GetPlayerInfo(uint32 guid );
+	PlayerInfo *GetPlayerInfoByName(const char * name);
 	void RenamePlayerInfo(PlayerInfo * pn, const char * oldname, const char * newname);
 	void DeletePlayerInfo(uint32 guid);
-	PlayerCreateInfo * GetPlayerCreateInfo(uint8 race, uint8 class_) const;
+	PlayerCreateInfo* GetPlayerCreateInfo(uint8 race, uint8 class_) const;
 
 	// Guild
-	void AddGuild(Guild * pGuild);
+	void AddGuild(Guild *pGuild);
 	uint32 GetTotalGuildCount();
 	bool RemoveGuild(uint32 guildId);
-	Guild * GetGuild(uint32 guildId);  
-	Guild * GetGuildByLeaderGuid(uint64 leaderGuid);  
-	Guild * GetGuildByGuildName(std::string guildName);
+	Guild* GetGuild(uint32 guildId);  
+	Guild* GetGuildByLeaderGuid(uint64 leaderGuid);  
+	Guild* GetGuildByGuildName(std::string guildName);
 
-	map<uint32,set<Quest*>*> ZoneToQuestMap;
 	void LoadAchievements();
 
-	// Corpse Stuff
+	//Corpse Stuff
 	Corpse* GetCorpseByOwner(uint32 ownerguid);
 	void CorpseCollectorUnload();
 	void DespawnCorpse(uint64 Guid);
@@ -486,18 +493,23 @@ public:
 	uint32 GetGossipTextForNpc(uint32 ID);
 
 	// Gm Tickets
-	void AddGMTicket(GM_Ticket *ticket,bool startup);
-	void remGMTicket(uint64 guid);
-	GM_Ticket* GetGMTicket(uint64 guid);
+	void AddGMTicket(GM_Ticket *ticket, bool startup = false);
+	void UpdateGMTicket(GM_Ticket *ticket);
+	void RemoveGMTicketByPlayer(uint64 playerGuid);
+	void RemoveGMTicket(uint64 ticketGuid);
+	void DeleteGMTicketPermanently(uint64 ticketGuid);
+	void DeleteAllRemovedGMTickets();
+	GM_Ticket* GetGMTicket(uint64 ticketGuid);
+	GM_Ticket* GetGMTicketByPlayer(uint64 playerGuid);
 
-	skilllinespell * GetSpellSkill(uint32 id);
+	skilllinespell* GetSpellSkill(uint32 id);
 
 	// Vendors
 	std::vector<CreatureItem> *GetVendorList(uint32 entry);
 	void SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_);
 
 	// Totem
-	SpellEntry * GetTotemSpell(uint32 spellId);
+	SpellEntry* GetTotemSpell(uint32 spellId);
 
 	std::list<ItemPrototype*>* GetListForItemSet(uint32 setid);
 
@@ -523,8 +535,9 @@ public:
 	
 	void AddPlayer(Player* p); // add it to global storage
 	void RemovePlayer(Player* p);
-	
+
 	// Serialization
+
 	void LoadQuests();
 	void LoadPlayersInfo();
 	void LoadPlayerCreateInfo();
@@ -532,7 +545,7 @@ public:
 	Corpse* LoadCorpse(uint32 guid);
 	void LoadCorpses(MapMgr* mgr);
 	void LoadGMTickets();
-	void SaveGMTicket(uint64 guid, QueryBuffer * buf);
+	void SaveGMTicket(GM_Ticket* ticket, QueryBuffer * buf);
 	void LoadAuctions();
 	void LoadAuctionItems();
 	void LoadSpellSkills();
@@ -549,7 +562,10 @@ public:
 	void ListGuidAmounts();
 	uint32 GenerateLowGuid(uint32 guidhigh);
 	uint32 GenerateMailID();
+	uint64 GenerateTicketID();
 	
+	uint64 GenerateEquipmentSetGuid();
+
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
 	void AddTransport(Transporter* pTransporter);
@@ -640,74 +656,79 @@ public:
 	std::set<ProfessionDiscovery*> ProfessionDiscoveryTable;
 
 protected:
-    RWLock playernamelock;
-    uint32 m_mailid;
-    // highest GUIDs, used for creating new objects
-    Mutex m_guidGenMutex;
-    union
-    {
-        uint32 m_hiItemGuid;
-        uint32 m_hiContainerGuid;
-    };
-    uint32 m_hiGroupId;
-    uint32 m_hiCharterId;
-    RWLock m_charterLock;
+	RWLock playernamelock;
+	uint32 m_mailid;
+	uint64 m_ticketid;
+	uint64 m_equipmentSetGuid;
+	// highest GUIDs, used for creating new objects
+	Mutex m_guidGenMutex;
+	union
+	{
+		uint32 m_hiItemGuid;
+		uint32 m_hiContainerGuid;
+	};
+	uint32 m_hiGroupId;
+	uint32 m_hiCharterId;
+	RWLock m_charterLock;
 
-    ReputationModMap m_reputation_faction;
-    ReputationModMap m_reputation_creature;
-    HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*> m_reputation_instance;
+	ReputationModMap m_reputation_faction;
+	ReputationModMap m_reputation_creature;
+	HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*> m_reputation_instance;
 
-    HM_NAMESPACE::hash_map<uint32, Charter*> m_charters[NUM_CHARTER_TYPES];
+	HM_NAMESPACE::hash_map<uint32, Charter*> m_charters[NUM_CHARTER_TYPES];
+	
+	set<uint32> m_disabled_spells;
 
-    set<uint32> m_disabled_spells;
+	uint64 TransportersCount;
+	HM_NAMESPACE::hash_map<uint32,PlayerInfo*> m_playersinfo;
+	PlayerNameStringIndexMap m_playersInfoByName;
+	
+	HM_NAMESPACE::hash_map<uint32,WayPointMap*> m_waypoints;//stored by spawnid
+	uint32 m_hiCreatureSpawnId;
 
-    uint64 TransportersCount;
-    HM_NAMESPACE::hash_map<uint32,PlayerInfo*> m_playersinfo;
-    PlayerNameStringIndexMap m_playersInfoByName;
+	Mutex m_CreatureSpawnIdMutex;
+	Mutex m_GOSpawnIdMutex;
 
-    HM_NAMESPACE::hash_map<uint32,WayPointMap*> m_waypoints;//stored by spawnid
-    uint32 m_hiCreatureSpawnId;
+	uint32 m_hiGameObjectSpawnId;
+	
+	///// Object Tables ////
+	// These tables are modified as creatures are created and destroyed in the world
 
-    Mutex m_CreatureSpawnIdMutex;
-    Mutex m_GOSpawnIdMutex;
+	// Group List
+	RWLock m_groupLock;
+	GroupMap m_groups;
 
-    uint32 m_hiGameObjectSpawnId;
+	// Map of all starting infos needed for player creation
+	PlayerCreateInfoMap mPlayerCreateInfo;
 
-    // Object Tables 
+	// DK: Map of all Guild's
+	GuildMap mGuild;
 
-    // These tables are modified as creatures are created and destroyed in the world
+	// Map of all vendor goods
+	VendorMap mVendors;
 
-    // Group List
-    RWLock m_groupLock;
-    GroupMap m_groups;
+	// Maps for Gossip stuff
+	NpcToGossipTextMap  mNpcToGossipText;
 
-    // Map of all starting infos needed for player creation
-    PlayerCreateInfoMap mPlayerCreateInfo;
+	SLMap mSpellSkills;
 
-    // DK: Map of all Guild's
-    GuildMap mGuild;
+	// Corpse Collector
+	CorpseCollectorMap mCorpseCollector;
 
-    // Map of all vendor goods
-    VendorMap mVendors;
+	TransportMap mTransports;
 
-    // Maps for Gossip stuff
-    NpcToGossipTextMap  mNpcToGossipText;
+	ItemSetContentMap mItemSets;
 
-    SLMap mSpellSkills;
-
-    // Corpse Collector
-    CorpseCollectorMap mCorpseCollector;
-
-    TransportMap mTransports;
-
-    ItemSetContentMap mItemSets;
-
-    TrainerMap mTrainers;
-    LevelInfoMap mLevelInfo;
-    PetSpellCooldownMap mPetSpellCooldowns;
-    PetLevelupSpellMap  mPetLevelupSpellMap;
+	TrainerMap mTrainers;
+	LevelInfoMap mLevelInfo;
+	PetSpellCooldownMap mPetSpellCooldowns;
+	PetLevelupSpellMap  mPetLevelupSpellMap;
 };
 
-#define objmgr ObjectMgr::getSingleton()
-#endif
 
+#define objmgr ObjectMgr::getSingleton()
+
+// void SetProgressBar(int, int, const char*);
+// void ClearProgressBar();
+
+#endif

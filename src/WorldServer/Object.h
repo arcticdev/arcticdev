@@ -21,7 +21,7 @@ enum HIGHGUID_TYPE
 	HIGHGUID_TYPE_PET = 0xF1400000,
 	HIGHGUID_TYPE_GAMEOBJECT = 0xF1100000,
 	HIGHGUID_TYPE_ITEM = 0x40000000,
-	HIGHGUID_TYPE_CONTAINER = 0x50000000,			// confirm this pl0x
+	HIGHGUID_TYPE_CONTAINER = 0x50000000, // confirm this pl0x
 	HIGHGUID_TYPE_PLAYER = 0x00000000,
 	HIGHGUID_TYPE_DYNAMICOBJECT = 0x60000000,
 	HIGHGUID_TYPE_TRANSPORTER = 0x1FC00000,
@@ -62,7 +62,7 @@ enum TYPEID
 	TYPEID_CORPSE = 7,
 	TYPEID_AIGROUP = 8,
 	TYPEID_AREATRIGGER = 9,
-	TYPEID_UNUSED = 10, // + used to signal invalid reference (object dealocated but someone is still using it)
+	TYPEID_UNUSED = 10, // used to signal invalid reference (object dealocated but someone is still using it)
 };
 
 enum OBJECT_UPDATE_TYPE 
@@ -125,12 +125,12 @@ public:
 	typedef unordered_set< Object* > InRangeSet;
 	typedef std::map<string, void*> ExtensionSet;
 
-	virtual ~Object ( );
+	virtual ~Object();
 	virtual void Destructor();
 	virtual void Init();
 
 	virtual void Update ( uint32 time ) { }
-    // True if object exists in world
+	// True if object exists in world
  
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
@@ -147,7 +147,7 @@ public:
 	ARCTIC_INLINE const uint64& GetGUID() const { return *((uint64*)m_uint32Values); }
 	ARCTIC_INLINE const WoWGuid& GetNewGUID() const { return m_wowGuid; }
 	ARCTIC_INLINE uint32 GetEntry(){return m_uint32Values[OBJECT_FIELD_ENTRY];}
-	
+
 	ARCTIC_INLINE const uint32 GetEntryFromGUID() const	{ return uint32( (*(uint64*)m_uint32Values >> 24) & 0xFFFFFFFF ); }
 	ARCTIC_INLINE const uint32 GetTypeFromGUID() const { return (m_uint32Values[1] & HIGHGUID_TYPE_MASK); }
 	ARCTIC_INLINE const uint32 GetUIdFromGUID() const { return (m_uint32Values[0] & LOWGUID_ENTRY_MASK); }
@@ -162,7 +162,6 @@ public:
 	ARCTIC_INLINE bool IsVehicle() { return m_isVehicle; }
 	ARCTIC_INLINE bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 	bool IsPet();
-	bool IsGiveXPorHonor(Player* plr, Unit* Target);
 
 	// This includes any nested objects we have, inventory for example.
 	virtual uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
@@ -174,8 +173,8 @@ public:
 	void BuildFieldUpdatePacket(Player* Target, uint32 Index, uint32 Value);
 	void BuildFieldUpdatePacket(ByteBuffer * buf, uint32 Index, uint32 Value);
 
-	void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId);
-	
+	void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
+
 	virtual void DestroyForPlayer( Player* target ) const;
 
 	void BuildHeartBeatMsg( WorldPacket *data ) const;
@@ -494,6 +493,7 @@ public:
 
 	bool PhasedCanInteract(Object* pObj);
 	bool HasPhase() { return m_phaseMode != 0; }
+	int32 GetPhase() { return m_phaseMode; }
 	void EnablePhase(int32 phaseMode);
 	void DisablePhase(int32 phaseMode);
 	void SetPhase(int32 phase); // Don't fucking use this.
@@ -572,8 +572,6 @@ protected:
 	ExtensionSet * m_extensions;
 	void _SetExtension(const string& name, void* ptr); // so we can set from scripts. :)
 
-	bool m_sharedPtrDestructed;
-
 public:
 
 	template<typename T>
@@ -602,7 +600,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// ACCESSOR FUNCTIONS                                                   //
 	//////////////////////////////////////////////////////////////////////////
-	
 	// Stats
 	ARCTIC_INLINE uint32 GetStrength() { return m_uint32Values[UNIT_FIELD_STRENGTH]; }
 	ARCTIC_INLINE uint32 GetAgility() { return m_uint32Values[UNIT_FIELD_AGILITY]; }
