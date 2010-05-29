@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="WorldServer"
 	ProjectGUID="{1DC6C4DA-A028-41F3-877D-D5400C594F88}"
 	RootNamespace="WorldServer"
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/Zm250 /MP5"
 				Optimization="0"
-				InlineFunctionExpansion="2"
+				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories="..\..\src\libs"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="false"
@@ -63,7 +63,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 				CompileAs="0"
 			/>
 			<Tool
@@ -79,8 +79,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/NODEFAULTLIB:MSVCRT /LTCG"
 				AdditionalDependencies="ws2_32.lib libmysql.lib libeay32.lib dbghelp.lib zlib.lib pcre.lib"
-				LinkIncremental="1"
 				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
@@ -137,7 +137,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalOptions="/Zm250"
+				AdditionalOptions="/Zm250 /bigobj"
 				Optimization="0"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="..\..\src\libs"
@@ -395,8 +395,11 @@
 	<References>
 	</References>
 	<Files>
+		<Filter
+			Name="Launcher"
+			>
 			<File
-				RelativePath="..\..\src\libs\CoreMemoryAllocator.cpp"
+				RelativePath="..\..\src\libs\CoreMemoryAllocator_Core.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -431,14 +434,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-		    <Filter
-			Name="Documentation"
-			>
-			<File
-				RelativePath="..\..\THANKS"
-				>
-			</File>
-		    </Filter>
 			<File
 				RelativePath="..\..\src\WorldServer\Main.cpp"
 				>
@@ -451,6 +446,9 @@
 				RelativePath="..\..\src\WorldServer\Master.h"
 				>
 			</File>
+			<Filter
+				Name="Console"
+				>
 				<File
 					RelativePath="..\..\src\WorldServer\BaseConsole.h"
 					>
@@ -475,6 +473,11 @@
 					RelativePath="..\..\src\WorldServer\ConsoleListener.cpp"
 					>
 				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="Battlegrounds"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\AlteracValley.cpp"
 				>
@@ -547,6 +550,10 @@
 				RelativePath="..\..\src\WorldServer\WarsongGulch.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Objects"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\Container.cpp"
 				>
@@ -647,6 +654,10 @@
 				RelativePath="..\..\src\WorldServer\Vehicle.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Chat"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\Channel.cpp"
 				>
@@ -676,7 +687,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\WorldServer\Debugcmds.cpp"
+				RelativePath="..\..\src\WorldServer\debugcmds.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\WorldServer\GMTicketCommands.cpp"
 				>
 			</File>
 			<File
@@ -711,6 +726,10 @@
 				RelativePath="..\..\src\WorldServer\WordFilter.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Interserver"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\ClusterInterface.cpp"
 				>
@@ -744,6 +763,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\WorldServer\WorkerSocketCluster.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\WorldServer\WorkerServerClient.cpp"
 				>
 			</File>
@@ -751,16 +774,12 @@
 				RelativePath="..\..\src\WorldServer\WorkerServerClient.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\WorldServer\WorkerSocketCluster.cpp"
-				>
-			</File>
+		</Filter>
+		<Filter
+			Name="Map System"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\CellHandler.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\WorldServer\EventsSystem.cpp"
 				>
 			</File>
 			<File
@@ -831,6 +850,10 @@
 				RelativePath="..\..\src\WorldServer\WorldStates.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Environment"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\AreaTrigger.cpp"
 				>
@@ -863,6 +886,10 @@
 				RelativePath="..\..\src\WorldServer\WeatherMgr.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Packet Handlers"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\CharacterHandler.cpp"
 				>
@@ -921,6 +948,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\WorldServer\NPCHandler.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\WorldServer\Packets.h"
 				>
 			</File>
 			<File
@@ -987,6 +1018,10 @@
 				RelativePath="..\..\src\WorldServer\WorldSession.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Spell"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\ClassSpells.h"
 				>
@@ -1031,6 +1066,10 @@
 				RelativePath="..\..\src\WorldServer\SpellTarget.cpp"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Player Systems"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\AchievementInterface.cpp"
 				>
@@ -1159,6 +1198,10 @@
 				RelativePath="..\..\src\WorldServer\TaxiMgr.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Brains"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\AIInterface.cpp"
 				>
@@ -1191,6 +1234,10 @@
 				RelativePath="..\..\src\WorldServer\WayPoints.cpp"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Client Communication"
+			>
 			<File
 				RelativePath="..\..\src\WorldServer\LocalizationMgr.cpp"
 				>
@@ -1204,6 +1251,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\WorldServer\Opcodes.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\WorldServer\Opcodes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\WorldServer\WorldSocket.cpp"
 				>
 			</File>
@@ -1211,6 +1266,27 @@
 				RelativePath="..\..\src\WorldServer\WorldSocket.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="Wintergrasp"
+			>
+			<File
+				RelativePath="..\..\src\WorldServer\Wintergrasp.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\WorldServer\Wintergrasp.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\WorldServer\WGI.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\WorldServer\WGI.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\WorldServer\Const.h"
 			>
@@ -1253,18 +1329,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\WorldServer\ObjectStorage.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\WorldServer\Opcodes.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\WorldServer\Opcodes.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\WorldServer\Packets.h"
 			>
 		</File>
 		<File
