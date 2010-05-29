@@ -21,7 +21,7 @@ enum HIGHGUID_TYPE
 	HIGHGUID_TYPE_PET = 0xF1400000,
 	HIGHGUID_TYPE_GAMEOBJECT = 0xF1100000,
 	HIGHGUID_TYPE_ITEM = 0x40000000,
-	HIGHGUID_TYPE_CONTAINER = 0x50000000, // confirm this pl0x
+	HIGHGUID_TYPE_CONTAINER = 0x50000000,
 	HIGHGUID_TYPE_PLAYER = 0x00000000,
 	HIGHGUID_TYPE_DYNAMICOBJECT = 0x60000000,
 	HIGHGUID_TYPE_TRANSPORTER = 0x1FC00000,
@@ -126,12 +126,12 @@ public:
 	typedef std::map<string, void*> ExtensionSet;
 
 	virtual ~Object();
-	virtual void Destructor();
 	virtual void Init();
+	virtual void Destructor();
 
 	virtual void Update ( uint32 time ) { }
 	// True if object exists in world
- 
+
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr* pMapMgr);
@@ -210,7 +210,7 @@ public:
 	ARCTIC_INLINE LocationVector & GetPositionNC() { return m_position; }
 	ARCTIC_INLINE LocationVector * GetPositionV() { return &m_position; }
 
-	//Distance Calculation
+	// Distance Calculation
 	float CalcDistance(Object* Ob);
 	float CalcDistance(float ObX, float ObY, float ObZ);
 	float CalcDistance(Object* Oa, Object* Ob);
@@ -598,8 +598,9 @@ public:
 	bool m_loadedFromDB;
 
 	//////////////////////////////////////////////////////////////////////////
-	// ACCESSOR FUNCTIONS                                                   //
+	// Accessor functions                                                   //
 	//////////////////////////////////////////////////////////////////////////
+
 	// Stats
 	ARCTIC_INLINE uint32 GetStrength() { return m_uint32Values[UNIT_FIELD_STRENGTH]; }
 	ARCTIC_INLINE uint32 GetAgility() { return m_uint32Values[UNIT_FIELD_AGILITY]; }
@@ -615,7 +616,7 @@ public:
 	int32 GetSpellBaseCost(SpellEntry *sp);
 
 	//////////////////////////////////////////////////////////////////////////
-	// END ACCESSOR FUNCTIONS                                               //
+	// End accessor functions                                               //
 	//////////////////////////////////////////////////////////////////////////
 
 	// declaration to fix scripting

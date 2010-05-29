@@ -152,7 +152,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		{
 			flags = 0x0010;
 		}break;
-		// player/unit: 0x68 (except self)
+			// player/unit: 0x68 (except self)
 	case TYPEID_UNIT:
 	case TYPEID_PLAYER:
 		{
@@ -162,12 +162,12 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	// gameobject/dynamicobject
 	case TYPEID_GAMEOBJECT:
 		{
-		flags = 0x0350; break;
+			flags = 0x0350;
 
 			switch(GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID))
 			{
 				case GAMEOBJECT_TYPE_MO_TRANSPORT:
-  					{
+					{
 						if(GetTypeFromGUID() != HIGHGUID_TYPE_TRANSPORTER)
 							return 0; // bad transporter
 						else
@@ -185,7 +185,8 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 						updatetype = UPDATETYPE_CREATE_YOURSELF;
 					}break;
 			}
-		}break;	case TYPEID_DYNAMICOBJECT:
+		}break;
+	case TYPEID_DYNAMICOBJECT:
 		flags = 0x0150;
 		break;
 
@@ -237,8 +238,8 @@ WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 {
 	WorldPacket * packet=new WorldPacket(1500);
 	packet->SetOpcode( SMSG_UPDATE_OBJECT );
-	*packet << (uint32)1; // number of update/create blocks
 
+	*packet << uint32(1);                 // number of update/create blocks
 	*packet << (uint8) UPDATETYPE_VALUES; // update type == update
 	*packet << GetNewGUID();
 
@@ -301,7 +302,6 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer * buf, UpdateMask * mask )
 {
 	*buf << (uint8) UPDATETYPE_VALUES; // update type == update
-
 	ASSERT(m_wowGuid.GetNewGuidLen());
 	*buf << m_wowGuid;
 
@@ -711,9 +711,9 @@ bool Object::SetPosition(const LocationVector & v, bool allowPorting /* = false 
 bool Object::SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting )
 {
 	bool updateMap = false, result = true;
+
 	if(m_lastMapUpdatePosition.Distance2DSq(newX, newY) > 4.0f)
 		updateMap = true;
-
 	m_position.ChangeCoords(newX, newY, newZ, newOrientation);
 
 	if (!allowPorting && newZ < -500)
@@ -769,7 +769,7 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 			else
 			{
 				(*itr)->GetSession()->OutPacket(Opcode, Len, Data);
-
+			}
 		}
 	}
 }
@@ -891,6 +891,8 @@ void Object::AddToWorld()
 			if( !mapMgr->m_battleground->CanPlayerJoin(p) && !p->bGMTagOn)
 				return;
 		}
+		if( !p->triggerpass_cheat && p->GetGroup()== NULL && (mapMgr->GetMapInfo()->type == INSTANCE_RAID || mapMgr->GetMapInfo()->type == INSTANCE_MULTIMODE))
+			return ;
 	}
 
 	m_mapMgr = mapMgr;
@@ -1005,10 +1007,11 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 }
 
 // Set uint32 propertyvoid 
-Object::SetUInt32Value( const uint32 index, const uint32 value )
+void Object::SetUInt32Value( const uint32 index, const uint32 value )
 {
 	if(index > m_valuesCount)
-		printf("Index: %u, m_valuesCount: %u, Value: %u Test:%s\n", index, m_valuesCount, value, __FUNCTION__);	ASSERT( index < m_valuesCount );
+		printf("Index: %u, m_valuesCount: %u, Value: %u Test:%s\n", index, m_valuesCount, value, __FUNCTION__);
+	ASSERT( index < m_valuesCount );
 	// save updating when val isn't changing.
 	if(m_uint32Values[index] == value)
 		return;
@@ -1596,7 +1599,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		Player* owner = TO_PLAYER( TO_PET(this)->GetPetOwner() );
 		if( owner != NULL )
 			if( owner->isAlive() && TO_PLAYER( pVictim )->DuelingWith != owner )
-				owner->SetPvPFlag();		
+				owner->SetPvPFlag();
 	}
 
 	if(!no_remove_auras)
@@ -1883,7 +1886,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 
 			if( IsCreature() )
 			{
-				TO_PLAYER(pVictim)->GetAchievementInterface()->HandleAchievementCriteriaKilledByCreature( TO_CREATURE(this)->GetEntry() );
+				TO_PLAYER(pVictim)->GetAchievementInterface()->HandleAchievementCriteriaKilledByCreature( TO_CREATURE(this)->GetUInt32Value(OBJECT_FIELD_ENTRY) );
 			}
 			else if(IsPlayer())
 			{
@@ -1907,7 +1910,8 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		// Zone Under Attack.
 		MapInfo * pZMapInfo = NULL;
 		pZMapInfo = WorldMapInfoStorage.LookupEntry(GetMapId());
-		if( pZMapInfo != NULL && pZMapInfo->type == INSTANCE_NULL && !pVictim->IsPlayer() && !pVictim->IsPet() && ( IsPlayer() || IsPet() ) )		{
+		if( pZMapInfo != NULL && pZMapInfo->type == INSTANCE_NULL && !pVictim->IsPlayer() && !pVictim->IsPet() && ( IsPlayer() || IsPet() ) )
+		{
 			// Only NPCs that bear the PvP flag can be truly representing their faction.
 			if( TO_CREATURE(pVictim)->IsPvPFlagged() )
 			{
@@ -2821,12 +2825,13 @@ void Object::SendAttackerStateUpdate( Unit* Target, dealdamage *dmg, uint32 real
 	WorldPacket data(SMSG_ATTACKERSTATEUPDATE, 70);
 
 	if (hit_status & HITSTATUS_BLOCK)
-	{		hit_status|= 0x800000;
+	{
+		hit_status|= 0x800000;
 	}
 
 	uint32 overkill = Target->computeOverkill(realdamage);
 
-	data << (uint32)hit_status;   
+	data << (uint32)hit_status;
 	data << GetNewGUID();
 	data << Target->GetNewGUID();
 
@@ -2846,14 +2851,15 @@ void Object::SendAttackerStateUpdate( Unit* Target, dealdamage *dmg, uint32 real
 		data << (uint32)dmg->resisted_damage;						// Damage resisted
 	}
 
-	data << (uint8)vstate;											// new victim state	if(hit_status & HITSTATUS_BLOCK)
-		data << uint32(0);											// Damage amount blocked
-	else
+	data << (uint8)vstate;											// new victim state
+	if(hit_status & HITSTATUS_BLOCK)
+		data << uint32(0);											// can be 0,1000 or -1	else
 		data << (uint32)0x3e8;										// can be 0,1000 or -1
 
 	if (hit_status & 0x00800000)
 	{
-		data << uint32(0);											// unknown	}
+		data << uint32(0);											// unknown
+	}
 	if(hit_status & HITSTATUS_BLOCK)
 	{
 		data << (uint32)blocked_damage;								// Damage amount blocked
