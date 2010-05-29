@@ -499,7 +499,7 @@ void StrandOfTheAncients::TimeTick()
 		sEventMgr.RemoveEvents(TO_SOTA( this ), EVENT_SOTA_TIMER);
 		if(BattleRound == 1)
 		{
-			Player* plr;
+			Player* plr = NULL;
 			PlaySoundToAll( 8212 );
 			plr->CastSpell(plr,52459,true);
 			if(plr->GetTeam() == Attackers)
