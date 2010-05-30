@@ -64,20 +64,23 @@ enum StableState
 	STABLE_STATE_ACTIVE = 1,
 	STABLE_STATE_PASSIVE = 2
 };
+
+enum StableResult
+{
+	STABLERESULT_FAIL_CANT_AFFORD = 0x01,
+	STABLERESULT_FAIL = 0x06,
+	STABLERESULT_STABLE_SUCCESS = 0x08,
+	STABLERESULT_UNSTABLE_SUCCESS = 0x09,
+	STABLERESULT_BUY_SLOT_SUCCESS = 0x0A
+};
+
+#define MAX_STABLE_SLOTS 4
+
 enum HappinessState
 {
-	UNHAPPY = 1,
-	CONTENT = 2,
-	HAPPY = 3
-};
-enum LoyaltyLevel
-{
-	REBELIOUS = 1,
-	UNRULY = 2,
-	SUBMISIVE = 3,
-	DEPENDABLE = 4,
-	FAITHFUL = 5,
-	BEST_FRIEND = 6
+	UNHAPPY =1,
+	CONTENT =2,
+	HAPPY =3
 };
 
 enum AutoCastEvents
@@ -96,6 +99,7 @@ enum AutoCastEvents
 #define AUTOCAST_SPELL_STATE 0xC100
 
 typedef map<SpellEntry*, uint16> PetSpellMap;
+typedef map<uint32, uint8> PetTalentMap;
 struct PlayerPet;
 
 class ARCTIC_DECL Pet : public Creature
@@ -107,15 +111,12 @@ class ARCTIC_DECL Pet : public Creature
 public:
 	Pet(uint64 guid);
 	~Pet();
-
 	virtual void Init();
-	virtual void Destructor();
 
 	void LoadFromDB(Player* owner, PlayerPet * pi);
 	void CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_creature, Unit* owner, SpellEntry *created_by_spell, uint32 type, uint32 expiretime);
 
 	virtual void Update(uint32 time);
-	void OnPushToWorld();
 
 	ARCTIC_INLINE uint32 GetXP(void) { return m_PetXP; }
 
@@ -153,8 +154,11 @@ public:
 
 	ARCTIC_INLINE Player* GetPetOwner() { return m_Owner; }
 	ARCTIC_INLINE void ClearPetOwner() { m_Owner = NULLPLR; }
+
+	/* Level and XP related functions */
 	void GiveXP(uint32 xp);
 	uint32 GetNextLevelXP(uint32 currentlevel);
+	void LevelUpTo(uint32 level);
 	void ApplyStatsForLevel();
 	void ApplySummonLevelAbilities();
 	void ApplyPetLevelAbilities();
@@ -166,7 +170,7 @@ public:
 	void SetActionBarSlot(uint32 slot, uint32 spell){ ActionBar[ slot ] = spell; }
 
 	void LoadSpells();
-	void AddSpell(SpellEntry * sp, bool learning);
+	void AddSpell(SpellEntry * sp, bool learning, bool sendspells = true);
 	void LearnSpell(uint32 spellid);
 	void LearnLevelupSpells();
 	void RemoveSpell(SpellEntry * sp);
@@ -197,29 +201,42 @@ public:
 	
 	AI_Spell*CreateAISpell(SpellEntry * info);
 	ARCTIC_INLINE PetSpellMap* GetSpells() { return &mSpells; }
-	ARCTIC_INLINE bool IsSummon() { return Summon; }
+	ARCTIC_INLINE bool IsSummonedPet() { return Summon; }
+	bool IsWarlockPet()
+	{
+		return GetEntry() == 691 ? true : GetEntry() == 688 ? true : GetEntry() == 712 ? true : GetEntry() == 697 ? true : false;
+	}
 
 	void __fastcall SetAutoCastSpell(AI_Spell*sp);
 	void Rename(string NewName);
 	ARCTIC_INLINE string& GetName() { return m_name; }
 	void AddPetSpellToOwner(uint32 spellId);
-	uint16 SpellTP(uint32 spellId);
-	uint16 GetUsedTP();
-	void UpdateTP();
 	
 	void HandleAutoCastEvent(uint32 Type);
 	AI_Spell*HandleAutoCastEvent();
 	void SetAutoCast(AI_Spell*sp, bool on);
+	uint32 GetHappiness() { return GetUInt32Value(UNIT_FIELD_POWER5); };
+	void SetHappiness(float amount) { SetPower(POWER_TYPE_HAPPINESS, amount); };
+	void IncreaseHappiness(float amount) { SetHappiness(amount + GetHappiness()); };
 	float GetHappinessDmgMod() { return 0.25f * GetHappinessState() + 0.5f; };
 	const char* GetPetName() { return m_name.c_str(); }
 
+	/* Pet Talents! */
+	ARCTIC_INLINE uint8 GetUnspentPetTalentPoints() { return GetByte( UNIT_FIELD_BYTES_1, 1); }
+	ARCTIC_INLINE void SetUnspentPetTalentPoints(uint8 points) { SetByte(UNIT_FIELD_BYTES_1, 1, points);}
+	ARCTIC_INLINE uint8 GetSpentPetTalentPoints() { return GetPetTalentPointsAtLevel() - GetUnspentPetTalentPoints(); }
+	void InitTalentsForLevel(bool creating = false);
+	bool ResetTalents(bool costs);
+	void InitializeTalents();
+	std::map<uint32, uint8> m_talents;
+
 protected:
-	bool bHasLoyalty;
 	Player* m_Owner;
 	uint32 m_PetXP;
 	PetSpellMap mSpells;
-	PlayerPet * mPi;
-	uint32 ActionBar[10];   // 10 slots
+	PlayerPet * m_PlayerPetInfo;
+	uint32 ActionBar[10]; // 10 slots
+	
 	
 	std::map<uint32, AI_Spell*> m_AISpellStore;
 
@@ -227,7 +244,6 @@ protected:
 
 	uint32 m_PartySpellsUpdateTimer;
 	uint32 m_HappinessTimer;
-	uint32 m_LoyaltyTimer;
 	uint32 m_PetNumber;
 
 	uint32 m_Action;
@@ -235,31 +251,25 @@ protected:
 	uint32 m_ExpireTime;
 	uint32 m_Diet;
 	uint64 m_OwnerGuid;
-	int16 TP;
-	int32 LoyaltyPts;
-	uint32 LoyaltyXP;
 	bool bExpires;
 	bool Summon;
 	string m_name;
-	uint8 GetLoyaltyLevel(){return ((GetUInt32Value(UNIT_FIELD_BYTES_1) >> 8) & 0xff);};
 	HappinessState GetHappinessState();
 	uint32 GetHighestRankSpell(uint32 spellId);
-	bool UpdateLoyalty(char pts);
-
+	uint8 GetPetTalentPointsAtLevel();
 	list<AI_Spell*> m_autoCastSpells[AUTOCAST_EVENT_COUNT];
 	bool m_dismissed;
 };
 
-#define PET_LOYALTY_UPDATE_TIMER 120000
 #define PET_HAPPINESS_UPDATE_VALUE 333000
 #define PET_HAPPINESS_UPDATE_TIMER 7500
 #define PET_PARTY_SPELLS_UPDATE_TIMER 10000
 
 #define PET_ACTION_ACTION   0x700
-#define PET_ACTION_STATE	0x600
+#define PET_ACTION_STATE    0x600
 
 // TODO: grep see the way pet spells contain the same flag...
-#define PET_ACTION_SPELL	0xC100
+#define PET_ACTION_SPELL    0xC100
 #define PET_ACTION_SPELL_1  0x8100
 #define PET_ACTION_SPELL_2  0x0100
 #define PET_SPELL_AUTOCAST_CHANCE 50
