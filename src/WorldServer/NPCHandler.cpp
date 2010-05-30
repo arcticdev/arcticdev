@@ -270,11 +270,14 @@ uint8 WorldSession::TrainerGetSpellStatus(TrainerSpell*  pSpell)
 	if( pSpell->pLearnSpell && (_player->HasSpell(pSpell->pLearnSpell->Id) || _player->HasDeletedSpell(pSpell->pLearnSpell->Id)) )
 		return TRAINER_STATUS_ALREADY_HAVE;
 
-	if(pSpell->DeleteSpell && _player->HasDeletedSpell(pSpell->DeleteSpell))		return TRAINER_STATUS_ALREADY_HAVE;	if(	(pSpell->RequiredLevel && _player->getLevel()<pSpell->RequiredLevel)
+	if(pSpell->DeleteSpell && _player->HasDeletedSpell(pSpell->DeleteSpell))
+	return
+	TRAINER_STATUS_ALREADY_HAVE;
+	if(	(pSpell->RequiredLevel && _player->getLevel()<pSpell->RequiredLevel)
 		|| (pSpell->RequiredSpell && !_player->HasSpell(pSpell->RequiredSpell))
 		|| (pSpell->Cost && _player->GetUInt32Value(PLAYER_FIELD_COINAGE) < pSpell->Cost)
 		|| (pSpell->RequiredSkillLine && _player->_GetSkillLineCurrent(pSpell->RequiredSkillLine,true) < pSpell->RequiredSkillLineValue)
-		|| (pSpell->IsProfession && pSpell->RequiredSkillLine==0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0)//check level 1 professions if we can learn a new proffesion
+		|| (pSpell->IsProfession && pSpell->RequiredSkillLine == 0 && _player->GetUInt32Value(PLAYER_CHARACTER_POINTS2) == 0) // check level 1 professions if we can learn a new proffesion
 		)
 		return TRAINER_STATUS_NOT_LEARNABLE;
 	return TRAINER_STATUS_LEARNABLE;
@@ -582,7 +585,7 @@ void WorldSession::HandleSpiritHealerActivateOpcode( WorldPacket & recv_data )
 				_player->SetAuraDuration(15007,aur->GetDuration());
 			else // else add him one, that fucker, he think he will get away!?
 			{
-				SpellEntry *spellInfo = dbcSpell.LookupEntry( 15007 );//resurrection sickness
+				SpellEntry *spellInfo = dbcSpell.LookupEntry( 15007 ); // resurrection sickness
 				SpellCastTargets targets;
 				targets.m_unitTarget = _player->GetGUID();
 				Spell* sp(new Spell(_player,spellInfo,true,NULLAURA));
@@ -676,7 +679,8 @@ void WorldSession::HandleBinderActivateOpcode( WorldPacket & recv_data )
 
 void WorldSession::SendInnkeeperBind(Creature* pCreature)
 {
-#define ITEM_ID_HEARTH_STONE 6948#define BIND_SPELL_ID 3286
+#define ITEM_ID_HEARTH_STONE 6948
+#define BIND_SPELL_ID 3286
 
 	CHECK_INWORLD_RETURN;
 	WorldPacket data(45);
@@ -728,7 +732,8 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 	targets.m_unitTarget = GetPlayer()->GetGUID();
 	BindSpell->prepare(&targets);
 
-#undef ITEM_ID_HEARTH_STONE#undef BIND_SPELL_ID
+#undef ITEM_ID_HEARTH_STONE
+#undef BIND_SPELL_ID
 }
 
 void WorldSession::SendSpiritHealerRequest(Creature* pCreature)
