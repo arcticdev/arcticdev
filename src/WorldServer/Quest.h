@@ -11,16 +11,25 @@ using namespace std;
 
 enum QUEST_STATUS
 {
-	QMGR_QUEST_NOT_AVAILABLE		= 0x00,	 // There aren't quests avaiable.				    | "No Mark"
-	QMGR_QUEST_AVAILABLELOW_LEVEL	= 0x01,	 // Quest avaiable, and your level isnt enough.	    | "Gray Quotation Mark !"
-	QMGR_QUEST_CHAT					= 0x02,	 // Quest avaiable it shows a talk baloon.		    | "No Mark"
-	QMGR_QUEST_NOT_FINISHED			= 0x05,	 // Quest isnt finished yet.						| "Gray Question ? Mark"
-	QMGR_QUEST_REPEATABLE_FINISHED	= 0x06,  //                                                 |
-	QMGR_QUEST_REPEATABLE			= 0x07,	 // Quest repeatable								| "Blue Question ? Mark" 
-	QMGR_QUEST_AVAILABLE			= 0x08,	 // Quest avaiable, and your level is enough		| "Yellow Quotation ! Mark" 
-	QMGR_QUEST_FINISHED_2			= 0x09,  // Quest has been finished                         | "No icon on the minimap"
-	QMGR_QUEST_FINISHED				= 0x0A,  // Quest has been finished.						| "Yellow Question  ? Mark" (7 has no minimap icon)
-	//QUEST_ITEM_UPDATE				= 0x06	 // Yellow Question "?" Mark. //Unknown
+	QMGR_QUEST_NOT_AVAILABLE		= 0x00, // There aren't quests avaiable.                 | "No Mark"
+	QMGR_QUEST_AVAILABLELOW_LEVEL	= 0x01, // Quest avaiable, and your level isnt enough.   | "Gray Quotation Mark !"
+	QMGR_QUEST_CHAT					= 0x02, // Quest avaiable it shows a talk baloon.        | "No Mark"
+	QMGR_QUEST_NOT_FINISHED			= 0x05, // Quest isnt finished yet.                      | "Gray Question ? Mark"
+	QMGR_QUEST_REPEATABLE_FINISHED	= 0x06, //                                               |
+	QMGR_QUEST_REPEATABLE			= 0x07, // Quest repeatable                              | "Blue Question ? Mark" 
+	QMGR_QUEST_AVAILABLE			= 0x08, // Quest avaiable, and your level is enough      | "Yellow Quotation ! Mark" 
+	QMGR_QUEST_FINISHED_2			= 0x09, // Quest has been finished                       | "No icon on the minimap"
+	QMGR_QUEST_FINISHED				= 0x0A, // Quest has been finished.                      | "Yellow Question  ? Mark" (7 has no minimap icon)
+	// QUEST_ITEM_UPDATE			= 0x06  // Yellow Question "?" Mark.
+};
+
+enum QUEST_STATUS_RESPONSE
+{
+	QMGR_QUEST_0 = 0x00, // Yellow Exclamation mark.x
+	QMGR_QUEST_1 = 0x01, // Yellow Exclamation mark.x
+	QMGR_QUEST_2 = 0x02, // Yellow Exclamation mark.x
+	QMGR_QUEST_3 = 0x03, // Finished or HasQuest ? Yellow Questionmark : Blue Questionmark(Breaks client apparently).x
+	QMGR_QUEST_4 = 0x04, // Finished or HasQuest ? Yellow Questionmark : Blue Questionmark(Breaks client apparently).x
 };
 
 enum QUESTGIVER_QUEST_TYPE
@@ -62,8 +71,8 @@ enum INVALID_REASON
 	INVALID_REASON_COMPLETED_QUEST			= 7,
 	INVALID_REASON_HAVE_TIMED_QUEST			= 12,
 	INVALID_REASON_HAVE_QUEST				= 13,
-//	INVALID_REASON_DONT_HAVE_REQ_ITEMS	  = 0x13,
-//	INVALID_REASON_DONT_HAVE_REQ_MONEY	  = 0x15,
+	// INVALID_REASON_DONT_HAVE_REQ_ITEMS	= 0x13,
+	// INVALID_REASON_DONT_HAVE_REQ_MONEY	= 0x15,
 	INVALID_REASON_DONT_HAVE_EXP_ACCOUNT	= 16,
 	INVALID_REASON_DONT_HAVE_REQ_ITEMS		= 21, // Changed for 2.1.3
 	INVALID_REASON_DONT_HAVE_REQ_MONEY		= 23,
@@ -73,14 +82,14 @@ enum INVALID_REASON
 
 enum QUEST_SHARE
 {
-	QUEST_SHARE_MSG_SHARING_QUEST			= 0, 
-	QUEST_SHARE_MSG_CANT_TAKE_QUEST			= 1, 
+	QUEST_SHARE_MSG_SHARING_QUEST			= 0,
+	QUEST_SHARE_MSG_CANT_TAKE_QUEST			= 1,
 	QUEST_SHARE_MSG_ACCEPT_QUEST			= 2,
 	QUEST_SHARE_MSG_REFUSE_QUEST			= 3,
-	QUEST_SHARE_MSG_BUSY					= 4, 
+	QUEST_SHARE_MSG_BUSY					= 4,
 	QUEST_SHARE_MSG_LOG_FULL				= 5,
-	QUEST_SHARE_MSG_HAVE_QUEST				= 6, 
-	QUEST_SHARE_MSG_FINISH_QUEST			= 7, 
+	QUEST_SHARE_MSG_HAVE_QUEST				= 6,
+	QUEST_SHARE_MSG_FINISH_QUEST			= 7,
 	QUEST_SHARE_MSG_CANT_SHARE_TODAY		= 8,
 	QUEST_SHARE_MSG_QUEST_TIMER_FINISHED	= 9,
 	QUEST_SHARE_MSG_NOT_IN_PARTY			= 10,
@@ -124,8 +133,8 @@ struct Quest
 
 	char * objectivetexts[4];
 
-	uint32 required_item[4];
-	uint32 required_itemcount[4];
+	uint32 required_item[6];
+	uint32 required_itemcount[6];
 
 	uint32 required_kill_player;
 
@@ -141,7 +150,7 @@ struct Quest
 
 	uint32 reward_repfaction[5];
 	int32 reward_repvalue[5];
-	uint32 reward_replimit;
+	int32 reward_replimit;
 
 	uint32 reward_title;
 
@@ -153,8 +162,8 @@ struct Quest
 	uint32 effect_on_player;
 	
 	uint32 point_mapid;
-	uint32 point_x;
-	uint32 point_y;
+	float point_x;
+	float point_y;
 	uint32 point_opt;
 
 	uint32 required_money;
@@ -228,7 +237,7 @@ public:
 
 	ARCTIC_INLINE uint32 GetBaseField(uint32 slot)
 	{
-		return PLAYER_QUEST_LOG_1_1 + (slot * 4);
+		return PLAYER_QUEST_LOG_1_1 + (slot * 5);
 	}
 
 private:
@@ -239,7 +248,7 @@ private:
 
 	Quest *m_quest;
 	Player* m_plr;
-	
+
 	uint32 m_mobcount[4];
 	uint32 m_explored_areas[4];
 

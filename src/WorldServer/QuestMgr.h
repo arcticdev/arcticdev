@@ -50,7 +50,7 @@ public:
 	void BuildQuestComplete(Player* , Quest* qst);
 	void BuildQuestList(WorldPacket* data, Object* qst_giver, Player* plr, uint32 language);
 	bool OnActivateQuestGiver(Object* qst_giver, Player* plr);
-    bool isRepeatableQuestFinished(Player* plr, Quest *qst);
+	bool isRepeatableQuestFinished(Player* plr, Quest *qst);
 
 	void SendQuestUpdateAddKill(Player* plr, uint32 questid, uint32 entry, uint32 count, uint32 tcount, uint64 guid);
 	void BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count);
@@ -114,7 +114,7 @@ public:
 
 	ARCTIC_INLINE int32 GetOffsetForItem(Quest *qst, uint32 itm)
 	{
-		for(uint32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < 6; ++i)
 			if(qst->required_item[i] == itm)
 				return i;
 
@@ -132,7 +132,7 @@ private:
 	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* > m_quest_associations;
 	HM_NAMESPACE::hash_map<uint32, list<QuestAssociation *>* >& GetQuestAssociationList(){return m_quest_associations;}
 
-	HM_NAMESPACE::hash_map<uint32, uint32>		  m_ObjectLootQuestList;
+	HM_NAMESPACE::hash_map<uint32, uint32> m_ObjectLootQuestList;
 
 	template <class T> void _AddQuest(uint32 entryid, Quest *qst, uint8 type);
 

@@ -230,9 +230,11 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 							Item* item = objmgr.CreateItem( qst->receive_items[i], plr);
 							if(!plr->GetItemInterface()->AddItemToFreeSlot(item))
 							{
-								if(item)
+								if(item != NULL)
+								{
 									item->Destructor();
-								item = NULLITEM;
+									item = NULLITEM;
+								}
 							}
 						}
 					}
@@ -245,9 +247,11 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 							item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, qst->srcitemcount ? qst->srcitemcount : 1);
 							if(!plr->GetItemInterface()->AddItemToFreeSlot(item))
 							{
-								if(item)
+								if(item != NULL)
+								{
 									item->Destructor();
-								item = NULLITEM;
+									item = NULLITEM;
+								}
 							}
 						}
 					}
@@ -579,7 +583,7 @@ bool ChatHandler::HandleQuestListCommand(const char * args, WorldSession * m_ses
 		}
 
 		Creature* unit = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
-		if(unit)
+		if(unit!=NULL)
 		{
 			if (!unit->isQuestGiver())
 			{
@@ -614,7 +618,7 @@ bool ChatHandler::HandleQuestListCommand(const char * args, WorldSession * m_ses
 			SystemMessage(m_session, "Auto-targeting self.");
 		}
 
-		if(plr)
+		if(plr!=NULL)
 		{
 			if(plr->HasQuests())
 			{

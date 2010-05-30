@@ -27,13 +27,13 @@ void WorldSession::HandleNameQueryOpcode( WorldPacket & recv_data )
 	uint8 databuffer[5000];
 	StackPacket data(SMSG_NAME_QUERY_RESPONSE, databuffer, 5000);
 	data << pguid;
-	data << uint8( 0 );
+	data << uint8(0);
 	data << pn->name;
-	data << uint8( 0 );	   // this probably is "different realm" or something flag.
-	data << uint8( pn->race );
-	data << uint8( pn->gender );
-	data << uint8( pn->cl );
-	data << uint8( 0 );
+	data << uint8(0); // this probably is "different realm" or something flag.
+	data << uint8(pn->race);
+	data << uint8(pn->gender);
+	data << uint8(pn->cl);
+	data << uint8(0);
 	SendPacket( &data );
 }
 
@@ -70,64 +70,51 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		data << "WayPoint";
 		data << uint8(0) << uint8(0) << uint8(0);
 		data << "Level is WayPoint ID";
-		for(uint32 i = 0; i < 8;i++)
-		{
-			data << uint32( 0 );
-		}
-		data << uint8( 0 );  
+		for(uint32 i = 0; i < 8; ++i)
+			data << uint32(0);
+		data << uint8(0);
+		SendPacket( &data );
+		return;
 	}
+
+	ci = CreatureNameStorage.LookupEntry(entry);
+	if(ci == NULL)
+		return;
+
+	LocalizedCreatureName * lcn = (language > 0) ? sLocalizationMgr.GetLocalizedCreatureName(entry, language) : NULL;
+
+	if(lcn)
+		DEBUG_LOG("WORLD","HandleCreatureQueryOpcode CMSG_CREATURE_QUERY '%s' (localized to %s)", ci->Name, lcn->Name);
 	else
-	{
-		ci = CreatureNameStorage.LookupEntry(entry);
-		if(ci == NULL)
-			return;
-
-		LocalizedCreatureName * lcn = (language>0) ? sLocalizationMgr.GetLocalizedCreatureName(entry, language) : NULL;
-
-		if(lcn == NULL)
-		{
-			OUT_DEBUG("WORLD: CMSG_CREATURE_QUERY '%s'", ci->Name);
-			data << (uint32)entry;
-			data << ci->Name;
-			data << uint8(0) << uint8(0) << uint8(0);
-			data << ci->SubName;
-		}
-		else
-		{
-			OUT_DEBUG("WORLD: CMSG_CREATURE_QUERY '%s' (localized to %s)", ci->Name, lcn->Name);
-			data << (uint32)entry;
-			data << lcn->Name;
-			data << uint8( 0 ) << uint8( 0 ) << uint8( 0 );
-			data << lcn->SubName;
-		}
-		data << ci->info_str; // this is a string in 2.3.0 Example: stormwind guard has : "Direction"
-		data << ci->Flags1;  
-		data << ci->Type;
-		data << ci->Family;
-		data << ci->Rank;
-		data << ci->Unknown1;
-		//data << ci->SpellDataID; 
-		data << ci->Unknown1; 
-		data << ci->Male_DisplayID;
-		data << ci->Female_DisplayID;
-		data << ci->Male_DisplayID2;
-		data << ci->Female_DisplayID2;
-		data << ci->Unknown1;
-		data << ci->unkfloat1;
-		data << ci->unkfloat2;
-		data << ci->Leader;
-		data << uint32( 0 );	// unk
-		data << uint32( 0 );	// unk
-		data << uint32( 0 );	// unk
-		data << uint32( 0 );	// unk
-		data << uint32( 0 );	// unk
-	}
+		DEBUG_LOG("WORLD","HandleCreatureQueryOpcode CMSG_CREATURE_QUERY '%s'", ci->Name);
+	data << (uint32)entry;
+	data << (lcn ? lcn->Name : ci->Name);
+	data << uint8(0) << uint8(0) << uint8(0);
+	data << (lcn ? lcn->SubName : ci->SubName);
+	data << ci->info_str; // this is a string in 2.3.0 Example: stormwind guard has : "Direction"
+	data << ci->Flags1;
+	data << ci->Type;
+	data << ci->Family;
+	data << ci->Rank;
+	data << ci->Unknown1;
+	data << ci->SpellDataID;
+	data << ci->Male_DisplayID;
+	data << ci->Female_DisplayID;
+	data << ci->Male_DisplayID2;
+	data << ci->Female_DisplayID2;
+	data << ci->unkfloat1;
+	data << ci->unkfloat2;
+	data << ci->Leader;
+	for(uint32 i = 0; i < 6; ++i)
+		data << uint32(0); // QuestItems
+	data << uint32(0); // CreatureMovementInfo.dbc
 	SendPacket( &data );
 }
 
 //////////////////////////////////////////////////////////////////////////
 // This function handles CMSG_GAMEOBJECT_QUERY:                         //
 //////////////////////////////////////////////////////////////////////////
+
 void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 12);
@@ -143,14 +130,14 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	recv_data >> entryID;
 	recv_data >> guid;
 
-	OUT_DEBUG("WORLD: CMSG_GAMEOBJECT_QUERY '%u'", entryID);
+	DEBUG_LOG("WORLD","HandleGameObjectQueryOpcode CMSG_GAMEOBJECT_QUERY '%u'", entryID);
 
 	goinfo = GameObjectNameStorage.LookupEntry(entryID);
 	if(goinfo == NULL)
 		return;
 
 	LocalizedGameObjectName * lgn = (language>0) ? sLocalizationMgr.GetLocalizedGameObjectName(entryID, language) : NULL;
-    
+
 	data << entryID;
 	data << goinfo->Type;
 	data << goinfo->DisplayID;
@@ -159,7 +146,12 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	else
 		data << goinfo->Name;
 
-	data << uint8( 0 ) << uint8( 0 ) << uint8( 0 ) << uint8( 0 ) << uint8( 0 ) << uint8( 0 );   // new string in 1.12
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
 	data << goinfo->SpellFocus;
 	data << goinfo->sound1;
 	data << goinfo->sound2;
@@ -184,10 +176,9 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 	data << goinfo->Unknown12;
 	data << goinfo->Unknown13;
 	data << goinfo->Unknown14;
-
-	data << float(goinfo->Size);
-	for(uint32 i = 0; i < 4; ++i)
-		data << uint32(goinfo->QuestItems[i]);
+	data << float(1);
+	for(uint32 i = 0; i < 6; ++i)
+		data << uint32(0); // itemId[6], quest drop
 
 	SendPacket( &data );
 }
@@ -195,6 +186,7 @@ void WorldSession::HandleGameObjectQueryOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////
 // This function handles MSG_CORPSE_QUERY:                              //
 //////////////////////////////////////////////////////////////////////////
+
 void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 {
 	DEBUG_LOG("WORLD","HandleCorpseQueryOpcode Received MSG_CORPSE_QUERY");
@@ -215,25 +207,24 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 		if(pPMapinfo == NULL)
 			data.Initialize(MSG_CORPSE_QUERY);
 
-		data << uint8( 0x01 ); // show ?
+		data << uint8(0x01); // show ?
 
 		if(pPMapinfo != NULL && !(pPMapinfo->type == INSTANCE_NULL || pPMapinfo->type == INSTANCE_PVP))
 		{
-			data << pPMapinfo->repopmapid;              // mapid (that tombstones shown on)
+			data << pPMapinfo->repopmapid; // mapid (that tombstones shown on)
 			data << pPMapinfo->repopx;
 			data << pPMapinfo->repopy;
 			data << pPMapinfo->repopz;
 		}
 		else
 		{
-			data << pCorpse->GetMapId();                // mapid (that tombstones shown on)
+			data << pCorpse->GetMapId(); // mapid (that tombstones shown on)
 			data << pCorpse->GetPositionX();
 			data << pCorpse->GetPositionY();
 			data << pCorpse->GetPositionZ();
 		}
+		data << pCorpse->GetMapId(); // instance mapid (needs to be same as mapid to be able to recover corpse)
 
-		data << uint32( 0 );                            // 3.2.2
-		data << pCorpse->GetMapId();                    // instance mapid (needs to be same as mapid to be able to recover corpse)
 		SendPacket(&data);
 	}
 }
@@ -242,9 +233,11 @@ void WorldSession::HandlePageTextQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 4);
 	uint32 pageid = 0;
+	uint64 itemguid;
 	uint8 buffer[10000];
 	StackPacket data(SMSG_PAGE_TEXT_QUERY_RESPONSE,buffer, 10000);
 	recv_data >> pageid;
+	recv_data >> itemguid;
 
 	while(pageid)
 	{
@@ -277,19 +270,29 @@ void WorldSession::HandleItemNameQueryOpcode( WorldPacket & recv_data )
 	StackPacket reply(SMSG_ITEM_NAME_QUERY_RESPONSE, databuffer, 1000);
 
 	uint32 itemid;
+	uint64 guid;
 	recv_data >> itemid;
+	recv_data >> guid;
+
 	reply << itemid;
-	ItemPrototype *proto=ItemPrototypeStorage.LookupEntry(itemid);
+	ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(itemid);
 	if(!proto)
 		reply << "Unknown Item";
 	else
 	{
-		LocalizedItem* li = (language>0) ? sLocalizationMgr.GetLocalizedItem(itemid, language) : NULL;
+		LocalizedItem* li = (language > 0) ? sLocalizationMgr.GetLocalizedItem(itemid, language) : NULL;
 		if(li)
 			reply << li->Name;
 		else
 			reply << proto->Name1;
 	}
+	if(!proto)
+		reply << uint32(0);
+	else
+	{
+		reply << uint32(proto->InventoryType);
+	}
+
 	SendPacket(&reply);	
 }
 
@@ -297,7 +300,6 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
-	// WorldPacket data(SMSG_QUESTGIVER_STATUS_MULTIPLE, 1000);
 	uint8 databuffer[10000];
 	StackPacket data(SMSG_QUESTGIVER_STATUS_MULTIPLE, databuffer, 10000);
 	Object::InRangeSet::iterator itr;
