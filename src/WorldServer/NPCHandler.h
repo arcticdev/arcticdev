@@ -21,7 +21,7 @@ enum GOSSIP_SPECIAL
 	GOSSIP_TEXT = 0x09,
 	GOSSIP_MENU = 0x0A,
 	GOSSIP_BATTLEMASTER = 0x0B,
-	GOSSIP_BANKER = 0x0C,
+	GOSSIP_BANKEER = 0x0C,
 };
 
 enum TrainerServiceType
@@ -89,15 +89,15 @@ struct GossipNpc
 
 struct trainertype
 {
-	const char * partialname;
+	const char* partialname;
 	uint32 type;
 };
 
 #define TRAINER_TYPE_MAX 16
 extern trainertype trainer_types[TRAINER_TYPE_MAX];
 
-#define TRAINER_STATUS_LEARNABLE		0
-#define TRAINER_STATUS_NOT_LEARNABLE	1
-#define TRAINER_STATUS_ALREADY_HAVE		2
+#define TRAINER_STATUS_LEARNABLE       0
+#define TRAINER_STATUS_NOT_LEARNABLE   1
+#define TRAINER_STATUS_ALREADY_HAVE    2
 
 #endif
