@@ -10,7 +10,7 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
-	//WorldPacket data;
+	// WorldPacket data;
 	uint64 petGuid = 0;
 	uint16 misc = 0;
 	uint16 action = 0;

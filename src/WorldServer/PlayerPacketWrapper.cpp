@@ -8,89 +8,101 @@
 
 void Player::SendWorldStateUpdate(uint32 WorldState, uint32 Value)
 {
-	packetSMSG_WORLD_STATE_UPDATE pck;
-	pck.State = WorldState;
-	pck.Value = Value;
+    packetSMSG_WORLD_STATE_UPDATE pck;
+    pck.State = WorldState;
+    pck.Value = Value;
 
-	GetSession()->OutPacket(SMSG_UPDATE_WORLD_STATE, sizeof(packetSMSG_WORLD_STATE_UPDATE), (const char*)&pck);
+    GetSession()->OutPacket(SMSG_UPDATE_WORLD_STATE, sizeof(packetSMSG_WORLD_STATE_UPDATE), (const char*)&pck);
 }
 
 void Player::Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name)
 {
-	WorldPacket data(SMSG_GOSSIP_POI, 50);
-	 data << uint32( Flags ); 
-	data << float( X ); 
-	data << float( Y );
-	data << uint32( Icon ); 
-	data << uint32( Data ); 
-	data << uint32( Name ); 
-	GetSession()->SendPacket(&data);
+    WorldPacket data(SMSG_GOSSIP_POI, 50);
+    data << Flags;
+    data << X;
+    data << Y;
+    data << Icon;
+    data << Data;
+    data << Name;
+    GetSession()->SendPacket(&data);
 }
-  
+
 void Player::SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4)
 {
-    WorldPacket data( SMSG_LEVELUP_INFO, 14 * 4 ); 
-    data << uint32( level ); 
-    data << uint32( Hp ); 
-    data << uint32( Mana ); 
+    packet_SMSG_LEVELUP_INFO packet;
+    packet.level = level;
+    packet.Hp = Hp;
+    packet.Mana = Mana;
 
-    for( int i = 0; i < 6; ++i )
-        data << uint32( 0 ); 
-    
-	// Append stat differences
-    data << uint32( Stat0 ); 
-    data << uint32( Stat1 ); 
-    data << uint32( Stat2 ); 
-    data << uint32( Stat3 );
-    data << uint32( Stat4 ); 
-    
-	m_session->SendPacket( &data ); 
+    // grep: these are probably the other powers :)
+    packet.unk0 = 0;
+    packet.unk1 = 0;
+    packet.unk2 = 0;
+    packet.unk3 = 0;
+    packet.unk4 = 0;
+    packet.unk5 = 0;
+
+    // Append stat differences
+    packet.Stat0 = Stat0;
+    packet.Stat1 = Stat1;
+    packet.Stat2 = Stat2;
+    packet.Stat3 = Stat3;
+    packet.Stat4 = Stat4;
+    GetSession()->OutPacket(SMSG_LEVELUP_INFO, sizeof(packet_SMSG_LEVELUP_INFO),(const char*)&packet);
 }
 
 void Player::SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type)
 {
-    WorldPacket data( SMSG_LOG_XPGAIN, 24 ); 
-	
     if (type == false)
     {
-        data << uint64( guid );
-        data << uint32( NormalXP ); 
-        if( type ) 
-            data << uint8( 1 ); 
-        else
-		    data << uint8( 0 );
-		data << uint32( RestedXP );
-        data << float( 1.0f ); 
+        packetSMSG_LOG_XP_GAIN_EXTRA packet;
+        packet.guid     = guid;
+        packet.xp       = NormalXP;
+        packet.type     = (uint8)type;
+        packet.restxp   = RestedXP;
+        packet.unk2     = 1.0f;
+        GetSession()->OutPacket(SMSG_LOG_XPGAIN, sizeof(packetSMSG_LOG_XP_GAIN_EXTRA),(const char*)&packet);
     }
     else if (type == true)
     {
-        data << uint64( 0 );          // does not need to be set for questxp 
-        data << uint32( NormalXP ); 
-        if( type ) 
-            data << uint8( 1 ); 
- 	    else 
- 	        data << uint8( 0 ); 
-        
-        data << uint8( 0 ); 
+        packetSMSG_LOG_XP_GAIN packet;
+        packet.guid = 0; // does not need to be set for quest xp
+        packet.xp = NormalXP;
+        packet.type = (uint8)type;
+        packet.unk = 0;
+        GetSession()->OutPacket(SMSG_LOG_XPGAIN, sizeof(packetSMSG_LOG_XP_GAIN),(const char*)&packet);
     }
-    m_session->SendPacket( &data );
 }
 
+// this one needs to be send inrange...
 void Player::SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 damage)
-{ 
-    WorldPacket data( SMSG_ENVIRONMENTALDAMAGELOG, 12 ); 
+{
+    packetSMSG_ENVIRONMENTAL_DAMAGE packet;
+    packet.Guid = guid;
+    packet.Damage = damage;
+    packet.Type = type;
+    GetSession()->OutPacket(SMSG_ENVIRONMENTALDAMAGELOG, sizeof(packetSMSG_ENVIRONMENTAL_DAMAGE),(const char*)&packet);
+}
 
-    data << uint64( guid ); 
-    data << uint8( type ); 
-    data << uint32( damage ); 
-
-    m_session->SendPacket( &data ); 
-} 
 
 void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
-{ 
-    WorldPacket data( SMSG_CAST_FAILED, 80 ); 
-    data << uint32( SpellId ); 
-    data << uint8( ErrorMessage ); 
-    data << uint8( MultiCast ); 
-} 
+{
+    if( Extra )
+    {
+        packetSMSG_CASTRESULT_EXTRA pe;
+        pe.SpellId = SpellId;
+        pe.ErrorMessage = ErrorMessage;
+        pe.MultiCast = MultiCast;
+        pe.Extra = Extra;
+        m_session->OutPacket( SMSG_CAST_FAILED, sizeof( packetSMSG_CASTRESULT_EXTRA ), &pe );
+    }
+    else
+    {
+        packetSMSG_CASTRESULT pe;
+        pe.SpellId = SpellId;
+        pe.ErrorMessage = ErrorMessage;
+        pe.MultiCast = MultiCast;
+        m_session->OutPacket( SMSG_CAST_FAILED, sizeof( packetSMSG_CASTRESULT ), &pe );
+    }
+}
+
