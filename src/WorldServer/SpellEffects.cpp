@@ -232,7 +232,7 @@ void Spell::SpellEffectInstantKill(uint32 i)
 					{
 						spellid1 = 18790;
 					}break;
-					case 1863: //Succubus
+					case 1863: // Succubus
 					{
 						spellid1 = 18791;
 					}break;
@@ -348,7 +348,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 	bool static_damage = false;
 	uint32 AdditionalCritChance = 0;
 
-	if(m_spellInfo->EffectChainTarget[i])//chain
+	if(m_spellInfo->EffectChainTarget[i]) // chain
 	{
 		if( m_spellInfo->Id == 53595 )
 		{
@@ -388,7 +388,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 
 			case SPELL_HASH_ICE_LANCE: // Ice Lance
 				{
-					if (dmg>300) //dirty bugfix.
+					if (dmg>300) // dirty bugfix.
 						dmg = (int32)(damage >> 1);
 				}break;
 			case SPELL_HASH_INCINERATE: // Incinerate -> Deals x-x extra damage if the target is affected by immolate
@@ -980,15 +980,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					p_caster->ClearCooldownForSpell( ClearSpellId[i] );
 			}
 		}break;
-	/*
-		Cloak of Shadows
-		Instantly removes all existing harmful spell effects and increases your chance to resist all spells by 90% for 5 sec.  Does not remove effects that prevent you from using Cloak of Shadows.
-		
-		Effect #1	Apply Aura: Mod Attacker Spell Hit Chance (126)
-			Value: -90
-		Effect #2	Trigger Spell
-			Spell #35729 <--- THIS SPELL
-	*/
 	case 35729:
 		{
 			if( unitTarget == NULL || !unitTarget->isAlive())
@@ -1038,7 +1029,9 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 	/*
 		Improved Leader of the Pack
-		Your Leader of the Pack ability also causes affected targets to have a X% chance to heal themselves for X% of their total health when they critically hit with a melee or ranged attack.  The healing effect cannot occur more than once every 6 sec.
+		Your Leader of the Pack ability also causes affected targets to have a X% chance to heal
+		themselves for X% of their total health when they critically hit with a melee or ranged attack.
+		The healing effect cannot occur more than once every 6 sec.
 		
 		Effect #1	Apply Aura: Add Flat Modifier (12)
 			Value: X
@@ -1128,16 +1121,16 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				Creature* cr=TO_CREATURE((*i2));
 				if(cr->GetAIInterface()->GetNextTarget()==unitTarget)
 					targets[targets_got++]=cr;
-				if(targets_got==3)
+				if(targets_got == 3)
 					break;
 			}
-			for(int i=0;i<targets_got;++i)
+			for(int i = 0; i < targets_got; ++i)
 			{
-				//set threat to this target so we are the msot hated
+				// set threat to this target so we are the msot hated
 				uint32 threat_to_him = targets[i]->GetAIInterface()->getThreatByPtr( unitTarget );
 				uint32 threat_to_us = targets[i]->GetAIInterface()->getThreatByPtr(u_caster);
 				int threat_dif = threat_to_him - threat_to_us;
-				if(threat_dif>0)//should nto happen
+				if(threat_dif>0) // should nto happen
 					targets[i]->GetAIInterface()->modThreatByPtr(u_caster,threat_dif);
 				targets[i]->GetAIInterface()->AttackReaction(u_caster,1,0);
 				targets[i]->GetAIInterface()->SetNextTarget(u_caster);
@@ -2249,7 +2242,7 @@ void Spell::SpellEffectApplyAura(uint32 i) // Apply Aura
 
 		if(!Duration)
 		{
-			//maybe add some resist messege to client here ?
+			// maybe add some resist messege to client here ?
 			return;
 		}
 		if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
@@ -2604,7 +2597,6 @@ void Spell::SpellEffectQuestComplete(uint32 i) // Quest Complete
 	}
 }
 
-//wand->
 void Spell::SpellEffectWeapondamageNoschool(uint32 i) // Weapon damage + (no School)
 {
 	if( unitTarget == NULL  || u_caster == NULL )
@@ -2864,10 +2856,6 @@ void Spell::SpellEffectWeapon(uint32 i)
 		}break;
 	}
 
-	// Don't add skills to players logging in.
-	/*if((m_spellInfo->Attributes & ATTRIBUTES_PASSIVE) && playerTarget->m_TeleportState == 1)
-		return;*/
-
 	if(skill)
 	{
 		if(spell)
@@ -2896,16 +2884,12 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	uint32 dur = GetDuration();
 	float r = GetRadius(i);
 
-	// Note: this code seems to be useless
-	// this must be only source point or dest point
-	// this AREA aura it's apllied on area
-	// it can'be on unit or self or item or object
-	// uncomment it if i'm wrong
-	// We are thinking in general so it might be useful later DK
 	DynamicObject* dynObj = NULL;
 	dynObj = m_caster->GetMapMgr()->CreateDynamicObject();
 	if(dynObj == NULL)
-		return;	if(g_caster != NULL && g_caster->IsInWorld() && g_caster->m_summoner)	{
+		return;
+	if(g_caster != NULL && g_caster->IsInWorld() && g_caster->m_summoner)
+	{
 		if (g_caster->GetByte(GAMEOBJECT_BYTES_1, 1) == GAMEOBJECT_TYPE_TRAP && g_caster->m_summoner->dynObj != NULL)
 			g_caster->m_summoner->dynObj->SetAliveDuration(1);
 		
@@ -3051,10 +3035,11 @@ void Spell::SummonCreature(uint32 i) // Summon
 	if( !ci || !cp )
 		return;
 
-	if(m_spellInfo->EffectMiscValue[i] == 510)	// Water Elemental
+	if(m_spellInfo->EffectMiscValue[i] == 510) // Water Elemental
 	{
 		Pet* summon = NULLCREATURE;
-		summon = objmgr.CreatePet();		summon->SetInstanceID(m_caster->GetInstanceID());
+		summon = objmgr.CreatePet();
+		summon->SetInstanceID(m_caster->GetInstanceID());
 		summon->CreateAsSummon(m_spellInfo->EffectMiscValue[i], ci, NULLCREATURE, p_caster, m_spellInfo, 1, 45000);
 		summon->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel());
 		summon->AddSpell(dbcSpell.LookupEntry(31707), true, false); // dont need to send the spell packet yet
@@ -3123,7 +3108,7 @@ void Spell::SummonCreature(uint32 i) // Summon
 				pCreature->SetSummonOwnerSlot(p_caster->GetGUID(),m_summonProperties->slot);
 				p_caster->m_SummonSlots[ m_summonProperties->slot ] = pCreature;
 			}
-			if ( m_spellInfo->EffectMiscValue[i] == 19668 ) //shadowfiend
+			if ( m_spellInfo->EffectMiscValue[i] == 19668 ) // shadowfiend
 			{
 				float parent_bonus = (float)(p_caster->GetDamageDoneMod(SCHOOL_SHADOW)*0.065f);
 				pCreature->SetFloatValue(UNIT_FIELD_MINDAMAGE, pCreature->GetFloatValue(UNIT_FIELD_MINDAMAGE) + parent_bonus);
@@ -3258,10 +3243,18 @@ void Spell::SpellEffectEnergize(uint32 i) // Energize
 				if(motherspell)
 				{
 					// heal amount from procspell (we only proced on a heal spell)
-					uint32 healamt=0;
+					uint32 healamt = 0;
 					if(ProcedOnSpell->Effect[0]==SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[0]==SPELL_EFFECT_SCRIPT_EFFECT)
 						healamt=ProcedOnSpell->EffectBasePoints[0]+1;
-					else if(ProcedOnSpell->Effect[1]==SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[1]==SPELL_EFFECT_SCRIPT_EFFECT)						healamt=ProcedOnSpell->EffectBasePoints[1]+1;					else if(ProcedOnSpell->Effect[2]==SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[2]==SPELL_EFFECT_SCRIPT_EFFECT)						healamt=ProcedOnSpell->EffectBasePoints[2]+1;					modEnergy = (motherspell->EffectBasePoints[0]+1)*(healamt)/100;				}			}		}break;	case 2687:
+					else if(ProcedOnSpell->Effect[1]==SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[1]==SPELL_EFFECT_SCRIPT_EFFECT)
+					healamt=ProcedOnSpell->EffectBasePoints[1]+1;
+					else if(ProcedOnSpell->Effect[2]==SPELL_EFFECT_HEAL || ProcedOnSpell->Effect[2]==SPELL_EFFECT_SCRIPT_EFFECT)
+					healamt=ProcedOnSpell->EffectBasePoints[2]+1;
+					modEnergy = (motherspell->EffectBasePoints[0]+1)*(healamt)/100;
+					}
+				}
+			}break;
+	case 2687:
 		{
 			modEnergy = damage;
 			if( p_caster != NULL )
@@ -3639,7 +3632,8 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 		float r=GetRadius(i);
 		r *= r;
 
-		if( u_caster->IsPlayer() || ( u_caster->GetTypeId() == TYPEID_UNIT && (TO_CREATURE(u_caster)->IsTotem() || TO_CREATURE(u_caster)->IsPet()) ) )		{
+		if( u_caster->IsPlayer() || ( u_caster->GetTypeId() == TYPEID_UNIT && (TO_CREATURE(u_caster)->IsTotem() || TO_CREATURE(u_caster)->IsPet()) ) )
+		{
 			sEventMgr.AddEvent(pAura, &Aura::EventUpdatePlayerAA, r, EVENT_AREAAURA_UPDATE, m_spellInfo->area_aura_update_interval, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
 		}
 		else if( u_caster->GetTypeId() == TYPEID_UNIT )
@@ -3813,7 +3807,7 @@ void Spell::SpellEffectDispel(uint32 i) // Dispel
 	uint32 start,end;
 	if(isAttackable(u_caster,unitTarget))
 	{
-		start=0;
+		start = 0;
 		end=MAX_POSITIVE_AURAS;
 	}
 	else
@@ -4024,20 +4018,20 @@ void Spell::SummonGuardian(uint32 i) // Summon Guardian
 	}
 	else
 	{
-		//we only have 7 summon slots
+		// we only have 7 summon slots
 		damage = damage > 6 ? 6 : damage;
 
 		// it's health., or a fucked up infernal.
 		if( m_summonProperties->unk2 & 2 || m_summonProperties->Id == 711)
 			damage = 1;
 
-		if(cr_entry == 31216)	// mirror image
+		if(cr_entry == 31216) // mirror image
 			damage = 3;
 
-		if(cr_entry == 24207)	// army of the dead
+		if(cr_entry == 24207) // army of the dead
 			damage = 6;
 		
-		if(cr_entry == 29264)	// Spirit Wolf
+		if(cr_entry == 29264) // Spirit Wolf
 		{
 			CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 			Pet *summon = objmgr.CreatePet();
@@ -4120,7 +4114,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 			else
 				max = 1;
 			break;
-		default: //u cant learn other types in game
+		default: // u cant learn other types in game
 			return;
 	};
 
@@ -4130,10 +4124,6 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 	}
 	else
 	{
-		// Don't add skills to players logging in.
-		/*if((m_spellInfo->Attributes & 64) && playerTarget->m_TeleportState == 1)
-			return;*/
-
 		if( sk->type == SKILL_TYPE_PROFESSION )
 			target->ModUnsigned32Value( PLAYER_CHARACTER_POINTS2, -1 );
 
@@ -4143,84 +4133,91 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 			target->_AddSkillLine( skill, 1, max );
 	}
 
-	//professions fix, for unknow reason when u learn profession it 
-	//does not teach find herbs for herbalism etc. moreover there is no spell
-	//in spell.dbc that would teach u this. It means blizz does it in some tricky way too
+	// professions fix, for unknow reason when u learn profession it 
+	// does not teach find herbs for herbalism etc. moreover there is no spell
+	// in spell.dbc that would teach u this. It means blizz does it in some tricky way too
 	switch( skill )
 	{
 	case SKILL_ALCHEMY:
-		target->addSpell( 2330 );//Minor Healing Potion
-		target->addSpell( 2329 );//Elixir of Lion's Strength
-		target->addSpell( 7183 );//Elixir of Minor Defense
+		target->addSpell( 2330 ); // Minor Healing Potion
+		target->addSpell( 2329 ); // Elixir of Lion's Strength
+		target->addSpell( 7183 ); // Elixir of Minor Defense
 		break;
 	case SKILL_ENCHANTING:
-		target->addSpell( 7418 );//Enchant Bracer - Minor Health
-		target->addSpell( 7428 );//Enchant Bracer - Minor Deflection
-		target->addSpell( 7421 );//Runed Copper Rod
-		target->addSpell( 13262 );//Disenchant
+		target->addSpell( 7418 ); // Enchant Bracer - Minor Health
+		target->addSpell( 7428 ); // Enchant Bracer - Minor Deflection
+		target->addSpell( 7421 ); // Runed Copper Rod
+		target->addSpell( 13262 ); // Disenchant
 		break;
 	case SKILL_HERBALISM:
 		target->addSpell( 2383 );//find herbs
 		break;
 	case SKILL_MINING:
-		target->addSpell( 2657 );//smelt copper
-		target->addSpell( 2656 );//smelting
-		target->addSpell( 2580 );//find minerals
+		target->addSpell( 2657 ); // smelt copper
+		target->addSpell( 2656 ); // smelting
+		target->addSpell( 2580 ); // find minerals
 		break;
 	case SKILL_FIRST_AID:
-		target->addSpell( 3275 );//Linen Bandage
+		target->addSpell( 3275 ); // Linen Bandage
 		break;
 	case SKILL_TAILORING:
-		target->addSpell( 2963 );//Bolt of Linen Cloth
+		target->addSpell( 2963 ); // Bolt of Linen Cloth
 
-		target->addSpell( 2387 );//Linen Cloak
-		target->addSpell( 2393 );//White Linen Shirt
-		target->addSpell( 3915 );//Brown Linen Shirt
-		target->addSpell( 12044 );//Simple Linen Pants
+		target->addSpell( 2387 ); // Linen Cloak
+		target->addSpell( 2393 ); // White Linen Shirt
+		target->addSpell( 3915 ); // Brown Linen Shirt
+		target->addSpell( 12044 ); // Simple Linen Pants
 		break;
 	case SKILL_LEATHERWORKING:
-		target->addSpell( 2149 );//Handstitched Leather Boots
-		target->addSpell( 2152 );//Light Armor Kit
-		target->addSpell( 2881 );//Light Leather
-		target->addSpell( 7126 );//Handstitched Leather Vest
-		target->addSpell( 9058 );//Handstitched Leather Cloak
-		target->addSpell( 9059 );//Handstitched Leather Bracers
+		target->addSpell( 2149 ); // Handstitched Leather Boots
+		target->addSpell( 2152 ); // Light Armor Kit
+		target->addSpell( 2881 ); // Light Leather
+		target->addSpell( 7126 ); // Handstitched Leather Vest
+		target->addSpell( 9058 ); // Handstitched Leather Cloak
+		target->addSpell( 9059 ); // Handstitched Leather Bracers
 		break;
 	case SKILL_ENGINERING:
-		target->addSpell( 3918 );//Rough Blasting Powder
-		target->addSpell( 3919 );//Rough Dynamite
-		target->addSpell( 3920 );//Crafted Light Shot
+		target->addSpell( 3918 ); // Rough Blasting Powder
+		target->addSpell( 3919 ); // Rough Dynamite
+		target->addSpell( 3920 ); // Crafted Light Shot
 		break;
 	case SKILL_COOKING:
-		target->addSpell( 2538 );//Charred Wolf Meat
-		target->addSpell( 2540 );//Roasted Boar Meat
-		target->addSpell( 818 );//Basic Campfire
-		target->addSpell( 8604 );//Herb Baked Egg
+		target->addSpell( 2538 ); // Charred Wolf Meat
+		target->addSpell( 2540 ); // Roasted Boar Meat
+		target->addSpell( 818 ); // Basic Campfire
+		target->addSpell( 8604 ); // Herb Baked Egg
 		break;
 	case SKILL_BLACKSMITHING:
-		target->addSpell( 2660 );//Rough Sharpening Stone
-		target->addSpell( 2663 );//Copper Bracers
-		target->addSpell( 12260 );//Rough Copper Vest
-		target->addSpell( 2662 );//Copper Chain Pants
-		target->addSpell( 3115 );//Rough Weightstone
+		target->addSpell( 2660 ); // Rough Sharpening Stone
+		target->addSpell( 2663 ); // Copper Bracers
+		target->addSpell( 12260 ); // Rough Copper Vest
+		target->addSpell( 2662 ); // Copper Chain Pants
+		target->addSpell( 3115 ); // Rough Weightstone
 		break;
 	case SKILL_JEWELCRAFTING:
-		target->addSpell( 25255 );// Delicate Copper Wire
-		target->addSpell( 25493 );// Braided Copper Ring
-		target->addSpell( 26925 );// Woven Copper Ring
-		target->addSpell( 32259 );// Rough Stone Statue
+		target->addSpell( 25255 ); // Delicate Copper Wire
+		target->addSpell( 25493 ); // Braided Copper Ring
+		target->addSpell( 26925 ); // Woven Copper Ring
+		target->addSpell( 32259 ); // Rough Stone Statue
 		break;
 	case SKILL_INSCRIPTION:
-		target->addSpell( 51005 );// Milling
-		target->addSpell( 48116 );// Scroll of Spirit
-		target->addSpell( 48114 );// Scroll of Intellect
-		target->addSpell( 45382 );// Scroll of Stamina
-		target->addSpell( 52738 );// Ivory Ink
+		target->addSpell( 51005 ); // Milling
+		target->addSpell( 48116 ); // Scroll of Spirit
+		target->addSpell( 48114 ); // Scroll of Intellect
+		target->addSpell( 45382 ); // Scroll of Stamina
+		target->addSpell( 52738 ); // Ivory Ink
 
 	}
 }
 
-void Spell::SpellEffectDetect(uint32 i){	if( u_caster == NULL )		return;	u_caster->UpdateVisibility();}void Spell::SpellEffectSummonObject(uint32 i)
+void Spell::SpellEffectDetect(uint32 i)
+{
+	if( u_caster == NULL )
+	return;
+	u_caster->UpdateVisibility();
+}
+
+void Spell::SpellEffectSummonObject(uint32 i)
 {
 	if( p_caster == NULL )
 		return;
@@ -4318,12 +4315,12 @@ void Spell::SpellEffectDetect(uint32 i){	if( u_caster == NULL )		return;	u_caste
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 		go->PushToWorld(m_caster->GetMapMgr());	  
 		go->ExpireAndDelete(GetDuration());
-		if(entry ==17032)//this is a portal
+		if(entry ==17032) // this is a portal
 		{
-			//enable it for party only
+			// enable it for party only
 			go->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
-			//disable by default
+			// disable by default
 			WorldPacket *pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_BYTES_1, 1);
 			SubGroup * pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
@@ -4382,7 +4379,9 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 	if( itemTarget == NULL || p_caster == NULL )
 		return;
 	EnchantEntry * Enchantment = NULL;
-	Enchantment = dbcEnchant.LookupEntry(m_spellInfo->EffectMiscValue[i]);	if(Enchantment == NULL )		return;	//Start Scroll Creation 
+	Enchantment = dbcEnchant.LookupEntry(m_spellInfo->EffectMiscValue[i]);
+	if(Enchantment == NULL )
+	return;	// Start Scroll Creation 
 	if( itemTarget->GetEntry() == 38682 || itemTarget->GetEntry() == 39349 || itemTarget->GetEntry() == 37602 || itemTarget->GetEntry() == 39350 || itemTarget->GetEntry() == 43145 || itemTarget->GetEntry() == 43146 )
 	{
 		Item* newItem = NULL;
@@ -4422,14 +4421,18 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 				}
 			
 				newItem =objmgr.CreateItem(itemid,p_caster);
-				if(newItem == NULL)					return;				newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
+				if(newItem == NULL)
+				return;
+				newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 				newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count);
 
 				if(p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 				{
 					p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 				}
-				else				{					newItem->Destructor();
+				else
+				{
+					newItem->Destructor();
 					newItem = NULLITEM;
 				}
 				DetermineSkillUp(SKILL_ENCHANTING);
@@ -4450,7 +4453,9 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 					else
 					{
 						newItem =objmgr.CreateItem(itemid,p_caster);
-						if(newItem == NULL)							return;						newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
+						if(newItem == NULL)
+						return;
+						newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 						newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
 						if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 						{
@@ -4581,12 +4586,10 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	Pet* pPet = objmgr.CreatePet();
 	pPet->SetInstanceID(p_caster->GetInstanceID());
 	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0);
-	//tame->SafeDelete();
-	//delete tame;
 	tame->Despawn(0,tame->proto? tame->proto->RespawnTime:0);
 }
 
-void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
+void Spell::SpellEffectSummonPet(uint32 i) // summon - pet
 {
 	if(m_spellInfo->Id == 883)
 	{
@@ -4614,13 +4617,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		}
 		return;
 	}
-	
-	//uint32 entryId = m_spellInfo->EffectMiscValue[i];
 
-	// VoidWalker:torment, sacrifice, suffering, consume shadows
-	// Succubus:lash of pain, soothing kiss, seduce , lesser invisibility
-	// felhunter: Devour Magic,Paranoia,Spell Lock, Tainted Blood
- 
 	if( p_caster == NULL || p_caster->getClass() != WARLOCK)
 		return;
 	
@@ -4632,9 +4629,6 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 	if(ci)
 	{
-		//if demonic sacrifice auras are still active, remove them
-		//uint32 spids[] = { 18789, 18790, 18791, 18792, 35701, 0 };
-		//p_caster->RemoveAuras(spids);
 		p_caster->RemoveAura(18789);
 		p_caster->RemoveAura(18790);
 		p_caster->RemoveAura(18791);
@@ -4642,7 +4636,10 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		p_caster->RemoveAura(35701);
 
 		Pet* summon = NULL;
-		summon = objmgr.CreatePet();		if(summon == NULL)			return;		summon->SetInstanceID(m_caster->GetInstanceID());
+		summon = objmgr.CreatePet();
+		if(summon == NULL)
+		return;
+		summon->SetInstanceID(m_caster->GetInstanceID());
 		summon->CreateAsSummon(m_spellInfo->EffectMiscValue[i], ci, NULLCREATURE, p_caster, m_spellInfo, 1, 0);
 		if( u_caster->IsPvPFlagged() )
 			summon->SetPvPFlag();
@@ -4654,7 +4651,7 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 	if( unitTarget == NULL || u_caster == NULL )
 		return;
 
-	//Hackfix for Mangle
+	// Hackfix for Mangle
 	if( m_spellInfo->NameHash == SPELL_HASH_MANGLE__CAT_ && u_caster->IsPlayer() )
 		TO_PLAYER( u_caster )->AddComboPoints( unitTarget->GetGUID(), 1 );
 
@@ -4683,7 +4680,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 	if( unitTarget == NULL ||!unitTarget->isAlive() || unitTarget->GetPowerType() != POWER_TYPE_MANA)
 		return;
 
-	//Resilience reduction
+	// Resilience reduction
 	if(unitTarget->IsPlayer())
 	{
 		float dmg_reduction_pct = 2.2f * TO_PLAYER(unitTarget)->CalcRating( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE ) / 100.0f;
@@ -4692,7 +4689,7 @@ void Spell::SpellEffectPowerBurn(uint32 i) // power burn
 		damage = float2int32( damage - damage * dmg_reduction_pct );
 	}
 
-	//this is pct...
+	// this is pct...
 	int32 mana = float2int32( unitTarget->GetUInt32Value( UNIT_FIELD_POWER1 ) * (damage/100.0f));
 	if( m_spellInfo->Id == 8129 )
 		if( mana > u_caster->GetUInt32Value( UNIT_FIELD_MAXPOWER1 ) * 0.26 )
@@ -4755,7 +4752,7 @@ void Spell::SpellEffectPowerFunnel(uint32 i) // Power Funnel
 	// does not exist
 }
 
-void Spell::SpellEffectHealMaxHealth(uint32 i)   // Heal Max Health
+void Spell::SpellEffectHealMaxHealth(uint32 i) // Heal Max Health
 {
 	if( unitTarget == NULL || !unitTarget->isAlive() )
 		return;
@@ -4791,7 +4788,7 @@ void Spell::SpellEffectInterruptCast(uint32 i) // Interrupt Cast
 	{
 		school = unitTarget->GetCurrentSpell()->m_spellInfo->School;
 		unitTarget->InterruptCurrentSpell();
-		if(school)//prevent from casts in this school
+		if(school) // prevent from casts in this school
 		{
 			unitTarget->SchoolCastPrevent[school] = GetDuration() + getMSTime();
 		}
@@ -4818,7 +4815,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 	if( unitTarget == NULL || p_caster == NULL || unitTarget->GetTypeId() != TYPEID_UNIT)
 		return;
 
-	//Show random loot based on roll,
+	// Show random loot based on roll,
 	Creature* target = TO_CREATURE( unitTarget );
 	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != HUMANOID))
 	{
@@ -4943,7 +4940,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 		{
 			if( p_caster == NULL )
 				return;
-			//ugly thingo
+			// ugly thingo
 			Aura* pAura = NULL;
 			for(uint32 i = MAX_POSITIVE_AURAS; i < MAX_AURAS; ++i)
 			{
@@ -4957,7 +4954,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 						}
 			}
 		}break;
-	case 53209://Chimera Shot
+	case 53209: // Chimera Shot
 		{
 			if( p_caster  == NULL )
 				return;
@@ -5065,7 +5062,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			pSpell_a->prepare( &targets );
 			
 			sp = dbcSpell.LookupEntryForced( 47953 );
-			Spell* pSpell_b =new Spell(p_caster, sp, true, NULLAURA);
+			Spell* pSpell_b = new Spell(p_caster, sp, true, NULLAURA);
 			pSpell_b->GenerateTargets( &targets );
 			pSpell_b->prepare( &targets );
 		}break;
@@ -5233,7 +5230,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				if(sp == NULL)
 					return;
 				SpellCastTargets tgt(unitTarget->GetGUID());
-				//sp->damage = damage;
+				// sp->damage = damage;
 				sp->forced_basepoints[0] = damage;
 				sp->prepare(&tgt);
 			}
@@ -5308,7 +5305,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				if( Rand( p_caster->GetDummyAura(SPELL_HASH_JUDGEMENTS_OF_THE_WISE)->RankNumber * 33 + 1 ) )
 				{
 					p_caster->CastSpell( p_caster, 31930, true );
-					//cast Replenishment
+					// cast Replenishment
 					if( p_caster->GetGroup() )
 					{
 						uint32 TargetCount = 0;
@@ -5348,27 +5345,27 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				}
 			}
 		}break;
-	//warlock - Master Demonologist
+	// warlock - Master Demonologist
 	case 23784:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) // in case it is imp
 				casted_spell_id = 23759 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) // VoidWalker
 				casted_spell_id = 23760 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) // Succubus
 				casted_spell_id = 23761 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) // Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23762 ;
 				inc_resist_by_level = 20 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) // Felguard
 			{
 				casted_spell_id = 35702 ;
 				inc_resist_by_level_spell = 23762 ;
@@ -5376,23 +5373,23 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( casted_spell_id )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULLAURA );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULLAURA );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULLAURA );
 				sp->forced_basepoints[0] = p_caster->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULLAURA );
 				sp->forced_basepoints[0] = unitTarget->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
@@ -5402,23 +5399,23 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 23830:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
 			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
 				casted_spell_id = 23826 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) // VoidWalker
 				casted_spell_id = 23841 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) // Succubus
 				casted_spell_id = 23833 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) // Felhunter
 			{
 				casted_spell_id = 1 ;
 				inc_resist_by_level_spell = 23837 ;
 				inc_resist_by_level = 40 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) // Felguard
 			{
 				casted_spell_id = 35703 ;
 				inc_resist_by_level_spell = 23837 ;
@@ -5426,11 +5423,11 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( casted_spell_id )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULLAURA );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = new Spell(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULLAURA );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
@@ -5452,23 +5449,23 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 23831:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) // in case it is imp
 				casted_spell_id = 23827 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) // VoidWalker
 				casted_spell_id = 23842 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) // Succubus
 				casted_spell_id = 23834 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) // Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23838 ;
 				inc_resist_by_level = 60 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) // Felguard
 			{
 				casted_spell_id = 35704 ;
 				inc_resist_by_level_spell = 23838 ;
@@ -5503,23 +5500,23 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 23832:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) // in case it is imp
 				casted_spell_id = 23828 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) // VoidWalker
 				casted_spell_id = 23843 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) // Succubus
 				casted_spell_id = 23835 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) // Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23839 ;
 				inc_resist_by_level = 80 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) // Felguard
 			{
 				casted_spell_id = 35705 ;
 				inc_resist_by_level_spell = 23839 ;
@@ -5527,11 +5524,11 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( casted_spell_id )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULLAURA );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = NULL;
 				sp = new Spell(unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULLAURA );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
@@ -5539,12 +5536,12 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( inc_resist_by_level_spell )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULLAURA );
 				sp->forced_basepoints[0] = p_caster->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = NULL;
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULLAURA );
 				sp->forced_basepoints[0] = unitTarget->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
@@ -5555,24 +5552,24 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 35708:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //in case it is imp
+			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) // in case it is imp
 				casted_spell_id = 23829 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) // VoidWalker
 				casted_spell_id = 23844 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) // Succubus
 				casted_spell_id = 23836 ;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) // Felhunter
 			{
 				casted_spell_id = 0 ;
 				inc_resist_by_level_spell = 23840 ;
 				inc_resist_by_level = 100 ;
 			}
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) // Felguard
 			{
 				casted_spell_id = 35706 ;
 			}
@@ -5589,12 +5586,12 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( inc_resist_by_level_spell )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULLAURA );
 				sp->forced_basepoints[0] = p_caster->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				Spell* Petsp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULLAURA );
 				Petsp->forced_basepoints[0] = unitTarget->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
@@ -5620,15 +5617,15 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 				return;
 
 			uint32 nspellid = 0;
-			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) //Imp
+			if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 416 ) // Imp
 				nspellid = 54444;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) //VoidWalker
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1860 ) // VoidWalker
 				nspellid = 54443;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) //Succubus
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 1863 ) // Succubus
 				nspellid = 54435;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) //Felhunter
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 417 ) // Felhunter
 				nspellid = 54509;
-			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) //Felguard
+			else if ( unitTarget->GetUInt32Value( OBJECT_FIELD_ENTRY ) == 17252 ) // Felguard
 				nspellid = 54508;
 
 			unitTarget->CastSpell(unitTarget, nspellid, true);
@@ -5663,14 +5660,9 @@ void Spell::SpellEffectAddComboPoints(uint32 i) // Add Combo Points
 	if(p_caster == NULL)
 		return;
 
-	//if this is a procspell Ruthlessness (maybe others later)
+	// if this is a procspell Ruthlessness (maybe others later)
 	if(pSpellId && m_spellInfo->Id==14157)
 	{
-		//it seems this combo adding procspell is going to change combopoint count before they will get reseted. We add it after the reset
-		/* burlex - this is wrong, and exploitable.. :/ if someone uses this they will have unlimited combo points */
-		//re-enabled this by Zack. Explained why it is used + recheked to make sure initialization is good ...
-		// while casting a spell talent will trigger uppon the spell prepare faze
-		// the effect of the talent is to add 1 combo point but when triggering spell finishes it will clear the extra combo point
 		p_caster->m_spellcomboPoints += damage;
 		return;
 	}
@@ -6091,7 +6083,7 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 		}
 
 	if(class_==WARRIOR||class_==ROGUE)
-		mana=0;
+		mana = 0;
 	
 	playerTarget->m_resurrectHealth = health;
 	playerTarget->m_resurrectMana = mana;
@@ -6103,7 +6095,7 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 
 	playerTarget->SetUInt32Value(PLAYER_SELF_RES_SPELL, 0);
 
-	if(m_spellInfo->Id==21169)
+	if(m_spellInfo->Id == 21169)
 		AddCooldown();
 }
 
@@ -6153,9 +6145,6 @@ void Spell::SpellEffectCharge(uint32 i)
 	float x, y, z;
 	float dx,dy;
 
-	//if(unitTarget->GetTypeId() == TYPEID_UNIT)
-	//	if(unitTarget->GetAIInterface())
-	//		unitTarget->GetAIInterface()->StopMovement(5000);
 	if(unitTarget->GetPositionX() == 0.0f || unitTarget->GetPositionY() == 0.0f)
 		return;
 	
@@ -6212,7 +6201,7 @@ void Spell::SpellEffectSendTaxi( uint32 i )
 	uint32 mount_entry = 0;
 	uint32 modelid = 0;
 
-	if( playerTarget->GetTeam() ) // HORDE
+	if( playerTarget->GetTeam() ) // Horde
 	{
 		mount_entry = taxinode->horde_mount;
 		if( !mount_entry )
@@ -6226,7 +6215,7 @@ void Spell::SpellEffectSendTaxi( uint32 i )
 		if( !modelid ) 
 			return;
 	}
-	else // ALLIANCE
+	else // Alliance
 	{
 		mount_entry = taxinode->alliance_mount;
 		if( !mount_entry )
@@ -6295,7 +6284,9 @@ void Spell::SummonNonCombatPet(uint32 i)
 	if(!ci || !cp)
 		return;
 	Creature* pCreature = NULLCREATURE;
-	pCreature = u_caster->GetMapMgr()->CreateCreature(SummonCritterID);	if(pCreature == NULL)		return;	pCreature->SetInstanceID(u_caster->GetMapMgr()->GetInstanceID());
+	pCreature = u_caster->GetMapMgr()->CreateCreature(SummonCritterID);	if(pCreature == NULL)
+	return;
+	pCreature->SetInstanceID(u_caster->GetMapMgr()->GetInstanceID());
 	pCreature->Load(cp, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), m_caster->GetOrientation());
 	pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 35);
 	pCreature->_setFaction();
@@ -6308,8 +6299,11 @@ void Spell::SummonNonCombatPet(uint32 i)
 	pCreature->bInvincible = true;
 	pCreature->PushToWorld(u_caster->GetMapMgr());
 	if( m_summonProperties->slot < 7 )
-	{		pCreature->SetSummonOwnerSlot(u_caster->GetGUID(), m_summonProperties->slot);		u_caster->m_SummonSlots[ m_summonProperties->slot ] = pCreature;
-	}}
+	{
+		pCreature->SetSummonOwnerSlot(u_caster->GetGUID(), m_summonProperties->slot);
+		u_caster->m_SummonSlots[ m_summonProperties->slot ] = pCreature;
+	}
+}
 
 void Spell::SpellEffectKnockBack(uint32 i)
 {
@@ -6368,9 +6362,9 @@ void Spell::SpellEffectDisenchant(uint32 i)
 
 		if( it->m_loot.items.size() > 0 )
 		{
-			//Check for skill, we can increase it upto 75 
+			// Check for skill, we can increase it upto 75 
 			uint32 skill=caster->_GetSkillLineCurrent( SKILL_ENCHANTING );
-			if(skill < 75)//can up skill
+			if(skill < 75) // can up skill
 			{
 				if(Rand(float(100-skill*100.0/75.0)))
 					caster->_AdvanceSkillLine(SKILL_ENCHANTING, float2int32( 1.0f * sWorld.getRate(RATE_SKILLRATE)));
@@ -6391,18 +6385,20 @@ void Spell::SpellEffectDisenchant(uint32 i)
 	if(it==i_caster)
 		i_caster=NULLITEM;
 }
+
 void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
 {
-	if( p_caster == NULL )
+	if( playerTarget == NULL )
 		return;
 
 	// Drunkee!
-	uint8 b2 = m_caster->GetByte(PLAYER_BYTES_3,1);
-	b2 += damage; // 10 beers will get you smassssshed!
-
-	m_caster->SetByte(PLAYER_BYTES_3,1,b2>90?90:b2);
-	sEventMgr.RemoveEvents(p_caster, EVENT_PLAYER_REDUCEDRUNK);
-	sEventMgr.AddEvent(p_caster, &Player::EventReduceDrunk, false, EVENT_PLAYER_REDUCEDRUNK, 300000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	uint16 currentDrunk = playerTarget->GetDrunkValue();
+	uint16 drunkMod = static_cast<uint16>(damage) * 256;
+	if( currentDrunk + drunkMod > 0xFFFF )
+		currentDrunk = 0xFFFF;
+	else
+		currentDrunk += drunkMod;
+	playerTarget->SetDrunkValue( currentDrunk, i_caster ? i_caster->GetEntry() : 0 );
 }
 
 void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
@@ -6415,13 +6411,14 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	pPet = p_caster->GetSummon();
 	if(pPet== NULL)		return;
 
-	/**	Cast feed pet effect
+	/*	Cast feed pet effect
 	- effect is item level and pet level dependent, aura ticks are 35, 17, 8 (*1000) happiness
-	- http://petopia.brashendeavors.net/html/articles/basics_feeding.shtml */
+	- http://petopia.brashendeavors.net/html/articles/basics_feeding.shtml
+	*/
 	int8 deltaLvl = pPet->getLevel() - itemTarget->GetProto()->ItemLevel;
 	damage /= 1000; //damage of Feed pet spell is 35000
 	if(deltaLvl > 10)
-		damage = damage >> 1;//divide by 2
+		damage = damage >> 1; // divide by 2
 	if(deltaLvl > 20)		damage = damage >> 1;	damage *= 1000;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(m_spellInfo->EffectTriggerSpell[i]);
@@ -6448,7 +6445,7 @@ void Spell::SpellEffectReputation(uint32 i)
 	if( playerTarget == NULL)
 		return;
 
-	//playerTarget->modReputation(m_spellInfo->EffectMiscValue[i], damage, true);
+	// playerTarget->modReputation(m_spellInfo->EffectMiscValue[i], damage, true);
 	playerTarget->ModStanding(m_spellInfo->EffectMiscValue[i], damage);
 }
 
@@ -7236,7 +7233,7 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 
 	Spell* sp= CREATESPELL(m_caster,dbcSpell.LookupEntry(TriggeredSpell->Id),true,NULLAURA);
 
-	for(uint32 x = 0; x<3; x++)
+	for(uint32 x = 0; x < 3; x++)
 	{
 		sp->forced_basepoints[x] = TriggeredSpell->EffectBasePoints[i];
 	}
@@ -7253,7 +7250,8 @@ void Spell::SpellEffectMegaJump(uint32 i)
 	{
 		Unit* u = NULL;
 		u = u_caster->GetMapMgr()->GetUnit( m_targets.m_unitTarget );
-		if( u == NULL )			return; // or we'll TP to some far off land :P
+		if( u == NULL )
+		return; // or we'll TP to some far off land :P
 		
 		m_targets.m_destX = u->GetPositionX();
 		m_targets.m_destY = u->GetPositionY();
@@ -7356,15 +7354,15 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 			itemid	=	ric->ItemToCreate;
 		}
 
-		//Tarot and Decks from Inscription + Northrend Inscription Research + Minor Inscription Research
-		//Northrend Alchemy
+		// Tarot and Decks from Inscription + Northrend Inscription Research + Minor Inscription Research
+		// Northrend Alchemy
 		if (ric->Skill == SKILL_INSCRIPTION || ric->Skill == SKILL_ALCHEMY)
 		{
 			uint32 k;
 			RandomCardCreation * rcc = RandomCardCreationStorage.LookupEntry(m_spellInfo->Id);
 			if(rcc)
 			{
-				//Same chance for every card to appear according wowhead and wowwiki info
+				// Same chance for every card to appear according wowhead and wowwiki info
 				k = RandomUInt(rcc->itemcount-1);
 				m_itemProto = ItemPrototypeStorage.LookupEntry( rcc->ItemId[k] );
 				itemid = rcc->ItemId[k];
@@ -7374,11 +7372,11 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 					case 61288:
 					case 61177:
 						{
-							item_count = RandomUInt(2);//This 2 can make random scrolls and vellum 1 or 2 according to info
+							item_count = RandomUInt(2); // This 2 can make random scrolls and vellum 1 or 2 according to info
 						}break;
 					case 60893:
 						{
-							item_count = RandomUInt(3);//Creates 3 random elixir/potion from alchemy
+							item_count = RandomUInt(3); // Creates 3 random elixir/potion from alchemy
 						}break;
 				}
 			}

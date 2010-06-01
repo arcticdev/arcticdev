@@ -3,28 +3,9 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
 #ifndef _PLAYER_H
 #define _PLAYER_H
-
-#define MAX_PET_NO 3
-#define PLAYER_NORMAL_RUN_SPEED 7.0f
-#define PLAYER_NORMAL_SWIM_SPEED 4.722222f
-#define PLAYER_NORMAL_FLIGHT_SPEED 7.0f
-#define PLAYER_HONORLESS_TARGET_SPELL 2479
-#define MONSTER_NORMAL_RUN_SPEED 8.0f
-
-// action button defines.
-#define PLAYER_ACTION_BUTTON_COUNT 132
-#define PLAYER_ACTION_BUTTON_SIZE PLAYER_ACTION_BUTTON_COUNT * sizeof(ActionButton)
-#define MAX_SPEC_COUNT 2
-#define GLYPHS_COUNT 6
-
-#define ALLIANCE 0
-#define HORDE 1
-
-// gold cap
-#define PLAYER_MAX_GOLD 0x7FFFFFFF
 
 struct BGScore;
 class Channel;
@@ -41,6 +22,25 @@ class Charter;
 class LFGMatch;
 struct LevelInfo;
 
+#define ALLIANCE 0
+#define HORDE 1
+
+#define MAX_PET_NO 3
+#define PLAYER_NORMAL_RUN_SPEED 7.0f
+#define PLAYER_NORMAL_SWIM_SPEED 4.722222f
+#define PLAYER_NORMAL_FLIGHT_SPEED 7.0f
+#define PLAYER_HONORLESS_TARGET_SPELL 2479
+#define MONSTER_NORMAL_RUN_SPEED 8.0f
+
+// action button defines.
+#define PLAYER_ACTION_BUTTON_COUNT 132
+#define PLAYER_ACTION_BUTTON_SIZE PLAYER_ACTION_BUTTON_COUNT * sizeof(ActionButton)
+#define MAX_SPEC_COUNT 2
+#define GLYPHS_COUNT 6
+
+// gold cap
+#define PLAYER_MAX_GOLD 0x7FFFFFFF
+
 enum Classes
 {
 	WARRIOR = 1,
@@ -55,18 +55,30 @@ enum Classes
 	DRUID = 11,
 };
 
+// Race value is index in ChrRaces.dbc
 enum Races
 {
-	RACE_HUMAN = 1,
-	RACE_ORC = 2,
-	RACE_DWARF = 3,
-	RACE_NIGHTELF = 4,
-	RACE_UNDEAD = 5,
-	RACE_TAUREN = 6,
-	RACE_GNOME = 7,
-	RACE_TROLL = 8,
-	RACE_BLOODELF = 10,
-	RACE_DRAENEI = 11,
+    RACE_HUMAN                 = 1,
+    RACE_ORC                   = 2,
+    RACE_DWARF                 = 3,
+    RACE_NIGHTELF              = 4,
+    RACE_UNDEAD                = 5,
+    RACE_TAUREN                = 6,
+    RACE_GNOME                 = 7,
+    RACE_TROLL                 = 8,
+    // RACE_GOBLIN             = 9,
+    RACE_BLOODELF              = 10,
+    RACE_DRAENEI               = 11
+    // RACE_FEL_ORC            = 12,
+    // RACE_NAGA               = 13,
+    // RACE_BROKEN             = 14,
+    // RACE_SKELETON           = 15,
+    // RACE_VRYKUL             = 16,
+    // RACE_TUSKARR            = 17,
+    // RACE_FOREST_TROLL       = 18,
+    // RACE_TAUNKA             = 19,
+    // RACE_NORTHREND_SKELETON = 20,
+    // RACE_ICE_TROLL          = 21
 };
 
 enum PlayerStatus
@@ -305,14 +317,6 @@ enum ArenaTeamTypes
 	NUM_ARENA_TEAM_TYPES = 3,
 };
 
-enum InstanceResetWarningType
-{
-	RAID_INSTANCE_WARNING_HOURS = 1,                 // WARNING! %s is scheduled to reset in %d hour(s).
-	RAID_INSTANCE_WARNING_MIN = 2,                   // WARNING! %s is scheduled to reset in %d minute(s)!
-	RAID_INSTANCE_WARNING_MIN_SOON = 3,              // WARNING! %s is scheduled to reset in %d minute(s). Please exit the zone or you will be returned to your bind location!
-	RAID_INSTANCE_WELCOME = 4                        // Welcome to %s. This raid instance is scheduled to reset in %s.
-};
-
 enum CooldownTypes
 {
 	COOLDOWN_TYPE_SPELL = 0,
@@ -395,7 +399,7 @@ struct PlayerCreateInfo
 	uint8 intellect;
 	uint8 spirit;
 	uint32 health;
-	uint32  mana;
+	uint32 mana;
 	uint32 rage;
 	uint32 focus;
 	uint32 energy;
@@ -427,132 +431,114 @@ struct LoginAura
     uint32 dur;
 };
 
-static const uint32 TalentTreesPerClass[DRUID+1][3] =  
+static const uint32 TalentTreesPerClass[DRUID+1][3] =
 {
-	{ 0, 0, 0 },        // NONE
-	{ 161, 163, 164 },  // WARRIOR
-	{ 382, 383, 381 },  // PALADIN
-	{ 361, 363, 362 },  // HUNTER
-	{ 182, 181, 183 },  // ROGUE
-	{ 201, 202, 203 },  // PRIEST
-	{ 398, 399, 400 },  // DEATH KNIGHT
-	{ 261, 263, 262 },  // SHAMAN
-	{ 81, 41, 61 },     // MAGE
-	{ 302, 303, 301 },  // WARLOCK
-	{ 0, 0, 0 },        // NONE
-	{ 283, 281, 282 },  // DRUID
+	{ 0, 0, 0 },       // NONE
+	{ 161, 163, 164 }, // WARRIOR
+	{ 382, 383, 381 }, // PALADIN
+	{ 361, 363, 362 }, // HUNTER
+	{ 182, 181, 183 }, // ROGUE
+	{ 201, 202, 203 }, // PRIEST
+	{ 398, 399, 400 }, // DEATH KNIGHT
+	{ 261, 263, 262 }, // SHAMAN
+	{ 81, 41, 61 },    // MAGE
+	{ 302, 303, 301 }, // WARLOCK
+	{ 0, 0, 0 },       // NONE
+	{ 283, 281, 282 }, // DRUID
 };
 
-// Dodge ( class base ) -    UNUSED,Warrior, Paladin,  Hunter,  Rogue,   Priest,    DK,    Shaman,   Mage,  Warlock, UNUSED, Druid
-const float baseDodge[12] = { 0.0f, 3.6640f, 3.4943f, -4.0873f, 2.0957f, 3.4178f, 3.6640f, 2.1080f, 3.5687f, 2.4211f, 0.0f, 5.6109f };
+// Dodge ( class base ) - UNUSED, Warrior, Paladin, Hunter, Rogue,   Priest, Death Knight, Shaman, Mage, Warlock, UNUSED, Druid
+const float baseDodge[12] = { 0.0f, 3.4636f, 3.2685f, -5.45f, -0.5900f, 3.1830f, 3.4636f, 1.6750f, 3.4575f, 2.0350f, 0.0f, 4.951f };
 
-// Dodge ( class ratio ) - UNUSED, Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, UNUSED, Druid
-// schnek:  At present I have found all parities but check is all the same necessary.
-const float dodgeRatio[80][12] = 
+// TODO: I only know the cap for paladins >.> 75 for the rest,
+// Dodge ( class Cap )      UNUSED   War    Paladin   hunter  rogue  priest  DK    Shaman  Mage   Lock  UNUSED Druid
+const float DodgeCap[12] = { 75.0f, 75.0f, 88.129021f, 75.0f, 75.0f, 75.0f, 75.0f, 75.0f, 75.0f, 75.0f, 75.0f, 75.0f };
+
+// Dodge ratio by class.
+const float dodgeRatio[81][12] = 
 {
-    {0.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 0.000000f , 5.000000f , } ,              // Level 1
-    {0.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 0.000000f , 5.000000f , } ,              // Level 2
-    {0.000000f , 5.157590f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 5.000000f , 0.000000f , 5.000000f , } ,              // Level 3
-    {0.000000f , 6.017188f , 5.014323f , 5.014323f , 5.000000f , 5.014323f , 5.014323f , 5.014323f , 5.014323f , 5.014323f , 0.000000f , 5.000000f , } ,              // Level 4
-    {0.000000f , 6.793599f , 5.661333f , 5.661333f , 5.000000f , 5.661333f , 5.661333f , 5.661333f , 5.661333f , 5.661333f , 0.000000f , 5.000000f , } ,              // Level 5
-    {0.000000f , 7.508715f , 6.257262f , 6.257262f , 5.005810f , 6.257262f , 6.257262f , 6.257262f , 6.257262f , 6.257262f , 0.000000f , 5.000000f , } ,              // Level 6
-    {0.000000f , 8.176156f , 6.813463f , 6.813463f , 5.450771f , 6.813463f , 6.813463f , 6.813463f , 6.813463f , 6.813463f , 0.000000f , 5.000000f , } ,              // Level 7
-    {0.000000f , 8.805091f , 7.337576f , 7.337576f , 5.870061f , 7.337576f , 7.337576f , 7.337576f , 7.337576f , 7.337576f , 0.000000f , 5.000000f , } ,              // Level 8
-    {0.000000f , 9.402047f , 7.835039f , 7.835039f , 6.268031f , 7.835039f , 7.835039f , 7.835039f , 7.835039f , 7.835039f , 0.000000f , 5.000000f , } ,              // Level 9
-    {0.000000f , 9.971868f , 8.309890f , 8.309890f , 6.647912f , 8.309890f , 8.309890f , 8.309890f , 8.309890f , 8.309890f , 0.000000f , 5.000000f , } ,              // Level 10
-    {0.000000f , 10.518271f , 8.765226f , 8.765226f , 7.012181f , 8.765226f , 8.765226f , 8.765226f , 8.765226f , 8.765226f , 0.000000f , 5.156022f , } ,             // Level 11
-    {0.000000f , 11.044185f , 9.203487f , 9.203487f , 7.362790f , 9.203487f , 9.203487f , 9.203487f , 9.203487f , 9.203487f , 0.000000f , 5.413823f , } ,             // Level 12
-    {0.000000f , 11.551964f , 9.626636f , 9.626636f , 7.701309f , 9.626636f , 9.626636f , 9.626636f , 9.626636f , 9.626636f , 0.000000f , 5.662734f , } ,             // Level 13
-    {0.000000f , 12.043536f , 10.036280f , 10.036280f , 8.029024f , 10.036280f , 10.036280f , 10.036280f , 10.036280f , 10.036280f , 0.000000f , 5.903701f , } ,      // Level 14
-    {0.000000f , 12.520508f , 10.433757f , 10.433757f , 8.347005f , 10.433757f , 10.433757f , 10.433757f , 10.433757f , 10.433757f , 0.000000f , 6.137511f , } ,      // Level 15
-    {0.000000f , 12.984231f , 10.820192f , 10.820192f , 8.656154f , 10.820192f , 10.820192f , 10.820192f , 10.820192f , 10.820192f , 0.000000f , 6.364827f , } ,      // Level 16
-    {0.000000f , 13.435856f , 11.196547f , 11.196547f , 8.957237f , 11.196547f , 11.196547f , 11.196547f , 11.196547f , 11.196547f , 0.000000f , 6.586212f , } ,      // Level 17
-    {0.000000f , 13.876376f , 11.563647f , 11.563647f , 9.250917f , 11.563647f , 11.563647f , 11.563647f , 11.563647f , 11.563647f , 0.000000f , 6.802153f , } ,      // Level 18
-    {0.000000f , 14.306651f , 11.922209f , 11.922209f , 9.537767f , 11.922209f , 11.922209f , 11.922209f , 11.922209f , 11.922209f , 0.000000f , 7.013073f , } ,      // Level 19
-    {0.000000f , 14.727435f , 12.272863f , 12.272863f , 9.818290f , 12.272863f , 12.272863f , 12.272863f , 12.272863f , 12.272863f , 0.000000f , 7.219340f , } ,      // Level 20
-    {0.000000f , 15.139391f , 12.616159f , 12.616159f , 10.092928f , 12.616159f , 12.616159f , 12.616159f , 12.616159f , 12.616159f , 0.000000f , 7.421279f , } ,     // Level 21
-    {0.000000f , 15.543108f , 12.952590f , 12.952590f , 10.362072f , 12.952590f , 12.952590f , 12.952590f , 12.952590f , 12.952590f , 0.000000f , 7.619180f , } ,     // Level 22
-    {0.000000f , 15.939111f , 13.282593f , 13.282593f , 10.626074f , 13.282593f , 13.282593f , 13.282593f , 13.282593f , 13.282593f , 0.000000f , 7.813299f , } ,     // Level 23
-    {0.000000f , 16.327870f , 13.606558f , 13.606558f , 10.885247f , 13.606558f , 13.606558f , 13.606558f , 13.606558f , 13.606558f , 0.000000f , 8.003867f , } ,     // Level 24
-    {0.000000f , 16.709808f , 13.924840f , 13.924840f , 11.139872f , 13.924840f , 13.924840f , 13.924840f , 13.924840f , 13.924840f , 0.000000f , 8.191092f , } ,     // Level 25
-    {0.000000f , 17.085310f , 14.237758f , 14.237758f , 11.390207f , 14.237758f , 14.237758f , 14.237758f , 14.237758f , 14.237758f , 0.000000f , 8.375162f , } ,     // Level 26
-    {0.000000f , 17.454722f , 14.545602f , 14.545602f , 11.636481f , 14.545602f , 14.545602f , 14.545602f , 14.545602f , 14.545602f , 0.000000f , 8.556246f , } ,     // Level 27
-    {0.000000f , 17.818362f , 14.848635f , 14.848635f , 11.878908f , 14.848635f , 14.848635f , 14.848635f , 14.848635f , 14.848635f , 0.000000f , 8.734502f , } ,     // Level 28
-    {0.000000f , 18.176520f , 15.147100f , 15.147100f , 12.117680f , 15.147100f , 15.147100f , 15.147100f , 15.147100f , 15.147100f , 0.000000f , 8.910069f , } ,     // Level 29
-    {0.000000f , 18.529462f , 15.441218f , 15.441218f , 12.352975f , 15.441218f , 15.441218f , 15.441218f , 15.441218f , 15.441218f , 0.000000f , 9.083081f , } ,     // Level 30
-    {0.000000f , 18.877433f , 15.731194f , 15.731194f , 12.584955f , 15.731194f , 15.731194f , 15.731194f , 15.731194f , 15.731194f , 0.000000f , 9.253655f , } ,     // Level 31
-    {0.000000f , 19.220659f , 16.017216f , 16.017216f , 12.813773f , 16.017216f , 16.017216f , 16.017216f , 16.017216f , 16.017216f , 0.000000f , 9.421903f , } ,     // Level 32
-    {0.000000f , 19.559349f , 16.299458f , 16.299458f , 13.039566f , 16.299458f , 16.299458f , 16.299458f , 16.299458f , 16.299458f , 0.000000f , 9.587928f , } ,     // Level 33
-    {0.000000f , 19.893697f , 16.578081f , 16.578081f , 13.262465f , 16.578081f , 16.578081f , 16.578081f , 16.578081f , 16.578081f , 0.000000f , 9.751824f , } ,     // Level 34
-    {0.000000f , 20.223883f , 16.853236f , 16.853236f , 13.482589f , 16.853236f , 16.853236f , 16.853236f , 16.853236f , 16.853236f , 0.000000f , 9.913680f , } ,     // Level 35
-    {0.000000f , 20.550075f , 17.125062f , 17.125062f , 13.700050f , 17.125062f , 17.125062f , 17.125062f , 17.125062f , 17.125062f , 0.000000f , 10.073578f , } ,    // Level 36
-    {0.000000f , 20.872429f , 17.393691f , 17.393691f , 13.914953f , 17.393691f , 17.393691f , 17.393691f , 17.393691f , 17.393691f , 0.000000f , 10.231595f , } ,    // Level 37
-    {0.000000f , 21.191092f , 17.659243f , 17.659243f , 14.127395f , 17.659243f , 17.659243f , 17.659243f , 17.659243f , 17.659243f , 0.000000f , 10.387803f , } ,    // Level 38
-    {0.000000f , 21.506201f , 17.921834f , 17.921834f , 14.337467f , 17.921834f , 17.921834f , 17.921834f , 17.921834f , 17.921834f , 0.000000f , 10.542268f , } ,    // Level 39
-    {0.000000f , 21.817885f , 18.181571f , 18.181571f , 14.545257f , 18.181571f , 18.181571f , 18.181571f , 18.181571f , 18.181571f , 0.000000f , 10.695055f , } ,    // Level 40
-    {0.000000f , 22.126265f , 18.438554f , 18.438554f , 14.750843f , 18.438554f , 18.438554f , 18.438554f , 18.438554f , 18.438554f , 0.000000f , 10.846221f , } ,    // Level 41
-    {0.000000f , 22.431455f , 18.692879f , 18.692879f , 14.954303f , 18.692879f , 18.692879f , 18.692879f , 18.692879f , 18.692879f , 0.000000f , 10.995824f , } ,    // Level 42
-    {0.000000f , 22.733562f , 18.944635f , 18.944635f , 15.155708f , 18.944635f , 18.944635f , 18.944635f , 18.944635f , 18.944635f , 0.000000f , 11.143916f , } ,    // Level 43
-    {0.000000f , 23.032688f , 19.193907f , 19.193907f , 15.355125f , 19.193907f , 19.193907f , 19.193907f , 19.193907f , 19.193907f , 0.000000f , 11.290547f , } ,    // Level 44
-    {0.000000f , 23.328928f , 19.440774f , 19.440774f , 15.552619f , 19.440774f , 19.440774f , 19.440774f , 19.440774f , 19.440774f , 0.000000f , 11.435763f , } ,    // Level 45
-    {0.000000f , 23.622374f , 19.685312f , 19.685312f , 15.748249f , 19.685312f , 19.685312f , 19.685312f , 19.685312f , 19.685312f , 0.000000f , 11.579609f , } ,    // Level 46
-    {0.000000f , 23.913111f , 19.927592f , 19.927592f , 15.942074f , 19.927592f , 19.927592f , 19.927592f , 19.927592f , 19.927592f , 0.000000f , 11.722127f , } ,    // Level 47
-    {0.000000f , 24.201221f , 20.167684f , 20.167684f , 16.134147f , 20.167684f , 20.167684f , 20.167684f , 20.167684f , 20.167684f , 0.000000f , 11.863358f , } ,    // Level 48
-    {0.000000f , 24.486781f , 20.405651f , 20.405651f , 16.324520f , 20.405651f , 20.405651f , 20.405651f , 20.405651f , 20.405651f , 0.000000f , 12.003338f , } ,    // Level 49
-    {0.000000f , 24.769865f , 20.641554f , 20.641554f , 16.513243f , 20.641554f , 20.641554f , 20.641554f , 20.641554f , 20.641554f , 0.000000f , 12.142105f , } ,    // Level 50
-    {0.000000f , 25.050543f , 20.875453f , 20.875453f , 16.700362f , 20.875453f , 20.875453f , 20.875453f , 20.875453f , 20.875453f , 0.000000f , 12.279693f , } ,    // Level 51
-    {0.000000f , 25.328883f , 21.107402f , 21.107402f , 16.885922f , 21.107402f , 21.107402f , 21.107402f , 21.107402f , 21.107402f , 0.000000f , 12.416134f , } ,    // Level 52
-    {0.000000f , 25.604947f , 21.337456f , 21.337456f , 17.069964f , 21.337456f , 21.337456f , 21.337456f , 21.337456f , 21.337456f , 0.000000f , 12.551460f , } ,    // Level 53
-    {0.000000f , 25.878796f , 21.565664f , 21.565664f , 17.252531f , 21.565664f , 21.565664f , 21.565664f , 21.565664f , 21.565664f , 0.000000f , 12.685700f , } ,    // Level 54
-    {0.000000f , 26.150490f , 21.792075f , 21.792075f , 17.433660f , 21.792075f , 21.792075f , 21.792075f , 21.792075f , 21.792075f , 0.000000f , 12.818883f , } ,    // Level 55
-    {0.000000f , 26.420082f , 22.016735f , 22.016735f , 17.613388f , 22.016735f , 22.016735f , 22.016735f , 22.016735f , 22.016735f , 0.000000f , 12.951036f , } ,    // Level 56
-    {0.000000f , 26.687628f , 22.239690f , 22.239690f , 17.791752f , 22.239690f , 22.239690f , 22.239690f , 22.239690f , 22.239690f , 0.000000f , 13.082186f , } ,    // Level 57
-    {0.000000f , 26.953176f , 22.460980f , 22.460980f , 17.968784f , 22.460980f , 22.460980f , 22.460980f , 22.460980f , 22.460980f , 0.000000f , 13.212357f , } ,    // Level 58
-    {0.000000f , 27.216777f , 22.680647f , 22.680647f , 18.144518f , 22.680647f , 22.680647f , 22.680647f , 22.680647f , 22.680647f , 0.000000f , 13.341573f , } ,    // Level 59
-    {0.000000f , 27.478477f , 22.898731f , 22.898731f , 18.318984f , 22.898731f , 22.898731f , 22.898731f , 22.898731f , 22.898731f , 0.000000f , 13.469858f , } ,    // Level 60
-    {0.000000f , 27.738320f , 23.115267f , 23.115267f , 18.492214f , 23.115267f , 23.115267f , 23.115267f , 23.115267f , 23.115267f , 0.000000f , 13.597232f , } ,    // Level 61
-    {0.000000f , 27.996351f , 23.330293f , 23.330293f , 18.664234f , 23.330293f , 23.330293f , 23.330293f , 23.330293f , 23.330293f , 0.000000f , 13.723718f , } ,    // Level 62
-    {0.000000f , 28.252611f , 23.543842f , 23.543842f , 18.835074f , 23.543842f , 23.543842f , 23.543842f , 23.543842f , 23.543842f , 0.000000f , 13.849336f , } ,    // Level 63
-    {0.000000f , 28.507139f , 23.755949f , 23.755949f , 19.004759f , 23.755949f , 23.755949f , 23.755949f , 23.755949f , 23.755949f , 0.000000f , 13.974104f , } ,    // Level 64
-    {0.000000f , 28.759974f , 23.966645f , 23.966645f , 19.173316f , 23.966645f , 23.966645f , 23.966645f , 23.966645f , 23.966645f , 0.000000f , 14.098043f , } ,    // Level 65
-    {0.000000f , 29.011153f , 24.175960f , 24.175960f , 19.340768f , 24.175960f , 24.175960f , 24.175960f , 24.175960f , 24.175960f , 0.000000f , 14.221170f , } ,    // Level 66
-    {0.000000f , 29.260711f , 24.383926f , 24.383926f , 19.507141f , 24.383926f , 24.383926f , 24.383926f , 24.383926f , 24.383926f , 0.000000f , 14.343503f , } ,    // Level 67
-    {0.000000f , 29.508683f , 24.590569f , 24.590569f , 19.672455f , 24.590569f , 24.590569f , 24.590569f , 24.590569f , 24.590569f , 0.000000f , 14.465058f , } ,    // Level 68
-    {0.000000f , 29.755102f , 24.795918f , 24.795918f , 19.836735f , 24.795918f , 24.795918f , 24.795918f , 24.795918f , 24.795918f , 0.000000f , 14.585852f , } ,    // Level 69
-    {0.000000f , 30.000000f , 25.000000f , 25.000000f , 20.000000f , 25.000000f , 25.000000f , 25.000000f , 25.000000f , 25.000000f , 0.000000f , 14.705900f , } ,    // Level 70
-    {0.000000f , 30.200000f , 25.200000f , 25.200000f , 20.100000f , 25.200000f , 25.200000f , 25.200000f , 25.200000f , 25.200000f , 0.000000f , 14.805900f , } ,    // Level 71
-    {0.000000f , 30.400000f , 25.400000f , 25.400000f , 20.200000f , 25.400000f , 25.400000f , 25.400000f , 25.400000f , 25.400000f , 0.000000f , 14.905900f , } ,    // Level 72
-    {0.000000f , 30.600000f , 25.600000f , 25.600000f , 20.300000f , 25.600000f , 25.600000f , 25.600000f , 25.600000f , 25.600000f , 0.000000f , 15.005900f , } ,    // Level 73
-    {0.000000f , 30.800000f , 25.800000f , 25.800000f , 20.400000f , 25.800000f , 25.800000f , 25.800000f , 25.800000f , 25.800000f , 0.000000f , 15.105900f , } ,    // Level 74
-    {0.000000f , 31.000000f , 26.000000f , 26.000000f , 20.500000f , 26.000000f , 26.000000f , 26.000000f , 26.000000f , 26.000000f , 0.000000f , 15.205900f , } ,    // Level 75
-    {0.000000f , 31.200000f , 26.200000f , 26.200000f , 20.700000f , 26.200000f , 26.200000f , 26.200000f , 26.200000f , 26.200000f , 0.000000f , 15.305900f , } ,    // Level 76
-    {0.000000f , 31.400000f , 26.400000f , 26.400000f , 20.800000f , 26.400000f , 26.400000f , 26.400000f , 26.400000f , 26.400000f , 0.000000f , 15.405900f , } ,    // Level 77
-    {0.000000f , 31.600000f , 26.600000f , 26.600000f , 21.000000f , 26.600000f , 26.600000f , 26.600000f , 26.600000f , 26.600000f , 0.000000f , 15.505900f , } ,    // Level 78
-    {0.000000f , 31.800000f , 26.800000f , 26.800000f , 21.100000f , 26.800000f , 26.800000f , 26.800000f , 26.800000f , 26.800000f , 0.000000f , 15.605900f , } ,    // Level 79
-    {0.000000f , 84.74576271f , 59.88023952f , 86.20689655f , 47.84688995f , 59.88023952f , 84.74576271f , 59.88023952f , 58.82352941f , 59.88023952f , 0.000000f , 47.84688995f , } , // Level 80 from 3.2.0
-};
-
-/*
-	Exalted         1,00     Access to racial mounts. Capped at 999.7
-	Revered         21,000   Heroic mode keys for Outland dungeons
-	Honored         12,000   10% discount from faction vendors
-	Friendly         6,00    -
-	Neutral         3,000    -
-	Unfriendly      3,000    Cannot buy, sell or interact.
-	Hostile	        3,000    You will always be attacked on sight
-	Hated           36,000 
-*/
-
-enum FactionRating
-{
-	HATED,
-	HOSTILE,
-	UNFRIENDLY,
-	NEUTRAL,
-	FRIENDLY,
-	HONORED,
-	REVERED,
-	EXALTED
+    { 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f },// Level 0
+    // unk  Warrior  Paladin  Hunter    Rogue   Priest DeathKnight Shaman   Mage    Warlock  Unk    Druid
+    { 0.1f, 0.2500f, 0.2174f, 0.2840f, 0.4476f, 0.0912f, 0.2500f, 0.1039f, 0.0773f, 0.1189f, 0.1f, 0.1262f }, // Level 1
+    { 0.1f, 0.2381f, 0.2070f, 0.2834f, 0.4290f, 0.0912f, 0.2381f, 0.1039f, 0.0773f, 0.1189f, 0.1f, 0.1262f }, // Level 2
+    { 0.1f, 0.2381f, 0.2070f, 0.2711f, 0.4118f, 0.0912f, 0.2381f, 0.0990f, 0.0773f, 0.1132f, 0.1f, 0.1202f }, // Level 3
+    { 0.1f, 0.2273f, 0.1976f, 0.2530f, 0.3813f, 0.0868f, 0.2273f, 0.0990f, 0.0736f, 0.1132f, 0.1f, 0.1202f }, // Level 4
+    { 0.1f, 0.2174f, 0.1976f, 0.2430f, 0.3677f, 0.0868f, 0.2174f, 0.0945f, 0.0736f, 0.1132f, 0.1f, 0.1148f }, // Level 5
+    { 0.1f, 0.2083f, 0.1890f, 0.2337f, 0.3550f, 0.0868f, 0.2083f, 0.0945f, 0.0736f, 0.1081f, 0.1f, 0.1148f }, // Level 6
+    { 0.1f, 0.2083f, 0.1890f, 0.2251f, 0.3321f, 0.0868f, 0.2083f, 0.0945f, 0.0736f, 0.1081f, 0.1f, 0.1098f }, // Level 7
+    { 0.1f, 0.2000f, 0.1812f, 0.2171f, 0.3217f, 0.0829f, 0.2000f, 0.0903f, 0.0736f, 0.1081f, 0.1f, 0.1098f }, // Level 8
+    { 0.1f, 0.1923f, 0.1812f, 0.2051f, 0.3120f, 0.0829f, 0.1923f, 0.0903f, 0.0736f, 0.1034f, 0.1f, 0.1052f }, // Level 9
+    { 0.1f, 0.1923f, 0.1739f, 0.1984f, 0.2941f, 0.0829f, 0.1923f, 0.0866f, 0.0703f, 0.1034f, 0.1f, 0.0971f }, // Level 10
+    { 0.1f, 0.1852f, 0.1739f, 0.1848f, 0.2640f, 0.0829f, 0.1852f, 0.0866f, 0.0703f, 0.0991f, 0.1f, 0.0935f }, // Level 11
+    { 0.1f, 0.1786f, 0.1672f, 0.1670f, 0.2394f, 0.0793f, 0.1786f, 0.0831f, 0.0703f, 0.0991f, 0.1f, 0.0935f }, // Level 12
+    { 0.1f, 0.1667f, 0.1553f, 0.1547f, 0.2145f, 0.0793f, 0.1667f, 0.0831f, 0.0703f, 0.0991f, 0.1f, 0.0902f }, // Level 13
+    { 0.1f, 0.1613f, 0.1553f, 0.1441f, 0.1980f, 0.0793f, 0.1613f, 0.0799f, 0.0703f, 0.0959f, 0.1f, 0.0902f }, // Level 14
+    { 0.1f, 0.1563f, 0.1449f, 0.1330f, 0.1775f, 0.0793f, 0.1563f, 0.0770f, 0.0672f, 0.0944f, 0.1f, 0.0842f }, // Level 15
+    { 0.1f, 0.1515f, 0.1449f, 0.1267f, 0.1660f, 0.0760f, 0.1515f, 0.0742f, 0.0672f, 0.0928f, 0.1f, 0.0842f }, // Level 16
+    { 0.1f, 0.1471f, 0.1403f, 0.1194f, 0.1560f, 0.0760f, 0.1471f, 0.0742f, 0.0672f, 0.0914f, 0.1f, 0.0814f }, // Level 17
+    { 0.1f, 0.1389f, 0.1318f, 0.1117f, 0.1450f, 0.0760f, 0.1389f, 0.0717f, 0.0672f, 0.0899f, 0.1f, 0.0789f }, // Level 18
+    { 0.1f, 0.1351f, 0.1318f, 0.1060f, 0.1355f, 0.0729f, 0.1351f, 0.0717f, 0.0672f, 0.0885f, 0.1f, 0.0789f }, // Level 19
+    { 0.1f, 0.1282f, 0.1242f, 0.0998f, 0.1271f, 0.0729f, 0.1282f, 0.0670f, 0.0644f, 0.0871f, 0.1f, 0.0701f }, // Level 20
+    { 0.1f, 0.1282f, 0.1208f, 0.0962f, 0.1197f, 0.0729f, 0.1282f, 0.0670f, 0.0644f, 0.0857f, 0.1f, 0.0701f }, // Level 21
+    { 0.1f, 0.1250f, 0.1208f, 0.0910f, 0.1144f, 0.0729f, 0.1250f, 0.0649f, 0.0644f, 0.0844f, 0.1f, 0.0682f }, // Level 22
+    { 0.1f, 0.1190f, 0.1144f, 0.0872f, 0.1084f, 0.0701f, 0.1190f, 0.0649f, 0.0644f, 0.0831f, 0.1f, 0.0664f }, // Level 23
+    { 0.1f, 0.1163f, 0.1115f, 0.0829f, 0.1040f, 0.0701f, 0.1163f, 0.0630f, 0.0618f, 0.0818f, 0.1f, 0.0664f }, // Level 24
+    { 0.1f, 0.1111f, 0.1087f, 0.0797f, 0.0980f, 0.0701f, 0.1111f, 0.0611f, 0.0618f, 0.0805f, 0.1f, 0.0631f }, // Level 25
+    { 0.1f, 0.1087f, 0.1060f, 0.0767f, 0.0936f, 0.0675f, 0.1087f, 0.0594f, 0.0618f, 0.0792f, 0.1f, 0.0631f }, // Level 26
+    { 0.1f, 0.1064f, 0.1035f, 0.0734f, 0.0903f, 0.0675f, 0.1064f, 0.0594f, 0.0618f, 0.0780f, 0.1f, 0.0616f }, // Level 27
+    { 0.1f, 0.1020f, 0.1011f, 0.0709f, 0.0865f, 0.0675f, 0.1020f, 0.0577f, 0.0618f, 0.0768f, 0.1f, 0.0601f }, // Level 28
+    { 0.1f, 0.1000f, 0.0988f, 0.0680f, 0.0830f, 0.0651f, 0.1000f, 0.0577f, 0.0595f, 0.0756f, 0.1f, 0.0601f }, // Level 29
+    { 0.1f, 0.0962f, 0.0945f, 0.0654f, 0.0792f, 0.0651f, 0.0962f, 0.0547f, 0.0595f, 0.0745f, 0.1f, 0.0549f }, // Level 30
+    { 0.1f, 0.0943f, 0.0925f, 0.0637f, 0.0768f, 0.0651f, 0.0943f, 0.0547f, 0.0595f, 0.0733f, 0.1f, 0.0537f }, // Level 31
+    { 0.1f, 0.0926f, 0.0925f, 0.0614f, 0.0741f, 0.0629f, 0.0926f, 0.0533f, 0.0595f, 0.0722f, 0.1f, 0.0537f }, // Level 32
+    { 0.1f, 0.0893f, 0.0887f, 0.0592f, 0.0715f, 0.0629f, 0.0893f, 0.0520f, 0.0573f, 0.0711f, 0.1f, 0.0526f }, // Level 33
+    { 0.1f, 0.0877f, 0.0870f, 0.0575f, 0.0691f, 0.0629f, 0.0877f, 0.0520f, 0.0573f, 0.0700f, 0.1f, 0.0515f }, // Level 34
+    { 0.1f, 0.0847f, 0.0836f, 0.0556f, 0.0664f, 0.0608f, 0.0847f, 0.0495f, 0.0573f, 0.0690f, 0.1f, 0.0505f }, // Level 35
+    { 0.1f, 0.0833f, 0.0820f, 0.0541f, 0.0643f, 0.0608f, 0.0833f, 0.0483f, 0.0552f, 0.0679f, 0.1f, 0.0495f }, // Level 36
+    { 0.1f, 0.0820f, 0.0820f, 0.0524f, 0.0628f, 0.0608f, 0.0820f, 0.0483f, 0.0552f, 0.0669f, 0.1f, 0.0485f }, // Level 37
+    { 0.1f, 0.0794f, 0.0791f, 0.0508f, 0.0609f, 0.0588f, 0.0794f, 0.0472f, 0.0552f, 0.0659f, 0.1f, 0.0485f }, // Level 38
+    { 0.1f, 0.0781f, 0.0776f, 0.0493f, 0.0592f, 0.0588f, 0.0781f, 0.0472f, 0.0552f, 0.0649f, 0.1f, 0.0476f }, // Level 39
+    { 0.1f, 0.0758f, 0.0750f, 0.0481f, 0.0572f, 0.0588f, 0.0758f, 0.0452f, 0.0533f, 0.0639f, 0.1f, 0.0443f }, // Level 40
+    { 0.1f, 0.0735f, 0.0737f, 0.0470f, 0.0556f, 0.0570f, 0.0735f, 0.0442f, 0.0533f, 0.0630f, 0.1f, 0.0435f }, // Level 41
+    { 0.1f, 0.0725f, 0.0737f, 0.0457f, 0.0542f, 0.0570f, 0.0725f, 0.0442f, 0.0533f, 0.0620f, 0.1f, 0.0435f }, // Level 42
+    { 0.1f, 0.0704f, 0.0713f, 0.0444f, 0.0528f, 0.0553f, 0.0704f, 0.0433f, 0.0533f, 0.0611f, 0.1f, 0.0428f }, // Level 43
+    { 0.1f, 0.0694f, 0.0701f, 0.0433f, 0.0512f, 0.0553f, 0.0694f, 0.0424f, 0.0515f, 0.0602f, 0.1f, 0.0421f }, // Level 44
+    { 0.1f, 0.0676f, 0.0679f, 0.0421f, 0.0497f, 0.0553f, 0.0676f, 0.0416f, 0.0515f, 0.0593f, 0.1f, 0.0407f }, // Level 45
+    { 0.1f, 0.0667f, 0.0669f, 0.0413f, 0.0486f, 0.0536f, 0.0667f, 0.0407f, 0.0515f, 0.0584f, 0.1f, 0.0401f }, // Level 46
+    { 0.1f, 0.0649f, 0.0659f, 0.0402f, 0.0474f, 0.0536f, 0.0649f, 0.0400f, 0.0499f, 0.0576f, 0.1f, 0.0401f }, // Level 47
+    { 0.1f, 0.0633f, 0.0639f, 0.0391f, 0.0464f, 0.0521f, 0.0633f, 0.0392f, 0.0499f, 0.0567f, 0.1f, 0.0394f }, // Level 48
+    { 0.1f, 0.0625f, 0.0630f, 0.0382f, 0.0454f, 0.0521f, 0.0625f, 0.0392f, 0.0499f, 0.0559f, 0.1f, 0.0388f }, // Level 49
+    { 0.1f, 0.0610f, 0.0612f, 0.0373f, 0.0440f, 0.0521f, 0.0610f, 0.0378f, 0.0483f, 0.0551f, 0.1f, 0.0366f }, // Level 50
+    { 0.1f, 0.0595f, 0.0604f, 0.0366f, 0.0431f, 0.0507f, 0.0595f, 0.0371f, 0.0483f, 0.0543f, 0.1f, 0.0361f }, // Level 51
+    { 0.1f, 0.0588f, 0.0596f, 0.0358f, 0.0422f, 0.0507f, 0.0588f, 0.0365f, 0.0483f, 0.0535f, 0.1f, 0.0356f }, // Level 52
+    { 0.1f, 0.0575f, 0.0580f, 0.0350f, 0.0412f, 0.0493f, 0.0575f, 0.0365f, 0.0468f, 0.0527f, 0.1f, 0.0351f }, // Level 53
+    { 0.1f, 0.0562f, 0.0572f, 0.0341f, 0.0404f, 0.0493f, 0.0562f, 0.0358f, 0.0468f, 0.0519f, 0.1f, 0.0351f }, // Level 54
+    { 0.1f, 0.0549f, 0.0557f, 0.0334f, 0.0394f, 0.0480f, 0.0549f, 0.0346f, 0.0468f, 0.0512f, 0.1f, 0.0341f }, // Level 55
+    { 0.1f, 0.0543f, 0.0550f, 0.0328f, 0.0386f, 0.0480f, 0.0543f, 0.0341f, 0.0455f, 0.0504f, 0.1f, 0.0337f }, // Level 56
+    { 0.1f, 0.0532f, 0.0544f, 0.0321f, 0.0378f, 0.0468f, 0.0532f, 0.0335f, 0.0455f, 0.0497f, 0.1f, 0.0332f }, // Level 57
+    { 0.1f, 0.0521f, 0.0530f, 0.0314f, 0.0370f, 0.0468f, 0.0521f, 0.0335f, 0.0455f, 0.0490f, 0.1f, 0.0328f }, // Level 58
+    { 0.1f, 0.0510f, 0.0524f, 0.0307f, 0.0364f, 0.0456f, 0.0510f, 0.0330f, 0.0442f, 0.0483f, 0.1f, 0.0324f }, // Level 59
+    { 0.1f, 0.0500f, 0.0512f, 0.0301f, 0.0355f, 0.0456f, 0.0500f, 0.0320f, 0.0442f, 0.0476f, 0.1f, 0.0308f }, // Level 60
+    { 0.1f, 0.0476f, 0.0494f, 0.0297f, 0.0334f, 0.0445f, 0.0476f, 0.0310f, 0.0442f, 0.0469f, 0.1f, 0.0299f }, // Level 61
+    { 0.1f, 0.0455f, 0.0483f, 0.0290f, 0.0322f, 0.0445f, 0.0455f, 0.0304f, 0.0442f, 0.0462f, 0.1f, 0.0295f }, // Level 62
+    { 0.1f, 0.0435f, 0.0473f, 0.0284f, 0.0307f, 0.0443f, 0.0435f, 0.0294f, 0.0429f, 0.0455f, 0.1f, 0.0285f }, // Level 63
+    { 0.1f, 0.0417f, 0.0458f, 0.0279f, 0.0296f, 0.0434f, 0.0417f, 0.0285f, 0.0429f, 0.0449f, 0.1f, 0.0279f }, // Level 64
+    { 0.1f, 0.0400f, 0.0448f, 0.0273f, 0.0286f, 0.0427f, 0.0400f, 0.0281f, 0.0429f, 0.0442f, 0.1f, 0.0274f }, // Level 65
+    { 0.1f, 0.0385f, 0.0439f, 0.0270f, 0.0276f, 0.0421f, 0.0385f, 0.0273f, 0.0418f, 0.0436f, 0.1f, 0.0269f }, // Level 66
+    { 0.1f, 0.0370f, 0.0426f, 0.0264f, 0.0268f, 0.0415f, 0.0370f, 0.0267f, 0.0418f, 0.0430f, 0.1f, 0.0265f }, // Level 67
+    { 0.1f, 0.0357f, 0.0418f, 0.0259f, 0.0262f, 0.0413f, 0.0357f, 0.0261f, 0.0418f, 0.0424f, 0.1f, 0.0258f }, // Level 68
+    { 0.1f, 0.0345f, 0.0410f, 0.0254f, 0.0256f, 0.0412f, 0.0345f, 0.0255f, 0.0407f, 0.0418f, 0.1f, 0.0254f }, // Level 69
+    { 0.1f, 0.0333f, 0.0403f, 0.0250f, 0.0250f, 0.0401f, 0.0333f, 0.0250f, 0.0407f, 0.0412f, 0.1f, 0.0250f }, // Level 70
+    { 0.1f, 0.0311f, 0.0372f, 0.0232f, 0.0232f, 0.0372f, 0.0311f, 0.0232f, 0.0377f, 0.0384f, 0.1f, 0.0232f }, // Level 71
+    { 0.1f, 0.0287f, 0.0345f, 0.0216f, 0.0216f, 0.0344f, 0.0287f, 0.0216f, 0.0351f, 0.0355f, 0.1f, 0.0216f }, // Level 72
+    { 0.1f, 0.0267f, 0.0322f, 0.0201f, 0.0201f, 0.0320f, 0.0267f, 0.0201f, 0.0329f, 0.0330f, 0.1f, 0.0201f }, // Level 73
+    { 0.1f, 0.0249f, 0.0298f, 0.0187f, 0.0187f, 0.0299f, 0.0249f, 0.0187f, 0.0303f, 0.0309f, 0.1f, 0.0187f }, // Level 74
+    { 0.1f, 0.0231f, 0.0277f, 0.0173f, 0.0173f, 0.0276f, 0.0231f, 0.0173f, 0.0281f, 0.0287f, 0.1f, 0.0173f }, // Level 75
+    { 0.1f, 0.0215f, 0.0257f, 0.0161f, 0.0161f, 0.0257f, 0.0215f, 0.0161f, 0.0262f, 0.0264f, 0.1f, 0.0161f }, // Level 76
+    { 0.1f, 0.0199f, 0.0239f, 0.0150f, 0.0150f, 0.0240f, 0.0199f, 0.0150f, 0.0242f, 0.0245f, 0.1f, 0.0150f }, // Level 77
+    { 0.1f, 0.0185f, 0.0223f, 0.0139f, 0.0139f, 0.0222f, 0.0185f, 0.0139f, 0.0227f, 0.0229f, 0.1f, 0.0139f }, // Level 78
+    { 0.1f, 0.0172f, 0.0207f, 0.0129f, 0.0129f, 0.0207f, 0.0172f, 0.0129f, 0.0209f, 0.0212f, 0.1f, 0.0129f }, // Level 79
+    { 0.1f, 0.0160f, 0.0192f, 0.0120f, 0.0120f, 0.0192f, 0.0160f, 0.0120f, 0.0196f, 0.0198f, 0.1f, 0.0120f }, // Level 80
 };
 
 enum RuneTypes
@@ -600,7 +586,6 @@ struct PlayerInfo
 	ArenaTeam * arenaTeam[NUM_ARENA_TEAM_TYPES];
 	uint32 charterId[NUM_CHARTER_TYPES];
 };
-
 struct PlayerPet
 {
 	string name;
@@ -608,18 +593,15 @@ struct PlayerPet
 	string fields;
 	uint32 xp;
 	bool active;
-	char stablestate;
+	uint8 stablestate;
 	uint32 number;
 	uint32 level;
-	uint32 loyaltyxp;
+	uint32 happiness;
 	uint32 happinessupdate;
-	string actionbar;
+	uint32 actionbarspell[10];
+	uint32 actionbarspellstate[10];
 	bool summon;
-	uint32 loyaltypts;
-	uint32 loyaltyupdate;
-	char loyaltylvl;
 };
-
 enum MeetingStoneQueueStatus
 {
 	MEETINGSTONE_STATUS_NONE = 0,
@@ -629,36 +611,32 @@ enum MeetingStoneQueueStatus
 	MEETINGSTONE_STATUS_LOOKING_FOR_NEW_PARTY_IN_QUEUE = 4,
 	MEETINGSTONE_STATUS_NONE_UNK = 5,
 };
-
 enum ItemPushResultTypes
 {
 	ITEM_PUSH_TYPE_LOOT = 0x00000000,
 	ITEM_PUSH_TYPE_RECEIVE = 0x00000001,
 	ITEM_PUSH_TYPE_CREATE = 0x00000002,
 };
-
 struct WeaponModifier
 {
 	uint32 wclass;
 	uint32 subclass;
 	float value;
 };
-
 struct PetActionBar
 {
 	uint32 spell[10];
 };
-
-struct SpellOverride
+struct classScriptOverride
 {
-	uint32 miscHP;
-	float damage;
-	uint32 reqaura;
-	uint32 addreqaura;
-	uint32 miscCheck[3];
-	uint32 overridemask; // 1 - percent, 2 - selfcheck, 4 - spellpower, 8 - checkclassmask, 
-						 // 16 - reqaurafromcaster, 256 - heal only
-						 // 32 - MISC FLAG (64 - nourish heal boost, 128 - soul siphon)
+	uint32 id;
+	uint32 effect;
+	uint32 aura;
+	uint32 damage;
+	bool percent;
+	// uint32 overridemask;	// 1 - percent, 2 - selfcheck, 4 - spellpower, 8 - checkclassmask, 
+							// 16 - reqaurafromcaster, 256 - heal only
+							// 32 - MISC FLAG (64 - nourish heal boost, 128 - soul siphon)
 
 };
 class Spell;
@@ -670,69 +648,101 @@ class GossipMenu;
 class AchievementInterface;
 struct TaxiPathNode;
 
-#define RESTSTATE_RESTED			 1
-#define RESTSTATE_NORMAL			 2
-#define RESTSTATE_TIRED100			 3
-#define RESTSTATE_TIRED50			 4
-#define RESTSTATE_EXHAUSTED			 5
-#define UNDERWATERSTATE_NONE		 0
-#define UNDERWATERSTATE_SWIMMING	 1
-#define UNDERWATERSTATE_UNDERWATER	 2
-#define UNDERWATERSTATE_RECOVERING	 4
+#define RESTSTATE_RESTED 1
+#define RESTSTATE_NORMAL 2
+#define RESTSTATE_TIRED100 3
+#define RESTSTATE_TIRED50 4
+#define RESTSTATE_EXHAUSTED 5
+#define UNDERWATERSTATE_NONE 0
+#define UNDERWATERSTATE_SWIMMING 1
+#define UNDERWATERSTATE_UNDERWATER 2
+#define UNDERWATERSTATE_RECOVERING 4
 #define UNDERWATERSTATE_TAKINGDAMAGE 8
-#define UNDERWATERSTATE_FATIGUE		 16
-#define UNDERWATERSTATE_LAVA		 32
-#define UNDERWATERSTATE_SLIME		 64
+#define UNDERWATERSTATE_FATIGUE 16
+#define UNDERWATERSTATE_LAVA 32
+#define UNDERWATERSTATE_SLIME 64
 
 enum TRADE_STATUS
 {
-	TRADE_STATUS_PLAYER_BUSY		= 0x00,
-	TRADE_STATUS_PROPOSED			= 0x01,
-	TRADE_STATUS_INITIATED			= 0x02,
-	TRADE_STATUS_CANCELLED			= 0x03,
-	TRADE_STATUS_ACCEPTED			= 0x04,
-	TRADE_STATUS_ALREADY_TRADING	= 0x05,
-	TRADE_STATUS_PLAYER_NOT_FOUND	= 0x06,
-	TRADE_STATUS_STATE_CHANGED		= 0x07,
-	TRADE_STATUS_COMPLETE			= 0x08,
-	TRADE_STATUS_UNACCEPTED			= 0x09,
-	TRADE_STATUS_TOO_FAR_AWAY		= 0x0A,
-	TRADE_STATUS_WRONG_FACTION		= 0x0B,
-	TRADE_STATUS_FAILED				= 0x0C,
-	TRADE_STATUS_UNK2				= 0x0D,
-	TRADE_STATUS_PLAYER_IGNORED		= 0x0E,
-	TRADE_STATUS_YOU_STUNNED		= 0x0F,
-	TRADE_STATUS_TARGET_STUNNED		= 0x10,
-	TRADE_STATUS_DEAD				= 0x11,
-	TRADE_STATUS_TARGET_DEAD		= 0x12,
-	TRADE_STATUS_YOU_LOGOUT			= 0x13,
-	TRADE_STATUS_TARGET_LOGOUT		= 0x14,
-	TRADE_STATUS_TRIAL_ACCOUNT		= 0x15,
-	TRADE_STATUS_ONLY_CONJURED		= 0x16,
+	TRADE_STATUS_PLAYER_BUSY = 0x00,
+	TRADE_STATUS_PROPOSED = 0x01,
+	TRADE_STATUS_INITIATED = 0x02,
+	TRADE_STATUS_CANCELLED = 0x03,
+	TRADE_STATUS_ACCEPTED = 0x04,
+	TRADE_STATUS_ALREADY_TRADING = 0x05,
+	TRADE_STATUS_PLAYER_NOT_FOUND = 0x06,
+	TRADE_STATUS_STATE_CHANGED = 0x07,
+	TRADE_STATUS_COMPLETE = 0x08,
+	TRADE_STATUS_UNACCEPTED = 0x09,
+	TRADE_STATUS_TOO_FAR_AWAY = 0x0A,
+	TRADE_STATUS_WRONG_FACTION = 0x0B,
+	TRADE_STATUS_FAILED	 = 0x0C,
+	TRADE_STATUS_UNK2 = 0x0D,
+	TRADE_STATUS_PLAYER_IGNORED = 0x0E,
+	TRADE_STATUS_YOU_STUNNED = 0x0F,
+	TRADE_STATUS_TARGET_STUNNED = 0x10,
+	TRADE_STATUS_DEAD = 0x11,
+	TRADE_STATUS_TARGET_DEAD = 0x12,
+	TRADE_STATUS_YOU_LOGOUT = 0x13,
+	TRADE_STATUS_TARGET_LOGOUT = 0x14,
+	TRADE_STATUS_TRIAL_ACCOUNT = 0x15,
+	TRADE_STATUS_ONLY_CONJURED = 0x16,
 };
+
 enum TRADE_DATA
 {
-	TRADE_GIVE		= 0x00,
-	TRADE_RECEIVE	 = 0x01,
+	TRADE_GIVE = 0x00,
+	TRADE_RECEIVE = 0x01,
 };
+
 enum DUEL_STATUS
 {
 	DUEL_STATUS_OUTOFBOUNDS,
 	DUEL_STATUS_INBOUNDS
 };
+
 enum DUEL_STATE
 {
 	DUEL_STATE_REQUESTED,
 	DUEL_STATE_STARTED,
 	DUEL_STATE_FINISHED
 };
+
 enum DUEL_WINNER
 {
 	DUEL_WINNER_KNOCKOUT,
 	DUEL_WINNER_RETREAT,
 };
+
 #define PLAYER_ATTACK_TIMEOUT_INTERVAL	5000
 #define PLAYER_FORCED_RESURECT_INTERVAL	360000 // 1000*60*6= 6 minutes 
+
+enum EquipmentSetUpdateState
+{
+	EQUIPMENT_SET_UNCHANGED = 0,
+	EQUIPMENT_SET_CHANGED = 1,
+	EQUIPMENT_SET_NEW = 2,
+	EQUIPMENT_SET_DELETED = 3
+};
+
+struct EquipmentSet
+{
+	EquipmentSet() : Guid(0), state(EQUIPMENT_SET_NEW)
+	{
+		for(uint8 i = 0; i < EQUIPMENT_SLOT_END; ++i)
+			Items[i] = 0;
+	}
+
+	uint64 Guid;
+	std::string Name;
+	std::string IconName;
+	WoWGuid Items[EQUIPMENT_SLOT_END];
+	EquipmentSetUpdateState state;
+};
+
+#define MAX_EQUIPMENT_SET_INDEX 10 // client limit
+
+typedef std::map<uint32, EquipmentSet> EquipmentSets;
 
 struct PlayerSkill
 {
@@ -790,9 +800,9 @@ enum SPELL_INDEX
 class ArenaTeam;
 struct PlayerCooldown
 {
-    uint32 ExpireTime;
-    uint32 ItemId;
-    uint32 SpellId;
+	uint32 ExpireTime;
+	uint32 ItemId;
+	uint32 SpellId;
 };
 
 //////////////////////////////////////////////////////////////////////////
@@ -802,25 +812,27 @@ struct PlayerCooldown
 // TODO: Attach characters to user accounts                             //
 //////////////////////////////////////////////////////////////////////////
 
-typedef std::set<uint32>                              SpellSet;
-typedef std::map<uint32, SpellOverride*>              SpellOverrideList;
-typedef std::set<uint32>                              SaveSet;
-typedef std::map<uint64, ByteBuffer*>                 SplineMap;
-typedef std::map<uint32, FactionReputation*>          ReputationMap;
-typedef std::map<uint32, uint64>                      SoloSpells;
-typedef std::map<SpellEntry*, pair<uint32, uint32> >  StrikeSpellMap;
-typedef std::map<uint32, OnHitSpell >                 StrikeSpellDmgMap;
-typedef std::map<uint32, PlayerSkill>                 SkillMap;
-typedef std::set<Player* *>                           ReferenceSet;
-typedef std::map<uint32, PlayerCooldown>              PlayerCooldownMap;
+typedef std::set<uint32>                            SpellSet;
+typedef std::list<classScriptOverride*>             ScriptOverrideList;
+typedef std::set<uint32>                            SaveSet;
+typedef std::map<uint64, ByteBuffer*>               SplineMap;
+typedef std::map<uint32, ScriptOverrideList* >      SpellOverrideMap;
+typedef std::map<uint32, uint32>                    SpellOverrideExtraAuraMap;
+typedef std::map<uint32, FactionReputation*>        ReputationMap;
+typedef std::map<uint32, uint64>                    SoloSpells;
+typedef std::map<SpellEntry*, pair<uint32, uint32> >StrikeSpellMap;
+typedef std::map<uint32, OnHitSpell >               StrikeSpellDmgMap;
+typedef std::map<uint32, PlayerSkill>               SkillMap;
+typedef std::set<Player* *>                         ReferenceSet;
+typedef std::map<uint32, PlayerCooldown>            PlayerCooldownMap;
 
 // #define OPTIMIZED_PLAYER_SAVING
 
 class ARCTIC_DECL Player : public Unit
 {
-    friend class WorldSession;
-    friend class Pet;
-    friend class SkillIterator;
+	friend class WorldSession;
+	friend class Pet;
+	friend class SkillIterator;
 
 public:
 
@@ -830,7 +842,6 @@ public:
 	virtual void Destructor();
 	virtual void Init();
 
-	ARCTIC_INLINE uint32 GetGuid() { return m_playerInfo->guid; }
 	ARCTIC_INLINE Guild * GetGuild() { return m_playerInfo->guild; }
 	ARCTIC_INLINE GuildMember * GetGuildMember() { return m_playerInfo->guildMember; }
 	ARCTIC_INLINE GuildRank * GetGuildRankS() { return m_playerInfo->guildRank; }
@@ -855,9 +866,8 @@ public:
 	void _RemoveAllSkills();
 	void _RemoveLanguages();
 	void _AddLanguages(bool All);
-	void _AdvanceAllSkills(uint32 count);
-	void _ModifySkillMaximum(uint32 SkillLine, uint32 NewMax);
-
+	void _AdvanceAllSkills(uint32 count, bool skipprof = false, uint32 max = 0);
+	void _ModifySkillMaximum(uint32 SkillLine, uint32 NewMax);	
 	void RecalculateHonor();
 
 	LfgMatch * m_lfgMatch;
@@ -873,19 +883,16 @@ protected:
 
 
 	// Cooldowns
-	uint32 m_lastPotionId;
 	PlayerCooldownMap m_cooldownMap[NUM_COOLDOWN_TYPES];
 	uint32 m_globalCooldown;
 	
 public:
-	void SetLastPotion(uint32 itemid) { m_lastPotionId = itemid; }
 	void Cooldown_OnCancel(SpellEntry *pSpell);
 	void Cooldown_AddStart(SpellEntry * pSpell);
 	void Cooldown_Add(SpellEntry * pSpell, Item* pItemCaster);
 	void Cooldown_AddItem(ItemPrototype * pProto, uint32 x);
 	bool Cooldown_CanCast(SpellEntry * pSpell);
 	bool Cooldown_CanCast(ItemPrototype * pProto, uint32 x);
-	void UpdatePotionCooldown();
 
 protected:
 	void _Cooldown_Add(uint32 Type, uint32 Misc, uint32 Time, uint32 SpellId, uint32 ItemId);
@@ -904,16 +911,14 @@ public:
 	void RemoveSpellIndexReferences(uint32 Type);
 	void SetSpellTargetType(uint32 Type, Unit* target);
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
+	void SendDungeonDifficulty();
 	void TriggerMovie(uint32 movieID);
- 	void SendDungeonDifficulty();
 	void SendRaidDifficulty();
 
-	void AddToWorld();
+	void AddToWorld(bool loggingin = false);
 	void AddToWorld(MapMgr* pMapMgr);
 	void RemoveFromWorld();
 	bool Create ( WorldPacket &data );
-
-	bool m_canTameExotic;
 	
 	void Update( uint32 time );
 	
@@ -932,7 +937,7 @@ public:
 	// Taxi                                                                 //
 	//////////////////////////////////////////////////////////////////////////
 
-	ARCTIC_INLINE TaxiPath* GetTaxiPath() { return m_CurrentTaxiPath; }
+	ARCTIC_INLINE TaxiPath*	GetTaxiPath() { return m_CurrentTaxiPath; }
 	ARCTIC_INLINE bool GetTaxiState() { return m_onTaxi; }
 	const uint32& GetTaximask( uint8 index ) const { return m_taximask[index]; }
 	void LoadTaxiMask(const char* data);
@@ -963,7 +968,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Quests                                                               //
 	//////////////////////////////////////////////////////////////////////////
-
 	bool HasQuests() 
 	{
 		for(int i = 0; i < 25; ++i)
@@ -987,12 +991,12 @@ public:
 	ARCTIC_INLINE void	SetQuestSharer(uint32 guid){ m_questSharer = guid; }
 	void SetQuestLogSlot(QuestLogEntry *entry, uint32 slot);
 
-	ARCTIC_INLINE void PushToRemovedQuests(uint32 questid)	{ m_removequests.insert(questid);}
+	ARCTIC_INLINE void PushToRemovedQuests(uint32 questid) { m_removequests.insert(questid);}
 	ARCTIC_INLINE uint32 GetFinishedDailiesCount() { return (uint32)m_finishedDailyQuests.size(); }
 	void AddToFinishedQuests(uint32 quest_id);
 	void AddToFinishedDailyQuests(uint32 quest_id);
 	void EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_slot, uint32 interval);
-	
+
 	bool HasFinishedQuest(uint32 quest_id);
 	bool HasFinishedDailyQuest(uint32 quest_id);
 	bool HasQuestForItem(uint32 itemid);
@@ -1002,19 +1006,19 @@ public:
 	bool HasQuestMob(uint32 entry);
 	void RemoveQuestMob(uint32 entry);
 	void RemoveQuestsFromLine(int skill_line);
- 
-	// Quest related variables
-	// uint32 m_questbarrier1[25];
-	QuestLogEntry* m_questlog[25];
-	// uint32 m_questbarrier2[25];
-	std::set<uint32> m_QuestGOInProgress;
-	std::set<uint32> m_removequests;
-	std::set<uint32> m_finishedQuests;
-	std::set<uint32> m_finishedDailyQuests;
-	uint32 m_questSharer;
-	std::set<uint32> quest_spells;
-	std::set<uint32> quest_mobs;
 	void ResetDailyQuests();
+	uint16 FindQuestSlot(uint32 questid);
+
+	// Quest related variables
+	QuestLogEntry*		m_questlog[25];
+	std::set<uint32>	m_QuestGOInProgress;
+	std::set<uint32>	m_removequests;
+	std::set<uint32>	m_finishedQuests;
+	std::set<uint32>	m_finishedDailyQuests;
+	uint32				m_questSharer;
+	std::set<uint32>	quest_spells;
+	std::set<uint32>	quest_mobs;
+	Mutex				DailyMutex;
 
 	void EventPortToGM(uint32 guid);
 	ARCTIC_INLINE uint32 GetTeam() { return m_team; }
@@ -1033,7 +1037,7 @@ public:
 	void CalcDamage();
 	uint32 GetMainMeleeDamage(uint32 AP_owerride); // i need this for windfury
 
-    const uint64& GetSelection( ) const { return m_curSelection; }
+	const uint64& GetSelection( ) const { return m_curSelection; }
 	void SetSelection(const uint64 &guid) { m_curSelection = guid; }
 
 	//////////////////////////////////////////////////////////////////////////
@@ -1044,83 +1048,83 @@ public:
 	bool HasTalentWithSpellID( uint32 SpellId );
 	bool HasDeletedSpell(uint32 spell);
 	void smsg_InitialSpells();
-	void smsg_TalentsInfo(bool update, uint32 newTalentId, uint8 newTalentRank);
-	void BuildFullTalentsInfo(WorldPacket *data, bool self);
+	void smsg_TalentsInfo(bool pet);
+	void BuildPlayerTalentsInfo(WorldPacket *data, bool self);
+	void BuildPetTalentsInfo(WorldPacket *data);
 	void addSpell(uint32 spell_idy);
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
-	void FillSpellOverride(uint32 hash, float amount, uint32 reqaura, uint32 addreqaura, uint32 HP, uint32 *SCM, uint32 overridemask);
 
-    // Please do not inline!
-    void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)
-    {
-        m_onStrikeSpells.insert( map< SpellEntry*, pair<uint32, uint32> >::value_type( sp, make_pair( delay, 0 ) ) );
-    }
-    void RemoveOnStrikeSpell(SpellEntry *sp)
-    {
-        m_onStrikeSpells.erase(sp);
-    }
-    void AddOnStrikeSpellDamage(uint32 spellid, uint32 mindmg, uint32 maxdmg)
-    {
-        OnHitSpell sp;
-        sp.spellid = spellid;
-        sp.mindmg = mindmg;
-        sp.maxdmg = maxdmg;
-        m_onStrikeSpellDmg[spellid] = sp;
-    }
-    void RemoveOnStrikeSpellDamage(uint32 spellid)
-    {
-        m_onStrikeSpellDmg.erase(spellid);
-    }
+	// Please do not inline!
+	void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)
+	{
+		m_onStrikeSpells.insert( map< SpellEntry*, pair<uint32, uint32> >::value_type( sp, make_pair( delay, 0 ) ) );
+	}
+	void RemoveOnStrikeSpell(SpellEntry *sp)
+	{
+		m_onStrikeSpells.erase(sp);
+	}
+	void AddOnStrikeSpellDamage(uint32 spellid, uint32 mindmg, uint32 maxdmg)
+	{
+		OnHitSpell sp;
+		sp.spellid = spellid;
+		sp.mindmg = mindmg;
+		sp.maxdmg = maxdmg;
+		m_onStrikeSpellDmg[spellid] = sp;
+	}
+	void RemoveOnStrikeSpellDamage(uint32 spellid)
+	{
+		m_onStrikeSpellDmg.erase(spellid);
+	}
 
-    // Spells variables
-    StrikeSpellMap      m_onStrikeSpells;
-    StrikeSpellDmgMap   m_onStrikeSpellDmg;
-    SpellSet            mSpells;
-    SpellSet            mDeletedSpells;
+	// Spells variables
+	StrikeSpellMap		m_onStrikeSpells;
+	StrikeSpellDmgMap	m_onStrikeSpellDmg;
+	SpellOverrideMap	mSpellOverrideMap;
+	SpellSet			mSpells;
+	SpellSet			mDeletedSpells;
 	SpellSet			mShapeShiftSpells;
-	map_t				mSpellsUniqueTargets;
-	SpellOverrideList   m_SpellOverrideList;
+	HM_NAMESPACE::hash_map<uint32, uint64 > mSpellsUniqueTargets;
 
 	void AddShapeShiftSpell(uint32 id);
 	void RemoveShapeShiftSpell(uint32 id);
 	void CheckSpellUniqueTargets(SpellEntry *sp, uint64 guid);
 
 
-    //////////////////////////////////////////////////////////////////////////
-    // Actionbar                                                            //
-    //////////////////////////////////////////////////////////////////////////
-	
-	void  setAction(uint8 button, uint16 action, uint8 type, uint8 misc);
-	void  SendInitialActions();
-    bool  m_actionsDirty;
-	
-    //////////////////////////////////////////////////////////////////////////
-    // Reputation                                                           //
-    //////////////////////////////////////////////////////////////////////////
-	
-	void  ModStanding(uint32 Faction, int32 Value);
-	int32  GetStanding(uint32 Faction);
-	int32  GetBaseStanding(uint32 Faction);
-	void  SetStanding(uint32 Faction, int32 Value);
-	void  SetAtWar(uint32 Faction, bool Set);
-	bool  IsAtWar(uint32 Faction);
-	Standing  GetStandingRank(uint32 Faction);
-	bool  IsHostileBasedOnReputation(FactionDBC * dbc);
-	void  UpdateInrangeSetsBasedOnReputation();
-	void  Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop);
-	void  Reputation_OnTalk(FactionDBC * dbc);
-	static Standing  GetReputationRankFromStanding(int32 Standing_);
-	
+	//////////////////////////////////////////////////////////////////////////
+	// Actionbar                                                            //
+	//////////////////////////////////////////////////////////////////////////
+
+	void setAction(uint8 button, uint16 action, uint8 type, uint8 misc);
+	void SendInitialActions();
+	bool m_actionsDirty;
+
+	//////////////////////////////////////////////////////////////////////////
+	// Reputation                                                           //
+	//////////////////////////////////////////////////////////////////////////
+
+	void ModStanding(uint32 Faction, int32 Value);
+	int32 GetStanding(uint32 Faction);
+	int32 GetBaseStanding(uint32 Faction);
+	void SetStanding(uint32 Faction, int32 Value);
+	void SetAtWar(uint32 Faction, bool Set);
+	bool IsAtWar(uint32 Faction);
+	Standing GetStandingRank(uint32 Faction);
+	bool IsHostileBasedOnReputation(FactionDBC * dbc);
+	void UpdateInrangeSetsBasedOnReputation();
+	void Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop);
+	void Reputation_OnTalk(FactionDBC * dbc);
+	static Standing GetReputationRankFromStanding(int32 Standing_);
+
 	bool titanGrip;
 	void ResetTitansGrip();
-	
+
     //////////////////////////////////////////////////////////////////////////
     // Factions                                                             //
     //////////////////////////////////////////////////////////////////////////
-	
-	void smsg_InitialFactions();
-	uint32 GetFactionId();
+
+    void smsg_InitialFactions();
+    uint32 GetFactionId();
     // factions variables
     int32 pctReputationMod;
 
@@ -1142,10 +1146,10 @@ public:
 	// Groups                                                               //
 	//////////////////////////////////////////////////////////////////////////
 	
-	void  SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
-	ARCTIC_INLINE uint32  GetInviter() { return m_GroupInviter; }
-	ARCTIC_INLINE bool  InGroup() { return (m_playerInfo->m_Group != NULL && !m_GroupInviter); }
-	bool  IsGroupLeader()
+	void SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
+	ARCTIC_INLINE uint32 GetInviter() { return m_GroupInviter; }
+	ARCTIC_INLINE bool InGroup() { return (m_playerInfo->m_Group != NULL && !m_GroupInviter); }
+	bool IsGroupLeader()
 	{
 		if(m_playerInfo->m_Group != NULL)
 		{
@@ -1154,7 +1158,6 @@ public:
 		}
 		return false;
 	}
-
 	bool IsGroupMember(Player* plyr);
 	ARCTIC_INLINE int HasBeenInvited() { return m_GroupInviter != 0; }
 	ARCTIC_INLINE Group* GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
@@ -1169,17 +1172,18 @@ public:
 		}
 		return false;
 	}
-	ARCTIC_INLINE void  SetBanned() { m_banned = 4;}
-	ARCTIC_INLINE void  SetBanned(string Reason) { m_banned = 4; m_banreason = Reason;}
-	ARCTIC_INLINE void  SetBanned(uint32 timestamp, string& Reason) { m_banned = timestamp; m_banreason = Reason; }
-	ARCTIC_INLINE void  UnSetBanned() { m_banned = 0; }
-	ARCTIC_INLINE string  GetBanReason() {return m_banreason;}
+
+	ARCTIC_INLINE void SetBanned() { m_banned = 4;}
+	ARCTIC_INLINE void SetBanned(string Reason) { m_banned = 4; m_banreason = Reason;}
+	ARCTIC_INLINE void SetBanned(uint32 timestamp, string& Reason) { m_banned = timestamp; m_banreason = Reason; }
+	ARCTIC_INLINE void UnSetBanned() { m_banned = 0; }
+	ARCTIC_INLINE string GetBanReason() {return m_banreason;}
 
 	void SetGuardHostileFlag(bool val) { if(val) SetFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); else RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); UpdateOppFactionSet(); }
 	void CreateResetGuardHostileFlagEvent()
 	{
 		event_RemoveEvents( EVENT_GUARD_HOSTILE );
-		sEventMgr.AddEvent(TO_PLAYER(this), &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
+		sEventMgr.AddEvent(this, &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
 	}
 
 	uint32 m_hasInRangeGuards;
@@ -1187,37 +1191,37 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Guilds                                                               //
 	//////////////////////////////////////////////////////////////////////////
-	
-	ARCTIC_INLINE  bool  IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
-	ARCTIC_INLINE uint32  GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
-	void  SetGuildId(uint32 guildId);
-	ARCTIC_INLINE uint32  GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
-	void  SetGuildRank(uint32 guildRank);
-	uint32  GetGuildInvitersGuid() { return m_invitersGuid; }
-	void  SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
-	void  UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
-	
+
+	ARCTIC_INLINE bool IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
+	ARCTIC_INLINE uint32 GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
+	void SetGuildId(uint32 guildId);
+	ARCTIC_INLINE uint32 GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
+	void SetGuildRank(uint32 guildRank);
+	uint32 GetGuildInvitersGuid() { return m_invitersGuid; }
+	void SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
+	void UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
+
 	//////////////////////////////////////////////////////////////////////////
 	// Duel                                                                 //
 	//////////////////////////////////////////////////////////////////////////
 
-	void  RequestDuel(Player* pTarget);
-	void  DuelBoundaryTest();
-	void  EndDuel(uint8 WinCondition);
-	void  DuelCountdown();
-	void  SetDuelStatus(uint8 status) { m_duelStatus = status; }
-	ARCTIC_INLINE uint8  GetDuelStatus() { return m_duelStatus; }
-	void  SetDuelState(uint8 state) { m_duelState = state; }
-	ARCTIC_INLINE uint8  GetDuelState() { return m_duelState; }
+	void RequestDuel(Player* pTarget);
+	void DuelBoundaryTest();
+	void EndDuel(uint8 WinCondition);
+	void DuelCountdown();
+	void SetDuelStatus(uint8 status) { m_duelStatus = status; }
+	ARCTIC_INLINE uint8 GetDuelStatus() { return m_duelStatus; }
+	void SetDuelState(uint8 state) { m_duelState = state; }
+	ARCTIC_INLINE uint8 GetDuelState() { return m_duelState; }
 	// duel variables
-	Player*  DuelingWith;
+	Player* DuelingWith;
 
 	//////////////////////////////////////////////////////////////////////////
 	// Trade                                                                //
 	//////////////////////////////////////////////////////////////////////////
-	
-	void  SendTradeUpdate(void);
-	void  ResetTradeVariables()
+
+	void SendTradeUpdate(void);
+	void ResetTradeVariables()
 	{
 		mTradeGold = 0;
 		for(uint8 i = 0; i < 7; ++i)
@@ -1231,49 +1235,50 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// Pets                                                                 //
 	//////////////////////////////////////////////////////////////////////////
-	
-	ARCTIC_INLINE void  SetSummon(Pet* pet) { m_Summon = pet; }
-	ARCTIC_INLINE Pet*  GetSummon(void) { return m_Summon; }
-	uint32  GeneratePetNumber(void);
-	void  RemovePlayerPet(uint32 pet_number);
-	ARCTIC_INLINE  void AddPlayerPet(PlayerPet* pet, uint32 index) { m_Pets[index] = pet; }
-	ARCTIC_INLINE PlayerPet*  GetPlayerPet(uint32 idx)
+
+	ARCTIC_INLINE void SetSummon(Pet* pet) { m_Summon = pet; }
+	ARCTIC_INLINE Pet* GetSummon(void) { return m_Summon; }
+	uint32 GeneratePetNumber(void);
+	void RemovePlayerPet(uint32 pet_number);
+	ARCTIC_INLINE void AddPlayerPet(PlayerPet* pet, uint32 index) { m_Pets[index] = pet; }
+	ARCTIC_INLINE PlayerPet* GetPlayerPet(uint8 idx)
 	{
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.find(idx);
-		if(itr != m_Pets.end()) return itr->second;
+		if(itr != m_Pets.end())
+			return itr->second;
 		else
 			return NULL;
 	}
-	void  SpawnPet(uint32 pet_number);
-	void  DespawnPet();
-	uint32  GetFirstPetNumber(void)
+
+	void SpawnPet(uint32 pet_number);
+	void DespawnPet();
+	uint32 GetFirstPetNumber(void)
 	{
 		if(m_Pets.size() == 0) return 0;
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
 		return itr->first;
 	}
-	ARCTIC_INLINE PlayerPet*  GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
-	ARCTIC_INLINE void  SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
-	ARCTIC_INLINE uint8  GetStableSlotCount(void) { return m_StableSlotCount; }
-	uint32  GetUnstabledPetNumber(void)
+	ARCTIC_INLINE PlayerPet* GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
+	ARCTIC_INLINE void SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
+	ARCTIC_INLINE uint8 GetStableSlotCount(void) { return m_StableSlotCount; }
+	uint8 GetUnstabledPetNumber(void)
 	{
 		if(m_Pets.size() == 0) return 0;
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
-		for(;itr != m_Pets.end();itr++)
+		for(;itr != m_Pets.end();++itr)
 			if(itr->second->stablestate == STABLE_STATE_ACTIVE)
 				return itr->first;
-		return 0;
+		return NULL;
 	}
-	void  EventSummonPet(Pet* new_pet); // if we charmed or simply summoned a pet, this function should get called
-	void  EventDismissPet(); // if pet/charm died or whatever happned we should call this function
+	void EventSummonPet(Pet* new_pet); // if we charmed or simply summoned a pet, this function should get called
+	void EventDismissPet(); // if pet/charm died or whatever happned we should call this function
 
 	//////////////////////////////////////////////////////////////////////////
 	// Item Interface                                                       //
 	//////////////////////////////////////////////////////////////////////////
-	
-	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
-	ARCTIC_INLINE void  ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
 
+	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
+	ARCTIC_INLINE void ApplyItemMods(Item* item, int16 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
 	// item interface variables
 	ItemInterface * m_ItemInterface;
 
@@ -1281,26 +1286,17 @@ public:
 	AchievementInterface * m_achievementInterface;
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Dancing Rune Weapon Crap                                             //
-	//////////////////////////////////////////////////////////////////////////
-	
-	ARCTIC_INLINE  void SetDancingRuneWeaponMod(int32 mod) { m_DancingRuneWeaponBonus = mod; }
-	ARCTIC_INLINE  int32 GetDancingRuneWeaponMod() { return m_DancingRuneWeaponBonus; }
-	ARCTIC_INLINE  void SetDancingRuneWeapon(Creature* cp) { m_DancingRuneWeapon = cp; }
-	ARCTIC_INLINE  Creature* GetDancingRuneWeapon() { return m_DancingRuneWeapon; }
-
-	//////////////////////////////////////////////////////////////////////////
 	// Loot                                                                 //
 	//////////////////////////////////////////////////////////////////////////
 
 	ARCTIC_INLINE const uint64& GetLootGUID() const { return m_lootGuid; }
-	ARCTIC_INLINE void  SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
+	ARCTIC_INLINE void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
 	void SendLoot(uint64 guid, uint32 mapid, uint8 loot_type);
-
 	// loot variables
-	uint64  m_lootGuid;
-	uint64  m_currentLoot;
-	bool  m_insigniaTaken;
+	uint64 m_lootGuid;
+	uint64 m_currentLoot;
+	bool m_insigniaTaken;
+	bool AllowDisenchantLoot();
 
 	//////////////////////////////////////////////////////////////////////////
 	// World Session                                                        //
@@ -1319,8 +1315,9 @@ public:
 	float GetSpellTimeMod(uint32 id);
 	int GetSpellDamageMod(uint32 id);
 	int32 GetSpellManaMod(uint32 id);
-	
+
 	// Talents
+	// These functions build a specific type of A9 packet
 	uint32 __fastcall BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
 	void DestroyForPlayer( Player* target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
@@ -1329,12 +1326,12 @@ public:
 	std::list<LoginAura> loginauras;
 
 	std::set<uint32> OnMeleeAuras;
-	
+
 	//////////////////////////////////////////////////////////////////////////
 	// Player loading and savings                                           //
 	// Serialize character to db                                            //
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	void SaveToDB(bool bNewCharacter);
 	void SaveAuras(stringstream&);
 	bool LoadFromDB(uint32 guid);
@@ -1362,13 +1359,13 @@ public:
 	void SpawnCorpseBones();
 	Corpse* CreateCorpse();
 	void KillPlayer();
-	void ResurrectPlayer(Player* pResurrector);
+	void ResurrectPlayer(Player* pResurrector = NULLPLR);
 	void BuildPlayerRepop();
 	Corpse* RepopRequestedPlayer();
-	
+
 	// silly event handler
 	void EventRepopRequestedPlayer() { RepopRequestedPlayer(); }
-	
+
 	void DeathDurabilityLoss(double percent);
 	void RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid);
 	
@@ -1427,6 +1424,7 @@ public:
 	void SendTalentResetConfirm();
 	void SendPetUntrainConfirm();
 	void SendDualTalentConfirm();
+	void SendXPToggleConfirm();
 	uint32 GetTalentResetTimes() { return m_talentresettimes; }
 	ARCTIC_INLINE void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
 	void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
@@ -1438,9 +1436,9 @@ public:
 	const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
 	ARCTIC_INLINE uint8 GetShapeShift()
 	{
-		return GetByte(UNIT_FIELD_BYTES_2,3);
+		return GetByte(UNIT_FIELD_BYTES_2, 3);
 	}
-	
+
 	void delayAttackTimer(int32 delay)
 	{
 		if(!delay)
@@ -1449,12 +1447,12 @@ public:
 		m_attackTimer += delay;
 		m_attackTimer_1 += delay;
 	}
-	
+
 	void SetShapeShift(uint8 ss);
 
-    // Showing Units WayPoints
+	// Showing Units WayPoints
 	AIInterface* waypointunit;
-	
+
 	uint32 m_nextSave;
 	// Tutorials
 	uint32 GetTutorialInt(uint32 intId );
@@ -1476,7 +1474,7 @@ public:
 	void Gossip_Complete();
 	int m_lifetapbonus;
 	uint32 m_lastShotTime;
-	
+
 	bool m_bUnlimitedBreath;
 	uint32 m_UnderwaterTime;
 	uint32 m_UnderwaterState;
@@ -1510,16 +1508,9 @@ public:
 
 	ARCTIC_INLINE InRangeSet::iterator GetVisibleSetBegin() { return m_visibleObjects.begin(); }
 	ARCTIC_INLINE InRangeSet::iterator GetVisibleSetEnd() { return m_visibleObjects.end(); }
-	
-	// Transporters
-	bool m_lockTransportVariables;
-	uint64 m_TransporterGUID;
-	float m_TransporterX;
-	float m_TransporterY;
-	float m_TransporterZ;
-	float m_TransporterO;
-	float m_TransporterUnk;
+
 	// Misc
+	void EventReduceDrunk(bool full);
 	bool m_AllowAreaTriggerPort;
 	void EventAllowTiggerPort(bool enable);
 	float m_rangedattackspeedmod;
@@ -1561,7 +1552,7 @@ public:
 	bool HasBattlegroundQueueSlot();
 
 	uint32 GetBGQueueSlot();
-	
+
 	void EventRepeatSpell();
 	void EventCastRepeatedSpell(uint32 spellid, Unit* target);
 	int32 CanShootRangedWeapon(uint32 spellid, Unit* target, bool autoshot);
@@ -1575,6 +1566,8 @@ public:
 	void EventMassSummonReset() { m_massSummonEnabled = false; }
 
 	bool m_massSummonEnabled;
+
+	uint32 m_moltenFuryDamageIncreasePct;
 	
 	void CalcResistance(uint32 type);
 	ARCTIC_INLINE float res_M_crit_get(){return m_resist_critical[0];}
@@ -1587,16 +1580,16 @@ public:
 	uint32 BaseResistanceModPctNeg[7];
 	uint32 ResistanceModPctPos[7];
 	uint32 ResistanceModPctNeg[7];
-	float m_resist_critical[2];            // when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
-	float m_resist_hit[3];                 // 0 = melee; 1= ranged; 2=spells
+	float m_resist_critical[2]; // when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
+	float m_resist_hit[3]; // 0 = melee; 1= ranged; 2=spells
 	float SpellDmgDoneByAttribute[5][7];
 	float SpellHealDoneByAttribute[5][7];
 	uint32 m_modphyscritdmgPCT;
-	uint32 m_RootedCritChanceBonus;        // Class Script Override: Shatter
+	uint32 m_RootedCritChanceBonus; // Class Script Override: Shatter
 
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;
-	uint32 m_casted_amount[7];             // Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
+	uint32 m_casted_amount[7]; // Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
 	
 	uint32 FlatStatModPos[5];
 	uint32 FlatStatModNeg[5];
@@ -1604,7 +1597,7 @@ public:
 	uint32 StatModPctNeg[5];
 	uint32 TotalStatModPctPos[5];
 	uint32 TotalStatModPctNeg[5];
-	int32 IncreaseDamageByType[12];        // mod dmg by creature type
+	int32 IncreaseDamageByType[12]; // mod dmg by creature type
 	float IncreaseDamageByTypePCT[12];
 	float IncreaseCricticalByTypePCT[12];
 	int32 DetectedRange;
@@ -1648,9 +1641,9 @@ public:
 #endif
 	void AddItemsToWorld();
 	void RemoveItemsFromWorld();
-	uint32 GetTotalItemLevel();
 	void UpdateKnownCurrencies(uint32 itemId, bool apply);
-	
+	uint32 GetTotalItemLevel();
+
 	uint32 m_ShapeShifted;
 	uint32 m_MountSpellId;
 
@@ -1676,18 +1669,17 @@ public:
 	void ClearCooldownsOnLine(uint32 skill_line, uint32 called_from);
 	void ResetAllCooldowns();
 	void ClearCooldownForSpell(uint32 spell_id);
-	void SendPreventSchoolCast(uint32 SpellSchool, uint32 unTimeMs);
 
 	bool bProcessPending;
 	Mutex _bufferS;
 	void PushUpdateData(ByteBuffer *data, uint32 updatecount);
 	void PushUpdateData(StackBuffer *data, uint32 updatecount);
-    void PushCreationData(ByteBuffer *data, uint32 updatecount);
+	void PushCreationData(ByteBuffer *data, uint32 updatecount);
 	void PushOutOfRange(const WoWGuid & guid);
 	void ProcessPendingUpdates(ByteBuffer *pBuildBuffer, ByteBuffer *pCompressionBuffer);
 	bool __fastcall CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer, ByteBuffer *pCompressionBuffer);
 	void ClearAllPendingUpdates();
-	
+
 	uint32 GetArmorProficiency() { return armor_proficiency; }
 	uint32 GetWeaponProficiency() { return weapon_proficiency; }
 
@@ -1695,13 +1687,13 @@ public:
 
 	// speedhack buster!
 	LocationVector m_lastHeartbeatPosition;
-	float   m_lastHeartbeatV;   // velocity
-	uint32  m_startMoveTime;	// time
-	uint32  m_lastMovementPacketTimestamp;
-	int32   m_heartbeatDisable;
-	uint32  m_lastMoveTime;
-	bool    m_speedChangeInProgress;
-	uint32  m_flyHackChances;
+	float  m_lastHeartbeatV; // velocity
+	uint32 m_startMoveTime;  // time
+	uint32 m_lastMovementPacketTimestamp;
+	int32  m_heartbeatDisable;
+	uint32 m_lastMoveTime;
+	bool   m_speedChangeInProgress;
+	uint32 m_flyHackChances;
 
 	void AddSplinePacket(uint64 guid, ByteBuffer* packet);
 	ByteBuffer* GetAndRemoveSplinePacket(uint64 guid);
@@ -1717,25 +1709,25 @@ public:
 	ARCTIC_INLINE uint32 GetAreaID() { return m_AreaID; }
 	void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
 	ARCTIC_INLINE AreaTable *GetAreaDBC() { return m_areaDBC; }
-	
-	
+
 	std::string Lfgcomment;
 	uint16 LfgDungeonId[3];
 	uint8 LfgType[3];
 	uint16 LfmDungeonId;
 	uint8 LfmType;
+	uint32 roleflags;
 	bool m_Autojoin;
 	bool m_AutoAddMem;
 	void StopMirrorTimer(uint32 Type);
 	BGScore m_bgScore;
 	uint32 m_bgTeam;
 	void UpdateChanceFields();
-	// Honor Variables
+	//Honor Variables
 	time_t m_fallDisabledUntil;
 	uint32 m_honorToday;
 	uint32 m_honorYesterday;
 	uint32 LatencyKickTimer;
-	
+
 	void RolloverHonor();
 	uint32 m_honorPoints;
 	uint32 m_honorRolloverTime;
@@ -1792,8 +1784,16 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// PVP Stuff                                                            //
 	//////////////////////////////////////////////////////////////////////////
-	
 	uint32 m_pvpTimer;
+
+	ARCTIC_INLINE void AddCoins( int32 coins )
+	{ 
+		ModUnsigned32Value( PLAYER_FIELD_COINAGE , coins );
+	}
+	ARCTIC_INLINE void TakeCoins( int32 coins )
+	{ 
+		ModUnsigned32Value(PLAYER_FIELD_COINAGE, -coins);
+	}
 
 	// Do this on /pvp off
 	ARCTIC_INLINE void ResetPvPTimer();
@@ -1806,20 +1806,6 @@ public:
 	void UpdatePvPArea();
 	// PvP Toggle (called on /pvp)
 	void PvPToggle();
-
-	/////////////////////////////////////////////////////////////////////////////////////
-	// void HandleSpellLoot( uint32 itemid )                                           //
-	//  Generates loot for the spell loot item (clams for example),                    //
-	//  then adds the generated loot to the Player                                     //
-	//                                                                                 //
-	// Parameters:                                                                     //
-	//  uint32 itemid - unique numerical identifier of the item the Player is looting  //
-	//                                                                                 //
-	// Return Value:                                                                   //
-	//  None.                                                                          //
-	/////////////////////////////////////////////////////////////////////////////////////
-
-	void HandleSpellLoot( uint32 itemid );
 
 	ARCTIC_INLINE uint32 LastHonorResetTime() const { return m_lastHonorResetTime; }
 	ARCTIC_INLINE void LastHonorResetTime(uint32 val) { m_lastHonorResetTime = val; }
@@ -1842,6 +1828,7 @@ public:
 	stringstream LoadAuras;
 	bool resend_speed;
 	bool rename_pending;
+	bool m_XPoff;
 	bool customizable;
 	uint32 iInstanceType;
 	uint32 iRaidType;
@@ -1907,7 +1894,7 @@ public:
 
 	void RemoteRevive()
 	{
-		ResurrectPlayer(NULLPLR);
+		ResurrectPlayer();
 		SetMovement(MOVE_UNROOT, 5);
 		SetPlayerSpeed(RUN, (float)7);
 		SetPlayerSpeed(SWIM, (float)4.9);
@@ -1922,7 +1909,7 @@ public:
 
 	LocationVector m_last_group_position;
 	int32 m_rap_mod_pct;
-	void SummonRequest(uint32 Requestor, uint32 ZoneID, uint32 MapID, uint32 InstanceID, const LocationVector & Position);
+	void SummonRequest(Object* Requestor, uint32 ZoneID, uint32 MapID, uint32 InstanceID, const LocationVector & Position);
 	uint8 m_lastMoveType;
 #ifdef OPTIMIZED_PLAYER_SAVING
 	void save_LevelXP();
@@ -2001,7 +1988,7 @@ protected:
 	LocationVector m_summonPos;
 	uint32 m_summonInstanceId;
 	uint32 m_summonMapId;
-	uint32 m_summoner;
+	Object* m_summoner;
 
 	uint32 iActivePet;
 	void _SetCreateBits(UpdateMask *updateMask, Player* target) const;
@@ -2038,11 +2025,13 @@ protected:
 	void _SaveGlyphsToDB(QueryBuffer * buf);
 
 	void _LoadPet(QueryResult * result);
+
+	void _LoadPetActionBar(QueryResult * result);
 	void _LoadPetNo();
 	void _LoadPetSpells(QueryResult * result);
 	void _SavePet(QueryBuffer * buf);
 	void _SavePetSpells(QueryBuffer * buf);
-	void _ApplyItemMods( Item* item, int8 slot, bool apply, bool justdrokedown = false, bool skip_stat_apply = false );
+	void _ApplyItemMods( Item* item, int16 slot, bool apply, bool justdrokedown = false, bool skip_stat_apply = false );
 	void _EventAttack( bool offhand );
 	void _EventExploration();
 
@@ -2050,39 +2039,36 @@ protected:
 	void SetNoseLevel();
 
 	//////////////////////////////////////////////////////////////////////////
-	// Trade																//
+	// Trade                                                                //
 	//////////////////////////////////////////////////////////////////////////
-	
 	Item* mTradeItems[7];
 	uint32 mTradeGold;
 	uint32 mTradeTarget;
 	uint32 mTradeStatus;
 	uint32 m_tradeSequence;
 
-    //////////////////////////////////////////////////////////////////////////
-    // Player Class systems, info and misc things                           //
-    //////////////////////////////////////////////////////////////////////////
-	
-    PlayerCreateInfo *info;
-	uint32  m_AttackMsgTimer;    // "too far away" and "wrong facing" timer
-	bool  m_attacking;
-	std::string m_name;          // max 21 character name
-	uint32  m_Tutorials[8];
-	int32			m_DancingRuneWeaponBonus;
-	Creature* m_DancingRuneWeapon;
+	//////////////////////////////////////////////////////////////////////////
+	// Player Class systems, info and misc things                           //
+	//////////////////////////////////////////////////////////////////////////
 
-    // Character Ban
-	uint32  m_banned;
-	string  m_banreason;
-	uint32  m_AreaID;
+	PlayerCreateInfo *info;
+	uint32 m_AttackMsgTimer; // "too far away" and "wrong facing" timer
+	bool m_attacking;
+	std::string m_name;      // max 21 character name
+	uint32 m_Tutorials[8];
+
+	// Character Ban
+	uint32 m_banned;
+	string m_banreason;
+	uint32 m_AreaID;
 	AreaTable  *m_areaDBC;
-	Pet*  m_Summon;
-	uint32  m_PetNumberMax;
+	Pet* m_Summon;
+	uint32 m_PetNumberMax;
 	std::map<uint32, PlayerPet*> m_Pets;
 	
-    uint32  m_invitersGuid; // It is guild inviters guid ,0 when its not used
+	uint32 m_invitersGuid; // It is guild inviters guid ,0 when its not used
 
-    // bind
+	// bind
 	float m_bind_pos_x;
 	float m_bind_pos_y;
 	float m_bind_pos_z;
@@ -2137,17 +2123,17 @@ protected:
 	uint32 m_GroupInviter;
 	uint8 m_StableSlotCount;
 
-    // Fishing related
+	// Fishing related
 	Object* m_SummonedObject;
 
-    // other system
+	// other system
 	Corpse* myCorpse;
 
 	uint32 m_lastHonorResetTime;
 	uint32 _fields[PLAYER_END];
 	uint32 trigger_on_stun;        // bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
 	uint32 trigger_on_stun_chance; // also using this for mage "Frostbite" talent
-	int hearth_of_wild_pct;		   // druid hearth of wild talent used on shapeshifting. We eighter know what is last talent level or memo on learn
+	int hearth_of_wild_pct;        // druid hearth of wild talent used on shapeshifting. We eighter know what is last talent level or memo on learn
 
 	uint32 m_team;
 	float m_lastRunSpeed;
@@ -2183,6 +2169,7 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 	// SOCIAL                                                               //
 	//////////////////////////////////////////////////////////////////////////
+
 private:
 	// we may have multiple threads on this(chat).
 	Mutex m_socialLock;
@@ -2214,7 +2201,7 @@ public:
 	PlayerInfo * m_playerInfo;
 	uint32 m_skipCastCheck[3];  // spell group relation of spell types that should ignore some cancast checks
 	bool m_castFilterEnabled;
-	uint32 m_castFilter[3];	    // spell group relation of only spells that player can currently cast 
+	uint32 m_castFilter[3]; // spell group relation of only spells that player can currently cast 
 
 	uint32 m_vampiricEmbrace;
 	void VampiricSpell(uint32 dmg, Unit* pTarget, SpellEntry *spellinfo);
@@ -2235,10 +2222,12 @@ public:
 	{
 		if(title < 1 || title > TITLE_END)
 			return false;  // Title doesn't exist
-		if(title < 64)
-			return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES ) & uint64(1) << title ) != (uint64) 0;
-		else
+		if(title > 127)
+			return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES2 ) & uint64(1) << (title - 128) ) != (uint64) 0;
+		else if(title > 63)
 			return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES1 ) & uint64(1) << (title - 64) ) != (uint64) 0;
+		else
+			return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES ) & uint64(1) << title ) != (uint64) 0;
 	}
 
 	void SetKnownTitle( int32 title, bool set );
@@ -2289,7 +2278,9 @@ public:
 	uint32 m_deathRuneMasteryChance;
 
 	// Equipment Sets
+	EquipmentSets m_EquipmentSets;
 	void SendEquipmentSets();
+	void SetEquipmentSet(uint32 index, EquipmentSet eqset);
 	void DeleteEquipmentSet(uint64 setGuid);
 	void _LoadEquipmentSets(QueryResult *result);
 	void _SaveEquipmentSets();
@@ -2298,9 +2289,11 @@ private:
 	// Stuff for "Talent Inspect"
 	#define TALENT_INSPECT_BYTES 71
 	uint8 m_talentInspectBuffer[TALENT_INSPECT_BYTES];
-	bool SetTaximaskNode(uint32 nodeidx); 
-
+	void SetTaximaskNode(uint32 nodeidx, bool UnSet = false);
 public:
+	void AddTaximaskNode(uint32 nodeidx){SetTaximaskNode(nodeidx, false);}
+	void RemoveTaximaskNode(uint32 nodeidx){SetTaximaskNode(nodeidx, true);}
+
 	ARCTIC_INLINE const uint8 *GetTalentInspectBuffer() { return m_talentInspectBuffer; }
 	void UpdateTalentInspectBuffer();
 	static void InitializeTalentInspectSupport();
@@ -2356,7 +2349,7 @@ public:
 		++m_itr;
 	}
 
-	ARCTIC_INLINE PlayerSkill* Grab() { return &m_itr -> second; }
+	ARCTIC_INLINE PlayerSkill* Grab() { return &m_itr->second; }
 	ARCTIC_INLINE bool End() { return (m_itr == m_endItr)?true:false; }
 };
 
