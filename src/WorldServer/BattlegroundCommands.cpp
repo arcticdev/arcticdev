@@ -8,6 +8,7 @@
 
 bool ChatHandler::HandleSetBGScoreCommand(const char* args, WorldSession *m_session)
 {
+	SystemMessage(m_session, "Command not yet implemented.");
 	return true;
 }
 
@@ -23,11 +24,13 @@ bool ChatHandler::HandleStartBGCommand(const char *args, WorldSession *m_session
 
 bool ChatHandler::HandlePauseBGCommand(const char *args, WorldSession *m_session)
 {
+	SystemMessage(m_session, "Command not yet implemented.");
 	return true;
 }
 
 bool ChatHandler::HandleBGInfoCommnad(const char *args, WorldSession *m_session)
 {
+	SystemMessage(m_session, "Command not yet implemented.");
 	return true;
 }
 
@@ -51,12 +54,13 @@ bool ChatHandler::HandleSetWorldStateCommand(const char* args, WorldSession *m_s
 
 	m_session->GetPlayer()->GetMapMgr()->GetStateManager().CreateWorldState(id, val);
 	m_session->GetPlayer()->GetMapMgr()->GetStateManager().UpdateWorldState(id, val);
-	
+
 	return true;
 }
 
 bool ChatHandler::HandlePlaySoundCommand(const char* args, WorldSession *m_session)
 {
+	SystemMessage(m_session, "Command not yet implemented.");
 	return true;
 }
 
@@ -69,6 +73,17 @@ bool ChatHandler::HandleSetBattlefieldStatusCommand(const char* args, WorldSessi
 
 bool ChatHandler::HandleBattlegroundExitCommand(const char* args, WorldSession* m_session)
 {
+	Player* plr = getSelectedChar(m_session, false);
+	if(plr==NULL)
+	{
+		if(m_session->GetPlayer()!= NULL)
+			plr = m_session->GetPlayer();
+	}
+	if(plr==NULL)
+		return true;
+
+	if(plr->m_bg && plr->IsInWorld())
+		plr->m_bg->RemovePlayer(plr, false);
 	return true;
 }
 

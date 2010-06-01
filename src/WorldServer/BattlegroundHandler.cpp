@@ -59,9 +59,6 @@ void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 
 	recv_data >> battlegroundType >> requestType >> unk1;
 
-	// if( GetPlayer()->HasBGQueueSlotOfType(type) == 4)
-	// return;
-	
 	BattlegroundManager.HandleBattlegroundListPacket(this, battlegroundType, false);
 }
 
@@ -327,7 +324,7 @@ void WorldSession::HandleInspectHonorStatsOpcode( WorldPacket &recv_data )
 	data << player->GetUInt32Value( PLAYER_FIELD_KILLS );
 	data << player->GetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION );
 	data << player->GetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION );
-	data << player->GetUInt32Value( PLAYER_FIELD_LIFETIME_HONORBALE_KILLS );
+	data << player->GetUInt32Value( PLAYER_FIELD_LIFETIME_HONORABLE_KILLS );
 
 	SendPacket( &data );
 }
@@ -347,7 +344,7 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
 	ArenaTeam *team;
 	uint32 i;
 
-	for( i = 0; i < 3; i++ )
+	for( i = 0; i < 3; ++i )
 	{
 		team = player->m_playerInfo->arenaTeam[i];
 		if( team != NULL )

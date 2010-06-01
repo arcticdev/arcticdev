@@ -80,8 +80,8 @@ const static CreateBattlegroundFunc BGCFuncs[BATTLEGROUND_NUM_TYPES] =
 	NULL,							// Non existant.
 	NULL,							// Non existant.
 	NULL,							// Non existant.
-	&IsleOfConquest::Create,		// IOC
-	NULL,							// Non existant.
+	// &IsleOfConquest::Create,		// IOC
+	// NULL,						// Non existant.
 	NULL,							// Random
 };
 
