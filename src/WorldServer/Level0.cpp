@@ -122,11 +122,6 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 	if(count)
 		output += "\n";
 
-
-		// FillSystemMessageData(&data, table[i].Name);
-		// m_session->SendPacket(&data);
-		// }
-
 	SendMultilineMessage(m_session, output.c_str());
 
 	return true;
@@ -268,7 +263,6 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 		BlueSystemMessage(m_session, "Unit has been dismounted.");
 	}
 	return true;
-
 }
 
 bool ChatHandler::HandleFullDismountCommand(const char * args, WorldSession *m_session)
@@ -389,7 +383,7 @@ bool ChatHandler::HandleGmLogCommentCommand( const char *args , WorldSession *m_
 
 bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_session )
 {
-	m_session->SystemMessage("Ratings!!!");
+	m_session->SystemMessage("Ratings...");
 	Player* m_plyr = getSelectedChar(m_session, false);
 	for( uint32 i = 0; i < 24; ++i )
 	{

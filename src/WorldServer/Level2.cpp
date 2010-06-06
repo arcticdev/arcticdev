@@ -373,7 +373,6 @@ bool ChatHandler::HandleSaveAllCommand(const char *args, WorldSession *m_session
 	sWorld.SendWorldText(msg);
 	sWorld.SendWorldWideScreenText(msg);
 	sGMLog.writefromsession(m_session, "saved all players");
-	//sWorld.SendIRCMessage(msg);
 	return true;
 }
 
@@ -396,7 +395,6 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		sGMLog.writefromsession(m_session, "used kill command on CREATURE %s", TO_CREATURE( target )->GetCreatureInfo() ? TO_CREATURE( target )->GetCreatureInfo()->Name : "unknown");
 		break;
 	}
-	
 
 	// If we're killing a player, send a message indicating a gm killed them.
 	if(target->IsPlayer())
@@ -407,7 +405,6 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 	}
 	else
 	{
-
 		// Cast insta-kill.
 		SpellEntry * se = dbcSpell.LookupEntry(5);
 		if(se == 0) return false;
@@ -415,15 +412,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		SpellCastTargets targets(target->GetGUID());
 		Spell* sp(new Spell(m_session->GetPlayer(), se, true, NULLAURA));
 		sp->prepare(&targets);
-
-/*		SpellEntry * se = dbcSpell.LookupEntry(20479);
-		if(se == 0) return false;
-		
-		SpellCastTargets targets(target->GetGUID());
-		Spell* sp(new Spell(target, se, true, NULLAURA));
-		sp->prepare(&targets);*/
 	}
-
 	return true;
 }
 
@@ -533,7 +522,6 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	data << uint32(0);
 	data << uint16(2);
 	data << target->GetGUID();
-	// WPAssert(data.size() == 36);
 	m_session->SendPacket( &data );
 
 	data.Initialize( SMSG_SPELL_GO );
@@ -545,7 +533,6 @@ bool ChatHandler::HandleCastSpellNECommand(const char* args, WorldSession *m_ses
 	data << uint8(0);
 	data << uint16(2);
 	data << target->GetGUID();
-	//		WPAssert(data.size() == 42);
 	m_session->SendPacket( &data );
 	return true;
 }
@@ -599,7 +586,6 @@ bool ChatHandler::HandleMonsterYellCommand(const char* args, WorldSession *m_ses
 
 	return true;
 }
-
 
 bool ChatHandler::HandleGOSelect(const char *args, WorldSession *m_session)
 {
@@ -1005,8 +991,7 @@ bool ChatHandler::HandleMountCommand(const char *args, WorldSession *m_session)
 	}
 
 	m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , modelid);
-	//m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
-	
+
 	BlueSystemMessage(m_session, "Now mounted with model %d.", modelid);
 	return true;
 }
@@ -1061,8 +1046,8 @@ bool ChatHandler::HandleAddAIAgentCommand(const char* args, WorldSession *m_sess
 	sp->floatMisc1 = (float)atof(floatMisc1);
 	sp->Misc2 = (uint32)atof(Misc2);
 	sp->cooldown = (uint32)atoi(spellCooldown);
-	sp->procCounter=0;
-	sp->cooldowntime=0;
+	sp->procCounter = 0;
+	sp->cooldowntime = 0;
 	sp->custom_pointer=false;
 	sp->minrange = GetMinRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
 	sp->maxrange = GetMaxRange(dbcSpellRange.LookupEntry(dbcSpell.LookupEntry(atoi(spellId))->rangeIndex));
@@ -1185,8 +1170,8 @@ bool ChatHandler::HandleItemSetCommand(const char* args, WorldSession *m_session
 	if(pamount)
 		amount = atoi(pamount);
 
-//	For Regular additem, not set.
-//	ItemPrototype* tmpItem = ItemPrototypeStorage.LookupEntry(item);   
+	// For Regular additem, not set.
+	// ItemPrototype* tmpItem = ItemPrototypeStorage.LookupEntry(item);   
 	ItemSetEntry* tmpItem = dbcItemSet.LookupEntry(item);
 
 	std::list<ItemPrototype*>* l = objmgr.GetListForItemSet(item);

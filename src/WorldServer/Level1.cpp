@@ -7,7 +7,7 @@
 #include "StdAfx.h"
  
 //////////////////////////////////////////////////////////////////////////
-//  GM Chat Commands                                                    //
+// GM Chat Commands                                                     //
 //////////////////////////////////////////////////////////////////////////
 
 bool ChatHandler::HandleAnnounceCommand(const char* args, WorldSession *m_session)
@@ -360,7 +360,6 @@ bool ChatHandler::HandleTaxiCheatCommand(const char* args, WorldSession *m_sessi
 			m_session->GetPlayer()->SetTaximask(i, 0);
 		}
 	}
-
 	return true;
 }
 
@@ -390,12 +389,16 @@ bool ChatHandler::HandleModifySpeedCommand(const char* args, WorldSession *m_ses
 	if(chr != m_session->GetPlayer())
 	{
 		BlueSystemMessage(m_session, "You set the speed of %s to %2.2f.", chr->GetName(), Speed);
-		SystemMessage(chr->GetSession(), "%s set your speed to %2.2f.", m_session->GetPlayer()->GetName(), Speed);	}	else		BlueSystemMessage(m_session, "Speed set to %2.2f.", Speed);
-	chr->SetPlayerSpeed(RUN, Speed);
-	chr->SetPlayerSpeed(SWIM, Speed);
-	chr->SetPlayerSpeed(RUNBACK, (Speed * 0.5));
-	chr->SetPlayerSpeed(FLY, Speed);
+		SystemMessage(chr->GetSession(), "%s set your speed to %2.2f.", m_session->GetPlayer()->GetName(), Speed);
 
+	else
+	{
+		BlueSystemMessage(m_session, "Speed set to %2.2f.", Speed);
+		chr->SetPlayerSpeed(RUN, Speed);
+		chr->SetPlayerSpeed(SWIM, Speed);
+		chr->SetPlayerSpeed(RUNBACK, (Speed * 0.5));
+		chr->SetPlayerSpeed(FLY, Speed);
+	}
 	return true;
 }
 
@@ -418,7 +421,9 @@ bool ChatHandler::HandleLearnSkillCommand(const char *args, WorldSession *m_sess
 		char *pMax = strtok(NULL, "\n");
 		if(pMax)
 			max = atol(pMax);
-	} else {
+	}
+	else
+	{
 		return false;
 	}
 
@@ -469,7 +474,6 @@ bool ChatHandler::HandleModifySkillCommand(const char *args, WorldSession *m_ses
 	return true;
 }
 
-// DGM: Get skill level command for getting information about a skill
 bool ChatHandler::HandleGetSkillLevelCommand(const char *args, WorldSession *m_session)
 {
 	uint32 skill = 0;
@@ -490,7 +494,7 @@ bool ChatHandler::HandleGetSkillLevelCommand(const char *args, WorldSession *m_s
 
 	char * SkillName = SkillNameManager->SkillNames[skill];
 
-	if (SkillName==0)
+	if (SkillName == 0)
 	{
 		BlueSystemMessage(m_session, "Skill: %u does not exists", skill);
 		return false;
@@ -539,10 +543,8 @@ bool ChatHandler::HandleGetSkillsInfoCommand(const char *args, WorldSession *m_s
 			BlueSystemMessage(m_session, "  %s: Value: %u, MaxValue: %u. (+ %d bonus)", SkillName, nobonus,max, bonus);
 		}
 	}
-
 	return true;
 }
-
 
 bool ChatHandler::HandleRemoveSkillCommand(const char *args, WorldSession *m_session)
 {
@@ -561,7 +563,6 @@ bool ChatHandler::HandleRemoveSkillCommand(const char *args, WorldSession *m_ses
 	SystemMessageToPlr(plr, "%s removed skill line %d from you. ", m_session->GetPlayer()->GetName(), skill);
 	return true;
 }
-
 
 bool ChatHandler::HandleEmoteCommand(const char* args, WorldSession *m_session)
 {
@@ -603,9 +604,6 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 
 	int32 total = atoi( (char*)args );
 
-	// gold = total / 10000;
-	// silver = (total / 100) % 100;
-	// copper = total % 100;
 	uint32 gold = (uint32) floor( (float)int32abs( total ) / 10000.0f );
 	uint32 silver = (uint32) floor( ((float)int32abs( total ) / 100.0f) ) % 100;
 	uint32 copper = int32abs2uint32( total ) % 100;
@@ -622,7 +620,8 @@ bool ChatHandler::HandleModifyGoldCommand(const char* args, WorldSession *m_sess
 	}
 	else
 	{
-		if(total >= 0) {
+		if(total >= 0) 
+		{
 			BlueSystemMessage( m_session,
 				"Adding %u gold, %u silver, %u copper to %s's backpack...",
 				gold, silver, copper,

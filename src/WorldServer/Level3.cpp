@@ -632,7 +632,6 @@ bool ChatHandler::HandleIncreaseWeaponSkill(const char *args, WorldSession *m_se
 	return true;
 }
 
-
 bool ChatHandler::HandleResetTalentsCommand(const char* args, WorldSession *m_session)
 {
 	Player* plr = this->getSelectedChar(m_session);
@@ -713,11 +712,6 @@ bool ChatHandler::HandleAccountBannedCommand(const char * args, WorldSession * m
 
 	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
 
-	/*stringstream my_sql;
-	my_sql << "UPDATE accounts SET banned = " << banned << " WHERE login = '" << CharacterDatabase.EscapeString(string(pAccount)) << "'";
-
-	sLogonCommHandler.LogonDatabaseSQLExecute(my_sql.str().c_str());
-	sLogonCommHandler.LogonDatabaseReloadAccounts();*/
 	sLogonCommHandler.Account_SetBanned(pAccount, banned, pReason);
 
 	GreenSystemMessage(m_session, "Account '%s' has been banned %s%s. The change will be effective immediately.", pAccount,
@@ -780,7 +774,6 @@ bool ChatHandler::HandleAccountUnmuteCommand(const char * args, WorldSession * m
 
 bool ChatHandler::HandleGetTransporterTime(const char* args, WorldSession* m_session)
 {
-	//Player* plyr = m_session->GetPlayer();
 	Creature* crt = getSelectedCreature(m_session, false);
 	if( crt == NULL )
 		return false;
@@ -831,8 +824,6 @@ bool ChatHandler::HandleRemoveRessurectionSickessAuraCommand(const char *args, W
 
 bool ChatHandler::HandleParalyzeCommand(const char* args, WorldSession *m_session)
 {
-	// Player* plr = getSelectedChar(m_session, true);
-	// if(!plr) return false;
 	Unit* plr = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
 	if(!plr || plr->GetTypeId() != TYPEID_PLAYER)
 	{
@@ -853,8 +844,6 @@ bool ChatHandler::HandleParalyzeCommand(const char* args, WorldSession *m_sessio
 
 bool ChatHandler::HandleUnParalyzeCommand(const char* args, WorldSession *m_session)
 {
-	// Player* plr = getSelectedChar(m_session, true);
-	// if(!plr) return false;
 	Unit* plr = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
 	if(!plr || plr->GetTypeId() != TYPEID_PLAYER)
 	{
@@ -1013,6 +1002,7 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 	if(!plyr) return true;
 
 	uint32 active = 0, inactive = 0;
+
 #define print_cheat_status(CheatName, CheatVariable) SystemMessage(m_session, "%s%s: %s%s", MSG_COLOR_LIGHTBLUE, CheatName, \
 		CheatVariable ? MSG_COLOR_LIGHTRED : MSG_COLOR_GREEN, CheatVariable ? "Active" : "Inactive");  \
 		if(CheatVariable) \
@@ -1292,14 +1282,14 @@ bool ChatHandler::HandleCreatePetCommand(const char* args, WorldSession* m_sessi
 
 
 #ifdef USE_SPECIFIC_AIAGENTS
-//this is custom stuff !
+// this is custom stuff !
 bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 {
 	if (!*args)
 		return false;
 
 	if( !m_session->GetPlayer() )
-		return false; //wtf ?
+		return false; // wtf ?
 
 	uint32 botprice = m_session->GetPlayer()->GetUInt32Value(UNIT_FIELD_LEVEL)*10000; //1 gold per level ?
 
@@ -1342,7 +1332,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 	Player* plr = m_session->GetPlayer();
 
 	// spawn a creature of this id to create from
-	Creature* pCreature = new Creature(HIGHGUID_UNIT ,1);//no need in guid
+	Creature* pCreature = new Creature(HIGHGUID_UNIT ,1); // no need in guid
 	CreatureSpawn * sp = new CreatureSpawn;
 	sp->id = 1;
 	sp->bytes = 0;
@@ -1359,7 +1349,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 	sp->x = plr->GetPositionX();
 	sp->y = plr->GetPositionY();
 	sp->respawnNpcLink = 0;
-	sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
+	sp->channel_spell = sp->channel_target_creature=sp->channel_target_go=0;
 	pCreature->Load(sp, (uint32)NULL, NULL);
 
 	Pet *old_tame = plr->GetSummon();
@@ -1373,7 +1363,7 @@ bool ChatHandler::HandlePetSpawnAIBot(const char* args, WorldSession *m_session)
 	pPet->SetInstanceID(plr->GetInstanceID());
 	pPet->SetMapId(plr->GetMapId());
 
-	pPet->SetFloatValue ( OBJECT_FIELD_SCALE_X, pTemplate->Scale / 2); //we do not wish to block visualy other players
+	pPet->SetFloatValue ( OBJECT_FIELD_SCALE_X, pTemplate->Scale / 2); // we do not wish to block visualy other players
 	AiAgentHealSupport *new_interface = new AiAgentHealSupport;
 	pPet->ReplaceAIInterface( (AIInterface *) new_interface );
 
@@ -1612,14 +1602,12 @@ bool ChatHandler::HandleMassSummonCommand(const char* args, WorldSession* m_sess
 	objmgr._playerslock.AcquireReadLock();
 	Player* summoner = m_session->GetPlayer();
 	Player* plr;
-	uint32 c=0;
+	uint32 c = 0;
 	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		plr = itr->second;
 		if(plr->GetSession() && plr->IsInWorld())
 		{
-			//plr->SafeTeleport(summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
-			/* let's do this the blizz way */
 			plr->SummonRequest(summoner, summoner->GetZoneId(), summoner->GetMapId(), summoner->GetInstanceID(), summoner->GetPosition());
 			++c;
 		}
@@ -1857,7 +1845,7 @@ bool ChatHandler::HandleResetSkillsCommand(const char* args, WorldSession * m_se
 		if(se->type != SKILL_TYPE_LANGUAGE && ss->skillid && ss->currentval && ss->maxval)
 			plr->_AddSkillLine(ss->skillid, ss->currentval, ss->maxval);
 	}
-	//Chances depend on stats must be in this order!
+	// Chances depend on stats must be in this order!
 	plr->UpdateStats();
 	plr->UpdateChances();
 	plr->_UpdateMaxSkillCounts();
@@ -1895,7 +1883,7 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	}
 	WorldSession* sess = plr->GetSession();
 
-//	char* infos = new char[128];
+	// char* infos = new char[128];
 	static const char* classes[12] =
 	{"None","Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Death Knight", "Shaman", "Mage", "Warlock", "None", "Druid"};
 	static const char* races[12] =
@@ -2025,11 +2013,11 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 			|| o1 > 255 || o2 > 255 || o3 > 255 || o4 > 255)
 	{
 		RedSystemMessage(m_session, "Invalid IPv4 address [%s]", pIp);
-		return true;	// error in syntax, but we wont remind client of command usage
+		return true; // error in syntax, but we wont remind client of command usage
 	}
 
 	time_t expire_time;
-	if ( timeperiod == 0)		// permanent ban
+	if ( timeperiod == 0) // permanent ban
 		expire_time = 0;
 	else
 		expire_time = UNIXTIME + (time_t)timeperiod;
@@ -2043,13 +2031,13 @@ bool ChatHandler::HandleIPBanCommand(const char * args, WorldSession * m_session
 
 bool ChatHandler::HandleIPUnBanCommand(const char * args, WorldSession * m_session)
 {
-	char ip[16] = {0};		// IPv4 address
+	char ip[16] = {0}; // IPv4 address
 
 	// we require at least one argument, the network address to unban
 	if ( sscanf(args, "%15s", ip) < 1)
 		return false;
 
-	/**
+	/*
 	 * We can afford to be less fussy with the validty of the IP address given since
 	 * we are only attempting to remove it.
 	 * Sadly, we can only blindly execute SQL statements on the logonserver so we have
@@ -2107,8 +2095,7 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 			return true;
 		}
 	}
-	// VehicleEntry * ve = dbcVehicle.LookupEntry( proto->vehicle_entry );
-	// bool spVehicle = (ve && proto->vehicle_entry > 0) ? true : false;
+
 	bool spVehicle = proto->vehicle_entry > 0 ? true : false;
 
 	Creature* p = NULLCREATURE;
@@ -2127,7 +2114,6 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	if( save )
 	{
 		sp = new CreatureSpawn;
-		// sp->displayid = info->DisplayID;
 		info->GenerateModelId(&sp->displayid);
 		sp->entry = entry;
 		sp->form = 0;
@@ -2143,7 +2129,6 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 		sp->bytes = 0;
 		sp->bytes1 = 0;
 		sp->bytes2 = 0;
-		// sp->respawnNpcLink = 0;
 		sp->stand_state = 0;
 		sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
 		sp->MountedDisplayID = 0;
@@ -2221,7 +2206,7 @@ bool ChatHandler::HandleRemoveItemCommand(const char * args, WorldSession * m_se
 	if(count > start_count)
 		count = start_count;
 
-	while(start_count >= count && (count > 0) && loop_count < 20)	 // Prevent a loop here.
+	while(start_count >= count && (count > 0) && loop_count < 20) // Prevent a loop here.
 	{
 		plr->GetItemInterface()->RemoveItemAmt(item_id, count);
 		start_count2 = plr->GetItemInterface()->GetItemCount(item_id, true);
@@ -2903,12 +2888,12 @@ bool ChatHandler::HandleCreateArenaTeamCommands(const char * args, WorldSession 
 	}
 
 	ArenaTeam * t = new ArenaTeam(real_type,objmgr.GenerateArenaTeamId());
-	t->m_emblemStyle=22;
-	t->m_emblemColour=4292133532UL;
-	t->m_borderColour=4294931722UL;
-	t->m_borderStyle=1;
-	t->m_backgroundColour=4284906803UL;
-	t->m_leader=plr->GetLowGUID();
+	t->m_emblemStyle = 22;
+	t->m_emblemColour = 4292133532UL;
+	t->m_borderColour = 4294931722UL;
+	t->m_borderStyle = 1;
+	t->m_backgroundColour = 4284906803UL;
+	t->m_leader = plr->GetLowGUID();
 	t->m_name = string(name);
 	t->AddMember(plr->m_playerInfo);
 	objmgr.AddArenaTeam(t);
@@ -2927,7 +2912,7 @@ bool ChatHandler::HandleWhisperBlockCommand(const char * args, WorldSession * m_
 
 bool ChatHandler::HandleDispelAllCommand(const char * args, WorldSession * m_session)
 {
-	uint32 pos=0;
+	uint32 pos = 0;
 	if(*args)
 		pos=atoi(args);
 
