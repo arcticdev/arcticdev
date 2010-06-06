@@ -14,11 +14,11 @@ class Spell;
 #define GEM_YELLOW_SOCKET            4
 #define GEM_BLUE_SOCKET              8
 
-#define MAX_INVENTORY_SLOT         118
+#define MAX_INVENTORY_SLOT         150
 #define MAX_BUYBACK_SLOT            12
 
 // works for all kind of slots now..
-#define ITEM_NO_SLOT_AVAILABLE      -1 
+#define ITEM_NO_SLOT_AVAILABLE      -1
 #define INVENTORY_SLOT_NOT_SET      -1
 
 #define EQUIPMENT_SLOT_START         0
@@ -312,8 +312,7 @@ enum ITEM_STAT_TYPE
 	HEALTH_REGEN = 46,
 	SPELL_PENETRATION = 47,
 	BLOCK_VALUE = 48,
-
-	};
+};
 
 enum ITEM_DAMAGE_TYPE
 {
@@ -606,12 +605,6 @@ enum SOCKET_GEM_COLOR
 	BLUE_SOCKET = 8
 };
 
-enum ITEM_LIMIT_FLAGS 
-{ 
-	ILFLAG_NONE = 0, 
-	ILFLAG_EQUIP_ONLY = 1, 
-}; 
-
 #pragma pack(push,1)
 
 struct SocketInfo 
@@ -648,11 +641,11 @@ struct ItemPrototype
 	uint32 ItemId;
 	uint32 Class;
 	uint32 SubClass;
-	uint32 unknown_bc;
+	int32 unknown_bc;
 	char * Name1;
-	char * Name2;
-	char * Name3;
-	char * Name4;
+	// char * Name2;
+	// char * Name3;
+	// char * Name4;
 	uint32 DisplayInfoID;
 	uint32 Quality;
 	uint32 Flags;
@@ -674,7 +667,7 @@ struct ItemPrototype
 	uint32 MaxCount;
 	uint32 ContainerSlots;
 	ItemStat Stats[10];
-	ItemDamage Damage[5];
+	ItemDamage Damage[2];
 	uint32 Armor;
 	uint32 HolyRes;
 	uint32 FireRes;
@@ -708,11 +701,12 @@ struct ItemPrototype
 	uint32 SocketBonus;
 	uint32 GemProperties;
 	int32 DisenchantReqSkill;
+	int32 Lootgold;
 	uint32 ArmorDamageModifier;
-	uint32 Faction; // schnek: 3.2
+	/*uint32 Faction; // schnek: 3.2
 	uint32 ExistingDuration;
 	uint32 ItemLimitCategory;
-	uint32 HolidayId; // schnek: HolidayNames.dbc 
+	uint32 HolidayId; // schnek: HolidayNames.dbc */
 
 	string lowercase_name; // used in auctions
 	uint32 FoodType; // pet food type
@@ -721,6 +715,8 @@ struct ItemPrototype
 
 	string ConstructItemLink(uint32 random_prop, uint32 random_suffix, uint32 stack);
 	bool ValidateItemLink(const char *szLink);
+
+	bool ValidateItemSpell(uint32 SpellID);
 };
 
 typedef struct 

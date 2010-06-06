@@ -3,7 +3,7 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
 #include "StdAfx.h"
 
 Item::Item() // this is called when constructing as container
@@ -147,10 +147,10 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	else if( random_suffix )
 		SetRandomSuffix( random_suffix );
 
-	SetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32());
+	SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32() );
 
-	SetUInt32Value(ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability);
-	SetUInt32Value(ITEM_FIELD_DURABILITY, fields[12].GetUInt32());
+	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability );
+	SetUInt32Value( ITEM_FIELD_DURABILITY, fields[12].GetUInt32() );
 
 	if( light )
 		return;
@@ -512,10 +512,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	SetUInt32Value( EnchantBase + 2, 0 ); // charges
 
 	// Add it to our map.
-	if((int32)Enchantments.size()>Slot)
-		Enchantments[Slot] = Instance;
-	else
-		DEBUG_LOG("Error in item.cpp:%s (%d)", __FUNCTION__, __LINE__);
+	Enchantments[Slot] = Instance;
 
 	if( m_owner == NULL )
 		return Slot;
@@ -525,7 +522,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 	// Add the removal event.
 	if( Duration )
 	{
-		sEventMgr.AddEvent(TO_ITEM(this), &Item::RemoveEnchantment, uint32(Slot), EVENT_REMOVE_ENCHANTMENT1 + Slot, Duration * 1000, 1, 0);
+		sEventMgr.AddEvent( TO_ITEM(this), &Item::RemoveEnchantment, uint32(Slot), EVENT_REMOVE_ENCHANTMENT1 + Slot, Duration * 1000, 1, 0 );
 	}
 
 	// No need to send the log packet, if the owner isn't in world (we're still loading)
@@ -639,12 +636,10 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 						else
 							TS.weapon_damage_type = 0; // Doesn't depend on weapon
 						TS.procCharges = 0;
-
 						/* This needs to be modified based on the attack speed of the weapon.
 						 * Secondly, need to assign some static chance for instant attacks (ss,
 						 * gouge, etc.) 
 						 */
-						
 						if( !Entry->min[c] && GetProto()->Class == ITEM_CLASS_WEAPON )
 						{
 							float speed = (float)GetProto()->Delay;
@@ -772,7 +767,7 @@ void Item::ApplyEnchantmentBonus( uint32 Slot, bool Apply )
 					m_owner->UpdateStats();
 				}break;
 
-			case 6:	 // Rockbiter weapon (increase damage per second... how the hell do you calc that)
+			case 6: // Rockbiter weapon (increase damage per second... how the hell do you calc that)
 				{
 					if( Apply )
 					{
@@ -907,7 +902,8 @@ void Item::SendEnchantTimeUpdate( uint32 Slot, uint32 Duration )
 	 */
 
 	WorldPacket* data = NULL;
-	data = new WorldPacket(SMSG_ITEM_ENCHANT_TIME_UPDATE, 24 );	*data << GetGUID();
+	data = new WorldPacket(SMSG_ITEM_ENCHANT_TIME_UPDATE, 24 );
+	*data << GetGUID();
 	*data << Slot;
 	*data << Duration;
 	*data << m_owner->GetGUID();
@@ -990,9 +986,6 @@ bool Item::IsGemRelated( EnchantEntry* Enchantment )
 
 uint32 Item::GetSocketsCount()
 {
-	/*if(this->GetTypeId() == TYPEID_CONTAINER) // no sockets on containers.
-		return 0;*/
-
 	uint32 c = 0;
 	for( uint32 x = 0; x < 3; x++ )
 		if( GetProto()->Sockets[x].SocketColor )
@@ -1018,21 +1011,21 @@ uint32 Item::GenerateRandomSuffixFactor( ItemPrototype* m_itemProto )
 //////////////////////////////////////////////////////////////////////////
 static const char *g_itemQualityColours[15] = 
 {
-	"|cff9d9d9d", /* Grey */
-	"|cffffffff", /* White */
-	"|cff1eff00", /* Green */
-	"|cff0070dd", /* Blue */
-	"|cffa335ee", /* Purple */
-	"|cffff8000", /* Orange */
-	"|cffe6cc80", /* Artifact */
-	"|cffe5cc80", /* Heirloom */
-	"|cff00ffff", /* Turquoise */
-	"|cff00ffff",
-	"|cff00ffff",
-	"|cff00ffff",
-	"|cff00ffff",
-	"|cff00ffff",
-	"|cff00ffff",
+	"|cff9d9d9d",		// Grey
+	"|cffffffff",		// White
+	"|cff1eff00",		// Green
+	"|cff0070dd",		// Blue
+	"|cffa335ee",		// Purple
+	"|cffff8000",		// Orange
+	"|cffe6cc80",		// Artifact
+	"|cffe5cc80",		// Heirloom
+	"|cff00ffff",		// Turquoise
+	"|cff00ffff",		// Turquoise
+	"|cff00ffff",		// Turquoise
+	"|cff00ffff",		// Turquoise
+	"|cff00ffff",		// Turquoise
+	"|cff00ffff",		// Turquoise
+	"|cff00ffff",		// Turquoise
 };
 
 string ItemPrototype::ConstructItemLink(uint32 random_prop, uint32 random_suffix, uint32 stack)
@@ -1083,20 +1076,10 @@ bool ItemPrototype::ValidateItemLink(const char *szLink)
 	return true;
 }
 
-uint32 Item::CountGemsWithLimitId(uint32 LimitId) 
-{ 
-	uint32 result = 0; 
-	for( uint32 count = 0; count < GetSocketsCount(); count++ ) 
-	{
-		EnchantmentInstance* ei = GetEnchantment( 2 + count ); 
-		if (ei && ei->Enchantment->GemEntry ) 
-		{ 
-			ItemPrototype* ip = ItemPrototypeStorage.LookupEntry(ei->Enchantment->GemEntry); 
-			if( ip && ip->ItemLimitCategory == LimitId )
-			{
-				 result++; 
-			}
-		} 
-	} 
-	return result; 
+bool ItemPrototype::ValidateItemSpell(uint32 SpellId)
+{
+	for(uint8 i = 0; i < 5; ++i)
+		if(Spells[i].Id == SpellId)
+			return true;
+	return false;
 }

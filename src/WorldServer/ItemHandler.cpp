@@ -41,7 +41,7 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 	if( (i1 && i1->wrapped_item_id) || (i2 && i2->wrapped_item_id) || ( i1 && i1->GetProto()->MaxCount < 2 ) || ( i2 && i2->GetProto()->MaxCount < 2 ) || count < 1 )
 	{
 		GetPlayer()->GetItemInterface()->BuildInventoryChangeError(i1, i2, INV_ERR_ITEM_CANT_STACK);
-		return;
+        return;
 	}
 
 	if(i2) // smth already in this slot
@@ -393,7 +393,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 	
-	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, dstslot, srcitem, skip_combat ) ) )
+	if( ( error = _player->GetItemInterface()->CanEquipItemInSlot( INVENTORY_SLOT_NOT_SET, dstslot, srcitem->GetProto(), skip_combat ) ) )
 	{
 		if( dstslot < CURRENCYTOKEN_SLOT_END )
 		{
@@ -402,31 +402,9 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 		}
 	}
 
-	// extra check needed here for gems, because CanEquipInSlot does not pass enchantments, etc.
-	// src is the item we're equipping, dst is the item we're replacing
-	if( dstslot < EQUIPMENT_SLOT_END && srcitem->HasEnchantments() )
-	{
-		ItemPrototype * gemitm;
-		for( uint32 x = 2 ; x < 5 ; x ++ )
-		{
-			if( srcitem->GetEnchantment( x ) )
-			{
-				gemitm = ItemPrototypeStorage.LookupEntry( srcitem->GetEnchantment( x )->Enchantment->GemEntry );
-				if( !gemitm || ( gemitm && !( gemitm->Flags & ITEM_FLAG_UNIQUE_EQUIP ) ) )
-					continue; // baaad boy
-				if( _player->GetItemInterface()->HasGemEquipped( srcitem->GetEnchantment( x )->Enchantment->GemEntry , dstslot ) )
-				{
-					Log.Debug( "HandleSwapInvItemOpcode", "Testing gem %u on item %u", srcitem->GetEnchantment( x )->Enchantment->GemEntry , srcitem->GetProto()->ItemId );
-					_player->GetItemInterface()->BuildInventoryChangeError( srcitem, dstitem, INV_ERR_ITEM_MAX_COUNT_EQUIPPED_SOCKETED );
-					return;
-				}
-			}
-		}
-	}
-
 	if(dstitem)
 	{
-		if((error=_player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, srcslot, dstitem, skip_combat)))
+		if((error=_player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, srcslot, dstitem->GetProto(), skip_combat)))
 		{
 			if(srcslot < CURRENCYTOKEN_SLOT_END)
 			{
@@ -489,15 +467,16 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 2);
 	//Player* plyr = GetPlayer();
 
 	int8 SrcInvSlot, SrcSlot;
+	uint32 data;
 
-	recv_data >> SrcInvSlot >> SrcSlot;
+	recv_data >> SrcInvSlot >> SrcSlot >> data;
 
-	OUT_DEBUG("ITEM: destroy, SrcInv Slot: %i Src slot: %i", SrcInvSlot, SrcSlot);
+	OUT_DEBUG( "ITEM: destroy, SrcInv Slot: %i Src slot: %i", SrcInvSlot, SrcSlot );
 	Item* it = _player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 
 	if(it)
@@ -562,7 +541,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 
 		uint32 mail_id = it->GetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID);
 		if(mail_id)
-			_player->m_mailBox->OnMessageCopyDeleted(mail_id); 
+			_player->m_mailBox->OnMessageCopyDeleted(mail_id);
 		
 		Item* pItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot,false);
 		if(!pItem)
@@ -611,27 +590,6 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	// handle equipping of items which have unique-equipped gems
-	if( eitem->HasEnchantments() )
-	{
-		EnchantmentInstance * enchinst;
-		ItemPrototype * gemproto;
-		for( uint32 x = 2 ; x < 5 ; x ++ )
-		{
-			if( eitem->GetEnchantment( x ) )
-			{
-				enchinst = eitem->GetEnchantment( x );
-				gemproto = ItemPrototypeStorage.LookupEntry( enchinst->Enchantment->GemEntry );
-				if( gemproto && gemproto->Flags & ITEM_FLAG_UNIQUE_EQUIP && _player->GetItemInterface()->HasGemEquipped( enchinst->Enchantment->GemEntry , SrcSlot ) )
-				{
-					// boo-hoo, we got one already :/
-					_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULLITEM,INV_ERR_ITEM_UNIQUE_EQUIPABLE); // wrong error code
-					return;
-				}
-			}
-		}
-	}
-
 	// handle equipping of 2h when we have two items equipped! :) special case.
 	if((Slot == EQUIPMENT_SLOT_MAINHAND || Slot == EQUIPMENT_SLOT_OFFHAND) && !_player->titanGrip)
 	{
@@ -644,7 +602,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			}
 		}
 
-		if((error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, Slot, eitem, true, true)))
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, Slot, eitem->GetProto(), true, true)))
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(eitem,NULLITEM, error);
 			return;
@@ -1418,21 +1376,19 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	if(int32(item.max_amount) > 0)
 	{
 		unit->ModAvItemAmount(item.itemid,item.amount*amount);
-
-		// there is probably a proper opcode for this.
+		// there is probably a proper opcode for this. - burlex
 		SendInventoryList(unit);
 	}
 
-		_player->SaveToDB(false);
+	_player->SaveToDB(false);
 }
 
 void WorldSession::HandleListInventoryOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld())
-		return;
+	CHECK_INWORLD_RETURN;
 
 	CHECK_PACKET_SIZE(recv_data, 8);
-	DEBUG_LOG("WORLD"," Recvd CMSG_LIST_INVENTORY" );
+	DEBUG_LOG( "WORLD"," Recvd CMSG_LIST_INVENTORY" );
 	uint64 guid;
 
 	recv_data >> guid;
@@ -1452,7 +1408,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 {
 	if(!unit->HasItems())
 	{
-		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to devs: %d (%s)", unit->GetEntry(), unit->GetCreatureName()->Name);
+		sChatHandler.BlueSystemMessageToPlr(_player, "No sell template found. Report this to devs: %d (%s)", unit->GetEntry(), unit->GetCreatureInfo()->Name);
 		return;
 	}
 
@@ -1477,7 +1433,7 @@ void WorldSession::SendInventoryList(Creature* unit)
 					continue;
 				if( !sWorld.display_free_items && curItem->BuyPrice == 0 && itr->extended_cost == NULL )
 					continue;
-					
+
 				int32 av_am = (itr->max_amount>0)?itr->available_amount:-1;
 				data << (counter + 1);
 				data << curItem->ItemId;
@@ -1500,12 +1456,12 @@ void WorldSession::SendInventoryList(Creature* unit)
 	const_cast<uint8*>(data.contents())[8] = (uint8)counter; // set count
 
 	SendPacket( &data );
-	DEBUG_LOG("WORLD"," Sent SMSG_LIST_INVENTORY");
+	DEBUG_LOG( "WORLD"," Sent SMSG_LIST_INVENTORY" );
 }
 void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 3);
-	DEBUG_LOG("WORLD"," Recvd CMSG_AUTO_STORE_BAG_ITEM");
+	DEBUG_LOG( "WORLD"," Recvd CMSG_AUTO_STORE_BAG_ITEM" );
 	
 	if(!GetPlayer())
 		return;
@@ -1564,7 +1520,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 		{
 			if((error=_player->GetItemInterface()->CanEquipItemInSlot(DstInv,  DstInv, srcitem)))
 			{
-				if(DstInv < INVENTORY_KEYRING_END)
+				if(DstInv < CURRENCYTOKEN_SLOT_END)
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(srcitem,dstitem, error);
 					return;
@@ -1622,7 +1578,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleReadItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	int8 uslot=0, slot=0;
 	recvPacket >> uslot >> slot;
@@ -1685,19 +1641,19 @@ ARCTIC_INLINE void RepairItem(Player* pPlayer, Item* pItem)
 
 void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recvPacket, 12);
 	CHECK_INWORLD_RETURN
 	if(!GetPlayer())
 		return;
 
-	uint64 npcguid;
-	uint64 itemguid;
+	uint64 npcguid, itemguid;
+	uint8 data;
 	Item* pItem;
 	Container* pContainer;
 	uint32 j, i;
 
-	recvPacket >> npcguid >> itemguid;
+	recvPacket >> npcguid >> itemguid >> data;
 
 	Creature* pCreature = _player->GetMapMgr()->GetCreature( GET_LOWGUID_PART(npcguid) );
 	if( pCreature == NULL )
@@ -1708,7 +1664,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 
 	if( !itemguid ) 
 	{
-		for( i = 0; i < MAX_INVENTORY_SLOT; i++ )
+		for( i = 0; i < MAX_INVENTORY_SLOT; ++i )
 		{
 			pItem = _player->GetItemInterface()->GetInventoryItem( i );
 			if( pItem != NULL )
@@ -1773,7 +1729,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket) 
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	uint32 bytes,slots;
 	int32 price;
 	DEBUG_LOG("WorldSession","Received CMSG_BUY_bytes_SLOT");
@@ -1783,7 +1739,7 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 
 	DEBUG_LOG("WorldSession","HandleBuyBankSlotOpcode: slot number = %d", slots);
 	BankSlotPrice* bsp = dbcBankSlotPrices.LookupEntry(slots+1);
-	if(!bsp) return;
+	if(bsp == NULL) return;
 	price = (bsp != NULL ) ? bsp->Price : 99999999;
 
 	if ((int32)_player->GetUInt32Value(PLAYER_FIELD_COINAGE) >= price) 
@@ -1796,7 +1752,7 @@ void WorldSession::HandleBuyBankSlotOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	DEBUG_LOG("WorldSession","Received CMSG_AUTO_BANK_ITEM");
 
@@ -1830,8 +1786,7 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 	else
 	{
 		eitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
-		// if(!_player->GetItemInterface()->SafeAddItem(eitem, slotresult.ContainerSlot, slotresult.Slot))
-		if(eitem != NULL && !_player->GetItemInterface()->SafeAddItem(eitem, slotresult.ContainerSlot, slotresult.Slot))
+		if(!_player->GetItemInterface()->SafeAddItem(eitem, slotresult.ContainerSlot, slotresult.Slot))
 		{
 			OUT_DEBUG("[ERROR]AutoBankItem: Error while adding item to bank bag!\n");
 			if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
@@ -1891,7 +1846,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 
 void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacket)
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
 	uint32 inventory_slot;
 	recvPacket >> inventory_slot;
 
@@ -1904,56 +1859,64 @@ void WorldSession::HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacke
 void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 {
 	uint64 itemguid;
-	uint64 gemguid;
+	uint64 gemguid[3];
 	GemPropertyEntry * gp;
 	EnchantEntry * Enchantment;
 	recvPacket >> itemguid;
 
 	CHECK_INWORLD_RETURN;
 
-	GetPlayer()->ObjLock();
-
 	Item* TargetItem =_player->GetItemInterface()->GetItemByGUID(itemguid);
-	if(!TargetItem)
-	{
-		GetPlayer()->ObjUnlock();
+	if(TargetItem == NULL)
 		return;
-	}
-	int slot =_player->GetItemInterface()->GetInventorySlotByGuid(itemguid);
-	bool apply = (slot>=0 && slot <19);
-	uint32 FilledSlots=0;
 
-	bool ColorMatch = true;
-	for(uint32 i = 0;i<TargetItem->GetSocketsCount();i++)
+	int slot = _player->GetItemInterface()->GetInventorySlotByGuid(itemguid);
+	bool apply = (slot >= 0 && slot < 19);
+	uint32 FilledSlots = 0;
+
+	/* The following is a hack check to make sure player's aren't socketing more than they have,
+		while still allowing socketing of items with prismatic sockets. */
+	bool sockenchgloves = (TargetItem->HasEnchantment(3723) && TargetItem->GetProto()->InventoryType == 10);
+	bool sockenchbracer = (TargetItem->HasEnchantment(3717) && TargetItem->GetProto()->InventoryType == 9);
+	bool sockenchbelt = (TargetItem->HasEnchantment(3729) && TargetItem->GetProto()->InventoryType == 6);
+
+	bool ColorMatch[3];
+	for(uint32 i = 0; i < 3; ++i)
 	{
-		recvPacket >> gemguid;
-		EnchantmentInstance * EI= TargetItem->GetEnchantment(2+i);
+		recvPacket >> gemguid[i];
+
+		if(i > ((sockenchgloves || sockenchbracer || sockenchbelt) ? TargetItem->GetSocketsCount() + 1 : TargetItem->GetSocketsCount()))
+			continue;
+
+		ColorMatch[i] = false;
+
+		EnchantmentInstance * EI = TargetItem->GetEnchantment(2+i);
 		if(EI)
 		{
 			FilledSlots++;
 			ItemPrototype * ip = ItemPrototypeStorage.LookupEntry(EI->Enchantment->GemEntry);
-			if(!ip)
+			if(ip == NULL)
 				gp = 0;
 			else
 				gp = dbcGemProperty.LookupEntry(ip->GemProperties);
-	
-			if(gp && !(gp->SocketMask & TargetItem->GetProto()->Sockets[i].SocketColor))
-				ColorMatch=false;
+
+			if(gp && !(gp->SocketMask & TargetItem->GetProto()->Sockets[i].SocketColor) && TargetItem->GetProto()->Sockets[i].SocketColor != 0)
+				ColorMatch[i] = false;
 		}
 
-		if(gemguid)//add or replace gem
+		if(gemguid[i])//add or replace gem
 		{
 			ItemInterface * itemi = _player->GetItemInterface();
 			ItemPrototype * ip = NULL;
-			Item* it = itemi->GetItemByGUID(gemguid);
+			Item * it = itemi->GetItemByGUID(gemguid[i]);
 			if (apply) 
 			{
-				if( !it )
+				if( it == NULL )
 					continue;
 
 				ip = it->GetProto();
 
-				if( !ip )
+				if((ip == NULL) || (ip && (ip->GemProperties <= 0))) // Incomplete DB, but we have cached.
 					continue;
 
 				if( ip->Flags & ITEM_FLAG_UNIQUE_EQUIP && itemi->IsEquipped( ip->ItemId ) )
@@ -1961,6 +1924,7 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 					itemi->BuildInventoryChangeError( it, TargetItem, INV_ERR_CANT_CARRY_MORE_OF_THIS );
 					continue;
 				}
+
 				// Skill requirement
 				if( ip->RequiredSkill )
 				{
@@ -1970,46 +1934,23 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 						continue;
 					}
 				}
-				if( ip->ItemLimitCategory )
-				{
-					ItemLimitCategoryEntry * ile = dbcItemLimitCategory.LookupEntry( ip->ItemLimitCategory );
-					if( ile != NULL && itemi->GetEquippedCountByItemLimit( ip->ItemLimitCategory ) >= ile->maxAmount )
-					{
-						itemi->BuildInventoryChangeError(it, TargetItem, INV_ERR_ITEM_MAX_COUNT_EQUIPPED_SOCKETED);
-						continue;
-					}
-				}
 			}
-			
-			it = _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(gemguid,true);
-			if(!it)
+
+			it = _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(gemguid[i],true);
+			if(it == NULL)
 				continue;
 
-			if( it->GetProto()->Flags & ITEM_FLAG_UNIQUE_EQUIP && _player->GetItemInterface()->HasGemEquipped( it->GetProto()->ItemId , -1 ) )
-			{
-				_player->GetItemInterface()->BuildInventoryChangeError( TargetItem , TargetItem , INV_ERR_ITEM_MAX_COUNT_EQUIPPED_SOCKETED );
-				// .. we removed the gem, so we gotta recompensate it :x
-				// afaik, ugly solution. However, it has the interesting bonus of being able to automatically remove the gem from the socketing screen!
-				SlotResult sr;
-				sr = _player->GetItemInterface()->FindFreeInventorySlot( it->GetProto() );
-				if( sr.Result )
-					_player->GetItemInterface()->SafeAddItem( it , sr.ContainerSlot , sr.Slot );
-				continue;
-			}
 			gp = dbcGemProperty.LookupEntry(it->GetProto()->GemProperties);
 			it->Destructor();
 			it = NULLITEM;
-		
-			if(!gp)
+
+			if(gp == NULL)
 				continue;
+
 			if(!(gp->SocketMask & TargetItem->GetProto()->Sockets[i].SocketColor))
-				ColorMatch=false;
+				ColorMatch[i] = false;
 
 			if(!gp->EnchantmentID) // this is ok in few cases
-				continue;
-
-			// exploit fix
-			if (TargetItem->GetProto()->Sockets[i].SocketColor != GEM_META_SOCKET && gp->SocketMask == GEM_META_SOCKET)
 				continue;
 
 			if(EI) // replace gem
@@ -2023,14 +1964,29 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 		}
 	}
 
+	bool truecolormatch = false;
+
+	for(uint32 i = 0; i < 3; ++i)
+	{
+		if(TargetItem->GetProto()->Sockets[i].SocketColor)
+		{
+			if(i <= TargetItem->GetSocketsCount())
+			{
+				if(ColorMatch[i] == true)
+					truecolormatch = true;
+				else
+					truecolormatch = false;
+			}
+		}
+	}
+
 	// Add color match bonus
 	if(TargetItem->GetProto()->SocketBonus)
 	{
-		if(ColorMatch && (FilledSlots==TargetItem->GetSocketsCount()))
+		if(truecolormatch && (FilledSlots >= TargetItem->GetSocketsCount()))
 		{
 			if(TargetItem->HasEnchantment(TargetItem->GetProto()->SocketBonus) > 0)
 			{
-				GetPlayer()->ObjUnlock();
 				return;
 			}
 
@@ -2040,15 +1996,14 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				uint32 Slot = TargetItem->FindFreeEnchantSlot(Enchantment,0);
 				TargetItem->AddEnchantment(Enchantment, 0, true,apply,false, Slot);
 			}
-		}else //remove
+		}
+		else // remove
 		{
 			TargetItem->RemoveSocketBonusEnchant();
 		}
 	}
 
 	TargetItem->m_isDirty = true;
-
-	GetPlayer()->ObjUnlock();
 }
 
 void WorldSession::HandleWrapItemOpcode( WorldPacket& recv_data )
