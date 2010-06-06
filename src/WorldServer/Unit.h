@@ -21,7 +21,7 @@ bool ARCTIC_DECL Rand(float);
 #define NUM_MECHANIC        32
 
 #define MAKE_ACTION_BUTTON(A,T) (uint32(A) | (uint32(T) << 24))
-#define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) //should get computed by precompiler ;)
+#define UNIT_TYPE_HUMANOID_BIT (1 << (HUMANOID-1)) // should get computed by precompiler ;)
 
 class Aura;
 class Spell;
