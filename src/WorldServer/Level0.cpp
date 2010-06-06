@@ -3,7 +3,7 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
 #include "StdAfx.h"
 #include "ObjectMgr.h"
 #include <svn_revision.h>
@@ -14,7 +14,7 @@
 
 bool ChatHandler::ShowHelpForCommand(WorldSession *m_session, ChatCommand *table, const char* cmd)
 {
-	for(uint32 i = 0; table[i].Name != NULL; i++)
+	for(uint32 i = 0; table[i].Name != NULL; ++i)
 	{
 		if(!hasStringAbbr(table[i].Name, cmd))
 			continue;
@@ -45,7 +45,7 @@ bool ChatHandler::ShowHelpForCommand(WorldSession *m_session, ChatCommand *table
 
 bool ChatHandler::HandleHelpCommand(const char* args, WorldSession *m_session)
 {
-    // ChatCommand *table = getCommandTable();
+	// ChatCommand *table = getCommandTable();
 	WorldPacket data;
 
 	if(!*args)
@@ -73,7 +73,7 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 
 	output = "Available commands: \n\n";
 
-	for(uint32 i = 0; table[i].Name != NULL; i++)
+	for(uint32 i = 0; table[i].Name != NULL; ++i)
 	{
 		if(*args && !hasStringAbbr(table[i].Name, (char*)args))
 			continue;
@@ -125,7 +125,7 @@ bool ChatHandler::HandleCommandsCommand(const char* args, WorldSession *m_sessio
 
 		// FillSystemMessageData(&data, table[i].Name);
 		// m_session->SendPacket(&data);
-	    // }
+		// }
 
 	SendMultilineMessage(m_session, output.c_str());
 
@@ -219,7 +219,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -230,7 +230,7 @@ bool ChatHandler::HandleInfoCommand(const char* args, WorldSession *m_session)
 		}			
 	}
 	objmgr._playerslock.ReleaseReadLock();
-	// GreenSystemMessage(m_session, "WoWArcTic",
+	GreenSystemMessage(m_session, "WoWArcTic");
 	GreenSystemMessage(m_session, "Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
 	GreenSystemMessage(m_session, "Current Players: |r%d (%d GMs, %d queued)", clientsNum, gm,  0);
 	GreenSystemMessage(m_session, "Average Latency: |r%.3fms", (float)((float)avg / (float)count));
@@ -250,7 +250,7 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 	Player* p_target = getSelectedChar(m_session, false);
 
 	if(p_target)
-		m_target = p_target;
+		m_target = TO_UNIT(p_target);
 	else
 	{
 		Creature* m_crt = getSelectedCreature(m_session, false);
@@ -269,6 +269,44 @@ bool ChatHandler::HandleDismountCommand(const char* args, WorldSession *m_sessio
 	}
 	return true;
 
+}
+
+bool ChatHandler::HandleFullDismountCommand(const char * args, WorldSession *m_session)
+{
+	Player* p_target = getSelectedChar(m_session, false);
+	if(!p_target)
+	{
+		SystemMessage(m_session, "Select a player or yourself first.");
+		return false;
+	}
+
+	if(!p_target->IsInWorld())
+		return false;
+
+	WorldSession* sess = p_target->GetSession();
+
+	if(!sess || !sess->GetSocket())
+	{
+		RedSystemMessage(m_session, "Not able to locate player %s.", sess->GetPlayer()->GetName()); 
+		return false;
+	}
+
+	if(!p_target->m_taxiPaths.size())
+		p_target->SetTaxiState(false);
+
+	p_target->SetTaxiPath(NULL);
+	p_target->UnSetTaxiPos();
+	p_target->m_taxi_ride_time = 0;
+
+	p_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID , 0);
+	p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNTED_TAXI);
+	p_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
+	p_target->Dismount();
+	sEventMgr.RemoveEvents(p_target, EVENT_PLAYER_TAXI_INTERPOLATE);
+
+	if( p_target->m_taxiPaths.size() )
+		p_target->m_taxiPaths.clear();
+	return true;
 }
 
 bool ChatHandler::HandleSaveCommand(const char* args, WorldSession *m_session)
@@ -295,7 +333,7 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 	WorldSession *gm_session;
 	SessionSet::iterator itr;
 
-	sWorld.gmList_lock.AcquireReadLock();	
+	sWorld.gmList_lock.AcquireReadLock();
 	for (itr = sWorld.gmList.begin(); itr != sWorld.gmList.end();)
 	{
 		gm_session = (*itr);
@@ -353,7 +391,7 @@ bool ChatHandler::HandleRatingsCommand( const char *args , WorldSession *m_sessi
 {
 	m_session->SystemMessage("Ratings!!!");
 	Player* m_plyr = getSelectedChar(m_session, false);
-	for( uint32 i = 0; i < 24; i++ )
+	for( uint32 i = 0; i < 24; ++i )
 	{
 		m_plyr->ModUnsigned32Value( PLAYER_FIELD_COMBAT_RATING_1 + i, i );
 	}

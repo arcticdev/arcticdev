@@ -9,39 +9,12 @@
 void WorldSession::HandleSetLookingForGroupComment(WorldPacket& recvPacket)
 {
 	std::string comment;
-		
 	recvPacket >> comment;
-	
-	GetPlayer()->Lfgcomment = comment;	
+	GetPlayer()->Lfgcomment = comment;
 }
 
 void WorldSession::HandleEnableAutoJoin(WorldPacket& recvPacket)
 {
-	uint32 i;
-
-	// make sure they're not queued in any invalid cases
-	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-	{
-		if(_player->LfgDungeonId[i] != 0)
-		{
-			if(LfgDungeonTypes[_player->LfgDungeonId[i]] != LFG_TYPE_DUNGEON && LfgDungeonTypes[_player->LfgDungeonId[i]] != LFG_TYPE_HEROIC_DUNGEON)
-			{
-				return;
-			}
-		}
-	}
-
-	// enable autojoin, join any groups if possible.
-	_player->m_Autojoin = true;
-	
-	for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-	{
-		if(_player->LfgDungeonId[i] != 0)
-		{
-			_player->SendMeetingStoneQueue(_player->LfgDungeonId[i], 1);
-			sLfgMgr.UpdateLfgQueue(_player->LfgDungeonId[i]);
-		}
-	}
 }
 
 void WorldSession::HandleDisableAutoJoin(WorldPacket& recvPacket)
@@ -160,58 +133,4 @@ void WorldSession::HandleLfgClear(WorldPacket & recvPacket)
 
 void WorldSession::HandleLfgInviteAccept(WorldPacket & recvPacket)
 {
-	CHECK_INWORLD_RETURN
-	
-	_player->PartLFGChannel();
-	if(_player->m_lfgMatch == NULL && _player->m_lfgInviterGuid == 0)
-	{
-		if(_player->m_lfgMatch == NULL)
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER); // Matched Player(s) have gone offline.
-		else
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED); // Group no longer available.
-
-		return;
-	}
-
-	if( _player->m_lfgMatch != NULL )
-	{
-		// move into accepted players
-		_player->m_lfgMatch->lock.Acquire();
-		_player->m_lfgMatch->PendingPlayers.erase(_player);
-
-		if( !_player->GetGroup() )
-		{
-			_player->m_lfgMatch->AcceptedPlayers.insert(_player);
-
-			if(!_player->m_lfgMatch->PendingPlayers.size())
-			{
-				// all players have accepted
-				Group * pGroup = new Group(true);
-				for(set<Player*  >::iterator itr = _player->m_lfgMatch->AcceptedPlayers.begin(); itr != _player->m_lfgMatch->AcceptedPlayers.end(); ++itr)
-					pGroup->AddMember((*itr)->m_playerInfo);
-
-				_player->m_lfgMatch->pGroup = pGroup;
-			}
-		}
-		_player->m_lfgMatch->lock.Release();
-	}
-	else
-	{
-		Player* pPlayer = objmgr.GetPlayer(_player->m_lfgInviterGuid);
-		if( pPlayer == NULL )
-		{
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED_NO_PLAYER); // Matched Player(s) have gone offline.
-			return;
-		}
-
-		if( pPlayer->GetGroup() == NULL || pPlayer->GetGroup()->IsFull() || pPlayer->GetGroup()->GetLeader() != pPlayer->m_playerInfo )
-		{
-			OutPacket(SMSG_LFG_AUTOJOIN_FAILED);
-			return;
-		}
-
-		pPlayer->GetGroup()->AddMember(_player->m_playerInfo);
-	}
-	_player->m_lfgInviterGuid = 0;
-	_player->m_lfgMatch = NULL;
 }

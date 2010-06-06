@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#define MAX_DUNGEONS 288+1 // lfgdungeons.dbc
+#define MAX_DUNGEONS 288+1 // lfgdungeons.dbc + 1
 #define MAX_LFG_QUEUE_ID 3
 #define LFG_MATCH_TIMEOUT 30 // in seconds
 
@@ -26,7 +26,6 @@ class LfgMatch;
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
 public:	
-	
 	typedef list<Player*  > LfgPlayerList;
 
 	LfgMgr();
