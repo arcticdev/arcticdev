@@ -3,7 +3,7 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
 #include "StdAfx.h"
 #define MAP_MGR_UPDATE_PERIOD 100
 #define MAPMGR_INACTIVE_MOVE_TIME 10
@@ -81,6 +81,111 @@ void MapMgr::Init()
 	m_stateManager = new WorldStateManager(this);
 	// Create script interface
 	ScriptInterface = new MapScriptInterface( this );
+}
+
+// call me to break the circular reference, perform cleanup
+void MapMgr::Destructor()
+{
+	// in case this goes feeefeee
+	MapMgr* pThis = this;
+
+	sEventMgr.RemoveEvents(this);
+	delete ScriptInterface;
+	delete m_stateManager;
+
+	if ( mInstanceScript != NULL )
+		mInstanceScript->Destroy();
+
+	// Remove objects
+	if(_cells)
+	{
+		for (uint32 i = 0; i < _sizeX; i++)
+		{
+			if(_cells[i] != 0)
+			{
+				for (uint32 j = 0; j < _sizeY; j++)
+				{
+					if(_cells[i][j] != 0)
+					{
+						_cells[i][j]->_unloadpending=false;
+						_cells[i][j]->RemoveObjects();
+					}
+				}
+			}
+		}
+	}
+
+	Object* pObject;
+	for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
+	{
+		pObject = *itr;
+		if(!pObject)
+			continue;
+
+		if(pObject->IsInWorld())
+			pObject->RemoveFromWorld(false);
+
+		switch(pObject->GetTypeFromGUID())
+		{
+		case HIGHGUID_TYPE_VEHICLE:
+			TO_VEHICLE(pObject)->Destructor();
+			break;
+		case HIGHGUID_TYPE_UNIT:
+			TO_CREATURE(pObject)->Destructor();
+			break;
+
+		case HIGHGUID_TYPE_GAMEOBJECT:
+			TO_GAMEOBJECT(pObject)->Destructor();
+			break;
+		default:
+			pObject->Destructor();
+
+		}
+		pObject = NULLOBJ;
+	}
+	_mapWideStaticObjects.clear();
+
+	Corpse* pCorpse;
+	for(unordered_set<Corpse* >::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
+	{
+		pCorpse = *itr;
+		if(!pCorpse)
+			continue;
+
+		if(pCorpse->IsInWorld())
+			pCorpse->RemoveFromWorld(false);
+
+		pCorpse->Destructor();
+		pCorpse = NULLCORPSE;
+	}
+	m_corpses.clear();
+
+	// Clear our remaining containers
+	m_PlayerStorage.clear();
+	m_PetStorage.clear();
+	m_DynamicObjectStorage.clear();
+
+	_combatProgress.clear();
+	_updates.clear();
+	_processQueue.clear();
+	MapSessions.clear();
+
+	activeGameObjects.clear();
+	activeCreatures.clear();
+	activeVehicles.clear();
+	_sqlids_vehicles.clear();
+	_sqlids_creatures.clear();
+	_sqlids_gameobjects.clear();
+	_reusable_guids_creature.clear();
+	_reusable_guids_vehicle.clear();
+	m_CreatureStorage.clear(); 
+	m_gameObjectStorage.clear();
+	m_VehicleStorage.clear();;
+
+	m_battleground = NULLBATTLEGROUND;
+	pMapInfo = NULL;
+
+	Log.Notice("MapMgr", "Instance %u shut down. (%s)" , m_instanceID, GetBaseMap()->GetName());
 }
 
 MapMgr::~MapMgr()
@@ -312,7 +417,7 @@ void MapMgr::PushObject(Object* obj)
 	objCell->AddObject(obj);
 
 	obj->SetMapCell(objCell);
-	 // Add to the mapmanager's object list
+	// Add to the mapmanager's object list
 	if(plObj)
 	{
 		m_PlayerStorage[plObj->GetLowGUID()] = plObj;
@@ -594,7 +699,7 @@ void MapMgr::ChangeObjectLocation( Object* obj )
 		plObj = NULLPLR;
 	}
 
-	Object* curObj = NULLOBJ;
+	Object* curObj = NULL;
 	float fRange;
 
 	//////////////////////////////////////////////////////////////////////////
@@ -1745,11 +1850,6 @@ void MapMgr::HookOnAreaTrigger(Player* plr, uint32 id)
 			door->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
 			// sEventMgr.AddEvent(door, &GameObject::SetUInt32Value, GAMEOBJECT_STATE, 1, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
 		}
-		// else
-		// {
-			// sEventMgr.RemoveEvents(door);
-			// sEventMgr.AddEvent(door, &GameObject::SetUInt32Value,GAMEOBJECT_STATE, 0, EVENT_SCRIPT_UPDATE_EVENT, 10000, 1, 0);
-		// }
 		break;
 	}
 }
@@ -1808,8 +1908,12 @@ GameObject* MapMgr::CreateGameObject(uint32 entry)
 	m_GOHighGuid &= 0x00FFFFFF;
 	new_guid |= (uint64)(++m_GOHighGuid);
 
-	GameObject* go = NULLGOB;	go = new GameObject(new_guid);	go->Init();
-	ASSERT( go->GetTypeFromGUID() == HIGHGUID_TYPE_GAMEOBJECT );	return go;
+	GameObject* go = NULLGOB;
+	go = new GameObject(new_guid);
+	go->Init();
+
+	ASSERT( go->GetTypeFromGUID() == HIGHGUID_TYPE_GAMEOBJECT );
+	return go;
 }
 
 DynamicObject* MapMgr::CreateDynamicObject()
@@ -1817,6 +1921,7 @@ DynamicObject* MapMgr::CreateDynamicObject()
 	DynamicObject* dyn = NULL;
 	dyn = new DynamicObject(HIGHGUID_TYPE_DYNAMICOBJECT,(++m_DynamicObjectHighGuid));
 	dyn->Init();
+
 	ASSERT( dyn->GetTypeFromGUID() == HIGHGUID_TYPE_DYNAMICOBJECT );
 	return dyn;
 }
@@ -1922,7 +2027,8 @@ void MapMgr::CastSpellOnPlayers(int32 iFactionMask, uint32 uSpellId)
 				continue;
 
 			if(sp != NULL)
-				sEventMgr.AddEvent(TO_UNIT(ptr), &Unit::EventCastSpell, TO_UNIT(__player_iterator->second), sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); 		}
+				sEventMgr.AddEvent(TO_UNIT(ptr), &Unit::EventCastSpell, TO_UNIT(__player_iterator->second), sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); 
+		}
 	}
 }
 

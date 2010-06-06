@@ -3,7 +3,7 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
 #include "StdAfx.h"
 
 void WorldSession::HandleRepopRequestOpcode( WorldPacket & recv_data )
@@ -174,14 +174,18 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 {
 	// sanity checks
 	if(!_player->IsInWorld() || !_player->GetLootGUID()) return;
-	
+
 	// lookup the object we will be looting
-	// TODO: Handle item guids
-	Object* pLootObj = _player->GetMapMgr()->_GetObject(_player->GetLootGUID());
+	Object* pLootObj = NULL;
+	if( GET_TYPE_FROM_GUID(_player->GetLootGUID()) == HIGHGUID_TYPE_ITEM )
+		pLootObj = _player->GetItemInterface()->GetItemByGUID(_player->GetLootGUID());
+	else
+		pLootObj = _player->GetMapMgr()->_GetObject(_player->GetLootGUID());
+
 	Player* plr;
 	if( pLootObj == NULL )
 		return;
-	
+
 	// is there any left? :o
 	if( pLootObj->m_loot.gold == 0 )
 		return;
@@ -213,7 +217,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		GroupMembersSet::iterator itr;
 		SubGroup * sgrp;
 		party->getLock().Acquire();
-		for(uint32 i = 0; i < party->GetSubGroupCount(); i++)
+		for(uint32 i = 0; i < party->GetSubGroupCount(); ++i)
 		{
 			sgrp = party->GetSubGroup(i);
 			for(itr = sgrp->GetGroupMembersBegin(); itr != sgrp->GetGroupMembersEnd(); ++itr)
@@ -233,7 +237,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		StackPacket pkt(SMSG_LOOT_MONEY_NOTIFY, databuf, 50);
 		pkt << share;
 
-		for(vector<Player*  >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+		for(vector<Player*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 		{
 			if(((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) >= PLAYER_MAX_GOLD)
 				continue;
@@ -247,8 +251,12 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
+
 	uint64 guid;
 	recv_data >> guid;
+
+	if(_player->GetMapMgr()->GetCreature(guid) && _player->GetMapMgr()->GetCreature(guid)->IsVehicle())
+		return;
 
 	if(_player->isCasting())
 		_player->InterruptCurrentSpell();
@@ -285,10 +293,10 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 
 				party->SendPacketToAll(&data);
 			}
-		}	
+		}
 	}
 
-	_player->SendLoot(guid,LOOT_CORPSE);
+	_player->SendLoot(guid, _player->GetMapId(), LOOT_CORPSE);
 }
 
 void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
@@ -333,7 +341,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 				Lock* pLock = dbcLock.LookupEntry( pGO->GetInfo()->SpellFocus );
 				if( pLock )
 				{
-					for( uint32 i=0; i < 5; i++ )
+					for( uint32 i=0; i < 5; ++i )
 					{
 						if( pLock->locktype[i] )
 						{
@@ -437,7 +445,8 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 				TO_CREATURE(pLootTarget)->UpdateLootAnimation(_player);
 
 				// skinning
-				if( lootmgr.IsSkinnable( pLootTarget->GetEntry() ) )
+				if(!TO_CREATURE(pLootTarget)->IsPet() && !TO_CREATURE(pLootTarget)->IsSummon()
+					&& lootmgr.IsSkinnable( pLootTarget->GetEntry()))
 				{
 					pLootTarget->BuildFieldUpdatePacket( _player, UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE );
 				}
@@ -665,7 +674,6 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & recv_data )
 
 		// stop player from moving
 		pPlayer->SetMovement(MOVE_ROOT,1);
-		LoggingOut = true;
 
 		// Set the "player locked" flag, to prevent movement
 		pPlayer->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
@@ -696,11 +704,6 @@ void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 	Player* pPlayer = GetPlayer();
 	if(!pPlayer || !_logoutTime)
 		return;
-
-	if (!LoggingOut)
-		return;
-
-	LoggingOut = false;
 
 	// Cancel logout Timer
 	SetLogoutTimer(0);
@@ -755,10 +758,10 @@ void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleStandStateChangeOpcode( WorldPacket & recv_data )
 {
-	uint8 animstate;
+	uint32 animstate;
 	recv_data >> animstate;
 
-	_player->SetStandState(animstate);
+	_player->SetStandState(int8(animstate));
 }
 
 void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
@@ -805,7 +808,7 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 
 	// Check we are actually in range of our corpse
 	if ( pCorpse->GetDistance2dSq( _player ) > CORPSE_MINIMUM_RECLAIM_RADIUS_SQ )
-	{
+  	{
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1);
 		SendPacket(&data);
@@ -851,7 +854,7 @@ void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 		pl = objmgr.GetPlayer((uint32)guid);
 	
 	// reset resurrector
-	_player->resurrector = 0;	
+	_player->resurrector = 0;
 	
 	if(pl == 0 || status != 1)
 	{
@@ -870,10 +873,13 @@ void WorldSession::HandleResurrectResponseOpcode(WorldPacket & recv_data)
 
 void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 {
-	uint32 uiID;
 	if(!sWorld.m_useAccountData)
+	{
+		SKIP_READ_PACKET(recv_data); // Spam cleanup.
 		return;
+	}
 
+	uint32 uiID;
 	recv_data >> uiID;
 
 	if(uiID > 8)
@@ -883,6 +889,9 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 		return;
 	}
 
+	uint32 _time;
+	recv_data >> _time;
+
 	uint32 uiDecompressedSize;
 	recv_data >> uiDecompressedSize;
 	uLongf uid = uiDecompressedSize;
@@ -890,39 +899,42 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 	// client wants to 'erase' current entries
 	if(uiDecompressedSize == 0)
 	{
+		SKIP_READ_PACKET(recv_data);
 		SetAccountData(uiID, NULL, false,0);
 		return;
 	}
 
-	if(uiDecompressedSize>100000)
+	if(uiDecompressedSize > 100000)
 	{
+		SKIP_READ_PACKET(recv_data); // Spam cleanup.
 		Disconnect();
 		return;
 	}
 
 	if(uiDecompressedSize >= 65534)
 	{
+		SKIP_READ_PACKET(recv_data); // Spam cleanup.
 		// BLOB fields can't handle any more than this.
 		return;
 	}
 
-	size_t ReceivedPackedSize = recv_data.size() - 8;
+	size_t ReceivedPackedSize = recv_data.size() - 12;
 	char* data = new char[uiDecompressedSize+1];
-	memset(data,0,uiDecompressedSize+1);
+	memset(data, 0, uiDecompressedSize+1);	/* fix umr here */
 
 	if(uiDecompressedSize > ReceivedPackedSize) // if packed is compressed
 	{
 		int32 ZlibResult;
 
-		ZlibResult = uncompress((uint8*)data, &uid, recv_data.contents() + 8, (uLong)ReceivedPackedSize);
-		
+		ZlibResult = uncompress((uint8*)data, &uid, recv_data.contents() + 12, (uLong)ReceivedPackedSize);
+
 		switch (ZlibResult)
 		{
 		case Z_OK: // 0 no error decompression is OK
-			SetAccountData(uiID, data, false,uiDecompressedSize);
-			OUT_DEBUG("WORLD: Successfully decompressed account data %d for %s, and updated storage array.", uiID, GetPlayer()->GetName());
+			SetAccountData(uiID, data, false, uiDecompressedSize);
+			OUT_DEBUG("WORLD: Successfully decompressed account data %d for %s, and updated storage array.", uiID, GetPlayer() ? GetPlayer()->GetName() : GetAccountNameS());
 			break;
-		
+
 		case Z_ERRNO:         // -1
 		case Z_STREAM_ERROR:  // -2
 		case Z_DATA_ERROR:    // -3
@@ -931,67 +943,70 @@ void WorldSession::HandleUpdateAccountData(WorldPacket &recv_data)
 		case Z_VERSION_ERROR: // -6
 		{
 			delete [] data;	 
-			sLog.outString("WORLD WARNING: Decompression of account data %d for %s FAILED.", uiID, GetPlayer()->GetName());
+			sLog.outString("WORLD WARNING: Decompression of account data %d for %s FAILED.", uiID, GetPlayer() ? GetPlayer()->GetName() : GetAccountNameS());
 			break;
 		}
 
 		default:
 			delete [] data;	 
-			sLog.outString("WORLD WARNING: Decompression gave a unknown error: %x, of account data %d for %s FAILED.", ZlibResult, uiID, GetPlayer()->GetName());
+			sLog.outString("WORLD WARNING: Decompression gave a unknown error: %x, of account data %d for %s FAILED.", ZlibResult, uiID, GetPlayer() ? GetPlayer()->GetName() : GetAccountNameS());
 			break;
 		}
 	}
 	else
 	{
-		memcpy(data,recv_data.contents() + 8,uiDecompressedSize);
-		SetAccountData(uiID, data, false,uiDecompressedSize);
-	}
+		memcpy(data, recv_data.contents() + 12, uiDecompressedSize);
+		SetAccountData(uiID, data, false, uiDecompressedSize);
+	}SKIP_READ_PACKET(recv_data); // Spam cleanup for packet size checker... Because who cares about this dataz
 }
 
 void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 {
-	uint32 id;
 	if(!sWorld.m_useAccountData)
+	{
+		SKIP_READ_PACKET(recv_data); // Spam cleanup for packet size checker.
 		return;
+	}
+
+	uint32 id;
 	recv_data >> id;
 	
 	if(id > 8)
 	{
 		// Shit..
-		sLog.outString("WARNING: Accountdata > 8 (%d) was requested by %s of account %d!", id, GetPlayer()->GetName(), this->GetAccountId());
+		sLog.outString("WARNING: Accountdata > 8 (%d) was requested by %s of account %d!", id, GetPlayer() ? GetPlayer()->GetName() : "UNKNOWN", this->GetAccountId());
 		return;
 	}
 
 	AccountDataEntry* res = GetAccountData(id);
-		WorldPacket data ;
-		data.SetOpcode(SMSG_UPDATE_ACCOUNT_DATA);
-		data << id;
-	// if red does not exists if ID == 7 and if there is no data send 0
-	if (!res || !res->data) // if error, send a NOTHING packet
+	uLongf destSize = compressBound(res->sz);
+	ByteBuffer bbuff;
+	bbuff.resize(destSize);
+
+	if(res->sz && compress(const_cast<uint8*>(bbuff.contents()), &destSize, (uint8*)res->data, res->sz) != Z_OK)
 	{
+		OUT_DEBUG("Error while compressing ACCOUNT_DATA");
+		SKIP_READ_PACKET(recv_data);
+		return;
+	}
+
+	WorldPacket data;
+	data.SetOpcode(SMSG_UPDATE_ACCOUNT_DATA);
+	data << uint64(_player ? _player->GetGUID() : 0);
+	data << id;
+	// if red does not exists if ID == 7 and if there is no data send 0
+	if(!res || !res->data) // if error, send a NOTHING packet
+	{
+		data << (uint32)0;
 		data << (uint32)0;
 	}
 	else
 	{
+		data << uint32(res->Time);
 		data << res->sz;
-		uLongf destsize;
-		if(res->sz>200)
-		{
-			data.resize( res->sz+800 );  // give us plenty of room to work with..
-			
-			if ( ( compress(const_cast<uint8*>(data.contents()) + (sizeof(uint32)*2), &destsize, (const uint8*)res->data, res->sz)) != Z_OK)
-			{
-				OUT_DEBUG("Error while compressing ACCOUNT_DATA");
-				return;
-			}
-			
-			data.resize(destsize+8);
-		}
-		else 
-			data.append(	res->data,res->sz);	
 	}
-		
-	SendPacket(&data);	
+	data.append(bbuff);
+	SendPacket(&data);
 }
 
 void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
@@ -1111,7 +1126,7 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 #define OPEN_CHEST 11437
 void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 {
-	CHECK_INWORLD_RETURN;
+ 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
 	recv_data >> guid;
@@ -1131,9 +1146,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	Player* plyr = GetPlayer();
 
 	CALL_GO_SCRIPT_EVENT(obj, OnActivate)(_player);
-	
-	_player->RemoveStealth(); // cebernic: RemoveStealth due to GO was using. Blizzlike
-
 	CALL_INSTANCE_SCRIPT_EVENT( _player->GetMapMgr(), OnGameObjectActivate )( obj, _player );
 
 	uint32 type = obj->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID);
@@ -1162,7 +1174,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 		case GAMEOBJECT_TYPE_DOOR:
 		{
-			// corrected by BLooD_LorD..
 			if((obj->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE) == 0) )
 				obj->EventCloseDoor();
 			else
@@ -1221,14 +1232,6 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 		case GAMEOBJECT_TYPE_SPELLCASTER:
 		{
-			if (obj->m_summoner && obj->m_summoner->IsPlayer() && plyr != TO_PLAYER(obj->m_summoner))
-			{
-				if (!TO_PLAYER(obj->m_summoner)->GetGroup())
-					break;
-				else if (TO_PLAYER(obj->m_summoner)->GetGroup() != plyr->GetGroup())
-					break;
-			}
-
 			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
 			if(!info)
 				break;
@@ -1247,7 +1250,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if(!obj->m_ritualmembers || !obj->m_ritualspell || !obj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
 				return;
 
-			for(i=0;i<goinfo->SpellFocus;i++)
+			for(i=0;i<goinfo->SpellFocus;++i)
 			{
 				if(!obj->m_ritualmembers[i])
 				{
@@ -1269,7 +1272,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
 				obj->m_ritualspell = 0;
 				Player* plr;
-				for(i=0;i<goinfo->SpellFocus;i++)
+				for(i=0;i<goinfo->SpellFocus;++i)
 				{
 					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
 					if(plr!=NULL)
@@ -1361,12 +1364,12 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 						if(!pleader)
 							return;
-
+	
 						info = dbcSpell.LookupEntry(goinfo->sound1);
 						Spell* spell(new Spell(pleader, info, true, NULLAURA));
 						SpellCastTargets targets(pleader->GetGUID());
 						spell->prepare(&targets);
-
+	
 						obj->ExpireAndDelete();
 						pleader->InterruptCurrentSpell();
 					}break;
@@ -1376,7 +1379,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						Player* pleader = _player->GetMapMgr()->GetPlayer(obj->m_ritualcaster);
 						if(!pleader)
 							return;
-
+	
 						info = dbcSpell.LookupEntry(goinfo->sound1);
 						Spell* spell(new Spell(pleader, info, true, NULLAURA));
 						SpellCastTargets targets(pleader->GetGUID());
@@ -1391,8 +1394,9 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}
 		case GAMEOBJECT_TYPE_CAMERA:// eye of azora
 		{
-			uint32 cinematic = goinfo->sound1;
-			OutPacket(SMSG_TRIGGER_CINEMATIC, 4, &cinematic);
+			SpellEntry * sp = dbcSpell.LookupEntryForced(goinfo->Unknown1);
+			if(sp != NULL)
+				_player->CastSpell(_player,sp,true);
 		}break;
 		case GAMEOBJECT_TYPE_MEETINGSTONE:	// Meeting Stone
 		{
@@ -1463,13 +1467,13 @@ void WorldSession::HandleTutorialFlag( WorldPacket & recv_data )
 
 void WorldSession::HandleTutorialClear( WorldPacket & recv_data )
 {
-	for ( uint32 iI = 0; iI < 8; iI++)
+	for ( uint32 iI = 0; iI < 8; ++iI)
 		GetPlayer()->SetTutorialInt( iI, 0xFFFFFFFF );
 }
 
 void WorldSession::HandleTutorialReset( WorldPacket & recv_data )
 {
-	for ( uint32 iI = 0; iI < 8; iI++)
+	for ( uint32 iI = 0; iI < 8; ++iI)
 		GetPlayer()->SetTutorialInt( iI, 0x00000000 );
 }
 
@@ -1482,8 +1486,8 @@ void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 {
-	uint8 show;
-	recv_data >> show;
+	uint8 send;
+	recv_data >> send;
 
 	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
 	if(playedt)
@@ -1496,7 +1500,7 @@ void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 	WorldPacket data(SMSG_PLAYED_TIME, 9);
 	data << (uint32)_player->m_playedtime[1];
 	data << (uint32)_player->m_playedtime[0];
-	data << show;
+	data << uint8(send);
 	SendPacket(&data);
 }
 
@@ -1506,7 +1510,6 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN
 
 	uint64 guid;
-	uint32 talent_points = 61;
 	recv_data >> guid;
 
 	Player* player = _player->GetMapMgr()->GetPlayer( (uint32)guid );
@@ -1516,7 +1519,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 
 	WorldPacket data(SMSG_INSPECT_TALENT, 1000);
 	data << player->GetNewGUID();
-	player->BuildFullTalentsInfo(&data, false);
+	player->BuildPlayerTalentsInfo(&data, false);
 	SendPacket( &data );
 
 	// build items inspect part. could be sent separately as SMSG_INSPECT
@@ -1592,7 +1595,7 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 	if(_player->m_speedChangeInProgress)
 		{
 			_player->ResetHeartbeatCoords();
-			_player->DelaySpeedHack( 5000 ); // give the client a chance to fall/catch up
+			_player->DelaySpeedHack( 5000 );			// give the client a chance to fall/catch up
 			_player->m_speedChangeInProgress = false;
 		}
 		break;
@@ -1651,7 +1654,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	SlotResult slotresult;
 
 	Creature* pCreature = NULLCREATURE;
-	Loot * m_loot = NULL;
+	Loot *pLoot = NULL;
 
 	//////////////////////////////////////////////////////////////////////////
 	// struct:
@@ -1689,24 +1692,24 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creatureguid));
 		if (!pCreature)return;
-		m_loot=&pCreature->m_loot;
+		pLoot=&pCreature->m_loot;
 	}
 
-	if(!m_loot) return;
+	if(!pLoot) return;
 
-	if (slotid >= m_loot->items.size())
+	if (slotid >= pLoot->items.size())
 	{
 		OUT_DEBUG("AutoLootItem: Player %s might be using a hack! (slot %d, size %d)",
-			GetPlayer()->GetName(), slotid, m_loot->items.size());
-			return;
+						GetPlayer()->GetName(), slotid, pLoot->items.size());
+		return;
 	}
 
-	amt = m_loot->items.at(slotid).iItemsCount;
+	amt = pLoot->items.at(slotid).iItemsCount;
 
-	if (!m_loot->items.at(slotid).ffa_loot)
+	if (!pLoot->items.at(slotid).ffa_loot)
 	{
-		if (!amt) // Test for party loot
-		{  
+		if (!amt)//Test for party loot
+		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM,INV_ERR_ALREADY_LOOTED);
 			return;
 		} 
@@ -1714,19 +1717,19 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	else
 	{
 		// make sure this player can still loot it in case of ffa_loot
-		LooterSet::iterator itr = m_loot->items.at(slotid).has_looted.find(player->GetLowGUID());
+		LooterSet::iterator itr = pLoot->items.at(slotid).has_looted.find(player->GetLowGUID());
 
-		if (m_loot->items.at(slotid).has_looted.end() != itr)
+		if (pLoot->items.at(slotid).has_looted.end() != itr)
 		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM,INV_ERR_ALREADY_LOOTED);
 			return;
 		}
 	}
 
-	itemid = m_loot->items.at(slotid).item.itemproto->ItemId;
-	ItemPrototype * it = m_loot->items.at(slotid).item.itemproto;
+	itemid = pLoot->items.at(slotid).item.itemproto->ItemId;
+	ItemPrototype* it = pLoot->items.at(slotid).item.itemproto;
 
-	if((error = player->GetItemInterface()->CanReceiveItem(it, 1, NULL)))
+	if((error = player->GetItemInterface()->CanReceiveItem(it, 1, 0)))
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM, error);
 		return;
@@ -1742,14 +1745,14 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	Item* item = objmgr.CreateItem( itemid, player);
 	
 	item->SetUInt32Value(ITEM_FIELD_STACK_COUNT,amt);
-	if(m_loot->items.at(slotid).iRandomProperty!=NULL)
+	if(pLoot->items.at(slotid).iRandomProperty!=NULL)
 	{
-		item->SetRandomProperty(m_loot->items.at(slotid).iRandomProperty->ID);
+		item->SetRandomProperty(pLoot->items.at(slotid).iRandomProperty->ID);
 		item->ApplyRandomProperties(false);
 	}
-	else if(m_loot->items.at(slotid).iRandomSuffix != NULL)
+	else if(pLoot->items.at(slotid).iRandomSuffix != NULL)
 	{
-		item->SetRandomSuffix(m_loot->items.at(slotid).iRandomSuffix->id);
+		item->SetRandomSuffix(pLoot->items.at(slotid).iRandomSuffix->id);
 		item->ApplyRandomProperties(false);
 	}
 
@@ -1764,19 +1767,19 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		item = NULLITEM;
 	}
 
-	m_loot->items.at(slotid).iItemsCount = 0;
+	pLoot->items.at(slotid).iItemsCount = 0;
 
 	// this gets sent to all looters
-	if (!m_loot->items.at(slotid).ffa_loot)
+	if (!pLoot->items.at(slotid).ffa_loot)
 	{
-		m_loot->items.at(slotid).iItemsCount = 0;
+		pLoot->items.at(slotid).iItemsCount = 0;
 
 		// this gets sent to all looters
-		WorldPacket data( 1 );
-		data.SetOpcode( SMSG_LOOT_REMOVED );
+		WorldPacket data(1);
+		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << slotid;
 		Player* plr;
-		for(LooterSet::iterator itr = m_loot->looters.begin(); itr != m_loot->looters.end(); ++itr)
+		for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
 		{
 			if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 				plr->GetSession()->SendPacket(&data);
@@ -1784,16 +1787,15 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-		m_loot->items.at(slotid).has_looted.insert(player->GetLowGUID());
+		pLoot->items.at(slotid).has_looted.insert(player->GetLowGUID());
 	}
 }
 
 void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 {
-	if(!_player->IsInWorld()) return;
-	
+	CHECK_INWORLD_RETURN;
 	/* struct:
-    {CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
+	{CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
 	|------------------------------------------------|----------------|
 	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
 	|------------------------------------------------|----------------|
@@ -1803,7 +1805,7 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 	uint64 creatureguid
 	uint21 slotid
 	uint8  choice */
-	
+
 	uint64 creatureguid;
 	uint32 slotid;
 	uint8 choice;
@@ -1921,10 +1923,17 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 		// delete item from database, so we can't cheat
 		pItem->DeleteFromDB();
 		lootmgr.FillItemLoot(&pItem->m_loot, pItem->GetEntry());
+
+		if(pItem->GetProto()->Lootgold > 0) // Gold can be looted from items. http://www.wowhead.com/?item=45724
+			pItem->m_loot.gold = pItem->GetProto()->Lootgold;
+
+		if(pItem->m_loot.gold)
+			pItem->m_loot.gold = int32(float(pItem->m_loot.gold) * sWorld.getRate(RATE_MONEY));
+
 		pItem->m_looted = true;
 	}
-	
-	_player->SendLoot(pItem->GetGUID(), LOOT_DISENCHANTING);
+
+	_player->SendLoot(pItem->GetGUID(), _player->GetMapId(), LOOT_DISENCHANTING);
 }
 
 void WorldSession::HandleCompleteCinematic(WorldPacket &recv_data)
@@ -1996,6 +2005,7 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 
 		Group * m_Group = _player->GetGroup();
 
+		m_Group->SetDifficulty(data);
 		m_Group->Lock();
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
 		{
@@ -2021,14 +2031,66 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 #endif
 }
 
+void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
+{
+	uint32 data;
+	recv_data >> data;
+
+	if(_player->GetGroup() && _player->IsGroupLeader())
+	{
+		WorldPacket pData;
+		pData.Initialize(MSG_SET_RAID_DIFFICULTY);
+		pData << data;
+
+		_player->iRaidType = data;
+		Group * m_Group = _player->GetGroup();
+
+		m_Group->SetRaidDifficulty(data);
+		m_Group->Lock();
+		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
+		{
+			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+			{
+				if((*itr)->m_loggedInPlayer)
+				{
+					(*itr)->m_loggedInPlayer->iRaidType = data;
+					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&pData);
+				}
+			}
+		}
+		m_Group->Unlock();
+	}
+	else if(!_player->GetGroup())
+	{
+		_player->iRaidType = data;
+	}
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_InstanceType();
+#endif
+}
+
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
+	uint64 summonguid;
+	bool agree;
+	recv_data >> summonguid;
+	recv_data >> agree;
+
 	if(!_player->m_summoner)
 	{
-		SendNotification(NOTIFICATION_MESSAGE_NO_PERMISSION);
+		SendNotification("Summoner guid has changed or does not exist.");
 		return;
 	}
 
+	// Summoner changed?
+	if(_player->m_summoner->GetGUID() != summonguid)
+	{
+		SendNotification("Summoner guid has changed or does not exist.");
+		return;
+	}
+
+	// not during combat
 	if(_player->CombatStatus.IsInCombat())
 		return;
 
@@ -2041,18 +2103,29 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 	if( _player->m_summonInstanceId != _player->GetInstanceID() )
 	{
 		// if not, are we allowed on the summoners map?
-		uint8 pReason = CheckTeleportPrerequsites(NULL, this, _player, inf);
+		uint8 pReason = CheckTeleportPrerequisites(NULL, this, _player, inf->mapid);
 		if( pReason )
 		{
 			SendNotification(NOTIFICATION_MESSAGE_NO_PERMISSION);
 			return;
 		}
 	}
-	if(!_player->SafeTeleport(_player->m_summonMapId, _player->m_summonInstanceId, _player->m_summonPos))
-		SendNotification(NOTIFICATION_MESSAGE_FAILURE);
+	if(agree)
+	{
+		if(!_player->SafeTeleport(_player->m_summonMapId, _player->m_summonInstanceId, _player->m_summonPos))
+			SendNotification(NOTIFICATION_MESSAGE_FAILURE);
 
-	// Null-out the summoner..
-	_player->m_summoner = _player->m_summonInstanceId = _player->m_summonMapId = 0;
+		_player->m_summoner = NULLOBJ;
+		_player->m_summonInstanceId = _player->m_summonMapId = 0;
+		return;
+	}
+	else
+	{
+		// Null-out the summoner
+		_player->m_summoner = NULLOBJ;
+		_player->m_summonInstanceId = _player->m_summonMapId = 0;
+		return;
+	}
 }
 
 void WorldSession::HandleDismountOpcode(WorldPacket& recv_data)
@@ -2086,10 +2159,80 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 		_player->m_specs[_player->m_talentActiveSpec].glyphs[glyphSlot] = 0;
 }
 
-// 3.2 UI Timers.
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
 	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
-	data << uint32(time(NULL));
+	data << (uint32)UNIXTIME;;
 	SendPacket(&data);
+}
+
+void WorldSession::HandleReadyForAccountDataTimes(WorldPacket &recv_data)
+{
+	DEBUG_LOG( "WORLD","Received CMSG_READY_FOR_ACCOUNT_DATA_TIMES" );
+
+	// account data == UI config
+	WorldPacket data(SMSG_ACCOUNT_DATA_TIMES, 4+1+4+8*4);
+	data << uint32(UNIXTIME) << uint8(1) << uint32(0x15);
+	for (int i = 0; i < 8; ++i)
+	{
+		if(0x15 & (1 << i))
+		{
+			data << uint32(0);
+		}
+	}
+	SendPacket(&data);
+
+}
+
+void WorldSession::HandleFarsightOpcode(WorldPacket &recv_data)
+{
+	uint8 type;
+	recv_data >> type;
+
+	// TODO
+
+	GetPlayer()->UpdateVisibility();
+}
+
+void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )
+{
+	if(!_player->GetMapMgr()) // Teleporting? :O
+	{ SKIP_READ_PACKET(recv_data); return; }
+
+	uint64 guid;
+	recv_data >> guid;
+	GameObject* gameobj = _player->GetMapMgr()->GetGameObject(uint32(guid));
+	if(gameobj != NULLGOB)
+	{
+		if(gameobj->CanActivate())
+			sQuestMgr.OnGameObjectActivate(_player, gameobj);
+	}
+}
+
+void WorldSession::HandleTalentWipeConfirmOpcode( WorldPacket& recv_data )
+{
+	uint64 guid;
+	recv_data >> guid;
+	CHECK_INWORLD_RETURN;
+
+	uint32 playerGold = _player->GetUInt32Value( PLAYER_FIELD_COINAGE );
+	uint32 price = _player->CalcTalentResetCost(_player->GetTalentResetTimes());
+
+	if( playerGold < price )
+		return;
+
+	_player->SetTalentResetTimes(GetPlayer()->GetTalentResetTimes() + 1);
+	_player->SetUInt32Value( PLAYER_FIELD_COINAGE, playerGold - price );
+	_player->Reset_Talents();
+
+	_player->GetAchievementInterface()->HandleAchievementCriteriaTalentResetCostTotal( price );
+	_player->GetAchievementInterface()->HandleAchievementCriteriaTalentResetCount();
+
+	_player->CastSpell(_player, 14867, true); // Spell: "Untalent Visual Effect"
+
+	WorldPacket data( MSG_TALENT_WIPE_CONFIRM, 12);	// You don't have any talent.
+	data << uint64(0);
+	data << uint32(0);
+	SendPacket( &data );
+	return;
 }

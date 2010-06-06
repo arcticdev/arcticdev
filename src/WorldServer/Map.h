@@ -4,8 +4,6 @@
  * See COPYING for license details.
  */
 
-// Map.h
-
 #ifndef __MAP_H
 #define __MAP_H
 
@@ -54,9 +52,6 @@ typedef struct CreatureSpawn
 	uint32  MountedDisplayID;
 	int32   phase;
 	uint32  vehicle;
-	uint8   eventid;
-	uint32  CanFly;
-	EventIdInfo * eventinfo;
 }CreatureSpawn;
 
 typedef struct GOSpawn
@@ -73,12 +68,10 @@ typedef struct GOSpawn
 	float	facing;
 	uint32	flags;
 	uint32	state;
-	uint32 	MountDisplayID;
+	uint32  MountDisplayID;
 	uint32	faction;
 	float   scale;
 	int32   phase;
-	uint8   eventid;
-	EventIdInfo * eventinfo;
 } GOSpawn;
 
 typedef std::vector<CreatureSpawn*> CreatureSpawnList;
@@ -123,7 +116,7 @@ public:
 		return spawns[cellx][celly];
 	}
 
-	void LoadSpawns(bool reload);//set to true to make clean up
+	void LoadSpawns(bool reload = false); // set to true to make clean up
 	uint32 CreatureSpawnCount;
 	uint32 GameObjectSpawnCount;
 

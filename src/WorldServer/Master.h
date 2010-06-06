@@ -33,7 +33,7 @@
 
 #define DEFAULT_LOOP_TIME 0 // 0 millisecs - instant
 #define DEFAULT_LOG_LEVEL 0
-#define DEFAULT_PLAYER_LIMIT 100
+#define DEFAULT_PLAYER_LIMIT 10000
 #define DEFAULT_WORLDSERVER_PORT 8129
 #define DEFAULT_REALMSERVER_PORT 3724
 #define DEFAULT_HOST "0.0.0.0"
@@ -42,7 +42,7 @@
 #define DEFAULT_DROP_RATE 1
 #define DEFAULT_REST_XP_RATE 1
 #define DEFAULT_QUEST_XP_RATE 1
-#define DEFAULT_SAVE_RATE 300000	// 5mins
+#define DEFAULT_SAVE_RATE 300000 // 5mins
 
 class ARCTIC_DECL Master : public Singleton<Master>
 {

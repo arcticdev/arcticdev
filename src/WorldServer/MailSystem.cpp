@@ -10,7 +10,6 @@ initialiseSingleton(MailSystem);
 
 bool MailMessage::LoadFromDB(Field * fields)
 {
-//	Field * fields;
 	uint32 i;
 	char * str;
 	char * p;
@@ -150,26 +149,25 @@ void Mailbox::Load(QueryResult * result)
 
 WorldPacket * Mailbox::MailboxListingPacket()
 {
- 	WorldPacket * data = new WorldPacket(SMSG_MAIL_LIST_RESULT, 500);
- 	MessageMap::iterator itr;
+	WorldPacket * data = new WorldPacket(SMSG_MAIL_LIST_RESULT, 500);
+	MessageMap::iterator itr;
 	uint32 realcount = 0;
- 	uint32 count = 0;
-	uint32 t = uint32(UNIXTIME);
- 	*data << uint32(0); // Mailbox Is Full.
+	uint32 count = 0;
+	uint32 t = (uint32)UNIXTIME;
+	*data << uint32(0); // realcount - this can be used to tell the client we have more mail than that fits into this packet
 	*data << uint8(0);  // Place Holder For Mail Size.
- 
- 	for(itr = Messages.begin(); itr != Messages.end(); ++itr)
- 	{
 
+	for(itr = Messages.begin(); itr != Messages.end(); ++itr)
+	{
 		if(count >= 50)
 		{
 			++realcount;
 			continue;
 		}
 
- 		if(AddMessageToListingPacket(*data, &itr->second))
+		if(AddMessageToListingPacket(*data, &itr->second))
 		{
- 			++count;
+			++count;
 			++realcount;
 		}
 	}
@@ -200,13 +198,13 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 	else
 		data << msg->sender_guid;
 
-	data << msg->cod; // cod
+	data << msg->cod;
 	data << uint32(0);
 	data << msg->stationary;
 	data << msg->money; // money
-	data << uint32(0x10);
-	data << float(float(msg->expire_time - (uint32)UNIXTIME) / 86400.0f);
 	data << uint32(0);
+	data << uint32(0x10);
+	data << uint32((msg->expire_time - uint32(UNIXTIME)) / 86400.0f);
 	data << msg->subject;
 	data << msg->body;
 	pos = data.wpos();
@@ -224,7 +222,7 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 			data << pItem->GetUInt32Value(OBJECT_FIELD_GUID);
 			data << pItem->GetEntry();
 
-			for( j = 0; j < 6; ++j )
+			for( j = 0; j < 7; ++j )
 			{
 				data << pItem->GetUInt32Value( ITEM_FIELD_ENCHANTMENT_1_1 + ( j * 3 ) );
 				data << pItem->GetUInt32Value( (ITEM_FIELD_ENCHANTMENT_1_1 + 1) + ( j * 3 ) );
@@ -241,11 +239,9 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 			data << uint32( pItem->GetChargesLeft() );
 			data << pItem->GetUInt32Value( ITEM_FIELD_MAXDURABILITY );
 			data << pItem->GetUInt32Value( ITEM_FIELD_DURABILITY );
-			data << uint32( 0 );
-			data << uint32( 0 );
-			data << uint32( 0 );
-			data << uint32( 0 );
+			data << uint32(0);
 			pItem->Destructor();
+			pItem = NULLITEM;
 		}
 		data.put< uint8 >( pos, i );
 	}
@@ -289,9 +285,9 @@ bool Mailbox::AddMessageToTimePacket(WorldPacket& data,MailMessage *msg)
 	// unread message, w00t.
 	data << uint64(msg->sender_guid);
 	data << uint32(0);
-	data << uint32(0);   // money or smth?
+	data << uint32(0);                // money or smth?
 	data << uint32(msg->stationary);
-	data << float(-9.0f); // maybe the above?
+	data << float(-9.0f);             // maybe the above?
 
 	return true;
 }
@@ -495,16 +491,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 		pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
 		real_item_slot = _player->GetItemInterface()->GetInventorySlotByGuid( itemguid );
-		if(pItem->IsAccountbound())
-		{
-			if(player->acct != _player->GetSession()->GetAccountId())
-			{
-				SendMailError(MAIL_ERR_ITEM_IS_ACCOUNT_BOUND);
-				return;
-			}
-		}
-
-		if( pItem == NULL || !pItem->IsAccountbound() || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) || 
+		if( pItem == NULL || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) || 
 			( pItem->IsContainer() && (TO_CONTAINER( pItem ))->HasItems() ) || real_item_slot >= 0 && real_item_slot < INVENTORY_SLOT_ITEM_START )
 		{
 			SendMailError(MAIL_ERR_INTERNAL_ERROR);
@@ -520,10 +507,6 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 	recv_data >> msg.money;
 	recv_data >> msg.cod;
-	// left over: (TODO- FIX ME BURLEX!)
-	// uint32
-	// uint32
-	// uint8
 
 	// Check if we're sending mail to ourselves
 	if(msg.player_guid == msg.sender_guid && !GetPermissionCount())
@@ -537,7 +520,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	{
 		msg.stationary = STATIONERY_GM; // GM mail always has GM Stationary.
 	}
-	
+
 	if( msg.stationary == STATIONERY_GM && !HasGMPermissions())
 	{
 		msg.stationary = STATIONERY_NORMAL; // Send stationary as normal instead.
@@ -619,6 +602,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 			}
 
 			pItem->Destructor();
+			pItem = NULLITEM;
 		}
 	}
 
@@ -958,4 +942,3 @@ void WorldSession::HandleGetMail(WorldPacket & recv_data )
 	SendPacket(data);
 	delete data;
 }
-

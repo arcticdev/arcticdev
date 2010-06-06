@@ -73,8 +73,8 @@ struct Addr
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
-        static const char* default_config_file = "conf/WorldServer.conf";
-        static const char* default_realm_config_file = "conf/Realms.conf";
+	static const char* default_config_file = "conf/WorldServer.conf";
+	static const char* default_realm_config_file = "conf/Realms.conf";
 
 bool bServerShutdown = false;
 bool StartConsoleListener();
@@ -96,12 +96,12 @@ bool Master::Run(int argc, char ** argv)
 
 	struct arctic_option longopts[] =
 	{
-		{ "checkconf",			arctic_no_argument,			    &do_check_conf,			 1		},
-		{ "screenloglevel",		arctic_required_argument,		&screen_log_level,	     1		},
-		{ "fileloglevel",		arctic_required_argument,		&file_log_level,		-1		},
-		{ "version",			arctic_no_argument,			    &do_version,			 1		},
-		{ "conf",				arctic_required_argument,		NULL,					'c'		},
-		{ "realmconf",			arctic_required_argument,		NULL,					'r'		},
+		{ "checkconf",			arctic_no_argument,				&do_check_conf,				1		},
+		{ "screenloglevel",		arctic_required_argument,		&screen_log_level,			1		},
+		{ "fileloglevel",		arctic_required_argument,		&file_log_level,			-1		},
+		{ "version",			arctic_no_argument,				&do_version,				1		},
+		{ "conf",				arctic_required_argument,		NULL,						'c'		},
+		{ "realmconf",			arctic_required_argument,		NULL,						'r'		},
 		{ 0, 0, 0, 0 }
 	};
 
@@ -139,7 +139,7 @@ bool Master::Run(int argc, char ** argv)
 	// Startup banner
 	UNIXTIME = time(NULL);
 	g_localTime = *localtime(&UNIXTIME);
-	
+
 	Log.Color(TBLUE);
 	printf(BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	sLog.outString("==============================================================================");
@@ -175,7 +175,7 @@ bool Master::Run(int argc, char ** argv)
 
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
-		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running Ascent as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
+		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running ArcTic as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
 #endif
 
 	InitRandomNumberGenerators();
@@ -224,7 +224,6 @@ bool Master::Run(int argc, char ** argv)
 	new World;
 
 	// open cheat log file
-	bool useTimeStamp = Config.MainConfig.GetBoolDefault("log", "TimeStamp", false);
 	Anticheat_Log = new SessionLogWriter(FormatOutputString( "logs", "cheaters", false).c_str(), false );
 	GMCommand_Log = new SessionLogWriter(FormatOutputString( "logs", "gmcommand", false).c_str(), false );
 	Player_Log = new SessionLogWriter(FormatOutputString( "logs", "players", false).c_str(), false );
@@ -247,14 +246,14 @@ bool Master::Run(int argc, char ** argv)
 	}
 
 	g_bufferPool.Init();
-	sWorld.SetStartTime((uint32)UNIXTIME);
+	sWorld.SetStartTime(uint32(UNIXTIME));
 	
 	WorldRunnable * wr = new WorldRunnable();
 	ThreadPool.ExecuteTask(wr);
 
 	_HookSignals();
 
-	ConsoleThread * console = new ConsoleThread();
+	ConsoleThread* console = new ConsoleThread();
 	ThreadPool.ExecuteTask(console);
 
 	uint32 realCurrTime, realPrevTime;
@@ -298,7 +297,7 @@ bool Master::Run(int argc, char ** argv)
 #else
 		pid = getpid();
 #endif
-		fprintf( fPid, "%u", (unsigned int)pid );
+		fprintf( fPid, "%u", uint(pid) );
 		fclose( fPid );
 	}
 #ifdef WIN32
@@ -335,10 +334,10 @@ bool Master::Run(int argc, char ** argv)
 	{
 		start = now();
 		diff = start - last_time;
-		if(! ((++loopcounter) % 10000) )		// 5mins
+		if(! ((++loopcounter) % 10000) ) // 5mins
 		{
 			ThreadPool.ShowStats();
-			ThreadPool.IntegrityCheck();        // Checks if THREAD_RESERVE is met
+			ThreadPool.IntegrityCheck(); // Checks if THREAD_RESERVE is met
 			g_bufferPool.Optimize();
 		}
 
@@ -359,7 +358,7 @@ bool Master::Run(int argc, char ** argv)
 #endif
 		sSocketGarbageCollector.Update();
 
-		// UPDATE.
+		/* Update */
 		last_time = now();
 		etime = last_time - start;
 		if( 50 > etime )
@@ -378,12 +377,11 @@ bool Master::Run(int argc, char ** argv)
 	_UnhookSignals();
 
 	wr->Terminate();
-	ThreadPool.ShowStats();
-	// Shut down console system.	
+
+	// Shut down console system.
 	CloseConsoleListener();
 	console->terminate();
 	delete console;
-
 
 	if( lootmgr.is_loading )
 	{
@@ -411,9 +409,11 @@ bool Master::Run(int argc, char ** argv)
 	Log.Notice("Server", "Shutting down random generator.");
 	CleanupRandomNumberGenerators();
 
+	Log.Notice( "WintergraspInternal", "Exiting..." );
+	sWintergraspI.terminate();
+
 	Log.Notice( "DayWatcherThread", "Exiting..." );
 	sDayWatcher.terminate();
-	delete DayWatcherThread::getSingletonPtr();
 
 #ifndef CLUSTERING
 	ls->Close();
@@ -437,7 +437,6 @@ bool Master::Run(int argc, char ** argv)
 	Log.Notice("MailSystem", "~MailSystem()");
 	delete MailSystem::getSingletonPtr();
 
-	bServerShutdown = true;
 	ThreadPool.Shutdown();
 
 #ifndef CLUSTERING
@@ -454,9 +453,6 @@ bool Master::Run(int argc, char ** argv)
 
 	sScriptMgr.UnloadScripts();
 	delete ScriptMgr::getSingletonPtr();
-
-	Log.Notice( "ChatHandler", "~ChatHandler()" );
-	delete ChatHandler::getSingletonPtr();
 
 	Log.Notice( "EventMgr", "~EventMgr()" );
 	delete EventMgr::getSingletonPtr();
@@ -521,7 +517,7 @@ bool Master::_StartDB()
 	}
 
 	// Initialize it
-	if( !WorldDatabase.Initialize(hostname.c_str(), (unsigned int)port, username.c_str(),
+	if( !WorldDatabase.Initialize(hostname.c_str(), uint(port), username.c_str(),
 		password.c_str(), database.c_str(), Config.MainConfig.GetIntDefault( "WorldDatabase", "ConnectionCount", 3 ), 16384 ) )
 	{
 		OUT_DEBUG( "sql: Main database initialization failed. Exiting." );

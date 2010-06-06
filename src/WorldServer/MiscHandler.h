@@ -22,7 +22,6 @@ struct GraveyardTeleport
 };
 #pragma pack(pop)
 /*
-// schnek: I'm not exactly sure what way it should be so let's wait a bit :P
 class ARCTIC_DECL MiscHandler
 {
 	Loot m_loot;

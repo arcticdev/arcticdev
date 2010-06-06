@@ -73,7 +73,7 @@ private:
 	uint16 _playerCount;
 	MapMgr* _mapmgr;
 
-	//Mutex m_objectlock;
+	// Mutex m_objectlock;
 };
 
 #endif

@@ -36,10 +36,6 @@ bin_PROGRAMS = WorldServer
     AuctionHouse.h \
     AuctionMgr.cpp \
     AuctionMgr.h \
-    AuthCommClient.cpp \
-    AuthCommHandler.h \
-    AuthCommClient.h \
-    AuthCommHandler.cpp \
     BattlegroundCommands.cpp \
     BattlegroundHandler.cpp \
     BattlegroundMgr.cpp \
@@ -62,7 +58,7 @@ bin_PROGRAMS = WorldServer
     Corpse.h \
     Creature.cpp \
     Creature.h \
-    Debugcmds.cpp \
+    debugcmds.cpp \
     DuelHandler.cpp \
     DynamicObject.cpp \
     DynamicObject.h \
@@ -78,6 +74,7 @@ bin_PROGRAMS = WorldServer
     GameObject.cpp \
     GameObject.h \
     GMTicket.cpp \
+    GMTicketCommands.cpp \
     Group.cpp \
     Group.h \
     GroupHandler.cpp \
@@ -86,9 +83,9 @@ bin_PROGRAMS = WorldServer
     GuildHandler.cpp \
     HonorHandler.cpp \
     HonorHandler.h \
-	IslesOfConquest.cpp \
+    IslesOfConquest.cpp \
     IslesOfConquest.h \ 
-	Item.cpp \
+    Item.cpp \
     Item.h \
     ItemHandler.cpp \
     ItemInterface.cpp \
@@ -105,6 +102,10 @@ bin_PROGRAMS = WorldServer
     LootMgr.h \
     LocalizationMgr.cpp \
     LocalizationMgr.h \
+    AuthCommClient.cpp \
+    AuthCommHandler.h \
+    AuthCommClient.h \
+    AuthCommHandler.cpp \
     MailSystem.cpp \
     MailSystem.h \
     MapCell.cpp \
@@ -196,6 +197,10 @@ bin_PROGRAMS = WorldServer
     WorldStateManager.cpp \
     WordFilter.h \
     WordFilter.cpp \
+    Wintergrasp.cpp \
+    Wintergrasp.h \
+    WGI.cpp \
+    WGI.h \
     Main.cpp \
     Master.cpp \
     Master.h \
