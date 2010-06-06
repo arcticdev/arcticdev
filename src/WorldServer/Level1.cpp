@@ -193,8 +193,6 @@ bool ChatHandler::HandleAddInvItemCommand(const char *args, WorldSession *m_sess
 		if(!chr->GetItemInterface()->AddItemById(itemid, count, randomprop, false))
 		{
 			m_session->SendNotification("No free slots were found in your inventory!");
-			item->Destructor();
-			item = NULLITEM;
 			return true;
 		}
 
@@ -390,15 +388,15 @@ bool ChatHandler::HandleModifySpeedCommand(const char* args, WorldSession *m_ses
 	{
 		BlueSystemMessage(m_session, "You set the speed of %s to %2.2f.", chr->GetName(), Speed);
 		SystemMessage(chr->GetSession(), "%s set your speed to %2.2f.", m_session->GetPlayer()->GetName(), Speed);
-
-	else
-	{
-		BlueSystemMessage(m_session, "Speed set to %2.2f.", Speed);
-		chr->SetPlayerSpeed(RUN, Speed);
-		chr->SetPlayerSpeed(SWIM, Speed);
-		chr->SetPlayerSpeed(RUNBACK, (Speed * 0.5));
-		chr->SetPlayerSpeed(FLY, Speed);
 	}
+	else
+		BlueSystemMessage(m_session, "Speed set to %2.2f.", Speed);
+
+	chr->SetPlayerSpeed(RUN, Speed);
+	chr->SetPlayerSpeed(SWIM, Speed);
+	chr->SetPlayerSpeed(RUNBACK, (Speed * 0.5));
+	chr->SetPlayerSpeed(FLY, Speed);
+
 	return true;
 }
 

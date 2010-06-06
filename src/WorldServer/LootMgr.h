@@ -7,16 +7,6 @@
 #ifndef _LOOTMGR_H
 #define _LOOTMGR_H
 
-#define ARCTIC_OBJECT_LOOT "objectloot"
-#define ARCTIC_CREATURE_LOOT "creatureloot"
-#define ARCTIC_CREATURE_LOOT_GATHERING "creatureloot_gathering"
-#define ARCTIC_DISENCHANTING_LOOT "disenchantingloot"
-#define ARCTIC_FISHING_LOOT "fishingloot"
-#define ARCTIC_ITEM_LOOT "itemloot"
-#define ARCTIC_PROSPECTING_LOOT "prospectingloot"
-#define ARCTIC_PICKPOCKETING_LOOT "pickpocketingloot"
-#define ARCTIC_MILLING_LOOT "millingloot"
-
 struct ItemPrototype;
 class MapMgr;
 class Player;

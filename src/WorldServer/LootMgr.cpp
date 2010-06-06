@@ -98,8 +98,8 @@ void LootMgr::LoadLoot()
 void LootMgr::LoadDelayedLoot()
 {
 	is_loading = true;
-	LoadLootTables(CREATURE_LOOT,&CreatureLoot);
-	LoadLootTables(CREATURE_LOOT_GATHERING,&GatheringLoot);
+	LoadLootTables("creatureloot",&CreatureLoot);
+	LoadLootTables("creatureloot_gathering",&GatheringLoot);
 	is_loading = false;
 }
 
@@ -271,8 +271,8 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 			ttab.clear();
 		}
 
-		if(szTableName == CREATURE_LOOT || szTableName == OBJECT_LOOT
-			|| szTableName == CREATURE_LOOT_GATHERING) // We have multiple difficulties.
+		if(szTableName == "creatureloot" || szTableName == "objectloot"
+			|| szTableName == "creatureloot_gathering") // We have multiple difficulties.
 		{
 			t.itemid = fields[1].GetUInt32();
 			for(int i = 0; i < 4; ++i)
@@ -610,7 +610,7 @@ void LootMgr::AddLoot(Loot* loot, uint32 itemid, uint32 mincount, uint32 maxcoun
 	uint32 count;
 	ItemPrototype *itemproto = ItemPrototypeStorage.LookupEntry(itemid);
 
-	if( itemproto )и// this check is needed until loot DB is fixed
+	if( itemproto ) // this check is needed until loot DB is fixed
 	{
 		if( mincount == maxcount )
 			count = maxcount;
