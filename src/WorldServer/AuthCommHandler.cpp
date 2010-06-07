@@ -123,7 +123,7 @@ void LogonCommHandler::Startup()
 			string perm = result->Fetch()[1].GetString();
 
 			ARCTIC_TOUPPER(acct);
-			forced_permissions.insert(make_pair(acct,perm));
+            forced_permissions.insert(make_pair(acct,perm));
 
 		} while (result->NextRow());
 		delete result;
@@ -153,14 +153,14 @@ void LogonCommHandler::Connect(LogonServer * server)
 	if(bServerShutdown)
 		return;
 
-	// if we reach 25 connect attemps, restart server.
-	// Temporary work around until we find out socket get's jammed.
-	++ReConCounter;
-	if(ReConCounter >25)
-	{
-		sWorld.QueueShutdown(0, SERVER_SHUTDOWN_TYPE_RESTART);
+	if(ReConCounter >= 5)
+	{	// Attempt to connect 5 times, if not able to, shut down.
+		sWorld.QueueShutdown(5, SERVER_SHUTDOWN_TYPE_SHUTDOWN);
+		bServerShutdown = true;
 		return;
 	}
+
+	++ReConCounter;
 
 	Log.Notice("LogonCommClient", "Connecting to logonserver on `%s:%u, attempt %u`", server->Address.c_str(), server->Port, ReConCounter );
 
@@ -182,6 +182,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 		if((uint32)UNIXTIME >= tt || bServerShutdown)
 		{
 			Log.Notice("LogonCommClient", "Authentication timed out.");
+			conn->_id = 0;
 			conn->Disconnect();
 			logons[server]=NULL;
 			return;
@@ -190,16 +191,16 @@ void LogonCommHandler::Connect(LogonServer * server)
 		Sleep(50);
 	}
 
-	if(conn->authenticated != 1)
+	if(conn->authenticated == 1)
+		Log.Notice("LogonCommClient","Authentication succeeded.");
+	else
 	{
-		Log.Notice("LogonCommClient", "Authentication failed.");
-		logons[server] = NULL;
+		Log.Notice("LogonCommClient","Authentication failed.");
+		conn->_id = 0;
 		conn->Disconnect();
-
+		logons[server] = NULL;
 		return;
 	}
-	else
-		Log.Notice("LogonCommClient", "Authentication succeeded.");
 
 	// Send the initial ping
 	conn->SendPing();
@@ -218,8 +219,9 @@ void LogonCommHandler::Connect(LogonServer * server)
 		if((uint32)UNIXTIME >= st)
 		{
 			Log.Notice("LogonCommClient", "Realm registration timed out.");
-			logons[server] = NULL;
+			conn->_id = 0;
 			conn->Disconnect();
+			logons[server] = NULL;
 			break;
 		}
 		Sleep(50);
@@ -263,34 +265,32 @@ void LogonCommHandler::UpdateSockets()
 		cs = itr->second;
 		if(cs != NULL)
 		{
-			if(!pings) continue;
-
 			if(cs->IsDeleted() || !cs->IsConnected())
 			{
+				Log.Error("LogonCommClient","Realm id %u lost connection.", (unsigned int)itr->first->ID);
 				cs->_id = 0;
 				itr->second = 0;
 				continue;
 			}
 
-			if(cs->last_pong < t && ((t - cs->last_pong) > 60))
+			if(pings)
 			{
-				// no pong for 60 seconds -> remove the socket
-				printf(" >> realm id %u connection dropped due to pong timeout.\n", (unsigned int)itr->first->ID);
-				cs->_id = 0;
-				cs->Disconnect();
-				itr->second = 0;
-				continue;
-			}
-
-			if( (t - cs->last_ping) > 15 )
-			{
-				// send a ping packet.
-				cs->SendPing();
+				if(cs->last_pong < t && ((t - cs->last_pong) > 60))
+				{
+					// no pong for 60 seconds -> remove the socket
+					Log.Error("LogonCommClient","Realm id %u connection dropped due to pong timeout.", (unsigned int)itr->first->ID);
+					cs->_id = 0;
+					cs->Disconnect();
+					itr->second = 0;
+					continue;
+				}
+				if( (t - cs->last_ping) > 15 )//ping every 15 seconds when connected
+					cs->SendPing();
 			}
 		}
 		else
 		{
-			// Check retry time
+			// Try to reconnect
 			if(t >= itr->first->RetryTime && !bServerShutdown)
 			{
 				Connect(itr->first);
@@ -310,9 +310,11 @@ void LogonCommHandler::ConnectionDropped(uint32 ID)
 	{
 		if(itr->first->ID == ID && itr->second != 0)
 		{
-			sLog.outColor(TNORMAL, " >> realm id %u connection was dropped unexpectedly. reconnecting next loop.", ID);
-			sLog.outColor(TNORMAL, "\n");
-			itr->second = 0;
+			if(!bServerShutdown)
+				Log.Error("LogonCommHandler"," Realm id %u connection was dropped unexpectedly. reconnecting next loop.", ID);
+			itr->second->_id = 0;
+			itr->second->Disconnect();
+			itr->second = NULL;
 			break;
 		}
 	}

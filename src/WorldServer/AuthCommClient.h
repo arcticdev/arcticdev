@@ -53,3 +53,4 @@ public:
 typedef void (LogonCommClientSocket::*logonpacket_handler)(WorldPacket&);
 
 #endif
+
