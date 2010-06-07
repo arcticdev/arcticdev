@@ -23,8 +23,7 @@ DayWatcherThread::DayWatcherThread()
 
 DayWatcherThread::~DayWatcherThread()
 {
-	m_creatureEventSpawnMaps.clear();
-	m_gameobjectEventSpawnMaps.clear();
+
 }
 
 void DayWatcherThread::terminate()
@@ -46,8 +45,6 @@ void DayWatcherThread::update_settings()
 {
 	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_arena_update_time\", %u)", last_arena_time);
 	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_dailies_reset_time\", %u)", last_daily_reset_time);
-	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_premium_update_time\", %u)", last_premium_update_time);
-	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_eventid_time\", %u)", last_eventid_time);
 }
 
 void DayWatcherThread::load_settings()
@@ -131,21 +128,20 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 {
 	switch(timeoutval)
 	{
-	case WEEKLY:
-		{
-			return ( abs( now_time->tm_yday - last_time->tm_yday ) >= 7 );
-		}
-		
 	case MONTHLY:
 		return (now_time->tm_mon != last_time->tm_mon);
+
+	case WEEKLY:
+		return ( (now_time->tm_mday / 7) != (last_time->tm_mday / 7) || (now_time->tm_mon != last_time->tm_mon) );
+
+	case DAILY:
+		return ((now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
 
 	case HOURLY:
 		return ((now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
 
-	case DAILY:
-		return ((now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mday != last_time->tm_mday));
 	case MINUTELY:
-			return ((now_time->tm_min != last_time->tm_min) || (now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
+		return ((now_time->tm_min != last_time->tm_min) || (now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
 	}
 	return false;
 }
@@ -164,10 +160,12 @@ bool DayWatcherThread::run()
 	_firstrun[0] = true;
 	_firstrun[1] = true;
 	m_heroic_reset = false;
+	uint32 WGcounter = 0;
 
 #ifdef WIN32
 	m_abortEvent = CreateEvent(NULL, NULL, FALSE, NULL);
 #else
+
 	struct timeval now;
 	struct timespec tv;
 
@@ -176,10 +174,9 @@ bool DayWatcherThread::run()
 #endif
 
 	uint32 interv = 120000; // in ms, must be >> 30secs
-
 	while(m_threadRunning)
 	{
-		m_busy=true;
+		m_busy = true;
 		currenttime = UNIXTIME;
 		dupe_tm_pointer(localtime(&currenttime), &local_currenttime);
 
@@ -187,10 +184,7 @@ bool DayWatcherThread::run()
 			update_arena();
 
 		if(has_timeout_expired(&local_currenttime, &local_last_daily_reset_time, DAILY))
-		{
 			update_daily();
-			runEvents = true;
-		}
 
 		// reset will occur daily between 04:59:00 CET and 05:01:30 CET (players inside will get 60 sec countdown)
 		uint32 umod = uint32(currenttime + 3600) % 86400;
@@ -200,143 +194,12 @@ bool DayWatcherThread::run()
 			m_heroic_reset = true;
 		}
 		if(m_heroic_reset && umod > 25140 + (interv/1000) + 30 )
-			m_heroic_reset = false;		
-
-
-		
-		if(has_timeout_expired(&local_currenttime, &local_last_eventid_time, HOURLY))
-		{
-			Log.Notice("DayWatcherThread", "Running Hourly In Game Events checks...");
-			for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
-			{
-				if(!(*itr)->eventbyhour)
-					continue;
-				
-				if((*itr)->isactive)
-				{
-					if((*itr)->lastactivated && !CheckHourlyEvent(&local_currenttime, (*itr)->starthour, (*itr)->endhour))
-					{
-						(*itr)->isactive = false;
-						SpawnEventId((*itr)->eventId, false);
-						update_event_settings((*itr)->eventId,0);
-					}
-					else
-					{
-						if((*itr)->lastactivated && _firstrun[0])
-						{
-							if(!SpawnEventId((*itr)->eventId))
-									break;
-						}
-						if(!(*itr)->lastactivated)
-						{
-						time_t activated = (*itr)->lastactivated = UNIXTIME;
-						update_event_settings((*itr)->eventId, activated);
-						runEvents = true;
-						}
-						continue;
-					}
-				}
-				else
-				{
-					if(CheckHourlyEvent(&local_currenttime, (*itr)->starthour, (*itr)->endhour))
-					{
-						if(!SpawnEventId((*itr)->eventId))
-							break;
-						(*itr)->isactive = true;
-						time_t activated = (*itr)->lastactivated = UNIXTIME;
-						update_event_settings((*itr)->eventId, activated);
-						continue;
-					}
-				}
-			}
-			_firstrun[0] = false;
-			last_eventid_time = UNIXTIME;
-			dupe_tm_pointer(localtime(&last_eventid_time), &local_last_eventid_time);
-			m_dirty = true;
-		}
-		
-		if(runEvents = true)
-		{
-			if(_loaded)
-			{
-				runEvents = false;
-				bool monthexpired = false;
-				Log.Notice("DayWatcherThread", "Running Daily In Game Events checks...");
-				for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
-				{
-					if((*itr)->eventbyhour)
-						continue;
-					if((*itr)->isactive)
-					{
-						if((*itr)->lastactivated && has_eventid_expired((*itr)->activedays, (*itr)->lastactivated))
-						{
-							(*itr)->isactive = false;
-							SpawnEventId((*itr)->eventId, false);
-							update_event_settings((*itr)->eventId,0);
-						}
-						else
-						{
-							if((*itr)->lastactivated && _firstrun[1])
-							{
-								if(!SpawnEventId((*itr)->eventId))
-										break;
-							}
-
-							if(!(*itr)->lastactivated)
-							{
-							time_t activated = (*itr)->lastactivated = UNIXTIME;
-							update_event_settings((*itr)->eventId, activated);
-							runEvents = true;
-							}
-							continue;
-						}
-					}
-					else
-					{
-						if((*itr)->monthnumber)
-						{
-							if(has_eventid_timeout_expired(&local_currenttime, ((*itr)->monthnumber - 1), MONTHLY))
-							{
-								if(!(*itr)->daynumber)
-								{
-									if(!SpawnEventId((*itr)->eventId))
-											break;
-									(*itr)->isactive = true;
-									time_t activated = (*itr)->lastactivated = UNIXTIME;
-									update_event_settings((*itr)->eventId, activated);
-									continue;
-								}
-								monthexpired = true;
-							}
-						}
-						if(monthexpired && (*itr)->daynumber && has_eventid_timeout_expired(&local_currenttime, (*itr)->daynumber, DAILY))
-						{
-							monthexpired = false;
-							time_t activated = (*itr)->lastactivated = UNIXTIME;
-							update_event_settings((*itr)->eventId, activated);
-							continue;
-						}
-						if((*itr)->daynumber && !(*itr)->monthnumber && has_eventid_timeout_expired(&local_currenttime, (*itr)->daynumber, DAILY))
-						{
-							if(!SpawnEventId((*itr)->eventId))
-								break;
-							(*itr)->isactive = true;
-							time_t activated = (*itr)->lastactivated = UNIXTIME;
-							update_event_settings((*itr)->eventId, activated);
-						}
-					}
-				}
-				_firstrun[1] = false;
-			}
-		}
-			
-		if(has_timeout_expired(&local_currenttime, &local_last_premium_update_time, MONTHLY))
-			update_premium();
+			m_heroic_reset = false;
 
 		if(m_dirty)
 			update_settings();
 
-		m_busy=false;
+		m_busy = false;
 		if(!m_threadRunning)
 			break;
 
@@ -423,14 +286,14 @@ void DayWatcherThread::update_arena()
 						//////////////////////////////////////////////////////////////////////////
 						
 						double power = ((-0.00412) * X);
-						
+
 						// if(power < 1.0)
 						//   power = 1.0;
 
 						double divisor = pow(((double)(2.71828)), power);						
 						divisor *= 1639.28;
 						divisor += 1.0;
-						
+
 						// if(divisor < 1.0)
 						//	 divisor = 1.0;
 
@@ -439,7 +302,6 @@ void DayWatcherThread::update_arena()
 
 					// 2v2 teams only earn 70% (Was 60% until 13th March 07) of the arena points, 3v3 teams get 80%, while 5v5 teams get 100% of the arena points.
 					// 2v2 - 76%, 3v3 - 88% as of patch 2.2
-					
 					if(team->m_type == ARENA_TEAM_TYPE_2V2)
 					{
 						Y *= 0.76;
@@ -466,13 +328,13 @@ void DayWatcherThread::update_arena()
 			if(orig_arenapoints != arenapoints)
 			{
 				plr = objmgr.GetPlayer(guid);
-				if(plr)
+				if(plr != NULL)
 				{
 					plr->m_arenaPoints = arenapoints;
-					
+
 					/* update visible fields (must be done through an event because of no uint lock */
 					sEventMgr.AddEvent(plr, &Player::RecalculateHonor, EVENT_PLAYER_UPDATE, 100, 1, 0);
-	
+
 					/* send a little message :> */
 					sChatHandler.SystemMessage(plr->GetSession(), "Your arena points have been updated! Check your PvP tab!");
 				}

@@ -8,7 +8,15 @@
 
 void WorldSession::HandleDuelAccepted(WorldPacket & recv_data)
 {
-	if( !_player->IsInWorld() || _player->DuelingWith == NULL || _player->m_duelState != DUEL_STATE_FINISHED || _player->m_duelCountdownTimer > 0  )
+	CHECK_INWORLD_RETURN;
+
+	if( _player->DuelingWith == NULL )
+		return;
+
+	if( _player->m_duelState != DUEL_STATE_FINISHED )
+		return;
+	
+	if( _player->m_duelCountdownTimer > 0 )
 		return;
 
 	_player->m_duelStatus = DUEL_STATUS_INBOUNDS;

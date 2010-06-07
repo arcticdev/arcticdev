@@ -3,7 +3,7 @@
  * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
- 
+
 #include "StdAfx.h"
 
 DynamicObject::DynamicObject(uint32 high, uint32 low)
@@ -52,7 +52,7 @@ void DynamicObject::Destructor()
 		target->RemoveAura(m_spellProto->Id);
 	}
 
-	if(m_caster && m_caster->dynObj == TO_DYNAMICOBJECT(this) )
+	if(m_caster && m_caster->dynObj == this )
 		m_caster->dynObj = NULLDYN;
 
 	m_parentSpell=NULLSPELL;
@@ -82,6 +82,7 @@ void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, floa
 			u_caster = pSpell->u_caster;
 			if(!u_caster && p_caster)
 				u_caster = TO_UNIT(p_caster);
+
 			g_caster = TO_GAMEOBJECT(caster);
 		}break;
 	case TYPEID_UNIT:
@@ -103,7 +104,7 @@ void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, floa
 	m_uint32Values[DYNAMICOBJECT_SPELLID] = m_spellProto->Id;
 
 	m_floatValues[DYNAMICOBJECT_RADIUS] = radius;
-	
+
 	// schnek: Dynamic compile errors tookin care of.
 	SetPosition( x, y, z, 0, false );
 	
@@ -136,7 +137,7 @@ void DynamicObject::AddInRangeObject( Object* pObj )
 			attackable = isAttackable( TO_DYNAMICOBJECT(this), pObj );
 		
 		if( attackable )
-			m_inRangeOppFactions.insert( TO_UNIT(pObj) );
+			m_inRangeOppFactions.insert( TO_UNIT( pObj ) );
 	}
 	Object::AddInRangeObject( pObj );
 }
