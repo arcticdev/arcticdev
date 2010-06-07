@@ -5,7 +5,6 @@
  */
 
 #include "StdAfx.h"
-
 GameObject::GameObject(uint64 guid)
 {
 	m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -45,6 +44,7 @@ GameObject::GameObject(uint64 guid)
 	mines_remaining = 1;
 	m_respawnCell=NULL;
 	m_battleground = NULLBATTLEGROUND;
+	Health = NULL;
 }
 
 GameObject::~GameObject()
@@ -70,14 +70,14 @@ void GameObject::Destructor()
 			plr->SetSummonedObject(NULLOBJ);
 
 		if(plr == m_summoner)
-			m_summoner = NULLUNIT;
+			m_summoner = NULLOBJ;
 	}
 
 	if(m_respawnCell!=NULL)
 		m_respawnCell->_respawnObjects.erase( TO_OBJECT(this) );
 
 	if (m_summonedGo && m_summoner)
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 4; ++i)
 			if (m_summoner->m_ObjectSlots[i] == GetUIdFromGUID())
 				m_summoner->m_ObjectSlots[i] = 0;
 
@@ -106,9 +106,10 @@ bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, fl
 	Object::_Create( mapid, x, y, z, ang );
 	SetUInt32Value( OBJECT_FIELD_ENTRY, entry );
 
-	SetPosition(x, y, z, ang);
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_1, ang);
-	UpdateRotation();
+	SetFloatValue( GAMEOBJECT_PARENTROTATION, orientation1 );
+	SetFloatValue( GAMEOBJECT_PARENTROTATION_1, orientation2 );
+
+	UpdateRotation( orientation3,orientation4 );
 
 	SetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE, 1);
 	SetUInt32Value( GAMEOBJECT_DISPLAYID, pInfo->DisplayID );
@@ -138,8 +139,6 @@ void GameObject::Update(uint32 p_time)
 		return;
 	}
 
-	
-
 	if(spell && (GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE) == 1))
 	{
 		if(checkrate > 1)
@@ -147,15 +146,12 @@ void GameObject::Update(uint32 p_time)
 			if(counter++%checkrate)
 				return;
 		}
-		ObjectSet::iterator itr = GetInRangeSetBegin();
-		ObjectSet::iterator it2 = itr;
-		ObjectSet::iterator iend = GetInRangeSetEnd();
+		Object::InRangeSet::iterator itr,it2;
 		Unit* pUnit;
 		float dist;
-		for(; it2 != iend;)
+		for( it2 = GetInRangeSetBegin(); it2 != GetInRangeSetEnd(); ++it2)
 		{
 			itr = it2;
-			++it2;
 			dist = GetDistanceSq((*itr));
 			if( (*itr) != m_summoner && (*itr)->IsUnit() && dist <= range)
 			{
@@ -180,7 +176,7 @@ void GameObject::Update(uint32 p_time)
 				if(pInfo->Type == 6)
 				{
 					if(m_summoner != NULL)
-						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, EXTRA_NONE, pUnit, spell);
+						m_summoner->HandleProc(PROC_ON_TRAP_TRIGGER, NULL, pUnit, spell);
 				} 
 
 				if(m_summonedGo)
@@ -254,8 +250,7 @@ void GameObject::SaveToDB()
 		<< GetUInt32Value(GAMEOBJECT_FLAGS) << ","
 		<< GetUInt32Value(GAMEOBJECT_FACTION) << ","
 		<< GetFloatValue(OBJECT_FIELD_SCALE_X) << ","
-		<< m_phaseMode << ","
-		<< (m_spawn ? m_spawn->eventid : 0) << ")";
+		<< m_phaseMode << ")";
 	WorldDatabase.Execute(ss.str().c_str());
 }
 
@@ -282,35 +277,37 @@ void GameObject::InitAI()
 	uint32 spellid = 0;
 	switch(pInfo->Type)
 	{
-		case GAMEOBJECT_TYPE_TRAP:
-		{	
+	case GAMEOBJECT_TYPE_TRAP:
+		{
 			spellid = pInfo->sound3;
 		}break;
-		case GAMEOBJECT_TYPE_SPELL_FOCUS: // redirect to properties of another go
+
+	case GAMEOBJECT_TYPE_SPELL_FOCUS://redirect to properties of another go
 		{
-		// get spellid from attached gameobject - by sound2 field
-		if( pInfo->sound2 == 0 )
+			uint32 new_entry = pInfo->sound2;
+			if(new_entry)
 			{
-			if( !GameObjectNameStorage.LookupEntry( pInfo->sound2 ) )
+				pInfo = GameObjectNameStorage.LookupEntry( new_entry );
+				if(pInfo == NULL)
 				{
-					Log.Warning("GameObject","Redirected gameobject %u doesn't seem to exists in database, skipping");
+					Log.Warning("GameObject","Redirected gameobject %u doesn't seem to exists in database, skipping",new_entry);
 					return;
 				}
-				if(GameObjectNameStorage.LookupEntry( pInfo->sound2 )->sound3)
-					spellid = GameObjectNameStorage.LookupEntry( pInfo->sound2 )->sound3;
+				if(pInfo->sound3)
+					spellid = pInfo->sound3;
 			}
 		}break;
-		case GAMEOBJECT_TYPE_RITUAL:
+	case GAMEOBJECT_TYPE_RITUAL:
 		{	
 			m_ritualmembers = new uint32[pInfo->SpellFocus];
 			memset(m_ritualmembers,0,sizeof(uint32)*pInfo->SpellFocus);
 		}break;
-		case GAMEOBJECT_TYPE_CHEST:
+	case GAMEOBJECT_TYPE_CHEST:
  		{
 			Lock *pLock = dbcLock.LookupEntry(GetInfo()->SpellFocus);
 			if(pLock)
 			{
-				for(uint32 i=0; i < 5; i++)
+				for(uint32 i=0; i < 5; ++i)
 				{
 					if(pLock->locktype[i])
 					{
@@ -327,15 +324,13 @@ void GameObject::InitAI()
 			}
 		}break;
 
-		case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
+	case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
 		{
 			Health = pInfo->SpellFocus + pInfo->sound5;
 		}break;
 	}
 
-	// Null out gossip_script here, will be set with sScriptMgr.register_go_gossip_script (if any).
-	pInfo->gossip_script = NULL;
-	myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), TO_GAMEOBJECT(this)); 
+	myScript = sScriptMgr.CreateAIScriptClassForGameObject(GetEntry(), this);
 
 	// hackfix for bad spell in BWL
 	if(!spellid || spellid == 22247)
@@ -371,7 +366,6 @@ void GameObject::InitAI()
 
 	range = r*r;    // square to make code faster
 	checkrate = 20; // once in 2 seconds
-	
 }
 
 bool GameObject::Load(GOSpawn *spawn)
@@ -382,7 +376,7 @@ bool GameObject::Load(GOSpawn *spawn)
 	m_phaseMode = spawn->phase;
 	m_spawn = spawn;
 	SetUInt32Value(GAMEOBJECT_FLAGS,spawn->flags);
-    // SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
+	// SetUInt32Value(GAMEOBJECT_LEVEL,spawn->level);
 	SetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE, spawn->state);
 	if(spawn->faction)
 	{
@@ -410,10 +404,8 @@ void GameObject::DeleteFromDB()
 
 void GameObject::EventCloseDoor()
 {
-	SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-	SetUInt32Value(GAMEOBJECT_FLAGS, GetUInt32Value( GAMEOBJECT_FLAGS ) & ~1);
+	SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
 }
-
 
 void GameObject::UseFishingNode(Player* player)
 {
@@ -496,7 +488,7 @@ void GameObject::EndFishing(Player* player, bool abort )
 	}
 
 	if(!abort)
-		sEventMgr.AddEvent(TO_GAMEOBJECT(this), &GameObject::ExpireAndDelete, EVENT_GAMEOBJECT_EXPIRE, 20000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+		TO_GAMEOBJECT(this)->ExpireAndDelete(20000);
 	else
 		ExpireAndDelete();
 }
@@ -585,30 +577,34 @@ void GameObject::_LoadQuests()
 //////////////////////////////////////////////////////////////////////////
 
 // guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
-Unit* GameObject::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, Unit* u_caster)
+Unit* GameObject::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, Unit* u_caster, uint8 Slot)
 {
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(guardian_entry);
 	CreatureInfo * info = CreatureNameStorage.LookupEntry(guardian_entry);
 	if(!proto || !info)
 	{
-			OUT_DEBUG("Warning : Missing summon creature template %u !",guardian_entry);
+		OUT_DEBUG("Warning : Missing summon creature template %u !",guardian_entry);
 		return NULLUNIT;
 	}
 	uint32 lvl = u_caster->getLevel();
-	LocationVector v = GetPositionNC(); 
- 	float m_followAngle = angle + v.o; 
- 	float x = v.x +(3*(cosf(m_followAngle))); 
- 	float y = v.y +(3*(sinf(m_followAngle))); 
-	Creature* p = GetMapMgr()->CreateCreature(guardian_entry);
+	LocationVector v = GetPositionNC();
+	float m_followAngle = angle + v.o;
+	float x = v.x +(3*(cosf(m_followAngle)));
+	float y = v.y +(3*(sinf(m_followAngle)));
+	Creature* p = NULLCREATURE;
+	p = GetMapMgr()->CreateCreature(guardian_entry);
+	if(p == NULLCREATURE)
+		return NULLUNIT;
+
 	p->SetInstanceID(GetMapMgr()->GetInstanceID());
 	p->Load(proto, x, y, v.z, angle);
 
-	if (lvl != 0)
+	if(lvl != 0)
 	{
 		// MANA.
-		p->SetPowerType(POWER_TYPE_MANA);
-		p->SetUInt32Value(UNIT_FIELD_MAXPOWER1,p->GetUInt32Value(UNIT_FIELD_MAXPOWER1)+28+10*lvl);
-		p->SetUInt32Value(UNIT_FIELD_POWER1,p->GetUInt32Value(UNIT_FIELD_POWER1)+28+10*lvl);
+		p->SetPowerType(p->GetProto()->Powertype);
+		p->SetUInt32Value(UNIT_FIELD_MAXPOWER1 + p->GetProto()->Powertype, p->GetUInt32Value(UNIT_FIELD_MAXPOWER1 + p->GetProto()->Powertype)+28+10*lvl);
+		p->SetUInt32Value(UNIT_FIELD_POWER1 + p->GetProto()->Powertype, p->GetUInt32Value(UNIT_FIELD_POWER1 + p->GetProto()->Powertype)+28+10*lvl);
 		// HEALTH.
 		p->SetUInt32Value(UNIT_FIELD_MAXHEALTH,p->GetUInt32Value(UNIT_FIELD_MAXHEALTH)+28+30*lvl);
 		p->SetUInt32Value(UNIT_FIELD_HEALTH,p->GetUInt32Value(UNIT_FIELD_HEALTH)+28+30*lvl);
@@ -617,8 +613,8 @@ Unit* GameObject::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,
 	}
 
 	p->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, GetGUID());
-    p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
-    p->SetZoneId(GetZoneId());
+	p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
+	p->SetZoneId(GetZoneId());
 	p->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,u_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	p->_setFaction();
 
@@ -629,12 +625,14 @@ Unit* GameObject::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,
 
 	p->PushToWorld(GetMapMgr());
 
+	if(duration)
+		sEventMgr.AddEvent(TO_UNIT(this), &Unit::SummonExpireSlot,Slot, EVENT_SUMMON_EXPIRE, duration, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+
 	return p;
 
 }
 void GameObject::_Expire()
 {
-	sEventMgr.RemoveEvents(this);
 	if(IsInWorld())
 		RemoveFromWorld(true);
 
@@ -643,14 +641,23 @@ void GameObject::_Expire()
 
 void GameObject::ExpireAndDelete()
 {
+	ExpireAndDelete(1); // Defaults to 1, so set to 1 for non delay including calls.
+}
+
+void GameObject::ExpireAndDelete(uint32 delay)
+{
 	if(m_deleted)
 		return;
 
-	m_deleted = true;
-	
-	// remove any events.
-	sEventMgr.RemoveEvents(this);
-	sEventMgr.AddEvent(TO_GAMEOBJECT(this), &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	delay = delay <= 0 ? 1 : delay;
+
+	if(delay == 1) // we're to be deleted next loop, don't update go anymore.
+		m_deleted = true;
+
+	if(sEventMgr.HasEvent(this,EVENT_GAMEOBJECT_EXPIRE))
+		sEventMgr.ModifyEventTimeLeft(this, EVENT_GAMEOBJECT_EXPIRE, delay);
+	else
+		sEventMgr.AddEvent(this, &GameObject::_Expire, EVENT_GAMEOBJECT_EXPIRE, delay, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
 void GameObject::CallScriptUpdate()
@@ -662,6 +669,7 @@ void GameObject::CallScriptUpdate()
 void GameObject::OnPushToWorld()
 {
 	Object::OnPushToWorld();
+	CALL_INSTANCE_SCRIPT_EVENT( m_mapMgr, OnGameObjectPushToWorld )( TO_GAMEOBJECT(this) );
 }
 
 void GameObject::OnRemoveInRangeObject(Object* pObj)
@@ -669,7 +677,7 @@ void GameObject::OnRemoveInRangeObject(Object* pObj)
 	Object::OnRemoveInRangeObject(pObj);
 	if(m_summonedGo && m_summoner == pObj)
 	{
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < 4; ++i)
 			if (m_summoner->m_ObjectSlots[i] == GetUIdFromGUID())
 				m_summoner->m_ObjectSlots[i] = 0;
 
@@ -710,18 +718,27 @@ void GameObject::GenerateLoot()
 }
 
 // Convert from radians to blizz rotation system
-void GameObject::UpdateRotation()
+void GameObject::UpdateRotation(float orientation3, float orientation4)
 {
-    static double const rotationMath = atan(pow(2.0f, -20.0f)); 
+	static double const rotationMath = atan(pow(2.0f, -20.0f));
+
 	m_rotation = 0;
-	double sinRotation = sin(GetOrientation()/2.0f); 
-	double cosRotation = cos(GetOrientation()/2.0f); 
-	if(cosRotation >= 0) 
-	    m_rotation = (uint64)(sinRotation / rotationMath * 1.0f) & 0x1FFFFF;
-	else 
-	    m_rotation = (uint64)(sinRotation / rotationMath * -1.0f) & 0x1FFFFF; 
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_2, (float) sinRotation); 
-	SetFloatValue(GAMEOBJECT_PARENTROTATION_3, (float) cosRotation); 	
+	double sinRotation = sin(GetOrientation() / 2.0f);
+	double cosRotation = cos(GetOrientation() / 2.0f);
+
+ 	if(cosRotation >= 0)
+		m_rotation = (uint64)(sinRotation / rotationMath * 1.0f) & 0x1FFFFF;
+	else
+		m_rotation = (uint64)(sinRotation / rotationMath * -1.0f) & 0x1FFFFF;
+
+	if(orientation3 == 0.0f && orientation4 == 0.0f)
+	{
+		orientation3 = (float) sinRotation;
+		orientation4 = (float) cosRotation;
+	}
+
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_2, orientation3);
+	SetFloatValue(GAMEOBJECT_PARENTROTATION_3, orientation4);
 }
 
 //	custom functions for scripting
@@ -736,7 +753,7 @@ uint8 GameObject::GetState()
 }
 
 // Destructable Buildings
-void GameObject::TakeDamage(uint32 ammount)
+void GameObject::TakeDamage(uint32 ammount, Object* mcaster, Object* pcaster, uint32 spellid)
 {
 	if(pInfo->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
 		return;
@@ -774,12 +791,17 @@ void GameObject::TakeDamage(uint32 ammount)
 			sHookInterface.OnDamageBuilding(TO_GAMEOBJECT(this));
 		}
 	}
+
+	WorldPacket data(SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 20);
+	data << mcaster->GetNewGUID() << pcaster->GetNewGUID();
+	data << uint32(ammount) << spellid;
+	mcaster->SendMessageToSet(&data, (mcaster->IsPlayer() ? true : false));
 }
 
 void GameObject::Rebuild()
 {
 	RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED);
 	RemoveFlag(GAMEOBJECT_FLAGS,GO_FLAG_DESTROYED);
-    SetUInt32Value(GAMEOBJECT_DISPLAYID, pInfo->DisplayID);
-    Health = pInfo->SpellFocus + pInfo->sound5;
+	SetUInt32Value(GAMEOBJECT_DISPLAYID, pInfo->DisplayID);
+	Health = pInfo->SpellFocus + pInfo->sound5;
 }

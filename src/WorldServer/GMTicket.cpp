@@ -6,23 +6,9 @@
 
 #include "StdAfx.h"
 
-enum GMticketType
-{
-	GM_TICKET_TYPE_STUCK = 1,
-	GM_TICKET_TYPE_BEHAVIOR_HARASSMENT = 2,
-	GM_TICKET_TYPE_GUILD = 3,
-	GM_TICKET_TYPE_ITEM = 4,
-	GM_TICKET_TYPE_ENVIRONMENTAL = 5,
-	GM_TICKET_TYPE_NON_QUEST_CREEP = 6,
-	GM_TICKET_TYPE_QUEST_QUEST_NPC = 7,
-	GM_TICKET_TYPE_TECHNICAL = 8,
-	GM_TICKET_TYPE_ACCOUNT_BILLING = 9,
-	GM_TICKET_TYPE_CHARACTER = 10,
-};
-
 void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 {
-	uint32 type;
+	uint32 map;
 	float x, y, z;
 	std::string message = "";
 	std::string message2 = "";
@@ -30,28 +16,28 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	WorldPacket data(SMSG_GMTICKET_CREATE, 4);
 
 	// recv Data
-	recv_data >> type;
+	recv_data >> map;
 	recv_data >> x;
 	recv_data >> y;
 	recv_data >> z;
 	recv_data >> message;
 	recv_data >> message2;
 
-	// Create new Ticket and store it
-	objmgr.remGMTicket(GetPlayer()->GetGUID());
-
-	ticket->guid = GetPlayer()->GetGUID();
-	ticket->type = type;
-	ticket->posX = x;
+	// Crap cleanup.
+	uint64 crap;
+	uint16 crap2;	uint8 crap3;	recv_data >> crap >> crap2 >> crap3;
+	// Remove pending tickets
+	objmgr.RemoveGMTicketByPlayer(GetPlayer()->GetGUID());
+	ticket->guid = objmgr.GenerateTicketID();	ticket->playerGuid = GetPlayer()->GetGUID();	ticket->map = map;	ticket->posX = x;
 	ticket->posY = y;
 	ticket->posZ = z;
-	ticket->message = message;
+	ticket->message = message, message2;
 	ticket->timestamp = (uint32)UNIXTIME;
 	ticket->name = GetPlayer()->GetName();
 	ticket->level = GetPlayer()->getLevel();
-
-	objmgr.remGMTicket(GetPlayer()->GetGUID());
-	objmgr.AddGMTicket(ticket,false);
+	ticket->deleted = false;	ticket->assignedToPlayer = 0;	ticket->comment = "";
+	// Add a new one
+	objmgr.AddGMTicket(ticket, false);
 
 	// Response - no errors
 	data << uint32(2);
@@ -62,10 +48,10 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(),GetPlayer());
 	if(chn)
 	{
-		char msg[100];
-		snprintf(msg, 100, "GmTicket 5,%s", GetPlayer()->GetName());
-		chn->Say(_player, msg, NULLPLR, true);
-	}
+		std::stringstream ss;
+#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
+		ss << "GmTicket 5, " << ticket->name;
+#else		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_NEWTICKET;		ss << ":" << ticket->guid;		ss << ":" << ticket->level;		ss << ":" << ticket->name;#endif		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}
 }
 
 void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
@@ -77,10 +63,10 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 	recv_data >> message;
 
 	// Update Ticket
-	GM_Ticket *ticket = objmgr.GetGMTicket(GetPlayer()->GetGUID());
-	if(!ticket) // Player doesnt have a GM Ticket yet
+	GM_Ticket *ticket = objmgr.GetGMTicketByPlayer(GetPlayer()->GetGUID());
+	if(!ticket) // Player doesn't have a GM Ticket yet
 	{
-		// Response - error couldnt find existing Ticket
+		// Response - error couldn't find existing Ticket
 		data << uint32(1);
 
 		SendPacket(&data);
@@ -89,28 +75,26 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 	ticket->message = message;
 	ticket->timestamp = (uint32)UNIXTIME;
 
-	objmgr.remGMTicket(GetPlayer()->GetGUID());
-	objmgr.AddGMTicket(ticket,false);
+	objmgr.UpdateGMTicket(ticket);
 
 	// Response - no errors
 	data << uint32(2);
 
 	SendPacket(&data);
-}
+#ifndef GM_TICKET_MY_MASTER_COMPATIBLE	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(),GetPlayer());	if(chn)	{		std::stringstream ss;		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_UPDATED;		ss << ":" << ticket->guid;		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}#endif}
 
 void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
 {
-	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
-	// no data
+	GM_Ticket* ticket = objmgr.GetGMTicketByPlayer(GetPlayer()->GetGUID());
 
 	// remove Ticket
-	objmgr.remGMTicket(GetPlayer()->GetGUID());
+	objmgr.RemoveGMTicketByPlayer(GetPlayer()->GetGUID());
 
 	// Response - no errors
-	data << uint32(9);
-
+	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);	data << uint32(9);
 	SendPacket(&data);
-}
+	// send message to gm_sync_chan
+	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), GetPlayer());	if(chn && ticket != NULL)	{		std::stringstream ss;#ifdef GM_TICKET_MY_MASTER_COMPATIBLE		ss << "GmTicket 1," << ticket->name;#else		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_REMOVED;		ss << ":" << ticket->guid;#endif		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}}
 
 void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 {
@@ -118,7 +102,7 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 	// no data
 
 	// get Current Ticket
-	GM_Ticket *ticket = objmgr.GetGMTicket(GetPlayer()->GetGUID());
+	GM_Ticket *ticket = objmgr.GetGMTicketByPlayer(GetPlayer()->GetGUID());
 
 	if(!ticket) // no Current Ticket
 	{
@@ -129,14 +113,15 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 
 	// Send current Ticket
 	data << uint32(6); // unk
+	data << uint32(1); // Deletable
 	data << ticket->message.c_str();
 	data << uint8(ticket->type);
 
 	SendPacket(&data);
 }
 
-void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket & recv_data)
-{
+
+void WorldSession::HandleGMTicketSystemStatusOpcode( WorldPacket & recv_data ){
 	WorldPacket data(SMSG_GMTICKET_SYSTEMSTATUS, 4);
 
 	// no data
@@ -150,10 +135,49 @@ void WorldSession::HandleGMTicketSystemStatusOpcode(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-void WorldSession::HandleGMTicketToggleSystemStatusOpcode(WorldPacket & recv_data)
+void WorldSession::HandleGMTicketToggleSystemStatusOpcode( WorldPacket & recv_data )
 {
 	if(!HasGMPermissions())
 		return;
 
 	sWorld.toggleGMTicketStatus();
 }
+
+void WorldSession::HandleGMTicketSurveySubmitOpcode( WorldPacket & recv_data )
+{
+	std::stringstream ss;
+	uint32 x;
+	recv_data >> x;
+	// sLog.outDebug("SURVEY: X = %u", x);
+
+	ss << "INSERT INTO gm_surveys (playerguid, question1, answer1, question2, answer2, question3, answer3, question4, answer4, question5, answer5, question6, answer6, question7, answer7, comment, timestamp) VALUES (";
+	ss << GetPlayer()->GetLowGUID() << ", ";
+
+	for( int i = 0; i < 10; ++i)
+	{
+		uint32 questionID;
+		recv_data >> questionID;
+		if( !questionID )
+			break;
+
+		uint8 value;
+		std::string unk_text;
+		recv_data >> value;
+		recv_data >> unk_text;
+
+		ss << questionID << ", ";
+		ss << uint32(value) << ", ";
+
+		// sLog.outDebug("SURVEY: ID %u, value %u, text %s", questionID, value, unk_text.c_str());
+	}
+
+	std::string comment;
+	recv_data >> comment;
+	// sLog.outDebug("SURVEY: comment %s", comment.c_str());
+
+	ss << "'" << CharacterDatabase.EscapeString( comment ) << "', ";
+	ss << uint32( UNIXTIME ) << ");";
+
+	CharacterDatabase.Execute(ss.str( ).c_str( ));
+}
+

@@ -18,9 +18,6 @@ struct GameObjectInfo
 	uint32 Type;
 	uint32 DisplayID;
 	char * Name;
-	char * Category;
- 	char * Castbartext;
- 	char * Unkstr;
 	uint32 SpellFocus;
 	uint32 sound1;
 	uint32 sound2;
@@ -45,10 +42,8 @@ struct GameObjectInfo
 	uint32 Unknown12;
 	uint32 Unknown13;
 	uint32 Unknown14;
-    float Size;
-    uint32 QuestItems[6];
-	uint32 InvolvedQuestCount;
 	uint32 *InvolvedQuestIds;
+	uint32 InvolvedQuestCount;
 	GossipScript * gossip_script;
 };
 #pragma pack(pop)
@@ -138,7 +133,7 @@ public:
 	ARCTIC_INLINE void SetInfo(GameObjectInfo * goi) { pInfo = goi; }
 
 	bool CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float orientation1, float orientation2, float orientation3, float orientation4);
-   
+
 	bool Load(GOSpawn *spawn);
 
 	virtual void Update(uint32 p_time);
@@ -156,7 +151,7 @@ public:
 	void DeleteFromDB();
 	void EventCloseDoor();
 	uint64 m_rotation;
-	void UpdateRotation();
+	void UpdateRotation(float orientation3 = 0.0f, float orientation4 = 0.0f);
 
 	// Fishing stuff
 	void UseFishingNode(Player* player);
@@ -180,10 +175,11 @@ public:
 		m_summoner = mob;
 		m_summonedGo = true;
 	}
-	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, Unit* u_caster);
+	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, Unit* u_caster, uint8 Slot);
 	void _Expire();
-	
-	void ExpireAndDelete(); 
+
+	void ExpireAndDelete();
+	void ExpireAndDelete(uint32 delay);
 
 	ARCTIC_INLINE bool isQuestGiver()
 	{
@@ -195,7 +191,7 @@ public:
 
 	// Quest data
 	std::list<QuestRelation *>* m_quests;
-   
+
 	uint32 *m_ritualmembers;
 	uint32 m_ritualcaster,m_ritualtarget;
 	uint16 m_ritualspell;
@@ -215,11 +211,10 @@ public:
 	CBattleground* m_battleground;
 
 	void CallScriptUpdate();
-   
 
 	ARCTIC_INLINE GameObjectAIScript* GetScript() { return myScript; }
 
-	void TrapSearchTarget();	// Traps need to find targets faster :P
+	void TrapSearchTarget(); // Traps need to find targets faster :P
 
 	ARCTIC_INLINE bool HasAI() { return spell != 0; }
 	GOSpawn * m_spawn;
@@ -231,8 +226,7 @@ public:
 	ARCTIC_INLINE void UseMine(){ if(mines_remaining) mines_remaining--;}
 	void CalcMineRemaining(bool force)
 	{
-		if(force || !mines_remaining)
-			mines_remaining = 0;
+		mines_remaining = 0; // 3.0.9
 	}
 
 	uint32 GetGOReqSkill();
@@ -243,15 +237,15 @@ public:
 	// loooot
 	void GenerateLoot();
 
-    // custom functions for scripting
+	// custom functions for scripting
 	void SetState(uint8 state);
 	uint8 GetState();
-    
+
 	// Destructable Building
-    uint32 Health;
-    void TakeDamage(uint32 ammount);
-    void Rebuild();
-    
+	uint32 Health;
+	void TakeDamage(uint32 ammount, Object* mcaster, Object* pcaster, uint32 spellid = 0);
+	void Rebuild();
+
 protected:
 
 	bool m_summonedGo;
@@ -259,9 +253,8 @@ protected:
 	GameObjectInfo *pInfo;
 	GameObjectAIScript * myScript;
 	uint32 _fields[GAMEOBJECT_END];
-	uint32 mines_remaining;  // used for mining to mark times it can be mined
+	uint32 mines_remaining; // used for mining to mark times it can be mined
 
 };
 
 #endif
-

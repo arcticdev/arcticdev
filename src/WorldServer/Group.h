@@ -80,14 +80,14 @@ public:
 	bool AddPlayer(PlayerInfo * info);
 	void RemovePlayer(PlayerInfo * info);
 	
-	ARCTIC_INLINE bool IsFull(void)				   { return m_GroupMembers.size() >= MAX_GROUP_SIZE_PARTY; }
-	ARCTIC_INLINE size_t GetMemberCount(void)	   { return m_GroupMembers.size(); }
+	ARCTIC_INLINE bool IsFull(void)				  { return m_GroupMembers.size() >= MAX_GROUP_SIZE_PARTY; }
+	ARCTIC_INLINE size_t GetMemberCount(void)	  { return m_GroupMembers.size(); }
 	
-	ARCTIC_INLINE uint32 GetID(void)			   { return m_Id; }
-	ARCTIC_INLINE void SetID(uint32 newid)		   { m_Id = newid; }
+	ARCTIC_INLINE uint32 GetID(void)			  { return m_Id; }
+	ARCTIC_INLINE void SetID(uint32 newid)		  { m_Id = newid; }
 
-	ARCTIC_INLINE void   SetParent(Group* parent)  { m_Parent = parent; }
-	ARCTIC_INLINE Group* GetParent(void)		   { return m_Parent; }
+	ARCTIC_INLINE void   SetParent(Group* parent) { m_Parent = parent; }
+	ARCTIC_INLINE Group* GetParent(void)		  { return m_Parent; }
 
 	void   Disband();
 	bool HasMember(uint32 guid);
@@ -146,7 +146,7 @@ public:
 	bool HasDisenchanters();
 	
 	// Accessing functions
-	ARCTIC_INLINE SubGroup * GetSubGroup(uint32 Id)
+	ARCTIC_INLINE SubGroup* GetSubGroup(uint32 Id)
 	{
 		if(Id >= 8)
 			return 0;
@@ -158,10 +158,10 @@ public:
 
 	ARCTIC_INLINE uint8 GetMethod(void) { return m_LootMethod; }
 	ARCTIC_INLINE uint16 GetThreshold(void) { return m_LootThreshold; }
-	ARCTIC_INLINE PlayerInfo * GetLeader(void) { return m_Leader; }
-	ARCTIC_INLINE PlayerInfo * GetLooter(void) { return m_Looter; }
+	ARCTIC_INLINE PlayerInfo* GetLeader(void) { return m_Leader; }
+	ARCTIC_INLINE PlayerInfo* GetLooter(void) { return m_Looter; }
 
-	void MovePlayer(PlayerInfo * info, uint8 subgroup);
+	void MovePlayer(PlayerInfo* info, uint8 subgroup);
 
 	bool HasMember(Player* pPlayer);
 	bool HasMember(PlayerInfo * info);
@@ -255,4 +255,4 @@ public:
 	uint32 m_prayerOfMendingTarget;
 };
 
-#endif  // _GROUP_H_
+#endif // _GROUP_H_

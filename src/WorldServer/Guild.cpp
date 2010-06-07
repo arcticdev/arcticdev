@@ -21,9 +21,8 @@ Guild::Guild()
 	m_borderStyle = 0;
 	m_creationTimeStamp = 0;
 	m_bankBalance = 0;
-	m_bankTabCount = 0;
-	creationDay = creationMonth = creationYear = 0;
-	m_hiLogId = 1;
+	creationDay = creationMonth=creationYear = 0;
+	m_hiLogId=1;
 	memset(m_ranks, 0, sizeof(GuildRank*)*MAX_GUILD_RANKS);
 }
 
@@ -38,7 +37,7 @@ Guild::~Guild()
 		delete itr->second;
 	}
 
-	for(uint32 i = 0; i < MAX_GUILD_RANKS; ++i)
+	for(uint8 i = 0; i < MAX_GUILD_RANKS; ++i)
 	{
 		if(m_ranks[i] != NULL)
 		{
@@ -54,13 +53,14 @@ Guild::~Guild()
 
 	for(GuildBankTabVector::iterator itr = m_bankTabs.begin(); itr != m_bankTabs.end(); ++itr)
 	{
-		for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
-			if((*itr)->pSlots[i] != NULL)
+		for( uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i )
+			if( (*itr)->pSlots[i] != NULL )
 			{
 				(*itr)->pSlots[i]->Destructor();
+				(*itr)->pSlots[i] = NULL;
 			}
 
-		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
+		for( list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2 )
 			delete (*it2);
 
 		delete (*itr);
@@ -214,7 +214,7 @@ GuildRank * Guild::CreateGuildRank(const char * szRankName, uint32 iPermissions,
 			{
 				for(j = 0; j < MAX_GUILD_BANK_TABS; ++j)
 				{
-					r->iTabPermissions[j].iFlags = 3;			// this is both use tab and withdraw
+					r->iTabPermissions[j].iFlags = GR_RIGHT_GUILD_BANK_ALL;
 					r->iTabPermissions[j].iStacksPerDay = -1;	// -1 = unlimited
 				}
 			}
@@ -222,7 +222,7 @@ GuildRank * Guild::CreateGuildRank(const char * szRankName, uint32 iPermissions,
 			m_lock.Release();
 
 			// save the rank into the database
-			CharacterDatabase.Execute("INSERT INTO guild_ranks VALUES(%u, %u, \"%s\", %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)",
+			CharacterDatabase.Execute("INSERT INTO guild_ranks VALUES(%u, %u, \'%s\', %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)",
 				m_guildId, i, CharacterDatabase.EscapeString(string(szRankName)).c_str(),
 				r->iRights, r->iGoldLimitPerDay,
 				r->iTabPermissions[0].iFlags, r->iTabPermissions[0].iStacksPerDay,
@@ -248,6 +248,7 @@ void Guild::CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn)
 	m_lock.Acquire();
 
 	m_guildId = objmgr.GenerateGuildId();
+	objmgr.AddGuild( this );
 	m_guildName = strdup(pCharter->GuildName.c_str());
 	m_guildLeader = pCharter->LeaderGuid;
 	m_creationTimeStamp = (uint32)UNIXTIME;
@@ -258,9 +259,9 @@ void Guild::CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn)
 	// rest of the fields have been nulled out, create some default ranks.
 	GuildRank * leaderRank = CreateGuildRank("Guild Master", GR_RIGHT_ALL, true);
 	CreateGuildRank("Officer", GR_RIGHT_ALL, true);
-	CreateGuildRank("Veteran", GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
-	CreateGuildRank("Member", GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
-	GuildRank * defRank = CreateGuildRank("Initiate", GR_RIGHT_GCHATLISTEN | GR_RIGHT_GCHATSPEAK, false);
+	CreateGuildRank("Veteran", GR_RIGHT_DEFAULT, false);
+	CreateGuildRank("Member", GR_RIGHT_DEFAULT, false);
+	GuildRank * defRank = CreateGuildRank("Initiate", GR_RIGHT_DEFAULT, false);
 
 	// turn off command logging, we don't wanna spam the logs
 	m_commandLogging = false;
@@ -313,7 +314,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		return;
 	}
 
-	// find the lowest rank that isnt his rank
+	// find the lowest rank that isn't his rank
 	int32 nh = pMember->guildRank->iId - 1;
 	GuildRank * newRank = NULL;
 
@@ -324,7 +325,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		nh--;
 	}
 
-	if(newRank==NULL)
+	if(newRank== NULL)
 	{
 		m_lock.Release();
 		if(pClient != NULL )
@@ -335,7 +336,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	GuildMemberMap::iterator itr = m_members.find(pMember);
 	if(itr == m_members.end())
 	{
-		// shouldnt happen
+		// shouldn't happen
 		m_lock.Release();
 		return;
 	}
@@ -345,7 +346,7 @@ void Guild::PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 
 	// log it
 	LogGuildEvent(GUILD_EVENT_PROMOTION, 3, pClient->GetPlayer()->GetName(), pMember->name, newRank->szRankName);
-	AddGuildLogEntry(GUILD_LOG_EVENT_PROMOTION, 2, pClient->GetPlayer()->GetLowGUID(), pMember->guid, newRank->iId);
+	AddGuildLogEntry(GUILD_LOG_EVENT_PROMOTION, 3, pClient->GetPlayer()->GetLowGUID(), pMember->guid, newRank->iId);
 
 	// update in the database
 	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = %u WHERE playerid = %u AND guildid = %u", newRank->iId, pMember->guid, m_guildId);
@@ -394,7 +395,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		++nh;
 	}
 
-	if(newRank==NULL)
+	if(newRank== NULL)
 	{
 		m_lock.Release();
 		if(pClient != NULL )
@@ -405,7 +406,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 	GuildMemberMap::iterator itr = m_members.find(pMember);
 	if(itr == m_members.end())
 	{
-		// shouldnt happen
+		// shouldn't happen
 		m_lock.Release();
 		return;
 	}
@@ -415,7 +416,7 @@ void Guild::DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 
 	// log it
 	LogGuildEvent(GUILD_EVENT_DEMOTION, 3, pClient->GetPlayer()->GetName(), pMember->name, newRank->szRankName);
-	AddGuildLogEntry(GUILD_LOG_EVENT_DEMOTION, 2, pClient->GetPlayer()->GetLowGUID(), pMember->guid, newRank->iId);
+	AddGuildLogEntry(GUILD_LOG_EVENT_DEMOTION, 3, pClient->GetPlayer()->GetLowGUID(), pMember->guid, newRank->iId);
 
 	// update in the database
 	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = %u WHERE playerid = %u AND guildid = %u", newRank->iId, pMember->guid, m_guildId);
@@ -441,18 +442,17 @@ bool Guild::LoadFromDB(Field * f)
 	m_guildInfo = strlen(f[8].GetString()) ? strdup(f[8].GetString()) : NULL;
 	m_motd = strlen(f[9].GetString()) ? strdup(f[9].GetString()) : NULL;
 	m_creationTimeStamp = f[10].GetUInt32();
-	m_bankTabCount = f[11].GetUInt32();
-	m_bankBalance = f[12].GetUInt32();
+	m_bankBalance = f[11].GetUInt64();
 
 	// load ranks
 	uint32 j;
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM guild_ranks WHERE guildId = %u ORDER BY rankId ASC", m_guildId);
-	if(result==NULL)
+	if(result == NULL)
 		return false;
 
 	uint32 sid = 0;
 
-	do 
+	do
 	{
 		GuildRank * r = new GuildRank;
 		Field * f2 = result->Fetch();
@@ -460,7 +460,7 @@ bool Guild::LoadFromDB(Field * f)
 		if(r->iId!=sid)
 		{
 			Log.Notice("Guild", "Renaming rank %u of guild %s to %u.", r->iId, m_guildName, sid);
-			CharacterDatabase.Execute("UPDATE guild_ranks SET rankId = %u WHERE guildId = %u AND rankName = \"%s\"", r->iId,
+			CharacterDatabase.Execute("UPDATE guild_ranks SET rankId = %u WHERE guildId = %u AND rankName = \'%s\'", r->iId,
 				m_guildId, CharacterDatabase.EscapeString(string(f2[2].GetString())).c_str());
 
 			r->iId=sid;
@@ -469,7 +469,7 @@ bool Guild::LoadFromDB(Field * f)
 		r->szRankName = strdup(f2[2].GetString());
 		r->iRights = f2[3].GetUInt32();
 		r->iGoldLimitPerDay = f2[4].GetUInt32();
-		
+
 		for(j = 0; j < MAX_GUILD_BANK_TABS; ++j)
 		{
 			r->iTabPermissions[j].iFlags = f2[5+(j*2)].GetUInt32();
@@ -485,10 +485,10 @@ bool Guild::LoadFromDB(Field * f)
 
 	// load members
 	result = CharacterDatabase.Query("SELECT * FROM guild_data WHERE guildid = %u", m_guildId);
-	if(result==NULL)
+	if(result == NULL)
 		return false;
 
-	do 
+	do
 	{
 		Field * f3 = result->Fetch();
 		GuildMember * gm = new GuildMember;
@@ -499,14 +499,14 @@ bool Guild::LoadFromDB(Field * f)
 			continue;
 		}
 
-		if(f3[2].GetUInt32() >= MAX_GUILD_RANKS || m_ranks[f3[2].GetUInt32()] == NULL) 
+		if(f3[2].GetUInt32() >= MAX_GUILD_RANKS || m_ranks[f3[2].GetUInt32()] == NULL)
 		{
 			delete gm;
 			continue;
 		}
 
 		gm->pRank = m_ranks[f3[2].GetUInt32()];
-		if(gm->pRank==NULL)
+		if(gm->pRank == NULL)
 			gm->pRank=FindLowestRank();
 		gm->pPlayer->guild=this;
 		gm->pPlayer->guildRank=gm->pRank;
@@ -555,11 +555,11 @@ bool Guild::LoadFromDB(Field * f)
 	result = CharacterDatabase.Query("SELECT * FROM guild_logs WHERE guildid = %u ORDER BY timestamp ASC", m_guildId);
 	if(result)
 	{
-		do 
+		do
 		{
 			GuildLogEvent * li = new GuildLogEvent;
 			li->iLogId = result->Fetch()[0].GetUInt32();
-			li->iEvent = result->Fetch()[3].GetUInt32();
+			li->iEvent = static_cast<uint8>( result->Fetch()[3].GetUInt32() );
 			li->iTimeStamp = result->Fetch()[2].GetUInt32();
 			li->iEventData[0] = result->Fetch()[4].GetUInt32();
 			li->iEventData[1] = result->Fetch()[5].GetUInt32();
@@ -573,7 +573,7 @@ bool Guild::LoadFromDB(Field * f)
 	sid = 0;
 	if(result)
 	{
-		do 
+		do
 		{
 			if((sid++) != result->Fetch()[1].GetUInt32())
 			{
@@ -592,15 +592,15 @@ bool Guild::LoadFromDB(Field * f)
 			pTab->iTabId = (uint8)result->Fetch()[1].GetUInt32();
 			pTab->szTabName = (strlen(result->Fetch()[2].GetString()) > 0) ? strdup(result->Fetch()[2].GetString()) : NULL;
 			pTab->szTabIcon = (strlen(result->Fetch()[3].GetString()) > 0) ? strdup(result->Fetch()[3].GetString()) : NULL;
-			
+			pTab->szTabInfo = (strlen(result->Fetch()[4].GetString()) > 0) ? strdup(result->Fetch()[4].GetString()) : NULL;
+
 			for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
 				pTab->pSlots[i] = NULLITEM;
 
 			if(res2)
 			{
-				do 
+				do
 				{
-
 					Item* pItem = objmgr.LoadItem(res2->Fetch()[3].GetUInt64());
 					if(pItem == NULL)
 					{
@@ -618,7 +618,7 @@ bool Guild::LoadFromDB(Field * f)
 			res2 = CharacterDatabase.Query("SELECT * FROM guild_banklogs WHERE guildid = %u AND tabid = %u ORDER BY timestamp ASC", m_guildId, result->Fetch()[1].GetUInt32());
 			if(res2 != NULL)
 			{
-				do 
+				do
 				{
 					GuildBankEvent * ev= new GuildBankEvent;
 					ev->iLogId=res2->Fetch()[0].GetUInt32();
@@ -643,7 +643,7 @@ bool Guild::LoadFromDB(Field * f)
 	result = CharacterDatabase.Query("SELECT * FROM guild_banklogs WHERE guildid = %u AND tabid = 6 ORDER BY timestamp ASC", m_guildId);
 	if(result != NULL)
 	{
-		do 
+		do
 		{
 			GuildBankEvent * ev= new GuildBankEvent;
 			ev->iLogId=result->Fetch()[0].GetUInt32();
@@ -680,12 +680,12 @@ void Guild::SetMOTD(const char * szNewMotd, WorldSession * pClient)
 	if(strlen(szNewMotd))
 	{
 		m_motd = strdup(szNewMotd);
-		CharacterDatabase.Execute("UPDATE guilds SET motd = \"%s\" WHERE guildId = %u", CharacterDatabase.EscapeString(string(szNewMotd)).c_str(), m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET motd = \'%s\' WHERE guildId = %u", CharacterDatabase.EscapeString(string(szNewMotd)).c_str(), m_guildId);
 	}
 	else
 	{
 		m_motd= NULL;
-		CharacterDatabase.Execute("UPDATE guilds SET motd = \"\" WHERE guildId = %u", m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET motd = \'\' WHERE guildId = %u", m_guildId);
 	}
 
 	LogGuildEvent(GUILD_EVENT_MOTD, 1, szNewMotd);
@@ -708,12 +708,12 @@ void Guild::SetGuildInformation(const char * szGuildInformation, WorldSession * 
 	if(strlen(szGuildInformation))
 	{
 		m_guildInfo = strdup(szGuildInformation);
-		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \"%s\" WHERE guildId = %u", CharacterDatabase.EscapeString(string(szGuildInformation)).c_str(), m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \'%s\' WHERE guildId = %u", CharacterDatabase.EscapeString(string(szGuildInformation)).c_str(), m_guildId);
 	}
 	else
 	{
 		m_guildInfo= NULL;
-		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \"\" WHERE guildId = %u", m_guildId);
+		CharacterDatabase.Execute("UPDATE guilds SET guildInfo = \'\' WHERE guildId = %u", m_guildId);
 	}
 }
 
@@ -736,12 +736,12 @@ void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 F
 	else
 		r = (ForcedRank<0) ? FindLowestRank() : m_ranks[ForcedRank];
 
-	if(r==NULL)
+	if(r == NULL)
 		r=FindLowestRank();
 
-	if(r==NULL)
+	if(r == NULL)
 	{
-		// shouldnt happen
+		// shouldn't happen
 		m_lock.Release();
 		return;
 	}
@@ -771,7 +771,7 @@ void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 F
 
 void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 {
-	if(pMember->guild != this )
+	if( pMember->guild != this )
 		return;
 
 	if(pMember->guildRank->iId==0)
@@ -823,7 +823,8 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 		if(pMember->m_loggedInPlayer)
 		{
 			Player* plr = objmgr.GetPlayer(pMember->guid);
-			sChatHandler.SystemMessageToPlr(plr, "You have been removed from the guild by %s", pClient->GetPlayer()->GetName());
+			if (plr)
+				sChatHandler.SystemMessageToPlr(plr, "You have been removed from the guild by %s", pClient->GetPlayer()->GetName());
 		}
 		LogGuildEvent(GUILD_EVENT_REMOVED, 2, pMember->name, pClient->GetPlayer()->GetName());
 		AddGuildLogEntry(GUILD_LOG_EVENT_REMOVAL, 2, pClient->GetPlayer()->GetLowGUID(), pMember->guid);
@@ -874,10 +875,10 @@ void Guild::SetPublicNote(PlayerInfo * pMember, const char * szNewNote, WorldSes
 			itr->second->szPublicNote = NULL;
 
 			// Update the database
-		if (itr->second->szPublicNote == NULL) 
-			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"\" WHERE playerid=%u", pMember->guid);
+		if (itr->second->szPublicNote == NULL)
+			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\'\' WHERE playerid=%u", pMember->guid);
 		else
-			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\"%s\" WHERE playerid=%u", 
+			CharacterDatabase.Execute("UPDATE guild_data SET publicNote=\'%s\' WHERE playerid=%u",
 				CharacterDatabase.EscapeString(string(itr->second->szPublicNote)).c_str(),
 				pMember->guid
 			);
@@ -914,10 +915,10 @@ void Guild::SetOfficerNote(PlayerInfo * pMember, const char * szNewNote, WorldSe
 			itr->second->szOfficerNote = NULL;
 
 		// Update the database
-		if (itr->second->szOfficerNote == NULL) 
-			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"\" WHERE playerid=%u", pMember->guid);
+		if (itr->second->szOfficerNote == NULL)
+			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\'\' WHERE playerid=%u", pMember->guid);
 		else
-			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\"%s\" WHERE playerid=%u", 
+			CharacterDatabase.Execute("UPDATE guild_data SET officerNote=\'%s\' WHERE playerid=%u",
 				CharacterDatabase.EscapeString(string(itr->second->szOfficerNote)).c_str(),
 				pMember->guid
 			);
@@ -932,11 +933,11 @@ void Guild::RemoveGuildRank(WorldSession * pClient)
 	m_lock.Acquire();
 
 	GuildRank * pLowestRank = FindLowestRank();
-	if(pLowestRank == NULL || pLowestRank->iId < 5)		// cannot delete default ranks.
+	if(pLowestRank == NULL || pLowestRank->iId < 5) // cannot delete default ranks.
 	{
 		pClient->SystemMessage("Cannot find a rank to delete.");
 		m_lock.Release();
-		return;		
+		return;
 	}
 
 	// check for players that need to be promoted
@@ -960,11 +961,11 @@ void Guild::RemoveGuildRank(WorldSession * pClient)
 void Guild::Disband()
 {
 	m_lock.Acquire();
-	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for( GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr )
 	{
-		itr->first->guild=NULL;
-		itr->first->guildRank=NULL;
-		itr->first->guildMember=NULL;
+		itr->first->guild = NULL;
+		itr->first->guildRank = NULL;
+		itr->first->guildMember = NULL;
 		if(itr->first->m_loggedInPlayer != NULL)
 		{
 			itr->first->m_loggedInPlayer->SetGuildId(0);
@@ -987,7 +988,7 @@ void Guild::Disband()
 
 void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 {
-	if(pClient->GetPlayer()->GetLowGUID() != m_guildLeader /* && pClient->GetPlayer()->m_playerInfo != pNewMaster*/ )
+	if( pClient->GetPlayer()->GetLowGUID() != m_guildLeader )
 	{
 		Guild::SendGuildCommandResult(pClient, GUILD_PROMOTE_S, "", GUILD_PERMISSIONS);
 		return;
@@ -995,7 +996,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 
 	m_lock.Acquire();
 	GuildRank * newRank = FindHighestRank();
-	if(newRank==NULL)
+	if(newRank == NULL)
 	{
 		m_lock.Release();
 		return;
@@ -1003,7 +1004,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 
 	GuildMemberMap::iterator itr = m_members.find(pNewMaster);
 	GuildMemberMap::iterator itr2 = m_members.find(pClient->GetPlayer()->m_playerInfo);
-	ASSERT(m_ranks[0]!=NULL);
+	ASSERT(m_ranks[0]!= NULL);
 	if(itr==m_members.end() || itr2==m_members.end())
 	{
 		m_lock.Release();
@@ -1015,15 +1016,18 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 	itr2->second->pRank = newRank;
 	itr2->first->guildRank = newRank;
 
-	//set new leader
+	// set new leader
 	CharacterDatabase.Execute("UPDATE guilds SET leaderGuid = %u WHERE guildId = %u", itr->first->guid, m_guildId);
 	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = 0 WHERE playerid = %u AND guildid = %u", itr->first->guid, m_guildId);
 
-	//degradated old leader
+	// degradated old leader
 	CharacterDatabase.Execute("UPDATE guild_data SET guildRank = %u WHERE playerid = %u AND guildid = %u", itr2->second->pRank->iId, itr2->first->guid, m_guildId);
 
 	m_guildLeader = itr->first->guid;
 	m_lock.Release();
+
+	LogGuildEvent(GUILD_EVENT_LEADER_CHANGED, 2, pClient->GetPlayer()->GetName(), pNewMaster->name);
+	// TODO: Figure out the GUILD_LOG_EVENT_LEADER_CHANGED code
 }
 
 uint32 Guild::GenerateGuildLogEventId()
@@ -1046,10 +1050,8 @@ void Guild::GuildChat(const char * szMessage, WorldSession * pClient, int32 iTyp
 		return;
 	}
 
-	uint8 flag = pClient->GetPlayer()->bGMTagOn ? 4 : 0;
-
 	WorldPacket * data = sChatHandler.FillMessageData( CHAT_MSG_GUILD, iType == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL, szMessage,
-		pClient->GetPlayer()->GetGUID(), flag);
+		pClient->GetPlayer()->GetGUID(), pClient->GetPlayer()->bGMTagOn ? 4 : 0);
 
 	m_lock.Acquire();
 	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
@@ -1073,10 +1075,8 @@ void Guild::OfficerChat(const char * szMessage, WorldSession * pClient, int32 iT
 		return;
 	}
 
-	uint8 flag = pClient->GetPlayer()->bGMTagOn ? 4 : 0;
-
 	WorldPacket * data = sChatHandler.FillMessageData( CHAT_MSG_OFFICER, iType == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL, szMessage,
-		pClient->GetPlayer()->GetGUID(), flag);
+		pClient->GetPlayer()->GetGUID(), pClient->GetPlayer()->bGMTagOn ? 4 : 0);
 
 	m_lock.Acquire();
 	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
@@ -1108,7 +1108,7 @@ void Guild::SendGuildLog(WorldSession * pClient)
 				data << uint64((*itr)->iEventData[1]);
 				data << uint8((*itr)->iEventData[2]);
 			}break;
-			
+
 		case GUILD_LOG_EVENT_INVITE:
 		case GUILD_LOG_EVENT_REMOVAL:
 			{
@@ -1139,7 +1139,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 	GuildRank * r;
 	Player* pPlayer;
 	uint32 i, j;
-	uint32 c =0;
+	uint32 c = 0;
 	uint32 pos;
 	GuildRank * myRank;
 	bool ofnote;
@@ -1192,8 +1192,8 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 		pPlayer = itr->second->pPlayer->m_loggedInPlayer;
 
 		data << itr->first->guid;
-		data << uint32(0);			// highguid
-		data << uint8( (pPlayer!=NULL) ? 1 : 0 );
+		data << uint32(0); // highguid
+		data << uint8( (pPlayer != NULL) ? 1 : 0 );
 		data << itr->first->name;
 		data << itr->second->pRank->iId;
 		data << uint8(itr->first->lastLevel);
@@ -1260,9 +1260,19 @@ void Guild::SendGuildQuery(WorldSession * pClient)
 	m_lock.Release();
 }
 
+void Guild::SendTurnInPetitionResult( WorldSession * pClient, uint32 result )
+{
+	if( pClient == NULL )
+		return;
+
+	WorldPacket data( SMSG_TURN_IN_PETITION_RESULTS, 4 );
+	data << result;
+	pClient->SendPacket( &data );
+}
+
 void Guild::CreateInDB()
 {
-	CharacterDatabase.Execute("INSERT INTO guilds VALUES(%u, \"%s\", %u, %u, %u, %u, %u, %u, '', '', %u, 0, 0)",
+	CharacterDatabase.Execute("INSERT INTO guilds VALUES(%u, \'%s\', %u, %u, %u, %u, %u, %u, '', '', %u, 0)",
 		m_guildId, CharacterDatabase.EscapeString(string(m_guildName)).c_str(), m_guildLeader, m_emblemStyle, m_emblemColor, m_borderColor, m_borderStyle,
 		m_backgroundColor, m_creationTimeStamp);
 }
@@ -1277,32 +1287,31 @@ void Guild::BuyBankTab(WorldSession * pClient)
 	if(pClient && pClient->GetPlayer()->GetLowGUID() != m_guildLeader)
 		return;
 
-	if(m_bankTabCount>=MAX_GUILD_BANK_TABS)
+	if( GetBankTabCount() >= MAX_GUILD_BANK_TABS )
 		return;
 
 	m_lock.Acquire();
 
 	GuildBankTab * pTab = new GuildBankTab;
-	pTab->iTabId = m_bankTabCount;
+	pTab->iTabId = GetBankTabCount();
 	for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
 		pTab->pSlots[i] = NULLITEM;
-	
-	pTab->szTabName=NULL;
-	pTab->szTabIcon=NULL;
+
+	pTab->szTabName = NULL;
+	pTab->szTabIcon = NULL;
+	pTab->szTabInfo = NULL;
 
 	m_bankTabs.push_back(pTab);
-	m_bankTabCount++;
 
-	CharacterDatabase.Execute("INSERT INTO guild_banktabs VALUES(%u, %u, '', '')", m_guildId, (uint32)pTab->iTabId);
-	CharacterDatabase.Execute("UPDATE guilds SET bankTabCount = %u WHERE guildId = %u", m_bankTabCount, m_guildId);
+	CharacterDatabase.Execute("INSERT INTO guild_banktabs VALUES(%u, %u, '', '', '')", m_guildId, (uint32)pTab->iTabId);
 	m_lock.Release();
 }
 
 uint32 GuildMember::CalculateAllowedItemWithdraws(uint32 tab)
 {
-	if(pRank->iTabPermissions[tab].iStacksPerDay == -1)		// Unlimited
+	if(pRank->iTabPermissions[tab].iStacksPerDay == -1) // Unlimited
 		return 0xFFFFFFFF;
-	if(pRank->iTabPermissions[tab].iStacksPerDay == 0)		// none
+	if(pRank->iTabPermissions[tab].iStacksPerDay == 0)  // none
 		return 0;
 
 	if((UNIXTIME - uLastItemWithdrawReset[tab]) >= TIME_DAY)
@@ -1335,7 +1344,7 @@ void GuildMember::OnItemWithdraw(uint32 tab)
 
 uint32 GuildMember::CalculateAvailableAmount()
 {
-	if(pRank->iGoldLimitPerDay == -1)		// Unlimited
+	if(pRank->iGoldLimitPerDay == -1) // Unlimited
 		return 0xFFFFFFFF;
 
 	if(pRank->iGoldLimitPerDay == 0)
@@ -1349,7 +1358,7 @@ uint32 GuildMember::CalculateAvailableAmount()
 
 void GuildMember::OnMoneyWithdraw(uint32 amt)
 {
-	if(pRank->iGoldLimitPerDay <= 0)		// Unlimited
+	if(pRank->iGoldLimitPerDay <= 0) // Unlimited
 		return;
 
 	// reset the counter if a day has passed
@@ -1380,14 +1389,14 @@ void Guild::DepositMoney(WorldSession * pClient, uint32 uAmount)
 	m_bankBalance += uAmount;
 
 	// update in db
-	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %u WHERE guildId = %u", m_bankBalance, m_guildId);
+	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", m_bankBalance, m_guildId);
 
 	// take the money, oh noes gm pls gief gold mi hero poor
 	pClient->GetPlayer()->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -(int32)uAmount);
 
 	// broadcast guild event telling everyone the new balance
 	char buf[20];
-	snprintf(buf, 20, I64FMT, (long long unsigned int)m_bankBalance);
+	snprintf(buf, 20, I64FMT, m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
 
 	// log it!
@@ -1435,11 +1444,11 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 	m_bankBalance -= uAmount;
 
 	// update in db
-	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %u WHERE guildId = %u", (m_bankBalance>0)?m_bankBalance:0, m_guildId);
+	CharacterDatabase.Execute("UPDATE guilds SET bankBalance = %llu WHERE guildId = %u", (m_bankBalance>0)?m_bankBalance:0, m_guildId);
 
 	// notify everyone with the new balance
 	char buf[20];
-	snprintf(buf, 20, I64FMT, (long long unsigned int)m_bankBalance);
+	snprintf(buf, 20, I64FMT, m_bankBalance);
 	LogGuildEvent(GUILD_EVENT_SETNEWBALANCE, 1, buf);
 
 	// log it!
@@ -1478,7 +1487,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 	}
 	else
 	{
-		if(iSlot >= m_bankTabCount)
+		if( iSlot >= GetBankTabCount() )
 		{
 			m_lock.Release();
 			return;
@@ -1491,7 +1500,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 			return;
 		}
 
-		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
+		WorldPacket data( MSG_GUILD_BANK_LOG_QUERY, ( 17 * m_moneyLog.size() ) + 2 );
 		uint32 lt = (uint32)UNIXTIME;
 		data << uint8(iSlot);
 		data << uint8((pTab->lLog.size() < 25) ? pTab->lLog.size() : 25);
@@ -1501,7 +1510,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 		{
 			data << (*itr)->iAction;
 			data << (*itr)->uPlayer;
-			data << uint32(0);			// highguid
+			data << uint32(0); // highguid
 			data << (*itr)->uEntry;
 			data << (*itr)->iStack;
 			data << uint32(lt - (*itr)->uTimeStamp);
@@ -1509,7 +1518,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 			if( (++count) >= 25 )
 				break;
 		}
-		
+
 		m_lock.Release();
 		SendPacket(&data);
 	}
@@ -1604,5 +1613,30 @@ void Guild::SendGuildInfo(WorldSession * pClient)
 	data << uint32(m_members.size());
 	data << uint32(m_members.size());
 
-	pClient->SendPacket(&data);	
+	pClient->SendPacket(&data);
 }
+
+void Guild::ChangeGuildName(char* name)
+{
+	m_guildName = name;
+	
+	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	{
+		Player* plr = itr->first->m_loggedInPlayer;
+		if(plr != NULL)
+			SendGuildQuery(plr->GetSession());
+	}
+}
+
+void Guild::ListGuildMembers(WorldSession* session)
+{
+	session->GetPlayer()->BroadcastMessage("Following Members are in the guild %s",m_guildName);
+	
+	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	{
+		if(itr->first != NULL)
+			session->GetPlayer()->BroadcastMessage("%s",itr->first->name);
+	}
+	
+}
+

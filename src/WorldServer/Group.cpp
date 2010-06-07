@@ -8,34 +8,34 @@
 
 enum PartyUpdateFlags
 {
-	GROUP_UPDATE_FLAG_NONE = 0,		            // 0x00000000
-	GROUP_UPDATE_FLAG_ONLINE = 1,		        // 0x00000001  uint8
-	GROUP_UPDATE_FLAG_HEALTH = 2,		        // 0x00000002  uint16
-	GROUP_UPDATE_FLAG_MAXHEALTH = 4,	    	// 0x00000004  uint16
-	GROUP_UPDATE_FLAG_POWER_TYPE = 8,	  	    // 0x00000008  uint16
-	GROUP_UPDATE_FLAG_POWER = 16,		        // 0x00000010  uint16
-	GROUP_UPDATE_FLAG_MAXPOWER = 32,		    // 0x00000020  uint16
-	GROUP_UPDATE_FLAG_LEVEL = 64,		        // 0x00000040  uint16
-	GROUP_UPDATE_FLAG_ZONEID = 128,		        // 0x00000080  uint16
-	GROUP_UPDATE_FLAG_POSITION = 256,	   	    // 0x00000100  uint16, uint16
+	GROUP_UPDATE_FLAG_NONE = 0,					// 0x00000000
+	GROUP_UPDATE_FLAG_ONLINE = 1,				// 0x00000001  uint8
+	GROUP_UPDATE_FLAG_HEALTH = 2,				// 0x00000002  uint16
+	GROUP_UPDATE_FLAG_MAXHEALTH = 4,			// 0x00000004  uint16
+	GROUP_UPDATE_FLAG_POWER_TYPE = 8,			// 0x00000008  uint16
+	GROUP_UPDATE_FLAG_POWER = 16,				// 0x00000010  uint16
+	GROUP_UPDATE_FLAG_MAXPOWER = 32,			// 0x00000020  uint16
+	GROUP_UPDATE_FLAG_LEVEL = 64,				// 0x00000040  uint16
+	GROUP_UPDATE_FLAG_ZONEID = 128,				// 0x00000080  uint16
+	GROUP_UPDATE_FLAG_POSITION = 256,			// 0x00000100  uint16, uint16
 	GROUP_UPDATE_FLAG_PLAYER_AURAS = 512,		// 0x00000200  uint64, uint16 for each uint64
-	GROUP_UPDATE_FLAG_PET_GUID = 1024,		    // 0x00000400  uint64
-	GROUP_UPDATE_FLAG_PET_NAME = 2048,		    // 0x00000800  string
+	GROUP_UPDATE_FLAG_PET_GUID = 1024,			// 0x00000400  uint64
+	GROUP_UPDATE_FLAG_PET_NAME = 2048,			// 0x00000800  string
 	GROUP_UPDATE_FLAG_PET_DISPLAYID = 4096,		// 0x00001000  uint16
 	GROUP_UPDATE_FLAG_PET_HEALTH = 8192,		// 0x00002000  uint16
 	GROUP_UPDATE_FLAG_PET_MAXHEALTH = 16384,	// 0x00004000  uint16
 	GROUP_UPDATE_FLAG_PET_POWER_TYPE = 32768,	// 0x00008000  uint8
-	GROUP_UPDATE_FLAG_PET_POWER = 65535,	    // 0x00010000  uint16
+	GROUP_UPDATE_FLAG_PET_POWER = 65535,		// 0x00010000  uint16
 	GROUP_UPDATE_FLAG_PET_MAXPOWER = 131070,	// 0x00020000  uint16
-	GROUP_UPDATE_FLAG_PET_AURAS = 262144,	    // 0x00040000  uint64, uint16 for each uint64
+	GROUP_UPDATE_FLAG_PET_AURAS = 262144,		// 0x00040000  uint64, uint16 for each uint64
 };
 
 enum PartyUpdateFlagGroups
 {
-	GROUP_UPDATE_TYPE_FULL_CREATE				=	GROUP_UPDATE_FLAG_ONLINE | GROUP_UPDATE_FLAG_HEALTH | GROUP_UPDATE_FLAG_MAXHEALTH |
-													GROUP_UPDATE_FLAG_POWER | GROUP_UPDATE_FLAG_LEVEL |
-													GROUP_UPDATE_FLAG_ZONEID | GROUP_UPDATE_FLAG_MAXPOWER | GROUP_UPDATE_FLAG_POSITION,
-	GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY		=   0x7FFC0BFF,
+	GROUP_UPDATE_TYPE_FULL_CREATE				= GROUP_UPDATE_FLAG_ONLINE | GROUP_UPDATE_FLAG_HEALTH | GROUP_UPDATE_FLAG_MAXHEALTH |
+												  GROUP_UPDATE_FLAG_POWER | GROUP_UPDATE_FLAG_LEVEL |
+												  GROUP_UPDATE_FLAG_ZONEID | GROUP_UPDATE_FLAG_MAXPOWER | GROUP_UPDATE_FLAG_POSITION,
+	GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY		= 0x7FFC0BFF,
 };
 
 Group::Group(bool Assign)
@@ -114,7 +114,7 @@ bool SubGroup::HasMember(uint32 guid)
 
 SubGroup * Group::FindFreeSubGroup()
 {
-	for(uint32 i = 0; i < m_SubGroupCount; i++)
+	for(uint32 i = 0; i < m_SubGroupCount; ++i)
 		if(!m_SubGroups[i]->IsFull())
 			return m_SubGroups[i];
 
@@ -216,7 +216,7 @@ void Group::Update()
 
 	if( m_groupFlags & GROUP_FLAG_REMOVE_OFFLINE_PLAYERS )
 	{
-		for( i = 0; i < m_SubGroupCount; i++ )
+		for( i = 0; i < m_SubGroupCount; ++i )
 		{
 			sg1 = m_SubGroups[i];
 
@@ -258,7 +258,7 @@ void Group::Update()
 			m_Looter = pNewLeader->m_playerInfo;
 	}
 
-	for( i = 0; i < m_SubGroupCount; i++ )
+	for( i = 0; i < m_SubGroupCount; ++i )
 	{
 		sg1 = m_SubGroups[i];
 
@@ -396,7 +396,7 @@ void Group::Disband()
 	}
 
 	uint32 i = 0;
-	for(i = 0; i < m_SubGroupCount; i++)
+	for(i = 0; i < m_SubGroupCount; ++i)
 	{
 		SubGroup *sg = m_SubGroups[i];
 		sg->Disband();
@@ -456,7 +456,7 @@ Player* Group::FindFirstPlayer()
 	GroupMembersSet::iterator itr;
 	m_groupLock.Acquire();
 
-	for( uint32 i = 0; i < m_SubGroupCount; i++ )
+	for( uint32 i = 0; i < m_SubGroupCount; ++i )
 	{
 		if( m_SubGroups[i] != NULL )
 		{
@@ -546,7 +546,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 		}
 
 		// Remove some party auras.
-		for (uint32 i=0;i<MAX_POSITIVE_AURAS;i++)
+		for (uint32 i=0;i<MAX_POSITIVE_AURAS;++i)
 		{
 			if (pPlayer->m_auras[i] != NULL && 
 				pPlayer->m_auras[i]->m_areaAura && 
@@ -600,7 +600,7 @@ void Group::ExpandToRaid()
 	m_groupLock.Acquire();
 	m_SubGroupCount = 8;
 
-	for(; i < m_SubGroupCount; i++)
+	for(; i < m_SubGroupCount; ++i)
 		m_SubGroups[i] = new SubGroup(this, i);
 
 	m_GroupType = GROUP_TYPE_RAID;
@@ -624,11 +624,11 @@ void Group::SendPacketToAllButOne(WorldPacket *packet, Player* pSkipTarget)
 	GroupMembersSet::iterator itr;
 	uint32 i = 0;
 	m_groupLock.Acquire();
-	for(; i < m_SubGroupCount; i++)
+	for(; i < m_SubGroupCount; ++i)
 	{
 		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
 		{
-			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer->GetSession() && (*itr)->m_loggedInPlayer != pSkipTarget)
+			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget)
 				(*itr)->m_loggedInPlayer->GetSession()->SendPacket(packet);
 		}
 	}
@@ -641,11 +641,11 @@ void Group::SendPacketToAllButOne(StackPacket *packet, Player* pSkipTarget)
 	GroupMembersSet::iterator itr;
 	uint32 i = 0;
 	m_groupLock.Acquire();
-	for(; i < m_SubGroupCount; i++)
+	for(; i < m_SubGroupCount; ++i)
 	{
 		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
 		{
-			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer->GetSession() && (*itr)->m_loggedInPlayer != pSkipTarget)
+			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget)
 				(*itr)->m_loggedInPlayer->GetSession()->SendPacket(packet);
 		}
 	}
@@ -658,7 +658,7 @@ void Group::OutPacketToAllButOne(uint16 op, uint16 len, const void* data, Player
 	GroupMembersSet::iterator itr;
 	uint32 i = 0;
 	m_groupLock.Acquire();
-	for(; i < m_SubGroupCount; i++)
+	for(; i < m_SubGroupCount; ++i)
 	{
 		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
 		{
@@ -678,7 +678,7 @@ bool Group::HasMember(Player* pPlayer)
 	GroupMembersSet::iterator itr;
 	m_groupLock.Acquire();
 
-	for( uint32 i = 0; i < m_SubGroupCount; i++ )
+	for( uint32 i = 0; i < m_SubGroupCount; ++i )
 	{
 		if( m_SubGroups[i] != NULL )
 		{
@@ -701,7 +701,7 @@ bool Group::HasMember(PlayerInfo * info)
 
 	m_groupLock.Acquire();
 
-	for(; i < m_SubGroupCount; i++)
+	for(; i < m_SubGroupCount; ++i)
 	{
 		if(m_SubGroups[i]->m_GroupMembers.find(info) != m_SubGroups[i]->m_GroupMembers.end())
 		{
@@ -1161,7 +1161,8 @@ bool Group::HasDisenchanters()
 
 void Group::AddBeaconOfLightTarget(Player* Target)
 {
-	m_BeaconOfLightTargets.insert(std::make_pair(Target, 0));
+	if(m_BeaconOfLightTargets.find(Target) == m_BeaconOfLightTargets.end())	//don't add somebody twice!
+		m_BeaconOfLightTargets.insert(std::make_pair(Target, 0));
 }
 void Group::RemoveBeaconOfLightTarget(Player* Target)
 {
@@ -1290,12 +1291,12 @@ void Group::SendVoiceUpdate()
 
 	WorldPacket data(SMSG_VOICE_SESSION_ENABLE, 100);
 	data << uint32( 0x00000E9D );
-	data << uint32( 0xE2500000 );			// this appears to be constant :S
+	data << uint32( 0xE2500000 );       // this appears to be constant :S
 
-	data << uint16( m_voiceChannelId );		// voice channel id, used in udp packet
-	data << uint8( 2 );						// party voice channel
-	data << uint8( 0 );						// for channels this is name
-	data.append( EncryptionKey, 16 );		// encryption key
+	data << uint16( m_voiceChannelId ); // voice channel id, used in udp packet
+	data << uint8( 2 );                 // party voice channel
+	data << uint8( 0 );                 // for channels this is name
+	data.append( EncryptionKey, 16 );   // encryption key
 
 	// IP
 	// these dont appear to be in network byte order.. gg
@@ -1398,7 +1399,7 @@ void Group::VoiceSessionReconnected()
 	SubGroup *sg2 = NULL;
 	m_groupLock.Acquire();
 
-	for( i = 0; i < m_SubGroupCount; i++ )
+	for( i = 0; i < m_SubGroupCount; ++i )
 	{
 		sg1 = m_SubGroups[i];
 

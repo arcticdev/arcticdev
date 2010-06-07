@@ -107,8 +107,7 @@ enum GuildRankRights
 	GR_RIGHT_REMOVE = 0x00000020,
 	GR_RIGHT_EMPTY = 0x00000040,
 	GR_RIGHT_PROMOTE = 0x00000080,
-	GR_RIGHT_DEMOTE = 0x00000100,
-	// unknown 0x00200
+	GR_RIGHT_DEMOTE = 0x00000100, // unknown 0x00200
 	// unknown 0x00400
 	// unknown 0x00800
 	GR_RIGHT_SETMOTD = 0x00001000,
@@ -234,8 +233,8 @@ struct ARCTIC_DECL GuildBankTab
 	uint8 iTabId;
 	char * szTabName;
 	char * szTabIcon;
-	Item* pSlots[MAX_GUILD_BANK_SLOTS];
-	list<GuildBankEvent*> lLog;
+	char * szTabInfo;
+	Item * pSlots[MAX_GUILD_BANK_SLOTS];	list<GuildBankEvent*> lLog;
 };
 
 class Charter;
@@ -245,7 +244,6 @@ class ARCTIC_DECL Guild
 public:
 	Guild();
 	~Guild( );
-
 	static Guild* Create();
 	bool LoadFromDB(Field * f);
 
@@ -308,10 +306,10 @@ public:
 	/* Sends a guild command packet to the client. */
 	static void SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType);
 
-	/* Logs a guild event and sends it to all online players. */
-	void LogGuildEvent(uint8 iEvent, uint8 iStringCount, ...);
+	/* Sends a turn in petition result to the client. */
+	static void SendTurnInPetitionResult( WorldSession * pClient, uint32 result );	/* Logs a guild event and sends it to all online players. */	void LogGuildEvent(uint8 iEvent, uint8 iStringCount, ...);
 	
-	/* Guild event logging.*/
+	/* Guild event logging. */
 	void AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...);
 
 	/* Creates a guild from a charter. */
@@ -348,8 +346,8 @@ public:
 	ARCTIC_INLINE const char * GetGuildName() const { return m_guildName; }
 	ARCTIC_INLINE const uint32 GetGuildLeader() const { return m_guildLeader; }
 	ARCTIC_INLINE const uint32 GetGuildId() const { return m_guildId; }
-	ARCTIC_INLINE const uint32 GetBankTabCount() const { return m_bankTabCount; }
-	ARCTIC_INLINE const uint32 GetBankBalance() const { return m_bankBalance; }
+	ARCTIC_INLINE const uint8 GetBankTabCount() const { return ( uint8) m_bankTabs.size(); }
+	ARCTIC_INLINE const uint64 GetBankBalance() const { return m_bankBalance; }
 	ARCTIC_INLINE const size_t GetNumMembers() const { return m_members.size(); }
 
 	Mutex* getLock() { return &m_lock; }
@@ -381,9 +379,8 @@ public:
 	}
 
 	/* Gets a guild bank tab for editing/viewing*/
-	ARCTIC_INLINE GuildBankTab * GetBankTab(uint32 Id)
-	{
-		if(Id >= m_bankTabCount)
+	ARCTIC_INLINE GuildBankTab * GetBankTab( uint8 Id )	{
+		if( Id >= GetBankTabCount() )
 			return NULL;
 
 		return m_bankTabs[Id];
@@ -432,8 +429,7 @@ protected:
 	uint32 m_backgroundColor;
 	uint32 m_guildLeader;
 	uint32 m_creationTimeStamp;
-	uint32 m_bankTabCount;
-	uint32 m_bankBalance;
+	uint64 m_bankBalance;
 
 	typedef vector<GuildBankTab*> GuildBankTabVector;
 	GuildBankTabVector m_bankTabs;
