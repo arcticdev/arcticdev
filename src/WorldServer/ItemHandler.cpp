@@ -41,7 +41,7 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 	if( (i1 && i1->wrapped_item_id) || (i2 && i2->wrapped_item_id) || ( i1 && i1->GetProto()->MaxCount < 2 ) || ( i2 && i2->GetProto()->MaxCount < 2 ) || count < 1 )
 	{
 		GetPlayer()->GetItemInterface()->BuildInventoryChangeError(i1, i2, INV_ERR_ITEM_CANT_STACK);
-        return;
+		return;
 	}
 
 	if(i2) // smth already in this slot
@@ -147,15 +147,15 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	if( ( SrcInvSlot <= 0 && SrcSlot < 0 ) || SrcInvSlot < -1 )
 		return;
 
-	SrcItem=_player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
+	SrcItem = _player->GetItemInterface()->GetInventoryItem(SrcInvSlot,SrcSlot);
 	if(!SrcItem)
 		return;
 
 	DstItem=_player->GetItemInterface()->GetInventoryItem(DstInvSlot,DstSlot);
 
 	if(DstItem)
-	{	// check if it will go to equipment slot
-		if(SrcInvSlot==INVENTORY_SLOT_NOT_SET)//not bag
+	{   // check if it will go to equipment slot
+		if(SrcInvSlot == INVENTORY_SLOT_NOT_SET) // not bag
 		{
 			if(DstItem->IsContainer())
 			{
@@ -171,7 +171,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 			if(SrcSlot <  CURRENCYTOKEN_SLOT_END)
 			{
-				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot(SrcInvSlot, SrcSlot, DstItem)))
+				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot(SrcInvSlot, SrcSlot, DstItem->GetProto())))
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 					return;
@@ -189,7 +189,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				}
 			}
 
-			if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot(SrcInvSlot, SrcInvSlot, DstItem)))
+			if((error = GetPlayer()->GetItemInterface()->CanEquipItemInSlot(SrcInvSlot, SrcInvSlot, DstItem->GetProto())))
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 				return;
@@ -198,8 +198,8 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	}
 
 	if(SrcItem)
-	{   //check if it will go to equipment slot
-		if(DstInvSlot==INVENTORY_SLOT_NOT_SET)//not bag
+	{   // check if it will go to equipment slot
+		if(DstInvSlot==INVENTORY_SLOT_NOT_SET) // not bag
 		{
 			if(SrcItem->IsContainer())
 			{
@@ -215,7 +215,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 			if(DstSlot <  CURRENCYTOKEN_SLOT_END)
 			{
-				if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot(DstInvSlot, DstSlot, SrcItem)))
+				if((error = GetPlayer()->GetItemInterface()->CanEquipItemInSlot(DstInvSlot, DstSlot, SrcItem->GetProto())))
 				{
 					_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 					return;
@@ -233,7 +233,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				}
 			}
 
-			if((error=GetPlayer()->GetItemInterface()->CanEquipItemInSlot(DstInvSlot, DstInvSlot, SrcItem)))
+			if((error = GetPlayer()->GetItemInterface()->CanEquipItemInSlot(DstInvSlot, DstInvSlot, SrcItem->GetProto())))
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 				return;
@@ -260,8 +260,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-
-		// Check for stacking..
+		// Check for stacking
 		if(DstItem && SrcItem->GetEntry()==DstItem->GetEntry() && SrcItem->GetProto()->MaxCount>1 && SrcItem->wrapped_item_id == 0 && DstItem->wrapped_item_id == 0)
 		{
 			uint32 total=SrcItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT)+DstItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);

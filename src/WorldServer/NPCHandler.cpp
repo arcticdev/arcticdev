@@ -711,7 +711,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 			}
 			else
 			{
-				item->DeleteMe();
+				item->Destructor();
 				item = NULLITEM;
 			}
 		}

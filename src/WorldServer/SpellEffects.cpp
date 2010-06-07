@@ -7451,7 +7451,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 			p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 		else
 		{
-			newItem->DeleteMe();
+			newItem->Destructor();
 			newItem = NULLITEM;
 		}
 		
@@ -7480,7 +7480,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 				newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
 				if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 				{
-					newItem->DeleteMe();
+					newItem->Destructor();
 					newItem = NULLITEM;
 					item_count = item_count_filled;
 				}

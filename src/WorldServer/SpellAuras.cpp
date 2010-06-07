@@ -6684,7 +6684,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 						if(!pCaster->GetItemInterface()->AddItemToFreeSlot(item))
 						{
 							pCaster->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM, INV_ERR_INVENTORY_FULL);
-							item->DeleteMe();
+							item->Destructor();
 							item = NULLITEM;
 							return;
 						}
