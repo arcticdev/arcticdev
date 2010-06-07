@@ -959,7 +959,7 @@ void Channel::VoiceChannelCreated(uint16 id)
 	SendVoiceUpdate();
 }
 
-void Channel::JoinVoiceChannel(Player* plr)
+void Channel::JoinVoiceChannel(Player * plr)
 {
 	m_lock.Acquire();
 	if(m_VoiceMembers.find(plr) == m_VoiceMembers.end())
@@ -974,7 +974,7 @@ void Channel::JoinVoiceChannel(Player* plr)
 	m_lock.Release();
 }
 
-void Channel::PartVoiceChannel(Player* plr)
+void Channel::PartVoiceChannel(Player * plr)
 {
 	m_lock.Acquire();
 	MemberMap::iterator itr = m_VoiceMembers.find(plr);
@@ -994,13 +994,13 @@ void Channel::SendVoiceUpdate()
 {
 	WorldPacket data(SMSG_VOICE_SESSION_ENABLE, 300);
 	uint8 m_encryptionKey[16] = { 0xba, 0x4d, 0x45, 0x60, 0x63, 0xcc, 0x12, 0xBC, 0x73, 0x94, 0x90, 0x03, 0x18, 0x14, 0x45, 0x1F };
-    uint8 counter = 1;
+	uint8 counter = 1;
 	m_lock.Acquire();
 	MemberMap::iterator itr;
 
-    data << uint64(0xe0e10000000032abULL);
-    data << uint16(0x5e26); // used in header of udp packets
-    data << uint8(0);
+	data << uint64(0xe0e10000000032abULL);
+	data << uint16(0x5e26); // used in header of udp packets
+	data << uint8(0);
 	data << m_name;
 	data.append(m_encryptionKey, 16);
 	data << uint32(htonl(sVoiceChatHandler.GetVoiceServerIP()));

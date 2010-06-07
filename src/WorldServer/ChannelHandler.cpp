@@ -13,7 +13,7 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,pass;
 	uint32 dbc_id = 0;
-	uint16 crap;		// crap = some sort of channel type?
+	uint16 crap; // crap = some sort of channel type?
 	uint32 i;
 	Channel * chn;
 

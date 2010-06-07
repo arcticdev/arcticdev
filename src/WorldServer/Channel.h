@@ -124,13 +124,13 @@ public:
 	void SendToAll(WorldPacket * data, Player* plr);
 
 	bool HasMember(Player* pPlayer);
-#ifdef VOICE_CHAT 
-	void VoiceChannelCreated(uint16 id); 
-	void JoinVoiceChannel(Player* plr); 
-	void PartVoiceChannel(Player* plr); 
-	void SendVoiceUpdate(); 
-	void VoiceDied(); 
-#endif 
+#ifdef VOICE_CHAT
+	void VoiceChannelCreated(uint16 id);
+	void JoinVoiceChannel(Player * plr);
+	void PartVoiceChannel(Player * plr);
+	void SendVoiceUpdate();
+	void VoiceDied();
+#endif
 };
 
 class ChannelIterator

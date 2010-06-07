@@ -34,12 +34,12 @@ void ConsoleThread::terminate()
 	ir[1].Event.KeyEvent.wVirtualScanCode = 28;
 	WriteConsoleInput( GetStdHandle( STD_INPUT_HANDLE ), ir, 2, & dwTmp );
 #endif
-	printf("Waiting for console thread to terminate....\n");
+	printf( "Waiting for console thread to terminate....\n" );
 	while( m_isRunning )
 	{
 		Sleep( 100 );
 	}
-	printf("Console shut down.\n");
+	printf( "Console shut down.\n" );
 }
 
 bool ConsoleThread::run()
