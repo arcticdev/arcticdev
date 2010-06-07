@@ -16,10 +16,10 @@ static const uint32 SANCTUARY_ZONES[SANCTUARIES_NUM] =
 	4395  /* Dalaran   */
 };
 
-ARCTIC_DECL bool isHostile(Object* objA, Object* objB);                               // B is hostile for A?
-ARCTIC_DECL bool isAttackable(Object* objA, Object* objB, bool CheckStealth = true);  // A can attack B?
-ARCTIC_DECL bool isCombatSupport(Object* objA, Object* objB);                         // B combat supports A?;
-ARCTIC_DECL bool isAlliance(Object* objA);                                            // A is alliance?
+ARCTIC_DECL bool isHostile(Object* objA, Object* objB);                              // B is hostile for A?
+ARCTIC_DECL bool isAttackable(Object* objA, Object* objB, bool CheckStealth = true); // A can attack B?
+ARCTIC_DECL bool isCombatSupport(Object* objA, Object* objB);                        // B combat supports A?
+ARCTIC_DECL bool isAlliance(Object* objA);                                           // A is alliance?
 
 ARCTIC_INLINE bool isFriendly(Object* objA, Object* objB)// B is friendly to A if its not hostile
 {
