@@ -28,14 +28,18 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	uint16 crap2;	uint8 crap3;	recv_data >> crap >> crap2 >> crap3;
 	// Remove pending tickets
 	objmgr.RemoveGMTicketByPlayer(GetPlayer()->GetGUID());
-	ticket->guid = objmgr.GenerateTicketID();	ticket->playerGuid = GetPlayer()->GetGUID();	ticket->map = map;	ticket->posX = x;
+	ticket->guid = objmgr.GenerateTicketID();
+	ticket->playerGuid = GetPlayer()->GetGUID();
+	ticket->map = map;	ticket->posX = x;
 	ticket->posY = y;
 	ticket->posZ = z;
 	ticket->message = message, message2;
 	ticket->timestamp = (uint32)UNIXTIME;
 	ticket->name = GetPlayer()->GetName();
 	ticket->level = GetPlayer()->getLevel();
-	ticket->deleted = false;	ticket->assignedToPlayer = 0;	ticket->comment = "";
+	ticket->deleted = false;
+	ticket->assignedToPlayer = 0;
+	ticket->comment = "";
 	// Add a new one
 	objmgr.AddGMTicket(ticket, false);
 
@@ -51,7 +55,13 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 		std::stringstream ss;
 #ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 		ss << "GmTicket 5, " << ticket->name;
-#else		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_NEWTICKET;		ss << ":" << ticket->guid;		ss << ":" << ticket->level;		ss << ":" << ticket->name;#endif		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}
+#else
+		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_NEWTICKET;
+		ss << ":" << ticket->guid
+		ss << ":" << ticket->level;
+		ss << ":" << ticket->name;
+#endif
+		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}
 }
 
 void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
@@ -81,7 +91,18 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 	data << uint32(2);
 
 	SendPacket(&data);
-#ifndef GM_TICKET_MY_MASTER_COMPATIBLE	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(),GetPlayer());	if(chn)	{		std::stringstream ss;		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_UPDATED;		ss << ":" << ticket->guid;		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}#endif}
+
+#ifndef GM_TICKET_MY_MASTER_COMPATIBLE
+	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(),GetPlayer());
+	if(chn)
+	{
+		std::stringstream ss;
+		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_UPDATED;
+		ss << ":" << ticket->guid;
+		chn->Say(_player, ss.str().c_str(), NULLPLR, true);
+	}
+#endif
+}
 
 void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
 {
@@ -91,10 +112,23 @@ void WorldSession::HandleGMTicketDeleteOpcode(WorldPacket & recv_data)
 	objmgr.RemoveGMTicketByPlayer(GetPlayer()->GetGUID());
 
 	// Response - no errors
-	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);	data << uint32(9);
+	WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
+	data << uint32(9);
 	SendPacket(&data);
 	// send message to gm_sync_chan
-	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), GetPlayer());	if(chn && ticket != NULL)	{		std::stringstream ss;#ifdef GM_TICKET_MY_MASTER_COMPATIBLE		ss << "GmTicket 1," << ticket->name;#else		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_REMOVED;		ss << ":" << ticket->guid;#endif		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}}
+	Channel *chn = channelmgr.GetChannel(sWorld.getGmClientChannel().c_str(), GetPlayer());
+	if(chn && ticket != NULL)
+	{
+		std::stringstream ss;
+#ifdef GM_TICKET_MY_MASTER_COMPATIBLE
+	    ss << "GmTicket 1," << ticket->name;
+#else
+		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_REMOVED;
+		ss << ":" << ticket->guid;
+#endif
+		chn->Say(_player, ss.str().c_str(), NULLPLR, true);
+	}
+}
 
 void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 {
@@ -120,11 +154,9 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 	SendPacket(&data);
 }
 
-
-void WorldSession::HandleGMTicketSystemStatusOpcode( WorldPacket & recv_data ){
+void WorldSession::HandleGMTicketSystemStatusOpcode( WorldPacket & recv_data )
+{
 	WorldPacket data(SMSG_GMTICKET_SYSTEMSTATUS, 4);
-
-	// no data
 
 	// Response - System is working Fine
 	if(sWorld.getGMTicketStatus())
@@ -148,7 +180,6 @@ void WorldSession::HandleGMTicketSurveySubmitOpcode( WorldPacket & recv_data )
 	std::stringstream ss;
 	uint32 x;
 	recv_data >> x;
-	// sLog.outDebug("SURVEY: X = %u", x);
 
 	ss << "INSERT INTO gm_surveys (playerguid, question1, answer1, question2, answer2, question3, answer3, question4, answer4, question5, answer5, question6, answer6, question7, answer7, comment, timestamp) VALUES (";
 	ss << GetPlayer()->GetLowGUID() << ", ";
@@ -168,12 +199,10 @@ void WorldSession::HandleGMTicketSurveySubmitOpcode( WorldPacket & recv_data )
 		ss << questionID << ", ";
 		ss << uint32(value) << ", ";
 
-		// sLog.outDebug("SURVEY: ID %u, value %u, text %s", questionID, value, unk_text.c_str());
 	}
 
 	std::string comment;
 	recv_data >> comment;
-	// sLog.outDebug("SURVEY: comment %s", comment.c_str());
 
 	ss << "'" << CharacterDatabase.EscapeString( comment ) << "', ";
 	ss << uint32( UNIXTIME ) << ");";

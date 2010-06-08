@@ -23,24 +23,6 @@ class CBattleground;
 class Instance;
 class InstanceScript;
 
-
-enum MapMgrTimers
-{
-	MMUPDATE_OBJECTS = 0,
-	MMUPDATE_SESSIONS = 1,
-	MMUPDATE_FIELDS = 2,
-	MMUPDATE_IDLE_OBJECTS = 3,
-	MMUPDATE_ACTIVE_OBJECTS = 4,
-	MMUPDATE_COUNT = 5
-};
-
-enum ObjectActiveState
-{
-	OBJECT_STATE_NONE = 0,
-	OBJECT_STATE_INACTIVE = 1,
-	OBJECT_STATE_ACTIVE = 2,
-};
-
 typedef unordered_set<Object*> ObjectSet;
 typedef unordered_set<Object*> UpdateQueue;
 typedef unordered_set<Player*> PUpdateQueue;
