@@ -15,7 +15,6 @@ class EyeOfTheStorm : public CBattleground
 public:
 	EyeOfTheStorm( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
 	~EyeOfTheStorm();
-
 	virtual void Init();
 
 	void HookOnPlayerDeath(Player* plr);
@@ -59,7 +58,7 @@ public:
 
 protected:
 	uint32 m_resourceRewards[2];
-	int32 m_CPStatus[EOTS_TOWER_COUNT];		
+	int32 m_CPStatus[EOTS_TOWER_COUNT];
 	uint32 m_flagHolder;
 
 	int m_bonusHonor;
@@ -70,6 +69,8 @@ protected:
 
 	GameObject* m_CPStatusGO[EOTS_TOWER_COUNT];
 	GameObject* m_CPBanner[EOTS_TOWER_COUNT];
+	GameObject* m_CPBanner2[EOTS_TOWER_COUNT];
+	GameObject* m_CPBanner3[EOTS_TOWER_COUNT];
 	GameObject* m_bubbles[2];
 	GameObject* m_EOTSbuffs[4];
 
