@@ -165,7 +165,6 @@ bool DayWatcherThread::run()
 #ifdef WIN32
 	m_abortEvent = CreateEvent(NULL, NULL, FALSE, NULL);
 #else
-
 	struct timeval now;
 	struct timespec tv;
 

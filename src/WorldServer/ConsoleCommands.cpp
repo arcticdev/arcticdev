@@ -17,7 +17,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	int avg = 0;
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -61,7 +61,7 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession()->GetPermissionCount())
 		{
@@ -275,7 +275,7 @@ bool HandleSaveAllCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	uint32 stime = now();
 	uint32 count = 0;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		if(itr->second->GetSession())
 		{
@@ -300,7 +300,7 @@ bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	if(argc < 3)
 		return false;
 
-	pPlayer = objmgr.GetPlayer(argv[1]);
+	pPlayer = objmgr.GetPlayer(argv[1],false);
 
 	if( pPlayer == NULL )
 	{
@@ -348,7 +348,7 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
-	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); itr++)
+	for (itr = objmgr._players.begin(); itr != objmgr._players.end(); ++itr)
 	{
 		pConsole->Write("| %21s | %15u | %04u ms |\r\n" , itr->second->GetName(), itr->second->GetSession()->GetPlayer()->getLevel(), itr->second->GetSession()->GetLatency());
 	}

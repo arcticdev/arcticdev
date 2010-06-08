@@ -23,7 +23,7 @@ Container::Container(uint32 high,uint32 low) : Item()
 	for(uint32 i = 0; i < 72; ++i)
 		m_Slot[i] = NULLITEM;
 
-	random_suffix=random_prop=0;
+	random_suffix=random_prop = 0;
 }
 
 void Container::Init()
@@ -90,7 +90,7 @@ void Container::Create( uint32 itemid, Player* owner )
 int8 Container::FindFreeSlot()
 {
 	int8 TotalSlots = GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS );
-	for (int8 i=0; i < TotalSlots; i++)
+	for (int8 i = 0; i < TotalSlots; ++i)
 	{
 		if(!m_Slot[i]) 
 		{ 
@@ -104,7 +104,7 @@ int8 Container::FindFreeSlot()
 bool Container::HasItems()
 {
 	int8 TotalSlots = GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS );
-	for (int8 i=0; i < TotalSlots; i++)
+	for (int8 i = 0; i < TotalSlots; ++i)
 	{
 		if(m_Slot[i]) 
 		{ 
@@ -114,7 +114,7 @@ bool Container::HasItems()
 	return false;
 }
 
-bool Container::AddItem(int8 slot, Item* item)
+bool Container::AddItem(int16 slot, Item* item)
 {
 	if (slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return false;
@@ -153,7 +153,7 @@ bool Container::AddItem(int8 slot, Item* item)
 	return true;
 }
 
-void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
+void Container::SwapItems(int16 SrcSlot, int16 DstSlot)
 {
 	Item* temp;
 	if( SrcSlot < 0 || SrcSlot >= (int8)m_itemProto->ContainerSlots )
@@ -212,14 +212,14 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 	}
 }
 
-Item* Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
+Item* Container::SafeRemoveAndRetreiveItemFromSlot(int16 slot, bool destroy)
 {
-	if(slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
+	if (slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return NULLITEM;
 
 	Item* pItem = m_Slot[slot];
 
-	if(pItem == NULL || pItem == TO_ITEM(this)) return NULLITEM;
+	if (pItem == NULL || pItem == TO_ITEM(this)) return NULLITEM;
 	m_Slot[slot] = NULLITEM;
 
 	if( pItem->GetOwner() == m_owner )
@@ -242,14 +242,14 @@ Item* Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
 	return pItem;
 }
 
-bool Container::SafeFullRemoveItemFromSlot(int8 slot)
+bool Container::SafeFullRemoveItemFromSlot(int16 slot)
 {
-	if(slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
+	if (slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return false;
 
 	Item* pItem = m_Slot[slot];
 
-	if(pItem == NULL ||pItem == TO_ITEM(this)) return false;
+	if (pItem == NULL ||pItem == TO_ITEM(this)) return false;
 	m_Slot[slot] = NULLITEM;
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + slot*2, 0 );
@@ -261,7 +261,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 	}
 	pItem->DeleteFromDB();
 	pItem->Destructor();
-	pItem = NULLITEM;
+	pItem = NULL;
 
 	return true;
 }
@@ -296,11 +296,11 @@ bool Container::AddItemToFreeSlot(Item* pItem, uint32 * r_slot)
 	return false;
 }
 
-void Container::SaveBagToDB(int8 slot, bool first, QueryBuffer * buf)
+void Container::SaveBagToDB(int16 slot, bool first, QueryBuffer * buf)
 {
 	SaveToDB(INVENTORY_SLOT_NOT_SET, slot, first, buf);
 
-	for(uint32 i = 0; i < m_itemProto->ContainerSlots; i++)
+	for(uint32 i = 0; i < m_itemProto->ContainerSlots; ++i)
 	{
 		if (m_Slot[i] && !((m_Slot[i]->GetProto()->Flags)& 2) )
 		{

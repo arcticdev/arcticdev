@@ -11,7 +11,7 @@ extern bool bLogChat;
 
 static const uint32 LanguageSkills[NUM_LANGUAGES] = 
 {
-    0,				// UNIVERSAL		0x00
+	0,				// UNIVERSAL		0x00
 	109,			// ORCISH			0x01
 	113,			// DARNASSIAN		0x02
 	115,			// TAURAHE			0x03

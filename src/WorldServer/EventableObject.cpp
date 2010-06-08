@@ -10,7 +10,8 @@
 EventableObject::~EventableObject()
 {
 	// decrement event count on all events 
-    EventMap::iterator itr = m_events.begin();
+
+	EventMap::iterator itr = m_events.begin();
 	for(; itr != m_events.end(); ++itr)
 	{
 		if( itr->second->eventFlag & EVENT_FLAG_FIRE_ON_DELETE && !itr->second->deleted )
@@ -27,27 +28,14 @@ EventableObject::~EventableObject()
 	m_events.clear();
 }
 
-// we virtually are destroying this object that means we will have no more events and we do not belong to any holder anymore
-void EventableObject::Virtual_Destructor()
+EventableObject::EventableObject()
 {
-	/* decrement event count on all events */
-	EventMap::iterator itr = m_events.begin();
-	for(; itr != m_events.end(); ++itr)
-	{
-		itr->second->deleted = true;
-		itr->second->DecRef();
-	}
-
-	m_events.clear();
+	/* commented, these will be allocated when the first event is added. */
+	//m_event_Instanceid = event_GetInstanceID();
+	//m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
 
 	m_holder = 0;
 	m_event_Instanceid = -1;
-}
-
-EventableObject::EventableObject()
-{
-	m_holder = 0;
-	m_event_Instanceid = WORLD_INSTANCE;
 	m_events.clear();
 }
 
@@ -68,10 +56,10 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 	m_lock.Release();
 
 	/* Add to event manager */
-	if(!m_holder)
+	if(!m_holder || ptr->eventFlag & EVENT_FLAG_MOVE_TO_WORLD_CONTEXT)
 	{
 		/* relocate to -1 eventholder :/ */
-		m_event_Instanceid = WORLD_INSTANCE;
+		m_event_Instanceid = -1;
 		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
 		ASSERT(m_holder);
 	}
@@ -225,6 +213,31 @@ bool EventableObject::event_GetTimeLeft(uint32 EventType, uint32 * Time)
 	return false;
 }
 
+
+void EventableObject::event_ModifyAuraTimeLeft(uint32 TimeLeft, uint32 Auraid)
+{
+	m_lock.Acquire();
+	if(!m_events.size())
+	{
+		m_lock.Release();
+		return;
+	}
+
+	EventMap::iterator itr = m_events.find(EVENT_AURA_REMOVE);
+	if(itr != m_events.end())
+	{
+		do 
+		{
+			//only update our requested aura
+			if(itr->second->eventAuraid == Auraid)
+				itr->second->currTime = ((int32)TimeLeft > itr->second->msTime) ? itr->second->msTime : (int32)TimeLeft;
+			++itr;
+		} while(itr != m_events.upper_bound(EVENT_AURA_REMOVE));
+	}
+
+	m_lock.Release();
+}
+
 void EventableObject::event_ModifyTime(uint32 EventType, uint32 Time)
 {
 	m_lock.Acquire();
@@ -337,17 +350,16 @@ void EventableObjectHolder::Update(uint32 time_difference)
 	m_insertPoolLock.Release();
 
 	/* Now we can proceed normally. */
-	EventList::iterator itr = m_events.begin();
-	EventList::iterator it2;
+	EventList::iterator itr,it2;
 	TimedEvent * ev;
 
+	itr	= m_events.begin();
 	while(itr != m_events.end())
 	{
 		it2 = itr++;
-		
+
 		if((*it2)->instanceId != mInstanceId || (*it2)->deleted || 
-		    ( mInstanceId == WORLD_INSTANCE && (*it2)->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT))
-		
+			( mInstanceId == WORLD_INSTANCE && (*it2)->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT))
 		{
 			// remove from this list.
 			(*it2)->DecRef();
@@ -373,7 +385,7 @@ void EventableObjectHolder::Update(uint32 time_difference)
 				ev->cb->execute();
 
 			// check if the event is expired now.
-            if(ev->repeats && --ev->repeats == 0)
+			if(ev->repeats && --ev->repeats == 0)
 			{
 				/* remove the event from here */
 				ev->deleted = true;
@@ -408,15 +420,16 @@ void EventableObject::event_Relocate()
 	/* prevent any new stuff from getting added */
 	m_lock.Acquire();
 
-	EventableObjectHolder * nh = sEventMgr.GetEventHolder(event_GetInstanceID());
+	EventableObjectHolder * nh = NULL;
+	nh = sEventMgr.GetEventHolder(event_GetInstanceID());
 	if(nh != m_holder)
 	{
 		// whee, we changed event holder :>
 		// doing this will change the instanceid on all the events, as well as add to the new holder.
 		
 		// no need to do this if we don't have any events, though.
-		if(!nh)
-			nh = sEventMgr.GetEventHolder(WORLD_INSTANCE);
+		if(nh == NULL)
+			nh = sEventMgr.GetEventHolder(-1);
 
 		nh->AddObject(this);
 
@@ -491,20 +504,19 @@ void EventableObjectHolder::AddObject(EventableObject* obj)
 		return;
 	}
 
-	else
+	for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
 	{
-		for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
-		{
-			// ignore deleted events
-			if(itr->second->deleted)
-				continue;
+		// ignore deleted events
+		if(itr->second->deleted)
+			continue;
 
-			if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
-				continue;
-			itr->second->IncRef();
-			itr->second->instanceId = mInstanceId;
-			m_events.push_back( itr->second );
-		}
-		m_lock.Release();
+		if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
+			continue;
+
+		itr->second->IncRef();
+		itr->second->instanceId = mInstanceId;
+		m_events.push_back( itr->second );
 	}
+
+	m_lock.Release();
 }

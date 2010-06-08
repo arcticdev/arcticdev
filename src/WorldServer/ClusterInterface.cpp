@@ -42,19 +42,19 @@ string ClusterInterface::GenerateVersionString()
 
 void ClusterInterface::ForwardWoWPacket(uint16 opcode, uint32 size, const void * data, uint32 sessionid)
 {
-	OUT_DEBUG(FORMATSWOWPAKESTSAI, SERVERSTOWOWFORMAAI, LookupName(opcode, g_worldOpcodeNames));
+	OUT_DEBUG("ForwardWoWPacket", "Forwarding %s to server", LookupName(opcode, g_worldOpcodeNames));
 	bool rv;
 	uint32 size2 = 10 + size;
 	uint16 opcode2 = ICMSG_WOW_PACKET;
 
-	if(!_clientSocket) return;			// Shouldn't happen
+	if(!_clientSocket) return; // Shouldn't happen
 	
 	_clientSocket->BurstBegin();
 	_clientSocket->BurstSend((const uint8*)&opcode2, 2);
 	_clientSocket->BurstSend((const uint8*)&size2, 4);
 	_clientSocket->BurstSend((const uint8*)&sessionid, 4);
 	_clientSocket->BurstSend((const uint8*)&opcode, 2);
-    rv=_clientSocket->BurstSend((const uint8*)&size, 4);
+	rv = _clientSocket->BurstSend((const uint8*)&size, 4);
 	if(size&&rv)
 		rv=_clientSocket->BurstSend((const uint8*)data, size);
 
@@ -70,7 +70,7 @@ void ClusterInterface::ConnectToRealmServer()
 	string strkey;
 	if(!Config.MainConfig.GetString("Cluster", "RSHostName", &hostname) || !Config.MainConfig.GetInt("Cluster", "RSPort", &port) || !Config.MainConfig.GetString("Cluster", "Key", &strkey))
 	{
-		Log.Error(CLUSTERINTERFACESAI, COUNTESNOTGETCONSAI);
+		Log.Error("ClusterInterface", "Could not get necessary fields from config file. Please fix and rehash.");
 		return;
 	}
 
@@ -80,15 +80,15 @@ void ClusterInterface::ConnectToRealmServer()
 	k.Finalize();
 	memcpy(key, k.GetDigest(), 20);
 
-	Log.Notice(CLUSTERINTERFACESAI, ZCONNECTSPORTSWOWAI, hostname.c_str(), port);
-    WSClient * s = ConnectTCPSocket<WSClient>(hostname.c_str(), port);
+	Log.Notice("ClusterInterface", "Connecting to %s port %u", hostname.c_str(), port);
+	WSClient * s = ConnectTCPSocket<WSClient>(hostname.c_str(), port);
 	if(!s)
 	{
-		Log.Error(CLUSTERINTERFACESAI, ZSDNNECTSPORTSWOWAI, hostname.c_str(), port);
+		Log.Error("ClusterInterface", "Could not connect to %s:%u", hostname.c_str(), port);
 		return;
 	}
 
-	Log.Success(CLUSTERINTERFACESAI, WOWCONNECTSPATCETAI, hostname.c_str(), port);
+	Log.Success("ClusterInterface", "Connected to %s:%u", hostname.c_str(), port);
 
 	_clientSocket = s;
 	m_latency = getMSTime();
@@ -99,7 +99,7 @@ void ClusterInterface::HandleAuthRequest(WorldPacket & pck)
 {
 	uint32 x;
 	pck >> x;
-	OUT_DEBUG(CLUSTERINTERFACESAI, INOCONMINTGSAUGRSAI, _clientSocket->GetRemoteIP().c_str(), x);
+	OUT_DEBUG("ClusterInterface", "Incoming auth request from %s (RS build %u)", _clientSocket->GetRemoteIP().c_str(), x);
 
 	WorldPacket data(ICMSG_AUTH_REPLY, 50);
 	data.append(key, 20);
@@ -108,17 +108,17 @@ void ClusterInterface::HandleAuthRequest(WorldPacket & pck)
 	SendPacket(&data);
 
 	m_latency = getMSTime() - m_latency;
-	Log.Notice(CLUSTERINTERFACESAI, LATESTNCEBEWEENSWAI, m_latency);
+	Log.Notice("ClusterInterface", "Latency between realm server is %u ms", m_latency);
 }
 
 void ClusterInterface::HandleAuthResult(WorldPacket & pck)
 {
 	uint32 res;
 	pck >> res;
-	OUT_DEBUG(CLUSTERINTERFACESAI, WOAUTYSWOWRESIULNAI, res);
+	OUT_DEBUG("ClusterInterface", "Auth Result: %u", res);
 	if(!res)
 	{
-		Log.Error(CLUSTERINTERFACESAI, AUTERHEARTICATIONAI);
+		Log.Error("ClusterInterface", "Authentication Failed");
 		_clientSocket->Disconnect();
 		_clientSocket = 0;
 		return;
@@ -126,9 +126,9 @@ void ClusterInterface::HandleAuthResult(WorldPacket & pck)
 
 	/* hardcoded to perfer 0, 530 */
 	WorldPacket data(ICMSG_REGISTER_WORKER, 4 + 12);
-	data << uint32( 69 );
-	data << uint32( 1 );
-	data << uint32( 0 );
+	data << uint32(69);
+	data << uint32(1);
+	data << uint32(0);
 	SendPacket(&data);
 }
 
@@ -137,14 +137,14 @@ void ClusterInterface::HandleRegisterResult(WorldPacket & pck)
 {
 	uint32 res;
 	pck >> res;
-	OUT_DEBUG(CLUSTERINTERFACESAI, REGISHEARTICATIONAI, res);
+	OUT_DEBUG("ClusterInterface", "Register Result: %u", res);
 }
 
 void ClusterInterface::HandleCreateInstance(WorldPacket & pck)
 {
 	uint32 mapid, instanceid;
 	pck >> mapid >> instanceid;
-	OUT_DEBUG(CLUSTERINTERFACESAI, CREAYIONSTINSTALCAI, instanceid, mapid);
+	OUT_DEBUG("ClusterInterface", "Creating Instance %u on Map %u", instanceid, mapid);
 	Map * pMap = sWorldCreator.GetMap(mapid);
 	pMap->CreateMapMgrInstance(instanceid);
 }
@@ -230,7 +230,7 @@ void ClusterInterface::Update()
 		if(opcode < IMSG_NUM_TYPES && ClusterInterface::PHandlers[opcode] != 0)
 			(this->*ClusterInterface::PHandlers[opcode])(*pck);
 		else
-			Log.Error(CLUSTERINTERFACESAI, WOWPAUNHADLESRWOWAI, opcode);
+			Log.Error("ClusterInterface", "Unhandled packet %u\n", opcode);
 	}
 }
 
@@ -257,11 +257,11 @@ void ClusterInterface::HandleWoWPacket(WorldPacket & pck)
 
 	if(!_sessions[sid])
 	{
-		Log.Error(HANDERWOWARCTICPACI, SQERYIONSTINSTALCAI, sid);
+		Log.Error("HandleWoWPacket", "Invalid session: %u", sid);
 		return;
 	}
 
-	OUT_DEBUG(HANDERWOWARCTICPACI, SERVERSTOWOWFORMAAI, LookupName(opcode, g_worldOpcodeNames));
+	OUT_DEBUG("HandleWoWPacket", "Forwarding %s to client", LookupName(opcode, g_worldOpcodeNames));
 
 	WorldPacket * npck = new WorldPacket(opcode, size);
 	npck->resize(size);
@@ -275,7 +275,7 @@ void ClusterInterface::HandlePlayerChangedServers(WorldPacket & pck)
 	pck >> sessionid >> dsid;
 	if(!_sessions[dsid])
 	{
-		Log.Error(COUNTESNOTGETCDASAI, SESSIONWOWINVALIDAI, sessionid);
+		Log.Error("HandlePlayerChangedServers", "Invalid session: %u", sessionid);
 		return;
 	}
 

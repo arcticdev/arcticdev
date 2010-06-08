@@ -7,7 +7,7 @@
 #include "StdAfx.h"
 
 // #pragma comment(lib, "collision.lib")
-#define MAX_MAP 700
+#define MAX_MAP 750
 
 struct CollisionMap
 {
@@ -182,5 +182,5 @@ bool CCollideInterface::IsOutdoor(uint32 mapId, float x, float y, float z)
 
 void CCollideInterface::DeInit()
 {
-// bleh.
+	// bleh.
 }

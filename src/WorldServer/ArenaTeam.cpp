@@ -37,13 +37,12 @@ ArenaTeam::ArenaTeam(uint32 Type, uint32 Id)
 	m_borderColour = 0;
 	m_borderStyle = 0;
 	m_backgroundColour = 0;
-	m_stat_rating = 0;
+	m_stat_rating = 1500;
 	m_stat_gamesplayedweek = 0;
 	m_stat_gamesplayedseason = 0;
 	m_stat_gameswonseason = 0;
 	m_stat_gameswonweek = 0;
 	m_stat_ranking = 0;
-	m_memberCount = 0;
 }
 
 ArenaTeam::ArenaTeam(Field * f)
@@ -51,8 +50,6 @@ ArenaTeam::ArenaTeam(Field * f)
 	uint32 z = 0, i, guid;
 	const char * data;
 	int ret;
-
-	m_memberCount = 0;
 
 	m_id = f[z++].GetUInt32();
 	m_type = f[z++].GetUInt32();
@@ -150,7 +147,7 @@ bool ArenaTeam::AddMember(PlayerInfo * info)
 
 	if(plr!=NULL)
 	{
-		base_field = (m_type*7) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
+		base_field = (m_type*6) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
 		plr->SetUInt32Value(base_field, m_id);
 		plr->SetUInt32Value(base_field+1,m_leader);
 		plr->GetSession()->SystemMessage("You are now a member of the arena team, '%s'.", m_name.c_str());
@@ -174,7 +171,7 @@ bool ArenaTeam::RemoveMember(PlayerInfo * info)
 			SaveToDB();
 
 			if(info->m_loggedInPlayer)
-				info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7), 0);
+				info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*6), 0);
 
 			info->arenaTeam[m_type] = NULL;
 			return true;
@@ -300,7 +297,7 @@ void ArenaTeam::SetLeader(PlayerInfo * info)
 	snprintf(buffer, 1024,"%s is now the captain of the arena team, '%s'.", info->name, m_name.c_str());
 	data = sChatHandler.FillSystemMessageData(buffer);
 	m_leader=info->guid;
-	SendPacket(data);
+    SendPacket(data);
 	delete data;
 
 	/* set the fields */
@@ -309,12 +306,12 @@ void ArenaTeam::SetLeader(PlayerInfo * info)
 		if(m_members[i].Info == info) /* new leader */
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 0);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*6) + 1, 0);
 		}
 		else if(m_members[i].Info->guid == old_leader)
 		{
 			if(m_members[i].Info->m_loggedInPlayer)
-				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*7) + 1, 1);
+				m_members[i].Info->m_loggedInPlayer->SetUInt32Value(PLAYER_FIELD_ARENA_TEAM_INFO_1_1 + (m_type*6) + 1, 1);
 		}
 	}
 
@@ -331,8 +328,11 @@ ArenaTeamMember * ArenaTeam::GetMember(PlayerInfo * info)
 	return NULL;
 }
 
-ArenaTeamMember * ArenaTeam::GetMemberByGuid(uint32 guid)
+ArenaTeamMember* ArenaTeam::GetMemberByGuid(uint32 guid)
 {
+	if(!m_memberCount) // If we don't have members, whats the point?
+		return NULL;
+
 	for(uint32 i = 0; i < m_memberCount; ++i)
 	{
 		if(m_members[i].Info && m_members[i].Info->guid == guid)
@@ -387,10 +387,7 @@ void WorldSession::HandleArenaTeamAddMemberOpcode(WorldPacket & recv_data)
 		return;
 
 	if(!pTeam->HasMember(GetPlayer()->GetLowGUID()))
-	{
 		GetPlayer()->SoftDisconnect();
-		return;
-	}
 
 	Player* plr = objmgr.GetPlayer(player_name.c_str(), false);
 	if(plr == NULL)

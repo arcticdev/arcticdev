@@ -40,6 +40,7 @@ struct CreatureInfo
 	char * info_str;
 	uint32 Flags1;
 	uint32 Type;
+	uint32 TypeFlags;
 	uint32 Family;
 	uint32 Rank;
 	uint32 Unknown1;
@@ -110,7 +111,8 @@ struct CreatureProto
 	uint32 Faction;
 	uint32 MinHealth;
 	uint32 MaxHealth;
-	uint32 Mana;
+	uint8 Powertype;
+	uint32 Power;
 	float  Scale;
 	uint32 NPCFLags;
 	uint32 AttackTime;
@@ -129,7 +131,8 @@ struct CreatureProto
 	float BoundingRadius;
 	char * aura_string;
 	uint32 boss;
-	int32 money; 
+	int32 money;
+	bool no_xp;
 	uint32 invisibility_type;
 	uint32 death_state;
 	float walk_speed; // base movement
@@ -156,7 +159,7 @@ struct CreatureProto
 	list<AI_Spell*> spells;
 };
 
-struct CreatureStatsHeroic
+struct CreatureProtoHeroic
 {
 	uint32 entry;
 	uint32 Minlevel;
@@ -165,7 +168,8 @@ struct CreatureStatsHeroic
 	uint32 Maxhealth;
 	float Mindmg;
 	float Maxdmg;
-	uint32 mana;
+	uint8 Powertype;
+	uint32 Power;
 	uint32 Resistances[7];
 	char * aura_string;
 	uint32 auraimmune_flag;
@@ -189,6 +193,24 @@ struct Formation
 	uint32 fol;
 	float ang;
 	float dist;
+};
+
+enum UNIT_TYPE
+{
+	NOUNITTYPE		= 0,
+	BEAST			= 1,
+	DRAGONSKIN		= 2,
+	DEMON			= 3,
+	ELEMENTAL		= 4,
+	GIANT			= 5,
+	UNDEAD			= 6,
+	HUMANOID		= 7,
+	CRITTER			= 8,
+	MECHANICAL		= 9,
+	UNIT_TYPE_MISC	= 10,
+	UNIT_TYPE_TOTEM = 11,
+	UNIT_TYPE_NONCOMBAT_PET = 12,
+	UNIT_TYPE_GAS_CLOUD = 13,   
 };
 
 enum FAMILY
@@ -240,6 +262,14 @@ enum FAMILY
 	FAMILY_FAKE_FELGUARD	= 17252
 };
 
+enum CreatureTypeFlags
+{
+	CREATURE_TYPEFLAGS_TAMEABLE   = 0x0001,
+	CREATURE_TYPEFLAGS_HERBLOOT   = 0x0100,
+	CREATURE_TYPEFLAGS_MININGLOOT = 0x0200,
+};
+
+
 enum ELITE
 {
 	ELITE_NORMAL = 0,
@@ -248,32 +278,12 @@ enum ELITE
 	ELITE_WORLDBOSS,
 	ELITE_RARE
 };
+
 enum TIME_REMOVE_CORPSE
 {
 	TIME_CREATURE_REMOVE_CORPSE = 180000,
 	TIME_CREATURE_REMOVE_RARECORPSE = 180000*3,
 	TIME_CREATURE_REMOVE_BOSSCORPSE = 180000*5,
-};
- 
-enum CreatureTypeFlags
-{
-	CREATURE_TYPEFLAGS_TAMEABLE = 0x0001,
-	CREATURE_TYPEFLAGS_HERBLOOT = 0x0100,
-	CREATURE_TYPEFLAGS_MININGLOOT = 0x0200,
-};
-
-enum CreatureFlag1
-{
-	CREATURE_FLAG1_TAMEABLE				= 0x0001,
-	CREATURE_FLAG1_NOT_ATTACKABLE		= 0x0002,
-	CREATURE_FLAG1_ATTACKABLE			= 0x0008,
-	CREATURE_FLAG1_NOT_ATTACKABLE_1		= 0x0080,
-	CREATURE_FLAG1_NON_PVP_PLAYER		= 0x0088,
-	CREATURE_FLAG1_HERBLOOT				= 0x0100,
-	CREATURE_FLAG1_MININGLOOT			= 0x0200,
-	CREATURE_FLAG1_ANIMATION_FROZEN		= 0x0400,
-	CREATURE_FLAG1_WAR_PLAYER			= 0x0800,
-	CREATURE_FLAG1_ENGINEERLOOT			= 0x08000,
 };
 
 struct PetSpellCooldown
@@ -286,7 +296,6 @@ class CreatureAIScript;
 class GossipScript;
 class AuctionHouse;
 struct Trainer;
-
 #define CALL_SCRIPT_EVENT(obj, func) if(obj->GetTypeId() == TYPEID_UNIT && TO_CREATURE(obj)->GetScript() != NULL) TO_CREATURE(obj)->GetScript()->func
 
 //////////////////////////////////////////////////////////////
@@ -323,7 +332,6 @@ public:
 	// Updates
 	virtual void Update( uint32 time );
 
-	ARCTIC_INLINE CreatureInfo* GetCreatureInfo() { return creature_info; }
 	ARCTIC_INLINE uint32 GetSQL_id() { return spawnid; };
 
 	// Creature inventory
@@ -499,8 +507,6 @@ public:
 	void OnRemoveCorpse();
 	void OnRespawn(MapMgr* m);
 	void SafeDelete();
-	// void Despawn();
-	void SummonExpire(); // this is used for guardians. They are non respawnable creatures linked to a player
 
 	// In Range
 	void AddInRangeObject(Object* pObj);
@@ -538,7 +544,12 @@ public:
 
 	uint32 m_TaxiNode;
 	CreatureInfo *creature_info;
-
+	ARCTIC_INLINE CreatureInfo *GetCreatureInfo()
+	{
+		return creature_info; 
+	}
+	// left this function for backwards compatibility with scripts
+	// please use GetCreatureInfo()
 	ARCTIC_INLINE CreatureInfo *GetCreatureName()
 	{
 		return creature_info; 
@@ -546,11 +557,9 @@ public:
 	ARCTIC_INLINE void SetCreatureName(CreatureInfo *ci) { creature_info = ci; }
 	ARCTIC_INLINE Trainer* GetTrainer() { return mTrainer; }
 	void RegenerateFocus();
-	
 	void RegenerateEnergy();
 
 	CreatureFamilyEntry * myFamily;
-
 	void FormationLinkUp(uint32 SqlId);
 	void ChannelLinkUpGO(uint32 SqlId);
 	void ChannelLinkUpCreature(uint32 SqlId);
@@ -560,9 +569,9 @@ public:
 	uint32 original_emotestate;
 	uint32 original_MountedDisplayID;
 	CreatureProto * proto;
-	CreatureStatsHeroic * heroicstats;
+	CreatureProtoHeroic * proto_heroic;
 	ARCTIC_INLINE CreatureProto *GetProto() { return proto; }
-	ARCTIC_INLINE CreatureStatsHeroic * GetStatsHeroic() { return heroicstats; }
+	ARCTIC_INLINE CreatureProtoHeroic * GetProtoHeroic() { return proto_heroic; }
 	CreatureSpawn * m_spawn;
 	EventIdInfo * m_event;
 	void OnPushToWorld();

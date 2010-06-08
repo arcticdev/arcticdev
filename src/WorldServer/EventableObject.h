@@ -33,6 +33,7 @@ protected:
 	void event_ModifyTimeLeft(uint32 EventType, uint32 TimeLeft,bool unconditioned=false);
 	void event_ModifyTime(uint32 EventType, uint32 Time);
 	void event_ModifyTimeAndTimeLeft(uint32 EventType, uint32 Time);
+	void event_ModifyAuraTimeLeft(uint32 Time, uint32 Auraid);
 	bool event_HasEvent(uint32 EventType);
 	void event_RemoveByPointer(TimedEvent * ev);
 	ARCTIC_INLINE int32 event_GetCurrentInstanceId() { return m_event_Instanceid; }
@@ -42,7 +43,6 @@ public:
 	uint32 event_GetEventPeriod(uint32 EventType);
 	// Public methods
 	EventableObject();
-
 	virtual ~EventableObject();
 	void Virtual_Destructor();
 
