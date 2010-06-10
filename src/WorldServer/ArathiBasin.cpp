@@ -7,8 +7,8 @@
 #include "StdAfx.h"
 
 #define BASE_RESOURCES_GAIN 10
-#define RESOURCES_WARNING_THRESHOLD 1800
-#define RESOURCES_WINVAL 2000
+#define RESOURCES_WARNING_THRESHOLD 1400
+#define RESOURCES_WINVAL 1600
 #define RESOURCES_TO_GAIN_BH 200
 #define BASE_BH_GAIN 14
 
@@ -18,6 +18,7 @@ uint32 buffentrys[3] = {180380,180362,180146};
 /* AB Battleground Data */
 
 static float GraveyardLocations[AB_NUM_CONTROL_POINTS][3] = 
+
 {
     { 1201.869507f, 1163.130615f, -56.285969f },                                                // STABLES
     { 834.726379f, 784.978699f, -57.081944f },                                                  // FARM
@@ -396,7 +397,7 @@ ArathiBasin::ArathiBasin( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) : CBa
 	m_lgroup = lgroup;
 
 	m_bonusHonor = HonorHandler::CalculateHonorPointsFormula(lgroup*10,lgroup*10);
-	m_resToGainBG = 330;
+	m_resToGainBH = 330;
 
 	for(i = 0; i < AB_NUM_CONTROL_POINTS; ++i)
 	{
@@ -486,9 +487,9 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		current_resources = RESOURCES_WINVAL;
 
 	m_resources[Team] = current_resources;
-	if((current_resources - m_lastHonorGainResources[Team]) >= m_resToGainBG)
+	if((current_resources - m_lastHonorGainResources[Team]) >= m_resToGainBH)
 	{
-		m_lastHonorGainResources[Team] += m_resToGainBG;
+		m_lastHonorGainResources[Team] += m_resToGainBH;
 		for(set< Player* >::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
 		{
 			(*itr)->m_bgScore.BonusHonor += m_bonusHonor;
@@ -516,6 +517,7 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 
 		/* add the marks of honor to all players */
 		SpellEntry * winner_spell = dbcSpell.LookupEntry(24953);
@@ -904,10 +906,10 @@ void ArathiBasin::SetIsWeekend(bool isweekend)
 	m_isWeekend = isweekend;
 	if (isweekend)
 	{
-		m_resToGainBG = 200;
+		m_resToGainBH = 200;
 	}
 	else
 	{
-		m_resToGainBG = 330;
+		m_resToGainBH = 330;
 	}
 }

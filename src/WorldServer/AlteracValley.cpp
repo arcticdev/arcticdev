@@ -897,7 +897,7 @@ AVNode::AVNode( AlteracValley* parent, AVNodeTemplate *tmpl, uint32 nodeid) : m_
 		const AVSpawnLocation *spi = g_initalGuardLocations[nodeid];
 		CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_template->m_initialSpawnId);
 		CreatureProto *cp = CreatureProtoStorage.LookupEntry(m_template->m_initialSpawnId);
-		Creature* sp;
+		Creature* sp = NULLCREATURE;
 		OUT_DEBUG("spawning guards at bunker %s of %s (%u)", m_template->m_name, ci->Name, ci->Id);
 
 		while(spi->x != 0.0f)
@@ -1139,6 +1139,7 @@ void AVNode::Spawn()
 			}
 		}
 	}
+
 
 	// update field states :O
 	for(uint32 i = 0; i < AV_NUM_SPAWN_TYPES; ++i)
@@ -1625,6 +1626,7 @@ void AlteracValley::Finish(uint32 losingTeam)
 	m_losingteam = losingTeam;
 	sEventMgr.RemoveEvents(this);
 	sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+	SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 
 	/* add the marks of honor to all players */
 	SpellEntry * winner_spell = dbcSpell.LookupEntry(24955);
@@ -1635,11 +1637,13 @@ void AlteracValley::Finish(uint32 losingTeam)
 		{
 			(*itr)->Root();
 
-			if( (*itr)->HasFlag(PLAYER_FLAGS, 0x2) )
+			if( (*itr)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_AFK) )
 				continue;
 
 			if(i == losingTeam)
+			{
 				(*itr)->CastSpell((*itr), loser_spell, true);
+			}
 			else
 			{
 				(*itr)->CastSpell((*itr), winner_spell, true);
@@ -1647,7 +1651,6 @@ void AlteracValley::Finish(uint32 losingTeam)
 				(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
 			}
 		}
-
 		if (m_LiveCaptain[i])
 		{
 			GiveHonorToTeam(i, m_bonusHonor * 2);
@@ -1752,14 +1755,14 @@ void AlteracValley::EventAssaultControlPoint(uint32 x)
 
 void AlteracValley::Herald(const char *format, ...)
 {
-	char msgbuf[200];
-	uint8 databuf[500];
+	char msgbuf[100];
+	uint8 databuf[200];
 	va_list ap;
 	size_t msglen;
 	StackPacket data(SMSG_MESSAGECHAT, databuf, 500);
 
 	va_start(ap, format);
-	vsnprintf(msgbuf, 200, format, ap); // 200 ->?<-100 
+	vsnprintf(msgbuf, 100, format, ap);
 	va_end(ap);
 	msglen = strlen(msgbuf);
 

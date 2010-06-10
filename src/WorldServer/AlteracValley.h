@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "StdAfx.h"
+#ifndef ALTERAC_VALLEY_H#define ALTERAC_VALLEY_H#include "StdAfx.h"
 
 enum AVControlPoints
 {
@@ -249,3 +249,4 @@ public:
 	int GetBonusHonor() { return m_bonusHonor; }
 };
 
+#endif // ALTERAC_VALLEY_H

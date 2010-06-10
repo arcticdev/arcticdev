@@ -153,9 +153,7 @@ public:
 	void OnRespawn(Unit* unit); // We don't really need the unit anymore.
 	void AttackReaction( Unit* pUnit, uint32 damage_dealt, uint32 spellId = 0);
 	bool HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellEntry * sp);
-	//Note//
-    void Event_Summon_EE_totem(uint32 summon_duration);
-	void Event_Summon_FE_totem(uint32 summon_duration);
+	void Event_Summon_Elemental(uint32 summon_duration, uint32 TotemEntry, int32 ResistanceType, uint8 Slot);
 
 	// Update
 	void Update(uint32 p_time);

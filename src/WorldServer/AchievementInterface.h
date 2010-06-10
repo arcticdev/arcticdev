@@ -59,7 +59,6 @@ public:
 	void LoadFromDB( QueryResult * pResult );
 	void SaveToDB(QueryBuffer * buffer);
 
-	
 	WorldPacket* BuildAchievementEarned(AchievementData * pData);
 	WorldPacket* BuildAchievementData(bool forInspect = false);
 
