@@ -2498,7 +2498,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 		}
 
 		// druids regen mana when shapeshifted
-		if(getClass() == DRUID && powertype != POWER_TYPE_MANA)
+		if(getClass() == CLASS_DRUID && powertype != POWER_TYPE_MANA)
 			TO_PLAYER(this)->RegenerateMana(isinterrupted);
 	}
 	else
@@ -3290,7 +3290,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if( IsPlayer() )
 		{
 			Player* plr = TO_PLAYER( this );
-			if( plr->getClass() == WARRIOR	)
+			if( plr->getClass() == CLASS_WARRIOR	)
 			{
 				plr->AddComboPoints( pVictim->GetGUID(), 1 );
 				plr->UpdateComboPoints();
@@ -3299,7 +3299,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 				else
 					sEventMgr.ModifyEventTimeLeft( plr, EVENT_COMBO_POINT_CLEAR_FOR_TARGET, 5000 ,0 );
 			}
-			else if( plr->getClass() == DEATHKNIGHT )
+			else if( plr->getClass() == CLASS_DEATH_KNIGHT )
 			{
 				CastSpell(GetGUID(), 56817, true); // client side aura enabling Rune Strike
 			}
@@ -3307,7 +3307,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 		if( pVictim->IsPlayer() )
 		{
 			Player* vplr = TO_PLAYER( pVictim );
-			if( vplr->getClass() == DRUID )
+			if( vplr->getClass() == CLASS_DRUID )
 			{
 				if( (vplr->GetShapeShift() == FORM_BEAR ||  
 					 vplr->GetShapeShift() == FORM_DIREBEAR) &&
@@ -3321,7 +3321,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					}	
 				}
 			}
-			else if( vplr->getClass() == ROGUE )
+			else if( vplr->getClass() == CLASS_ROGUE )
 			{
 				if( vplr->HasDummyAura(SPELL_HASH_SETUP) )
 				{
@@ -3406,7 +3406,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			{
 				aproc |= PROC_ON_RANGED_ATTACK;
 				vproc |= PROC_ON_RANGED_ATTACK_VICTIM;
-				if( ability && ability->Id == 3018 && IsPlayer() && getClass() == HUNTER )
+				if( ability && ability->Id == 3018 && IsPlayer() && getClass() == CLASS_HUNTER )
 					aproc |= PROC_ON_AUTO_SHOT_HIT;
 			}
 
@@ -3469,7 +3469,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 			case 3:
 				{
 					float low_dmg_mod = 1.5f - (0.05f * diffAcapped);
-					if(getClass() == MAGE || getClass() == PRIEST || getClass() == WARLOCK) // casters = additional penalty.
+					if(getClass() == CLASS_MAGE || getClass() == CLASS_PRIEST || getClass() == CLASS_WARLOCK) // casters = additional penalty.
 					{
 						low_dmg_mod -= 0.7f;
 					}
@@ -3478,7 +3478,7 @@ void Unit::Strike( Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability
 					if(low_dmg_mod>0.91)
 						low_dmg_mod = 0.91f;
 					float high_dmg_mod = 1.2f - (0.03f * diffAcapped);
-					if(getClass() == MAGE || getClass() == PRIEST || getClass() == WARLOCK) // casters = additional penalty.
+					if(getClass() == CLASS_MAGE || getClass() == CLASS_PRIEST || getClass() == CLASS_WARLOCK) // casters = additional penalty.
 					{
 						high_dmg_mod -= 0.3f;
 					}
@@ -6888,7 +6888,7 @@ void Creature::Tag(Player* plr)
 	if( m_taggingPlayer != 0 )
 		return;
 
-	if(GetCreatureInfo() && GetCreatureInfo()->Type == CRITTER || IsPet())
+	if(GetCreatureInfo() && GetCreatureInfo()->Type == UNIT_TYPE_CRITTER || IsPet())
 		return;
 
 	m_taggingPlayer = plr->GetLowGUID();

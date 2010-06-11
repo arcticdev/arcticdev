@@ -1702,7 +1702,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
    
 	uint32 health = pVictim->GetUInt32Value(UNIT_FIELD_HEALTH );
 
-	if(health <= damage && pVictim->IsPlayer() && pVictim->getClass() == ROGUE && pVictim->m_CustomTimers[CUSTOM_TIMER_CHEATDEATH] <= getMSTime() )
+	if(health <= damage && pVictim->IsPlayer() && pVictim->getClass() == CLASS_ROGUE && pVictim->m_CustomTimers[CUSTOM_TIMER_CHEATDEATH] <= getMSTime() )
 	{
 		Player* plrVictim = TO_PLAYER(pVictim);
 		uint32 rank = plrVictim->m_cheatDeathRank;
@@ -1778,7 +1778,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 	bool isCritter = false;
 	if(pVictim->GetTypeId() == TYPEID_UNIT && TO_CREATURE(pVictim)->GetCreatureInfo())
 	{
-			if(TO_CREATURE(pVictim)->GetCreatureInfo()->Type == CRITTER)
+			if(TO_CREATURE(pVictim)->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER)
 				isCritter = true;
 		else if(TO_CREATURE(pVictim)->proto)
 		{
@@ -2048,7 +2048,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 					plr->Reputation_OnKilledUnit( pVictim, false );
 			}
 
-			if(plr->getLevel() <= (pVictim->getLevel() + 8) && plr->getClass() == WARRIOR)
+			if(plr->getLevel() <= (pVictim->getLevel() + 8) && plr->getClass() == CLASS_WARRIOR)
 			{	// currently only warriors seem to use it (Victory Rush)
 				plr->SetFlag( UNIT_FIELD_AURASTATE, AURASTATE_FLAG_VICTORIOUS );
 				if( !sEventMgr.HasEvent(TO_UNIT(plr), EVENT_VICTORIOUS_FLAG_EXPIRE ) )
@@ -2634,7 +2634,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 
 	if( school == SHADOW_DAMAGE )
 	{
-		if( IsPlayer() && TO_UNIT(this)->isAlive() && TO_PLAYER(this)->getClass() == PRIEST )
+		if( IsPlayer() && TO_UNIT(this)->isAlive() && TO_PLAYER(this)->getClass() == CLASS_PRIEST )
 			TO_PLAYER(this)->VampiricSpell(float2int32(res), pVictim, dbcSpell.LookupEntry(spellID));
 
 		if( pVictim->isAlive() && IsUnit() )

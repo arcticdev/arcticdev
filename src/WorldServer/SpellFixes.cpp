@@ -159,43 +159,43 @@ uint32 GetSpellClass(SpellEntry *sp)
 		case SKILL_ARMS:
 		case SKILL_FURY:
 		case SKILL_PROTECTION:
-			return WARRIOR;
+			return CLASS_WARRIOR;
 		case SKILL_HOLY2:
 		case SKILL_PROTECTION2:
 		case SKILL_RETRIBUTION:
-			return PALADIN;
+			return CLASS_PALADIN;
 		case SKILL_BEAST_MASTERY:
 		case SKILL_SURVIVAL:
 		case SKILL_MARKSMANSHIP:
-			return HUNTER;
+			return CLASS_HUNTER;
 		case SKILL_ASSASSINATION:
 		case SKILL_COMBAT:
 		case SKILL_SUBTLETY:
-			return ROGUE;
+			return CLASS_ROGUE;
 		case SKILL_DISCIPLINE:
 		case SKILL_HOLY:
 		case SKILL_SHADOW:
-			return PRIEST;
+			return CLASS_PRIEST;
 		case SKILL_ENHANCEMENT:
 		case SKILL_RESTORATION:
 		case SKILL_ELEMENTAL_COMBAT:
-			return SHAMAN;
+			return CLASS_SHAMAN;
 		case SKILL_FROST:
 		case SKILL_FIRE:
 		case SKILL_ARCANE:
-			return MAGE;
+			return CLASS_MAGE;
 		case SKILL_AFFLICTION:
 		case SKILL_DEMONOLOGY:
 		case SKILL_DESTRUCTION:
-			return WARLOCK;
+			return CLASS_WARLOCK;
 		case SKILL_RESTORATION2:
 		case SKILL_BALANCE:
 		case SKILL_FERAL_COMBAT:
-			return DRUID;
+			return CLASS_DRUID;
 		case SKILL_DK_FROST:
 		case SKILL_UNHOLY:
 		case SKILL_BLOOD:
-			return DEATHKNIGHT;
+			return CLASS_DEATH_KNIGHT;
 	}
 
 	return -1;
@@ -227,18 +227,18 @@ void DumpClassSpells()
 	}
 
 	fprintf(f, "/* ** Automatically Generated File ** */\n\n");
-	fprintf(f, "static uint32 spellarray[DRUID+1][9999] = {\n");
+	fprintf(f, "static uint32 spellarray[CLASS_DRUID+1][9999] = {\n");
 	fprintf(f, "\t{ 0 }, \n");
-	_DumpClassSpells(f, WARRIOR);
-	_DumpClassSpells(f, PALADIN);
-	_DumpClassSpells(f, HUNTER);
-	_DumpClassSpells(f, ROGUE);
-	_DumpClassSpells(f, PRIEST);
-	_DumpClassSpells(f, DEATHKNIGHT);
-	_DumpClassSpells(f, SHAMAN);
-	_DumpClassSpells(f, MAGE);
-	_DumpClassSpells(f, WARLOCK);
-	_DumpClassSpells(f, DRUID);
+	_DumpClassSpells(f, CLASS_WARRIOR);
+	_DumpClassSpells(f, CLASS_PALADIN);
+	_DumpClassSpells(f, CLASS_HUNTER);
+	_DumpClassSpells(f, CLASS_ROGUE);
+	_DumpClassSpells(f, CLASS_PRIEST);
+	_DumpClassSpells(f, CLASS_DEATH_KNIGHT);
+	_DumpClassSpells(f, CLASS_SHAMAN);
+	_DumpClassSpells(f, CLASS_MAGE);
+	_DumpClassSpells(f, CLASS_WARLOCK);
+	_DumpClassSpells(f, CLASS_DRUID);
 	fprintf(f, "\t};\n");
 
 	fclose(f);

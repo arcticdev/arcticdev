@@ -282,12 +282,12 @@ void Creature::GenerateLoot()
 	if(proto->money == 0)
 	{
 		CreatureInfo *info=GetCreatureName();
-		if (info && info->Type != BEAST)
+		if (info && info->Type != UNIT_TYPE_BEAST)
 		{
 			if(m_uint32Values[UNIT_FIELD_MAXHEALTH] <= 1667)
-				m_loot.gold = uint32((info->Rank+1)*getLevel()*(rand()%5 + 1)); //generate copper
+				m_loot.gold = uint32((info->Rank+1)*getLevel()*(rand()%5 + 1)); // generate copper
 			else
-				m_loot.gold = uint32((info->Rank+1)*getLevel()*(rand()%5 + 1)*(GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.0006)); //generate copper
+				m_loot.gold = uint32((info->Rank+1)*getLevel()*(rand()%5 + 1)*(GetUInt32Value(UNIT_FIELD_MAXHEALTH)*0.0006)); // generate copper
 		}
 		else // Beast don't drop money
 			m_loot.gold = 0;
@@ -532,7 +532,7 @@ void Creature::EnslaveExpire()
 
 	switch(GetCreatureInfo()->Type)
 	{
-	case DEMON:
+	case UNIT_TYPE_DEMON:
 		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 90);
 		break;
 	default:
@@ -1180,7 +1180,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROF))
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER_PROF))
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )

@@ -242,7 +242,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 	uint32 gain = 0;
 	switch(playerclass)
 	{
-	case DEATHKNIGHT:
+	case CLASS_DEATH_KNIGHT:
 		{
 			switch(Stat)
 			{
@@ -254,7 +254,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case PRIEST:
+	case CLASS_PRIEST:
 		{
 			switch(Stat)
 			{
@@ -266,7 +266,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case WARRIOR:
+	case CLASS_WARRIOR:
 		{
 			switch(Stat)
 			{
@@ -278,7 +278,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case WARLOCK:
+	case CLASS_WARLOCK:
 		{
 			switch(Stat)
 			{
@@ -290,7 +290,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case DRUID:
+	case CLASS_DRUID:
 		{
 			switch(Stat)
 			{
@@ -302,7 +302,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case PALADIN:
+	case CLASS_PALADIN:
 		{
 			switch(Stat)
 			{
@@ -314,7 +314,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case HUNTER:
+	case CLASS_HUNTER:
 		{
 			switch(Stat)
 			{
@@ -326,7 +326,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case MAGE:
+	case CLASS_MAGE:
 		{
 			switch(Stat)
 			{
@@ -338,7 +338,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case SHAMAN:
+	case CLASS_SHAMAN:
 		{
 			switch(Stat)
 			{
@@ -350,7 +350,7 @@ uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat)
 			}
 		}break;
 
-	case ROGUE:
+	case CLASS_ROGUE:
 		{
 			switch(Stat)
 			{

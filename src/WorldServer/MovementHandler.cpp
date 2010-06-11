@@ -183,7 +183,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player* _player, WorldSession
 			if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )
 			{
 				// remove druid aquatic form on land
-				if( _player->getClass() == DRUID )
+				if( _player->getClass() == CLASS_DRUID )
 					_player->RemoveAura( 1066 );
 
 				// unset swim session water level
@@ -231,7 +231,7 @@ void _HandleBreathing(MovementInfo &movement_info, Player* _player, WorldSession
 		if( ( movement_info.z + _player->m_noseLevel ) > pSession->m_wLevel )
 		{
 			// remove druid aquatic form on land
-			if( _player->getClass() == DRUID )
+			if( _player->getClass() == CLASS_DRUID )
 				_player->RemoveAura( 1066 );
 
 			// unset swim session water level
@@ -506,7 +506,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 			/* if player is a rogue or druid(in cat form), then apply -17 modifier to fall distance.
 			these checks need improving, low level rogue/druid should not receive this benefit*/
-			if( ( _player->getClass() == ROGUE ) || ( _player->GetShapeShift() == FORM_CAT ) )
+			if( ( _player->getClass() == CLASS_ROGUE ) || ( _player->GetShapeShift() == FORM_CAT ) )
 				falldistance -= 17;
 
 			// checks that player has fallen more than 12 units, otherwise no damage will be dealt

@@ -543,34 +543,34 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 			{
 				switch(Plr->getClass())
 				{
-				case WARRIOR:
+				case CLASS_WARRIOR:
 					msg += "warrior";
 					break;
-				case PALADIN:
+				case CLASS_PALADIN:
 					msg += "paladin";
 					break;
-				case HUNTER:
+				case CLASS_HUNTER:
 					msg += "hunter";
 					break;
-				case ROGUE:
+				case CLASS_ROGUE:
 					msg += "rogue";
 					break;
-				case PRIEST:
+				case CLASS_PRIEST:
 					msg += "priest";
 					break;
-				case DEATHKNIGHT:
+				case CLASS_DEATH_KNIGHT:
 					msg += "death knight";
 					break;
-				case SHAMAN:
+				case CLASS_SHAMAN:
 					msg += "shaman";
 					break;
-				case MAGE:
+				case CLASS_MAGE:
 					msg += "mage";
 					break;
-				case WARLOCK:
+				case CLASS_WARLOCK:
 					msg += "warlock";
 					break;
-				case DRUID:
+				case CLASS_DRUID:
 					msg += "druid";
 					break;
 				}
@@ -619,7 +619,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	
 	if( pTrainer &&
 		pTrainer->TrainerType == TRAINER_TYPE_PET && // pet trainer type
-		Plr->getClass() == HUNTER &&                 // hunter class
+		Plr->getClass() == CLASS_HUNTER &&                 // hunter class
 		Plr->GetSummon() != NULL )                   // have pet
 	{
 		Menu->AddItem(0, "I would like to untrain my pet.", 13); // TODO: Find proper message

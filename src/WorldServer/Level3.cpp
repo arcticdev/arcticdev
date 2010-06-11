@@ -49,7 +49,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 	}
 	if(!plr) return false;
 
-	if(plr->getClass()==WARRIOR)
+	if(plr->getClass()==CLASS_WARRIOR)
 	{
 		plr->ClearCooldownsOnLine(26, guid);
 		plr->ClearCooldownsOnLine(256, guid);
@@ -57,7 +57,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Warrior cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==PALADIN)
+	if(plr->getClass()==CLASS_PALADIN)
 	{
 		plr->ClearCooldownsOnLine(594, guid);
 		plr->ClearCooldownsOnLine(267, guid);
@@ -65,7 +65,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Paladin cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==HUNTER)
+	if(plr->getClass()==CLASS_HUNTER)
 	{
 		plr->ClearCooldownsOnLine(50, guid);
 		plr->ClearCooldownsOnLine(51, guid);
@@ -73,7 +73,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Hunter cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==ROGUE)
+	if(plr->getClass()==CLASS_ROGUE)
 	{
 		plr->ClearCooldownsOnLine(253, guid);
 		plr->ClearCooldownsOnLine(38, guid);
@@ -81,7 +81,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Rogue cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==PRIEST)
+	if(plr->getClass()==CLASS_PRIEST)
 	{
 		plr->ClearCooldownsOnLine(56, guid);
 		plr->ClearCooldownsOnLine(78, guid);
@@ -89,7 +89,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Priest cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==SHAMAN)
+	if(plr->getClass()==CLASS_SHAMAN)
 	{
 		plr->ClearCooldownsOnLine(373, guid);
 		plr->ClearCooldownsOnLine(374, guid);
@@ -97,7 +97,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Shaman cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==DEATHKNIGHT)
+	if(plr->getClass()==CLASS_DEATH_KNIGHT)
 	{
 		plr->ClearCooldownsOnLine(770, guid);
 		plr->ClearCooldownsOnLine(771, guid);
@@ -105,7 +105,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Death Knight cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==MAGE)
+	if(plr->getClass()==CLASS_MAGE)
 	{
 		plr->ClearCooldownsOnLine(6, guid);
 		plr->ClearCooldownsOnLine(8, guid);
@@ -113,7 +113,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Mage cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==WARLOCK)
+	if(plr->getClass()==CLASS_WARLOCK)
 	{
 		plr->ClearCooldownsOnLine(355, guid);
 		plr->ClearCooldownsOnLine(354, guid);
@@ -121,7 +121,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Warlock cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==DRUID)
+	if(plr->getClass()==CLASS_DRUID)
 	{
 		plr->ClearCooldownsOnLine(573, guid);
 		plr->ClearCooldownsOnLine(574, guid);
@@ -220,25 +220,25 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 		uint32 r = plr->getRace();
 		switch(c)
 		{
-		case PALADIN:
+		case CLASS_PALADIN:
 			for( uint32 i = 0; paladinspellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( paladinspellarray[r][i] );
 			}
 			break;
-		case PRIEST:
+		case CLASS_PRIEST:
 			for( uint32 i = 0; priestspellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( priestspellarray[r][i] );
 			}
 			break;
-		case MAGE:
+		case CLASS_MAGE:
 			for( uint32 i = 0; magespellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( magespellarray[r][i] );
 			}
 			break;
-		case SHAMAN:
+		case CLASS_SHAMAN:
 			for( uint32 i = 0; shamanspellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( shamanspellarray[r][i] );
