@@ -53,15 +53,17 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	if(chn)
 	{
 		std::stringstream ss;
+
 #ifdef GM_TICKET_MY_MASTER_COMPATIBLE
 		ss << "GmTicket 5, " << ticket->name;
 #else
 		ss << "GmTicket:" << GM_TICKET_CHAT_OPCODE_NEWTICKET;
-		ss << ":" << ticket->guid
+		ss << ":" << ticket->guid;
 		ss << ":" << ticket->level;
 		ss << ":" << ticket->name;
 #endif
-		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	}
+		chn->Say(_player, ss.str().c_str(), NULLPLR, true);	
+	}
 }
 
 void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)

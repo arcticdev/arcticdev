@@ -11,15 +11,6 @@
 #include "UpdateMask.h"
 #include "ItemInterface.h"
 
-enum Stats
-{
-	STAT_STRENGTH,
-	STAT_AGILITY,
-	STAT_STAMINA,
-	STAT_INTELLECT,
-	STAT_SPIRIT,
-};
-
 enum Resistances
 {
 	RESISTANCE_ARMOR,

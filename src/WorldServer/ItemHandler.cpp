@@ -367,11 +367,11 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	
 	// allow weapon switching in combat
 	bool skip_combat = false;
-	if( srcslot < EQUIPMENT_SLOT_END || dstslot < EQUIPMENT_SLOT_END )	  // We're doing an equip swap.
+	if( srcslot < EQUIPMENT_SLOT_END || dstslot < EQUIPMENT_SLOT_END ) // We're doing an equip swap.
 	{
 		if( _player->CombatStatus.IsInCombat() )
 		{
-			if( srcslot < EQUIPMENT_SLOT_MAINHAND || dstslot < EQUIPMENT_SLOT_MAINHAND )	// These can't be swapped
+			if( srcslot < EQUIPMENT_SLOT_MAINHAND || dstslot < EQUIPMENT_SLOT_MAINHAND ) // These can't be swapped
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(srcitem, dstitem, INV_ERR_CANT_DO_IN_COMBAT);
 				return;
@@ -403,7 +403,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 	if(dstitem)
 	{
-		if((error=_player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, srcslot, dstitem->GetProto(), skip_combat)))
+		if((error = _player->GetItemInterface()->CanEquipItemInSlot(INVENTORY_SLOT_NOT_SET, srcslot, dstitem->GetProto(), skip_combat)))
 		{
 			if(srcslot < CURRENCYTOKEN_SLOT_END)
 			{
@@ -435,7 +435,7 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 
 		if(dstitem)
 		{
-			//source is a bag and dst slot is a bag inventory and has items
+			// source is a bag and dst slot is a bag inventory and has items
 			if(dstitem->IsContainer())
 			{
 				if(TO_CONTAINER(dstitem)->HasItems() && !_player->GetItemInterface()->IsBagSlot(srcslot))
@@ -446,13 +446,13 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 			}
 			else
 			{
-				//dst item is not a bag, swap impossible
+				// dst item is not a bag, swap impossible
 				_player->GetItemInterface()->BuildInventoryChangeError(srcitem,dstitem,INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
 				return;
 			}
 		}
 
-		//dst is bag inventory
+		// dst is bag inventory
 		if(dstslot < INVENTORY_SLOT_BAG_END)
 		{
 			if(srcitem->GetProto()->Bonding==ITEM_BIND_ON_EQUIP)
@@ -468,7 +468,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 2);
-	//Player* plyr = GetPlayer();
+	// Player* plyr = GetPlayer();
 
 	int8 SrcInvSlot, SrcSlot;
 	uint32 data;
@@ -654,7 +654,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 					return; // should never happen
 
 				if( !_player->GetItemInterface()->SafeAddItem(mainhandweapon, result.ContainerSlot, result.Slot) )
-					if( !_player->GetItemInterface()->AddItemToFreeSlot(mainhandweapon) )		// shouldn't happen either.
+					if( !_player->GetItemInterface()->AddItemToFreeSlot(mainhandweapon) ) // shouldn't happen either.
 					{
 						mainhandweapon->Destructor();
 						mainhandweapon = NULLITEM;
@@ -874,7 +874,7 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 			_player->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM, INV_ERR_INVENTORY_FULL);
 			return;
 		}
-		
+
 		// Check for gold
 		int32 cost =_player->GetUInt32Value(PLAYER_FIELD_BUYBACK_PRICE_1 + stuff);
 		if((int32)_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < cost )
@@ -1215,7 +1215,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			return;
 	}
 
-	SendItemPushResult(pItem, false, true, false, (pItem==oldItem) ? false : true, bagslot, slot, amount*ci.amount);
+	SendItemPushResult(pItem, false, true, false, (pItem == oldItem) ? false : true, bagslot, slot, amount*ci.amount);
 
 	WorldPacket data(SMSG_BUY_ITEM, 22);
 	data << uint64(srcguid);
@@ -1316,7 +1316,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 	}
 	if ((!slotresult.Result) && (!add))
 	{
-		//Our User doesn't have a free Slot in there bag
+		// Our User doesn't have a free Slot in there bag
 		_player->GetItemInterface()->BuildInventoryChangeError(NULLITEM, NULLITEM, INV_ERR_INVENTORY_FULL);
 		return;
 	}
@@ -1465,7 +1465,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 	if(!GetPlayer())
 		return;
 
-	//WorldPacket data;
+	// WorldPacket data;
 	WorldPacket packet;
 	int8 SrcInv = 0, Slot = 0, DstInv = 0;
 	Item* srcitem = NULLITEM;
@@ -1478,10 +1478,10 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 
 	srcitem = _player->GetItemInterface()->GetInventoryItem(SrcInv, Slot);
 
-	//source item exists
+	// source item exists
 	if(srcitem)
 	{
-		//src containers cant be moved if they have items inside
+		// src containers cant be moved if they have items inside
 		if(srcitem->IsContainer() && TO_CONTAINER(srcitem)->HasItems())
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(srcitem, NULLITEM, INV_ERR_NONEMPTY_BAG_OVER_OTHER_BAG);
@@ -1491,7 +1491,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 		// destination is backpack
 		if(DstInv == INVENTORY_SLOT_NOT_SET)
 		{
-			//check for space
+			// check for space
 			NewSlot = _player->GetItemInterface()->FindFreeBackPackSlot();
 			if(NewSlot == ITEM_NO_SLOT_AVAILABLE)
 			{
@@ -1500,7 +1500,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 			}
 			else
 			{
-				//free space found, remove item and add it to the destination
+				// free space found, remove item and add it to the destination
 				srcitem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInv, Slot, false);
 				if( srcitem )
 				{
@@ -1517,7 +1517,7 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 		}
 		else
 		{
-			if((error=_player->GetItemInterface()->CanEquipItemInSlot(DstInv,  DstInv, srcitem)))
+			if((error = _player->GetItemInterface()->CanEquipItemInSlot(DstInv,  DstInv, srcitem)))
 			{
 				if(DstInv < CURRENCYTOKEN_SLOT_END)
 				{

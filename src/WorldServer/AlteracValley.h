@@ -4,7 +4,10 @@
  * See COPYING for license details.
  */
 
-#ifndef ALTERAC_VALLEY_H#define ALTERAC_VALLEY_H#include "StdAfx.h"
+#include "StdAfx.h"
+
+#ifndef ALTERAC_VALLEY_H
+#define ALTERAC_VALLEY_H
 
 enum AVControlPoints
 {

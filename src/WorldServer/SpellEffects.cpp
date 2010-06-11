@@ -1344,7 +1344,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			else if(unitTarget->IsCreature())
 			{
 				CreatureInfo * ci = TO_CREATURE(unitTarget)->GetCreatureInfo();
-				if(ci && ci->Type == UNDEAD)
+				if(ci && ci->Type == UNIT_TYPE_UNDEAD)
 					u_caster->Heal(unitTarget, spellId, float2int32(damage * 1.5f));
 			}
 			else if(unitTarget->IsPlayer())
@@ -4561,7 +4561,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 		result = SPELL_FAILED_BAD_TARGETS;
 	else if(!tame->GetCreatureInfo())
 		result = SPELL_FAILED_BAD_TARGETS;
-	else if(tame->GetCreatureInfo()->Type != BEAST)
+	else if(tame->GetCreatureInfo()->Type != UNIT_TYPE_BEAST)
 		result = SPELL_FAILED_BAD_TARGETS;
 	else if(tame->getLevel() > p_caster->getLevel())
 		result = SPELL_FAILED_HIGHLEVEL;
@@ -4817,7 +4817,7 @@ void Spell::SpellEffectPickpocket(uint32 i) // pickpocket
 
 	// Show random loot based on roll,
 	Creature* target = TO_CREATURE( unitTarget );
-	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != HUMANOID))
+	if(target->IsPickPocketed() || (target->GetCreatureInfo() && target->GetCreatureInfo()->Type != UNIT_TYPE_HUMANOID))
 	{
 		SendCastResult(SPELL_FAILED_TARGET_NO_POCKETS);
 		return;
@@ -4866,7 +4866,7 @@ void Spell::SpellEffectUseGlyph(uint32 i)
 
 void Spell::SpellEffectHealMechanical(uint32 i)
 {
-	if(unitTarget == NULL || unitTarget->GetTypeId() != TYPEID_UNIT || TO_CREATURE(unitTarget)->GetCreatureInfo()->Type != MECHANICAL)
+	if(unitTarget == NULL || unitTarget->GetTypeId() != TYPEID_UNIT || TO_CREATURE(unitTarget)->GetCreatureInfo()->Type != UNIT_TYPE_MECHANICAL)
 		return;
 
 	Heal((int32)damage);

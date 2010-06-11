@@ -195,24 +195,6 @@ struct Formation
 	float dist;
 };
 
-enum UNIT_TYPE
-{
-	NOUNITTYPE		= 0,
-	BEAST			= 1,
-	DRAGONSKIN		= 2,
-	DEMON			= 3,
-	ELEMENTAL		= 4,
-	GIANT			= 5,
-	UNDEAD			= 6,
-	HUMANOID		= 7,
-	CRITTER			= 8,
-	MECHANICAL		= 9,
-	UNIT_TYPE_MISC	= 10,
-	UNIT_TYPE_TOTEM = 11,
-	UNIT_TYPE_NONCOMBAT_PET = 12,
-	UNIT_TYPE_GAS_CLOUD = 13,   
-};
-
 enum FAMILY
 {
 	FAMILY_WOLF				= 1,

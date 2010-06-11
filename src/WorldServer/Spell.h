@@ -460,17 +460,6 @@ enum SpellCastFlags
 	CAST_FLAG_AMMO = 0x20 // load ammo display id (uint32) and ammo inventory type (uint32)
 };
 
-enum School
-{
-	SCHOOL_NORMAL = 0,
-	SCHOOL_HOLY = 1,
-	SCHOOL_FIRE = 2,
-	SCHOOL_NATURE = 3,
-	SCHOOL_FROST = 4,
-	SCHOOL_SHADOW = 5,
-	SCHOOL_ARCANE = 6
-};
-
 // converting schools for 2.4.0 client
 static const uint32 g_spellSchoolConversionTable[SCHOOL_ARCANE+1] = 
 {
@@ -1314,9 +1303,10 @@ ARCTIC_INLINE bool TargetTypeCheck(Object* obj,uint32 ReqCreatureTypeMask)
 		if( inf == NULL || !( 1 << ( inf->Type - 1 ) & ReqCreatureTypeMask ) )
 			return false;
 	}
-	else if(obj->GetTypeId() == TYPEID_PLAYER && !(UNIT_TYPE_HUMANOID_BIT & ReqCreatureTypeMask))
+	else if(obj->GetTypeId() == TYPEID_PLAYER && !(UNIT_TYPE_HUMANOID & ReqCreatureTypeMask))
 		return false;
-	else return false; // omg, how in the hack did we cast it on a GO ? But who cares ?
+	else 
+		return false; // omg, how in the hack did we cast it on a GO ? But who cares ?
 	return true;
 }
 
@@ -1415,22 +1405,6 @@ enum ShapeshiftForm
 	FORM_STEALTH			= 30, // 1073741824
 	FORM_MOONKIN			= 31, // 2147483648
 	FORM_SPIRITOFREDEMPTION	= 32, // 4294967296
-};
-
-enum DISPEL_TYPE
-{
-	DISPEL_ZGTRINKETS = -1,
-	DISPEL_NULL,
-	DISPEL_MAGIC,
-	DISPEL_CURSE,
-	DISPEL_DISEASE,
-	DISPEL_POISON,
-	DISPEL_STEALTH,
-	DISPEL_INVISIBILTY,
-	DISPEL_ALL,
-	DISPEL_SPECIAL_NPCONLY,
-	DISPEL_FRENZY,
-	NUM_DISPELS,
 };
 
 enum DISPEL_MECHANIC_TYPE

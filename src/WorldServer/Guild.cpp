@@ -215,7 +215,7 @@ GuildRank * Guild::CreateGuildRank(const char * szRankName, uint32 iPermissions,
 				for(j = 0; j < MAX_GUILD_BANK_TABS; ++j)
 				{
 					r->iTabPermissions[j].iFlags = GR_RIGHT_GUILD_BANK_ALL;
-					r->iTabPermissions[j].iStacksPerDay = -1;	// -1 = unlimited
+					r->iTabPermissions[j].iStacksPerDay = -1; // -1 = unlimited
 				}
 			}
 			m_ranks[i] = r;

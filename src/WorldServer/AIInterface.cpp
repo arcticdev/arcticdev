@@ -664,7 +664,7 @@ void AIInterface::_UpdateTargets()
 	if( GetUnit()->IsPlayer() || (getAIType() != AITYPE_PET && disable_targeting ))
 		return;
 
-	if( TO_CREATURE(GetUnit())->GetCreatureInfo() && TO_CREATURE(GetUnit())->GetCreatureInfo()->Type == CRITTER )
+	if( TO_CREATURE(GetUnit())->GetCreatureInfo() && TO_CREATURE(GetUnit())->GetCreatureInfo()->Type == UNIT_TYPE_CRITTER )
 		return;
 
 	AssistTargetSet::iterator i, i2;
