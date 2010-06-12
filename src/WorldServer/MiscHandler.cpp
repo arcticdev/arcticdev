@@ -997,8 +997,8 @@ void WorldSession::HandleRequestAccountData(WorldPacket& recv_data)
 	// if red does not exists if ID == 7 and if there is no data send 0
 	if(!res || !res->data) // if error, send a NOTHING packet
 	{
-		data << (uint32)0;
-		data << (uint32)0;
+		data << uint32(0);
+		data << uint32(0);
 	}
 	else
 	{
@@ -1016,7 +1016,7 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 	uint16 action; 
 	recv_data >> button >> action >> misc >> type; 
 	OUT_DEBUG( "BUTTON: %u ACTION: %u TYPE: %u MISC: %u", button, action, type, misc ); 
-	if(action==0)
+	if(action == 0)
 	{
 		OUT_DEBUG( "MISC: Remove action from button %u", button ); 
 		// remove the action button from the db
@@ -1180,7 +1180,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
 				obj->SetUInt32Value(GAMEOBJECT_FLAGS, obj->GetUInt32Value( GAMEOBJECT_FLAGS ) | 1); // lock door
 				obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
-				sEventMgr.AddEvent(obj,&GameObject::EventCloseDoor,EVENT_GAMEOBJECT_DOOR_CLOSE,20000,1,0);
+				sEventMgr.AddEvent(obj,&GameObject::EventCloseDoor,EVENT_GAMEOBJECT_DOOR_CLOSE, 20000, 1, 0);
 			}
 		}break;
 		case GAMEOBJECT_TYPE_FLAGSTAND:
@@ -1243,14 +1243,14 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if(obj->charges>0 && !--obj->charges)
 				obj->ExpireAndDelete();
 		}break;
-		case GAMEOBJECT_TYPE_RITUAL: 
+		case GAMEOBJECT_TYPE_SUMMONING_RITUAL: 
 		{
 			// store the members in the ritual, cast sacrifice spell, and summon.
 			uint32 i = 0;
 			if(!obj->m_ritualmembers || !obj->m_ritualspell || !obj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
 				return;
 
-			for(i=0;i<goinfo->SpellFocus;++i)
+			for(i = 0; i < goinfo->SpellFocus; ++i)
 			{
 				if(!obj->m_ritualmembers[i])
 				{
@@ -1392,13 +1392,13 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		{
 			// Quest related mostly
 		}
-		case GAMEOBJECT_TYPE_CAMERA:// eye of azora
+		case GAMEOBJECT_TYPE_CAMERA: // eye of azora
 		{
 			SpellEntry * sp = dbcSpell.LookupEntryForced(goinfo->Unknown1);
 			if(sp != NULL)
 				_player->CastSpell(_player,sp,true);
 		}break;
-		case GAMEOBJECT_TYPE_MEETINGSTONE:	// Meeting Stone
+		case GAMEOBJECT_TYPE_MEETINGSTONE: // Meeting Stone
 		{
 			// Use selection.
 			Player* pPlayer = objmgr.GetPlayer((uint32)_player->GetSelection());
@@ -1526,7 +1526,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	uint32 slotUsedMask = 0;
 	uint16 enchantmentMask = 0;
 	size_t maskPos = data.wpos();
-	data << uint32(slotUsedMask);	// will be replaced later
+	data << uint32(slotUsedMask); // will be replaced later
 	for(uint32 slot = 0; slot < EQUIPMENT_SLOT_END; slot++)
 	{
 		Item* item = player->GetItemInterface()->GetInventoryItem(slot);
@@ -1595,7 +1595,7 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 	if(_player->m_speedChangeInProgress)
 		{
 			_player->ResetHeartbeatCoords();
-			_player->DelaySpeedHack( 5000 );			// give the client a chance to fall/catch up
+			_player->DelaySpeedHack( 5000 ); // give the client a chance to fall/catch up
 			_player->m_speedChangeInProgress = false;
 		}
 		break;
@@ -1666,9 +1666,9 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	// |00                                              |.               |
 	// -------------------------------------------------------------------
 	//
-	//	uint64 creatureguid
-	//	uint8  slotid
-	//	uint64 target_playerguid 
+	//  uint64 creatureguid
+	//  uint8  slotid
+	//  uint64 target_playerguid 
 	//
 	//////////////////////////////////////////////////////////////////////////
 
@@ -1794,17 +1794,21 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 {
 	CHECK_INWORLD_RETURN;
-	/* struct:
-	{CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
-	|------------------------------------------------|----------------|
-	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-	|------------------------------------------------|----------------|
-	|11 4D 0B 00 BD 06 01 F0 00 00 00 00 02          |.M              |
-	-------------------------------------------------------------------
 
-	uint64 creatureguid
-	uint21 slotid
-	uint8  choice */
+	//////////////////////////////////////////////////////////////////////////
+	// struct:
+	// {CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
+	// |------------------------------------------------|----------------|
+	// |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
+	// |------------------------------------------------|----------------|
+	// | 11 4D 0B 00 BD 06 01 F0 00 00 00 00 02         |.M              |
+	// -------------------------------------------------------------------
+	//
+	//  uint64 creatureguid
+	//  uint8 slotid
+	//  uint8 choice
+	//
+	//////////////////////////////////////////////////////////////////////////
 
 	uint64 creatureguid;
 	uint32 slotid;

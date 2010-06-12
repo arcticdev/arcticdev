@@ -297,7 +297,7 @@ void GameObject::InitAI()
 					spellid = pInfo->sound3;
 			}
 		}break;
-	case GAMEOBJECT_TYPE_RITUAL:
+	case GAMEOBJECT_TYPE_SUMMONING_RITUAL:
 		{	
 			m_ritualmembers = new uint32[pInfo->SpellFocus];
 			memset(m_ritualmembers,0,sizeof(uint32)*pInfo->SpellFocus);

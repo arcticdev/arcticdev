@@ -58,55 +58,55 @@ enum GAMEOBJECT_BYTES
 
 enum GAMEOBJECT_TYPES
 {
-	GAMEOBJECT_TYPE_DOOR					= 0,
-	GAMEOBJECT_TYPE_BUTTON					= 1,
-	GAMEOBJECT_TYPE_QUESTGIVER				= 2,
-	GAMEOBJECT_TYPE_CHEST					= 3,
-	GAMEOBJECT_TYPE_BINDER					= 4,
-	GAMEOBJECT_TYPE_GENERIC					= 5,
-	GAMEOBJECT_TYPE_TRAP					= 6,
-	GAMEOBJECT_TYPE_CHAIR					= 7,
-	GAMEOBJECT_TYPE_SPELL_FOCUS				= 8,
-	GAMEOBJECT_TYPE_TEXT					= 9,
-	GAMEOBJECT_TYPE_GOOBER					= 10,
-	GAMEOBJECT_TYPE_TRANSPORT				= 11,
-	GAMEOBJECT_TYPE_AREADAMAGE				= 12,
-	GAMEOBJECT_TYPE_CAMERA					= 13,
-	GAMEOBJECT_TYPE_MAP_OBJECT				= 14,
-	GAMEOBJECT_TYPE_MO_TRANSPORT			= 15,
-	GAMEOBJECT_TYPE_DUEL_ARBITER			= 16,
-	GAMEOBJECT_TYPE_FISHINGNODE				= 17,
-	GAMEOBJECT_TYPE_RITUAL					= 18,
-	GAMEOBJECT_TYPE_MAILBOX					= 19,
-	GAMEOBJECT_TYPE_AUCTIONHOUSE			= 20,
-	GAMEOBJECT_TYPE_GUARDPOST				= 21,
-	GAMEOBJECT_TYPE_SPELLCASTER				= 22,
-	GAMEOBJECT_TYPE_MEETINGSTONE			= 23,
-	GAMEOBJECT_TYPE_FLAGSTAND				= 24,
-	GAMEOBJECT_TYPE_FISHINGHOLE				= 25,
-	GAMEOBJECT_TYPE_FLAGDROP				= 26,
-	GAMEOBJECT_TYPE_MINI_GAME				= 27,
-	GAMEOBJECT_TYPE_LOTTERY_KIOSK			= 28,
-	GAMEOBJECT_TYPE_CAPTURE_POINT			= 29,
-	GAMEOBJECT_TYPE_AURA_GENERATOR			= 30,
-	GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY		= 31,
-	GAMEOBJECT_TYPE_BARBER_CHAIR			= 32,
-	GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING	= 33,
-	GAMEOBJECT_TYPE_GUILD_BANK				= 34,
-	GAMEOBJECT_TYPE_TRAPDOOR				= 35
+    GAMEOBJECT_TYPE_DOOR                  = 0,
+    GAMEOBJECT_TYPE_BUTTON                = 1,
+    GAMEOBJECT_TYPE_QUESTGIVER            = 2,
+    GAMEOBJECT_TYPE_CHEST                 = 3,
+    GAMEOBJECT_TYPE_BINDER                = 4,
+    GAMEOBJECT_TYPE_GENERIC               = 5,
+    GAMEOBJECT_TYPE_TRAP                  = 6,
+    GAMEOBJECT_TYPE_CHAIR                 = 7,
+    GAMEOBJECT_TYPE_SPELL_FOCUS           = 8,
+    GAMEOBJECT_TYPE_TEXT                  = 9,
+    GAMEOBJECT_TYPE_GOOBER                = 10,
+    GAMEOBJECT_TYPE_TRANSPORT             = 11,
+    GAMEOBJECT_TYPE_AREADAMAGE            = 12,
+    GAMEOBJECT_TYPE_CAMERA                = 13,
+    GAMEOBJECT_TYPE_MAP_OBJECT            = 14,
+    GAMEOBJECT_TYPE_MO_TRANSPORT          = 15,
+    GAMEOBJECT_TYPE_DUEL_ARBITER          = 16,
+    GAMEOBJECT_TYPE_FISHINGNODE           = 17,
+    GAMEOBJECT_TYPE_SUMMONING_RITUAL      = 18,
+    GAMEOBJECT_TYPE_MAILBOX               = 19,
+    GAMEOBJECT_TYPE_AUCTIONHOUSE          = 20,
+    GAMEOBJECT_TYPE_GUARDPOST             = 21,
+    GAMEOBJECT_TYPE_SPELLCASTER           = 22,
+    GAMEOBJECT_TYPE_MEETINGSTONE          = 23,
+    GAMEOBJECT_TYPE_FLAGSTAND             = 24,
+    GAMEOBJECT_TYPE_FISHINGHOLE           = 25,
+    GAMEOBJECT_TYPE_FLAGDROP              = 26,
+    GAMEOBJECT_TYPE_MINI_GAME             = 27,
+    GAMEOBJECT_TYPE_LOTTERY_KIOSK         = 28,
+    GAMEOBJECT_TYPE_CAPTURE_POINT         = 29,
+    GAMEOBJECT_TYPE_AURA_GENERATOR        = 30,
+    GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY    = 31,
+    GAMEOBJECT_TYPE_BARBER_CHAIR          = 32,
+    GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING = 33,
+    GAMEOBJECT_TYPE_GUILD_BANK            = 34,
+    GAMEOBJECT_TYPE_TRAPDOOR              = 35
 };
 
 enum GameObjectFlags
 {
-	GO_FLAG_IN_USE                          = 0x001, // Disables interaction while animated
-	GO_FLAG_LOCKED                          = 0x002, // Require key, spell, event, etc to be opened. Makes "Locked" appear in tooltip
-	GO_FLAG_INTERACT_COND                   = 0x004, // Cannot interact (condition to interact)
-	GO_FLAG_TRANSPORT                       = 0x008, // Any kind of transport? Object can transport (elevator, boat, car)
-	GO_FLAG_UNK1                            = 0x010,
-	GO_FLAG_NODESPAWN                       = 0x020, // Never despawn, typically for doors, they just change state
-	GO_FLAG_TRIGGERED                       = 0x040, // Typically, summoned objects. Triggered by spell or other events
-	GO_FLAG_DAMAGED                         = 0x200,
-	GO_FLAG_DESTROYED                       = 0x400,
+    GO_FLAG_IN_USE                        = 0x00000001, // Disables interaction while animated
+    GO_FLAG_LOCKED                        = 0x00000002, // Require key, spell, event, etc to be opened. Makes "Locked" appear in tooltip
+    GO_FLAG_INTERACT_COND                 = 0x00000004, // Cannot interact (condition to interact)
+    GO_FLAG_TRANSPORT                     = 0x00000008, // Any kind of transport? Object can transport (elevator, boat, car)
+    GO_FLAG_UNK1                          = 0x00000010,
+    GO_FLAG_NODESPAWN                     = 0x00000020, // Never despawn, typically for doors, they just change state
+    GO_FLAG_TRIGGERED                     = 0x00000040, // Typically, summoned objects. Triggered by spell or other events
+    GO_FLAG_DAMAGED                       = 0x00000200,
+    GO_FLAG_DESTROYED                     = 0x00000400,
 };
 
 enum GameObjectDynFlags

@@ -1298,7 +1298,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_aiInterface->m_isGuard = isGuard(GetEntry());
 
 	m_aiInterface->getMoveFlags();
-	//CanMove (overrules AI)
+	// CanMove (overrules AI)
 	if(!proto->CanMove)
 		Root();
 

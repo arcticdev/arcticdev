@@ -801,37 +801,37 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 		<< MSG_COLOR_GREEN << "faction: " << MSG_COLOR_LIGHTBLUE << GObj->GetUInt32Value(GAMEOBJECT_FACTION)<< "\n"
 		<< MSG_COLOR_GREEN << "Type: "  << MSG_COLOR_LIGHTBLUE << (uint32)GObj->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) << " -- ";
 
-	switch( GObj->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) )
-	{
-		case GAMEOBJECT_TYPE_DOOR:			sstext << "Door";			break;
-		case GAMEOBJECT_TYPE_BUTTON:		sstext << "Button";			break;
-		case GAMEOBJECT_TYPE_QUESTGIVER:	sstext << "Quest Giver";	break;
-		case GAMEOBJECT_TYPE_CHEST:			sstext << "Chest";			break;
-		case GAMEOBJECT_TYPE_BINDER:		sstext << "Binder";			break;
-		case GAMEOBJECT_TYPE_GENERIC:		sstext << "Generic";		break;
-		case GAMEOBJECT_TYPE_TRAP:			sstext << "Trap";			break;
-		case GAMEOBJECT_TYPE_CHAIR:			sstext << "Chair";			break;
-		case GAMEOBJECT_TYPE_SPELL_FOCUS:	sstext << "Spell Focus";	break;
-		case GAMEOBJECT_TYPE_TEXT:			sstext << "Text";			break;
-		case GAMEOBJECT_TYPE_GOOBER:		sstext << "Goober";			break;
-		case GAMEOBJECT_TYPE_TRANSPORT:		sstext << "Transport";		break;
-		case GAMEOBJECT_TYPE_AREADAMAGE:	sstext << "Area Damage";	break;
-		case GAMEOBJECT_TYPE_CAMERA:		sstext << "Camera";			break;
-		case GAMEOBJECT_TYPE_MAP_OBJECT:	sstext << "Map Object";		break;
-		case GAMEOBJECT_TYPE_MO_TRANSPORT:	sstext << "Mo Transport";	break;
-		case GAMEOBJECT_TYPE_DUEL_ARBITER:	sstext << "Duel Arbiter";	break;
-		case GAMEOBJECT_TYPE_FISHINGNODE:	sstext << "Fishing Node";	break;
-		case GAMEOBJECT_TYPE_RITUAL:		sstext << "Ritual";			break;
-		case GAMEOBJECT_TYPE_MAILBOX:		sstext << "Mailbox";		break;
-		case GAMEOBJECT_TYPE_AUCTIONHOUSE:	sstext << "Auction House";	break;
-		case GAMEOBJECT_TYPE_GUARDPOST:		sstext << "Guard Post";		break;
-		case GAMEOBJECT_TYPE_SPELLCASTER:	sstext << "Spell Caster";	break;
-		case GAMEOBJECT_TYPE_MEETINGSTONE:	sstext << "Meeting Stone";	break;
-		case GAMEOBJECT_TYPE_FLAGSTAND:		sstext << "Flag Stand";		break;
-		case GAMEOBJECT_TYPE_FISHINGHOLE:	sstext << "Fishing Hole";	break;
-		case GAMEOBJECT_TYPE_FLAGDROP:		sstext << "Flag Drop";		break;
-		default:							sstext << "Unknown.";		break;
-	}
+    switch( GObj->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) )
+    {
+        case GAMEOBJECT_TYPE_DOOR:               sstext << "Door";          break;
+        case GAMEOBJECT_TYPE_BUTTON:             sstext << "Button";        break;
+        case GAMEOBJECT_TYPE_QUESTGIVER:         sstext << "Quest Giver";   break;
+        case GAMEOBJECT_TYPE_CHEST:              sstext << "Chest";         break;
+        case GAMEOBJECT_TYPE_BINDER:             sstext << "Binder";        break;
+        case GAMEOBJECT_TYPE_GENERIC:            sstext << "Generic";       break;
+        case GAMEOBJECT_TYPE_TRAP:               sstext << "Trap";          break;
+        case GAMEOBJECT_TYPE_CHAIR:              sstext << "Chair";         break;
+        case GAMEOBJECT_TYPE_SPELL_FOCUS:        sstext << "Spell Focus";   break;
+        case GAMEOBJECT_TYPE_TEXT:               sstext << "Text";          break;
+        case GAMEOBJECT_TYPE_GOOBER:             sstext << "Goober";        break;
+        case GAMEOBJECT_TYPE_TRANSPORT:          sstext << "Transport";     break;
+        case GAMEOBJECT_TYPE_AREADAMAGE:         sstext << "Area Damage";   break;
+        case GAMEOBJECT_TYPE_CAMERA:             sstext << "Camera";        break;
+        case GAMEOBJECT_TYPE_MAP_OBJECT:         sstext << "Map Object";    break;
+        case GAMEOBJECT_TYPE_MO_TRANSPORT:       sstext << "Mo Transport";  break;
+        case GAMEOBJECT_TYPE_DUEL_ARBITER:       sstext << "Duel Arbiter";  break;
+        case GAMEOBJECT_TYPE_FISHINGNODE:        sstext << "Fishing Node";  break;
+        case GAMEOBJECT_TYPE_SUMMONING_RITUAL:   sstext << "Ritual";        break;
+        case GAMEOBJECT_TYPE_MAILBOX:            sstext << "Mailbox";       break;
+        case GAMEOBJECT_TYPE_AUCTIONHOUSE:       sstext << "Auction House"; break;
+        case GAMEOBJECT_TYPE_GUARDPOST:          sstext << "Guard Post";    break;
+        case GAMEOBJECT_TYPE_SPELLCASTER:        sstext << "Spell Caster";  break;
+        case GAMEOBJECT_TYPE_MEETINGSTONE:       sstext << "Meeting Stone"; break;
+        case GAMEOBJECT_TYPE_FLAGSTAND:          sstext << "Flag Stand";    break;
+        case GAMEOBJECT_TYPE_FISHINGHOLE:        sstext << "Fishing Hole";  break;
+        case GAMEOBJECT_TYPE_FLAGDROP:           sstext << "Flag Drop";     break;
+        default:                                 sstext << "Unknown.";      break;
+    }
 
 	sstext
 		<< "\n"
