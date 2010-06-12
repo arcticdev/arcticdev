@@ -1350,40 +1350,50 @@ enum FriendsResult
     FRIEND_IGNORE_NOT_FOUND = 0x0D,
     FRIEND_IGNORE_ALREADY = 0x0E,
     FRIEND_IGNORE_ADDED = 0x0F,
-    FRIEND_IGNORE_REMOVED = 0x10
+    FRIEND_IGNORE_REMOVED = 0x10,
+    FRIEND_IGNORE_AMBIGUOUS = 0x11, // That name is ambiguous, type more of the player's server name
+    FRIEND_MUTE_FULL = 0x12,
+    FRIEND_MUTE_SELF = 0x13,
+    FRIEND_MUTE_NOT_FOUND = 0x14,
+    FRIEND_MUTE_ALREADY = 0x15,
+    FRIEND_MUTE_ADDED = 0x16,
+    FRIEND_MUTE_REMOVED = 0x17,
+    FRIEND_MUTE_AMBIGUOUS = 0x18, // That name is ambiguous, type more of the player's server name
+    FRIEND_UNK7 = 0x19, // no message at client
+    FRIEND_UNKNOWN = 0x1A  // Unknown friend response from server
 };
 
 enum NPCFlags 
 {
-    //   Hex                            Decimal      Bit         Comments
-    UNIT_NPC_FLAG_NONE               = 0x00000000, // 0,           00
-    UNIT_NPC_FLAG_GOSSIP             = 0x00000001, // 1,           01  Gossip/Talk (CMSG_GOSSIP_HELLO)
-    UNIT_NPC_FLAG_QUESTGIVER         = 0x00000002, // 2,           02 Questgiver
-    UNIT_NPC_FLAG_UNK1               = 0x00000004, // 4,           03
-    UNIT_NPC_FLAG_UNK2               = 0x00000008, // 8,           04
-    UNIT_NPC_FLAG_TRAINER            = 0x00000010, // 16,          05
-    UNIT_NPC_FLAG_TRAINER_CLASS      = 0x00000020, // 32,          06
-    UNIT_NPC_FLAG_TRAINER_PROFESSION = 0x00000040, // 100%
-    UNIT_NPC_FLAG_VENDOR             = 0x00000080, // 128,         07 Vendor (CMSG_LIST_INVENTORY)
-    UNIT_NPC_FLAG_VENDOR_AMMO        = 0x00000100, // 100%,        general goods vendor
-    UNIT_NPC_FLAG_VENDOR_FOOD        = 0x00000200, // 100%
-    UNIT_NPC_FLAG_VENDOR_POISON      = 0x00000400, // guessed
-    UNIT_NPC_FLAG_VENDOR_REAGENT     = 0x00000800, // 100%
-    UNIT_NPC_FLAG_ARMORER            = 0x00001000, // 4096,        12
-    UNIT_NPC_FLAG_TAXIVENDOR         = 0x00002000, // 8192,        13  Taxi Vendor (CMSG_TAXIQUERYAVAILABLENODES)
-    UNIT_NPC_FLAG_TRAINER_PROF       = 0x00004000, // 16384,       14
-    UNIT_NPC_FLAG_SPIRITHEALER       = 0x00008000, // 32768,       15  Spirithealer (CMSG_BINDER_ACTIVATE)
-    UNIT_NPC_FLAG_INNKEEPER          = 0x00010000, // 65536,       16  Innkeeper Asking for Bind Point
-    UNIT_NPC_FLAG_BANKER             = 0x00020000, // 131072,      17  Banker
-    UNIT_NPC_FLAG_ARENACHARTER       = 0x00040000, // 262144,      18  GuildMasters also have UNIT_NPC_FLAG_TABARDCHANGER!!
-    UNIT_NPC_FLAG_TABARDCHANGER      = 0x00080000, // 524288,      19  Tabard Design Changer Flag
-    UNIT_NPC_FLAG_BATTLEFIELDPERSON  = 0x00100000, // 1048576,     20  BattleMaster (CMSG_BATTLEMASTER_HELLO (0x02D7))
-    UNIT_NPC_FLAG_AUCTIONEER         = 0x00200000, // 2097152,     21  Auctioneer (MSG_AUCTION_HELLO)
-    UNIT_NPC_FLAG_STABLEMASTER       = 0x00400000, // 4194304,     22  (MSG_LIST_STABLED_PETS (0x026F))
-    UNIT_NPC_FLAG_GUILD_BANK         = 0x00800000, // 8388608,     23
-    UNIT_NPC_FLAG_SPELLCLICK         = 0x01000000, // 16777216,    24
-    UNIT_NPC_FLAG_GUARD              = 0x10000000, // custom flag for guards
-    UNIT_NPC_FLAG_PLAYERVEHICLE      = 0x02000000, // 33554432
+    UNIT_NPC_FLAG_NONE                  = 0x00000000,
+    UNIT_NPC_FLAG_GOSSIP                = 0x00000001, // 100%
+    UNIT_NPC_FLAG_QUESTGIVER            = 0x00000002, // guessed, probably ok
+    UNIT_NPC_FLAG_UNK1                  = 0x00000004,
+    UNIT_NPC_FLAG_UNK2                  = 0x00000008,
+    UNIT_NPC_FLAG_TRAINER               = 0x00000010, // 100%
+    UNIT_NPC_FLAG_TRAINER_CLASS         = 0x00000020, // 100%
+    UNIT_NPC_FLAG_TRAINER_PROFESSION    = 0x00000040, // 100%
+    UNIT_NPC_FLAG_VENDOR                = 0x00000080, // 100%
+    UNIT_NPC_FLAG_VENDOR_AMMO           = 0x00000100, // 100%, general goods vendor
+    UNIT_NPC_FLAG_VENDOR_FOOD           = 0x00000200, // 100%
+    UNIT_NPC_FLAG_VENDOR_POISON         = 0x00000400, // guessed
+    UNIT_NPC_FLAG_VENDOR_REAGENT        = 0x00000800, // 100%
+    UNIT_NPC_FLAG_REPAIR                = 0x00001000, // 100%
+    UNIT_NPC_FLAG_FLIGHTMASTER          = 0x00002000, // 100%
+    UNIT_NPC_FLAG_SPIRITHEALER          = 0x00004000, // guessed
+    UNIT_NPC_FLAG_SPIRITGUIDE           = 0x00008000, // guessed
+    UNIT_NPC_FLAG_INNKEEPER             = 0x00010000, // 100%
+    UNIT_NPC_FLAG_BANKER                = 0x00020000, // 100%
+    UNIT_NPC_FLAG_PETITIONER            = 0x00040000, // 100% 0xC0000 = guild petitions, 0x40000 = arena team petitions
+    UNIT_NPC_FLAG_TABARDDESIGNER        = 0x00080000, // 100%
+    UNIT_NPC_FLAG_BATTLEMASTER          = 0x00100000, // 100%
+    UNIT_NPC_FLAG_AUCTIONEER            = 0x00200000, // 100%
+    UNIT_NPC_FLAG_STABLEMASTER          = 0x00400000, // 100%
+    UNIT_NPC_FLAG_GUILD_BANKER          = 0x00800000, // cause client to send 997 opcode
+    UNIT_NPC_FLAG_SPELLCLICK            = 0x01000000, // cause client to send 1015 opcode (spell click), dynamic, set at loading and don't must be set in DB
+    UNIT_NPC_FLAG_PLAYER_VEHICLE        = 0x02000000, // players with mounts that have vehicle data should have it set
+    UNIT_NPC_FLAG_GUARD                 = 0x10000000, // custom flag for guards
+    UNIT_NPC_FLAG_OUTDOORPVP            = 0x20000000, // custom flag for outdoor pvp creatures
 };
 
 enum GossipIcons 

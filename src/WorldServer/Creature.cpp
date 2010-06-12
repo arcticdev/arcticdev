@@ -254,11 +254,11 @@ void Creature::CreateWayPoint (uint32 WayPointID, uint32 mapid, float x, float y
 uint32 Creature::GetRequiredLootSkill()
 {
 	if(GetCreatureInfo()->TypeFlags & CREATURE_TYPEFLAGS_HERBLOOT)
-		return SKILL_HERBALISM;     // herbalism
+		return SKILL_HERBALISM; // herbalism
 	else if(GetCreatureInfo()->TypeFlags & CREATURE_TYPEFLAGS_MININGLOOT)
-		return SKILL_MINING;        // mining   
+		return SKILL_MINING;    // mining   
 	else
-		return SKILL_SKINNING;      // skinning
+		return SKILL_SKINNING;  // skinning
 };
 
 void Creature::GenerateLoot()
@@ -314,14 +314,13 @@ void Creature::SaveToDB()
 		<< m_position.z << ","
 		<< m_position.o << ","
 		<< m_aiInterface->getMoveType() << ","
-		<< 0 << "," //Uses random display from proto. Setting a displayid manualy will override proto lookup
+		<< 0 << "," // Uses random display from proto. Setting a displayid manualy will override proto lookup
 		<< m_uint32Values[UNIT_FIELD_FACTIONTEMPLATE] << ","
 		<< m_uint32Values[UNIT_FIELD_FLAGS] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_0] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_1] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_2] << ","
 		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",";
-		/*<< ((this->m_spawn ? m_spawn->respawnNpcLink : uint32(0))) << ",";*/
 
 	if(m_spawn)
 		ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
@@ -354,6 +353,7 @@ void Creature::DeleteFromDB()
 //////////////////////////////////////////////////////////////
 // Quests                                                   //
 //////////////////////////////////////////////////////////////
+
 void Creature::AddQuest(QuestRelation *Q)
 {
 	m_quests->push_back(Q);
@@ -559,7 +559,7 @@ void Creature::AddInRangeObject(Object* pObj)
 
 void Creature::OnRemoveInRangeObject(Object* pObj)
 {
-	if(IsTotem() && SummonOwner && SummonOwner == pObj->GetLowGUID())		// player gone out of range of the totem
+	if(IsTotem() && SummonOwner && SummonOwner == pObj->GetLowGUID()) // player gone out of range of the totem
 	{
 		// Expire next loop.
 		event_ModifyTimeLeft(EVENT_TOTEM_EXPIRE, 1);
@@ -732,8 +732,8 @@ void Creature::UpdateItemAmount(uint32 itemid)
 	{
 		if(itr->itemid == itemid)
 		{
-			if (itr->max_amount==0)		// shouldnt happen
-				itr->available_amount=0;
+			if (itr->max_amount==0) // shouldnt happen
+				itr->available_amount = 0;
 			else
 			{
 				itr->available_amount = itr->max_amount;
@@ -774,7 +774,7 @@ void Creature::ChannelLinkUpGO(uint32 SqlId)
 
 void Creature::ChannelLinkUpCreature(uint32 SqlId)
 {
-	if(!m_mapMgr)		// shouldnt happen
+	if(!m_mapMgr) // shouldnt happen
 		return;
 
 	Creature* go = m_mapMgr->GetSqlIdCreature(SqlId);
@@ -795,7 +795,7 @@ WayPoint * Creature::CreateWaypointStruct()
 {
 	return new WayPoint();
 }
-//#define SAFE_FACTIONS
+// #define SAFE_FACTIONS
 
 bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 {
@@ -817,8 +817,8 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	spawnid = spawn->id;
 
-	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; //set speeds
-	m_runSpeed = m_base_runSpeed = proto->run_speed; //set speeds
+	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; // set speeds
+	m_runSpeed = m_base_runSpeed = proto->run_speed; // set speeds
 	m_flySpeed = proto->fly_speed;
 
 	m_phaseMode = spawn->phase;
@@ -877,7 +877,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetUInt32Value(UNIT_FIELD_BYTES_1, spawn->bytes1);
 	SetUInt32Value(UNIT_FIELD_BYTES_2, spawn->bytes2);
 
-	//Use proto displayid (random + gender generator), unless there is an id  specified in spawn->displayid
+	// Use proto displayid (random + gender generator), unless there is an id  specified in spawn->displayid
 	uint32 model = 0;
 	if(!spawn->displayid)
 	{
@@ -923,7 +923,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_aiInterface->m_waypoints = objmgr.GetWayPointMap(spawn->id);
 
 
-	//use proto faction if spawn faction is unspecified
+	// use proto faction if spawn faction is unspecified
 	m_faction = dbcFactionTemplate.LookupEntry(spawn->factionid?spawn->factionid:proto->Faction);
 
 	if(m_faction)
@@ -936,8 +936,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	else
 		Log.Warning("Creature","Creature is missing a valid faction template for entry %u.", spawn->entry);
 
-
-//SETUP NPC FLAGS
+	// SETUP NPC FLAGS
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
@@ -946,16 +945,16 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ) )
 		_LoadQuests();
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER) )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROF))
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER))
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
-//NPC FLAGS
+	// NPC FLAGS
 	 m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
 
 	//load resistances
@@ -972,10 +971,12 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	BaseRangedDamage[1]=GetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE);
 	BaseAttackType=proto->AttackType;
 
-	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
+	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f); // better set this one
 
-////////////AI
-	
+	//////////////////////////////////////////////////////////////
+	// AI                                                       //
+	//////////////////////////////////////////////////////////////
+
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
@@ -990,7 +991,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
 	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
 
-	//these fields are always 0 in db
+	// these fields are always 0 in db
 	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
 	
@@ -1014,13 +1015,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
-	
-	// PLACE FOR DIRTY FIX BASTARDS
-	// HACK! set call for help on civ health @ 100%
 	if(creature_info->Civilian >= 1)
 		m_aiInterface->m_CallForHelpHealth = 100;
- 
- //HACK!
+
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
@@ -1079,7 +1076,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_aiInterface->m_isGuard = isGuard(GetEntry());
 
 	m_aiInterface->getMoveFlags();
-	//CanMove (overrules AI)
+	// CanMove (overrules AI)
 	if(!proto->CanMove)
 		Root();
 
@@ -1177,10 +1174,10 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ) )
 		_LoadQuests();
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER) )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER_PROF))
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER))
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )
@@ -1229,17 +1226,16 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_aiInterface->m_formationFollowDistance = 0;
 	m_aiInterface->m_formationFollowAngle = 0;
 
-	//////////////AI
+	//////////////////////////////////////////////////////////////
+	// AI                                                       //
+	//////////////////////////////////////////////////////////////
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
-
-	// PLACE FOR DIRTY FIX BASTARDS
-	// HACK! set call for help on civ health @ 100%
 	if(creature_info->Civilian >= 1)
 		m_aiInterface->m_CallForHelpHealth = 100;
 
-	//HACK!
+	// HACK!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||

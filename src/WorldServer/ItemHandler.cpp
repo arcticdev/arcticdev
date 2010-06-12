@@ -1658,7 +1658,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 	if( pCreature == NULL )
 		return;
 
-	if( !pCreature->HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_ARMORER ) )
+	if( !pCreature->HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_REPAIR ) )
 		return;
 
 	if( !itemguid ) 

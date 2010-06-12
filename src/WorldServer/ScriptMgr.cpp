@@ -515,7 +515,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if( flags & UNIT_NPC_FLAG_VENDOR && !pCreature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE))
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_VENDOR, "I would like to browse your goods", 1);
 
-	if(pTrainer != NULL && (flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_TRAINER_PROF))
+	if(pTrainer != NULL && (flags & UNIT_NPC_FLAG_TRAINER || flags & UNIT_NPC_FLAG_SPIRITHEALER))
 	{
 		string name = pCreature->GetCreatureInfo()->Name;
 		string::size_type pos = name.find(" "); // only take first name
@@ -583,7 +583,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		}
 	}
 
-	if(flags & UNIT_NPC_FLAG_TAXIVENDOR)
+	if(flags & UNIT_NPC_FLAG_FLIGHTMASTER)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_FLIGHT, "Give me a ride.", 3);
 
 	if(flags & UNIT_NPC_FLAG_AUCTIONEER)
@@ -598,13 +598,13 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if(flags & UNIT_NPC_FLAG_SPIRITHEALER)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "Bring me back to life.", 7);
 
-	if(flags & UNIT_NPC_FLAG_ARENACHARTER)
+	if(flags & UNIT_NPC_FLAG_PETITIONER)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_ARENA, "How do I create a guild/arena team?", 8);
 
-	if(flags & UNIT_NPC_FLAG_TABARDCHANGER)
+	if(flags & UNIT_NPC_FLAG_TABARDDESIGNER)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_TABARD, "I want to create a guild crest.", 9);
 
-	if(flags & UNIT_NPC_FLAG_BATTLEFIELDPERSON)
+	if(flags & UNIT_NPC_FLAG_BATTLEMASTER)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_ARENA, "I would like to go to the battleground.", 10);
 
 	if( pTrainer && pTrainer->RequiredClass )
