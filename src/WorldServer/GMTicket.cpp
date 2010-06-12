@@ -151,7 +151,7 @@ void WorldSession::HandleGMTicketGetTicketOpcode(WorldPacket & recv_data)
 	data << uint32(6); // unk
 	data << uint32(1); // Deletable
 	data << ticket->message.c_str();
-	data << uint8(ticket->type);
+	data << uint8(ticket->map);
 
 	SendPacket(&data);
 }

@@ -125,6 +125,8 @@ enum GuildRankRights
 
 	GR_RIGHT_GUILD_BANK_VIEW_TAB = 0x01,
 	GR_RIGHT_GUILD_BANK_DEPOSIT_ITEMS = 0x02,
+	GR_RIGHT_GUILD_BANK_CHANGE_TABTXT = 0x04,
+	GR_RIGHT_GUILD_BANK_ALL = GR_RIGHT_GUILD_BANK_VIEW_TAB | GR_RIGHT_GUILD_BANK_DEPOSIT_ITEMS | GR_RIGHT_GUILD_BANK_CHANGE_TABTXT,
 };
 
 enum GuildEvent
@@ -145,7 +147,9 @@ enum GuildEvent
 	GUILD_EVENT_HASGONEOFFLINE = 0xD,
 	GUILD_EVENT_BANKTABBOUGHT = 0xF,
 	GUILD_EVENT_SETNEWBALANCE = 0x11,
+	GUILD_EVENT_TABINFO = 0x13,
 };
+
 enum GuildLogEventE
 {
 	GUILD_LOG_EVENT_INVITE = 1,
@@ -161,7 +165,7 @@ enum GuildBankLogEvents
 	GUILD_BANK_LOG_EVENT_DEPOSIT_ITEM = 1,
 	GUILD_BANK_LOG_EVENT_WITHDRAW_ITEM = 2,
 	GUILD_BANK_LOG_EVENT_DEPOSIT_MONEY = 4,
-	GUILD_BANK_LOG_EVENT_WITHDRAW_MONEY	= 5,
+	GUILD_BANK_LOG_EVENT_WITHDRAW_MONEY = 5,
 };
 
 #define ITEM_ENTRY_GUILD_CHARTER     5863
@@ -234,7 +238,8 @@ struct ARCTIC_DECL GuildBankTab
 	char * szTabName;
 	char * szTabIcon;
 	char * szTabInfo;
-	Item * pSlots[MAX_GUILD_BANK_SLOTS];	list<GuildBankEvent*> lLog;
+	Item * pSlots[MAX_GUILD_BANK_SLOTS];
+	list<GuildBankEvent*> lLog;
 };
 
 class Charter;
@@ -307,7 +312,10 @@ public:
 	static void SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType);
 
 	/* Sends a turn in petition result to the client. */
-	static void SendTurnInPetitionResult( WorldSession * pClient, uint32 result );	/* Logs a guild event and sends it to all online players. */	void LogGuildEvent(uint8 iEvent, uint8 iStringCount, ...);
+	static void SendTurnInPetitionResult( WorldSession * pClient, uint32 result );
+
+	/* Logs a guild event and sends it to all online players. */
+	void LogGuildEvent(uint8 iEvent, uint8 iStringCount, ...);
 	
 	/* Guild event logging. */
 	void AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...);
@@ -379,7 +387,8 @@ public:
 	}
 
 	/* Gets a guild bank tab for editing/viewing*/
-	ARCTIC_INLINE GuildBankTab * GetBankTab( uint8 Id )	{
+	ARCTIC_INLINE GuildBankTab * GetBankTab( uint8 Id )	
+	{
 		if( Id >= GetBankTabCount() )
 			return NULL;
 
@@ -401,6 +410,8 @@ public:
 	/* Sends the guild bank to this client.*/
 	void SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 updated_slot1 = -1, int8 updated_slot2 = -1);
 	void SendGuildBankInfo(WorldSession * pClient);
+	void ChangeGuildName(char* name);
+	void ListGuildMembers(WorldSession* session);
 
 	/* Changes the tabard info.*/
 	void SetTabardInfo(uint32 EmblemStyle, uint32 EmblemColor, uint32 BorderStyle, uint32 BorderColor, uint32 BackgroundColor);

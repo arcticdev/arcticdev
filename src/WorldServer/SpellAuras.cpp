@@ -3347,7 +3347,6 @@ void Aura::SpellAuraModStun(bool apply)
 		m_target->m_stunned++;
 		m_target->m_special_state |= UNIT_STATE_STUN;
 		m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
-		m_target->SetFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_STUNNED);
 
 		if(m_target->GetTypeId() == TYPEID_UNIT)
 			m_target->GetAIInterface()->SetNextTarget(NULLUNIT);
@@ -3361,41 +3360,11 @@ void Aura::SpellAuraModStun(bool apply)
 		}
 
 		// warrior talent - second wind triggers on stun and immobilize. This is not used as proc to be triggered always !
-		if(m_target->IsPlayer() && m_spellProto->MechanicsType != MECHANIC_INCAPACIPATED)
-			TO_PLAYER(m_target)->EventStunOrImmobilize();
+		if(p_target && m_spellProto->MechanicsType != MECHANIC_INCAPACIPATED)
+			p_target->EventStunOrImmobilize();
 	}
-	else 
+	else
 	{
-		if( m_spellProto->NameHash == SPELL_HASH_WYVERN_STING )
-		{
-			Unit* caster = NULL;
-			caster = GetUnitCaster();
-			if( caster == NULL )
-				return;
-
-			uint32 wyvernsp = 0;
-			switch(m_spellProto->Id)
-			{
-				case 49012:{wyvernsp = 49010;}break;
-				case 49011:{wyvernsp = 49009;}break;
-				case 27068:{wyvernsp = 27069;}break;
-				case 24132:{wyvernsp = 24134;}break;
-				default:{wyvernsp = 24131;}break;
-			}
-			SpellEntry * wyvspell = NULL;
-			wyvspell = dbcSpell.LookupEntry(wyvernsp);
-			if(wyvspell != NULL)
-				sEventMgr.AddEvent(caster, &Unit::EventCastSpell, m_target, wyvspell, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); 
-		}
-
-		// targetdummies stay rooted
-		if( m_target->IsCreature() && TO_CREATURE(m_target)->GetProto() && isTargetDummy(TO_CREATURE(m_target)->GetProto()->Id))
-		{
-			m_target->m_rooted = 1;
-			m_target->m_stunned = 1;
-			return;
-		}
-
 		m_target->m_rooted--;
 
 		if(m_target->m_rooted == 0)
@@ -3407,7 +3376,25 @@ void Aura::SpellAuraModStun(bool apply)
 		{
 			m_target->m_special_state &= ~UNIT_STATE_STUN;
 			m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED);
-			m_target->RemoveFlag(UNIT_FIELD_AURASTATE, AURASTATE_FLAG_STUNNED);
+		}
+
+		if( m_spellProto->NameHash == SPELL_HASH_WYVERN_STING )
+		{
+			Unit* caster = NULL;
+			if( !caster )
+				caster = m_target;
+			if( m_spellProto->Id == 49012 ) 
+				caster->CastSpell(m_target, 49010, true);
+			else if( m_spellProto->Id == 49011 )
+				caster->CastSpell(m_target, 49009, true);
+			else if( m_spellProto->Id == 27068 )
+				caster->CastSpell(m_target, 27069, true);
+			else if( m_spellProto->Id == 24133 )
+				caster->CastSpell(m_target, 24135, true);
+			else if( m_spellProto->Id == 24132 )
+				caster->CastSpell(m_target, 24134, true);
+			else
+				caster->CastSpell(m_target, 24131, true);
 		}
 
 		// attack them back.. we seem to lose this sometimes for some reason
@@ -3427,47 +3414,36 @@ void Aura::SpellAuraModStun(bool apply)
 
 void Aura::SpellAuraModDamageDone(bool apply)
 {
-	int32 val = 0;
-
-	if( m_spellProto->NameHash == SPELL_HASH_DIVINE_SPIRIT ||
-		m_spellProto->NameHash == SPELL_HASH_PRAYER_OF_SPIRIT )
-	{
-		Unit * m_caster = GetUnitCaster();
-		if( m_caster != NULL && m_caster->HasDummyAura(SPELL_HASH_IMPROVED_DIVINE_SPIRIT) )
-		{
-			val += m_spellProto->EffectBasePoints[0] / m_caster->GetDummyAura(SPELL_HASH_IMPROVED_DIVINE_SPIRIT)->RankNumber == 1 ? 2 : 1;
-			if( !apply ) val = -val;
-		}
-	}
+	int32 val;
 
 	if( m_target->IsPlayer() )
 	{
 		uint32 index;
-		 
+
 		if( mod->m_amount > 0 )
 		{
 			if( apply )
 			{
 				SetPositive();
-				val += mod->m_amount;
+				val = mod->m_amount;
 			}
 			else
 			{
-				val += -mod->m_amount;
+				val = -mod->m_amount;
 			}
 			index = PLAYER_FIELD_MOD_DAMAGE_DONE_POS;
-		
+
 		}
 		else
 		{
 			if( apply )
 			{
 				SetNegative();
-				val += -mod->m_amount;
+				val = -mod->m_amount;
 			}
 			else
 			{
-				val += mod->m_amount;
+				val = mod->m_amount;
 			}
 			index = PLAYER_FIELD_MOD_DAMAGE_DONE_NEG;
 		}
@@ -3487,11 +3463,11 @@ void Aura::SpellAuraModDamageDone(bool apply)
 			if( apply )
 			{
 				SetPositive();
-				val += mod->m_amount;
+				val = mod->m_amount;
 			}
 			else
 			{
-				val += -mod->m_amount;
+				val = -mod->m_amount;
 			}
 
 		}
@@ -3500,11 +3476,11 @@ void Aura::SpellAuraModDamageDone(bool apply)
 			if( apply )
 			{
 				SetNegative();
-				val += mod->m_amount;
+				val = mod->m_amount;
 			}
 			else
 			{
-				val += -mod->m_amount;
+				val = -mod->m_amount;
 			}
 		}
 
@@ -3512,12 +3488,11 @@ void Aura::SpellAuraModDamageDone(bool apply)
 		{
 			if( mod->m_miscValue & ( ( (uint32)1 ) << x ) )
 			{
-				if(m_target->IsCreature())
-					TO_CREATURE(m_target)->ModDamageDone[x] += val;
+				static_cast< Creature* >( m_target )->ModDamageDone[x] += val;
 			}
 		}
 	}
-   
+
 	if( mod->m_miscValue & 1 )
 		m_target->CalcDamage();
 }
@@ -8253,43 +8228,34 @@ void Aura::SpellAuraAddFlatModifier(bool apply)
 	SendModifierLog(&m_target->SM[modifier][0],val,AffectedGroups,modifier);
 }
 
-
 void Aura::SpellAuraModHealingDone(bool apply)
 {
-	int32 val = 0;
-
-	if( m_spellProto->NameHash == SPELL_HASH_DIVINE_SPIRIT ||
-		m_spellProto->NameHash == SPELL_HASH_PRAYER_OF_SPIRIT )
+	int32 val;
+	if( apply )
 	{
-		Unit * m_caster = GetUnitCaster();
-		if( m_caster != NULL && m_caster->HasDummyAura(SPELL_HASH_IMPROVED_DIVINE_SPIRIT) )
-		{
-			val += m_spellProto->EffectBasePoints[0] / m_caster->GetDummyAura(SPELL_HASH_IMPROVED_DIVINE_SPIRIT)->RankNumber == 1 ? 2 : 1;
-			if( !apply ) val = -val;
-		}
-	}
-
-	if(apply)
-	{
-		val += mod->m_amount;
-		if(val < 0)
+		val = mod->m_amount;
+		if( val < 0 )
 			SetNegative();
 		else
 			SetPositive();
 	}
-	else 
-		val += -mod->m_amount;
+	else
+		val = -mod->m_amount;
+	
+	uint32 player_class = m_target->getClass();
+	if( player_class == CLASS_DRUID || player_class == CLASS_PALADIN || player_class == CLASS_SHAMAN || player_class == CLASS_PRIEST )
+		val = float2int32( val * 1.88f );
 
-	for(uint32 x = 0; x < 7; x++)
+	for( uint8 x = 0; x < 7; x++ )
 	{
-		if (mod->m_miscValue  & (((uint32)1)<<x) )
+		if( mod->m_miscValue  & (((uint32)1) << x ) )
 		{
 			m_target->HealDoneMod[x] += val;
 		}
 	}
 	if(m_target->IsPlayer())
 	{
-		TO_PLAYER( m_target )->UpdateChanceFields();
+		TO_PLAYER(m_target)->UpdateChanceFields();
 		m_target->SetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS, m_target->GetUInt32Value(PLAYER_FIELD_MOD_HEALING_DONE_POS) + val);
 	}
 }

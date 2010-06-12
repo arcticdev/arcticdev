@@ -3831,17 +3831,18 @@ uint8 Spell::CanCast(bool tolerate)
 				switch( m_spellInfo->NameHash )
 				{
 					case SPELL_HASH_ICE_BLOCK: // Ice Block
-					case 0x9840A1A6: // Divine Shield
+					case SPELL_HASH_DIVINE_SHIELD: // Divine Shield
 						break;
 
-					case 0x3DFA70E5: // Will of the Forsaken
+					case SPELL_HASH_WILL_OF_THE_FORSAKEN:
 						{
 							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP ) )
 								break;
 						}break;
 
-					case 0xF60291F4: // Death Wish
-					case 0x19700707: // Berserker Rage
+					case SPELL_HASH_DEATH_WISH:
+					case SPELL_HASH_FEAR_WARD:
+					case SPELL_HASH_BERSERKER_RAGE:
 						{
 							if( u_caster->m_special_state & UNIT_STATE_FEAR )
 								break;
@@ -3856,7 +3857,7 @@ uint8 Spell::CanCast(bool tolerate)
 							break;
 						}
 
-					case 0xCD4CDF55: // Barksin
+					case SPELL_HASH_BARKSKIN: // Barksin
 					{ // This spell is usable while stunned, frozen, incapacitated, feared or asleep.  Lasts 12 sec.
 						if( u_caster->m_special_state & ( UNIT_STATE_STUN | UNIT_STATE_FEAR | UNIT_STATE_SLEEP ) ) // Uh, what unit_state is Frozen? (freezing trap...)
 							break;
@@ -3883,8 +3884,8 @@ uint8 Spell::CanCast(bool tolerate)
 			switch( m_spellInfo->NameHash )
 			{
 				case SPELL_HASH_ICE_BLOCK: // Ice Block
-				case 0x9840A1A6: // Divine Shield
-				case 0x3DFA70E5: // Will of the Forsaken
+				case SPELL_HASH_DIVINE_SHIELD: // Divine Shield
+				case SPELL_HASH_WILL_OF_THE_FORSAKEN: // Will of the Forsaken
 				{
 					if( u_caster->m_special_state & (UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP))
 						break;
@@ -3911,7 +3912,7 @@ uint8 Spell::CanCast(bool tolerate)
 				case SPELL_HASH_ICE_BLOCK: // Ice Block
 				case SPELL_HASH_DIVINE_SHIELD: // Divine Shield
 				case SPELL_HASH_DIVINE_PROTECTION: // Divine Protection
-				case 0xCD4CDF55: // Barkskin
+				case SPELL_HASH_BARKSKIN: // Barkskin
 					break;
 
 				/* -Supalosa- For some reason, being charmed or sleep'd is counted as 'Stunned'. 
@@ -3920,7 +3921,7 @@ uint8 Spell::CanCast(bool tolerate)
 				case 0xC7C45478: /* Immune Movement Impairment and Loss of Control (PvP Trinkets) */
 					break;
 
-				case 0x3DFA70E5: /* Will of the Forsaken (Undead Racial) */
+				case SPELL_HASH_WILL_OF_THE_FORSAKEN:
 					break;
 
 				case SPELL_HASH_PVP_TRINKET: // insignia of the alliance/horde 2.4.3
@@ -4153,8 +4154,8 @@ int32 Spell::CalculateEffect(uint32 i,Unit* target)
 
 	if( caster != NULL )
 	{
-		int32 spell_flat_modifers=0;
-		int32 spell_pct_modifers=0;
+		int32 spell_flat_modifers = 0;
+		int32 spell_pct_modifers = 0;
 		
 		SM_FIValue(caster->SM[SMT_MISC_EFFECT][0],&spell_flat_modifers,m_spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM[SMT_MISC_EFFECT][1],&spell_pct_modifers,m_spellInfo->SpellGroupType);

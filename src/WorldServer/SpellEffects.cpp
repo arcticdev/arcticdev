@@ -2184,25 +2184,25 @@ void Spell::SpellEffectTeleportUnits( uint32 i ) // Teleport Units
 
 void Spell::SpellEffectApplyAura(uint32 i) // Apply Aura
 {
-	if(unitTarget == NULL)
+	if( unitTarget == NULL )
 		return;
 
 	// Aura Immune Flag Check
-	if ( playerTarget == NULL)
+	if ( playerTarget == NULL )
 	{
 		Creature* c = TO_CREATURE( unitTarget );
-		if(c != NULL)
+		if ( c != NULL )
 		{
-			if(c->proto_heroic == NULL)
+			if ( c->GetStatsHeroic() && m_caster && m_caster->IsPlayer() && m_caster->GetMapMgr()->iInstanceMode && m_caster->GetMapMgr()->iInstanceMode > 0 )
 			{
-				if ( c->proto != NULL)
-					if( c->proto->auraimmune_flag && (c->proto->auraimmune_flag & m_spellInfo->auraimmune_flag ))
+				if ( c->GetStatsHeroic()->auraimmune_flag )
+					if ( c->GetStatsHeroic()->auraimmune_flag & m_spellInfo->auraimmune_flag )
 						return;
 			}
 			else
 			{
-				if ( p_caster != NULL && p_caster->GetMapMgr() && p_caster->GetMapMgr()->iInstanceMode)
-					if(c->proto_heroic->auraimmune_flag && (c->proto_heroic->auraimmune_flag & m_spellInfo->auraimmune_flag))
+				if ( c->proto && c->proto->auraimmune_flag )
+					if ( c->proto->auraimmune_flag & m_spellInfo->auraimmune_flag )
 						return;
 			}
 		}
@@ -2234,7 +2234,7 @@ void Spell::SpellEffectApplyAura(uint32 i) // Apply Aura
 	// if we do not make a check to see if the aura owner is the same as the caster then we will stack the 2 auras and they will not be visible client sided
 	if(itr==unitTarget->tmpAura.end())
 	{
-		uint32 Duration = GetDuration();
+		uint32 Duration = this->GetDuration();
 		
 		// Handle diminishing returns, if it should be resisted, it'll make duration 0 here.
 		if(!(m_spellInfo->Attributes & ATTRIBUTES_PASSIVE)) // Passive
@@ -5963,11 +5963,6 @@ void Spell::SummonTotem(uint32 i) // Summon Totem
 
 		if( TotemSpell->NameHash == SPELL_HASH_TOTEM_OF_WRATH )
 			pTotem->CastSpell(pTotem, dbcSpell.LookupEntry(30708), true);
-		else if( TotemSpell->NameHash == SPELL_HASH_FIRE_NOVA_TOTEM )
-		{
-			if( p_caster->HasDummyAura(SPELL_HASH_IMPROVED_FIRE_NOVA_TOTEM) && Rand(p_caster->GetDummyAura(SPELL_HASH_IMPROVED_FIRE_NOVA_TOTEM)->RankNumber * 50) )
-				sEventMgr.AddEvent( TO_UNIT(pTotem), &Unit::EventCastSpell, TO_UNIT(pTotem), dbcSpell.LookupEntry(51880), EVENT_AURA_PERIODIC_TRIGGERSPELL, 4000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
-		}	
 	}
 	else
 	{

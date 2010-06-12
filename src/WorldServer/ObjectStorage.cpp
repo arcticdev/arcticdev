@@ -19,7 +19,7 @@ const char * gAchievementRewardFormat	= "uuuu";
 const char * gAreaTriggerFormat			= "ucuusffffuu";
 const char * gCreatureNameFormat		= "usssuuuuuuuuuuuffcc";
 const char * gCreatureProtoFormat		= "uuuuuucufuuuffuffuuuuuuuuuuuffsuibuufffuuiuc";
-const char * gCreatureProtoHeroicFormat	= "uuuuuffcuuuuuuuusu";
+const char * gCreatureStatsHeroicFormat = "uuuuuuuuuuuuuuusu";
 const char * gCreatureVehicleProto		= "ubuuuuuuuuuuuuuuu";
 const char * gFishingFormat				= "uuu";
 const char * gGameObjectNameFormat		= "uuusuuuuuuuuuuuuuuuuuuuuuuuu";
@@ -40,7 +40,7 @@ ARCTIC_DECL SQLStorage<AchievementReward, HashMapStorageContainer<AchievementRew
 ARCTIC_DECL SQLStorage<AreaTrigger, HashMapStorageContainer<AreaTrigger> >						AreaTriggerStorage;
 ARCTIC_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >					CreatureNameStorage;
 ARCTIC_DECL SQLStorage<CreatureProto, HashMapStorageContainer<CreatureProto> >					CreatureProtoStorage;
-ARCTIC_DECL SQLStorage<CreatureProtoHeroic, HashMapStorageContainer<CreatureProtoHeroic> >		CreatureProtoHeroicStorage;
+ARCTIC_DECL SQLStorage<CreatureStatsHeroic, HashMapStorageContainer<CreatureStatsHeroic> >		CreatureStatsHeroicStorage;
 ARCTIC_DECL SQLStorage<CreatureProtoVehicle, HashMapStorageContainer<CreatureProtoVehicle> >	CreatureProtoVehicleStorage;
 ARCTIC_DECL SQLStorage<FishingZoneEntry, HashMapStorageContainer<FishingZoneEntry> >			FishingZoneStorage;
 ARCTIC_DECL SQLStorage<GameObjectInfo, HashMapStorageContainer<GameObjectInfo> >				GameObjectNameStorage;
@@ -518,7 +518,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(CreatureNameStorage, CreatureInfo, HashMapStorageContainer, "creature_names", gCreatureNameFormat);
 	make_task(GameObjectNameStorage, GameObjectInfo, HashMapStorageContainer, "gameobject_names", gGameObjectNameFormat);
 	make_task(CreatureProtoStorage, CreatureProto, HashMapStorageContainer, "creature_proto", gCreatureProtoFormat);
-	make_task(CreatureProtoHeroicStorage, CreatureProtoHeroic, HashMapStorageContainer, "creature_proto_heroic", gCreatureProtoHeroicFormat);
+	make_task(CreatureStatsHeroicStorage, CreatureStatsHeroic, HashMapStorageContainer, "creature_stats_heroic", gCreatureStatsHeroicFormat);
 	make_task(CreatureProtoVehicleStorage, CreatureProtoVehicle, HashMapStorageContainer, "creature_proto_vehicle", gCreatureVehicleProto);
 	make_task(AreaTriggerStorage, AreaTrigger, HashMapStorageContainer, "areatriggers", gAreaTriggerFormat);
 	make_task(ItemPageStorage, ItemPage, HashMapStorageContainer, "itempages", gItemPageFormat);

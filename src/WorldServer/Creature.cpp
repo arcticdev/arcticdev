@@ -10,6 +10,7 @@
 #undef M_PI
 #endif
 
+#define MOVETIME 10000
 #define M_PI 3.14159265358979323846f
 
 Creature::Creature(uint64 guid)
@@ -23,12 +24,11 @@ Creature::Creature(uint64 guid)
 	SetUInt64Value( OBJECT_FIELD_GUID, guid);
 	m_wowGuid.Init(GetGUID());
 
-
 	m_quests = NULL;
 	proto = NULL;
-	proto_heroic = NULL;
-
+	heroicstats = NULL;
 	creature_info = NULL;
+
 	m_H_regenTimer = 0;
 	m_P_regenTimer = 0;
 	m_useAI = true;
@@ -797,6 +797,7 @@ WayPoint * Creature::CreateWaypointStruct()
 }
 // #define SAFE_FACTIONS
 
+
 bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 {
 	m_spawn = spawn;
@@ -806,19 +807,13 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	creature_info = CreatureNameStorage.LookupEntry(spawn->entry);
 	if(!creature_info)
 		return false;
-	proto_heroic = NULL;
-	uint32 health = 0;
-	uint8 powertype = 0;
-	uint32 power = 0;
-	float mindmg = 0.0f;
-	float maxdmg = 0.0f;
-	uint32 level = 0;
 
+	heroicstats = CreatureStatsHeroicStorage.LookupEntry(spawn->entry);
 
 	spawnid = spawn->id;
 
 	m_walkSpeed = m_base_walkSpeed = proto->walk_speed; // set speeds
-	m_runSpeed = m_base_runSpeed = proto->run_speed; // set speeds
+	m_runSpeed = m_base_runSpeed = proto->run_speed;    // set speeds
 	m_flySpeed = proto->fly_speed;
 
 	m_phaseMode = spawn->phase;
@@ -826,52 +821,49 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	original_emotestate = spawn->emote_state;
 	original_MountedDisplayID = spawn->MountedDisplayID;
 
-	//Set fields
+	// Set fields
 	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
 	
+	uint32 health = proto->MinHealth + (RandomUInt(proto->MaxHealth - proto->MinHealth));
+	uint32 mana = proto->Mana;
+	float mindmg = proto->MinDamage;
+	float maxdmg = proto->MaxDamage;
+	uint32 level = proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel));
+
+	for(uint32 i = 0; i < 7; ++i)
+		SetUInt32Value(UNIT_FIELD_RESISTANCES + i, proto->Resistances[i]);
+
 	// Heroic stats
 	if(mode)
 	{
-		proto_heroic = CreatureProtoHeroicStorage.LookupEntry(spawn->entry);
-		if(proto_heroic != NULL)
+		if(GetStatsHeroic())
 		{
-			health = proto_heroic->Minhealth + RandomUInt(proto_heroic->Maxhealth - proto_heroic->Minhealth);
-			powertype = proto_heroic->Powertype;
-			power = proto_heroic->Power;
-			mindmg = proto_heroic->Mindmg;
-			maxdmg = proto_heroic->Maxdmg;
-			level =  proto_heroic->Minlevel + (RandomUInt(proto_heroic->Maxlevel - proto_heroic->Minlevel));
+			health = GetStatsHeroic()->Minhealth + RandomUInt(GetStatsHeroic()->Maxhealth - GetStatsHeroic()->Minhealth);
+			mana = GetStatsHeroic()->mana;
+			mindmg = GetStatsHeroic()->Mindmg;
+			maxdmg = GetStatsHeroic()->Maxdmg;
+			level = GetStatsHeroic()->Minlevel + (RandomUInt(GetStatsHeroic()->Maxlevel - GetStatsHeroic()->Minlevel));
 			for(uint32 i = 0; i < 7; ++i)
-				SetUInt32Value(UNIT_FIELD_RESISTANCES + i, proto_heroic->Resistances[i]);
+				SetUInt32Value(UNIT_FIELD_RESISTANCES + i, GetStatsHeroic()->Resistances[i]);
 		}
 		else
 		{
 			health = long2int32(double(proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth)) * 1.5);
-			powertype = POWER_TYPE_MANA;
 			mindmg = proto->MinDamage * 1.2f;
 			maxdmg = proto->MaxDamage * 1.2f;
 			level = proto->MinLevel + RandomUInt(proto->MaxLevel - proto->MinLevel) + RandomUInt(10);
-			if(proto->Power)
-				power = proto->Power * 1.2;
-			for(uint32 i = 0; i < 7; ++i)
-				SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
+			if(proto->Mana)
+				mana = proto->Mana * 1.2;
 		}
-	}
-	else
-	{
-		health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
-		powertype = proto->Powertype;
-		power = proto->Power;
-		mindmg = proto->MinDamage;
-		maxdmg = proto->MaxDamage;
-		level = proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel));
-		for(uint32 i = 0; i < 7; ++i)
-			SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
 	}
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, health);
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
+
+	SetUInt32Value(UNIT_FIELD_POWER1, mana);
+	SetUInt32Value(UNIT_FIELD_MAXPOWER1, mana);
+	SetUInt32Value(UNIT_FIELD_BASE_MANA, mana);
 
 	SetUInt32Value(UNIT_FIELD_BYTES_0, spawn->bytes);
 	SetUInt32Value(UNIT_FIELD_BYTES_1, spawn->bytes1);
@@ -898,7 +890,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	SetUInt32Value(UNIT_FIELD_LEVEL, level);
 
-
 	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
 	SetFloatValue(UNIT_FIELD_MINDAMAGE, mindmg);
 	SetFloatValue(UNIT_FIELD_MAXDAMAGE, maxdmg);
@@ -919,25 +910,26 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// set position
 	m_position.ChangeCoords( spawn->x, spawn->y, spawn->z, spawn->o );
 	m_spawnLocation.ChangeCoords(spawn->x, spawn->y, spawn->z, spawn->o);
-	m_aiInterface->setMoveType(spawn->movetype);	
-	m_aiInterface->m_waypoints = objmgr.GetWayPointMap(spawn->id);
+	GetAIInterface()->setMoveType(spawn->movetype);	
+	GetAIInterface()->m_waypoints = objmgr.GetWayPointMap(spawn->id);
 
-
-	// use proto faction if spawn faction is unspecified
-	m_faction = dbcFactionTemplate.LookupEntry(spawn->factionid?spawn->factionid:proto->Faction);
-
+	m_faction = dbcFactionTemplate.LookupEntry(spawn->factionid);
 	if(m_faction)
 	{
-		// not a neutral creature
 		m_factionDBC = dbcFaction.LookupEntry(m_faction->Faction);
+		// not a neutral creature
 		if(!(m_factionDBC->RepListId == -1 && m_faction->HostileMask == 0 && m_faction->FriendlyMask == 0))
+		{
 			GetAIInterface()->m_canCallForHelp = true;
+		}
 	}
 	else
+	{
 		Log.Warning("Creature","Creature is missing a valid faction template for entry %u.", spawn->entry);
+	}
 
-	// SETUP NPC FLAGS
-	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
+	// Setup npc flags
+	SetUInt32Value(UNIT_NPC_FLAGS, proto->NPCFLags);
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
 		m_SellItems = objmgr.GetVendorList(GetEntry());
@@ -955,12 +947,12 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
 	// NPC FLAGS
-	 m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
+	 GetAIInterface()->m_waypoints=objmgr.GetWayPointMap(spawn->id);
 
-	//load resistances
-	for(uint32 x=0;x<7;x++)
+	// load resistances
+	for( uint32 x = 0; x < 7; ++x )
 		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
-	for(uint32 x=0;x<5;x++)
+	for( uint32 x = 0; x < 5; ++x )
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
 	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
@@ -980,16 +972,16 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
-		m_aiInterface->addSpellToList(*itr);
+		GetAIInterface()->addSpellToList(*itr);
 	}
-	m_aiInterface->m_canRangedAttack = proto->m_canRangedAttack;
-	m_aiInterface->m_RangedAttackSpell = proto->m_RangedAttackSpell;
-	m_aiInterface->m_SpellSoundid = proto->m_SpellSoundid;
-	m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
-	m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
-	m_aiInterface->m_canFlee = proto->m_canFlee;
-	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
-	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
+	GetAIInterface()->m_canRangedAttack = proto->m_canRangedAttack;
+	GetAIInterface()->m_RangedAttackSpell = proto->m_RangedAttackSpell;
+	GetAIInterface()->m_SpellSoundid = proto->m_SpellSoundid;
+	GetAIInterface()->m_canCallForHelp = proto->m_canCallForHelp;
+	GetAIInterface()->m_CallForHelpHealth = proto->m_callForHelpHealth;
+	GetAIInterface()->m_canFlee = proto->m_canFlee;
+	GetAIInterface()->m_FleeHealth = proto->m_fleeHealth;
+	GetAIInterface()->m_FleeDuration = proto->m_fleeDuration;
 
 	// these fields are always 0 in db
 	GetAIInterface()->setMoveType(0);
@@ -998,15 +990,15 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// load formation data
 	if( spawn->form != NULL )
 	{
-		m_aiInterface->m_formationLinkSqlId = spawn->form->fol;
-		m_aiInterface->m_formationFollowDistance = spawn->form->dist;
-		m_aiInterface->m_formationFollowAngle = spawn->form->ang;
+		GetAIInterface()->m_formationLinkSqlId = spawn->form->fol;
+		GetAIInterface()->m_formationFollowDistance = spawn->form->dist;
+		GetAIInterface()->m_formationFollowAngle = spawn->form->ang;
 	}
 	else
 	{
-		m_aiInterface->m_formationLinkSqlId = 0;
-		m_aiInterface->m_formationFollowDistance = 0;
-		m_aiInterface->m_formationFollowAngle = 0;
+		GetAIInterface()->m_formationLinkSqlId = 0;
+		GetAIInterface()->m_formationFollowDistance = 0;
+		GetAIInterface()->m_formationFollowAngle = 0;
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -1015,9 +1007,23 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
+	
+	// place for dirty fix bastards
+	// hack! set call for help on civ health @ 100%
 	if(creature_info->Civilian >= 1)
-		m_aiInterface->m_CallForHelpHealth = 100;
+		GetAIInterface()->m_CallForHelpHealth = 100;
+		
+	// blizzlike code for humanoids run away if they have health lower then 10% of maximum value
+	if(creature_info->Family = UNIT_TYPE_HUMANOID)
+	{
+			GetAIInterface()->m_canFlee = true;
+			GetAIInterface()->m_FleeHealth = 0.2f;
+			GetAIInterface()->m_FleeDuration = (MOVETIME);
+			GetAIInterface()->m_canCallForHelp = true;
+			GetAIInterface()->m_CallForHelpHealth = 0.2f;
+	} 
 
+    // Hack!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
@@ -1026,56 +1032,15 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		m_useAI = false;
 	}
 
-	switch(powertype)
-	{
-	case POWER_TYPE_MANA:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_MANA);
-			SetUInt32Value(UNIT_FIELD_POWER1, power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER1, power);
-			SetUInt32Value(UNIT_FIELD_BASE_MANA, power);
-		}break;
-	case POWER_TYPE_RAGE:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_RAGE);
-			SetUInt32Value(UNIT_FIELD_POWER2, power * 10);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER2, power * 10);
-		}break;
-	case POWER_TYPE_FOCUS:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_FOCUS);
-			SetUInt32Value(UNIT_FIELD_POWER3, power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER3, power);
-		}break;
-	case POWER_TYPE_ENERGY:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_ENERGY);
-			SetUInt32Value(UNIT_FIELD_POWER4, power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER4, power);
-		}break;
-	case POWER_TYPE_RUNE:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_RUNE);
-			SetUInt32Value(UNIT_FIELD_POWER6, power * 10);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER6, power * 10);
-		}break;
-	case POWER_TYPE_RUNIC:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_RUNIC);
-			SetUInt32Value(UNIT_FIELD_POWER7, power * 10);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER7, power * 10);
-		}break;
-	default:
-		{
-			sLog.outError("Creature %u has an incorrect powertype.", this->GetEntry());	
-		}break;
-	}
+	// more hacks!
+	if(proto->Mana != 0)
+		SetPowerType(POWER_TYPE_MANA);
+	else
+		SetPowerType(0);
 
 	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
-	m_aiInterface->m_isGuard = isGuard(GetEntry());
-
-	m_aiInterface->getMoveFlags();
+	
 	// CanMove (overrules AI)
 	if(!proto->CanMove)
 		Root();
@@ -1083,15 +1048,15 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	/* creature death state */
 	if(proto->death_state == 1)
 	{
-		uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
-		if(!newhealth)
-			newhealth = 1;
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
 		bInvincible = true;
 		SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD);
 	}
+
 	m_invisFlag = proto->invisibility_type;
+	UpdateVisibility();
+
 	if( spawn->stand_state )
 		SetStandState( (uint8)spawn->stand_state );
 
@@ -1112,11 +1077,45 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	// Set fields
 	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
 
-	uint32 health = proto->MinHealth + RandomUInt(proto->MaxHealth - proto->MinHealth);
+	uint32 health = proto->MinHealth + (RandomUInt(proto->MaxHealth - proto->MinHealth));
+	uint32 mana = proto->Mana;
+	float mindmg = proto->MinDamage;
+	float maxdmg = proto->MaxDamage;
+	uint32 level = proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel));
+
+	for(uint32 i = 0; i < 7; ++i)
+		SetUInt32Value(UNIT_FIELD_RESISTANCES + i, proto->Resistances[i]);
+
+	// Heroic stats
+	if(GetStatsHeroic())
+	{
+		health = GetStatsHeroic()->Minhealth + RandomUInt(GetStatsHeroic()->Maxhealth - GetStatsHeroic()->Minhealth);
+		mana = GetStatsHeroic()->mana;
+		mindmg = GetStatsHeroic()->Mindmg;
+		maxdmg = GetStatsHeroic()->Maxdmg;
+		level =  GetStatsHeroic()->Minlevel + (RandomUInt(GetStatsHeroic()->Maxlevel - GetStatsHeroic()->Minlevel));
+		for(uint32 i = 0; i < 7; ++i)
+			SetUInt32Value(UNIT_FIELD_RESISTANCES + i, GetStatsHeroic()->Resistances[i]);
+	}
+	else
+	{
+		health = long2int32(double(health) * 1.5);
+		mindmg = proto->MinDamage * 1.2f;
+		maxdmg = proto->MaxDamage * 1.2f;
+		level = level + RandomUInt(3);
+		if(proto->Mana)
+			mana = proto->Mana * 1.2;
+		for(uint32 i = 0; i < 7; ++i)
+			SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
+	}
 
 	SetUInt32Value(UNIT_FIELD_HEALTH, health);
 	SetUInt32Value(UNIT_FIELD_MAXHEALTH, health);
 	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, health);
+
+	SetUInt32Value(UNIT_FIELD_POWER1, mana);
+	SetUInt32Value(UNIT_FIELD_MAXPOWER1, mana);
+	SetUInt32Value(UNIT_FIELD_BASE_MANA, mana);
 
 	uint32 model;
 	uint32 gender = creature_info->GenerateModelId(&model);
@@ -1128,14 +1127,11 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
 
-	SetUInt32Value(UNIT_FIELD_LEVEL, proto->MinLevel + (RandomUInt(proto->MaxLevel - proto->MinLevel)));
-
-	for(uint32 i = 0; i < 7; ++i)
-		SetUInt32Value(UNIT_FIELD_RESISTANCES+i,proto->Resistances[i]);
+	SetUInt32Value(UNIT_FIELD_LEVEL, level);
 
 	SetUInt32Value(UNIT_FIELD_BASEATTACKTIME,proto->AttackTime);
-	SetFloatValue(UNIT_FIELD_MINDAMAGE, proto->MinDamage);
-	SetFloatValue(UNIT_FIELD_MAXDAMAGE, proto->MaxDamage);
+	SetFloatValue(UNIT_FIELD_MINDAMAGE, mindmg);
+	SetFloatValue(UNIT_FIELD_MAXDAMAGE, maxdmg);
 
 	SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME,proto->RangedAttackTime);
 	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,proto->RangedMinDamage);
@@ -1165,7 +1161,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		}
 	}
 
-	// SETUP NPC FLAGS
+	// Setup npc flags
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
@@ -1206,25 +1202,25 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
-		m_aiInterface->addSpellToList(*itr);
+		GetAIInterface()->addSpellToList(*itr);
 	}
-	m_aiInterface->m_canRangedAttack = proto->m_canRangedAttack;
-	m_aiInterface->m_RangedAttackSpell = proto->m_RangedAttackSpell;
-	m_aiInterface->m_SpellSoundid = proto->m_SpellSoundid;
-	m_aiInterface->m_canCallForHelp = proto->m_canCallForHelp;
-	m_aiInterface->m_CallForHelpHealth = proto->m_callForHelpHealth;
-	m_aiInterface->m_canFlee = proto->m_canFlee;
-	m_aiInterface->m_FleeHealth = proto->m_fleeHealth;
-	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
+	GetAIInterface()->m_canRangedAttack = proto->m_canRangedAttack;
+	GetAIInterface()->m_RangedAttackSpell = proto->m_RangedAttackSpell;
+	GetAIInterface()->m_SpellSoundid = proto->m_SpellSoundid;
+	GetAIInterface()->m_canCallForHelp = proto->m_canCallForHelp;
+	GetAIInterface()->m_CallForHelpHealth = proto->m_callForHelpHealth;
+	GetAIInterface()->m_canFlee = proto->m_canFlee;
+	GetAIInterface()->m_FleeHealth = proto->m_fleeHealth;
+	GetAIInterface()->m_FleeDuration = proto->m_fleeDuration;
 
 	//these fields are always 0 in db
 	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
 
 	// load formation data
-	m_aiInterface->m_formationLinkSqlId = 0;
-	m_aiInterface->m_formationFollowDistance = 0;
-	m_aiInterface->m_formationFollowAngle = 0;
+	GetAIInterface()->m_formationLinkSqlId = 0;
+	GetAIInterface()->m_formationFollowDistance = 0;
+	GetAIInterface()->m_formationFollowAngle = 0;
 
 	//////////////////////////////////////////////////////////////
 	// AI                                                       //
@@ -1233,9 +1229,18 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
 	if(creature_info->Civilian >= 1)
-		m_aiInterface->m_CallForHelpHealth = 100;
+		GetAIInterface()->m_CallForHelpHealth = 100;
 
-	// HACK!
+	// blizzlike code for humanoids run away if they have health lower then 10% of maximum value
+	if(creature_info->Family = UNIT_TYPE_HUMANOID)
+	{
+		GetAIInterface()->m_canFlee = true;
+		GetAIInterface()->m_FleeHealth = 0.2f;
+		GetAIInterface()->m_FleeDuration = (MOVETIME);
+		GetAIInterface()->m_canCallForHelp = true;
+		GetAIInterface()->m_CallForHelpHealth = 0.2f;
+	} 
+
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 ||
@@ -1244,56 +1249,23 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		m_useAI = false;
 	}
 
-	switch(proto->Powertype)
-	{
-	case POWER_TYPE_MANA:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_MANA);
-			SetUInt32Value(UNIT_FIELD_POWER1, proto->Power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER1, proto->Power);
-			SetUInt32Value(UNIT_FIELD_BASE_MANA, proto->Power);
-		}break;
-	case POWER_TYPE_RAGE:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_RAGE);
-			SetUInt32Value(UNIT_FIELD_POWER2, proto->Power * 10);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER2, proto->Power * 10);
-		}break;
-	case POWER_TYPE_FOCUS:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_FOCUS);
-			SetUInt32Value(UNIT_FIELD_POWER3, proto->Power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER3, proto->Power);
-		}break;
-	case POWER_TYPE_ENERGY:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_ENERGY);
-			SetUInt32Value(UNIT_FIELD_POWER4, proto->Power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER4, proto->Power);
-		}break;
-	case POWER_TYPE_RUNE:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_RUNE);
-			SetUInt32Value(UNIT_FIELD_POWER6, proto->Power * 10);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER6, proto->Power * 10);
-		}break;
-	case POWER_TYPE_RUNIC:
-		{
-			SetByte(UNIT_FIELD_BYTES_0, 3, POWER_TYPE_RUNIC);
-			SetUInt32Value(UNIT_FIELD_POWER7, proto->Power);
-			SetUInt32Value(UNIT_FIELD_MAXPOWER7, proto->Power);
-		}break;
-	default:
-		{
-			sLog.outError("Creature %u has an incorrect powertype.", this->GetEntry());	
-		}break;
-	}
+	// more hacks!
+	if(proto->Mana != 0)
+		SetPowerType(POWER_TYPE_MANA);
+	else
+		SetPowerType(0);
 
 	has_combat_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_ENTER_COMBAT);
 	has_waypoint_text = objmgr.HasMonsterSay(GetEntry(), MONSTER_SAY_EVENT_RANDOM_WAYPOINT);
-	m_aiInterface->m_isGuard = isGuard(GetEntry());
 
-	m_aiInterface->getMoveFlags();
+	m_aiInterface->m_isGuard = false;
+	m_aiInterface->m_isNeutralGuard = false;
+
+	if( proto->GuardType & 1 )
+		m_aiInterface->m_isGuard = true;
+	if( proto->GuardType & 2 )
+		m_aiInterface->m_isNeutralGuard = true;
+
 	// CanMove (overrules AI)
 	if(!proto->CanMove)
 		Root();
@@ -1301,9 +1273,6 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	// creature death state.
 	if(proto->death_state == 1)
 	{
-		uint32 newhealth = m_uint32Values[UNIT_FIELD_HEALTH] / 100;
-		if(!newhealth)
-			newhealth = 1;
 		SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 		m_limbostate = true;
 		bInvincible = true;

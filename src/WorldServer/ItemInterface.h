@@ -23,6 +23,20 @@ class Player;
 class UpdateData;
 class ByteBuffer;
 
+enum CanAffordItem
+{
+	CAN_AFFORD_ITEM_ERROR_OK = 0,
+	CAN_AFFORD_ITEM_ERROR_CURRENTLY_SOLD_OUT = 1,
+	CAN_AFFORD_ITEM_ERROR_DONT_HAVE_ENOUGH_MONEY = 2,
+	CAN_AFFORD_ITEM_ERROR_NOT_FOUND = 3,
+	CAN_AFFORD_ITEM_ERROR_DOESNT_LIKE_YOU = 4,
+	CAN_AFFORD_ITEM_ERROR_TOO_FAR_AWAY = 5,
+	CAN_AFFORD_ITEM_ERROR_NO_MESSAGE = 6,
+	CAN_AFFORD_ITEM_ERROR_CANT_CARRY_ANY_MORE = 8,
+	CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK = 11,
+	CAN_AFFORD_ITEM_ERROR_REPUTATION = 12,
+};
+
 // sanity checking
 enum AddItemResult
 {
@@ -108,11 +122,12 @@ public:
 	int8 GetItemSlotByType(uint32 type);
 	Item* GetItemByGUID(uint64 itemGuid);
 
-
 	void BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint8 Error);
 	bool SwapItemSlots(int16 srcslot, int16 dstslot);
 
 	int16 GetInternalBankSlotFromPlayer(int16 islot); //converts inventory slots into 0-x numbers
+	// Checks if the player has slotted an item with an item ID
+	bool HasGemEquipped( uint32 GemID , int8 IgnoreSlot = -1 ); // (GemID: The item ID of the gem)
 
 	// buyback stuff
 	ARCTIC_INLINE Item* GetBuyBack(int32 slot) 
@@ -129,6 +144,8 @@ public:
 
 	void CheckAreaItems();
 
+	uint32 GetItemCountByLimitId(uint32 LimitId, bool IncBank);
+	uint32 GetEquippedCountByItemLimit(uint32 LimitId); 
 
 public:
 	ARCTIC_INLINE bool VerifyBagSlots(int16 ContainerSlot, int16 Slot)

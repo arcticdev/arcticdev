@@ -5618,7 +5618,7 @@ void Player::AddInRangeObject(Object* pObj)
 	// unit based objects, send aura data
 	if (pObj->IsUnit())
 	{
-		Unit* pUnit=TO_UNIT(pObj);
+		Unit* pUnit = TO_UNIT(pObj);
 		Aura* aur = NULLAURA;
 		
 		if (GetSession() != NULL)
@@ -5685,8 +5685,8 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		else
 			this->UnPossess();
 		if(m_currentSpell)
-			m_currentSpell->cancel();	   // cancel the spell
-		m_CurrentCharm=NULLUNIT;
+			m_currentSpell->cancel(); // cancel the spell
+		m_CurrentCharm = NULLUNIT;
 
 		if( p->m_temp_summon&&p->GetTypeId() == TYPEID_UNIT )
 			TO_CREATURE( p )->SafeDelete();
@@ -5876,13 +5876,13 @@ void Player::SendLoot(uint64 guid, uint32 mapid, uint8 loot_type)
 	data << guid;
 	data << loot_type; // loot_type;
 	data << lootObj->m_loot.gold;
-	data << (uint8) 0; // loot size reserve
+	data << uint8(0); // loot size reserve
 
 	std::vector<__LootItem>::iterator iter=lootObj->m_loot.items.begin();
-	uint32 count=0;
+	uint32 count = 0;
 	uint8 slottype = 0;
 
-	for(uint32 x=0;iter!=lootObj->m_loot.items.end();iter++,x++)
+	for(uint32 x = 0; iter != lootObj->m_loot.items.end(); iter++, x++)
 	{ 
 		if (iter->iItemsCount == 0)
 			continue;
@@ -6384,9 +6384,9 @@ void Player::SendInitialLogonPackets()
 	data << m_bind_zoneid;
 	GetSession()->SendPacket( &data );
 
-	//Proficiencies
-	//SendSetProficiency(4,armor_proficiency);
-	//SendSetProficiency(2,weapon_proficiency);
+	// Proficiencies
+	// SendSetProficiency(4,armor_proficiency);
+	// SendSetProficiency(2,weapon_proficiency);
 	packetSMSG_SET_PROFICICENCY pr;
 	pr.ItemClass = 4;
 	pr.Profinciency = armor_proficiency;

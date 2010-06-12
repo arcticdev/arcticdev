@@ -4,8 +4,6 @@
  * See COPYING for license details.
  */
  
-#include "Map.h"
-
 #ifndef WOWARCTIC_CREATURE_H
 #define WOWARCTIC_CREATURE_H
 
@@ -16,6 +14,7 @@ class GossipScript;
 #define MAX_CREATURE_LOOT 8
 #define MAX_PET_SPELL 4
 #define VENDOR_ITEMS_UPDATE_TIME 3600000
+#include "Map.h"
 
 struct CreatureItem
 {
@@ -30,6 +29,7 @@ struct CreatureItem
 ARCTIC_DECL bool Rand(float chance);
 ARCTIC_DECL bool Rand(uint32 chance);
 ARCTIC_DECL bool Rand(int32 chance);
+
 #pragma pack(push,1)
 
 struct CreatureInfo
@@ -51,8 +51,8 @@ struct CreatureInfo
 	uint32 Female_DisplayID2;
 	float unkfloat1;
 	float unkfloat2;
-	uint8  Civilian;
-	uint8  Leader;
+	uint8 Civilian;
+	uint8 Leader;
 
 	std::string lowercase_name;
 	GossipScript * gossip_script;
@@ -111,8 +111,7 @@ struct CreatureProto
 	uint32 Faction;
 	uint32 MinHealth;
 	uint32 MaxHealth;
-	uint8 Powertype;
-	uint32 Power;
+	uint32 Mana;
 	float  Scale;
 	uint32 NPCFLags;
 	uint32 AttackTime;
@@ -159,7 +158,7 @@ struct CreatureProto
 	list<AI_Spell*> spells;
 };
 
-struct CreatureProtoHeroic
+struct CreatureStatsHeroic
 {
 	uint32 entry;
 	uint32 Minlevel;
@@ -168,8 +167,7 @@ struct CreatureProtoHeroic
 	uint32 Maxhealth;
 	float Mindmg;
 	float Maxdmg;
-	uint8 Powertype;
-	uint32 Power;
+	uint32 mana;
 	uint32 Resistances[7];
 	char * aura_string;
 	uint32 auraimmune_flag;
@@ -278,6 +276,7 @@ class CreatureAIScript;
 class GossipScript;
 class AuctionHouse;
 struct Trainer;
+
 #define CALL_SCRIPT_EVENT(obj, func) if(obj->GetTypeId() == TYPEID_UNIT && TO_CREATURE(obj)->GetScript() != NULL) TO_CREATURE(obj)->GetScript()->func
 
 //////////////////////////////////////////////////////////////
@@ -551,9 +550,9 @@ public:
 	uint32 original_emotestate;
 	uint32 original_MountedDisplayID;
 	CreatureProto * proto;
-	CreatureProtoHeroic * proto_heroic;
+	CreatureStatsHeroic * heroicstats;
 	ARCTIC_INLINE CreatureProto *GetProto() { return proto; }
-	ARCTIC_INLINE CreatureProtoHeroic * GetProtoHeroic() { return proto_heroic; }
+	ARCTIC_INLINE CreatureStatsHeroic * GetStatsHeroic() { return heroicstats; }
 	CreatureSpawn * m_spawn;
 	EventIdInfo * m_event;
 	void OnPushToWorld();
