@@ -250,7 +250,6 @@ void DynamicObject::Remove()
 {
 	if(IsInWorld())
 		RemoveFromWorld(true);
-
-	delete this;
+	Destructor();
 }
 

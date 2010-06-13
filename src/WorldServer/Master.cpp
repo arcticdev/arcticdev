@@ -24,7 +24,7 @@ volatile bool Master::m_stopEvent = false;
 ARCTIC_DECL Database* Database_Character;
 ARCTIC_DECL Database* Database_World;
 
-// mainserv defines
+// Mainserv defines
 SessionLogWriter* GMCommand_Log;
 SessionLogWriter* Anticheat_Log;
 SessionLogWriter* Player_Log;

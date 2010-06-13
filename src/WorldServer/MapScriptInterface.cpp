@@ -5,8 +5,7 @@
  */
 
 /* Class MapScriptInterface
- * Provides an interface to mapmgr for scripts, to obtain objects,
- * get players, etc.
+ * Provides an interface to mapmgr for scripts, to obtain objects, get players, etc.
  */
 
 #include "StdAfx.h"
@@ -129,13 +128,13 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 
 void MapScriptInterface::DeleteCreature(Creature* ptr)
 {
-	delete ptr;
+	ptr->Destructor();
 	ptr = NULLCREATURE;
 }
 
 void MapScriptInterface::DeleteGameObject(GameObject* ptr)
 {
-	delete ptr;
+	ptr->Destructor();
 	ptr = NULLGOB;
 }
 

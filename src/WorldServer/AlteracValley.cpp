@@ -12,43 +12,43 @@
 
 const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = 
 {
-    { // Aid Station
+	{	// Aid Station
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Stormpike Graveyard
+	{	// Stormpike Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Stonehearth Graveyard
+	{	// Stonehearth Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Snowfall graveyard
+	{	// Snowfall graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Coldtooth mine
+	{	// Coldtooth mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Irondeep mine
+	{	// Irondeep mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Iceblood gy
+	{	// Iceblood gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Frostwolf gy
+	{	// Frostwolf gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Frostwolf relief
+	{	// Frostwolf relief
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Dun baldar nth
+	{	// Dun baldar nth
 		{ 667.917297f, -137.020660f, 63.645058f, 1.094849f },
 		{ 680.675903f, -125.554802f, 63.666199f, 0.089540f },
 		{ 685.923828f, -148.394562f, 56.618328f, 1.138047f },
@@ -59,7 +59,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Dun baldar sth
+	{	// Dun baldar sth
 		{ 568.422852f, -83.935478f, 51.942871f, 2.324003f },
 		{ 547.981018f, -93.095024f, 51.942841f, 0.898504f },
 		{ 549.647034f, -80.551971f, 44.820171f, 2.858073f },
@@ -70,7 +70,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Icewing
+	{	// Icewing
 		{ 198.799316f, -361.116241f, 56.391476f, 5.363494f },
 		{ 217.211273f, -375.348236f, 56.368317f, 0.494023f },
 		{ 200.838547f, -362.912231f, 49.267738f, 2.708846f },
@@ -81,7 +81,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Stonehearth
+	{	// Stonehearth
 		{ -162.115128f, -458.521393f, 40.389114f, 5.921130f },
 		{ -146.283035f, -451.985413f, 40.392101f, 1.593585f },
 		{ -154.911880f, -440.288513f, 33.280674f, 3.392147f },
@@ -92,7 +92,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Iceblood
+	{	// Iceblood
 		{ -569.760010f, -263.288513f, 75.008682f, 2.104091f },
 		{ -570.742493f, -271.907837f, 74.988449f, 3.238992f },
 		{ -578.531372f, -253.600327f, 74.959206f, 0.647177f },
@@ -105,7 +105,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Tower point
+	{	// Tower point
 		{ -769.523010f, -358.549561f, 68.635841f, 3.853180f },
 		{ -762.504395f, -362.904480f, 68.543678f, 5.730278f },
 		{ -761.258606f, -360.407471f, 72.666672f, 1.618719f },
@@ -118,7 +118,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // East frostwolf
+	{	// East frostwolf
 		{ -1304.755249f, -322.213409f, 91.419922f, 5.141234f },
 		{ -1304.633057f, -310.950684f, 91.677505f, 0.746931f },
 		{ -1301.672974f, -309.800598f, 95.747795f, 3.586145f },
@@ -131,7 +131,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // West frostwolf
+	{	// West frostwolf
 		{ -1299.614014f, -263.684998f, 114.151276f, 4.944896f },
 		{ -1297.918335f, -269.959930f, 114.151276f, 4.772108f },
 		{ -1304.088379f, -272.878387f, 114.098404f, 5.200147f },
@@ -149,10 +149,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
 // Waypoints                                                            //
 //////////////////////////////////////////////////////////////////////////
 
-static uint32 g_unitWaypoints[4][2] = 
-{
-	{ },
-};
+static uint32 g_unitWaypoints[4][2] = { { }, };
 
 //////////////////////////////////////////////////////////////////////////
 // Initial Guard Locations                                              //
@@ -161,57 +158,57 @@ static uint32 g_unitWaypoints[4][2] =
 const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = 
 {
 
-	{ // Aid Station
+	{	// Aid Station
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Stormpike Graveyard
+	{	// Stormpike Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Stonehearth Graveyard
+	{	// Stonehearth Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Snowfall graveyard
+	{	// Snowfall graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Coldtooth mine
+	{	// Coldtooth mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Irondeep mine
+	{	// Irondeep mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Iceblood gy
+	{	// Iceblood gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Frostwolf gy
+	{	// Frostwolf gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Frostwolf relief
+	{	// Frostwolf relief
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Dun baldar nth
+	{	// Dun baldar nth
 		{ 672.141296f, -120.239807f, 64.147659f, 2.379753f },
 		{ 664.585083f, -126.076088f, 64.120972f, 2.768524f },
 		{ 661.464905f, -137.339371f, 64.216965f, 3.436112f },
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Dun baldar sth
+	{	// Dun baldar sth
 		{ 564.124146f, -71.107430f, 52.488060f, 1.300614f },
 		{ 571.863770f, -77.084518f, 52.367657f, 0.295303f },
 		{ 574.969543f, -90.801270f, 52.412132f, 5.910901f },
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Icewing
+	{	// Icewing
 		{ 222.674530f, -378.605408f, 57.147060f, 5.577111f },
 		{ 210.093506f, -384.971558f, 56.793076f, 4.595366f },
 		{ 199.602188f, -380.995575f, 56.864891f, 3.754991f },
@@ -221,7 +218,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Stonehearth
+	{	// Stonehearth
 		{ -139.692780f, -445.390533f, 40.982857f, 0.527005f },
 		{ -140.723969f, -457.597168f, 40.862610f, 5.643875f },
 		{ -148.143784f, -464.959808f, 40.933720f, 5.639948f },
@@ -231,7 +228,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Iceblood
+	{	// Iceblood
 		{ -568.816711f, -255.542038f, 75.008690f, 1.025736f },
 		{ -580.106445f, -264.803497f, 74.931145f, 3.931711f },
 		{ -572.966248f, -271.499786f, 74.933746f, 4.198746f },
@@ -239,7 +236,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // Tower point
+	{	// Tower point
 		{ -760.347595f, -358.281586f, 90.885597f, 0.358147f },
 		{ -759.719116f, -367.059113f, 90.826775f, 5.722414f },
 		{ -768.441956f, -372.756653f, 90.933365f, 4.991992f },
@@ -248,7 +245,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // East frostwolf
+	{	// East frostwolf
 		{ -1297.069092f, -309.338623f, 113.769043f, 1.002180f },
 		{ -1293.462036f, -316.529602f, 113.774048f, 0.067557f },
 		{ -1298.062256f, -326.274994f, 113.820679f, 5.015566f },
@@ -258,7 +255,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{ // West frostwolf
+	{	// West frostwolf
 		{ -1299.964233f, -275.591461f, 114.055862f, 1.241742f },
 		{ -1306.900757f, -268.969574f, 114.055481f, 3.464420f },
 		{ -1305.109375f, -261.103363f, 114.068550f, 2.298103f },
@@ -274,7 +271,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
 
 struct AVHomeNPC { uint32 id_a; uint32 id_h; float a_x; float a_y; float a_z; float a_o; float h_x; float h_y; float h_z; float h_o; };
 
-const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] = 
+const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] =
 {
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stormpike aid station
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stormpike graveyard
@@ -310,7 +307,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 		// aura definition
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION				 ROTATION
-		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,  0.0f, 0.0f	},
+		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },
 
 		// glow definition
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION										     ROTATION
@@ -322,7 +319,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 		//	guard count,		boss ids					peon locations		boss location				fire locations
 		5,						{ 0, 0, 0 },				NULL,				{ 0.0f, 0.0f, 0.0f },		0,
 
-		//	world state fields
+		// world state fields
 		0,
 		WORLDSTATE_AV_STORMPIKE_AID_STATION_ALLIANCE_ASSAULTING,
 		WORLDSTATE_AV_STORMPIKE_AID_STATION_ALLIANCE_CONTROLLED,
@@ -1140,7 +1137,6 @@ void AVNode::Spawn()
 		}
 	}
 
-
 	// update field states :O
 	for(uint32 i = 0; i < AV_NUM_SPAWN_TYPES; ++i)
 	{
@@ -1633,7 +1629,7 @@ void AlteracValley::Finish(uint32 losingTeam)
 	SpellEntry * loser_spell = dbcSpell.LookupEntry(24954);
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->Root();
 

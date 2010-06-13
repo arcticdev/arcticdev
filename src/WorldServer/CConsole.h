@@ -4,18 +4,18 @@
  * See COPYING for license details.
  */
 
-#ifndef __CConsole_H
-#define __CConsole_H
+#ifndef __CCONSOLE_H
+#define __CCONSOLE_H
 
 #include "Common.h"
 
 class ConsoleThread : public ThreadContext
 {
 protected:
-	bool m_isRunning;
+    bool m_isRunning;
 public:
-	void terminate();
-	bool run();
+    void terminate();
+    bool run();
 };
 
-#endif
+#endif // __CCONSOLE_H

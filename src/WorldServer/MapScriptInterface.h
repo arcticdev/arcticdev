@@ -9,8 +9,7 @@
 
 /* 
  * Class MapScriptInterface
- * Provides an interface to mapmgr for scripts, to obtain objects,
- * get players, etc.
+ * Provides an interface to mapmgr for scripts, to obtain objects, get players, etc.
  */
 
 class GameObject;
@@ -34,8 +33,8 @@ public:
 
 		Object* ClosestObject = NULLOBJ;
 		float CurrentDist = 0;
-		ObjectSet::const_iterator iter;
-		for(iter = pCell->Begin(); iter != pCell->End(); ++iter)
+		ObjectSet::const_iterator iter = pCell->Begin();
+		for(; iter != pCell->End(); ++iter)
 		{
 			CurrentDist = (*iter)->CalcDistance(x, y, (z != 0.0f ? z : (*iter)->GetPositionZ()));
 			if(CurrentDist < ClosestDist && (*iter)->GetTypeId() == TypeId)
@@ -92,3 +91,4 @@ public:
 #define sStructFactory StructFactory::getSingleton()
 
 #endif
+
