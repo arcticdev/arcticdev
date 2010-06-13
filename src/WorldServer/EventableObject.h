@@ -10,7 +10,7 @@
 class EventableObjectHolder;
 
 /*
- *@class EventableObject
+ * class EventableObject
  * EventableObject means that the class inheriting this is able to take
  * events. This 'base' class will store and update these events upon
  * receiving the call from the instance thread / WorldRunnable thread.
@@ -43,6 +43,7 @@ public:
 	uint32 event_GetEventPeriod(uint32 EventType);
 	// Public methods
 	EventableObject();
+
 	virtual ~EventableObject();
 	void Virtual_Destructor();
 

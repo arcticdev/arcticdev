@@ -126,8 +126,6 @@ public:
 	bool SwapItemSlots(int16 srcslot, int16 dstslot);
 
 	int16 GetInternalBankSlotFromPlayer(int16 islot); //converts inventory slots into 0-x numbers
-	// Checks if the player has slotted an item with an item ID
-	bool HasGemEquipped( uint32 GemID , int8 IgnoreSlot = -1 ); // (GemID: The item ID of the gem)
 
 	// buyback stuff
 	ARCTIC_INLINE Item* GetBuyBack(int32 slot) 
@@ -143,9 +141,6 @@ public:
 	bool IsEquipped(uint32 itemid);
 
 	void CheckAreaItems();
-
-	uint32 GetItemCountByLimitId(uint32 LimitId, bool IncBank);
-	uint32 GetEquippedCountByItemLimit(uint32 LimitId); 
 
 public:
 	ARCTIC_INLINE bool VerifyBagSlots(int16 ContainerSlot, int16 Slot)
@@ -259,7 +254,7 @@ public:
 			}
 
 			// unset this
-			m_container=NULLCONTAINER;
+			m_container = NULLCONTAINER;
 		}
 
 		for(; m_slot < MAX_INVENTORY_SLOT; ++m_slot)

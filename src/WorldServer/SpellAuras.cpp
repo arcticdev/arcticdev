@@ -622,7 +622,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 	m_castInDuel = false;
 	m_spellProto = proto;
 	m_duration = duration;
-	m_positive = 0; //we suppose spell will have positive impact on target
+	m_positive = 0; // we suppose spell will have positive impact on target
 	stackSize = 1;
 	procCharges = GetSpellProto()->procCharges;
 	m_deleted = false;
@@ -8524,37 +8524,37 @@ void Aura::SpellAuraIncreaseAllWeaponSkill(bool apply)
 		{
 			SetPositive();
 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SWORDS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_AXES, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_BOWS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_GUNS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_MACES, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_SWORDS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_STAVES, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_MACES, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_AXES, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_DAGGERS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_CROSSBOWS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SPEARS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_WANDS, mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_POLEARMS, mod->m_amount); 
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SWORDS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_AXES, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_BOWS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_GUNS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_MACES, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_SWORDS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_STAVES, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_MACES, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_AXES, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_DAGGERS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_CROSSBOWS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SPEARS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_WANDS, mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_POLEARMS, mod->m_amount);
 		}
 		else
 		{
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SWORDS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_AXES, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_BOWS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_GUNS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_MACES, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_SWORDS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_STAVES, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_MACES, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_AXES, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_DAGGERS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_CROSSBOWS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SPEARS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_WANDS, -mod->m_amount); 
-			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_POLEARMS, -mod->m_amount); 
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SWORDS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_AXES, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_BOWS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_GUNS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_MACES, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_SWORDS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_STAVES, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_MACES, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_2H_AXES, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_DAGGERS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_CROSSBOWS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SPEARS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_WANDS, -mod->m_amount);
+			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_POLEARMS, -mod->m_amount);
 		}
 
 		TO_PLAYER( m_target )->UpdateStats();
@@ -8907,10 +8907,10 @@ void Aura::SpellAuraIncreaseRangedAPStatPCT(bool apply)
 void Aura::SpellAuraModBlockValue(bool apply)
 {
 	if( m_target->IsPlayer())
- 	{
+	{
 		int32 amt;
- 		if( apply )
- 		{
+		if( apply )
+		{
 			amt = mod->m_amount;
 			if( amt < 0 )
 				SetNegative();
@@ -9044,7 +9044,7 @@ void Aura::SpellAuraExpertise(bool apply)
 // Sets time left before aura removal and sends update packet
 void Aura::SetTimeLeft(int32 time)
 {
-	sEventMgr.ModifyAuraEventTimeLeft(m_target, time, GetSpellId());
+	sEventMgr.ModifyEventTimeLeft(m_target, EVENT_AURA_REMOVE, time);
 	if( !IsPassive() )
 	{
 		timeleft = ( uint32 )UNIXTIME;

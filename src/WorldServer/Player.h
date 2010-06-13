@@ -587,6 +587,7 @@ struct PlayerInfo
 	ArenaTeam * arenaTeam[NUM_ARENA_TEAM_TYPES];
 	uint32 charterId[NUM_CHARTER_TYPES];
 };
+
 struct PlayerPet
 {
 	string name;
@@ -603,6 +604,7 @@ struct PlayerPet
 	uint32 actionbarspellstate[10];
 	bool summon;
 };
+
 enum MeetingStoneQueueStatus
 {
 	MEETINGSTONE_STATUS_NONE = 0,
@@ -612,22 +614,26 @@ enum MeetingStoneQueueStatus
 	MEETINGSTONE_STATUS_LOOKING_FOR_NEW_PARTY_IN_QUEUE = 4,
 	MEETINGSTONE_STATUS_NONE_UNK = 5,
 };
+
 enum ItemPushResultTypes
 {
 	ITEM_PUSH_TYPE_LOOT = 0x00000000,
 	ITEM_PUSH_TYPE_RECEIVE = 0x00000001,
 	ITEM_PUSH_TYPE_CREATE = 0x00000002,
 };
+
 struct WeaponModifier
 {
 	uint32 wclass;
 	uint32 subclass;
 	float value;
 };
+
 struct PetActionBar
 {
 	uint32 spell[10];
 };
+
 struct classScriptOverride
 {
 	uint32 id;
@@ -635,11 +641,8 @@ struct classScriptOverride
 	uint32 aura;
 	uint32 damage;
 	bool percent;
-	// uint32 overridemask;	// 1 - percent, 2 - selfcheck, 4 - spellpower, 8 - checkclassmask, 
-							// 16 - reqaurafromcaster, 256 - heal only
-							// 32 - MISC FLAG (64 - nourish heal boost, 128 - soul siphon)
-
 };
+
 class Spell;
 class Item;
 class Container;
@@ -715,8 +718,8 @@ enum DUEL_WINNER
 	DUEL_WINNER_RETREAT,
 };
 
-#define PLAYER_ATTACK_TIMEOUT_INTERVAL	5000
-#define PLAYER_FORCED_RESURECT_INTERVAL	360000 // 1000*60*6= 6 minutes 
+#define PLAYER_ATTACK_TIMEOUT_INTERVAL  5000
+#define PLAYER_FORCED_RESURECT_INTERVAL 360000 // 1000*60*6= 6 minutes 
 
 enum EquipmentSetUpdateState
 {

@@ -580,19 +580,19 @@ enum ITEM_FLAG
 
 enum SPECIAL_ITEM_TYPE
 {
-	ITEM_TYPE_BOWAMMO       = 1,    // Arrows
-	ITEM_TYPE_GUNAMMO       = 2,    // Bullets
-	ITEM_TYPE_SOULSHARD     = 4,    // Soul Shards
-	ITEM_TYPE_LEATHERWORK   = 8,    // Leatherworking Supplies
-	ITEM_TYPE_INSCRIPTION   = 16,   // Inscripton Supplies
-	ITEM_TYPE_HERBALISM     = 32,   // Herbs
-	ITEM_TYPE_ENCHANTMENT   = 64,   // Enchanting Supplies
-	ITEM_TYPE_ENGINEERING   = 128,  // Engineering Supplies
-	ITEM_TYPE_KEYRING       = 256,  // Keys
-	ITEM_TYPE_GEMS          = 512,  // Gems
-	ITEM_TYPE_MINING        = 1024, // Mining Supplies
-	ITEM_TYPE_SBEQUIPMENT   = 2048, // Soulbound Equipment
-	ITEM_TYPE_VANITYPETS    = 4096, // Vanity Pets
+	ITEM_TYPE_BOWAMMO       = 1,	// Arrows
+	ITEM_TYPE_GUNAMMO       = 2,	// Bullets
+	ITEM_TYPE_SOULSHARD     = 4,	// Soul Shards
+	ITEM_TYPE_LEATHERWORK   = 8,	// Leatherworking Supplies
+	ITEM_TYPE_INSCRIPTION   = 16,	// Inscripton Supplies
+	ITEM_TYPE_HERBALISM     = 32,	// Herbs
+	ITEM_TYPE_ENCHANTMENT   = 64,	// Enchanting Supplies
+	ITEM_TYPE_ENGINEERING   = 128,	// Engineering Supplies
+	ITEM_TYPE_KEYRING       = 256,	// Keys
+	ITEM_TYPE_GEMS          = 512,	// Gems
+	ITEM_TYPE_MINING        = 1024,	// Mining Supplies
+	ITEM_TYPE_SBEQUIPMENT   = 2048,	// Soulbound Equipment
+	ITEM_TYPE_VANITYPETS    = 4096,	// Vanity Pets
 	ITEM_TYPE_CURRENCY      = 8192,
 	ITEM_TYPE_QUEST_ITEMS   = 16384
 };
@@ -703,10 +703,10 @@ struct ItemPrototype
 	int32 DisenchantReqSkill;
 	int32 Lootgold;
 	uint32 ArmorDamageModifier;
-	uint32 Faction; // schnek: 3.2
+	/* uint32 Faction; // schnek: 3.2
 	uint32 ExistingDuration;
 	uint32 ItemLimitCategory;
-	uint32 HolidayId; // schnek: HolidayNames.dbc
+	uint32 HolidayId; */ // schnek: HolidayNames.dbc
 
 	string lowercase_name; // used in auctions
 	uint32 FoodType; // pet food type

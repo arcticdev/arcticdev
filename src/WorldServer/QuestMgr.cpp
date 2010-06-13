@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 
-// Рейты для премиум акков
+// Rates of premium for the acc 
 #define PREMIUM_ACC_QUEST_EXP 3
 
 uint32 QuestMgr::CalcQuestStatus(Object* quest_giver, Player* plr, QuestRelation* qst)
@@ -514,13 +514,23 @@ void QuestMgr::BuildQuestComplete(Player* plr, Quest* qst)
 		plr->GiveXP(xp, 0, false);
 	}
 
-	WorldPacket data(SMSG_QUESTGIVER_QUEST_COMPLETE, 24);
-	data << uint32(qst->id);
-	data << uint32(xp);
-	data << uint32(GenerateRewardMoney(plr, qst));
-	data << uint32(qst->reward_honor);
-	data << uint32(qst->reward_talents);
-	data << uint32(0); // Arena points
+	WorldPacket data( SMSG_QUESTGIVER_QUEST_COMPLETE,72 );
+
+	data << qst->id;
+	data << xp;
+	data << uint32( GenerateRewardMoney(plr, qst) );
+	data << uint32( qst->reward_honor);          // Honor Points
+	data << uint32( 0 );                         // 3.0.2
+	data << uint32( qst->count_reward_item );    // Reward item count
+
+	for(uint32 i = 0; i < 4; ++i)
+	{
+		if(qst->reward_item[i])
+		{
+			data << qst->reward_item[i];
+			data << qst->reward_itemcount[i];
+		}
+	}
 	plr->GetSession()->SendPacket(&data);
 }
 

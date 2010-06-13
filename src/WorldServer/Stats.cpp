@@ -11,7 +11,7 @@
 
 uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl)
 {
-#define PLAYER_LEVEL_CAP 70
+#define PLAYER_LEVEL_CAP 80
 	const uint32 grayLevel[PLAYER_LEVEL_CAP+1] = {0,0,0,0,0,0,0,1,2,3,4,5,6,7,8,9,10,11,12,13,13,14,15,16,17,18,19,20,21,22,22,23,24,25,26,27,28,29,30,31,31,32,33,34,35,35,36,37,38,39,39,40,41,42,43,43,44,45,46,47,47,48,49,50,51,51,52,53,54,55,55};
 	if(AttackerLvl + 5 <= VictimLvl)
 	{
@@ -184,11 +184,11 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 	if(xp == 0.0f)
 		return 0;
 
-	//Checks for Premium account
+	// Checks for Premium account
 	if(pAttacker->IsPlayer())
 	{
 	QueryResult * result = CharacterDatabase.Query("SELECT premium FROM accounts WHERE acct=%u",TO_PLAYER(pAttacker)->GetSession()->GetAccountId());
-	if ( result!=NULL )
+	if ( result != NULL )
 	{
 		premium = result->Fetch()[0].GetUInt32();
 		delete result;
@@ -219,7 +219,6 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 			xp *= 2.5f;
 			break;
 		default: // rare or higher
-			// xp *= 7.0f;
 			break;
 		}
 	}
@@ -227,6 +226,7 @@ uint32 CalculateXpToGive(Unit* pVictim, Unit* pAttacker)
 		xp = 0;
 
 	return (uint32)xp;
+
 }
 
 uint32 CalculateStat(uint16 level, float inc)

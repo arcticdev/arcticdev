@@ -10,7 +10,6 @@
 EventableObject::~EventableObject()
 {
 	// decrement event count on all events 
-
 	EventMap::iterator itr = m_events.begin();
 	for(; itr != m_events.end(); ++itr)
 	{
@@ -28,14 +27,27 @@ EventableObject::~EventableObject()
 	m_events.clear();
 }
 
-EventableObject::EventableObject()
+// we virtually are destroying this object that means we will have no more events and we do not belong to any holder anymore
+void EventableObject::Virtual_Destructor()
 {
-	/* commented, these will be allocated when the first event is added. */
-	//m_event_Instanceid = event_GetInstanceID();
-	//m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
+	/* decrement event count on all events */
+	EventMap::iterator itr = m_events.begin();
+	for(; itr != m_events.end(); ++itr)
+	{
+		itr->second->deleted = true;
+		itr->second->DecRef();
+	}
+
+	m_events.clear();
 
 	m_holder = 0;
 	m_event_Instanceid = -1;
+}
+
+EventableObject::EventableObject()
+{
+	m_holder = 0;
+	m_event_Instanceid = WORLD_INSTANCE;
 	m_events.clear();
 }
 
@@ -56,10 +68,10 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 	m_lock.Release();
 
 	/* Add to event manager */
-	if(!m_holder || ptr->eventFlag & EVENT_FLAG_MOVE_TO_WORLD_CONTEXT)
+	if(!m_holder)
 	{
 		/* relocate to -1 eventholder :/ */
-		m_event_Instanceid = -1;
+		m_event_Instanceid = WORLD_INSTANCE;
 		m_holder = sEventMgr.GetEventHolder(m_event_Instanceid);
 		ASSERT(m_holder);
 	}
@@ -350,10 +362,10 @@ void EventableObjectHolder::Update(uint32 time_difference)
 	m_insertPoolLock.Release();
 
 	/* Now we can proceed normally. */
-	EventList::iterator itr,it2;
+	EventList::iterator itr = m_events.begin();
+	EventList::iterator it2;
 	TimedEvent * ev;
 
-	itr	= m_events.begin();
 	while(itr != m_events.end())
 	{
 		it2 = itr++;
@@ -420,16 +432,15 @@ void EventableObject::event_Relocate()
 	/* prevent any new stuff from getting added */
 	m_lock.Acquire();
 
-	EventableObjectHolder * nh = NULL;
-	nh = sEventMgr.GetEventHolder(event_GetInstanceID());
+	EventableObjectHolder * nh = sEventMgr.GetEventHolder(event_GetInstanceID());
 	if(nh != m_holder)
 	{
 		// whee, we changed event holder :>
 		// doing this will change the instanceid on all the events, as well as add to the new holder.
 		
 		// no need to do this if we don't have any events, though.
-		if(nh == NULL)
-			nh = sEventMgr.GetEventHolder(-1);
+		if(!nh)
+			nh = sEventMgr.GetEventHolder(WORLD_INSTANCE);
 
 		nh->AddObject(this);
 
@@ -504,19 +515,20 @@ void EventableObjectHolder::AddObject(EventableObject* obj)
 		return;
 	}
 
-	for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
+	else
 	{
-		// ignore deleted events
-		if(itr->second->deleted)
-			continue;
+		for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
+		{
+			// ignore deleted events
+			if(itr->second->deleted)
+				continue;
 
-		if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
-			continue;
-
-		itr->second->IncRef();
-		itr->second->instanceId = mInstanceId;
-		m_events.push_back( itr->second );
+			if(mInstanceId == WORLD_INSTANCE && itr->second->eventFlag & EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT)
+				continue;
+			itr->second->IncRef();
+			itr->second->instanceId = mInstanceId;
+			m_events.push_back( itr->second );
+		}
+		m_lock.Release();
 	}
-
-	m_lock.Release();
 }

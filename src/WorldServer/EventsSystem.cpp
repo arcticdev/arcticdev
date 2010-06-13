@@ -10,11 +10,11 @@ void MapMgr::DespawnEvent(uint8 eventToRemove)
 {
 	if(_cells)
 	{
-		for (uint32 i = 0; i < _sizeX; i++)
+		for (uint32 i = 0; i < _sizeX; ++i)
 		{
 			if(_cells[i] != 0)
 			{
-				for (uint32 j = 0; j < _sizeY; j++)
+				for (uint32 j = 0; j < _sizeY; ++j)
 				{
 					if(_cells[i][j] != 0)
 					{
@@ -30,16 +30,16 @@ void MapMgr::DespawnEvent(uint8 eventToRemove)
 
 void MapMgr::SpawnEvent(uint8 eventId)
 {
-	CellSpawns* sp;
+	CellSpawns * sp;
 	if(_cells)
 	{
-		for (uint32 i = 0; i < _sizeX; i++)
+		for (uint32 i = 0; i < _sizeX; ++i)
 		{
 			if(_cells[i] != 0)
 			{
-				for (uint32 j = 0; j < _sizeY; j++)
+				for (uint32 j = 0; j < _sizeY; ++j)
 				{
-					if(_cells[i][j])
+					if(_cells[i][j] != 0)
 					{
 						sp = _map->GetSpawnsList(i, j);
 						_cells[i][j]->LoadEventIdObjects(sp, eventId);
@@ -90,7 +90,7 @@ void DayWatcherThread::LoadEventIdSettings()
 		do
 		{
 			eventid = result->Fetch()[0].GetUInt8();
-			result2 = WorldDatabase.Query("SELECT DISTINCT map FROM creature_spawns WHERE eventid = '%u'", eventid);
+			result2 = WorldDatabase.Query("SELECT DISTINCT mapid FROM creature_spawns WHERE eventid = '%u'", eventid);
 			if(result2)
 			{
 				do
@@ -99,7 +99,7 @@ void DayWatcherThread::LoadEventIdSettings()
 				}while(result2->NextRow());
 				delete result2;
 			}
-			result2 = WorldDatabase.Query("SELECT DISTINCT map FROM gameobject_spawns WHERE eventid = '%u'", eventid);
+			result2 = WorldDatabase.Query("SELECT DISTINCT mapid FROM gameobject_spawns WHERE eventid = '%u'", eventid);
 			if(result2)
 			{
 				do
@@ -122,7 +122,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 	{
 		Vehicle* v;
 		Creature* c;
-		for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); ++i)
+		for(CreatureSpawnList::iterator i=sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
 		{
 			if(pInstance)
 			{
@@ -133,7 +133,6 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 			{
 				if(!((*i)->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
 					continue;
-
 				if((*i)->vehicle != 0)
 				{
 					v=_mapmgr->CreateVehicle((*i)->entry);
@@ -159,7 +158,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 				}
 				else
 				{
-					c = _mapmgr->CreateCreature((*i)->entry);
+					c=_mapmgr->CreateCreature((*i)->entry);
 
 					c->SetMapId(_mapmgr->GetMapId());
 					c->SetInstanceID(_mapmgr->GetInstanceID());
@@ -187,17 +186,15 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 	if(sp->GOSpawns.size()) // got GOs
 	{
 		GameObject* go;
-		for(GOSpawnList::iterator i = sp->GOSpawns.begin(); i != sp->GOSpawns.end(); ++i)
+		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
 		{
 			if((*i)->eventid && (*i)->eventid == eventId)
 			{
 				if(!((*i)->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
 					continue;
-
 				go = _mapmgr->CreateGameObject((*i)->entry);
 				if(go == NULL)
 					continue;
-
 				if(go->Load(*i))
 				{
 					go->m_loadedFromDB = true;
@@ -207,7 +204,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 				else
 				{
 					go->Destructor();
-					go = NULL;
+					go = NULLGOB;
 				}
 			}
 		}
@@ -218,73 +215,71 @@ void MapCell::ModifyEventIdSetting(bool active, uint8 eventId)
 {
 	ObjectSet::iterator itr;
 	Object* pObject; // do this outside the loop!
-	if(_objects.size())
+	for(itr = _objects.begin(); itr != _objects.end();)
 	{
-		for(itr = _objects.begin(); itr != _objects.end();)
+		pObject = (*itr);
+		itr++;
+
+		if(!pObject)
+			continue;
+
+		switch(pObject->GetTypeId())
 		{
-			pObject = (*itr);
-			++itr;
-
-			if(!pObject)
-				continue;
-
-			switch(pObject->GetTypeId())
+		case TYPEID_UNIT: 
 			{
-				case TYPEID_UNIT: 
-				{
-					if( pObject->IsPet() )
-						continue;
-
-					if(!TO_CREATURE(pObject)->m_spawn->eventinfo)
-						continue;
-
-					if(TO_CREATURE(pObject)->m_spawn->eventid != eventId)
-						continue;
-
-					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_MODELID)
-						TO_CREATURE(pObject)->SetUInt32Value(UNIT_FIELD_DISPLAYID, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventdisplayid : TO_CREATURE(pObject)->m_spawn->displayid);
-
-					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_PHASE)
-						TO_CREATURE(pObject)->SetPhase(active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventphase : TO_CREATURE(pObject)->m_spawn->phase);
-
-					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_EQUIP)
-					{
-						if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem1)
-							TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem1 : TO_CREATURE(pObject)->proto->Item1);
-						if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2)
-							TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2 : TO_CREATURE(pObject)->proto->Item2);
-						if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3)
-							TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3 : TO_CREATURE(pObject)->proto->Item3);
-					}
-				}break;
-			case TYPEID_GAMEOBJECT:
-				{
-					if(TO_GAMEOBJECT(pObject)->m_spawn->eventid != eventId)
-						continue;
-
-					if(!TO_GAMEOBJECT(pObject)->m_spawn->eventinfo)
-						continue;
-
-					if(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_MODELID)
-					{
-						if(active)
-						{
-							TO_GAMEOBJECT(pObject)->SetUInt32Value(GAMEOBJECT_DISPLAYID, TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventdisplayid);
-						}
-						else
-						{
-							GameObjectInfo * pInfo = GameObjectNameStorage.LookupEntry(pObject->GetEntry());
-							TO_GAMEOBJECT(pObject)->SetUInt32Value(GAMEOBJECT_DISPLAYID, pInfo->DisplayID);
-						}
-					}
-					if(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_PHASE)
-						TO_CREATURE(pObject)->SetPhase(active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventphase : TO_CREATURE(pObject)->m_spawn->phase);
-				}break;
-			default:
-				{
+				if( pObject->IsPet() )
 					continue;
-				}break;
-			}
+
+				if(!TO_CREATURE(pObject)->m_spawn->eventinfo)
+					continue;
+
+				if(TO_CREATURE(pObject)->m_spawn->eventid != eventId)
+					continue;
+
+				if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_MODELID)
+					TO_CREATURE(pObject)->SetUInt32Value(UNIT_FIELD_DISPLAYID, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventdisplayid : TO_CREATURE(pObject)->m_spawn->displayid);
+
+				if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_PHASE)
+					TO_CREATURE(pObject)->SetPhase(active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventphase : TO_CREATURE(pObject)->m_spawn->phase);
+
+				if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_EQUIP)
+				{
+					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem1)
+						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem1 : TO_CREATURE(pObject)->proto->Item1);
+					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2)
+						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2 : TO_CREATURE(pObject)->proto->Item2);
+					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3)
+						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3 : TO_CREATURE(pObject)->proto->Item3);
+				}
+			}break;
+		case TYPEID_GAMEOBJECT:
+			{
+				if(TO_GAMEOBJECT(pObject)->m_spawn->eventid != eventId)
+					continue;
+
+				if(!TO_GAMEOBJECT(pObject)->m_spawn->eventinfo)
+					continue;
+
+				if(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_MODELID)
+				{
+					if(active)
+					{
+						TO_GAMEOBJECT(pObject)->SetUInt32Value(GAMEOBJECT_DISPLAYID, TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventdisplayid);
+					}
+					else
+					{
+						GameObjectInfo * pInfo = GameObjectNameStorage.LookupEntry(pObject->GetEntry());
+						TO_GAMEOBJECT(pObject)->SetUInt32Value(GAMEOBJECT_DISPLAYID, pInfo->DisplayID);
+					}
+				}
+
+				if(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_PHASE)
+					TO_CREATURE(pObject)->SetPhase(active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventphase : TO_CREATURE(pObject)->m_spawn->phase);
+			}break;
+		default:
+			{
+				continue;
+			}break;
 		}
 	}
 }
@@ -298,109 +293,101 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 
 	/* delete objects in pending respawn state */
 	Object* pObject;
-	if(_respawnObjects.size())
+	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
 	{
-		for(itr = _respawnObjects.begin(); itr != _respawnObjects.end();)
+		pObject = *itr;
+		if(!pObject)
+			continue;
+		
+		switch(pObject->GetTypeId())
 		{
-			pObject = (*itr);
-			++itr;
-
-			if(!pObject)
-				continue;
-			
-			switch(pObject->GetTypeId())
+		case TYPEID_UNIT: 
 			{
-				case TYPEID_UNIT: 
+				if(!(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
+					continue;
+				if(TO_CREATURE(pObject)->m_spawn->eventid == eventToRemove)
 				{
-					if(!(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
-						continue;
-					if(TO_CREATURE(pObject)->m_spawn->eventid == eventToRemove)
+					if( pObject->IsVehicle())
 					{
-						if( pObject->IsVehicle())
-						{
-							_mapmgr->_reusable_guids_vehicle.push_back( pObject->GetUIdFromGUID() );
-							TO_VEHICLE(pObject)->m_respawnCell=NULL;
-							TO_VEHICLE(pObject)->Destructor();
-							_respawnObjects.erase(pObject);
-						}
-						else if( !pObject->IsPet() )
-						{
-							_mapmgr->_reusable_guids_creature.push_back( pObject->GetUIdFromGUID() );
-							TO_CREATURE(pObject)->m_respawnCell=NULL;
-							TO_CREATURE(pObject)->Destructor();
-							_respawnObjects.erase(pObject);
-						}
-					}
-					}break;
-
-			case TYPEID_GAMEOBJECT:
-				{
-					if(!(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
-						continue;
-
-					if(TO_GAMEOBJECT(pObject)->m_spawn->eventid == eventToRemove)
-					{
-						TO_GAMEOBJECT(pObject)->m_respawnCell=NULL;
-						TO_GAMEOBJECT(pObject)->Destructor();
+						_mapmgr->_reusable_guids_vehicle.push_back( pObject->GetUIdFromGUID() );
+						TO_VEHICLE(pObject)->m_respawnCell=NULL;
+						TO_VEHICLE(pObject)->Destructor();
 						_respawnObjects.erase(pObject);
-					}break;
+					}
+					else if( !pObject->IsPet() )
+					{
+						_mapmgr->_reusable_guids_creature.push_back( pObject->GetUIdFromGUID() );
+						TO_CREATURE(pObject)->m_respawnCell=NULL;
+						TO_CREATURE(pObject)->Destructor();
+						_respawnObjects.erase(pObject);
+					}
 				}
+			}break;
+
+		case TYPEID_GAMEOBJECT:
+			{
+				if(!(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
+					continue;
+
+				if(TO_GAMEOBJECT(pObject)->m_spawn->eventid == eventToRemove)
+				{
+					TO_GAMEOBJECT(pObject)->m_respawnCell=NULL;
+					TO_GAMEOBJECT(pObject)->Destructor();
+					_respawnObjects.erase(pObject);
+				}break;
 			}
 		}
 	}
 
-	if(_objects.size())
+	for(itr = _objects.begin(); itr != _objects.end();)
 	{
-		for(itr = _objects.begin(); itr != _objects.end();)
+		pObject = (*itr);
+		itr++;
+
+		if(!pObject)
+			continue;
+
+		switch(pObject->GetTypeId())
 		{
-			pObject = (*itr);
-			++itr;
-
-			if(!pObject)
-				continue;
-
-			switch(pObject->GetTypeId())
+		case TYPEID_UNIT: 
 			{
-				case TYPEID_UNIT: 
-				{
-					if( pObject->IsPet() )
-						continue;
+				if( pObject->IsPet() )
+					continue;
 
-					if(TO_CREATURE(pObject)->m_spawn->eventid != eventToRemove)
-						continue;
+				if(TO_CREATURE(pObject)->m_spawn->eventid != eventToRemove)
+					continue;
 
 				if(!(TO_CREATURE(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
-						continue;
-				}break;
-			case TYPEID_GAMEOBJECT:
-				{
-					if(TO_GAMEOBJECT(pObject)->m_spawn->eventid != eventToRemove)
-						continue;
-
-					if(!(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
-						continue;
-				}break;
-			default:
-				{
 					continue;
-	
-				}break;
-			}
-
-			if( _unloadpending )
-			{			
-				if(!pObject->m_loadedFromDB)
+			}break;
+		case TYPEID_GAMEOBJECT:
+			{
+				if(TO_GAMEOBJECT(pObject)->m_spawn->eventid != eventToRemove)
 					continue;
-			}
 
-			if( pObject->Active )
-				pObject->Deactivate( _mapmgr );
-
-			if( pObject->IsInWorld() )
-				pObject->RemoveFromWorld( true );
-
-			pObject->Destructor();
+				if(!(TO_GAMEOBJECT(pObject)->m_spawn->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
+					continue;
+			}break;
+		default:
+			{
+				continue;
+			}break;
 		}
+
+		if( _unloadpending )
+		{			
+			if(!pObject->m_loadedFromDB)
+				continue;
+		}
+
+		if( pObject->Active )
+			pObject->Deactivate( _mapmgr );
+
+		if( pObject->IsInWorld() )
+			pObject->RemoveFromWorld( true );
+
+		pObject->Destructor();
+
 	}
 }
 
@@ -441,69 +428,24 @@ void DayWatcherThread::update_event_settings(uint8 eventid, time_t activated)
 bool DayWatcherThread::SpawnEventId(uint8 eventId, bool activate)
 {
 	MapMgr* mgr;
-	if(m_creatureEventSpawnMaps.size())
+	CreatureEventSpawnMaps::iterator itr = m_creatureEventSpawnMaps.find(eventId);
+	if(itr != m_creatureEventSpawnMaps.end())
 	{
-		CreatureEventSpawnMaps::iterator itr = m_creatureEventSpawnMaps.find(eventId);
-		if(itr != m_creatureEventSpawnMaps.end())
+		do
 		{
-			do
-			{
-				mgr = sInstanceMgr.GetMapMgr(itr->second);
-				if(mgr)
-					if(activate)
-					{
-						if(!sEventMgr.HasEvent(mgr, EVENT_SPAWN_ING_EVENT))
-						{
-							sEventMgr.AddEvent(mgr, &MapMgr::SpawnEvent, eventId, EVENT_SPAWN_ING_EVENT, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-						}
-					}
-					else
-					{
-						if(!sEventMgr.HasEvent(mgr, EVENT_DESPAWN_ING_EVENT))
-						{
-							sEventMgr.AddEvent(mgr, &MapMgr::DespawnEvent, eventId, EVENT_DESPAWN_ING_EVENT, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-						}
-					}
+			mgr = sInstanceMgr.GetMapMgr(itr->second);
+			if(mgr)
+				if(activate)
+					sEventMgr.AddEvent(mgr, &MapMgr::SpawnEvent, eventId, EVENT_UNK, 10000, 0, 0);
 				else
-				{
-					runEvents = true;
-					return false;
-				}
-			++itr;
-			}while(itr != m_creatureEventSpawnMaps.upper_bound(eventId));
-		}
-	}
-	if(m_gameobjectEventSpawnMaps.size())
-	{
-		GameobjectEventSpawnMaps::iterator itr2 = m_gameobjectEventSpawnMaps.find(eventId);
-		if(itr2 != m_gameobjectEventSpawnMaps.end())
-		{
-			do
+					mgr->DespawnEvent(eventId);
+			else
 			{
-				mgr = sInstanceMgr.GetMapMgr(itr2->second);
-				if(mgr)
-					if(activate)
-					{
-						if(!sEventMgr.HasEvent(mgr, EVENT_SPAWN_ING_EVENT))
-						{
-							sEventMgr.AddEvent(mgr, &MapMgr::SpawnEvent, eventId, EVENT_SPAWN_ING_EVENT, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-						}
-					}
-					else
-					{
-						if(!sEventMgr.HasEvent(mgr, EVENT_DESPAWN_ING_EVENT))
-						{
-							sEventMgr.AddEvent(mgr, &MapMgr::DespawnEvent, eventId, EVENT_DESPAWN_ING_EVENT, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-						}
-					}
-				else
-				{
-					runEvents = true;
-					return false;
-				}
-				itr2++;
-			}while(itr2 != m_gameobjectEventSpawnMaps.upper_bound(eventId));
-		}
+				runEvents = true;
+				return false;
+			}
+			itr++;
+		}while(itr != m_creatureEventSpawnMaps.upper_bound(eventId));
 	}
 	return true;
 }

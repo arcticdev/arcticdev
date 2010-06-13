@@ -26,7 +26,7 @@ ItemInterface::ItemInterface( Player* pPlayer )
 
 ItemInterface::~ItemInterface()
 {
-	for( int i = 0; i < MAX_INVENTORY_SLOT; ++i )
+	for(int i = 0; i < MAX_INVENTORY_SLOT; ++i)
 	{
 		if( m_pItems[i] != NULL && m_pItems[i]->GetOwner() == m_pOwner )
 		{
@@ -40,7 +40,7 @@ ItemInterface::~ItemInterface()
 
 uint32 ItemInterface::m_CreateForPlayer(ByteBuffer *data)
 {
-	ASSERT( m_pOwner != NULL );
+	ASSERT(m_pOwner != NULL);
 	uint32 count = 0;
 
 	for(int i = 0; i < MAX_INVENTORY_SLOT; ++i)
@@ -49,16 +49,16 @@ uint32 ItemInterface::m_CreateForPlayer(ByteBuffer *data)
 		{
 			if(m_pItems[i]->IsContainer())
 			{
-				count += ( TO_CONTAINER(m_pItems[i]))->BuildCreateUpdateBlockForPlayer(data, m_pOwner );
+				count += (TO_CONTAINER(m_pItems[i]))->BuildCreateUpdateBlockForPlayer(data, m_pOwner);
 
 				if(m_pItems[i]->GetProto())
 				{
-					for( uint32 e = 0; e < m_pItems[i]->GetProto()->ContainerSlots; ++e )
+					for(uint32 e=0; e < m_pItems[i]->GetProto()->ContainerSlots; e++)
 					{
 						Item* pItem = (TO_CONTAINER(m_pItems[i]))->GetItem(e);
-						if( pItem )
+						if(pItem)
 						{
-							if( pItem->IsContainer() )
+							if(pItem->IsContainer())
 							{
 								count += (TO_CONTAINER(pItem))->BuildCreateUpdateBlockForPlayer( data, m_pOwner );
 							}
@@ -457,9 +457,9 @@ Item* ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 		}
 		else
 		{
-			if( item && item->IsContainer() && item->GetProto() )
+			if(item && item->IsContainer() && item->GetProto())
 			{
-				for (uint32 j =0; j < item->GetProto()->ContainerSlots; ++j)
+				for (uint32 j =0; j < item->GetProto()->ContainerSlots; j++)
 				{
 					Item* item2 = TO_CONTAINER(item)->GetItem(j);
 					if (item2 && item2->GetGUID() == guid)
@@ -474,7 +474,7 @@ Item* ItemInterface::SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy)
 	for(i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; ++i)
 	{
 		Item* item = GetInventoryItem(i);
-		if ( item && item->GetGUID() == guid )
+		if (item && item->GetGUID() == guid)
 		{
 			return this->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, i, destroy);
 		}
@@ -613,7 +613,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(int16 ContainerSlot, int16 slot)
 
 		if (pItem == NULL) { return false; }
 
-		if( pItem->GetProto()->ContainerSlots > 0 && pItem->GetTypeId() == TYPEID_CONTAINER && TO_CONTAINER(pItem)->HasItems() )
+		if(pItem->GetProto()->ContainerSlots > 0 && pItem->GetTypeId() == TYPEID_CONTAINER && TO_CONTAINER(pItem)->HasItems())
 		{
 			/* sounds weird? no. this will trigger a callstack display due to my other debug code. */
 			pItem->DeleteFromDB();
@@ -2226,18 +2226,18 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature* 
 			}
 		}
 
-		if( m_pOwner->GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY ) < (ec->honor*amount) )
+		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY) < (ec->honor*amount))
 			return CAN_AFFORD_ITEM_ERROR_DONT_HAVE_ENOUGH_MONEY;
-		if( m_pOwner->GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY ) < (ec->arena*amount) )
+		if(m_pOwner->GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY ) < (ec->arena*amount))
 			return CAN_AFFORD_ITEM_ERROR_DONT_HAVE_ENOUGH_MONEY;
- 		if( m_pOwner->GetMaxPersonalRating() < ec->personalrating )
+ 		if(m_pOwner->GetMaxPersonalRating() < ec->personalrating)
 			return CAN_AFFORD_ITEM_ERROR_NOT_REQUIRED_RANK;
 	}
 
 	if(item->BuyPrice)
 	{
 		int32 price = GetBuyPriceForItem(item, amount, m_pOwner, pVendor) * amount;
-		if( (int32)m_pOwner->GetUInt32Value(PLAYER_FIELD_COINAGE) < price )
+		if((int32)m_pOwner->GetUInt32Value(PLAYER_FIELD_COINAGE) < price)
 		{
 			return CAN_AFFORD_ITEM_ERROR_DONT_HAVE_ENOUGH_MONEY;
 		}
@@ -2245,7 +2245,7 @@ int8 ItemInterface::CanAffordItem(ItemPrototype * item,uint32 amount, Creature* 
 	if(item->RequiredFaction)
 	{
 		FactionDBC *factdbc = dbcFaction.LookupEntry(item->RequiredFaction);
-		if( !factdbc || factdbc->RepListId < 0 )
+		if(!factdbc || factdbc->RepListId < 0)
 			return (int8)NULL;
 		
 		if( Player::GetReputationRankFromStanding( m_pOwner->GetStanding( item->RequiredFaction )) < (int32)item->RequiredFactionStanding )
@@ -2416,7 +2416,7 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 		}
 	}
 
-	// Inventory bags
+	//INVENTORY BAGS
 	for(i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
 	{
 		if(m_pItems[i] != NULL && m_pItems[i]->IsContainer())
@@ -2461,9 +2461,9 @@ Item* ItemInterface::GetItemByGUID(uint64 Guid)
 	// Keyring && Currency
 	for(i = INVENTORY_KEYRING_START; i < CURRENCYTOKEN_SLOT_END;++i)
 	{
-		if( m_pItems[i] != 0 )
+		if(m_pItems[i] != 0)
 		{
-			if( m_pItems[i]->GetGUID() == Guid )
+			if(m_pItems[i]->GetGUID() == Guid)
 			{
 				result.ContainerSlot = INVALID_BACKPACK_SLOT;
 				result.Slot = i;
@@ -2485,7 +2485,7 @@ void ItemInterface::BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint
 	data.Initialize( SMSG_INVENTORY_CHANGE_FAILURE );
 	data << Error;
 
-	if( Error == 1 ) 
+	if(Error == 1) 
 	{
 		if(SrcItem)
 		{
@@ -2496,7 +2496,7 @@ void ItemInterface::BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint
 	data << (SrcItem ? SrcItem->GetGUID() : uint64(0));
 	data << (DstItem ? DstItem->GetGUID() : uint64(0));
 	data << uint8(0);
-	if( Error == INV_ERR_YOU_MUST_REACH_LEVEL_N )
+	if(Error == INV_ERR_YOU_MUST_REACH_LEVEL_N)
 	{
 		uint32 level = 0;
 		if(SrcItem)
@@ -2522,7 +2522,7 @@ void ItemInterface::EmptyBuyBack()
 			{
 				if( TO_CONTAINER(m_pBuyBack[j])->IsInWorld() )
 					TO_CONTAINER(m_pBuyBack[j])->RemoveFromWorld();
-				
+
 				m_pBuyBack[j]->Destructor();
 				m_pBuyBack[j] = NULLITEM;
 			}
@@ -2532,7 +2532,7 @@ void ItemInterface::EmptyBuyBack()
 					m_pBuyBack[j]->RemoveFromWorld();
 
 				m_pBuyBack[j]->Destructor();
-				m_pBuyBack[j] = NULLITEM;
+				m_pBuyBack[j] = NULL;
 			}
 
 			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),0);
@@ -2541,39 +2541,41 @@ void ItemInterface::EmptyBuyBack()
 			m_pBuyBack[j] = NULLITEM;
 		}
 		else
+		{
 			break;
+		}
 	}
 }
 
 void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 {
 	int i;
-	if( (m_pBuyBack[11] != NULL) && (m_pOwner->GetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + 22) != 0) )
+	if ((m_pBuyBack[11] != NULL) && (m_pOwner->GetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + 22) != 0))
 	{
-		if( m_pBuyBack[0] != NULL )
-		{		   
+		if(m_pBuyBack[0] != NULL)
+		{
 			 m_pBuyBack[0]->DestroyForPlayer(m_pOwner);
 			 m_pBuyBack[0]->DeleteFromDB();
 
-			 if( m_pBuyBack[0]->IsContainer() )
+			 if(m_pBuyBack[0]->IsContainer())
 			 {
-				if( TO_CONTAINER(m_pBuyBack[0])->IsInWorld() )
+				if (TO_CONTAINER(m_pBuyBack[0])->IsInWorld())
 					TO_CONTAINER(m_pBuyBack[0])->RemoveFromWorld();
-				
+
 				m_pBuyBack[0]->Destructor();
-				m_pBuyBack[0] = NULLITEM;
+				m_pBuyBack[0] = NULL;
 			 }
 			 else
 			 {
-				if( m_pBuyBack[0]->IsInWorld() )
+				if (m_pBuyBack[0]->IsInWorld())
 					m_pBuyBack[0]->RemoveFromWorld();
 
 				m_pBuyBack[0]->Destructor();
-				m_pBuyBack[0] = NULLITEM;
+				m_pBuyBack[0] = NULL;
 			 }
 		}
 
-		for (int j = 0; j < 11; ++j)
+		for (int j = 0; j < 11;j++)
 		{
 			// SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),buyback[j+1]->GetGUID());
 			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),m_pOwner->GetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + ((j+1)*2) ) );
@@ -2589,9 +2591,9 @@ void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 		return;
 	}
 
-	for(i = 0; i < 24;i += 2)
+	for(i = 0; i < 24; i += 2)
 	{
-		if( (m_pOwner->GetUInt32Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i) == 0) || (m_pBuyBack[i/2] == NULL) )
+		if((m_pOwner->GetUInt32Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i) == 0) || (m_pBuyBack[i/2] == NULL))
 		{
 			OUT_DEBUG("setting buybackslot %u\n",i/2);
 			m_pBuyBack[i >> 1] = it;
@@ -2608,9 +2610,9 @@ void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 void ItemInterface::RemoveBuyBackItem(uint32 index)
 {
 	int32 j = 0;
-	for( j = index;j < 11; ++j )
+	for( j = index;j < 11; j++ )
 	{
-		if( m_pOwner->GetUInt64Value( PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + ( j * 2 ) ) != 0 )
+		if (m_pOwner->GetUInt64Value( PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + ( j * 2 ) ) != 0 )
 		{
 			m_pOwner->SetUInt64Value( PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + ( 2 * j ), m_pOwner->GetUInt64Value( PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + ( ( j + 1 ) * 2 ) ) );
 			m_pOwner->SetUInt32Value( PLAYER_FIELD_BUYBACK_PRICE_1 + j, m_pOwner->GetUInt32Value( PLAYER_FIELD_BUYBACK_PRICE_1 + j+1));
@@ -2837,7 +2839,7 @@ bool ItemInterface::SwapItemSlots(int16 srcslot, int16 dstslot)
 				m_pOwner->SetUInt32Value( VisibleBase + 1, 0 );
 			}
 		}
-	}  
+	}
 
 	if( dstslot < INVENTORY_SLOT_BAG_END )   // source item is inside inventory
 	{
@@ -2880,12 +2882,12 @@ bool ItemInterface::SwapItemSlots(int16 srcslot, int16 dstslot)
 
 	// src item is equiped now
 	if( srcslot < INVENTORY_SLOT_BAG_END )
- 	{
+	{
 		if( m_pItems[(int)srcslot] != NULL )
 			m_pOwner->ApplyItemMods( m_pItems[(int)srcslot], srcslot, true );
 		else if( srcslot == EQUIPMENT_SLOT_MAINHAND || srcslot == EQUIPMENT_SLOT_OFFHAND )
 			m_pOwner->CalcDamage();
- 	}
+	}
 
 	// dst item is equiped now
 	if( dstslot < INVENTORY_SLOT_BAG_END )
@@ -2935,7 +2937,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 
 				}
 				if( SafeAddItem( item, containerslot, slot ) )
-				    item->m_isDirty = false;
+					item->m_isDirty = false;
 				else
 				{
 					item->Destructor();
