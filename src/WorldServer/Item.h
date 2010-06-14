@@ -250,8 +250,9 @@ public:
 
 	uint32 wrapped_item_id;
 
-protected:
+	static void HeirloomInfo(ItemPrototype* proto);
 
+protected:
 	ItemPrototype* m_itemProto;
 	EnchantmentMap Enchantments;
 	uint32 _fields[ITEM_END]; // this mem is wasted in case of container... but this will be fixed in future

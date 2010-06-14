@@ -14,99 +14,12 @@ class Spell;
 class Aura;
 class DynamicObject;
 
-enum HIGHGUID_TYPE
-{
-	HIGHGUID_TYPE_VEHICLE = 0xF1500000,
-	HIGHGUID_TYPE_UNIT = 0xF1300000,
-	HIGHGUID_TYPE_PET = 0xF1400000,
-	HIGHGUID_TYPE_GAMEOBJECT = 0xF1100000,
-	HIGHGUID_TYPE_ITEM = 0x40000000,
-	HIGHGUID_TYPE_CONTAINER = 0x50000000,
-	HIGHGUID_TYPE_PLAYER = 0x00000000,
-	HIGHGUID_TYPE_DYNAMICOBJECT = 0x60000000,
-	HIGHGUID_TYPE_TRANSPORTER = 0x1FC00000,
-	HIGHGUID_TYPE_WAYPOINT = 0x10000000,
-	HIGHGUID_TYPE_CORPSE = 0x30000000,
-	HIGHGUID_TYPE_MASK = 0xFFF00000,
-	LOWGUID_ENTRY_MASK = 0x00FFFFFF,
-};
-
-#define GET_TYPE_FROM_GUID(x) (GUID_HIPART((x)) & HIGHGUID_TYPE_MASK)
-#define GET_LOWGUID_PART(x) (GUID_LOPART((x)) & LOWGUID_ENTRY_MASK)
-
-// TODO: fix that type mess
-
-enum TYPE
-{
-	TYPE_OBJECT = 1,
-	TYPE_ITEM = 2,
-	TYPE_CONTAINER = 4,
-	TYPE_UNIT = 8,
-	TYPE_PLAYER = 16,
-	TYPE_GAMEOBJECT = 32,
-	TYPE_DYNAMICOBJECT = 64,
-	TYPE_CORPSE = 128,
-	TYPE_AIGROUP = 256,
-	TYPE_AREATRIGGER = 512,
-};
-
-enum TYPEID 
-{
-	TYPEID_OBJECT = 0,
-	TYPEID_ITEM = 1,
-	TYPEID_CONTAINER = 2,
-	TYPEID_UNIT = 3,
-	TYPEID_PLAYER = 4,
-	TYPEID_GAMEOBJECT = 5,
-	TYPEID_DYNAMICOBJECT = 6,
-	TYPEID_CORPSE = 7,
-	TYPEID_AIGROUP = 8,
-	TYPEID_AREATRIGGER = 9,
-	TYPEID_UNUSED = 10, // used to signal invalid reference (object dealocated but someone is still using it)
-};
-
-enum OBJECT_UPDATE_TYPE 
-{
-	UPDATETYPE_VALUES = 0,
-	//  8 bytes - GUID
-	//  Goto Update Block
-	UPDATETYPE_MOVEMENT = 1,
-	//  8 bytes - GUID
-	//  Goto Position Update
-	UPDATETYPE_CREATE_OBJECT = 2,
-	//  8 bytes - GUID
-	//  1 byte - Object Type (*)
-	//  Goto Position Update
-	//  Goto Update Block
-	UPDATETYPE_CREATE_YOURSELF = 3, // looks like 3 & 4 do the same thing
-	//  4 bytes - Count
-	//  Loop Count Times:
-	//  8 bytes - GUID
-	UPDATETYPE_OUT_OF_RANGE_OBJECTS = 4, // <- this is correct, not sure about 3
-	//  4 bytes - Count
-	//  Loop Count Times:
-	//  8 bytes - GUID
-
-	UPDATETYPE_NEAR_OBJECTS = 5,
-	//  4 bytes - Count
-	//  Loop Count Times:
-	//  8 bytes - GUID
-};
-
 typedef struct
 { 
 	uint32 school_type;
 	int32 full_damage;
 	uint32 resisted_damage;
 } dealdamage;
-
-enum PHASEMODE
-{
-	ALL_PHASES = -1,
-	PHASE_1,
-	PHASE_2,
-	PHASE_3, // should be enough for the emulator to know about, but we can have more :P
-};
 
 class WorldPacket;
 class ByteBuffer;

@@ -88,6 +88,7 @@ bin_PROGRAMS = WorldServer
     Item.cpp \
     Item.h \
     ItemHandler.cpp \
+    ItemHeirloom.cpp \
     ItemInterface.cpp \
     ItemInterface.h \
     ItemPrototype.h \
@@ -123,6 +124,7 @@ bin_PROGRAMS = WorldServer
     NPCHandler.cpp \
     NPCHandler.h \
     Object.cpp \
+    ObjectDefines.h \
     Object.h \
     ObjectMgr.cpp \
     ObjectMgr.h \
@@ -146,9 +148,12 @@ bin_PROGRAMS = WorldServer
     ReputationHandler.cpp \
     ScriptMgr.cpp \
     ScriptMgr.h \
+    ScriptSetup.h \
+    SharedDefines.h \
     Skill.h \
     SkillHandler.cpp \
     SocialHandler.cpp \
+    SpellAuraDefines.h \
     SpellAuras.cpp \
     SpellAuras.h \
     SpellTarget.cpp \

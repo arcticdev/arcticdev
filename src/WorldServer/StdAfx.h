@@ -74,6 +74,10 @@
 #include "Packets.h"
 
 #include "../libs/CallBack.h"
+#include "SharedDefines.h"
+#include "SpellAuraDefines.h"
+#include "ObjectDefines.h"
+#include "DBCEnums.h"
 #include "WordFilter.h"
 #include "EventMgr.h"
 #include "EventableObject.h"
@@ -120,7 +124,6 @@
 #include "WorldStateManager.h"
 #include "MapMgr.h"
 #include "MapScriptInterface.h"
-#include "DayWatcherThread.h"
 #include "WGI.h"
 #include "Player.h"
 #include "faction.h"
@@ -148,12 +151,14 @@
 #include "WorldRunnable.h"
 #include "../libs/Storage.h"
 #include "ObjectStorage.h"
+#include "DayWatcherThread.h"
 #include "VoiceChatHandler.h"
 #include "LocalizationMgr.h"
 #include "Vehicle.h"
 #include "AchievementInterface.h"
 #include "ChainAggroEntity.h"
 #include "StrandOfTheAncients.h"
+#include "IsleOfConquest.h"
 
 #ifdef CLUSTERING
 	#include "WorkerServerClient.h"
@@ -165,6 +170,6 @@
 #include "Master.h"
 #include "BaseConsole.h"
 #include "CConsole.h"
-// #define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
+//#define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
 
 #endif
