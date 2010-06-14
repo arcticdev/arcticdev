@@ -6,11 +6,8 @@
 
 #include "StdAfx.h"
 
+initialiseSingleton( CharacterLoaderThread );
 initialiseSingleton( World );
-
-DayWatcherThread* dw = NULL;
-CharacterLoaderThread* ctl = NULL;
-WintergraspInternal* wgi = NULL;
 
 float World::m_movementCompressThreshold;
 float World::m_movementCompressThresholdCreatures;
@@ -424,13 +421,11 @@ bool World::SetInitialWorldSettings()
 	new WorldLog;
 	new ChatHandler;
 
-	ThreadPool.ExecuteTask( new DayWatcherThread() );
-
-#define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
-
 	// Fill the task list with jobs to do.
 	TaskList tl;
 	Storage_FillTaskList(tl);
+
+#define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
 
 	// spawn worker threads (2 * number of cpus)
 	tl.spawn();
@@ -522,14 +517,10 @@ bool World::SetInitialWorldSettings()
 	new AuctionMgr;
 	sAuctionMgr.LoadAuctionHouses();
 
-	dw = new DayWatcherThread();
-	ThreadPool.ExecuteTask( dw );
+	ThreadPool.ExecuteTask(new DayWatcherThread());
 
 	if(wg_enabled)
-	{
-		wgi = new WintergraspInternal();
-		ThreadPool.ExecuteTask( wgi );
-	}
+		ThreadPool.ExecuteTask(new WintergraspInternal());
 
 	m_queueUpdateTimer = mQueueUpdateInterval;
 	if(Config.MainConfig.GetBoolDefault("Startup", "BackgroundLootLoading", true))
@@ -550,13 +541,12 @@ bool World::SetInitialWorldSettings()
 	Channel::LoadConfSettings();
 
 	Log.Notice("World", "Starting Battlegrounds...");
-	CBattlegroundManager* BattlegroundMgr(new CBattlegroundManager);
-	BattlegroundMgr->Init();
+	new CBattlegroundManager;
+	BattlegroundManager.Init();
 
 	Log.Notice("World", "Starting CharacterLoaderThread...");
-	ctl = new CharacterLoaderThread();
-	ThreadPool.ExecuteTask( ctl );
-	ThreadPool.ExecuteTask( new NewsAnnouncer() );
+	ThreadPool.ExecuteTask(new CharacterLoaderThread());
+	ThreadPool.ExecuteTask(new NewsAnnouncer());
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	Log.Notice("World", "Starting MovementCompressor...");
@@ -749,7 +739,7 @@ void World::SendWorldText(const char* text, WorldSession *self)
 	data << uint32(0); 
 	data << uint64(0);
 
-	data << uint32(textLen);
+	data << textLen;
 	data << text;
 	data << uint8(0);
 
@@ -1584,7 +1574,7 @@ void World::PollMailboxInsertQueue(DatabaseConnection * con)
 			if( pItem != NULL )
 			{
 				pItem->Destructor();
-				pItem = NULLITEM;
+				pItem = NULL;
 			}
 
 		} while ( result->NextRow() );
@@ -2343,7 +2333,7 @@ void World::BackupDB()
 {
 #ifndef WIN32
 	const char *tables[] =
-	{ 
+	{
 		"account_data", "account_forced_permissions", "achievements", "arenateams", "auctions",
 		"banned_names", "characters", "characters_insert_queue", "charters", "corpses", "gm_tickets",
 		"groups", "guild_bankitems", "guild_banklogs", "guild_banktabs",
@@ -2352,7 +2342,7 @@ void World::BackupDB()
 		"playercooldowns", "playeritems", "playeritems_insert_queue", "playerpets",
 		"playerpetspells", "playerpettalents", "playersummons", "playersummonspells", "questlog",
 		"server_settings", "social_friends", "social_ignores", "tutorials",
-		"worldstate_save_data", NULL 
+		"worldstate_save_data", NULL
 	};
 
 	char cmd[1024];

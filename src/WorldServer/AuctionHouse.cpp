@@ -257,20 +257,20 @@ void Auction::AddToPacket(WorldPacket & data)
 	data << uint32(0);										// Unknown
 	data << uint32(0);										// Unknown
 	data << uint32(0);										// Unknown
-	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);  // Amount
-	data << uint32( 0 );									// Unknown
-	data << uint32( 0 );									// Unknown
+	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);	// Amount
+	data << uint32(0);										// Unknown
+	data << uint32(0);										// Unknown
 	data << uint64(Owner);									// Owner guid
 	data << HighestBid;										// Current prize
 	// hehe I know its evil, this creates a nice trough put of money
-	data << uint32( 50 );									// Next bid value modifier, like current bid + this value
+	data << uint32(50);										// Next bid value modifier, like current bid + this value
 	data << BuyoutPrice;									// Buyout
 	data << uint32((ExpiryTime - UNIXTIME) * 1000);			// Time left
 	data << uint64(HighestBidder);							// Last bidder
 	if(HighestBidder != 0)
 		data << HighestBid;									// The bid of the last bidder
 	else
-	  	data << uint32(0);									// The bid of the last bidder
+		data << uint32(0);									// The bid of the last bidder
 }
 
 void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket * packet)

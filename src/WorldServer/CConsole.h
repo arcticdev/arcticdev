@@ -12,10 +12,10 @@
 class ConsoleThread : public ThreadContext
 {
 protected:
-    bool m_isRunning;
+	bool m_isRunning;
 public:
-    void terminate();
-    bool run();
+	void terminate();
+	bool run();
 };
 
 #endif // __CCONSOLE_H

@@ -632,7 +632,7 @@ void Creature::RegenerateMana(bool isinterrupted)
 {
 	if (m_interruptRegen || isinterrupted)
 		return;
-   
+
 	uint32 cur=GetUInt32Value(UNIT_FIELD_POWER1);
 	uint32 mm=GetUInt32Value(UNIT_FIELD_MAXPOWER1);
 	if(cur>=mm)
@@ -718,7 +718,7 @@ void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 				}
 				else
 					itr->available_amount -= value;
-                
+
 				if(!event_HasEvent(EVENT_ITEM_UPDATE))
 					sEventMgr.AddEvent(TO_CREATURE(this), &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, itr->incrtime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}

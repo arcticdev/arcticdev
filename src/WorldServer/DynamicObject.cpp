@@ -68,11 +68,10 @@ void DynamicObject::Destructor()
 
 void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, float z, uint32 duration, float radius)
 {
-	Object::_Create(caster->GetMapId(),x, y, z, 0);
+	Object::_Create(caster->GetMapId(), x, y, z, 0);
 	if(pSpell->g_caster)
-	{
 		m_parentSpell = pSpell;
-	}
+
 	m_caster = caster;
 	switch(caster->GetTypeId())
 	{

@@ -62,7 +62,7 @@ protected:
 	uint32 m_flagHolder;
 
 	int m_bonusHonor;
-	uint32 m_resToGainBG;
+	uint32 m_resToGainBH;
 
 	GameObject* m_standFlag;
 	GameObject* m_dropFlag;

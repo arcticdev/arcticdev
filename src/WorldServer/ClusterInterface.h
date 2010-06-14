@@ -54,6 +54,8 @@ public:
 
 	ARCTIC_INLINE WorldSession * GetSession(uint32 sid) { return _sessions[sid]; }
 
+	void HandleSessionRemoved(WorldPacket & pck);
+	void HandleTeleportResult(WorldPacket & pck);
 	void HandleAuthRequest(WorldPacket & pck);
 	void HandleAuthResult(WorldPacket & pck);
 	void HandleRegisterResult(WorldPacket & pck);
@@ -61,13 +63,22 @@ public:
 	void HandleDestroyInstance(WorldPacket & pck);
 	void HandlePlayerLogin(WorldPacket & pck);
 	void HandlePackedPlayerInfo(WorldPacket & pck);
+	void HandlePlayerInfo(WorldPacket & pck);
 	void HandleWoWPacket(WorldPacket & pck);
 	void HandlePlayerChangedServers(WorldPacket & pck);
+	void HandleSaveAllPlayers(WorldPacket & pck);
+	void HandleTransporterMapChange(WorldPacket & pck);
+	void HandlePlayerTeleport(WorldPacket & pck);
+	void HandleCreatePlayer(WorldPacket & pck);
+	void HandleDestroyPlayerInfo(WorldPacket & pck);
+	void HandleChannelAction(WorldPacket & pck);
+	void HandleChannelLFGDungeonStatusRequest(WorldPacket & pck);
 
 	ARCTIC_INLINE void QueuePacket(WorldPacket * pck) { _pckQueue.Push(pck); }
 
 	void Update();
 	void DestroySession(uint32 sid);
+	void ConnectionDropped();
 
 	ARCTIC_INLINE void SendPacket(WorldPacket * data) { if(_clientSocket) _clientSocket->SendPacket(data); }
 	ARCTIC_INLINE void SetSocket(WSClient * s) { _clientSocket = s; }

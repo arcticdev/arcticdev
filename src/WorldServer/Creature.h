@@ -72,25 +72,25 @@ struct CreatureInfo
 		if( Male_DisplayID )
 		{
 			modelchoices[max] = Male_DisplayID;
-			max++;
+			++max;
 		}
 
 		if( Male_DisplayID2 )
 		{
 			modelchoices[max] = Male_DisplayID2;
-			max++;
+			++max;
 		}
 
 		if( Female_DisplayID )
 		{
 			modelchoices[max] = Female_DisplayID;
-			max++;
+			++max;
 		}
 
 		if( Female_DisplayID2 )
 		{
 			modelchoices[max] = Female_DisplayID2;
-			max++;
+			++max;
 		}
 
 		uint32 r = RandomUInt(max ? max - 1 : 0);
@@ -175,13 +175,28 @@ struct CreatureStatsHeroic
 	unordered_set<uint32> start_auras;
 };
 
+struct AccessoryInfo
+{
+	uint32 accessoryentry;
+//	bool unselectableaccessory;
+};
+
 struct CreatureProtoVehicle
 {
 	uint32 vehicle_creature_entry; // Entry.
 	bool healthfromdriver; // Effects only driver.
 	uint32 healthunitfromitemlev;
 	uint32 VehicleSpells[6]; // Vehicle spells.
-	uint32 accessoryentry[8]; // Accessories.
+	AccessoryInfo accessories[8]; // Accessories.
+};
+
+struct CreatureInfoExtra
+{
+	uint32 entry;
+	uint32 default_emote_state;
+	uint32 default_flags;
+	uint16 default_stand_state;
+	uint32 default_MountedDisplayID;
 };
 
 #pragma pack(pop)
@@ -195,51 +210,51 @@ struct Formation
 
 enum FAMILY
 {
-	FAMILY_WOLF				= 1,
-	FAMILY_CAT,
-	FAMILY_SPIDER,
-	FAMILY_BEAR,
-	FAMILY_BOAR,
-	FAMILY_CROCILISK,
-	FAMILY_CARRION_BIRD,
-	FAMILY_CRAB,
-	FAMILY_GORILLA,
-	FAMILY_RAPTOR			= 11,
-	FAMILY_TALLSTRIDER ,
-	FAMILY_FELHUNTER		= 15,
-	FAMILY_VOIDWALKER,
-	FAMILY_SUCCUBUS,
-	FAMILY_DOOMGUARD		= 19,
-	FAMILY_SCORPID,
-	FAMILY_TURTLE, 
-	FAMILY_IMP				= 23,
-	FAMILY_BAT,
-	FAMILY_HYENA,
-	FAMILY_BIRD_OF_PREY,
-	FAMILY_WIND_SERPENT,
-	FAMILY_REMOTE_CONTROL,
-	FAMILY_FELGUARD,
-	FAMILY_DRAGONHAWK,
-	FAMILY_RAVAGER,
-	FAMILY_WARP_STALKER,
-	FAMILY_SPOREBAT,
-	FAMILY_NETHER_RAY,
-	FAMILY_SERPENT,
-	FAMILY_MOTH				= 37,
-	FAMILY_CHIMAERA,
-	FAMILY_DEVILSAUR,
-	FAMILY_GHOUL,
-	FAMILY_SILITHID,
-	FAMILY_WORM,
-	FAMILY_RHINO,
-	FAMILY_WASP,
-	FAMILY_CORE_HOUND,
-	FAMILY_SPIRIT_BEAST,
-	FAMILY_FAKE_IMP			= 416,
+	FAMILY_WOLF = 1,
+	FAMILY_CAT = 2,
+	FAMILY_SPIDER = 3,
+	FAMILY_BEAR = 4,
+	FAMILY_BOAR = 5,
+	FAMILY_CROCOLISK = 6,
+	FAMILY_CARRION_BIRD = 7,
+	FAMILY_CRAB = 8,
+	FAMILY_GORILLA = 9,
+	FAMILY_RAPTOR = 11,
+	FAMILY_TALLSTRIDER = 12 ,
+	FAMILY_FELHUNTER = 15,
+	FAMILY_VOIDWALKER = 16,
+	FAMILY_SUCCUBUS = 17,
+	FAMILY_DOOMGUARD = 19,
+	FAMILY_SCORPID = 20,
+	FAMILY_TURTLE = 21, 
+	FAMILY_IMP = 23,
+	FAMILY_BAT = 24,
+	FAMILY_HYENA = 25,
+	FAMILY_OWL = 26,
+	FAMILY_WIND_SERPENT = 27,
+	FAMILY_REMOTE_CONTROL = 28,
+	FAMILY_FELGUARD = 29,
+	FAMILY_DRAGONHAWK = 30,
+	FAMILY_RAVAGER = 31,
+	FAMILY_WARP_STALKER = 32,
+	FAMILY_SPOREBAT = 33,
+	FAMILY_NETHER_RAY = 34,
+	FAMILY_SERPENT = 35,
+	FAMILY_MOTH = 37,
+	FAMILY_CHIMAERA = 38,
+	FAMILY_DEVILSAUR = 39,
+	FAMILY_GHOUL = 40,
+	FAMILY_SILITHID = 41,
+	FAMILY_WORM = 42,
+	FAMILY_RHINO = 43,
+	FAMILY_WASP = 44,
+	FAMILY_CORE_HOUND = 45,
+	FAMILY_SPIRIT_BEAST = 46
+	FAMILY_FAKE_IMP = 416,
 	FAMILY_FAKE_FELHUNTER,
-	FAMILY_FAKE_VOIDWALKER	= 1860,
-	FAMILY_FAKE_SUCCUBUS	= 1863,
-	FAMILY_FAKE_FELGUARD	= 17252
+	FAMILY_FAKE_VOIDWALKER = 1860,
+	FAMILY_FAKE_SUCCUBUS = 1863,
+	FAMILY_FAKE_FELGUARD = 17252
 };
 
 enum CreatureTypeFlags

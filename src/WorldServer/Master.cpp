@@ -28,7 +28,6 @@ ARCTIC_DECL Database* Database_World;
 SessionLogWriter* GMCommand_Log;
 SessionLogWriter* Anticheat_Log;
 SessionLogWriter* Player_Log;
-extern CharacterLoaderThread * ctl;
 
 void Master::_OnSignal(int s)
 {
@@ -171,11 +170,15 @@ bool Master::Run(int argc, char ** argv)
 	Log.Line();
 
 	// use these log_level until we are fully started up.
+#ifdef _DEBUG
 	sLog.Init(-1, 3);
+#else
+	sLog.Init(-1, 2);
+#endif // _DEBUG
 
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
-		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running ArcTic as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
+		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running Hearthstone as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
 #endif
 
 	InitRandomNumberGenerators();
@@ -392,11 +395,9 @@ bool Master::Run(int argc, char ** argv)
 
 
 	Log.Notice( "CharacterLoaderThread", "Exiting..." );
-	ctl->Terminate();
-	ctl = NULL;
+	ArcTicLog.Terminate();
 
-
-	sWorld.LogoutPlayers(); // (Also saves players).
+	sWorld.LogoutPlayers(); // Also saves players
 	CharacterDatabase.Execute("UPDATE characters SET online = 0");
 
 	// send a query to wake it up if its inactive
@@ -409,8 +410,11 @@ bool Master::Run(int argc, char ** argv)
 	Log.Notice("Server", "Shutting down random generator.");
 	CleanupRandomNumberGenerators();
 
-	Log.Notice( "WintergraspInternal", "Exiting..." );
-	sWintergraspI.terminate();
+	if(sWorld.wg_enabled)
+	{
+		Log.Notice( "WintergraspInternal", "Exiting..." );
+		sWintergraspI.terminate();
+	}
 
 	Log.Notice( "DayWatcherThread", "Exiting..." );
 	sDayWatcher.terminate();

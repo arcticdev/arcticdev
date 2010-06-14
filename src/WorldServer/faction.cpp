@@ -6,6 +6,86 @@
 
 #include "StdAfx.h"
 
+bool isHostileNonPvP(Object* objA, Object* objB) // B is hostile for A? (without PVP flag checks)
+{
+	bool hostile = false;
+
+	// can't attack self.. this causes problems with buffs if we dont have it :p
+	if(!objA || !objB || (objA == objB))
+		return false;
+
+	// can't attack corpses neither...
+	if(objA->GetTypeId() == TYPEID_CORPSE || objB->GetTypeId() == TYPEID_CORPSE)
+		return false;
+
+	if( objA->m_faction == NULL || objB->m_faction == NULL || objA->m_factionDBC == NULL || objB->m_factionDBC == NULL )
+		return true;
+
+	uint32 faction = objB->m_faction->Mask;
+	uint32 host = objA->m_faction->HostileMask;
+
+	if(faction & host)
+		hostile = true;
+
+	// check friend/enemy list
+	for(uint32 i = 0; i < 4; i++)
+	{
+		if(objA->m_faction->EnemyFactions[i] == objB->m_faction->Faction)
+		{
+			hostile = true;
+			break;
+		}
+		if(objA->m_faction->FriendlyFactions[i] == objB->m_faction->Faction)
+		{
+			hostile = false;
+			break;
+		}
+	}
+
+	// PvP Flag System Checks
+	// We check this after the normal isHostile test, that way if we're
+	// on the opposite team we'll already know :p
+
+	Player* player_objA = GetPlayerFromObject(objA);
+	Player* player_objB = GetPlayerFromObject(objB);
+
+	//BG or PVP?
+	if( player_objA && player_objB )
+	{
+		if( player_objA->m_bg != NULL )	
+		{
+			if( player_objA->m_bgTeam != player_objB->m_bgTeam )
+				return true;
+		}
+		if( hostile )
+			return true;
+		else
+			return false;
+	}
+
+
+	// Reputation System Checks
+	if(player_objA && !player_objB)	   // PvE
+	{
+		if(objB->m_factionDBC->RepListId >= 0)
+			hostile = player_objA->IsHostileBasedOnReputation( objB->m_factionDBC );
+	}
+	
+	if(player_objB && !player_objA)	   // PvE
+	{
+		if(objA->m_factionDBC->RepListId >= 0)
+			hostile = player_objB->IsHostileBasedOnReputation( objA->m_factionDBC );
+	}
+
+	if( objA->IsPlayer() && objB->IsPlayer() && TO_PLAYER(objA)->m_bg != NULL )
+	{
+		if( TO_PLAYER(objA)->m_bgTeam != TO_PLAYER(objB)->m_bgTeam )
+			return true;
+	}
+
+	return hostile;
+}
+
 bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 {
 	bool hostile = false;
@@ -28,7 +108,7 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 		hostile = true;
 
 	// check friend/enemy list
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < 4; i++)
 	{
 		if(objA->m_faction->EnemyFactions[i] == objB->m_faction->Faction)
 		{
@@ -125,12 +205,12 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		// These area's are sanctuaries
 		for (uint32 i = 0; i < SANCTUARIES_NUM; ++i)
 		{
-			if( player_objA->GetAreaID() == SANCTUARY_ZONES[i] || player_objB->GetAreaID() == SANCTUARY_ZONES[i])
+			if(player_objA->GetAreaID() == SANCTUARY_ZONES[i] || player_objB->GetAreaID() == SANCTUARY_ZONES[i])
 				return false;
 		}
 
 		// schnek: Players with feign death flags can't be attacked
-		if( (objA->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || objB->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH)) && !objA->IsPlayer() )
+		if( (objA->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || objB->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH)) && !objA->IsPlayer() ) 
 			return false;
 
 		// do not let people attack each other in sanctuary
@@ -158,6 +238,9 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 				return true;
 		}
 
+		if( player_objA->DuelingWith == player_objB && player_objA->GetDuelState() == DUEL_STATE_STARTED )
+			return true;
+
 		if(player_objA->IsFFAPvPFlagged() && player_objB->IsFFAPvPFlagged())
 		{
 			if( player_objA->GetGroup() && player_objA->GetGroup() == player_objB->GetGroup() )
@@ -166,8 +249,12 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			if( player_objA == player_objB ) // Totems...
 				return false;
 
-			return true;		// can hurt each other in FFA pvp
+			return true; // can hurt each other in FFA pvp
 		}
+		
+		// Cannot hurt unflagged opponents (should fix Penance/AOE spells), this, however, makes you put attacked units as second param...
+		if(!player_objB->IsPvPFlagged())
+			return false;
 
 		if( player_objA->GetAreaDBC() != NULL )
 		{
@@ -189,7 +276,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	{
 		hostile = true;
 		// check friend/enemy list
-		for(uint32 i = 0; i < 4; ++i)
+		for(uint32 i = 0; i < 4; i++)
 		{
 			if(objA->m_faction->EnemyFactions[i] == objB->m_faction->Faction)
 				hostile = true;
@@ -224,6 +311,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	}
 	return hostile;
 }
+
 Player* GetPlayerFromObject(Object* obj)
 {
 	Player* player_obj = NULLPLR;
@@ -247,10 +335,11 @@ Player* GetPlayerFromObject(Object* obj)
 	}
 	return player_obj;
 }
-bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
+
+bool isCombatSupport(Object* objA, Object* objB) // B combat supports A?
 {
 	if( !objA || !objB )
-		return false;   
+		return false;
 
 	// can't support corpses...
 	if( objA->GetTypeId() == TYPEID_CORPSE || objB->GetTypeId() == TYPEID_CORPSE )
@@ -269,7 +358,7 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 		combatSupport = true;
 
 	// check friend/enemy list
-	for(uint32 i = 0; i < 4; ++i)
+	for(uint32 i = 0; i < 4; i++)
 	{
 		if(objB->m_faction->EnemyFactions[i] == objA->m_faction->Faction)
 		{

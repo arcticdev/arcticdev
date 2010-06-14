@@ -68,7 +68,7 @@ void EventableObject::event_AddEvent(TimedEvent * ptr)
 	m_lock.Release();
 
 	/* Add to event manager */
-	if(!m_holder)
+	if(!m_holder || ptr->eventFlag & EVENT_FLAG_MOVE_TO_WORLD_CONTEXT)
 	{
 		/* relocate to -1 eventholder :/ */
 		m_event_Instanceid = WORLD_INSTANCE;
@@ -343,7 +343,7 @@ EventableObjectHolder::~EventableObjectHolder()
 
 void EventableObjectHolder::Update(uint32 time_difference)
 {
-	m_lock.Acquire();			// <<<<
+	m_lock.Acquire(); // <<<<
 
 	/* Insert any pending objects in the insert pool. */
 	m_insertPoolLock.Acquire();
@@ -432,14 +432,15 @@ void EventableObject::event_Relocate()
 	/* prevent any new stuff from getting added */
 	m_lock.Acquire();
 
-	EventableObjectHolder * nh = sEventMgr.GetEventHolder(event_GetInstanceID());
+	EventableObjectHolder * nh = NULL;
+	nh = sEventMgr.GetEventHolder(event_GetInstanceID());
 	if(nh != m_holder)
 	{
 		// whee, we changed event holder :>
 		// doing this will change the instanceid on all the events, as well as add to the new holder.
 		
 		// no need to do this if we don't have any events, though.
-		if(!nh)
+		if(nh == NULL)
 			nh = sEventMgr.GetEventHolder(WORLD_INSTANCE);
 
 		nh->AddObject(this);

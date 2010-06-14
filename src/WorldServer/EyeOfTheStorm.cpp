@@ -163,7 +163,7 @@ EyeOfTheStorm::EyeOfTheStorm( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) :
 	}
 
 	m_bonusHonor = HonorHandler::CalculateHonorPointsFormula(lgroup*10,lgroup*10);
-	m_resToGainBG = 330;
+	m_resToGainBH = 330;
 
 	m_flagHolder = 0;
 	m_points[0] = m_points[1] = 0;
@@ -358,7 +358,6 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player* plr, uint32 id)
 
 void EyeOfTheStorm::HookOnPlayerDeath(Player* plr)
 {
-		
 	if(plr->m_bgHasFlag)
 		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
 	
@@ -975,7 +974,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 	if( m_points[team] >= m_resourceRewards[team] )
 	{
-		m_resourceRewards[team] += m_resToGainBG;
+		m_resourceRewards[team] += m_resToGainBH;
 
 		for(set<Player*  >::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
 		{
@@ -1177,10 +1176,10 @@ void EyeOfTheStorm::SetIsWeekend(bool isweekend)
 {
 	if (isweekend)
 	{
-		m_resToGainBG = 200;
+		m_resToGainBH = 200;
 	}
 	else
 	{
-		m_resToGainBG = 330;
+		m_resToGainBH = 330;
 	}
 }

@@ -173,7 +173,6 @@ enum ServerMessageType
 	SERVER_MSG_STRING = 3,
 	SERVER_MSG_SHUTDOWN_CANCELLED = 4,
 	SERVER_MSG_RESTART_CANCELLED = 5,
-
 	SERVER_MSG_BATTLEGROUND_SHUTDOWN = 6,
 	SERVER_MSG_BATTLEGROUND_RESTART = 7,
 	SERVER_MSG_INSTANCE_SHUTDOWN = 8,
@@ -224,9 +223,9 @@ struct MapInfo
 	uint32 heroic_key[2];
 	float update_distance;
 	uint32 checkpoint_id;
-	bool collision;
 	uint32 phasehorde;
 	uint32 phasealliance;
+	bool collision;
 
 	bool HasFlag(uint32 flag)
 	{
@@ -238,8 +237,8 @@ struct MapInfo
 
 enum REALM_TYPE
 {
-    REALM_PVE = 0,
-    REALM_PVP = 1,
+	REALM_PVE = 0,
+	REALM_PVP = 1,
 };
 struct AreaTable;
 
@@ -264,7 +263,7 @@ public:
 	void execute();
 };
 
-struct CharacterLoaderThread : public ThreadContext
+struct CharacterLoaderThread : public Singleton<CharacterLoaderThread>, public ThreadContext
 {
 #ifdef WIN32
 	HANDLE hEvent;
@@ -278,6 +277,7 @@ public:
 	void OnShutdown();
 	bool run();
 };
+
 class TaskList
 {
 	set<Task*> tasks;
@@ -409,7 +409,7 @@ public:
 	void SetMotd(const char *motd) { m_motd = motd; }
 	ARCTIC_INLINE const char* GetMotd() const { return m_motd.c_str(); }
 
-	// MOTD line 2
+	// MOTD line 2.
 	void SetMotd2(const char *motd2) { m_motd2 = motd2; }
 	ARCTIC_INLINE const char* GetMotd2() const { return m_motd2.c_str(); }
 
@@ -721,6 +721,7 @@ cont:
 	}
 };
 
+#define ArcTicLog CharacterLoaderThread::getSingleton()
 #define sWorld World::getSingleton()
 
 #endif
