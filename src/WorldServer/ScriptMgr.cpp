@@ -296,8 +296,8 @@ void ScriptMgr::UnloadScripts()
 	for(CustomGossipScripts::iterator itr = _customgossipscripts.begin(); itr != _customgossipscripts.end(); ++itr)
 		(*itr)->Destroy();
 	_customgossipscripts.clear();
-	delete this->DefaultGossipScript;
-	this->DefaultGossipScript=NULL;
+	delete DefaultGossipScript;
+	DefaultGossipScript = NULL;
 
 	LibraryHandleMap::iterator itr = _handles.begin();
 	for(; itr != _handles.end(); ++itr)
@@ -309,6 +309,12 @@ void ScriptMgr::UnloadScripts()
 #endif
 	}
 	_handles.clear();
+}
+
+void ScriptMgr::ReloadScripts()
+{
+	UnloadScripts();
+	LoadScripts();
 }
 
 void ScriptMgr::register_creature_script(uint32 entry, exp_create_creature_ai callback)
@@ -422,7 +428,7 @@ bool ScriptMgr::CallScriptedDummyAura(uint32 uSpellId, uint32 i, Aura* pAura, bo
 
 bool ScriptMgr::CallScriptedItem(Item* pItem, Player* pPlayer)
 {
-	if(pItem->GetProto()->gossip_script)
+	if(pItem->GetProto() && pItem->GetProto()->gossip_script != NULL)
 	{
 		pItem->GetProto()->gossip_script->GossipHello(pItem,pPlayer,true);
 		return true;
@@ -619,10 +625,10 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	
 	if( pTrainer &&
 		pTrainer->TrainerType == TRAINER_TYPE_PET && // pet trainer type
-		Plr->getClass() == CLASS_HUNTER &&                 // hunter class
-		Plr->GetSummon() != NULL )                   // have pet
+		Plr->getClass() == CLASS_HUNTER &&			 // hunter class
+		Plr->GetSummon() != NULL )					 // have pet
 	{
-		Menu->AddItem(0, "I would like to untrain my pet.", 13); // TODO: Find proper message
+		Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "I would like to untrain my pet.", 13);
 	}
 
 	if( pCreature->GetEntry() == 35364 || pCreature->GetEntry() == 35365 )

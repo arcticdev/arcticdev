@@ -129,13 +129,12 @@ typedef HM_NAMESPACE::hash_map<uint32, exp_handle_dummy_spell> HandleDummySpellM
 typedef HM_NAMESPACE::hash_map< uint32, exp_create_instance_ai > InstanceCreateMap;
 typedef set<GossipScript*> CustomGossipScripts;
 typedef set<QuestScript*> QuestScripts;
-typedef list<void*> ServerHookList;
+typedef list<SCRIPT_MODULE> ServerHookList;
 typedef list<SCRIPT_MODULE> LibraryHandleMap;
 
 class ARCTIC_DECL ScriptMgr : public Singleton<ScriptMgr>
 {
 public:
-
 	ScriptMgr();
 	~ScriptMgr();
 
@@ -143,6 +142,7 @@ public:
 
 	void LoadScripts();
 	void UnloadScripts();
+	void ReloadScripts();
 
 	CreatureAIScript * CreateAIScriptClassForEntry(Creature* pCreature);
 	GameObjectAIScript * CreateAIScriptClassForGameObject(uint32 uEntryId, GameObject* pGameObject);
@@ -237,7 +237,6 @@ public:
 	void RemoveAIUpdateEvent();
 
 protected:
-
 	GameObject* _gameobject;
 };
 
