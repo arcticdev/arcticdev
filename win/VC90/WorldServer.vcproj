@@ -919,11 +919,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\WorldServer\IslesOfConquest.cpp"
+				RelativePath="..\..\src\WorldServer\IsleOfConquest.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\WorldServer\IslesOfConquest.h"
+				RelativePath="..\..\src\WorldServer\IsleOfConquest.h"
 				>
 			</File>
 			<File
