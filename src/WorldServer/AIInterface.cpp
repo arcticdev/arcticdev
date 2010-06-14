@@ -208,19 +208,14 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				CALL_SCRIPT_EVENT(GetUnit(), OnCombatStart)(pUnit);
 
 				if( m_ChainAgroSet )
-				{
 					m_ChainAgroSet->EventEnterCombat( pUnit );
-				}
 
 				// Mark raid as combat in progress if it concerns a boss 
 				if(pUnit->GetMapMgr() && pUnit->GetMapMgr()->GetMapInfo() && pUnit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
-				{
+
 					if(GetUnit()->GetTypeId() == TYPEID_UNIT && GetUnit()->m_loadedFromDB )
-					{
 						if(cr->GetCreatureInfo() && cr->GetCreatureInfo()->Rank == ELITE_WORLDBOSS)
 							 pUnit->GetMapMgr()->AddCombatInProgress(GetUnit()->GetGUID());
-					}
-				}
 			}break;
 		case EVENT_LEAVECOMBAT:
 			{
@@ -1119,9 +1114,16 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 		return;
 	}
 
-	if( GetUnit() == pUnit )
+	if( GetUnit() == pUnit || GetUnit()->IsVehicle() )
 	{
 		return;
+	}
+
+	if(pUnit->IsVehicle())
+	{
+		uint32 count = TO_VEHICLE(pUnit)->GetPassengerCount();
+		if(!count) // No players.
+			return;
 	}
 
 	if( getAIState() == STATE_IDLE || getAIState() == STATE_FOLLOWING )
@@ -1138,7 +1140,6 @@ bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellE
 {
 	if(!caster || !victim)
 	{
-		// printf("!!!BAD POINTER IN AIInterface::HealReaction!!!\n");
 		return false;
 	}
 
@@ -1224,7 +1225,7 @@ void AIInterface::OnRespawn(Unit* unit)
 }
 
 Unit* AIInterface::FindTarget()
-{// find nearest hostile Target to attack
+{	// find nearest hostile Target to attack
 	if( !m_AllowedToEnterCombat ) 
 		return NULLUNIT;
 
@@ -1256,7 +1257,7 @@ Unit* AIInterface::FindTarget()
 		pObj = (*it2);
 		if( pObj->GetTypeId() == TYPEID_PLAYER )
 		{
-			if(TO_PLAYER( pObj )->GetTaxiState() )	  // skip players on taxi
+			if(TO_PLAYER( pObj )->GetTaxiState() ) // skip players on taxi
 				continue;
 		}
 		else if( pObj->GetTypeId() != TYPEID_UNIT )
@@ -1295,9 +1296,6 @@ Unit* AIInterface::FindTarget()
 		if( !GetUnit()->PhasedCanInteract( pUnit ) )
 			continue;
 
-		/*if(pUnit->m_invisible) // skip invisible units
-			continue;*/
-		
 		if(!pUnit->isAlive()
 			|| GetUnit() == pUnit 
 			|| GetUnit()->GetUInt64Value(UNIT_FIELD_CREATEDBY) == pUnit->GetGUID())
@@ -1307,7 +1305,7 @@ Unit* AIInterface::FindTarget()
 		if(!pUnit->m_faction || !pUnit->m_factionDBC)
 			continue;
 
-		//BLooD_LorD:don't agro neutrals
+		// BLooD_LorD:don't agro neutrals
 		if( ( pUnit->IsPlayer() || pUnit->IsPet() )
 			&& GetUnit()->m_factionDBC->RepListId == -1 
 			&& GetUnit()->m_faction->HostileMask == 0 
@@ -1351,7 +1349,7 @@ Unit* AIInterface::FindTarget()
 
 		AttackReaction(target, 1, 0);
 		WorldPacket data(SMSG_AI_REACTION, 12);
-		data << GetUnit()->GetGUID() << uint32(2);		// Aggro sound
+		data << GetUnit()->GetGUID() << uint32(2); // Aggro sound
 		GetUnit()->SendMessageToSet(&data, false);
 
 		if(target->GetUInt32Value(UNIT_FIELD_CREATEDBY) != 0)
@@ -1657,7 +1655,7 @@ float AIInterface::_CalcDistanceFromHome()
 //  3: there is an extra uint64 most likely a guid.					  unknown
 //  4: there is an extra float that causes the orientation to be set. known
 //  	
-// note:	when this field is 1. 
+// note: when this field is 1. 
 //  	there is no need to send  the next 3 uint32's as they are'nt used by the client
 // 	    
 // the MoveFlags:
@@ -1833,7 +1831,6 @@ void AIInterface::UpdateMove()
 		else
 		{
 			// Calculate the angle to our next position
-
 			float dx = (float)m_destinationX - GetUnit()->GetPositionX();
 			float dy = (float)m_destinationY - GetUnit()->GetPositionY();
 			if(dy != 0.0f)
@@ -1853,7 +1850,7 @@ void AIInterface::UpdateMove()
 	setCreatureState(MOVING);
 }
 
-void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
+void AIInterface::SendCurrentMove(Player* plyr)
 {
 	if(m_destinationX == 0.0f && m_destinationY == 0.0f && m_destinationZ == 0.0f) return; // invalid move 
 

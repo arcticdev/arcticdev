@@ -19,12 +19,12 @@ DayWatcherThread::DayWatcherThread()
 {
 	m_threadRunning = true;
 	m_dirty = false;
+	m_creatureEventSpawnMaps.clear();
+	m_gameobjectEventSpawnMaps.clear();
 }
 
 DayWatcherThread::~DayWatcherThread()
 {
-	m_creatureEventSpawnMaps.clear();
-	m_gameobjectEventSpawnMaps.clear();
 }
 
 void DayWatcherThread::terminate()
@@ -172,7 +172,8 @@ bool DayWatcherThread::run()
 	pthread_cond_init(&abortcond,NULL);
 #endif
 
-	uint32 interv = 120000; // in ms, must be >> 30secs
+	uint32 interv = 120000;
+	uint32 counter = 0;
 
 	while(m_threadRunning)
 	{

@@ -6,53 +6,52 @@
 
 #ifndef _IOC_H
 #define _IOC_H
-/*
+
 enum IOCControlPoints
 {
-	IOC_CONTROL_POINT_OILDERRICK				= 0,
-	IOC_CONTROL_POINT_COBALTMINE				= 1,
-	IOC_CONTROL_POINT_DOCKS						= 2,
-	IOC_CONTROL_POINT_AIRSHIPHANGAR				= 3,
-	IOC_CONTROL_POINT_SIEGEWORKSHOP				= 4,
-	IOC_CONTROL_POINT_ALLIANCE_KEEP				= 5,
-	IOC_CONTROL_POINT_HORDE_KEEP				= 6,
-	IOC_NUM_CONTROL_POINTS						= 7,
+	IOC_CONTROL_POINT_OILDERRICK = 0,
+	IOC_CONTROL_POINT_COBALTMINE = 1,
+	IOC_CONTROL_POINT_DOCKS = 2,
+	IOC_CONTROL_POINT_AIRSHIPHANGAR = 3,
+	IOC_CONTROL_POINT_SIEGEWORKSHOP = 4,
+	IOC_CONTROL_POINT_ALLIANCE_KEEP = 5,
+	IOC_CONTROL_POINT_HORDE_KEEP = 6,
+	IOC_NUM_CONTROL_POINTS = 7,
 };
 
 enum IOCSpawnTypes
 {
-	IOC_SPAWN_TYPE_NEUTRAL				= 0,
-	IOC_SPAWN_TYPE_ALLIANCE_ASSAULT		= 1,
-	IOC_SPAWN_TYPE_HORDE_ASSAULT		= 2,
-	IOC_SPAWN_TYPE_ALLIANCE_CONTROLLED	= 3,
-	IOC_SPAWN_TYPE_HORDE_CONTROLLED		= 4,
-	IOC_NODE_STATE_COUNT				= 5,
+	IOC_SPAWN_TYPE_NEUTRAL = 0,
+	IOC_SPAWN_TYPE_ALLIANCE_ASSAULT = 1,
+	IOC_SPAWN_TYPE_HORDE_ASSAULT = 2,
+	IOC_SPAWN_TYPE_ALLIANCE_CONTROLLED = 3,
+	IOC_SPAWN_TYPE_HORDE_CONTROLLED = 4,
+	IOC_NODE_STATE_COUNT = 5,
 };
 
 enum IOCvehicles
 {
-	KEEP_CANNON					= 34944,
-	CATAPULT					= 34793,
-	DEMOLISHER					= 34775,
-	FLAME_TURRET_A				= 34778,
-	FLAME_TURRET_H				= 36356,
-	GLAIVE_THROWER_A			= 34802,
-	GLAIVE_THROWER_H			= 35273,
-	ALLIANCE_GUNSHIP_CANNON		= 34929,
-	HORDE_GUNSHIP_CANNON		= 34935,
-	SIEGE_ENGINE_A				= 34776,
-	SIEGE_ENGINE_H				= 35069,
-	SIEGE_TURRET_A				= 34777,
-	SIEGE_TURRET_H				= 36355,
+	KEEP_CANNON = 34944,
+	CATAPULT = 34793,
+	DEMOLISHER = 34775,
+	FLAME_TURRET_A = 34778,
+	FLAME_TURRET_H = 36356,
+	GLAIVE_THROWER_A = 34802,
+	GLAIVE_THROWER_H = 35273,
+	ALLIANCE_GUNSHIP_CANNON = 34929,
+	HORDE_GUNSHIP_CANNON = 34935,
+	SIEGE_ENGINE_A = 34776,
+	SIEGE_ENGINE_H = 35069,
+	SIEGE_TURRET_A = 34777,
+	SIEGE_TURRET_H = 36355,
 };
 
-#define IOC_TRANSPORTER		195313
-#define TELEPORTER_EFFECT_A		195701
-#define TELEPORTER_EFFECT_H		195702
-#define IOC_FLAGPOLE 	191311
-#define IOC_DYNAMIC_DOOR_A		195703
-#define IOC_DYNAMIC_DOOR_H		195491
-#define PARACHUTE		54168
+#define IOC_TRANSPORTER         195313
+#define TELEPORTER_EFFECT_A     195701
+#define TELEPORTER_EFFECT_H     195702
+#define IOC_FLAGPOLE            191311
+#define IOC_DYNAMIC_DOOR_A      195703
+#define IOC_DYNAMIC_DOOR_H      195491
 
 struct IOCLocation { float x; float y; float z; };
 struct IOCSpawnLocation { float x; float y; float z; float o; };
@@ -77,7 +76,7 @@ struct IOCNodeTemplate
 };
 
 
-class ARCTIC_DECL IsleOfConquest : public CBattleground
+class IsleOfConquest : public CBattleground
 {
 public:
 	GameObject* m_ioccontrolPoints[IOC_NUM_CONTROL_POINTS];
@@ -90,13 +89,11 @@ protected:
 	bool m_LiveCaptain[2];
 	int m_bonusHonor;
 	Creature* cannons[8];
-	Creature* m_wsveh[8];
 	GameObject* m_flagpole[IOC_NUM_CONTROL_POINTS];
 	GameObject* m_teleporters[12];
 	GameObject* m_teleeffect[12];
 	GameObject* m_desgates[6];
 	GameObject* m_ogates[6];
-	GameObject* m_gunship[2];
 	Creature* m_spiritGuides[IOC_NUM_CONTROL_POINTS];
 	Creature* m_salesman;
 	uint32 m_resources[2];
@@ -108,8 +105,8 @@ protected:
 	bool m_flagIsVirgin[IOC_NUM_CONTROL_POINTS];
 
 public:
-    IsleOfConquest(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
-    ~IsleOfConquest();
+	IsleOfConquest(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
+	~IsleOfConquest();
 	virtual void Init();
 
 	void HookOnPlayerDeath(Player* plr);
@@ -118,9 +115,7 @@ public:
 	void HookOnMount(Player* plr);
 	void SpawnControlPoint(uint32 Id, uint32 Type);
 	void CaptureControlPoint(uint32 Id, uint32 Team);
-//	void Updateworkshop(uint32 Team);
-//	uint8 WSVehicle();
-//	void SpawnWSVehicle(uint32 Team);
+	void Updateworkshop(uint32 Team);
 	void AssaultControlPoint(Player* pPlayer, uint32 Id);
 	void HookOnAreaTrigger(Player* plr, uint32 id);
 	bool HookHandleRepop(Player* plr);
@@ -148,7 +143,7 @@ public:
 	void HookGenerateLoot(Player* plr, Corpse* pCorpse);
 
 	void SetIsWeekend(bool isweekend);
-    void HookOnUnitKill(Player* plr, Unit* pVictim);
+	void HookOnUnitKill(Player* plr, Unit* pVictim);
 	void Herald(const char *format, ...);
 	void Finish(uint32 losingTeam);
 
@@ -162,7 +157,7 @@ enum GENERAL_IOC_DEFINES
 	IOC_SCORE_WARNING					= 530,		// Dunno what this should be ;p
 	IOC_ADD_POINTS_ON_CONTROLLED_MINE	= 1,		// Points to give the team who controls (a) mine(s)
 	IOC_REINFORCEMENT_ADD_INTERVAL		= 45000,	// The interval (in milliseconds) that points from mines are awarded
-	IOC_POINTS_ON_DESTROY_BUNKER			= 75,		// Points to remove for destroying a team's bunker
+	IOC_POINTS_ON_DESTROY_BUNKER		= 75,		// Points to remove for destroying a team's bunker
 	IOC_POINTS_ON_KILL					= 1,		// Points to remove when killing a member of the opposite team
 	IOC_POINTS_ON_KILL_CAPTAIN			= 100,		// Points  to remove for killing a team's captain
 	IOC_NUM_CONTESTED_AREAS				= 9,		// Total contested areas (graveyards/mines)
@@ -176,5 +171,6 @@ enum GENERAL_IOC_DEFINES
 	IOC_DESTROYABLE_AREAS_START			= 9,		// ID at which destroyable points start (for loops/ifs)
 	IOC_DESTROYABLE_AREAS_END			= 16,		// ID at which contested points finish (for loops/ifs)
 	IOC_PER_KILL_HONOR					= 21,
-};*/
-#endif		// _ICO_H
+};
+
+#endif // _ICO_H

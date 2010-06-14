@@ -10,8 +10,8 @@
 // #include "ShortVector.h"
 // #include "ShortBox.h"
 
-#include <Collision/g3dlite/G3D/Vector3.h>
-#include <Collision/g3dlite/G3D/AABox.h>
+#include "../g3dlite/G3D/Vector3.h"
+#include "../g3dlite/G3D/AABox.h"
 
 using namespace G3D;
 
@@ -28,7 +28,7 @@ namespace VMAP
 	class TreeNode
 	{
 		private:
-			/* Location along the specified axis */
+			/** Location along the specified axis */
 			float iSplitLocation;
 			// Offest or the clients
 			int iChilds[2];

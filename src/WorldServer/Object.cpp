@@ -13,9 +13,9 @@ using namespace std;
 #undef M_PI
 #endif
 
-#define M_PI 3.14159265358979323846 
-#define M_H_PI 1.57079632679489661923 
-#define M_Q_PI 0.785398163397448309615 
+#define M_PI 3.14159265358979323846f
+#define M_H_PI 1.57079632679489661923f
+#define M_Q_PI 0.785398163397448309615f
 
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
@@ -110,16 +110,25 @@ void Object::Destructor()
 void Object::SetPhase(int32 phase)
 {
 	m_phaseMode = phase;
+	WorldPacket data(SMSG_SET_PHASE_SHIFT, 9);
+	data << GetNewGUID() << uint8(m_phaseMode);
+	SendMessageToSet(&data, (IsPlayer() ? true : false));
 }
 
 void Object::EnablePhase(int32 phaseMode)
 {
 	m_phaseMode |= phaseMode;
+	WorldPacket data(SMSG_SET_PHASE_SHIFT, 9);
+	data << GetNewGUID() << uint8(m_phaseMode);
+	SendMessageToSet(&data, (IsPlayer() ? true : false));
 }
 
 void Object::DisablePhase(int32 phaseMode)
 {
 	m_phaseMode &= ~phaseMode;
+	WorldPacket data(SMSG_SET_PHASE_SHIFT, 9);
+	data << GetNewGUID() << uint8(m_phaseMode);
+	SendMessageToSet(&data, (IsPlayer() ? true : false));
 }
 
 void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
@@ -152,7 +161,6 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		{
 			flags = 0x0010;
 		}break;
-			// player/unit: 0x68 (except self)
 	case TYPEID_UNIT:
 	case TYPEID_PLAYER:
 		{
@@ -247,7 +255,7 @@ WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 	*packet << (uint8)mBlocks;
 
 	for(uint32 dword_n=mBlocks-1;dword_n;dword_n--)
-	*packet <<(uint32)0;
+		*packet <<(uint32)0;
 
 	*packet <<(((uint32)(1))<<(index%32));
 	*packet << value;
@@ -295,7 +303,6 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 			return 1;
 		}
 	}
-
 	return 0;
 }
 
@@ -331,32 +338,30 @@ uint32 TimeStamp();
 
 void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2, Player* target )
 {
-	ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0;
 	uint16 flag16 = 0; // some other flag
-
+	ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0;
 	*data << (uint16)flags;
 
-	Player* pThis = NULLPLR;
-	MovementInfo* moveinfo;
+	Unit* uThis = NULL;
+	Player* pThis = NULL;
+	MovementInfo* moveinfo = NULL; // We are basically writting movement info, if exists.
 	if(m_objectTypeId == TYPEID_PLAYER)
 	{
 		pThis = TO_PLAYER(this);
-		if(pThis->GetSession())
-			moveinfo = pThis->GetMovementInfo();
+		uThis = TO_UNIT(this);
 		if(target == pThis)
-		{
-			// Updating our last speeds.
-			pThis->UpdateLastSpeeds();
-		}
-	}
+			pThis->UpdateLastSpeeds(); // Updating our last speeds.
 
-	if (flags & 0x20)
+		moveinfo = pThis->GetMovementInfo();
+	}
+	else if(m_objectTypeId == TYPEID_UNIT)
 	{
-		if(pThis && pThis->m_TransporterGUID != 0)
-			flags2 |= 0x200;
-		else if(m_objectTypeId==TYPEID_UNIT && TO_CREATURE(this)->m_TransporterGUID != 0 && TO_CREATURE(this)->m_transportPosition != NULL)
-			flags2 |= 0x200;
-		else if (IsUnit() && TO_UNIT(this)->m_CurrentVehicle != NULL)
+		uThis = TO_UNIT(this);
+		moveinfo = uThis->GetMovementInfo();
+	}
+	if(flags & 0x20)
+	{
+		if(uThis && (uThis->m_TransporterGUID != uint64(NULL) || uThis->m_CurrentVehicle != NULL))
 			flags2 |= 0x200;
 
 		if(splinebuf)
@@ -398,9 +403,14 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		*data << (float)m_position.z;
 		*data << (float)m_position.o;
 
-		if ( flags2 & 0x0200 )
+		if ( flags2 & MOVEFLAG_TAXI )
 		{
-			if (IsUnit() && TO_UNIT(this)->m_CurrentVehicle != NULL)
+			if(moveinfo != NULL)
+			{
+				*data << moveinfo->transGuid << moveinfo->transX << moveinfo->transY
+					<< moveinfo->transZ << moveinfo->transO << moveinfo->transTime << moveinfo->transSeat;
+			}
+			else if (IsUnit() && TO_UNIT(this)->m_CurrentVehicle != NULL)
 			{
 				Unit* pUnit = TO_UNIT(this);
 				Vehicle* vehicle = TO_UNIT(this)->m_CurrentVehicle;
@@ -411,7 +421,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 					*data << vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId]->m_attachmentOffsetX;
 					*data << vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId]->m_attachmentOffsetY;
 					*data << vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId]->m_attachmentOffsetZ;
-					*data << float(0.0f);
+					*data << vehicle->GetOrientation();
 					*data << uint32(0);
 					*data << pUnit->m_inVehicleSeatId;
 				}
@@ -426,53 +436,51 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 					*data << uint8(0);
 				}
 			}
-			else if(pThis)
+			else if(uThis)
 			{
-				WoWGuid wowguid(pThis->m_TransporterGUID);
+				WoWGuid wowguid(uThis->m_TransporterGUID);
 				*data << wowguid;
-				*data << pThis->m_transportPosition->x << pThis->m_transportPosition->y << pThis->m_transportPosition->z << pThis->m_transportPosition->o;
-				*data << pThis->m_TransporterUnk << uint8(0);
-			}
-			else if(m_objectTypeId == TYPEID_UNIT && TO_CREATURE(this)->m_transportPosition != NULL)
-			{
-				WoWGuid tguid(TO_CREATURE(this)->m_TransporterGUID);
-				*data << tguid;
-				*data << TO_CREATURE(this)->m_transportPosition->x << TO_CREATURE(this)->m_transportPosition->y <<
-					TO_CREATURE(this)->m_transportPosition->z << TO_CREATURE(this)->m_transportPosition->o;
-				*data << uint32(0);
-				*data << uint8(0);
+				*data << uThis->m_transportPosition->x << uThis->m_transportPosition->y << uThis->m_transportPosition->z << uThis->m_transportPosition->o;
+				*data << uint32(uThis->m_TransporterUnk) << uint8(0);
 			}
 		}
 
-		if(flags2 & 0x2200000 || flag16 & 0x20)
+		if(flags2 & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING) || flag16 & 0x20) //flying/swimming, && unk sth to do with vehicles?
 		{
-			if(pThis && moveinfo)
+			if(moveinfo != NULL)
 				*data << moveinfo->pitch;
-			*data << float(0); // pitch
+			else
+				*data << float(0); // pitch
 		}
 
-		if(pThis && moveinfo)
+		if(moveinfo != NULL)
 			*data << moveinfo->FallTime;
 		else
 			*data << uint32(0); // last fall time
 
-		if(flags2 & 0x1000) // BYTE1(flags2) & 0x10
+		if(flags2 & MOVEFLAG_REDIRECTED || flags2 & MOVEFLAG_FALLING)
 		{
-			if(pThis && moveinfo)
+			if(moveinfo != NULL)
 			{
-				*data << moveinfo->jumpspeed;
+				*data << moveinfo->jump_velocity;
 				*data << moveinfo->jump_sinAngle;
 				*data << moveinfo->jump_cosAngle;
 				*data << moveinfo->jump_xySpeed;
 			}
-			*data << (float)0;
-			*data << (float)1.0;    // sinAngle
-			*data << (float)0;      // cosAngle
-			*data << (float)0;      // xySpeed
+			else
+			{
+				*data << (float)0;
+				*data << (float)1.0; //sinAngle
+				*data << (float)0;   //cosAngle
+				*data << (float)0;   //xySpeed
+			}
 		}
 		if( flags2 & MOVEFLAG_SPLINE_MOVER )
 		{
-			*data << (float)0;      // unknown float
+			if(moveinfo != NULL)
+				*data << moveinfo->pitch;
+			else
+				*data << float(0); // last fall time
 		}
 
 		*data << m_walkSpeed;		// walk speed
@@ -540,7 +548,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		uint64 rotation = 0;
 		if(IsGameObject())
 			rotation = TO_GAMEOBJECT(this)->m_rotation;
-		*data << uint64(rotation); //blizz 64bit rotation
+		*data << uint64(rotation); // blizz 64bit rotation
 	}
 }
 
@@ -838,7 +846,6 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 ///////////////////////////////////////////////////////////////////////////////
 void Object::LoadValues(const char* data)
 {
-	// thread-safe ;) strtok is not.
 	std::string ndata = data;
 	std::string::size_type last_pos = 0, pos = 0;
 	uint32 index = 0;
@@ -880,7 +887,7 @@ void Object::AddToWorld()
 		if(IsPlayer() && TO_PLAYER(this)->m_bg != NULL && TO_PLAYER(this)->m_bg->IsArena())
 			mapMgr = TO_PLAYER(this)->m_bg->GetMapMgr();
 		else
-			return; //instance add failed
+			return; // instance add failed
 	}
 	if( IsPlayer() )
 	{
@@ -891,7 +898,7 @@ void Object::AddToWorld()
 			if( !mapMgr->m_battleground->CanPlayerJoin(p) && !p->bGMTagOn)
 				return;
 		}
-		if( !p->triggerpass_cheat && p->GetGroup()== NULL && (mapMgr->GetMapInfo()->type == INSTANCE_RAID || mapMgr->GetMapInfo()->type == INSTANCE_MULTIMODE))
+		if( !p->triggerpass_cheat && p->GetGroup() == NULL && (mapMgr->GetMapInfo()->type == INSTANCE_RAID || mapMgr->GetMapInfo()->type == INSTANCE_MULTIMODE))
 			return ;
 	}
 
@@ -1006,7 +1013,6 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 	}
 }
 
-// Set uint32 propertyvoid 
 void Object::SetUInt32Value( const uint32 index, const uint32 value )
 {
 	if(index > m_valuesCount)
@@ -1160,7 +1166,6 @@ void Object::ModFloatValue(const uint32 index, const float value )
 	}
 }
 
-// Set uint64 property
 void Object::SetUInt64Value( const uint32 index, const uint64 value )
 {
 	assert( index + 1 < m_valuesCount );
@@ -1183,7 +1188,6 @@ void Object::SetUInt64Value( const uint32 index, const uint64 value )
 	}
 }
 
-// Set float property
 void Object::SetFloatValue( const uint32 index, const float value )
 {
 	ASSERT( index < m_valuesCount );
@@ -1209,7 +1213,7 @@ void Object::SetFlag( const uint32 index, uint32 newFlag )
 	ASSERT( index < m_valuesCount );
 
 	// no change -> no update
-	if((m_uint32Values[ index ] & newFlag)==newFlag)
+	if((m_uint32Values[ index ] & newFlag) == newFlag)
 		return;
 
 	m_uint32Values[ index ] |= newFlag;
@@ -1267,7 +1271,7 @@ void Object::RemoveFlag( const uint32 index, uint32 oldFlag )
 	ASSERT( index < m_valuesCount );
 
 	// no change -> no update
-	if((m_uint32Values[ index ] & oldFlag)==0)
+	if((m_uint32Values[ index ] & oldFlag) == 0)
 		return;
 
 	m_uint32Values[ index ] &= ~oldFlag;
@@ -1322,25 +1326,18 @@ void Object::RemoveFlag( const uint32 index, uint32 oldFlag )
 
 float Object::CalcDistance(Object* Ob)
 {
-	ASSERT(Ob != NULLOBJ);
 	return CalcDistance(GetPositionX(), GetPositionY(), GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
-
 float Object::CalcDistance(float ObX, float ObY, float ObZ)
 {
 	return CalcDistance(GetPositionX(), GetPositionY(), GetPositionZ(), ObX, ObY, ObZ);
 }
-
 float Object::CalcDistance(Object* Oa, Object* Ob)
 {
-	ASSERT(Oa != NULLOBJ);
-	ASSERT(Ob != NULLOBJ);
 	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), Ob->GetPositionX(), Ob->GetPositionY(), Ob->GetPositionZ());
 }
-
 float Object::CalcDistance(Object* Oa, float ObX, float ObY, float ObZ)
 {
-	ASSERT(Oa != NULL);
 	return CalcDistance(Oa->GetPositionX(), Oa->GetPositionY(), Oa->GetPositionZ(), ObX, ObY, ObZ);
 }
 
@@ -1356,7 +1353,7 @@ float Object::calcAngle( float Position1X, float Position1Y, float Position2X, f
 {
 	float dx = Position2X-Position1X;
 	float dy = Position2Y-Position1Y;
-	double angle=0.0f;
+	double angle = 0.0f;
 
 	// Calculate angle
 	if (dx == 0.0)
@@ -1396,7 +1393,7 @@ float Object::calcRadAngle( float Position1X, float Position1Y, float Position2X
 {
 	double dx = double(Position2X-Position1X);
 	double dy = double(Position2Y-Position1Y);
-	double angle=0.0;
+	double angle = 0.0;
 
 	// Calculate angle
 	if (dx == 0.0)
@@ -1404,9 +1401,9 @@ float Object::calcRadAngle( float Position1X, float Position1Y, float Position2X
 		if (dy == 0.0)
 			angle = 0.0;
 		else if (dy > 0.0)
-			angle = M_PI * 0.5/*/ 2.0*/;
+			angle = M_PI * 0.5;
 		else
-			angle = M_PI * 3.0 * 0.5/*/ 2.0*/;
+			angle = M_PI * 3.0 * 0.5;
 	}
 	else if (dy == 0.0)
 	{
@@ -1431,10 +1428,12 @@ float Object::calcRadAngle( float Position1X, float Position1Y, float Position2X
 
 float Object::getEasyAngle( float angle )
 {
-	while ( angle < 0 ) {
+	while ( angle < 0 ) 
+	{
 		angle = angle + 360;
 	}
-	while ( angle >= 360 ) {
+	while ( angle >= 360 ) 
+	{
 		angle = angle - 360;
 	}
 	return angle;
@@ -1458,23 +1457,23 @@ bool Object::inArc(float Position1X, float Position1Y, float FOV, float Orientat
 
 bool Object::isInFront(Object* target)
 {
-    double x = target->GetPositionX() - m_position.x;
-    double y = target->GetPositionY() - m_position.y;
+	double x = target->GetPositionX() - m_position.x;
+	double y = target->GetPositionY() - m_position.y;
 
-    double angle = atan2( y, x );
-    angle = ( angle >= 0.0 ) ? angle : 2.0 * M_PI + angle;
+	double angle = atan2( y, x );
+	angle = ( angle >= 0.0 ) ? angle : 2.0 * M_PI + angle;
 	angle -= m_position.o;
 
-    while( angle > M_PI)
-        angle -= 2.0 * M_PI;
+	while( angle > M_PI)
+		angle -= 2.0 * M_PI;
 
-    while(angle < -M_PI)
-        angle += 2.0 * M_PI;
+	while(angle < -M_PI)
+		angle += 2.0 * M_PI;
 
-    double left = -1.0 * ( M_PI / 2.0 );
-    double right = ( M_PI / 2.0 );
+	double left = -1.0 * ( M_PI / 2.0 );
+	double right = ( M_PI / 2.0 );
 
-    return( ( angle >= left ) && ( angle <= right ) );
+	return( ( angle >= left ) && ( angle <= right ) );
 }
 
 bool Object::isInBack(Object* target)
@@ -1583,7 +1582,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 	
 	if( pVictim->GetStandState() ) // not standing-> standup
 	{
-		pVictim->SetStandState( STANDSTATE_STAND );//probably mobs also must standup
+		pVictim->SetStandState( STANDSTATE_STAND ); // probably mobs also must standup
 	}
 
 	// This one is easy. If we're attacking a hostile target, and we're not flagged, flag us.
@@ -1643,7 +1642,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			TO_PLAYER(this)->SetGuardHostileFlag(true);
 			TO_PLAYER(this)->CreateResetGuardHostileFlagEvent();
 		}
-		
+
 		if(IsPet())
 			plr = TO_PET(this)->GetPetOwner();
 		else if(IsPlayer())
@@ -1661,8 +1660,8 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 
-        // Rage
-        float val;
+		// Rage
+		float val;
 
 		if( pVictim->GetPowerType() == POWER_TYPE_RAGE 
 			&& pVictim != TO_UNIT(this)
@@ -1726,7 +1725,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	// DUEL HANDLERS                                                        //
+	// Duel handlers                                                        //
 	//////////////////////////////////////////////////////////////////////////
 
 	if((pVictim->IsPlayer()) && (IsPlayer()) && TO_PLAYER(pVictim)->DuelingWith == TO_PLAYER(this) ) //Both Players
@@ -1828,7 +1827,6 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 	//////////////////////////////////////////////////////////////////////////
 	if ((isCritter || health <= damage) )
 	{
-
 		if( pVictim->HasDummyAura(SPELL_HASH_GUARDIAN_SPIRIT) )
 		{
 			pVictim->CastSpell(pVictim, dbcSpell.LookupEntry(48153), true);
@@ -1864,7 +1862,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		{
 			// let's see if we have shadow of death
 			if( !pVictim->FindPositiveAuraByNameHash(SPELL_HASH_SHADOW_OF_DEATH) && TO_PLAYER( pVictim)->HasSpell( 49157 )  && 
-				!(TO_PLAYER(pVictim)->m_bg && TO_PLAYER(pVictim)->m_bg->IsArena())) //check for shadow of death
+				!(TO_PLAYER(pVictim)->m_bg && TO_PLAYER(pVictim)->m_bg->IsArena())) // check for shadow of death
 			{
 				SpellEntry* sorInfo = dbcSpell.LookupEntry(54223);
 				if( sorInfo != NULL && TO_PLAYER(pVictim)->Cooldown_CanCast( sorInfo ))
@@ -1958,8 +1956,8 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 						data << dObj->GetGUID();
 						dObj->SendMessageToSet(&data, false);
 						dObj->RemoveFromWorld(true);
-						dObj->Destructor();
-						dObj = NULLDYN; // deleted!
+						delete dObj;
+						dObj = NULL;
 					}
 				}
 				if(spl->m_spellInfo->ChannelInterruptFlags == 48140) spl->cancel();
@@ -2254,7 +2252,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			TO_PLAYER( pVictim )->m_SwimmingTime = 0;
 		
  			//////////////////////////////////////////////////////////////////////////
-			// Удалять питомца когда игрок вспутает в дуэль                         //
+			//                                                                      //
 			//////////////////////////////////////////////////////////////////////////
 
 			if( TO_PLAYER( pVictim )->GetSummon() != NULL )
@@ -2265,15 +2263,15 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 					TO_PLAYER( pVictim )->GetSummon()->Remove( true, true, true );
 			}
  			//////////////////////////////////////////////////////////////////////////
-			// Удалять питомца когда игрок вспутает в дуэль Конец кода              //
+			//                                                                      //
 			//////////////////////////////////////////////////////////////////////////
 
 		}
 		else OUT_DEBUG("DealDamage for Unknown Object.");
 	}
-	else /* NOT DEAD YET  */
+	else
 	{
-		if(pVictim != TO_UNIT(this) /* && updateskill */)
+		if(pVictim != TO_UNIT(this))
 		{
 			// Send AI Reaction UNIT vs UNIT
 			if( GetTypeId() ==TYPEID_UNIT )
@@ -2358,10 +2356,6 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 	// Spell Damage Bonus Calculations                                      //
 	//////////////////////////////////////////////////////////////////////////
 
-	//////////////////////////////////////////////////////////////////////////
-	// by stats                                                             //
-	//////////////////////////////////////////////////////////////////////////
-
 	if( IsUnit() && !static_damage )
 	{
 		caster->RemoveAurasByInterruptFlag( AURA_INTERRUPT_ON_START_ATTACK );
@@ -2444,7 +2438,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 			{
 				critical = true;
 				if(caster && !caster->HasAura(55447)) // Glyph of Flame Shock
-					fs->Remove();
+					pVictim->RemoveAura(fs);
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -2461,7 +2455,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 				{
 					// the bonuses are halved by 50% (funky blizzard math :S)
 					float b;
-					if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell )		// physical || hackfix SoCommand/JoCommand
+					if( spellInfo->School == 0 || spellInfo->is_melee_spell || spellInfo->is_ranged_spell ) // physical || hackfix SoCommand/JoCommand
 						b = ( ( float(critical_bonus) ) / 100.0f ) + 1.0f;
 					else
 						b = ( ( float(critical_bonus) / 2.0f ) / 100.0f ) + 1.0f;
@@ -2554,7 +2548,7 @@ void Object::SpellNonMeleeDamageLog(Unit* pVictim, uint32 spellID, uint32 damage
 		dmg.resisted_damage = dmg.full_damage;
 
 	//////////////////////////////////////////////////////////////////////////
-	// уменьшение сопротивления                                             //
+	//                                                                      //
 	//////////////////////////////////////////////////////////////////////////
 
 	float res_before_resist = res;
@@ -2667,12 +2661,12 @@ void Object::SendSpellLog(Object* Caster, Object* Target, uint32 Ability, uint8 
 		return;
 
 	WorldPacket data(SMSG_SPELLLOGMISS,28);
-	data << Ability;                                    // spellid
-	data << Caster->GetGUID();                          // caster / player
-	data << uint8(1);                                   // unknown but I think they are const
-	data << uint32(1);                                  // unknown but I think they are const
-	data << Target->GetGUID();                          // target
-	data << SpellLogType;                               // spelllogtype
+	data << Ability;                                            // spellid
+	data << Caster->GetGUID();                                  // caster / player
+	data << uint8(1);                                           // unknown but I think they are const
+	data << uint32(1);                                          // unknown but I think they are const
+	data << Target->GetGUID();                                  // target
+	data << SpellLogType;                                       // spelllogtype
 	Caster->SendMessageToSet(&data, true);
 }
 
@@ -2689,16 +2683,16 @@ void Object::SendSpellNonMeleeDamageLog( Object* Caster, Unit* Target, uint32 Sp
 	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG,40);
 	data << Target->GetNewGUID();
 	data << Caster->GetNewGUID();
-	data << uint32(SpellID);									// SpellID / AbilityID
-	data << uint32(Damage);										// All Damage
-	data << uint32(overkill);									// Overkill
-	data << uint8(g_spellSchoolConversionTable[School]);		// School
-	data << uint32(AbsorbedDamage);								// Absorbed Damage
-	data << uint32(ResistedDamage);								// Resisted Damage
-	data << uint8(PhysicalDamage);								// Physical Damage (true/false)
-	data << uint8(0);											// unknown or it binds with Physical Damage
-	data << BlockedDamage;										// Physical Damage (true/false)
-	data << uint8(CriticalHit ? 7 : 5);							// unknown const
+	data << uint32(SpellID);                                    // SpellID / AbilityID
+	data << uint32(Damage);                                     // All Damage
+	data << uint32(overkill);                                   // Overkill
+	data << uint8(g_spellSchoolConversionTable[School]);        // School
+	data << uint32(AbsorbedDamage);                             // Absorbed Damage
+	data << uint32(ResistedDamage);                             // Resisted Damage
+	data << uint8(PhysicalDamage);                              // Physical Damage (true/false)
+	data << uint8(0);                                           // unknown or it binds with Physical Damage
+	data << BlockedDamage;                                      // Physical Damage (true/false)
+	data << uint8(CriticalHit ? 7 : 5);                         // unknown const
 	data << uint32(0);
 
 	Caster->SendMessageToSet( &data, bToset );
@@ -2718,7 +2712,7 @@ void Object::EventSpellHit(Spell* pSpell)
 	if( IsInWorld() && pSpell->m_caster != NULL )
 		pSpell->cast(false);
 	else
-		pSpell = NULLSPELL;
+		delete pSpell;
 }
 
 bool Object::CanActivate()
@@ -2854,6 +2848,7 @@ void Object::SendAttackerStateUpdate( Unit* Target, dealdamage *dmg, uint32 real
 	data << (uint8)vstate;											// new victim state
 	if(hit_status & HITSTATUS_BLOCK)
 		data << uint32(0);											// can be 0,1000 or -1	else
+	else
 		data << (uint32)0x3e8;										// can be 0,1000 or -1
 
 	if (hit_status & 0x00800000)
@@ -2942,9 +2937,7 @@ bool Object::PhasedCanInteract(Object* pObj)
 
 	// Hack for Acherus: Horde/Alliance can't see each other!
 	if( pObjI && pObjII && GetMapId() == 609 && pObjI->GetTeam() != pObjII->GetTeam() )
-	{
 		return false;
-	}
 
 	return ret;
 }

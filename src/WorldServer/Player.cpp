@@ -9263,7 +9263,7 @@ void Player::SaveAuras(stringstream &ss)
 		{
 			Aura* aur=m_auras[x];
 			bool skip = false;
-			for(uint32 i = 0; i < NUM_BG_QUEUE_SLOTS; ++i)
+			for(uint32 i = 0; i < ARCTICNQS; ++i)
 			{
 				if(aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA ||
 					aur->m_spellProto->Effect[i] == SPELL_EFFECT_APPLY_AURA_128 || 

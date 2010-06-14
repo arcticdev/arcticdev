@@ -25,6 +25,7 @@ struct LevelInfo;
 #define ALLIANCE 0
 #define HORDE 1
 
+#define ARCTICNQS 3
 #define MAX_PET_NO 3
 #define PLAYER_NORMAL_RUN_SPEED 7.0f
 #define PLAYER_NORMAL_SWIM_SPEED 4.722222f
@@ -1533,10 +1534,8 @@ public:
 
 	// Battlegrounds.
 	CBattleground* m_bg;
-
-#define NUM_BG_QUEUE_SLOTS 2
-
-	CBattleground* m_pendingBattleground[NUM_BG_QUEUE_SLOTS];
+	CBattleground* m_pendingBattleground[ARCTICNQS];
+	Wintergrasp* WinterGrasp;
 	uint32 m_bgSlot;
 	bool m_bgRatedQueue;
 	uint32 m_bgEntryPointMap;
@@ -1546,11 +1545,10 @@ public:
 	float m_bgEntryPointO;
 	int32 m_bgEntryPointInstance;
 	bool m_bgHasFlag;
-	bool m_bgIsQueued[NUM_BG_QUEUE_SLOTS];
-	uint32 m_bgQueueType[NUM_BG_QUEUE_SLOTS];
-	uint32 m_bgQueueInstanceId[NUM_BG_QUEUE_SLOTS];
-	// uint32 m_bgQueueTime[NUM_BG_QUEUE_SLOTS];
-	uint32 m_bgQueueTime[3];
+	bool m_bgIsQueued[ARCTICNQS];
+	uint32 m_bgQueueType[ARCTICNQS];
+	uint32 m_bgQueueInstanceId[ARCTICNQS];
+uint32 m_bgQueueTime[ARCTICNQS];
 	uint32 m_bgFlagIneligible;
 
 	bool HasBattlegroundQueueSlot();

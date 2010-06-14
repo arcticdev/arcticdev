@@ -36,7 +36,7 @@ enum HIGHGUID_TYPE
 
 // TODO: fix that type mess
 
-enum TYPE 
+enum TYPE
 {
 	TYPE_OBJECT = 1,
 	TYPE_ITEM = 2,

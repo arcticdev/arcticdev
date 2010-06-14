@@ -18,7 +18,7 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 	if(action == 0)
 	{
 		uint32 BGQueueSlot = _player->GetBGQueueSlotByBGType(bgtype);
-		if( BGQueueSlot >= NUM_BG_QUEUE_SLOTS )
+		if( BGQueueSlot >= ARCTICNQS )
 			return;
 
 		_player->RemoveFromBattlegroundQueue(BGQueueSlot);
@@ -26,7 +26,7 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 	}
 	else
 	{
-		for(uint32 i = 0; i < NUM_BG_QUEUE_SLOTS; ++i)
+		for(uint32 i = 0; i < ARCTICNQS; ++i)
 		{
 			if( GetPlayer()->m_pendingBattleground[i] && 
 				(GetPlayer()->m_pendingBattleground[i]->GetType() == bgtype || bgtype == BATTLEGROUND_ARENA_5V5))

@@ -102,7 +102,7 @@
 #include "HonorHandler.h"
 #include "ItemPrototype.h"
 #include "Item.h"
-#include "IslesOfConquest.h"
+#include "IsleOfConquest.h"
 #include "Container.h"
 #include "AuctionHouse.h"
 #include "AuctionMgr.h"

@@ -110,9 +110,9 @@ public:
 	void Resetup(uint32 Max)
 	{
 		if(Max < _max)
-			return;		// no need to realloc
+			return; // no need to realloc
 
-        T ** a = new T*[Max];
+		T ** a = new T*[Max];
 		memset(a,0,sizeof(T*)*Max);
 		memcpy(a, _array, sizeof(T*) * _max);
 		delete [] _array;
@@ -475,7 +475,7 @@ public:
 	virtual void Cleanup()
 	{
 		printf("Deleting database cache of `%s`...\n", _indexName);
-        StorageContainerIterator<T> * itr = _storage.MakeIterator();
+		StorageContainerIterator<T> * itr = _storage.MakeIterator();
 		while(!itr->AtEnd())
 		{
 			FreeBlock(itr->Get());
@@ -498,7 +498,7 @@ public:
 		{
 			switch(*p)
 			{
-			case 's':	// string is the only one we have to actually do anything for here
+			case 's': // string is the only one we have to actually do anything for here
 					free((*(char**)structpointer));
 					structpointer += sizeof(char*);
 				break;
@@ -537,45 +537,49 @@ public:
 		Field * f = fields;
 		for(; *p != 0; ++p, ++f)
 		{
-            switch(*p)
+			switch(*p)
 			{
-			case 'b':	// Boolean
-				*(bool*)&structpointer[offset] = f->GetBool();
-				offset += sizeof(bool);
-				break;
+			case 'b': // Boolean
+				{
+					*(bool*)&structpointer[offset] = f->GetBool();
+					offset += sizeof(bool);
+				}break;
 
-			case 'c':	// Char
-				*(uint8*)&structpointer[offset] = f->GetUInt8();
-				offset += sizeof(uint8);
-				break;
+			case 'c': // Char
+				{
+					*(uint8*)&structpointer[offset] = f->GetUInt8();
+					offset += sizeof(uint8);
+				}break;
 
-			case 'h':	// Short
-				*(uint16*)&structpointer[offset] = f->GetUInt16();
-				offset += sizeof(uint16);
-				break;
+			case 'h': // Short
+				{
+					*(uint16*)&structpointer[offset] = f->GetUInt16();
+					offset += sizeof(uint16);
+				}break;
 
-			case 'u':	// Unsigned integer
-				*(uint32*)&structpointer[offset] = f->GetUInt32();
-				offset += sizeof(uint32);
-				break;
+			case 'u': // Unsigned integer
+				{
+					*(uint32*)&structpointer[offset] = f->GetUInt32();
+					offset += sizeof(uint32);
+				}break;
 
-			case 'i':	// Signed integer
-				*(int32*)&structpointer[offset] = f->GetInt32();
-				offset += sizeof(int32);
-				break;
+			case 'i': // Signed integer
+				{
+					*(int32*)&structpointer[offset] = f->GetInt32();
+					offset += sizeof(int32);
+				}break;
 
-			case 'f':	// Float
-				*(float*)&structpointer[offset] = f->GetFloat();
-				offset += sizeof(float);
-				break;
+			case 'f': // Float
+				{
+					*(float*)&structpointer[offset] = f->GetFloat();
+					offset += sizeof(float);
+				}break;
 
-			case 's':	// Null-terminated string
-				if( reload )
-					free( *(char**)&structpointer[offset] );
-
-				*(char**)&structpointer[offset] = strdup(f->GetString());
-				offset += sizeof(char*);
-				break;
+			case 's': // Null-terminated string
+				{
+					*(char**)&structpointer[offset] = strdup(f->GetString());
+					offset += sizeof(char*);
+				}break;
 
 			case 'x':	// Skip
 				break;

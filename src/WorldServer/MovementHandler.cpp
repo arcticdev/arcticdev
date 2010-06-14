@@ -793,7 +793,6 @@ void WorldSession::HandleMoveFallResetOpcode(WorldPacket & recvPacket)
 
 void MovementInfo::init(WorldPacket & data)
 {
-	unk13 = 0;
 	data >> flags >> flag16 >> time;
 	data >> x >> y >> z >> orientation;
 
@@ -823,11 +822,11 @@ void MovementInfo::init(WorldPacket & data)
 
 	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
 	{
-		data >> jumpspeed >> jump_sinAngle >> jump_cosAngle >> jump_xySpeed;
+		data >> jump_velocity >> jump_sinAngle >> jump_cosAngle >> jump_xySpeed;
 	}
 	if (flags & MOVEFLAG_SPLINE_MOVER)
 	{
-		data >> spline_unk;
+		data >> spline;
 	}
 }
 
@@ -837,26 +836,23 @@ void MovementInfo::write(WorldPacket & data)
 
 	data << x << y << z << orientation;
 
-	if (flags & MOVEFLAG_TAXI)
+	if(flags & MOVEFLAG_TAXI)
 	{
 		data << transGuid << transX << transY << transZ << transO << transTime << transSeat;
 	}
-	if (flags & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING) || flag16 & 0x20)
+	if(flags & (MOVEFLAG_SWIMMING | MOVEFLAG_AIR_SWIMMING) || flag16 & 0x20)
 	{
 		data << pitch;
 	}
 
 	data << FallTime;
 
-	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
+	if(flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
 	{
-		data << jumpspeed << jump_sinAngle << jump_cosAngle << jump_xySpeed;
+		data << jump_velocity << jump_sinAngle << jump_cosAngle << jump_xySpeed;
 	}
-	if (flags & MOVEFLAG_SPLINE_MOVER)
+	if(flags & MOVEFLAG_SPLINE_MOVER)
 	{
-		data << spline_unk;
+		data << spline;
 	}
-
-	if(unk13)
-		data << unk13;
 }

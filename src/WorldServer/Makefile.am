@@ -83,8 +83,8 @@ bin_PROGRAMS = WorldServer
     GuildHandler.cpp \
     HonorHandler.cpp \
     HonorHandler.h \
-    IslesOfConquest.cpp \
-    IslesOfConquest.h \ 
+    IsleOfConquest.cpp \
+    IsleOfConquest.h \ 
     Item.cpp \
     Item.h \
     ItemHandler.cpp \

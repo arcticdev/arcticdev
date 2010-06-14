@@ -40,10 +40,10 @@ class ARCTIC_DECL DayWatcherThread : public Singleton<DayWatcherThread>, public 
 	bool m_threadRunning;
 	bool m_busy;
 	bool m_dirty;
-	bool m_heroic_reset;
 	bool _loaded;
 	bool runEvents;
-	bool _firstrun[1];
+	bool _firstrun[2];
+	bool m_heroic_reset;
 
 	static const time_t timeout = 120; /* check every 2 minutes */
 	time_t currenttime;

@@ -7,8 +7,8 @@
 #ifndef _RAYINTERSECTIONITERATOR_H
 #define _RAYINTERSECTIONITERATOR_H
 
-#include <Collision/g3dlite/G3D/CollisionDetection.h>
-#include <Collision/g3dlite/G3D/AABox.h>
+#include "../g3dlite/G3D/CollisionDetection.h"
+#include "../g3dlite/G3D/AABox.h"
 
 #include "NodeValueAccess.h"
 
@@ -249,18 +249,18 @@ namespace VMAP
 			int debugCounter;
 
 		private:
-			Ray				ray;
-			Ray				reverseRay;
+			Ray					ray;
+			Ray					reverseRay;
 			bool				isEnd;
 
-			Array<StackFrame>   stack;
-			int				stackLength;
-			int				stackIndex;
-			int				breakFrameIndex;
+			Array<StackFrame>	stack;
+			int					stackLength;
+			int					stackIndex;
+			int					breakFrameIndex;
 			bool				skipAABoxTests;
 			NodeValueAccess<TNode, TValue> iNodeValueAccess;
-			double			boxMaxDist2;
-			double			boxMaxDist;
+			double				boxMaxDist2;
+			double				boxMaxDist;
 
 		public:
 			RayIntersectionIterator(const NodeValueAccess<TNode, TValue> pNodeValueAccess, const Ray& r, const TNode* root,  double pMaxTime, bool skip)
