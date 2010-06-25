@@ -1,7 +1,0 @@
-/*
- * Arctic MMORPG Server Software
- * Copyright (c) 2008-2010 Arctic Server Team
- * See COPYING for license details.
- */
-
-IDI_APPICON ICON DISCARDABLE "../libs/icon.ico"
