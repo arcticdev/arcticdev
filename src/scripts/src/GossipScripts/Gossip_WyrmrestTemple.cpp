@@ -1,6 +1,6 @@
 /*
  * FrozenThrone Scripts
- * Copyright (C) 2008-2009 FrozenThrone Shard <http://www.dowlee.it/ft>
+ * Copyright (C) 2008-2010 FrozenThrone Shard <http://www.dowlee.it/ft>
  */
 
 #include "StdAfx.h"

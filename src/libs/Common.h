@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2009 Arctic Server Team
+ * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -163,14 +163,6 @@ enum MsTimeVariables
 #define ARCH "X86"
 #endif
 
-/*#if COMPILER == COMPILER_MICROSOFT
-#  pragma warning( disable : 4267 ) // conversion from 'size_t' to 'int', possible loss of data
-#  pragma warning( disable : 4311 ) // 'type cast': pointer truncation from HMODULE to uint32
-#  pragma warning( disable : 4786 ) // identifier was truncated to '255' characters in the debug information
-#  pragma warning( disable : 4146 )
-#  pragma warning( disable : 4800 )
-#endif*/
-
 #if PLATFORM == PLATFORM_WIN32
 #define STRCASECMP stricmp
 #else
@@ -220,7 +212,6 @@ enum MsTimeVariables
 					   + __GNUC_PATCHLEVEL__)
 #endif
 
-
 #ifndef WIN32
 #ifndef X64
 #  if defined (__GNUC__)
@@ -250,7 +241,7 @@ enum MsTimeVariables
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
 #include <ext/hash_map>
 #include <ext/hash_set>
-#elif COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1500 && _HAS_TR1   // VC9.0 SP1 and later
+#elif COMPILER == COMPILER_MICROSOFT && _MSC_VER >= 1500 && _HAS_TR1 // VC9.0 SP1 and later
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>

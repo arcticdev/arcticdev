@@ -1,4 +1,6 @@
-##### http://autoconf-archive.cryp.to/acx_pthread.html
+# ===========================================================================
+#            http://autoconf-archive.cryp.to/acx_pthread.html
+# ===========================================================================
 #
 # SYNOPSIS
 #

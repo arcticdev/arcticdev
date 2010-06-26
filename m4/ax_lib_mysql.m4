@@ -1,4 +1,6 @@
-##### http://autoconf-archive.cryp.to/ax_lib_mysql.html
+# ===========================================================================
+#          http://www.nongnu.org/autoconf-archive/ax_lib_mysql.html
+# ===========================================================================
 #
 # SYNOPSIS
 #
@@ -6,19 +8,18 @@
 #
 # DESCRIPTION
 #
-#   This macro provides tests of availability of MySQL client library
-#   of particular version or newer.
+#   This macro provides tests of availability of MySQL client library of
+#   particular version or newer.
 #
-#   AX_LIB_MYSQL macro takes only one argument which is optional. If
-#   there is no required version passed, then macro does not run
-#   version test.
+#   AX_LIB_MYSQL macro takes only one argument which is optional. If there
+#   is no required version passed, then macro does not run version test.
 #
 #   The --with-mysql option takes one of three possible values:
 #
 #   no - do not check for MySQL client library
 #
-#   yes - do check for MySQL library in standard locations
-#   (mysql_config should be in the PATH)
+#   yes - do check for MySQL library in standard locations (mysql_config
+#   should be in the PATH)
 #
 #   path - complete path to mysql_config utility, use this option if
 #   mysql_config can't be found in the PATH
@@ -33,17 +34,13 @@
 #
 #     HAVE_MYSQL
 #
-# LAST MODIFICATION
+# LICENSE
 #
-#   2006-07-16
+#   Copyright (c) 2008 Mateusz Loskot <mateusz@loskot.net>
 #
-# COPYLEFT
-#
-#   Copyright (c) 2006 Mateusz Loskot <mateusz@loskot.net>
-#
-#   Copying and distribution of this file, with or without
-#   modification, are permitted in any medium without royalty provided
-#   the copyright notice and this notice are preserved.
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved.
 
 AC_DEFUN([AX_LIB_MYSQL],
 [

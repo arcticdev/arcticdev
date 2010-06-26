@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2009 Arctic Server Team
+ * Copyright (c) 2008-2010 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -52,8 +52,8 @@ public:
 	void SocketDisconnected();
 	void OnRead(WorldPacket* pck);
 
-	HEARTHSTONE_INLINE uint32 GetVoiceServerIP() { return ip; }
-	HEARTHSTONE_INLINE uint16 GetVoiceServerPort() { return port; }
+	ARCTIC_INLINE uint32 GetVoiceServerIP() { return ip; }
+	ARCTIC_INLINE uint16 GetVoiceServerPort() { return port; }
 	void CreateVoiceChannel(Channel * chn);
 	void DestroyVoiceChannel(Channel * chn);
 	bool CanCreateVoiceChannel(Channel * chn);

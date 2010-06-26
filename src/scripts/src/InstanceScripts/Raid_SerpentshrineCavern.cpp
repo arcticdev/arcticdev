@@ -2,7 +2,7 @@
  * Sun++ Scripts for Aspire MMORPG Server
  * Copyright (C) 2005-2007 Ascent Team <http://www.ascentemu.com/>
  * Copyright (C) 2007-2008 Moon++ Team <http://www.moonplusplus.info/>
- * Copyright (C) 2008-2009 Sun++ Team <http://www.sunscripting.com/>
+ * Copyright (C) 2008-2010 Sun++ Team <http://www.sunscripting.com/>
  * Copyright (C) 2008 Sun++ Team <http://www.sunplusplus.info/>
  *
  * This program is free software: you can redistribute it and/or modify
