@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="WS Interface">
+      <UniqueIdentifier>{5aa4207d-2dfa-43f6-9fd2-d4121e83bbab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client Handlers">
+      <UniqueIdentifier>{c3ebbeb4-7403-408c-b3d3-f378e657fd09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Caching">
+      <UniqueIdentifier>{45246f5f-7eeb-47e2-adf2-7288377b0915}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Console">
+      <UniqueIdentifier>{51888b0d-a6eb-4ca4-a74e-e0ee06112831}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\AuthServer\LogonCommServer.cpp">
+      <Filter>WS Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AuthServer\LogonOpcodes.cpp">
+      <Filter>WS Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AuthServer\AuthSocket.cpp">
+      <Filter>Client Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AuthServer\AutoPatcher.cpp">
+      <Filter>Client Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AuthServer\AccountCache.cpp">
+      <Filter>Caching</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AuthServer\LogonConsole.cpp">
+      <Filter>Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\AuthServer\LogonStdAfx.cpp" />
+    <ClCompile Include="..\..\src\AuthServer\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\AuthServer\LogonCommServer.h">
+      <Filter>WS Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\LogonOpcodes.h">
+      <Filter>WS Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\AuthSocket.h">
+      <Filter>Client Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\AuthStructs.h">
+      <Filter>Client Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\AutoPatcher.h">
+      <Filter>Client Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\AccountCache.h">
+      <Filter>Caching</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\LogonConsole.h">
+      <Filter>Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\AuthServer\LogonStdAfx.h" />
+    <ClInclude Include="..\..\src\AuthServer\Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\libs\icon.rc" />
+  </ItemGroup>
+</Project>
