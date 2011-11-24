@@ -105,7 +105,8 @@ void Player::Init()
 	Lfgcomment = "";
 	m_flyHackChances = 5;
 
-	for(int i = 0; i < 3; i++)
+	int i;
+	for(i = 0; i < 3; i++)
 	{
 		LfgType[i] = 0;
 		LfgDungeonId[i] = 0;
@@ -116,17 +117,14 @@ void Player::Init()
 	LfmDungeonId = 0;
 	LfmType = 0;
 
-	for(int32 i = 0; i < NUM_MECHANIC; i++)
-	{
+	for(i = 0; i < NUM_MECHANIC; i++)
 		MechanicDurationPctMod[i] = 1.0f;
-	}
 
 	m_invitersGuid = 0;
 
 	m_currentMovement = MOVE_UNROOT;
 	m_isGmInvisible = false;
 
-	// DK
 	m_invitersGuid = 0;
 
 	// Trade
@@ -142,12 +140,8 @@ void Player::Init()
 	// WayPoint
 	waypointunit = NULL;
 
-	// PVP
-	// PvPTimeoutEnabled = false;
-
 	//Tutorials
-	for ( int aX = 0 ; aX < 8 ; aX++ )
-		m_Tutorials[ aX ] = 0x00;
+	memset(m_Tutorials, 0x00, sizeof(uint32)*8);
 
 	m_lootGuid = 0;
 	m_banned = false;
@@ -177,7 +171,7 @@ void Player::Init()
 	m_bgEntryPointY = 0;
 	m_bgEntryPointZ = 0;
 	m_bgEntryPointO = 0;
-	for(uint32 i = 0; i < 3; ++i)
+	for(i = 0; i < 3; ++i)
 	{
 		m_bgQueueType[i] = 0;
 		m_bgQueueInstanceId[i] = 0;
@@ -190,7 +184,6 @@ void Player::Init()
 	m_bgEntryPointInstance = 0;
 
 	// gm stuff
-	// m_invincible = false;
 	bGMTagOn = false;
 	CooldownCheat = false;
 	CastTimeCheat = false;
@@ -231,28 +224,29 @@ void Player::Init()
 
 	m_GM_SelectedGO = NULL;
 
-	for(uint32 x = 0; x < 7; x++)
+	for(i = 0; i < 7; i++)
 	{
-		FlatResistanceModifierPos[x] = 0;
-		FlatResistanceModifierNeg[x] = 0;
-		BaseResistanceModPctPos[x] = 0;
-		BaseResistanceModPctNeg[x] = 0; 
-		ResistanceModPctPos[x] = 0;
-		ResistanceModPctNeg[x] = 0;
-		SpellDelayResist[x] = 0;
-		m_casted_amount[x] = 0;
+		FlatResistanceModifierPos[i] = 0;
+		FlatResistanceModifierNeg[i] = 0;
+		BaseResistanceModPctPos[i] = 0;
+		BaseResistanceModPctNeg[i] = 0; 
+		ResistanceModPctPos[i] = 0;
+		ResistanceModPctNeg[i] = 0;
+		SpellDelayResist[i] = 0;
+		m_casted_amount[i] = 0;
 	} 
 
-	for(uint32 a = 0; a < 6; a++)
+	int x;
+	for(i = 0; i < 6; i++)
 	{
-		for(uint32 x = 0; x < 7; x++)
+		for(x = 0; x < 7; x++)
 		{	
-			SpellDmgDoneByAttribute[a][x] = 0;
-			SpellHealDoneByAttribute[a][x] = 0;
+			SpellDmgDoneByAttribute[i][x] = 0;
+			SpellHealDoneByAttribute[i][x] = 0;
 		}
 	}
 
-	for(uint32 x = 0; x < 5; x++)
+	for(x = 0; x < 5; x++)
 	{
 		FlatStatModPos[x] = 0;
 		FlatStatModNeg[x] = 0;
@@ -262,7 +256,7 @@ void Player::Init()
 		TotalStatModPctNeg[x] = 0;
 	}
 
-	for(uint32 x = 0; x < 12; x++)
+	for(x = 0; x < 12; x++)
 	{
 		IncreaseDamageByType[x] = 0;
 		IncreaseDamageByTypePCT[x] = 0;
@@ -278,7 +272,7 @@ void Player::Init()
 	m_CurrentCharm = NULL;
 	m_CurrentTransporter = NULL;
 	m_SummonedObject = NULL;
-	m_currentLoot = (uint64)NULL;
+	m_currentLoot = 0;
 	pctReputationMod = 0;
 	roll = 0;
 	mUpdateCount = 0;
@@ -286,11 +280,10 @@ void Player::Init()
 	bCreationBuffer.reserve(40000);
 	bUpdateBuffer.reserve(30000); // ought to be > than enough ;)
 	mOutOfRangeIds.reserve(1000);
-	mOutOfRangeIdCount	  = 0;
+	mOutOfRangeIdCount = 0;
 
 	bProcessPending = false;
-	for(int i = 0; i < 25; ++i)
-		m_questlog[i] = NULL;
+	memset(m_questlog, NULL, sizeof(QuestLogEntry*)*25);
 
 	CurrentGossipMenu = NULL;
 
@@ -342,18 +335,17 @@ void Player::Init()
 
 	UpdateLastSpeeds();
 
-	m_resist_critical[0] = m_resist_critical[1] = 0;
+	m_resist_critical[0] = 0;
+	m_resist_critical[1] = 0;
 	m_castFilterEnabled = false;
 
-	m_resist_critical[0] = m_resist_critical[1] = 0;
-	m_castFilterEnabled = false;
-	for (uint32 x = 0; x < 3 ; x++)
+	for (x = 0; x <3; x++)
 	{
 		m_resist_hit[x] = 0;
 		m_skipCastCheck[x] = 0;
 		m_castFilter[x] = 0;
 	}
-	for(int i = 0; i < 6; ++i)
+	for(i = 0; i < 6; ++i)
 	{
 		m_runes[i] = baseRunes[i];
 	}
@@ -366,7 +358,7 @@ void Player::Init()
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
 
-	for(int i = 0; i < 6; ++i)
+	for(i = 0; i < 6; i++)
 		m_runes[i] = baseRunes[i];
 
 	ok_to_remove = false;
@@ -380,13 +372,14 @@ void Player::Init()
 	m_rap_mod_pct = 0;
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
-	m_summoner = m_summonInstanceId = m_summonMapId = 0;
+	m_summoner = 0;
+	m_summonInstanceId= 0;
+	m_summonMapId = 0;
 	m_lastMoveType = 0;
 	m_tempSummon = NULL;
 	m_spellcomboPoints = 0;
 
-	for(uint8 i = 0; i < 3 ; ++i)
-		m_pendingBattleground[i] = NULL;
+	memset(m_pendingBattleground, NULLBATTLEGROUND, sizeof(CBattleground*)*3);
 
 	m_deathVision = false;
 	m_retainComboPoints = false;
@@ -404,8 +397,8 @@ void Player::Init()
 	m_honorRolloverTime = 0;
 	hearth_of_wild_pct = 0;
 	raidgrouponlysent = false;
-	m_waterwalk=false;
-	m_setwaterwalk=false;
+	m_waterwalk = false;
+	m_setwaterwalk = false;
 	m_areaSpiritHealer_guid = 0;
 	m_CurrentTaxiPath = NULL;
 	m_setflycheat = false;
@@ -463,7 +456,7 @@ void Player::Init()
 	m_visibleObjects.clear();
 	mSpells.clear();
 
-	for(uint32 i = 0; i < 21; ++i)
+	for(i = 0; i < 21; i++)
 		m_WeaponSubClassDamagePct[i] = 1.0f;
 
 	Unit::Init();
@@ -12062,8 +12055,7 @@ void Player::GenerateLoot(Corpse* pCorpse)
 	pCorpse->ClearLoot();
 	pCorpse->m_loot.gold = 500;
 		
-	if( m_bg != NULL )
-		m_bg->HookGenerateLoot(TO_PLAYER(this), pCorpse);
+	m_bg->HookGenerateLoot(TO_PLAYER(this), pCorpse);
 }
 
 uint32 Player::GetMaxPersonalRating()
@@ -12160,10 +12152,7 @@ void Player::CheckSpellUniqueTargets(SpellEntry *sp, uint64 guid)
 
 bool Player::HasBattlegroundQueueSlot()
 {
-	if( m_bgIsQueued[0] &&  m_bgIsQueued[1] && m_bgIsQueued[2] )
-		return false;
-
-	return true;
+	return !(m_bgIsQueued[0] &&  m_bgIsQueued[1] && m_bgIsQueued[2]);
 }
 
 uint32 Player::GetBGQueueSlot()

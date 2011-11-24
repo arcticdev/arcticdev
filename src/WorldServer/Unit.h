@@ -1335,7 +1335,7 @@ protected:
 
 	uint32 m_charmtemp;
 
-	std::map<uint32, SpellEntry*> m_DummyAuras;
+	HM_NAMESPACE::hash_map<uint32, SpellEntry*> m_DummyAuras;
 };
 
 #endif
