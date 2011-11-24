@@ -506,8 +506,9 @@ protected:
 	bool HandleQuestSpawnCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStartCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStatusCommand(const char * args, WorldSession * m_session);
+	bool HandleResetDailiesCommand( const char *args ,WorldSession *m_session );
 
-	/** AI AGENT DEBUG COMMANDS */
+	/* ai agent debug commands */
 	bool HandleAIAgentDebugBegin(const char * args, WorldSession * m_session);
 	bool HandleAIAgentDebugContinue(const char * args, WorldSession * m_session);
 	bool HandleAIAgentDebugSkip(const char * args, WorldSession * m_session);

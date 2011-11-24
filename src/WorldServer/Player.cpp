@@ -140,7 +140,7 @@ void Player::Init()
 	// WayPoint
 	waypointunit = NULL;
 
-	//Tutorials
+	// Tutorials
 	memset(m_Tutorials, 0x00, sizeof(uint32)*8);
 
 	m_lootGuid = 0;
@@ -167,7 +167,7 @@ void Player::Init()
 
 	// Battleground
 	m_bgEntryPointMap = 0;
-	m_bgEntryPointX = 0;	
+	m_bgEntryPointX = 0;
 	m_bgEntryPointY = 0;
 	m_bgEntryPointZ = 0;
 	m_bgEntryPointO = 0;
@@ -373,7 +373,7 @@ void Player::Init()
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
 	m_summoner = 0;
-	m_summonInstanceId= 0;
+	m_summonInstanceId = 0;
 	m_summonMapId = 0;
 	m_lastMoveType = 0;
 	m_tempSummon = NULL;
