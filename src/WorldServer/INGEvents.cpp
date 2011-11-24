@@ -294,7 +294,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 
 	/* delete objects in pending respawn state */
 	Object* pObject;
-	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
+	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); itr++)
 	{
 		pObject = *itr;
 		if(!pObject)

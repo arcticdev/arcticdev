@@ -64,7 +64,7 @@ void AccountMgr::ReloadAccounts(bool silent)
 	for(; itr != AccountDatabase.end();)
 	{
 		it2 = itr;
-		++itr;
+		itr++;
 
 		if(account_list.find(it2->first) == account_list.end())
 		{
@@ -339,7 +339,7 @@ bool IPBanner::Add(const char * ip, uint32 dur)
 bool IPBanner::Remove(const char * ip)
 {
 	listBusy.Acquire();
-	for(list<IPBan>::iterator itr = banList.begin(); itr != banList.end(); ++itr)
+	for(list<IPBan>::iterator itr = banList.begin(); itr != banList.end(); itr++)
 	{
 		if( !strcmp(ip, itr->db_ip.c_str()) )
 		{
@@ -420,7 +420,7 @@ Realm * InformationCore::GetRealm(uint32 realm_id)
 int32 InformationCore::GetRealmIdByName(string Name)
 {
 	map<uint32, Realm*>::iterator itr = m_realms.begin();
-	for(; itr != m_realms.end(); ++itr)
+	for(; itr != m_realms.end(); itr++)
 		if (itr->second->Name == Name)
 		{
 			return itr->first;
@@ -469,7 +469,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	// loop realms :/
 	map<uint32, Realm*>::iterator itr = m_realms.begin();
 	HM_NAMESPACE::hash_map<uint32, uint8>::iterator it;
-	for(; itr != m_realms.end(); ++itr)
+	for(; itr != m_realms.end(); itr++)
 	{
 		data << itr->second->Icon;
 		data << uint8(0);		// delete when using data << itr->second->Lock;
@@ -515,7 +515,7 @@ void InformationCore::TimeoutSockets()
 	{
 		s = *itr;
 		it2 = itr;
-		++itr;
+		itr++;
 
 		if(!s->removed && (t - s->last_ping) > 60)
 		{
@@ -565,7 +565,7 @@ void InformationCore::CheckServers()
 	{
 		s = *itr;
 		it2 = itr;
-		++itr;
+		itr++;
 
 		if(!IsServerAllowed(s->GetRemoteAddress().s_addr))
 		{

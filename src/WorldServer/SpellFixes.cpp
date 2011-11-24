@@ -7447,7 +7447,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupRow(x);
 		ApplySingleSpellFixes(sp);
 	}
-	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); ++itr)
+	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); itr++)
 		ApplySingleSpellFixes(*itr);
 
 

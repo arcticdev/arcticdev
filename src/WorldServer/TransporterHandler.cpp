@@ -335,7 +335,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 		for(; itr != mPassengers.end();)
 		{
 			it2 = itr;
-			++itr;
+			itr++;
 
 			Player* plr = objmgr.GetPlayer(it2->first);
 			if(!plr)
@@ -399,7 +399,7 @@ Transporter::~Transporter()
 {
 sEventMgr.RemoveEvents(this);
 
-	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
+	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); itr++)
 	{
 		if(itr->second->GetTypeId()==TYPEID_UNIT)
 			delete TO_CREATURE( itr->second )->m_transportPosition;
@@ -497,7 +497,7 @@ uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* ta
 	uint32 cnt = Object::BuildCreateUpdateBlockForPlayer(data, target);
 
 	// add all the npcs to the packet
-	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
+	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); itr++)
 	{
 		LocationVector v_offset = GetPosition();
 		v_offset.x = v_offset.x + TO_CREATURE(itr->second)->m_transportPosition->x;

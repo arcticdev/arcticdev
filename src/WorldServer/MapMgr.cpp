@@ -127,7 +127,7 @@ MapMgr::~MapMgr()
 	}
 
 	Object* pObject;
-	for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
+	for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); itr++)
 	{
 		pObject = *itr;
 		if(!pObject)
@@ -156,7 +156,7 @@ MapMgr::~MapMgr()
 	_mapWideStaticObjects.clear();
 
 	Corpse* pCorpse;
-	for(unordered_set<Corpse* >::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
+	for(unordered_set<Corpse* >::iterator itr = m_corpses.begin(); itr != m_corpses.end(); itr++)
 	{
 		pCorpse = *itr;
 		if(!pCorpse)
@@ -388,7 +388,7 @@ void MapMgr::PushObject(Object* obj)
 		/* Add the map wide objects */
 		if(_mapWideStaticObjects.size())
 		{
-			for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
+			for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); itr++)
 			{
 				count = (*itr)->BuildCreateUpdateBlockForPlayer(&m_createBuffer, plObj);
 				plObj->PushCreationData(&m_createBuffer, count);
@@ -573,7 +573,7 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 		m_PlayerStorage.erase( TO_PLAYER( obj )->GetLowGUID() );
 
 		// Remove the session from our set if it is a player.
-		for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
+		for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); itr++)
 		{
 			plObj->PushOutOfRange((*itr)->GetNewGUID());
 		}
@@ -1080,7 +1080,7 @@ void MapMgr::_UpdateObjects()
 					for(itr = it_start; itr != it_end;)
 					{
 						lplr = *itr;
-						++itr;
+						itr++;
 						// Make sure that the target player can see us.
 						if( lplr != NULL && lplr->GetTypeId() == TYPEID_PLAYER && lplr->IsVisible( pObj ) )
 							lplr->PushUpdateData( &m_updateBuffer, count );
@@ -1091,12 +1091,9 @@ void MapMgr::_UpdateObjects()
 		}
 		pObj->ClearUpdateMask();
 	}
-	//_updates.clear();
-	//m_updateMutex.Release();
-	
+
 	// generate pending a9packets and send to clients.
 	Player* plyr;
-	m_updateMutex.Acquire();
 	for(it = _processQueue.begin(); it != _processQueue.end();)
 	{
 		plyr = *it;
@@ -1106,7 +1103,6 @@ void MapMgr::_UpdateObjects()
 		if(plyr->GetMapMgr() == this)
 			plyr->ProcessPendingUpdates(&m_updateBuildBuffer, &m_compressionBuffer);
 	}
-	m_updateMutex.Release();
 }
 void MapMgr::LoadAllCells()
 {
@@ -1289,7 +1285,7 @@ void MapMgr::ChangeFarsightLocation(Player* plr, Unit* farsight, bool apply)
 	{
 		// We're clearing.
 		for(ObjectSet::iterator itr = plr->m_visibleFarsightObjects.begin(); itr != plr->m_visibleFarsightObjects.end();
-			++itr)
+			itr++)
 		{
 			// Send destroy
 			plr->PushOutOfRange((*itr)->GetNewGUID());
@@ -1343,7 +1339,7 @@ void MapMgr::ChangeFarsightLocation(Player* plr, float X, float Y, bool apply)
 	{
 		// We're clearing.
 		for(ObjectSet::iterator itr = plr->m_visibleFarsightObjects.begin(); itr != plr->m_visibleFarsightObjects.end();
-			++itr)
+			itr++)
 		{
 			// Send destroy
 			plr->PushOutOfRange((*itr)->GetNewGUID());
@@ -1412,7 +1408,7 @@ bool MapMgr::Do()
 	LoadInstanceScript();
 
 	/* create static objects */
-	for(GOSpawnList::iterator itr = _map->staticSpawns.GOSpawns.begin(); itr != _map->staticSpawns.GOSpawns.end(); ++itr)
+	for(GOSpawnList::iterator itr = _map->staticSpawns.GOSpawns.begin(); itr != _map->staticSpawns.GOSpawns.end(); itr++)
 	{
 		GameObject* obj = CreateGameObject((*itr)->entry);
 		if(obj == NULL)
@@ -1421,7 +1417,7 @@ bool MapMgr::Do()
 		_mapWideStaticObjects.insert(obj);
 	}
 
-	for(CreatureSpawnList::iterator itr = _map->staticSpawns.CreatureSpawns.begin(); itr != _map->staticSpawns.CreatureSpawns.end(); ++itr)
+	for(CreatureSpawnList::iterator itr = _map->staticSpawns.CreatureSpawns.begin(); itr != _map->staticSpawns.CreatureSpawns.end(); itr++)
 	{
 		Creature* obj = NULL;
 		obj = CreateCreature((*itr)->entry);
@@ -1433,7 +1429,7 @@ bool MapMgr::Do()
 	}
 
 	/* add static objects */
-	for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); ++itr)
+	for(set<Object* >::iterator itr = _mapWideStaticObjects.begin(); itr != _mapWideStaticObjects.end(); itr++)
 		PushStaticObject(*itr);
 
 	/* load corpses */
@@ -1713,7 +1709,7 @@ void MapMgr::_PerformObjectDuties()
 		{
 			MapSession = (*itr);
 			it2 = itr;
-			++itr;
+			itr++;
 
 			//we have teleported to another map, remove us here.
 			if(MapSession->GetInstance() != m_instanceID)

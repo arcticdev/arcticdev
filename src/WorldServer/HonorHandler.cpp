@@ -99,7 +99,7 @@ void HonorHandler::OnPlayerKilledUnit( Player* pPlayer, Unit* pVictim )
 			pPlayer->m_bg->Lock();
 			set<Player*  > * s = &pPlayer->m_bg->m_players[t];
 
-			for(set<Player*  >::iterator itr = s->begin(); itr != s->end(); ++itr)
+			for(set<Player*  >::iterator itr = s->begin(); itr != s->end(); itr++)
 			{
 				if((*itr) == pPlayer || (*itr)->isInRange(pPlayer,40.0f))
 					toadd.push_back(*itr);

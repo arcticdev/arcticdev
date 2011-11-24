@@ -777,11 +777,11 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 	{
 		if(!itr->second)
 		{
-			++itr;
+			itr++;
 			continue;
 		}
 		sstext << "guid: " << itr->first->GetGUID() << " | threat: " << itr->second << "| threat after mod: " << (itr->second + itr->first->GetThreatModifier()) << "\n";
-		++itr;
+		itr++;
 	}
 
 	SendMultilineMessage(m_session, sstext.str().c_str());

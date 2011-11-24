@@ -110,9 +110,9 @@ public:
 	{
 
 #ifdef WIN32
-		for(HM_NAMESPACE::hash_map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
+		for(HM_NAMESPACE::hash_map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); itr++)
 #else
-		for(map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
+		for(map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); itr++)
 #endif
 		{
 			delete itr->second;

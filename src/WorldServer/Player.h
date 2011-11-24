@@ -1188,7 +1188,6 @@ public:
 	ARCTIC_INLINE void         ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
 	// item interface variables
 	ItemInterface *     m_ItemInterface;
-	void EventCheckCurrencies();
 
 	ARCTIC_INLINE AchievementInterface* GetAchievementInterface() { return m_achievementInterface; }
 	AchievementInterface * m_achievementInterface;

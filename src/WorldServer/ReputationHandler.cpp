@@ -412,7 +412,7 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 	Unit* pUnit;
 	bool rep_value;
 	bool enemy_current;
-	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
+	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++ )
 	{
 		if( (*itr)->GetTypeId() != TYPEID_UNIT )
 			continue;
@@ -460,7 +460,7 @@ void Player::Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop)
 	if(modifier != 0)
 	{
 		// Apply this data.
-		for(vector<ReputationMod>::iterator itr = modifier->mods.begin(); itr != modifier->mods.end(); ++itr)
+		for(vector<ReputationMod>::iterator itr = modifier->mods.begin(); itr != modifier->mods.end(); itr++)
 		{
 			if(!(*itr).faction[team])
 				continue;

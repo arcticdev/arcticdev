@@ -243,7 +243,7 @@ bool IsleOfConquest::HookHandleRepop(Player* plr)
 
 	/*if(m_started)
 	{
-		for(x = 0; x < IOC_NUM_CONTROL_POINTS; ++x)
+		for(x = 0; x < IOC_NUM_CONTROL_POINTS; x++)
 		{
 			// skip non-graveyards
 			if( !m_nodes[x]->m_template->m_isGraveyard )
@@ -841,13 +841,13 @@ LocationVector IsleOfConquest::GetStartingCoords(uint32 Team)
 void IsleOfConquest::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	// open gates
-	/*for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	/*for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -939,7 +939,7 @@ void IsleOfConquest::Finish(uint32 losingTeam)
 	SpellEntry * loser_spell = dbcSpell.LookupEntry(24954);
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
 			(*itr)->Root();
 

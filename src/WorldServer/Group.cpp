@@ -99,7 +99,7 @@ bool SubGroup::AddPlayer(PlayerInfo * info)
 
 bool SubGroup::HasMember(uint32 guid)
 {
-	for( GroupMembersSet::iterator itr = m_GroupMembers.begin(); itr != m_GroupMembers.end(); ++itr )
+	for( GroupMembersSet::iterator itr = m_GroupMembers.begin(); itr != m_GroupMembers.end(); itr++ )
 		if( (*itr) != NULL )
 			if( (*itr)->guid == guid )
 				return true;
@@ -361,8 +361,7 @@ void Group::Disband()
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
 
-	uint32 i = 0;
-	for(i = 0; i < m_SubGroupCount; i++)
+	for(uint32 i = 0; i < m_SubGroupCount; i++)
 	{
 		SubGroup *sg = m_SubGroups[i];
 		sg->Disband();
@@ -370,7 +369,7 @@ void Group::Disband()
 
 	m_groupLock.Release();
 	CharacterDatabase.Execute("DELETE FROM groups WHERE group_id = %u", m_Id);
-	delete this;	// destroy ourselves, the destructor removes from eventmgr and objectmgr.
+	delete this; // destroy ourselves, the destructor removes from eventmgr and objectmgr.
 }
 
 void SubGroup::Disband()
@@ -408,7 +407,7 @@ void SubGroup::Disband()
 
 		m_Parent->m_MemberCount--;
 		it2 = itr;
-		++itr;
+		itr++;
 
 		m_GroupMembers.erase(it2);
 	}
@@ -426,7 +425,7 @@ Player* Group::FindFirstPlayer()
 	{
 		if( m_SubGroups[i] != NULL )
 		{
-			for( itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr )
+			for( itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); itr++ )
 			{
 				if( (*itr) != NULL && (*itr)->m_loggedInPlayer != NULL )
 					return (*itr)->m_loggedInPlayer;
@@ -581,7 +580,7 @@ void Group::SendPacketToAllButOne(WorldPacket *packet, Player* pSkipTarget)
 	Guard mGuard(m_groupLock);
 	for(uint32 i = 0; i < m_SubGroupCount; i++)
 	{
-		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
+		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); itr++)
 		{
 			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget)
 				(*itr)->m_loggedInPlayer->GetSession()->SendPacket(packet);
@@ -596,7 +595,7 @@ void Group::SendPacketToAllButOne(StackPacket *packet, Player* pSkipTarget)
 	Guard mGuard(m_groupLock);
 	for(uint32 i = 0; i < m_SubGroupCount; i++)
 	{
-		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
+		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); itr++)
 		{
 			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget)
 				(*itr)->m_loggedInPlayer->GetSession()->SendPacket(packet);
@@ -610,7 +609,7 @@ void Group::OutPacketToAllButOne(uint16 op, uint16 len, const void* data, Player
 	Guard mGuard(m_groupLock);
 	for(uint32 i = 0; i < m_SubGroupCount; i++)
 	{
-		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
+		for(itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); itr++)
 		{
 			if((*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer != pSkipTarget)
 				(*itr)->m_loggedInPlayer->GetSession()->OutPacket( op, len, data );
@@ -804,7 +803,7 @@ void Group::SaveToDB()
 		uint32 j = 0;
 		if (m_SubGroups[i])
 		{
-			for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); j<5 && itr != m_SubGroups[i]->GetGroupMembersEnd(); ++j, ++itr)
+			for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); j<5 && itr != m_SubGroups[i]->GetGroupMembersEnd(); ++j, itr++)
 			{
 				ss << (*itr)->guid << ",";
 			}
@@ -899,7 +898,7 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 			for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd();)
 			{
 				plr = (*itr)->m_loggedInPlayer;
-				++itr;
+				itr++;
 
 				if(plr && plr != pPlayer)
 				{
@@ -935,7 +934,7 @@ void Group::UpdateAllOutOfRangePlayersFor(Player* pPlayer)
 		if(m_SubGroups[i] == NULL)
 			continue;
 
-		for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); ++itr)
+		for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd(); itr++)
 		{
 			plr = (*itr)->m_loggedInPlayer;
 			if(!plr || plr == pPlayer) continue;

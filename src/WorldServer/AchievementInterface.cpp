@@ -21,7 +21,7 @@ AchievementInterface::~AchievementInterface()
 	if( m_achivementDataMap.size() > 0 )
 	{
 		std::map<uint32,AchievementData*>::iterator itr = m_achivementDataMap.begin();
-		for(; itr != m_achivementDataMap.end(); ++itr)
+		for(; itr != m_achivementDataMap.end(); itr++)
 		{
 			delete itr->second;
 		}
@@ -85,7 +85,7 @@ void AchievementInterface::SaveToDB(QueryBuffer * buffer)
 	}
 
 	map<uint32,AchievementData*>::iterator itr = m_achivementDataMap.begin();
-	for(; itr != m_achivementDataMap.end(); ++itr)
+	for(; itr != m_achivementDataMap.end(); itr++)
 	{
 		AchievementData * ad = itr->second;
 		if( !ad->m_isDirty )
@@ -121,7 +121,7 @@ WorldPacket* AchievementInterface::BuildAchievementData(bool forInspect)
 		*data << m_player->GetNewGUID();
 
 	std::map<uint32,AchievementData*>::iterator itr = m_achivementDataMap.begin();
-	for(; itr != m_achivementDataMap.end(); ++itr)
+	for(; itr != m_achivementDataMap.end(); itr++)
 	{
 		if( itr->second->completed )
 		{
@@ -132,7 +132,7 @@ WorldPacket* AchievementInterface::BuildAchievementData(bool forInspect)
 
 	*data << int32(-1);
 	itr = m_achivementDataMap.begin(); // Re-loop, luls
-	for(; itr != m_achivementDataMap.end(); ++itr)
+	for(; itr != m_achivementDataMap.end(); itr++)
 	{
 		if( !itr->second->completed )
 		{
@@ -370,7 +370,7 @@ void AchievementInterface::HandleAchievementCriteriaConditionDeath()
 		return;
 
 	map<uint32,AchievementData*>::iterator itr = m_achivementDataMap.begin();
-	for(; itr != m_achivementDataMap.end(); ++itr)
+	for(; itr != m_achivementDataMap.end(); itr++)
 	{
 		AchievementData * ad = itr->second;
 		if(ad->completed) continue;

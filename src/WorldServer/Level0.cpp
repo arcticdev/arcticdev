@@ -340,7 +340,7 @@ bool ChatHandler::HandleGMListCommand(const char* args, WorldSession *m_session)
 	for (itr = sWorld.gmList.begin(); itr != sWorld.gmList.end();)
 	{
 		gm_session = (*itr);
-		++itr;
+		itr++;
 		if(first)
 			GreenSystemMessage(m_session, "There are following active GMs on this server:");
 		first = false;

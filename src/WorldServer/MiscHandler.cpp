@@ -141,7 +141,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << lootSlot;
 		Player* plr;
-		for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); ++itr)
+		for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); itr++)
 		{
 			plr = _player->GetMapMgr()->GetPlayer((*itr));
 			if( plr != NULL )
@@ -160,7 +160,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	/* any left yet? (for fishing bobbers) */
 	if(pGO && pGO->GetEntry() ==GO_FISHING_BOBBER)
 	{
-		for(vector<__LootItem>::iterator itr = pLootObj->m_loot.items.begin(); itr != pLootObj->m_loot.items.end(); ++itr)
+		for(vector<__LootItem>::iterator itr = pLootObj->m_loot.items.begin(); itr != pLootObj->m_loot.items.end(); itr++)
 		{
 			if( itr->iItemsCount > 0 )
 				return;
@@ -187,7 +187,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		return;
 
 	uint32 money = pLootObj->m_loot.gold;
-	for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); ++itr)
+	for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); itr++)
 	{
 		if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 			plr->GetSession()->OutPacket(SMSG_LOOT_CLEAR_MONEY);
@@ -216,7 +216,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		for(uint32 i = 0; i < party->GetSubGroupCount(); i++)
 		{
 			sgrp = party->GetSubGroup(i);
-			for(itr = sgrp->GetGroupMembersBegin(); itr != sgrp->GetGroupMembersEnd(); ++itr)
+			for(itr = sgrp->GetGroupMembersBegin(); itr != sgrp->GetGroupMembersEnd(); itr++)
 			{
 				if((*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->GetZoneId() == _player->GetZoneId() && _player->GetInstanceID() == (*itr)->m_loggedInPlayer->GetInstanceID())
 					targets.push_back((*itr)->m_loggedInPlayer);
@@ -233,7 +233,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		StackPacket pkt(SMSG_LOOT_MONEY_NOTIFY, databuf, 50);
 		pkt << share;
 
-		for(vector<Player*  >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+		for(vector<Player*  >::iterator itr = targets.begin(); itr != targets.end(); itr++)
 		{
 			if(((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) >= PLAYER_MAX_GOLD)
 				continue;
@@ -272,7 +272,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 				for(uint32 i = 0; i < party->GetSubGroupCount(); ++i)
 				{
 					s = party->GetSubGroup(i);
-					for(itr = s->GetGroupMembersBegin(); itr != s->GetGroupMembersEnd(); ++itr)
+					for(itr = s->GetGroupMembersBegin(); itr != s->GetGroupMembersEnd(); itr++)
 					{
 						if((*itr)->m_loggedInPlayer && _player->GetZoneId() == (*itr)->m_loggedInPlayer->GetZoneId())
 						{
@@ -542,7 +542,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	while(itr !=iend && sent_count < 50)
 	{
 		plr = itr->second;
-		++itr;
+		itr++;
 		bool queriedPlayerIsGM = false;
 		if(plr->GMPermissions.find("a"))
 		{
@@ -655,7 +655,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	while(itr !=iend && sent_count < 50)
 	{
 		plr = itr->second;
-		++itr;
+		itr++;
 
 		if(!plr->GetSession() || !plr->IsInWorld())
 			continue;
@@ -1955,7 +1955,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << slotid;
 		Player* plr;
-		for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
+		for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); itr++)
 		{
 			if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 				plr->GetSession()->SendPacket(&data);
@@ -2207,7 +2207,7 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
         m_Group->Lock();
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
 		{
-			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); itr++)
 			{
 				if((*itr)->m_loggedInPlayer)
 				{

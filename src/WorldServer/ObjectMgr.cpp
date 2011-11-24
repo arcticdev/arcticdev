@@ -84,7 +84,7 @@ ObjectMgr::~ObjectMgr()
 	for(uint32 i = 0 ; i < NUM_MONSTER_SAY_EVENTS ; ++i)
 	{
 		NpcMonsterSay * p;
-		for(MonsterSayMap::iterator itr = mMonsterSays[i].begin(); itr != mMonsterSays[i].end(); ++itr)
+		for(MonsterSayMap::iterator itr = mMonsterSays[i].begin(); itr != mMonsterSays[i].end(); itr++)
 		{
 			p = itr->second;
 			for(uint32 j = 0; j < p->TextCount; ++j)
@@ -100,27 +100,27 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("ObjectMgr", "Deleting Charters...");
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); ++itr)
+		for(HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); itr++)
 		{
 			delete itr->second;
 		}
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Reputation Tables...");
-	for(ReputationModMap::iterator itr = this->m_reputation_creature.begin(); itr != m_reputation_creature.end(); ++itr)
+	for(ReputationModMap::iterator itr = this->m_reputation_creature.begin(); itr != m_reputation_creature.end(); itr++)
 	{
 		ReputationModifier * mod = itr->second;
 		mod->mods.clear();
 		delete mod;
 	}
-	for(ReputationModMap::iterator itr = this->m_reputation_faction.begin(); itr != m_reputation_faction.end(); ++itr)
+	for(ReputationModMap::iterator itr = this->m_reputation_faction.begin(); itr != m_reputation_faction.end(); itr++)
 	{
 		ReputationModifier * mod = itr->second;
 		mod->mods.clear();
 		delete mod;
 	}
 
-	for(HM_NAMESPACE::hash_map<uint32,InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); ++itr)
+	for(HM_NAMESPACE::hash_map<uint32,InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); itr++)
 	{
 		InstanceReputationModifier * mod = itr->second;
 		mod->mods.clear();
@@ -131,7 +131,7 @@ ObjectMgr::~ObjectMgr()
 	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end();)
 	{
 		Group* pGroup = itr->second;
-		++itr;
+		itr++;
 
 		if( pGroup != NULL )
 		{
@@ -148,7 +148,7 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
-	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
+	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); itr++)
 	{
 		itr->second->m_Group=NULL;
 		free(itr->second->name);
@@ -156,11 +156,11 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting GM Tickets...");
-	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); ++itr)
+	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); itr++)
 		delete (*itr);
 
 	Log.Notice("ObjectMgr", "Deleting Arena Teams..."); 
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) 
+	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); itr++) 
 		delete itr->second;
 
 	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
@@ -169,7 +169,7 @@ ObjectMgr::~ObjectMgr()
 		delete (*itr);	
 
 	Log.Notice("ObjectMgr", "Deleting Achievement Cache...");
-	for(AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.begin(); itr != m_achievementCriteriaMap.end(); ++itr)
+	for(AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.begin(); itr != m_achievementCriteriaMap.end(); itr++)
 		delete (itr->second);
 
 	Log.Notice("ObjectMgr", "Deleting Achievement Quest Map...");
@@ -177,7 +177,7 @@ ObjectMgr::~ObjectMgr()
 		delete qitr->second;
 
 	Log.Notice("ObjectMgr", "Deleting Pet Levelup Spells...");
-	for(PetLevelupSpellMap::iterator itr = mPetLevelupSpellMap.begin(); itr != mPetLevelupSpellMap.end(); ++itr)
+	for(PetLevelupSpellMap::iterator itr = mPetLevelupSpellMap.begin(); itr != mPetLevelupSpellMap.end(); itr++)
 	{
 		itr->second.clear();
 	}
@@ -259,7 +259,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 	GroupMap::iterator itr;
 	Group * ret=NULL;
 	m_groupLock.AcquireReadLock();
-	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
+	for(itr = m_groups.begin(); itr != m_groups.end(); itr++)
 	{
 		if(itr->second->GetLeader()==pPlayer->m_playerInfo)
 		{
@@ -659,7 +659,7 @@ Corpse* ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 	CorpseMap::const_iterator itr;
 	Corpse* rv = NULL;
 	_corpseslock.Acquire();
-	for (itr = m_corpses.begin();itr != m_corpses.end(); ++itr)
+	for (itr = m_corpses.begin();itr != m_corpses.end(); itr++)
 	{
 		if(itr->second->GetUInt32Value(CORPSE_FIELD_OWNER) == ownerguid)
 		{
@@ -875,7 +875,7 @@ Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
 	{
 		std::string strName = name;
 		ARCTIC_TOLOWER(strName);
-		for (itr = _players.begin(); itr != _players.end(); ++itr)
+		for (itr = _players.begin(); itr != _players.end(); itr++)
 		{
 			if(!stricmp(itr->second->GetNameString()->c_str(), strName.c_str()))
 			{
@@ -886,7 +886,7 @@ Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
 	}
 	else
 	{
-		for (itr = _players.begin(); itr != _players.end(); ++itr)
+		for (itr = _players.begin(); itr != _players.end(); itr++)
 		{
 			if(!strcmp(itr->second->GetName(), name))
 			{
@@ -1276,7 +1276,7 @@ void ObjectMgr::CorpseCollectorUnload()
 	for (itr = m_corpses.begin(); itr != m_corpses.end();)
 	{
 		Corpse* c =itr->second;
-		++itr;
+		itr++;
 		if(c->IsInWorld())
 			c->RemoveFromWorld(false);
 
@@ -1745,7 +1745,7 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 {
 	// Iterate levelinfo map until we find the right class+race.
 	LevelInfoMap::iterator itr = mLevelInfo.begin();
-	for(; itr != mLevelInfo.end(); ++itr )
+	for(; itr != mLevelInfo.end(); itr++ )
 	{
 		if( itr->first.first == Race && itr->first.second == Class)
 		{
@@ -2044,7 +2044,7 @@ Transporter* ObjectMgr::GetTransporterByEntry(uint32 entry)
 	Transporter* rv = NULL;
 	_TransportLock.Acquire();
 	HM_NAMESPACE::hash_map<uint32, Transporter* >::iterator itr = mTransports.begin();
-	for(; itr != mTransports.end(); ++itr)
+	for(; itr != mTransports.end(); itr++)
 	{
 		if(itr->second->GetEntry() == entry)
 		{
@@ -2202,7 +2202,7 @@ Charter * ObjectMgr::GetCharterByItemGuid(uint64 guid)
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
-		for(; itr != m_charters[i].end(); ++itr)
+		for(; itr != m_charters[i].end(); itr++)
 		{
 			if(itr->second->ItemGuid == guid)
 			{
@@ -2221,7 +2221,7 @@ Charter * ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
-		for(; itr != m_charters[i].end(); ++itr)
+		for(; itr != m_charters[i].end(); itr++)
 		{
 			if(playerguid == itr->second->LeaderGuid)
 			{
@@ -2248,7 +2248,7 @@ Charter * ObjectMgr::GetCharterByName(string &charter_name, CharterTypes Type)
 	Charter * rv = 0;
 	m_charterLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[Type].begin();
-	for(; itr != m_charters[Type].end(); ++itr)
+	for(; itr != m_charters[Type].end(); itr++)
 	{
 		if(itr->second->GuildName == charter_name)
 		{
@@ -2572,7 +2572,7 @@ ArenaTeam * ObjectMgr::GetArenaTeamById(uint32 id)
 ArenaTeam * ObjectMgr::GetArenaTeamByName(string & name, uint32 Type)
 {
 	m_arenaTeamLock.Acquire();
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
+	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); itr++)
 	{
 		if(!strnicmp(itr->second->m_name.c_str(), name.c_str(), name.size()))
 		{
@@ -2620,12 +2620,12 @@ void ObjectMgr::UpdateArenaTeamRankings()
 	{
 		vector<ArenaTeam*> ranking;
 		
-		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
+		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); itr++)
 			ranking.push_back(itr->second);
 
 		std::sort(ranking.begin(), ranking.end(), ArenaSorter());
 		uint32 rank = 1;
-		for(vector<ArenaTeam*>::iterator itr = ranking.begin(); itr != ranking.end(); ++itr)
+		for(vector<ArenaTeam*>::iterator itr = ranking.begin(); itr != ranking.end(); itr++)
 		{
 			if((*itr)->m_stat_ranking != rank)
 			{
@@ -2643,7 +2643,7 @@ void ObjectMgr::UpdateArenaTeamWeekly()
 	m_arenaTeamLock.Acquire();
 	for(uint32 i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
+		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); itr++)
 		{
 			ArenaTeam *team = itr->second;
 			if(team)

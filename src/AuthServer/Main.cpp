@@ -134,7 +134,7 @@ vector<AllowedIP> m_allowedModIps;
 bool IsServerAllowed(unsigned int IP)
 {
 	m_allowedIpLock.Acquire();
-	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); ++itr)
+	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); itr++)
 	{
 		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
 		{
@@ -149,7 +149,7 @@ bool IsServerAllowed(unsigned int IP)
 bool IsServerAllowedMod(unsigned int IP)
 {
 	m_allowedIpLock.Acquire();
-	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); ++itr)
+	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); itr++)
 	{
 		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
 		{
@@ -184,7 +184,7 @@ bool Rehash()
 	m_allowedIps.clear();
 	m_allowedModIps.clear();
 	vector<string>::iterator itr;
-	for(itr = vips.begin(); itr != vips.end(); ++itr)
+	for(itr = vips.begin(); itr != vips.end(); itr++)
 	{
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
@@ -210,7 +210,7 @@ bool Rehash()
 		m_allowedIps.push_back(tmp);
 	}
 
-	for(itr = vipsmod.begin(); itr != vipsmod.end(); ++itr)
+	for(itr = vipsmod.begin(); itr != vipsmod.end(); itr++)
 	{
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
@@ -492,7 +492,7 @@ void LogonServer::CheckForDeadSockets()
 	{
 		it2 = itr;
 		s = (*it2);
-		++itr;
+		itr++;
 
 		diff = t - s->GetLastRecv();
 		if(diff > 240)		   // More than 4mins -> kill the socket.

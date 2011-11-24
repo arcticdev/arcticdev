@@ -156,7 +156,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 		if( result != NULL )
 		{
 			AI_Spell *sp = NULL;
-			const SpellEntry * spe = NULL;
+			SpellEntry * spe = NULL;
 			uint32 entry = 0;
 			uint32 spellID = 0;
 			uint16 agent = 0;
@@ -766,7 +766,7 @@ bool Storage_ReloadTable(const char * TableName)
 	
 	uint32 len = (uint32)strlen(TableName);
 	uint32 len2;
-	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); ++itr)
+	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); itr++)
 	{
 		len2=(uint32)itr->second.length();
 		if(!strnicmp(TableName, itr->second.c_str(), min(len,len2)))
@@ -788,7 +788,7 @@ void Storage_LoadAdditionalTables()
 	if(strs.empty())
 		return;
 
-	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); ++itr)
+	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); itr++)
 	{
 		char s1[200];
 		char s2[200];

@@ -49,7 +49,7 @@ void CapitalizeString(string& arg)
 {
 	if(arg.length() == 0) return;
 	arg[0] = toupper(arg[0]);
-	for(uint32 x = 1; x < arg.size(); ++x)
+	for(uint32 x = 1; x < arg.size(); x++)
 		arg[x] = tolower(arg[x]);
 }
 

@@ -43,7 +43,7 @@ void LogonCommHandler::RequestAddition(LogonCommClientSocket * Socket)
 {
 	set<Realm*>::iterator itr = realms.begin();
 	WorldPacket data(RCMSG_REGISTER_REALM, 100);
-	for(; itr != realms.end(); ++itr)
+	for(; itr != realms.end(); itr++)
 	{
 		data.clear();
 
@@ -132,7 +132,7 @@ void LogonCommHandler::Startup()
 void LogonCommHandler::ConnectAll()
 {
 	Log.Notice("LogonCommClient", "Attempting to connect to logon server...");
-	for(set<LogonServer*>::iterator itr = servers.begin(); itr != servers.end(); ++itr)
+	for(set<LogonServer*>::iterator itr = servers.begin(); itr != servers.end(); itr++)
 		Connect(*itr);
 }
 
@@ -229,7 +229,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 void LogonCommHandler::AdditionAck(uint32 ID, uint32 ServID)
 {
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
-	for(; itr != logons.end(); ++itr)
+	for(; itr != logons.end(); itr++)
 	{
 		if(itr->first->ID == ID)
 		{
@@ -247,7 +247,7 @@ void LogonCommHandler::UpdateSockets()
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	LogonCommClientSocket * cs = NULL;
 	uint32 t = (uint32)UNIXTIME;
-	for(; itr != logons.end(); ++itr)
+	for(; itr != logons.end(); itr++)
 	{
 		cs = itr->second;
 		if(cs != NULL)
@@ -293,7 +293,7 @@ void LogonCommHandler::ConnectionDropped(uint32 ID)
 		return;
 	mapLock.Acquire();
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
-	for(; itr != logons.end(); ++itr)
+	for(; itr != logons.end(); itr++)
 	{
 		if(itr->first->ID == ID && itr->second != 0)
 		{

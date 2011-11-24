@@ -290,7 +290,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	UpdateMask updateMask;
 	updateMask.SetCount( m_valuesCount );
 	_SetUpdateBits( &updateMask, target );
-	for(uint32 x = 0; x < m_valuesCount; ++x)
+	for(uint32 x = 0; x < m_valuesCount; x++)
 	{
 		if(updateMask.GetBit(x))
 		{
@@ -801,7 +801,7 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 	unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin();
 	unordered_set<Player*  >::iterator it_end = m_inRangePlayers.end();
 	int gm = ( m_objectTypeId == TYPEID_PLAYER ? TO_PLAYER(this)->m_isGmInvisible : 0 );
-	for(; itr != it_end; ++itr)
+	for(; itr != it_end; itr++)
 	{
 		ASSERT((*itr)->GetSession());
 		if( gm )
@@ -836,7 +836,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		uint32 myteam=TO_PLAYER(this)->GetTeam();
 		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam && PhasedCanInteract(*itr))
@@ -845,7 +845,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		}
 		else
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetTeam()==myteam && PhasedCanInteract(*itr))
@@ -857,7 +857,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 	{
 		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetSession()->GetPermissionCount() > 0 && PhasedCanInteract(*itr))
@@ -866,7 +866,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		}
 		else
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if( PhasedCanInteract(*itr) )

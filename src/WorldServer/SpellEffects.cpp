@@ -581,7 +581,7 @@ void Spell::SpellEffectSchoolDMG(uint32 i) // dmg school
 						m_requiresCP = true;
 
 						//remove deadly poisons
-						for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+						for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++)
 						{
 							if(unitTarget->m_auras[x] && unitTarget->m_auras[x]->m_spellProto->poison_type == POISON_TYPE_DEADLY )
 							{
@@ -1140,10 +1140,10 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				if( p_caster->GetGroup() )
 				{
 					p_caster->GetGroup()->Lock();
-					for(uint32 x = 0; x < p_caster->GetGroup()->GetSubGroupCount(); ++x)
+					for(uint32 x = 0; x < p_caster->GetGroup()->GetSubGroupCount(); x++)
 					{
 						if( count == 3 ) break;
-						for(GroupMembersSet::iterator itr = p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); ++itr)
+						for(GroupMembersSet::iterator itr = p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); itr++)
 						{
 						if( (*itr) && (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->GetPowerType() == POWER_TYPE_MANA && count != 3)
 							{
@@ -1219,7 +1219,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					for(uint32 sgid = 0; sgid < grp->GetSubGroupCount(); ++sgid)
 					{
 						sg = p_caster->GetGroup()->GetSubGroup(sgid);
-						for(GroupMembersSet::iterator itr = sg->GetGroupMembersBegin(); itr != sg->GetGroupMembersEnd(); ++itr)
+						for(GroupMembersSet::iterator itr = sg->GetGroupMembersBegin(); itr != sg->GetGroupMembersEnd(); itr++)
 						{
 							if( (*itr)->m_loggedInPlayer != NULL && (*itr)->m_loggedInPlayer->GetInstanceID() == p_caster->GetInstanceID() &&
 								(*itr)->m_loggedInPlayer != p_caster && (*itr)->m_loggedInPlayer->GetDistance2dSq(p_caster) <= 400.0f )
@@ -4451,7 +4451,7 @@ void Spell::SpellEffectSummonObject(uint32 i)
 			{
 				p_caster->GetGroup()->Lock();
 				for(GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin();
-					itr != pGroup->GetGroupMembersEnd(); ++itr)
+					itr != pGroup->GetGroupMembersEnd(); itr++)
 				{
 					if((*itr)->m_loggedInPlayer && m_caster != (*itr)->m_loggedInPlayer)
 						(*itr)->m_loggedInPlayer->GetSession()->SendPacket(pkt);
@@ -5478,12 +5478,12 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 					{
 						uint32 TargetCount = 0;
 						p_caster->GetGroup()->Lock();
-						for(uint32 x = 0; x < p_caster->GetGroup()->GetSubGroupCount(); ++x)
+						for(uint32 x = 0; x < p_caster->GetGroup()->GetSubGroupCount(); x++)
 						{
 							if( TargetCount == 10 )
 								break;
 
-							for(GroupMembersSet::iterator itr = p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); ++itr)
+							for(GroupMembersSet::iterator itr = p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != p_caster->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); itr++)
 							{
 								if((*itr)->m_loggedInPlayer && TargetCount <= 10)
 								{
@@ -5812,7 +5812,7 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	for( itr = unitTarget->GetInRangeOppFactsSetBegin(); itr != unitTarget->GetInRangeOppFactsSetEnd(); )
 	{
 		it2 = itr;
-		++itr;
+		itr++;
 		pUnit = TO_UNIT(*it2);
 		if( pUnit->GetTypeId() == TYPEID_UNIT )
 			pUnit->GetAIInterface()->RemoveThreatByPtr( unitTarget );
@@ -7034,7 +7034,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 		uint32 sunder_count=0;
 		SpellEntry *spellInfo= NULL;
 		spellInfo = dbcSpell.LookupEntry(25225);
-		for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; ++x)
+		for(uint32 x = MAX_POSITIVE_AURAS; x < MAX_AURAS; x++)
 		{
 			if(unitTarget->m_auras[x] != NULL && unitTarget->m_auras[x]->GetSpellProto()->NameHash==SPELL_HASH_SUNDER_ARMOR)
 			{

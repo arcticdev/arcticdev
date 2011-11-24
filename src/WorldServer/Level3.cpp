@@ -1051,7 +1051,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 	BlueSystemMessage(m_session, "Searching item set %u...", setid);
 	uint32 start = getMSTime();
 	sGMLog.writefromsession(m_session, "used add item set command, set %u, target %s", setid, chr->GetName());
-	for(std::list<ItemPrototype*>::iterator itr = l->begin(); itr != l->end(); ++itr)
+	for(std::list<ItemPrototype*>::iterator itr = l->begin(); itr != l->end(); itr++)
 	{
 		Item* itm = objmgr.CreateItem((*itr)->ItemId, m_session->GetPlayer());
 		if(!itm) continue;
@@ -2656,7 +2656,7 @@ bool ChatHandler::HandleAIAgentDebugBegin(const char * args, WorldSession * m_se
 	} while(result->NextRow());
 	delete result;
 
-	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); ++itr)
+	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); itr++)
 	{
 		result = WorldDatabase.Query("SELECT * FROM ai_agents WHERE spell = %u", (*itr)->Id);
 		ASSERT(result);
@@ -3077,7 +3077,7 @@ bool ChatHandler::HandleClearBonesCommand(const char *args, WorldSession *m_sess
 	Object::InRangeSet::iterator itr;
 	Object* obj;
 
-	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); ++itr)
+	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); itr++)
 	{
 		obj = *itr;
 		if(!obj)
@@ -3099,7 +3099,7 @@ bool ChatHandler::HandleClearCorpsesCommand(const char *args, WorldSession *m_se
 	Object::InRangeSet::iterator itr;
 	Object* obj;
 
-	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); ++itr)
+	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); itr++)
 	{
 		obj = *itr;
 		if(!obj)

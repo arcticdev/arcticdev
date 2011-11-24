@@ -195,7 +195,7 @@ Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
 	tmplocality[4]=0;
 	ulocality = *(uint32*)tmplocality;
 
-	for(itr = m_patches.begin(); itr != m_patches.end(); ++itr)
+	for(itr = m_patches.begin(); itr != m_patches.end(); itr++)
 	{
 		// since localities are always 4 bytes we can do a simple int compare,
 		// saving a string compare ;)
@@ -230,7 +230,7 @@ void PatchMgr::UpdateJobs()
 	for(itr = m_patchJobs.begin(); itr != m_patchJobs.end();)
 	{
 		itr2 = itr;
-		++itr;
+		itr++;
 
 		if(!(*itr2)->Update())
 		{
@@ -239,7 +239,7 @@ void PatchMgr::UpdateJobs()
 			m_patchJobs.erase(itr2);
 		}
 		else
-			++itr;
+			itr++;
 	}
 	m_patchJobLock.Release();
 }
@@ -248,7 +248,7 @@ void PatchMgr::AbortPatchJob(PatchJob * pJob)
 {
 	list<PatchJob*>::iterator itr;
 	m_patchJobLock.Acquire();
-	for(itr = m_patchJobs.begin(); itr != m_patchJobs.end(); ++itr)
+	for(itr = m_patchJobs.begin(); itr != m_patchJobs.end(); itr++)
 	{
 		if((*itr)==pJob)
 		{

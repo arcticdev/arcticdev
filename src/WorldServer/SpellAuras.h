@@ -714,7 +714,7 @@ public:
 	// this stuff can be cached in spellproto.
 	ARCTIC_INLINE bool IsCombatStateAffecting()
 	{
-		for(uint32 x = 0; x < 3; ++x) {
+		for(uint32 x = 0; x < 3; x++) {
 			if(m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE || 
 				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE_PERCENT ||
 				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_TRIGGER_SPELL ||

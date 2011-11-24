@@ -823,7 +823,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						if(subgroup)
 						{
 							p->GetGroup()->Lock();
-							for(GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); ++itr)
+							for(GroupMembersSet::iterator itr = subgroup->GetGroupMembersBegin(); itr != subgroup->GetGroupMembersEnd(); itr++)
 							{
 								if(!(*itr)->m_loggedInPlayer || m_caster == (*itr)->m_loggedInPlayer) 
 									continue;
@@ -902,7 +902,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 							{
 								p_caster->GetGroup()->Lock();
 								for(GroupMembersSet::iterator itr = pGroup->GetGroupMembersBegin();
-									itr != pGroup->GetGroupMembersEnd(); ++itr)
+									itr != pGroup->GetGroupMembersEnd(); itr++)
 								{
 									if(!(*itr)->m_loggedInPlayer || p == (*itr)->m_loggedInPlayer) 
 										continue;
@@ -1454,7 +1454,7 @@ void Spell::cast(bool check)
 		bool effects_done[3];
 		effects_done[0]=effects_done[1]=effects_done[2] = false;
 
-		for(; itr != m_targetList.end(); ++itr)
+		for(; itr != m_targetList.end(); itr++)
 		{
 			if( itr->HitResult != SPELL_DID_HIT_SUCCESS )
 				continue;
@@ -1463,7 +1463,7 @@ void Spell::cast(bool check)
 			_SetTargets(itr->Guid);
 
 			// call effect handlers
-			for( x = 0; x < 3; ++x )
+			for( x = 0; x < 3; x++ )
 			{
 				switch (m_spellInfo->Effect[x])
 				{
@@ -1509,7 +1509,7 @@ void Spell::cast(bool check)
 		}
 
 		//Handle remaining effects for which we did not find targets.
-		for( x = 0; x < 3; ++x )
+		for( x = 0; x < 3; x++ )
 		{
 			if(!effects_done[x])
 			{
@@ -1538,7 +1538,7 @@ void Spell::cast(bool check)
 		   m_spellInfo->EffectApplyAuraName[2] != 0)
 		{
 			itr = m_targetList.begin();
-			for(; itr != m_targetList.end(); ++itr)
+			for(; itr != m_targetList.end(); itr++)
 			{
 				if( itr->HitResult != SPELL_DID_HIT_SUCCESS )
 					continue;
@@ -2259,7 +2259,7 @@ void Spell::SendSpellGo()
 	if( m_hitTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
 		{
 			if( itr->HitResult == SPELL_DID_HIT_SUCCESS )
 			{
@@ -2273,7 +2273,7 @@ void Spell::SendSpellGo()
 	if( m_missTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
 		{
 			if( itr->HitResult != SPELL_DID_HIT_SUCCESS )
 			{
@@ -2313,7 +2313,7 @@ void Spell::writeSpellGoTargets( WorldPacket * data )
 	if( m_hitTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
 		{
 			if( itr->HitResult == SPELL_DID_HIT_SUCCESS )
 			{
@@ -2327,7 +2327,7 @@ void Spell::writeSpellGoTargets( WorldPacket * data )
 	if( m_missTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
 		{
 			if( itr->HitResult != SPELL_DID_HIT_SUCCESS )
 			{
@@ -4816,7 +4816,7 @@ void Spell::Heal(int32 amount)
 		{
 			target_threat.reserve(u_caster->GetInRangeCount()); // this helps speed
 
-			for(unordered_set<Object* >::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); ++itr)
+			for(unordered_set<Object* >::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); itr++)
 			{
 				if((*itr)->GetTypeId() != TYPEID_UNIT)
 					continue;
@@ -4837,7 +4837,7 @@ void Spell::Heal(int32 amount)
 			*/
 			uint32 threat = base_threat / (count * 2);
 				
-			for(std::vector<Unit* >::iterator itr = target_threat.begin(); itr != target_threat.end(); ++itr)
+			for(std::vector<Unit* >::iterator itr = target_threat.begin(); itr != target_threat.end(); itr++)
 			{
 				// for now we'll just use heal amount as threat.. we'll prolly need a formula though
 				TO_UNIT(*itr)->GetAIInterface()->HealReaction( u_caster, unitTarget, threat, m_spellInfo );
@@ -5195,7 +5195,7 @@ void Spell::_AddTarget(const Unit* target, const uint32 effectid)
 	SpellTarget tgt;
 
 	// look for the target in the list already
-	for( itr = m_targetList.begin(); itr != m_targetList.end(); ++itr )
+	for( itr = m_targetList.begin(); itr != m_targetList.end(); itr++ )
 	{
 		if( itr->Guid == target->GetGUID() )
 		{
@@ -5228,7 +5228,7 @@ void Spell::_AddTargetForced(const uint64& guid, const uint32 effectid)
 	SpellTarget tgt;
 
 	// look for the target in the list already
-	for( itr = m_targetList.begin(); itr != m_targetList.end(); ++itr )
+	for( itr = m_targetList.begin(); itr != m_targetList.end(); itr++ )
 	{
 		if( itr->Guid == guid )
 		{

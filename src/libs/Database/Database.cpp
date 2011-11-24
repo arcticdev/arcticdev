@@ -183,7 +183,7 @@ void Database::PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon)
 	if( ccon == NULL )
 		con = GetFreeConnection();
 	
-	for(vector<char*>::iterator itr = b->queries.begin(); itr != b->queries.end(); ++itr)
+	for(vector<char*>::iterator itr = b->queries.begin(); itr != b->queries.end(); itr++)
 	{
 		_SendQuery(con, *itr, false);
 		delete[] (*itr);
@@ -309,7 +309,7 @@ void AsyncQuery::AddQuery(const char * format, ...)
 void AsyncQuery::Perform()
 {
 	DatabaseConnection * conn = db->GetFreeConnection();
-	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
+	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); itr++)
 		itr->result = db->FQuery(itr->query, conn);
 
 	conn->Busy.Release();
@@ -321,7 +321,7 @@ void AsyncQuery::Perform()
 AsyncQuery::~AsyncQuery()
 {
 	delete func;
-	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
+	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); itr++)
 	{
 		if(itr->result)
 			delete itr->result;

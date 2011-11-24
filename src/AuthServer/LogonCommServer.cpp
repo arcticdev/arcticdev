@@ -51,7 +51,7 @@ void LogonCommServerSocket::OnDisconnect()
 	if(!removed)
 	{
 		set<uint32>::iterator itr = server_ids.begin();
-		for(; itr != server_ids.end(); ++itr)
+		for(; itr != server_ids.end(); itr++)
 			sInfoCore.SetRealmOffline((*itr), this);
 
 		sInfoCore.RemoveServerSocket(this);
