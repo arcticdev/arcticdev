@@ -1773,6 +1773,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				}break;
 			}			
 			p_caster->GetSession()->SendPacket(crap);
+			delete crap;
 		}break;
 	case 28806:// Toss Fuel on Bonfire
 		{

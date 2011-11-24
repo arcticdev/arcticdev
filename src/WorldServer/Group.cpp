@@ -138,7 +138,7 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid /* =-1 */ )
 		{
 			if(pPlayer)
 				sEventMgr.AddEvent(pPlayer,&Player::EventGroupFullUpdate,EVENT_PLAYER_UPDATE,1500,1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-            
+
 			m_dirty = true;
 			++m_MemberCount;
 			Update(); // Send group update
@@ -146,7 +146,7 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid /* =-1 */ )
 				info->m_Group->RemovePlayer(info);
 
 			if(m_Leader == NULL && info->m_loggedInPlayer)
-				m_Leader=info;
+				m_Leader = info;
 
 			info->m_Group = this;
 			info->subGroup = (int8)subgroup->GetID();
@@ -159,7 +159,6 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid /* =-1 */ )
 			info->subGroup = -1;
 			return false;
 		}
-
 	}
 	else
 	{
@@ -200,7 +199,7 @@ void Group::Update()
 	uint8 flags;
 	SubGroup *sg1 = NULL;
 	SubGroup *sg2 = NULL;
-	m_groupLock.Acquire();
+	Guard mGuard(m_groupLock);
 
 	m_updateblock = true;
 
@@ -210,7 +209,7 @@ void Group::Update()
 		{
 			sg1 = m_SubGroups[i];
 
-			if( sg1 != NULL)
+			if( sg1 != NULL )
 			{
 				for( itr1 = sg1->GetGroupMembersBegin(); itr1 != sg1->GetGroupMembersEnd(); )
 				{
@@ -261,7 +260,7 @@ void Group::Update()
 					continue;
 
 				/* skip offline players */
-				if((*itr1)->m_loggedInPlayer == NULL)
+				if( (*itr1)->m_loggedInPlayer == NULL )
 				{
 					continue;
 				}
@@ -350,11 +349,11 @@ void Group::Update()
 void Group::Disband()
 {
 	m_groupLock.Acquire();
-	m_updateblock=true;
+	m_updateblock = true;
 
 	if(m_isqueued)
 	{
-		m_isqueued=false;
+		m_isqueued = false;
 		WorldPacket * data = sChatHandler.FillSystemMessageData("A change was made to your group. Removing the arena queue.");
 		SendPacketToAll(data);
 		delete data;
@@ -421,7 +420,7 @@ void SubGroup::Disband()
 Player* Group::FindFirstPlayer()
 {
 	GroupMembersSet::iterator itr;
-	m_groupLock.Acquire();
+	Guard mGuard(m_groupLock);
 
 	for( uint32 i = 0; i < m_SubGroupCount; i++ )
 	{
@@ -636,15 +635,14 @@ bool Group::HasMember(Player* pPlayer)
 		}
 	}
 
-	m_groupLock.Release();
 	return false;
 }
 
 bool Group::HasMember(PlayerInfo * info)
 {
 	GroupMembersSet::iterator itr;
-
 	Guard mGuard(m_groupLock);
+
 	for(uint32 i = 0; i < m_SubGroupCount; i++)
 	{
 		if(m_SubGroups[i]->m_GroupMembers.find(info) != m_SubGroups[i]->m_GroupMembers.end())
@@ -684,9 +682,8 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 	}
 
 	if(sg == NULL)
-
 		return;
-
+	
 	sg->RemovePlayer(info);
 
 	// Grab the new group, and insert
@@ -958,6 +955,7 @@ void Group::HandleUpdateFieldChange(uint32 Index, Player* pPlayer)
 	if( m_dirty ) // sth has corrupted this, workaround
 		return;
 
+	Guard mGuard(m_groupLock);
 	switch(Index)
 	{
 	case UNIT_FIELD_HEALTH:
@@ -998,7 +996,7 @@ void Group::HandleUpdateFieldChange(uint32 Index, Player* pPlayer)
 void Group::HandlePartialChange(uint32 Type, Player* pPlayer)
 {
 	uint32 Flags = 0;
-	m_groupLock.Acquire();
+	Guard mGuard(m_groupLock);
 
 	switch(Type)
 	{
@@ -1013,8 +1011,6 @@ void Group::HandlePartialChange(uint32 Type, Player* pPlayer)
 
 	if(Flags)
 		UpdateOutOfRangePlayer(pPlayer, Flags, true, 0);
-
-	m_groupLock.Release();
 }
 
 void WorldSession::HandlePartyMemberStatsOpcode(WorldPacket & recv_data)
