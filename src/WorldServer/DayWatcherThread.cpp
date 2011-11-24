@@ -443,7 +443,7 @@ void DayWatcherThread::update_arena()
 			if(orig_arenapoints != arenapoints)
 			{
 				plr = objmgr.GetPlayer(guid);
-				if(plr!=NULL)
+				if(plr != NULL)
 				{
 					plr->m_arenaPoints = arenapoints;
 					
@@ -463,7 +463,6 @@ void DayWatcherThread::update_arena()
 
 	objmgr.UpdateArenaTeamWeekly();
 
-	//===========================================================================
 	last_arena_time = UNIXTIME;
 	dupe_tm_pointer(localtime(&last_arena_time), &local_last_arena_time);
 	m_dirty = true;

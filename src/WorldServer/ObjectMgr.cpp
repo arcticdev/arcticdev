@@ -2666,9 +2666,11 @@ void ObjectMgr::ResetDailies()
 {
 	_playerslock.AcquireReadLock();
 	PlayerStorageMap::iterator itr = _players.begin();
+	Player* pPlayer;
+
 	for(; itr != _players.end(); itr++)
 	{
-		Player* pPlayer = itr->second;
+		pPlayer = itr->second;
 		uint8 eflags = 0;
 		if( pPlayer->IsInWorld() )
 			eflags = EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT;
