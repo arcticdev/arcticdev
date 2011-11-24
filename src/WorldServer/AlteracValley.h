@@ -82,9 +82,6 @@ class AVNode
 	// guards, need to be respawned when changes ownership
 	vector<Creature*> m_guards;
 
-	// peon locations, used in mines (todo)
-	vector<Creature*> m_peonLocations;
-
 	// control point (capturable)
 	GameObject* m_flag;
 
