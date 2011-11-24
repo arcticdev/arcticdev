@@ -434,9 +434,7 @@ bool Master::Run(int argc, char ** argv)
 	delete LogonCommHandler::getSingletonPtr();
 
 	Log.Notice( "World", "~World()" );
-	//delete World::getSingletonPtr();
 	World::getSingletonPtr()->Destructor();
-
 
 	sScriptMgr.UnloadScripts();
 	delete ScriptMgr::getSingletonPtr();
@@ -469,12 +467,6 @@ bool Master::Run(int argc, char ** argv)
 
 #ifdef WIN32
 	WSACleanup();
-
-	// Terminate Entire Application
-	//HANDLE pH = OpenProcess(PROCESS_TERMINATE, TRUE, GetCurrentProcessId());
-	//TerminateProcess(pH, 0);
-	//CloseHandle(pH);
-
 #endif
 
 	return true;
@@ -484,8 +476,8 @@ bool Master::_StartDB()
 {
 	string hostname, username, password, database;
 	int port = 0;
+
 	// Configure Main Database
-	
 	bool result = Config.MainConfig.GetString( "WorldDatabase", "Username", &username );
 	Config.MainConfig.GetString( "WorldDatabase", "Password", &password );
 	result = !result ? result : Config.MainConfig.GetString( "WorldDatabase", "Hostname", &hostname );
@@ -538,7 +530,6 @@ void Master::_StopDB()
 }
 
 #ifndef WIN32
-// Unix crash handler :oOoOoOoOoOo
 volatile bool m_crashed = false;
 void segfault_handler(int c)
 {
@@ -572,7 +563,6 @@ void segfault_handler(int c)
 	abort();
 }
 #endif
-
 
 void Master::_HookSignals()
 {
@@ -636,10 +626,7 @@ void OnCrash( bool Terminate )
 	}
 
 	sLog.outString( "Closing." );
-	
-	// beep
-	//printf("\x7");
-	
+
 	// Terminate Entire Application
 	if( Terminate )
 	{
