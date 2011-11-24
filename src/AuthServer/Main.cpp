@@ -12,7 +12,7 @@
 #endif
 #include "../libs/getopt.h"
 
-#define BANNER "ArcTic %s r%u/%s-%s (%s) :: Logon Server"
+#define ARCTIC_BANNER "ArcTic - AuthServer r%s/%s-%s (%s)"
 
 #ifndef WIN32
 #include <sched.h>
@@ -299,7 +299,7 @@ void LogonServer::Run(int argc, char ** argv)
 	}
 
 	Log.Color(TBLUE);
-	printf(BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	printf(ARCTIC_BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	sLog.outString("==============================================================================");
 	Log.Line();
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
