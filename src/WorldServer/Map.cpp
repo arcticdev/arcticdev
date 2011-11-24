@@ -53,14 +53,23 @@ Map::~Map()
 			{
 				if(spawns[x][y])
 				{	
-					CellSpawns * sp=spawns[x][y];
-						for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
+					CellSpawns * sp = spawns[x][y];
+					for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
+					{
+						if((*i)->eventinfo)
+							delete (*i)->eventinfo;
 						delete (*i);
+					}
+
 					for(GOSpawnList::iterator it = sp->GOSpawns.begin();it!=sp->GOSpawns.end();it++)
+					{
+						if((*it)->eventinfo)
+							delete (*it)->eventinfo;
 						delete (*it);
+					}
 
 					delete sp;
-					spawns[x][y]=NULL;
+					spawns[x][y] = NULL;
 				}
 			}
 			delete [] spawns[x];
@@ -68,9 +77,17 @@ Map::~Map()
 	}
 
 	for(CreatureSpawnList::iterator i = staticSpawns.CreatureSpawns.begin(); i != staticSpawns.CreatureSpawns.end(); ++i)
-		delete *i;
+	{
+		if((*i)->eventinfo)
+			delete (*i)->eventinfo;
+		delete (*i);
+	}
 	for(GOSpawnList::iterator i = staticSpawns.GOSpawns.begin(); i != staticSpawns.GOSpawns.end(); ++i)
+	{
+		if((*i)->eventinfo)
+			delete (*i)->eventinfo;
 		delete *i;
+	}
 
 	// collision
 	if (sWorld.Collision && _mapInfo->collision)

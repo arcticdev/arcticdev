@@ -1156,7 +1156,7 @@ MapMgr* InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 			return NULL;
 	}
 
-	MapMgr* ret = (new MapMgr(m_maps[mapid],mapid,GenerateInstanceID()));
+	MapMgr* ret = new MapMgr(m_maps[mapid],mapid,GenerateInstanceID());
 	ret->Init();
 	Instance * pInstance = new Instance();
 	pInstance->m_creation = UNIXTIME;
