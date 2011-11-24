@@ -7,7 +7,7 @@
 #include "StdAfx.h"
 #include <Console/CConsole.h>
 
-#define BANNER "ArcTic %s r%u/%s-%s-%s :: World Server"
+#define ARCTIC_BANNER "ArcTic - World Server r%s/%s-%s (%s)"
 
 #ifndef WIN32
 #include <sched.h>
@@ -144,7 +144,7 @@ bool Master::Run(int argc, char ** argv)
 	g_localTime = *localtime(&UNIXTIME);
 
 	Log.Color(TBLUE);
-	printf(BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	printf(ARCTIC_BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	sLog.outString("==============================================================================");
 	Log.Line();
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");

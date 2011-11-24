@@ -599,10 +599,6 @@ void WorldSession::FullLogin(Player* plr)
 	SetPlayer(plr);
 	m_MoverWoWGuid.Init(plr->GetGUID());
 
-	// copy to movement array
-	//movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
-	//memcpy(&movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
-
 	WorldPacket datab(MSG_SET_DUNGEON_DIFFICULTY, 20);
 	datab << plr->iInstanceType;
 	datab << uint32(0x01);
@@ -768,12 +764,12 @@ void WorldSession::FullLogin(Player* plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcTic %s r%u/%s-Win-%s %s", MSG_COLOR_WHITE,
+	_player->BroadcastMessage("Server: %sArcTic r%s/%s-Windows-%s", MSG_COLOR_WHITE,
 		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUG_TRACKER);
 #else
-	_player->BroadcastMessage("Server: %sArcTic %s r%u/%s-%s %s", MSG_COLOR_WHITE,
+	_player->BroadcastMessage("Server: %sArcTic r%s/%s-%s", MSG_COLOR_WHITE,
 		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUG_TRACKER);
