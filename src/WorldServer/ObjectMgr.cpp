@@ -1192,6 +1192,7 @@ Item* ObjectMgr::LoadItem(uint64 guid)
 	{
 		ItemPrototype * pProto = ItemPrototypeStorage.LookupEntry(result->Fetch()[2].GetUInt32());
 		if(!pProto)
+			delete result;
 			return NULL;
 
 		if(pProto->InventoryType == INVTYPE_BAG)
