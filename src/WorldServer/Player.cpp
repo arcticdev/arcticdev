@@ -8628,11 +8628,13 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 		}
 		
 		// Dismount
-		TO_UNIT(this)->Dismount();
+		if(this->IsMounted())
+			this->Dismount();
+
 	}
 
 	//no flying outside new continents
-	if((GetShapeShift() == FORM_FLIGHT || GetShapeShift() == FORM_SWIFT) && MapID != 530 && MapID != 571 )
+	if(GetShapeShift() == (FORM_FLIGHT || FORM_SWIFT) && MapID != (530 && 571 ))
 		RemoveShapeShiftSpell(m_ShapeShifted);
 
 	// make sure player does not drown when teleporting from under water
@@ -8741,7 +8743,7 @@ void Player::UpdatePvPArea()
 	}
 	else
 	{
-        //Enemy city check
+        // Enemy city check
         if(m_areaDBC->AreaFlags & AREA_CITY_AREA || m_areaDBC->AreaFlags & AREA_CITY)
         {
             if((m_areaDBC->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (m_areaDBC->category == AREAC_HORDE_TERRITORY && GetTeam() == 0) ||
@@ -8765,10 +8767,10 @@ void Player::UpdatePvPArea()
         }
         else
         {
-            //contested territory
+            // contested territory
             if(sWorld.GetRealmType() == REALM_PVP)
             {
-                //automaticaly sets pvp flag on contested territorys.
+                // automaticaly sets pvp flag on contested territorys.
                 if(!IsPvPFlagged())
 					SetPvPFlag();
 				StopPvPTimer();
@@ -8787,7 +8789,7 @@ void Player::UpdatePvPArea()
 		}
 	}
 
-	if(m_areaDBC->AreaFlags & AREA_PVP_ARENA)			/* ffa pvp arenas will come later */
+	if(m_areaDBC->AreaFlags & AREA_PVP_ARENA) /* ffa pvp arenas will come later */
 	{
 		if(!IsPvPFlagged()) SetPvPFlag();
 
@@ -9009,7 +9011,7 @@ void Player::CompleteLoading()
 	// this needs to be after the cast of passive spells, because it will cast ghost form, after the remove making it in ghost alive, if no corpse.
 
 	if(iActivePet)
-		SpawnPet(iActivePet);	   // only spawn if >0
+		SpawnPet(iActivePet); // only spawn if >0
 
 	// Banned
 	if(IsBanned())
@@ -9037,7 +9039,7 @@ void Player::CompleteLoading()
 
 void Player::OnWorldPortAck()
 {
-	//only rezz if player is porting to a instance portal
+	// only rezz if player is porting to a instance portal
 	MapInfo *pPMapinfo = NULL;
 	pPMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
 
