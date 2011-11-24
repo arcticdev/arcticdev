@@ -346,7 +346,7 @@ PlayerInfo *ObjectMgr::GetPlayerInfo( uint32 guid )
 void ObjectMgr::AddPlayerInfo(PlayerInfo *pn)
 {
 	playernamelock.AcquireWriteLock();
-	m_playersinfo[pn->guid] =  pn ;
+	m_playersinfo[pn->guid] = pn;
 	string pnam = string(pn->name);
 	ARCTIC_TOLOWER(pnam);
 	m_playersInfoByName[pnam] = pn;
