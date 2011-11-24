@@ -8,7 +8,7 @@
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_MOUNT_CHECK_INTERVAL 1000
 static const uint8 baseRunes[6] = {0,0,1,1,2,2};
-static const uint32 DKNodesMask[12] = {4294967295,4093640703,830406655,0,33570816,1310944,3250593812,73752,896,67111952,0,0};//all old continents are available to DK's by default.
+static const uint32 DKNodesMask[12] = {4294967295,4093640703,830406655,0,33570816,1310944,3250593812,73752,896,67111952,0,0}; // all old continents are available to DK's by default.
 
 Player::Player( uint32 guid )
 {
@@ -18,7 +18,7 @@ Player::Player( uint32 guid )
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
 	m_uint32Values = _fields;
-	memset(m_uint32Values, 0,(PLAYER_END)*sizeof(uint32));
+	memset(m_uint32Values, 0, (PLAYER_END)*sizeof(uint32));
 	m_updateMask.SetCount(PLAYER_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_PLAYER|TYPE_UNIT|TYPE_OBJECT);
 	SetUInt32Value( OBJECT_FIELD_GUID,guid);
@@ -29,7 +29,7 @@ Player::Player( uint32 guid )
 void Player::Init()
 {
 	m_mailBox = new Mailbox( GetUInt32Value(OBJECT_FIELD_GUID) );
-	m_ItemInterface		 = new ItemInterface(TO_PLAYER(this));
+	m_ItemInterface = new ItemInterface(TO_PLAYER(this));
 	m_achievementInterface = new AchievementInterface(TO_PLAYER(this));
 
 	m_bgSlot = 0;
@@ -37,146 +37,146 @@ void Player::Init()
 
 	m_feralAP = 0;
 	m_finishingmovesdodge = false;
-	iActivePet			  = 0;
-	resurrector			 = 0;
-	SpellCrtiticalStrikeRatingBonus=0;
-	SpellHasteRatingBonus   = 0;
-	m_lifetapbonus		  = 0;
-	info					= NULL;				 // Playercreate info
-	SoulStone			   = 0;
-	SoulStoneReceiver		= 0;
-	bReincarnation			= false;
-	Seal					= 0;
-	m_session			   = 0;
-	TrackingSpell		   = 0;
-	m_status				= 0;
-	offhand_dmg_mod		 = 0.5;
-	m_walkSpeed			= 2.5f;
-	m_runSpeed			  = PLAYER_NORMAL_RUN_SPEED;
-	m_isMoving			  = false;
-	m_isWaterWalking	  = 0;
-	m_ShapeShifted		  = 0;
-	m_curSelection		  = 0;
-	m_lootGuid			  = 0;
-	m_Summon				= NULL;
-	hasqueuedpet			= false;
+	iActivePet = 0;
+	resurrector = 0;
+	SpellCrtiticalStrikeRatingBonus = 0;
+	SpellHasteRatingBonus = 0;
+	m_lifetapbonus = 0;
+	info = NULL; // Playercreate info
+	SoulStone = 0;
+	SoulStoneReceiver = 0;
+	bReincarnation = false;
+	Seal = 0;
+	m_session = 0;
+	TrackingSpell = 0;
+	m_status = 0;
+	offhand_dmg_mod = 0.5;
+	m_walkSpeed = 2.5f;
+	m_runSpeed = PLAYER_NORMAL_RUN_SPEED;
+	m_isMoving = false;
+	m_isWaterWalking = 0;
+	m_ShapeShifted = 0;
+	m_curSelection = 0;
+	m_lootGuid = 0;
+	m_Summon = NULL;
+	hasqueuedpet = false;
 	m_hasInRangeGuards = 0;
 
-	m_PetNumberMax		  = 0;
-	m_lastShotTime		  = 0;
+	m_PetNumberMax = 0;
+	m_lastShotTime = 0;
 
-	m_H_regenTimer			= 0;
-	m_P_regenTimer			= 0;
-	m_onTaxi				= false;
+	m_H_regenTimer = 0;
+	m_P_regenTimer = 0;
+	m_onTaxi = false;
 
-	m_taxi_pos_x			= 0;
-	m_taxi_pos_y			= 0;
-	m_taxi_pos_z			= 0;
-	m_taxi_ride_time		= 0;
+	m_taxi_pos_x = 0;
+	m_taxi_pos_y = 0;
+	m_taxi_pos_z = 0;
+	m_taxi_ride_time = 0;
 
 	// Attack related variables
 	m_blockfromspellPCT	 = 0;
-	m_blockfromspell		= 0;
-	m_critfromspell		 = 0;
-	m_spellcritfromspell	= 0;
-	m_dodgefromspell		= 0;
-	m_parryfromspell		= 0;
-	m_hitfromspell		  = 0; 
-	m_hitfrommeleespell	 = 0;
-	m_meleeattackspeedmod   = 1.0f;
-	m_rangedattackspeedmod  = 1.0f;
+	m_blockfromspell = 0;
+	m_critfromspell = 0;
+	m_spellcritfromspell = 0;
+	m_dodgefromspell = 0;
+	m_parryfromspell = 0;
+	m_hitfromspell = 0; 
+	m_hitfrommeleespell = 0;
+	m_meleeattackspeedmod = 1.0f;
+	m_rangedattackspeedmod = 1.0f;
 
 	m_cheatDeathRank = 0;
 
-	m_healthfromspell	   = 0;
-	m_manafromspell		 = 0;
-	m_healthfromitems	   = 0;
-	m_manafromitems		 = 0;
+	m_healthfromspell = 0;
+	m_manafromspell = 0;
+	m_healthfromitems = 0;
+	m_manafromitems = 0;
 
-	m_talentresettimes	  = 0;
+	m_talentresettimes = 0;
 
-	m_nextSave			  = getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
+	m_nextSave = getMSTime() + sWorld.getIntRate(INTRATE_SAVE);
 
-	m_currentSpell		  = NULL;
-	m_resurrectHealth	   = m_resurrectMana = 0;
+	m_currentSpell = NULL;
+	m_resurrectHealth = m_resurrectMana = 0;
 
-	m_GroupInviter		  = 0;
+	m_GroupInviter = 0;
 
 	Lfgcomment = "";
 	m_flyHackChances = 5;
 
-	for(int i=0;i<3;i++)
+	for(int i = 0; i < 3; i++)
 	{
-		LfgType[i]=0;
-		LfgDungeonId[i]=0;
+		LfgType[i] = 0;
+		LfgDungeonId[i] = 0;
 	}
 
 	m_Autojoin = false;
 	m_AutoAddMem = false;
-	LfmDungeonId=0;
-	LfmType=0;
+	LfmDungeonId = 0;
+	LfmType = 0;
 
-	for(int32 i=0;i<NUM_MECHANIC;i++)
+	for(int32 i = 0; i < NUM_MECHANIC; i++)
 	{
 		MechanicDurationPctMod[i] = 1.0f;
 	}
 
-	m_invitersGuid		  = 0;
+	m_invitersGuid = 0;
 
-	m_currentMovement	   = MOVE_UNROOT;
-	m_isGmInvisible		 = false;
+	m_currentMovement = MOVE_UNROOT;
+	m_isGmInvisible = false;
 
-	//DK
-	m_invitersGuid		  = 0;
+	// DK
+	m_invitersGuid = 0;
 
-	//Trade
+	// Trade
 	ResetTradeVariables();
 	mTradeTarget = 0;
 
-	//Duel
-	DuelingWith			 = NULL;
-	m_duelCountdownTimer	= 0;
-	m_duelStatus			= 0;
-	m_duelState			 = DUEL_STATE_FINISHED;		// finished
+	// Duel
+	DuelingWith = NULL;
+	m_duelCountdownTimer = 0;
+	m_duelStatus = 0;
+	m_duelState = DUEL_STATE_FINISHED; // finished
 
-	//WayPoint
-	waypointunit			= NULL;
+	// WayPoint
+	waypointunit = NULL;
 
-	//PVP
-	//PvPTimeoutEnabled	   = false;
+	// PVP
+	// PvPTimeoutEnabled = false;
 
 	//Tutorials
 	for ( int aX = 0 ; aX < 8 ; aX++ )
 		m_Tutorials[ aX ] = 0x00;
 
-	m_lootGuid			  = 0;
-	m_banned				= false;
+	m_lootGuid = 0;
+	m_banned = false;
 
-	//Bind possition
-	m_bind_pos_x			= 0;
-	m_bind_pos_y			= 0;
-	m_bind_pos_z			= 0;
-	m_bind_mapid			= 0;
-	m_bind_zoneid		   = 0;
+	// Bind possition
+	m_bind_pos_x = 0;
+	m_bind_pos_y = 0;
+	m_bind_pos_z = 0;
+	m_bind_mapid = 0;
+	m_bind_zoneid = 0;
 
 	// Rest
-	m_timeLogoff		= 0;
-	m_isResting			= 0;
-	m_restState			= 0;
-	m_restAmount		= 0;
-	m_afk_reason		= "";
-	m_playedtime[0]		= 0;
-	m_playedtime[1]		= 0;
-	m_playedtime[2]		= (uint32)UNIXTIME;
+	m_timeLogoff = 0;
+	m_isResting = 0;
+	m_restState = 0;
+	m_restAmount = 0;
+	m_afk_reason = "";
+	m_playedtime[0] = 0;
+	m_playedtime[1] = 0;
+	m_playedtime[2] = (uint32)UNIXTIME;
 
 	m_AllowAreaTriggerPort  = true;
 
 	// Battleground
-	m_bgEntryPointMap	   = 0;
-	m_bgEntryPointX		 = 0;	
-	m_bgEntryPointY		 = 0;
-	m_bgEntryPointZ		 = 0;
-	m_bgEntryPointO		 = 0;
+	m_bgEntryPointMap = 0;
+	m_bgEntryPointX = 0;	
+	m_bgEntryPointY = 0;
+	m_bgEntryPointZ = 0;
+	m_bgEntryPointO = 0;
 	for(uint32 i = 0; i < 3; ++i)
 	{
 		m_bgQueueType[i] = 0;
@@ -186,52 +186,52 @@ void Player::Init()
 	}
 	m_bg = NULL;
 
-	m_bgHasFlag			 = false;
-	m_bgEntryPointInstance  = 0;
+	m_bgHasFlag = false;
+	m_bgEntryPointInstance = 0;
 
 	// gm stuff
-	//m_invincible			= false;
-	bGMTagOn				= false;
-	CooldownCheat		   = false;
-	CastTimeCheat		   = false;
-	PowerCheat			  = false;
-	GodModeCheat			= false;
-	FlyCheat				= false;
+	// m_invincible = false;
+	bGMTagOn = false;
+	CooldownCheat = false;
+	CastTimeCheat = false;
+	PowerCheat = false;
+	GodModeCheat = false;
+	FlyCheat = false;
 
-	//FIX for professions
-	weapon_proficiency	  = 0x4000;//2^14
-	//FIX for shit like shirt etc
-	armor_proficiency	   = 1;
+	// FIX for professions
+	weapon_proficiency	  = 0x4000; // 2^14
+	// FIX for shit like shirt etc
+	armor_proficiency = 1;
 
-	m_bUnlimitedBreath	  = false;
-	m_UnderwaterState	   = 0;
-	m_UnderwaterTime		= 180000;
-	m_UnderwaterMaxTime	 = 180000;
-	m_UnderwaterLastDmg	 = getMSTime();
-	m_SwimmingTime		  = 0;
-	m_BreathDamageTimer	 = 0;
+	m_bUnlimitedBreath = false;
+	m_UnderwaterState = 0;
+	m_UnderwaterTime = 180000;
+	m_UnderwaterMaxTime = 180000;
+	m_UnderwaterLastDmg = getMSTime();
+	m_SwimmingTime = 0;
+	m_BreathDamageTimer = 0;
 
-	//transport shit
-	m_TransporterGUID	   = 0;
-	m_TransporterX		  = 0.0f;
-	m_TransporterY		  = 0.0f;
-	m_TransporterZ		  = 0.0f;
-	m_TransporterO		  = 0.0f;
-	m_TransporterUnk		= 0.0f;
-	m_lockTransportVariables= false;
+	// transport shit
+	m_TransporterGUID = 0;
+	m_TransporterX = 0.0f;
+	m_TransporterY = 0.0f;
+	m_TransporterZ = 0.0f;
+	m_TransporterO = 0.0f;
+	m_TransporterUnk = 0.0f;
+	m_lockTransportVariables = false;
 
 	// Autoshot variables
-	m_AutoShotTarget		= 0;
-	m_onAutoShot			= false;
-	m_AutoShotDuration	  = 0;
-	m_AutoShotAttackTimer   = 0;
-	m_AutoShotSpell		 = NULL;
+	m_AutoShotTarget = 0;
+	m_onAutoShot = false;
+	m_AutoShotDuration = 0;
+	m_AutoShotAttackTimer = 0;
+	m_AutoShotSpell = NULL;
 
-	m_AttackMsgTimer		= 0;
+	m_AttackMsgTimer = 0;
 
-	m_GM_SelectedGO		 = NULL;
+	m_GM_SelectedGO = NULL;
 
-	for(uint32 x = 0;x < 7; x++)
+	for(uint32 x = 0; x < 7; x++)
 	{
 		FlatResistanceModifierPos[x] = 0;
 		FlatResistanceModifierNeg[x] = 0;
@@ -252,228 +252,226 @@ void Player::Init()
 		}
 	}
 
-		for(uint32 x = 0; x < 5; x++)
-		{
-			FlatStatModPos[x] = 0;
-			FlatStatModNeg[x] = 0;
-			StatModPctPos[x] = 0;
-			StatModPctNeg[x] = 0;
-			TotalStatModPctPos[x] = 0;
-			TotalStatModPctNeg[x] = 0;
-		}
+	for(uint32 x = 0; x < 5; x++)
+	{
+		FlatStatModPos[x] = 0;
+		FlatStatModNeg[x] = 0;
+		StatModPctPos[x] = 0;
+		StatModPctNeg[x] = 0;
+		TotalStatModPctPos[x] = 0;
+		TotalStatModPctNeg[x] = 0;
+	}
 
+	for(uint32 x = 0; x < 12; x++)
+	{
+		IncreaseDamageByType[x] = 0;
+		IncreaseDamageByTypePCT[x] = 0;
+		IncreaseCricticalByTypePCT[x] = 0;
+	}
 
-		for(uint32 x = 0; x < 12; x++)
-		{
-			IncreaseDamageByType[x] = 0;
-			IncreaseDamageByTypePCT[x] = 0;
-			IncreaseCricticalByTypePCT[x] = 0;
-		}
+	PctIgnoreRegenModifier = 0.0f;
+	m_retainedrage = 0;
+	DetectedRange = 0;
+	m_targetIcon = 0;
+	m_MountSpellId = 0;
+	bHasBindDialogOpen = false;
+	m_CurrentCharm = NULL;
+	m_CurrentTransporter = NULL;
+	m_SummonedObject = NULL;
+	m_currentLoot = (uint64)NULL;
+	pctReputationMod = 0;
+	roll = 0;
+	mUpdateCount = 0;
+	mCreationCount = 0;
+	bCreationBuffer.reserve(40000);
+	bUpdateBuffer.reserve(30000); // ought to be > than enough ;)
+	mOutOfRangeIds.reserve(1000);
+	mOutOfRangeIdCount	  = 0;
 
-		PctIgnoreRegenModifier  = 0.0f;
-		m_retainedrage          = 0;
-		DetectedRange		   = 0;
-		m_targetIcon			= 0;
-		m_MountSpellId		  = 0;
-		bHasBindDialogOpen	  = false;
-		m_CurrentCharm		  = NULL;
-		m_CurrentTransporter	= NULL;
-		m_SummonedObject		= NULL;
-		m_currentLoot		   = (uint64)NULL;
-		pctReputationMod		= 0;
-		roll					= 0;
-		mUpdateCount			= 0;
-		mCreationCount          = 0;
-		bCreationBuffer.reserve(40000);
-		bUpdateBuffer.reserve(30000);//ought to be > than enough ;)
-		mOutOfRangeIds.reserve(1000);
-		mOutOfRangeIdCount	  = 0;
+	bProcessPending = false;
+	for(int i = 0; i < 25; ++i)
+		m_questlog[i] = NULL;
 
-		bProcessPending		 = false;
-		for(int i = 0; i < 25; ++i)
-			m_questlog[i] = NULL;
+	CurrentGossipMenu = NULL;
 
-		CurrentGossipMenu	   = NULL;
+	ResetHeartbeatCoords();
 
-		ResetHeartbeatCoords();
+	m_AreaID = 0;
+	m_areaDBC = NULL;
+	m_actionsDirty = false;
+	rageFromDamageDealt = 0;
 
-		m_AreaID				= 0;
-		m_areaDBC				= NULL;
-		m_actionsDirty		  = false;
-		rageFromDamageDealt	 = 0;
+	m_honorToday = 0;
+	m_honorYesterday = 0;
+	m_honorPoints = 0;
+	m_killsToday = 0;
+	m_killsYesterday = 0;
+	m_killsLifetime = 0;
+	m_honorless = false;
+	m_lastSeenWeather = 0;
+	m_attacking = false;
 
-		m_honorToday			= 0;
-		m_honorYesterday		= 0;
-		m_honorPoints		   = 0;
-		m_killsToday			= 0;
-		m_killsYesterday		= 0;
-		m_killsLifetime		 = 0;
-		m_honorless			 = false;
-		m_lastSeenWeather	   = 0;
-		m_attacking			 = false;
+	myCorpse = NULL;
 
-		myCorpse				= NULL;
+	blinked = false;
+	m_speedhackChances = 3;
+	m_explorationTimer = getMSTime();
+	linkTarget = NULL;
+	stack_cheat = false;
+	triggerpass_cheat = false;
+	m_pvpTimer = 0;
+	m_globalCooldown = 0;
+	m_lastHonorResetTime = 0;
+	memset(&mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
+	tutorialsDirty = true;
+	m_TeleportState = 1;
+	m_beingPushed = false;
+	m_FlyingAura = 0;
+	resend_speed = false;
+	rename_pending = false;
+	recustomize_pending = false;
+	titanGrip = false;
+	iInstanceType = 0;
+	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
-		blinked				 = false;
-		m_speedhackChances	  = 3;
-		m_explorationTimer	  = getMSTime();
-		linkTarget			  = NULL;
-		stack_cheat			 = false;
-		triggerpass_cheat = false;
-		m_pvpTimer			  = 0;
-		m_globalCooldown = 0;
-		m_lastHonorResetTime	= 0;
-		memset(&mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
-		tutorialsDirty = true;
-		m_TeleportState = 1;
-		m_beingPushed = false;
-		m_FlyingAura = 0;
-		resend_speed = false;
-		rename_pending = false;
-		recustomize_pending = false;
-		titanGrip = false;
-		iInstanceType		   = 0;
-		memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
+	m_comboTarget = 0;
+	m_comboPoints = 0;
 
-		m_comboTarget = 0;
-		m_comboPoints = 0;
+	SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, 0.0f);
+	SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, 0.0f);
 
-		SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, 0.0f);
-		SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, 0.0f);
+	UpdateLastSpeeds();
 
-		UpdateLastSpeeds();
+	m_resist_critical[0] = m_resist_critical[1] = 0;
+	m_castFilterEnabled = false;
 
-		m_resist_critical[0]=m_resist_critical[1]=0;
-		m_castFilterEnabled = false;
+	m_resist_critical[0] = m_resist_critical[1] = 0;
+	m_castFilterEnabled = false;
+	for (uint32 x = 0; x < 3 ; x++)
+	{
+		m_resist_hit[x] = 0;
+		m_skipCastCheck[x] = 0;
+		m_castFilter[x] = 0;
+	}
+	for(int i = 0; i < 6; ++i)
+	{
+		m_runes[i] = baseRunes[i];
+	}
+	m_maxTalentPoints = 0;
+	m_talentActiveSpec = 0;
+	m_talentSpecsCount = 1;
+	ok_to_remove = false;
+	trigger_on_stun = 0;
+	trigger_on_stun_chance = 100;
+	m_modphyscritdmgPCT = 0;
+	m_RootedCritChanceBonus = 0;
 
-		m_resist_critical[0]=m_resist_critical[1]=0;
-		m_castFilterEnabled = false;
-		for (uint32 x =0;x<3;x++)
-		{
-			m_resist_hit[x]=0;
-			m_skipCastCheck[x] = 0;
-			m_castFilter[x] = 0;
-		}
-		for(int i = 0; i < 6; ++i)
-		{
-			m_runes[i] = baseRunes[i];
-		}
-		m_maxTalentPoints = 0;
-		m_talentActiveSpec = 0;
-		m_talentSpecsCount = 1;
-		ok_to_remove = false;
-		trigger_on_stun = 0;
-		trigger_on_stun_chance = 100;
-		m_modphyscritdmgPCT = 0;
-		m_RootedCritChanceBonus = 0;
+	for(int i = 0; i < 6; ++i)
+		m_runes[i] = baseRunes[i];
 
-		for(int i = 0; i < 6; ++i)
-			m_runes[i] = baseRunes[i];
+	ok_to_remove = false;
+	trigger_on_stun = 0;
+	trigger_on_stun_chance = 100;
+	m_modphyscritdmgPCT = 0;
+	m_RootedCritChanceBonus = 0;
 
-		ok_to_remove = false;
-		trigger_on_stun = 0;
-		trigger_on_stun_chance = 100;
-		m_modphyscritdmgPCT = 0;
-		m_RootedCritChanceBonus = 0;
+	m_ModInterrMRegenPCT = 0;
+	m_ModInterrMRegen = 0;
+	m_rap_mod_pct = 0;
+	m_modblockabsorbvalue = 0;
+	m_modblockvaluefromspells = 0;
+	m_summoner = m_summonInstanceId = m_summonMapId = 0;
+	m_lastMoveType = 0;
+	m_tempSummon = NULL;
+	m_spellcomboPoints = 0;
 
-		m_ModInterrMRegenPCT = 0;
-		m_ModInterrMRegen =0;
-		m_rap_mod_pct = 0;
-		m_modblockabsorbvalue = 0;
-		m_modblockvaluefromspells = 0;
-		m_summoner = m_summonInstanceId = m_summonMapId = 0;
-		m_lastMoveType = 0;
-		m_tempSummon = NULL;
-		m_spellcomboPoints = 0;
+	for(uint8 i = 0; i < 3 ; ++i)
+		m_pendingBattleground[i] = NULL;
 
-		for(uint8 i = 0; i < 3 ; ++i)
-			m_pendingBattleground[i] = NULL;
-
-		m_deathVision = false;
-		m_retainComboPoints = false;
-		last_heal_spell = NULL;
-		m_playerInfo = NULL;
-		m_sentTeleportPosition.ChangeCoords(999999.0f,999999.0f,999999.0f);
-		m_speedChangeCounter=1;
-		memset(&m_bgScore,0,sizeof(BGScore));
-		m_arenaPoints = 0;
-		memset(&m_spellIndexTypeTargets, 0, sizeof(uint64)*NUM_SPELL_TYPE_INDEX);
-		m_base_runSpeed = m_runSpeed;
-		m_base_walkSpeed = m_walkSpeed;
-		m_arenateaminviteguid=0;
-		m_arenaPoints=0;
-		m_honorRolloverTime=0;
-		hearth_of_wild_pct = 0;
-		raidgrouponlysent=false;
-		m_waterwalk=false;
-		m_setwaterwalk=false;
-		m_areaSpiritHealer_guid=0;
-		m_CurrentTaxiPath=NULL;
-		m_setflycheat = false;
-		m_fallDisabledUntil = 0;
-		m_lfgMatch = NULL;
-		m_lfgInviterGuid = 0;
-		m_mountCheckTimer = 0;
-		m_taxiMapChangeNode = 0;
-		m_startMoveTime = 0;
-		m_canCastSpellsWhileDead = false;
+	m_deathVision = false;
+	m_retainComboPoints = false;
+	last_heal_spell = NULL;
+	m_playerInfo = NULL;
+	m_sentTeleportPosition.ChangeCoords(999999.0f,999999.0f,999999.0f);
+	m_speedChangeCounter = 1;
+	memset(&m_bgScore, 0, sizeof(BGScore));
+	m_arenaPoints = 0;
+	memset(&m_spellIndexTypeTargets, 0, sizeof(uint64)*NUM_SPELL_TYPE_INDEX);
+	m_base_runSpeed = m_runSpeed;
+	m_base_walkSpeed = m_walkSpeed;
+	m_arenateaminviteguid = 0;
+	m_arenaPoints = 0;
+	m_honorRolloverTime = 0;
+	hearth_of_wild_pct = 0;
+	raidgrouponlysent = false;
+	m_waterwalk=false;
+	m_setwaterwalk=false;
+	m_areaSpiritHealer_guid = 0;
+	m_CurrentTaxiPath = NULL;
+	m_setflycheat = false;
+	m_fallDisabledUntil = 0;
+	m_lfgMatch = NULL;
+	m_lfgInviterGuid = 0;
+	m_mountCheckTimer = 0;
+	m_taxiMapChangeNode = 0;
+	m_startMoveTime = 0;
+	m_canCastSpellsWhileDead = false;
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
-		m_movementBuffer.reserve(5000);
+	m_movementBuffer.reserve(5000);
 #endif
 
-		m_heartbeatDisable = 0;
-		m_safeFall = 0;
-		m_noFallDamage = false;
-		z_axisposition = 0.0f;
-		m_KickDelay = 0;
-		m_speedhackCheckTimer = 0;
-		m_speedChangeInProgress = false;
-		m_passOnLoot = false;
-		m_changingMaps = true;
-		m_vampiricEmbrace = 0;
-		m_magnetAura = NULL;
-		m_lastMoveTime = 0;
-		m_lastMovementPacketTimestamp = 0;
-		m_cheatEngineChances = 2;
-		m_mageInvisibility = false;
-		mWeakenedSoul = false;
-		mForbearance = false;
-		mExhaustion = false;
-		mHypothermia = false;
-		mSated = false;
-		mAvengingWrath = true;
-		m_flyhackCheckTimer = 0;
-		m_bgFlagIneligible = 0;
-		m_moltenFuryDamageIncreasePct = 0;
-		m_insigniaTaken = false;
-		mSpellsUniqueTargets.clear();
+	m_heartbeatDisable = 0;
+	m_safeFall = 0;
+	m_noFallDamage = false;
+	z_axisposition = 0.0f;
+	m_KickDelay = 0;
+	m_speedhackCheckTimer = 0;
+	m_speedChangeInProgress = false;
+	m_passOnLoot = false;
+	m_changingMaps = true;
+	m_vampiricEmbrace = 0;
+	m_magnetAura = NULL;
+	m_lastMoveTime = 0;
+	m_lastMovementPacketTimestamp = 0;
+	m_cheatEngineChances = 2;
+	m_mageInvisibility = false;
+	mWeakenedSoul = false;
+	mForbearance = false;
+	mExhaustion = false;
+	mHypothermia = false;
+	mSated = false;
+	mAvengingWrath = true;
+	m_flyhackCheckTimer = 0;
+	m_bgFlagIneligible = 0;
+	m_moltenFuryDamageIncreasePct = 0;
+	m_insigniaTaken = false;
+	mSpellsUniqueTargets.clear();
 
-		m_wratings.clear();
-		m_QuestGOInProgress.clear();
-		m_removequests.clear();
-		m_finishedQuests.clear();
-		m_finishedDailyQuests.clear();
-		quest_spells.clear();
-		quest_mobs.clear();
-		loginauras.clear();
-		OnMeleeAuras.clear();
-		m_Pets.clear();
-		m_itemsets.clear();
-		m_channels.clear();
-		m_visibleObjects.clear();
-		mSpells.clear();
-		for(uint32 i = 0; i < 21; ++i)
-			m_WeaponSubClassDamagePct[i] = 1.0f;
+	m_wratings.clear();
+	m_QuestGOInProgress.clear();
+	m_removequests.clear();
+	m_finishedQuests.clear();
+	m_finishedDailyQuests.clear();
+	quest_spells.clear();
+	quest_mobs.clear();
+	loginauras.clear();
+	OnMeleeAuras.clear();
+	m_Pets.clear();
+	m_itemsets.clear();
+	m_channels.clear();
+	m_visibleObjects.clear();
+	mSpells.clear();
+
+	for(uint32 i = 0; i < 21; ++i)
+		m_WeaponSubClassDamagePct[i] = 1.0f;
 
 	Unit::Init();
 }
 
 void Player::OnLogin()
 {
-
 }
-
 
 Player::~Player ( )
 {
@@ -745,10 +743,10 @@ bool Player::Create(WorldPacket& data )
 	uint8 powertype = myClass->power_type;
 
 	// Automatically add the race's taxi hub to the character's taximask at creation time ( 1 << (taxi_node_id-1) )
-	memset(m_taximask,0,sizeof(m_taximask));
+	memset(m_taximask, 0, sizeof(m_taximask));
 	if(class_ == DEATHKNIGHT)
 	{
-		for(uint8 i=0;i<12;++i)
+		for(uint8 i = 0; i < 12; ++i)
 			m_taximask[i] |= DKNodesMask[i];
 	}
 
@@ -829,8 +827,8 @@ bool Player::Create(WorldPacket& data )
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId - gender );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId - gender );
 	}
-	//SetFloatValue(UNIT_FIELD_MINDAMAGE, info->mindmg );
-	//SetFloatValue(UNIT_FIELD_MAXDAMAGE, info->maxdmg );
+	// SetFloatValue(UNIT_FIELD_MINDAMAGE, info->mindmg );
+	// SetFloatValue(UNIT_FIELD_MAXDAMAGE, info->maxdmg );
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, info->attackpower );
 	SetUInt32Value(PLAYER_BYTES, ((skin) | (face << 8) | (hairStyle << 16) | (hairColor << 24)));
 	//PLAYER_BYTES_2							   GM ON/OFF	 BANKBAGSLOTS   RESTEDSTATE
