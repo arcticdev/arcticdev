@@ -644,7 +644,7 @@ protected:
 	
 	set<uint32> m_disabled_spells;
 
-	uint64 TransportersCount;
+	uint32 TransportersCount;
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*> m_playersinfo;
 	PlayerNameStringIndexMap m_playersInfoByName;
 	

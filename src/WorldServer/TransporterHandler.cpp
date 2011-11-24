@@ -422,8 +422,7 @@ void ObjectMgr::LoadTransporters()
 	QueryResult * QR = WorldDatabase.Query("SELECT entry FROM gameobject_names WHERE type = %u", GAMEOBJECT_TYPE_MO_TRANSPORT);
 	if(!QR) return;
 
-	int64 total = QR->GetRowCount();
-	TransportersCount=total;
+	TransportersCount = QR->GetRowCount();
 	do 
 	{
 		uint32 entry = QR->Fetch()[0].GetUInt32();
@@ -435,7 +434,7 @@ void ObjectMgr::LoadTransporters()
 			pTransporter->Destructor();
 		}else
 		{
-            AddTransport(pTransporter);
+			AddTransport(pTransporter);
 
 			QueryResult * result2 = WorldDatabase.Query("SELECT * FROM transport_creatures WHERE transport_entry = %u", entry);
 			if(result2)
