@@ -942,6 +942,28 @@ AVNode::AVNode( AlteracValley* parent, AVNodeTemplate *tmpl, uint32 nodeid) : m_
 
 AVNode::~AVNode()
 {
+	if(m_boss && !m_boss->IsInWorld())
+		m_boss->Destructor();
+
+	if(m_flag && !m_flag->IsInWorld())
+		m_flag->Destructor();
+
+	if(m_aura && !m_aura->IsInWorld())
+		m_aura->Destructor();
+
+	if(m_glow && !m_glow->IsInWorld())
+		m_glow->Destructor();
+
+	if(m_homeNPC && !m_homeNPC->IsInWorld())
+		m_homeNPC->Destructor();
+
+	if(m_spiritGuide && !m_spiritGuide->IsInWorld())
+		m_spiritGuide->Destructor();
+
+	vector<Creature*>::iterator itr;
+	for(itr = m_guards.begin(); itr != m_guards.end(); ++itr)
+		(*itr)->Destructor();
+	m_guards.clear();
 
 }
 
@@ -1380,7 +1402,11 @@ void AlteracValley::Init()
 
 AlteracValley::~AlteracValley()
 {
-
+	for(uint8 i = 0; i < AV_NUM_CONTROL_POINTS; ++i)
+	{
+		if(m_nodes[i])
+		delete m_nodes[i];
+	}
 }
 
 bool AlteracValley::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
