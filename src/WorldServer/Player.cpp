@@ -967,12 +967,10 @@ void Player::Update( uint32 p_time )
 	{
 		if( m_AutoShotAttackTimer > p_time )
 		{
-			//OUT_DEBUG( "HUNTER AUTOSHOT 0) %i, %i", m_AutoShotAttackTimer, p_time );
 			m_AutoShotAttackTimer -= p_time;
 		}
 		else
 		{
-			//OUT_DEBUG( "HUNTER AUTOSHOT 1) %i", p_time );
 			EventRepeatSpell();
 		}
 	}
@@ -1091,30 +1089,27 @@ void Player::Update( uint32 p_time )
 			m_pvpTimer -= p_time;
 	}
 
-	if (GetMapMgr())
+	if( GetMapMgr()->IsCollisionEnabled() && mstime >= m_mountCheckTimer )
 	{
-		if( GetMapMgr()->IsCollisionEnabled() && mstime >= m_mountCheckTimer )
+		if( CollideInterface.IsIndoor( m_mapId, m_position.x, m_position.y, m_position.z ) )
 		{
-			if( CollideInterface.IsIndoor( m_mapId, m_position.x, m_position.y, m_position.z ) )
+			//Mount expired?
+			if(IsMounted())
 			{
-				//Mount expired?
-				if(IsMounted())
-				{
-					// Qiraj battletanks work everywhere on map 531
-					if (! (m_mapId == 531 && ( m_MountSpellId == 25953 || m_MountSpellId == 26054 || m_MountSpellId == 26055 || m_MountSpellId == 26056 )) )
-						TO_UNIT(this)->Dismount();
-				}
-				// Now remove all auras that are only usable outdoors (e.g. Travel form)
-				for(uint32 x=0;x<MAX_AURAS;x++)
-				{
-					if(m_auras[x] != NULL && m_auras[x]->m_spellProto && (m_auras[x]->m_spellProto->Attributes & ATTRIBUTES_ONLY_OUTDOORS))
-					{
-						RemoveAuraBySlot(x);
-					}
-				}
+				// Qiraj battletanks work everywhere on map 531
+				if (! (m_mapId == 531 && ( m_MountSpellId == 25953 || m_MountSpellId == 26054 || m_MountSpellId == 26055 || m_MountSpellId == 26056 )) )
+					TO_UNIT(this)->Dismount();
 			}
-			m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
+			// Now remove all auras that are only usable outdoors (e.g. Travel form)
+			for(uint32 x=0;x<MAX_AURAS;x++)
+			{
+				if(m_auras[x] != NULL && m_auras[x]->m_spellProto && (m_auras[x]->m_spellProto->Attributes & ATTRIBUTES_ONLY_OUTDOORS))
+				{
+					RemoveAuraBySlot(x);
+				}
+			}	
 		}
+		m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
 	}
 
 	if( mstime >= m_speedhackCheckTimer )
@@ -4988,50 +4983,8 @@ void Player::SetTutorialInt(uint32 intId, uint32 value)
 	tutorialsDirty = true;
 }
 
-//Player stats calculation for saving at lvl up, etc
-/*void Player::CalcBaseStats()
-{//TO_PLAYER(TO_PLAYER(this))->getClass() == HUNTER ||
-	//TODO take into account base stats at create
-	uint32 AP, RAP;
-	//Save AttAck power
-	if(getClass() == ROGUE || getClass() == HUNTER)
-	{
-		AP = GetBaseUInt32Value(UNIT_FIELD_STAT0) + GetBaseUInt32Value(UNIT_FIELD_STAT1);
-		RAP = (GetBaseUInt32Value(UNIT_FIELD_STAT1) * 2);
-		SetBaseUInt32Value(UNIT_FIELD_ATTACK_POWER, AP);
-		SetBaseUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER, RAP);
-	}
-	else
-	{
-		AP = (GetBaseUInt32Value(UNIT_FIELD_STAT0) * 2);
-		RAP = (GetBaseUInt32Value(UNIT_FIELD_STAT1) * 2);
-		SetBaseUInt32Value(UNIT_FIELD_ATTACK_POWER, AP);
-		SetBaseUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER, RAP);
-	}
-
-}*/
-
 void Player::UpdateHit(int32 hit)
 {
-   /*std::list<Affect*>::iterator i;
-	Affect::ModList::const_iterator j;
-	Affect *aff;
-	uint32 in = hit;
-	for (i = GetAffectBegin(); i != GetAffectEnd(); i++)
-	{
-		aff = *i;
-		for (j = aff->GetModList().begin();j != aff->GetModList().end(); j++)
-		{
-			Modifier mod = (*j);
-			if ((mod.GetType() == SPELL_AURA_MOD_HIT_CHANCE))
-			{
-				SpellEntry *spellInfo = sSpellStore.LookupEntry(aff->GetSpellId());
-				if (this->canCast(spellInfo))
-					in += mod.GetAmount();
-			}
-		}
-	}
-	SetHitFromSpell(in);*/
 }
 
 void Player::UpdateChances()
