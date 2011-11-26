@@ -240,12 +240,6 @@ LootMgr::~LootMgr()
 
 void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 {
-  /*  DBCFile *dbc = new DBCFile();
-	dbc->open("DBC/ItemRandomProperties.dbc");
-	_propCount = dbc->getRecordCount();
-	delete dbc;*/
-	//HM_NAMESPACE::hash_map<uint32, std::vector<loot_tb> > loot_db;
-	//HM_NAMESPACE::hash_map<uint32, std::vector<loot_tb> >::iterator itr;
 	DEBUG_LOG("LootMgr","Attempting to load loot from table %s...", szTableName);
 	vector< pair< uint32, vector< tempy > > > db_cache;
 	vector< pair< uint32, vector< tempy > > >::iterator itr;
@@ -337,7 +331,6 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 					{
 						if(proto->Class == ITEM_CLASS_QUEST)
 						{
-							//printf("Quest item \"%s\" allocated to quest ", proto->Name1.c_str());
 							sQuestMgr.SetGameObjectLootQuest(itr->first, itemid);
 							quest_loot_go[entry_id].insert(proto->ItemId);
 						}
@@ -350,7 +343,6 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 	}
 
 	Log.Notice("LootMgr","%d loot templates loaded from %s", db_cache.size(), szTableName);
- //   loot_db.clear();
 	delete result;
 }
 
@@ -465,7 +457,7 @@ void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenc
 void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, bool heroic)
 {
 	loot->items.clear();
-	loot->gold =0;
+	loot->gold = 0;
 	
 	LootStore::iterator tab =CreatureLoot.find(loot_id);
 	if( CreatureLoot.end()==tab)
@@ -477,7 +469,7 @@ void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, bool heroic)
 void LootMgr::FillGOLoot(Loot * loot,uint32 loot_id, bool heroic)
 {
 	loot->items.clear ();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab =GOLoot.find(loot_id);
 	if( GOLoot.end()==tab)return;
@@ -507,7 +499,7 @@ void LootMgr::FillGatheringLoot(Loot * loot,uint32 loot_id)
 void LootMgr::FillPickpocketingLoot(Loot * loot,uint32 loot_id)
 {
 	loot->items.clear();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab =PickpocketingLoot.find(loot_id);
 	if( PickpocketingLoot.end()==tab)return;
@@ -517,7 +509,7 @@ void LootMgr::FillPickpocketingLoot(Loot * loot,uint32 loot_id)
 void LootMgr::FillDisenchantingLoot(Loot *loot, uint32 loot_id)
 {
 	loot->items.clear();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab = DisenchantingLoot.find(loot_id);
 	if( DisenchantingLoot.end()==tab)
@@ -529,7 +521,7 @@ void LootMgr::FillDisenchantingLoot(Loot *loot, uint32 loot_id)
 void LootMgr::FillProspectingLoot(Loot *loot, uint32 loot_id)
 {
 	loot->items.clear();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab = ProspectingLoot.find(loot_id);
 	if( ProspectingLoot.end()==tab)
@@ -541,7 +533,7 @@ void LootMgr::FillProspectingLoot(Loot *loot, uint32 loot_id)
 void LootMgr::FillMillingLoot(Loot *loot, uint32 loot_id)
 {
 	loot->items.clear();
-	loot->gold =0;
+	loot->gold = 0;
 
 	LootStore::iterator tab = MillingLoot.find(loot_id);
 	if( MillingLoot.end()==tab)
@@ -668,7 +660,6 @@ void LootRoll::Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid,
 
 LootRoll::~LootRoll()
 {
-	
 }
 
 void LootRoll::Finalize()

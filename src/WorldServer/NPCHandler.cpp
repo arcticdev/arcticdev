@@ -713,7 +713,6 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 #undef BIND_SPELL_ID
 }
 
-
 void WorldSession::SendSpiritHealerRequest(Creature* pCreature)
 {
 	WorldPacket data(SMSG_SPIRIT_HEALER_CONFIRM, 8);

@@ -1259,7 +1259,6 @@ void Spell::cast(bool check)
 		{
 			if(!TakePower() && !m_triggeredSpell) //not enough mana
 			{
-				//OUT_DEBUG("Spell::Not Enough Mana");
 				SendInterrupted(SPELL_FAILED_NO_POWER);
 				SendCastResult(SPELL_FAILED_NO_POWER);
 				finish();
@@ -2003,10 +2002,8 @@ void Spell::SendCastResult(uint8 result)
 		Extra = m_spellInfo->Totem[1] ? m_spellInfo->Totem[1] : m_spellInfo->Totem[0];
 		break;
 
-	//case SPELL_FAILED_TOTEM_CATEGORY: seems to be fully client sided.
 	}
 
-	//plr->SendCastResult(m_spellInfo->Id, result, extra_cast_number, Extra);
 	if( Extra )
 	{
 		packetSMSG_CASTRESULT_EXTRA pe;
