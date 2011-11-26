@@ -964,9 +964,6 @@ AVNode::~AVNode()
 	for(itr = m_guards.begin(); itr != m_guards.end(); ++itr)
 		(*itr)->Destructor();
 
-	vector<Creature*>::iterator itr;
-	for(itr = m_guards.begin(); itr != m_guards.end(); ++itr)
-		(*itr)->Destructor();
 	m_guards.clear();
 }
 
