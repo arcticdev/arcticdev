@@ -955,12 +955,12 @@ public:
 	void CalcDamage();
 	uint32 GetMainMeleeDamage(uint32 AP_owerride); //i need this for windfury
 
-    const uint64& GetSelection( ) const { return m_curSelection; }
-	void SetSelection(const uint64 &guid) { m_curSelection = guid; }
+	ARCTIC_INLINE const uint64& GetSelection( ) const { return m_curSelection; }
+	ARCTIC_INLINE void SetSelection(const uint64 &guid) { m_curSelection = guid; }
 	
-    /************************************************************************/
-    /* Spells                                                               */
-    /************************************************************************/
+	/************************************************************************/
+	/* Spells                                                               */
+	/************************************************************************/
 	bool HasSpell(uint32 spell);
 	bool HasDeletedSpell(uint32 spell);
 	void smsg_InitialSpells();
@@ -971,7 +971,7 @@ public:
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
 
-    // PLEASE DO NOT INLINE!
+    // Please do not inline!
     void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)
     {
         m_onStrikeSpells.insert( map< SpellEntry*, pair<uint32, uint32> >::value_type( sp, make_pair( delay, 0 ) ) );
@@ -1005,7 +1005,6 @@ public:
 	void AddShapeShiftSpell(uint32 id);
 	void RemoveShapeShiftSpell(uint32 id);
 	void CheckSpellUniqueTargets(SpellEntry *sp, uint64 guid);
-
 
     /************************************************************************/
     /* Actionbar                                                            */
@@ -1058,19 +1057,13 @@ public:
 	/************************************************************************/
 	/* Groups                                                               */
 	/************************************************************************/
-	void                SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
-	ARCTIC_INLINE uint32       GetInviter() { return m_GroupInviter; }
-	ARCTIC_INLINE bool         InGroup() { return (m_playerInfo->m_Group != NULL && !m_GroupInviter); }
-	bool                IsGroupLeader()
-	{
-		if(m_playerInfo->m_Group != NULL)
-		{
-			if(m_playerInfo->m_Group->GetLeader() == m_playerInfo)
-				return true;
-		}
-		return false;
-	}
+	ARCTIC_INLINE void			SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
+	ARCTIC_INLINE uint32		GetInviter() { return m_GroupInviter; }
+	ARCTIC_INLINE bool			InGroup() { return (m_playerInfo->m_Group != NULL && !m_GroupInviter); }
+	ARCTIC_INLINE bool			IsGroupLeader() { return (m_playerInfo->m_Group != NULL && m_playerInfo->m_Group->GetLeader() == m_playerInfo); }
+
 	bool IsGroupMember(Player* plyr);
+
 	ARCTIC_INLINE int		HasBeenInvited() { return m_GroupInviter != 0; }
 	ARCTIC_INLINE Group*	GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
 	ARCTIC_INLINE uint32	GetGroupID() { return m_playerInfo != NULL ? m_playerInfo->m_Group? m_playerInfo->m_Group->GetID(): NULL: NULL; }
@@ -1090,8 +1083,8 @@ public:
 	ARCTIC_INLINE void		UnSetBanned() { m_banned = 0; }
 	ARCTIC_INLINE string	GetBanReason() {return m_banreason;}
 
-	void SetGuardHostileFlag(bool val) { if(val) SetFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); else RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); UpdateOppFactionSet(); }
-	void CreateResetGuardHostileFlagEvent()
+	ARCTIC_INLINE void SetGuardHostileFlag(bool val) { if(val) SetFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); else RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); UpdateOppFactionSet(); }
+	ARCTIC_INLINE void CreateResetGuardHostileFlagEvent()
 	{
 		event_RemoveEvents( EVENT_GUARD_HOSTILE );
 		sEventMgr.AddEvent(this, &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
@@ -1102,34 +1095,36 @@ public:
 	/************************************************************************/
 	/* Guilds                                                               */
 	/************************************************************************/
-	ARCTIC_INLINE  bool        IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
-	ARCTIC_INLINE uint32       GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
-	void                SetGuildId(uint32 guildId);
-	ARCTIC_INLINE uint32       GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
-	void                SetGuildRank(uint32 guildRank);
-	uint32              GetGuildInvitersGuid() { return m_invitersGuid; }
-	void                SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
-	void                UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
+
+	ARCTIC_INLINE bool IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
+	ARCTIC_INLINE uint32 GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
+	void SetGuildId(uint32 guildId);
+	ARCTIC_INLINE uint32 GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
+	void SetGuildRank(uint32 guildRank);
+	ARCTIC_INLINE uint32 GetGuildInvitersGuid() { return m_invitersGuid; }
+	ARCTIC_INLINE void SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
+	ARCTIC_INLINE void UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
 
 	/************************************************************************/
 	/* Duel                                                                 */
 	/************************************************************************/
-	void                RequestDuel(Player* pTarget);
-	void                DuelBoundaryTest();
-	void                EndDuel(uint8 WinCondition);
-	void                DuelCountdown();
-	void                SetDuelStatus(uint8 status) { m_duelStatus = status; }
-	ARCTIC_INLINE uint8        GetDuelStatus() { return m_duelStatus; }
-	void                SetDuelState(uint8 state) { m_duelState = state; }
-	ARCTIC_INLINE uint8        GetDuelState() { return m_duelState; }
+
+	void RequestDuel(Player* pTarget);
+	void DuelBoundaryTest();
+	void EndDuel(uint8 WinCondition);
+	void DuelCountdown();
+	ARCTIC_INLINE void SetDuelStatus(uint8 status) { m_duelStatus = status; }
+	ARCTIC_INLINE uint8 GetDuelStatus() { return m_duelStatus; }
+	ARCTIC_INLINE void SetDuelState(uint8 state) { m_duelState = state; }
+	ARCTIC_INLINE uint8 GetDuelState() { return m_duelState; }
 	// duel variables
-	Player*             DuelingWith;
+	Player *DuelingWith;
 
 	/************************************************************************/
 	/* Trade                                                                */
 	/************************************************************************/
-	void                SendTradeUpdate(void);
-	void         ResetTradeVariables()
+	void SendTradeUpdate(void);
+	ARCTIC_INLINE void ResetTradeVariables()
 	{
 		mTradeGold = 0;
 		for(uint8 i = 0; i < 7; ++i)
@@ -1156,18 +1151,18 @@ public:
 		else
 			return NULL;
 	}
-	void						SpawnPet(uint32 pet_number);
-	void						DespawnPet();
-	uint32						GetFirstPetNumber(void)
+	void SpawnPet(uint32 pet_number);
+	void DespawnPet();
+	ARCTIC_INLINE uint32 GetFirstPetNumber(void)
 	{
 		if(m_Pets.size() == 0) return 0;
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
 		return itr->first;
 	}
-	ARCTIC_INLINE PlayerPet*	GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
-	ARCTIC_INLINE void			SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
-	ARCTIC_INLINE uint8			GetStableSlotCount(void) { return m_StableSlotCount; }
-	uint8						GetUnstabledPetNumber(void)
+	ARCTIC_INLINE PlayerPet* GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
+	ARCTIC_INLINE void SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
+	ARCTIC_INLINE uint8 GetStableSlotCount(void) { return m_StableSlotCount; }
+	ARCTIC_INLINE uint8 GetUnstabledPetNumber(void)
 	{
 		if(m_Pets.size() == 0) return 0;
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
@@ -1176,16 +1171,16 @@ public:
 				return itr->first;
 		return NULL;
 	}
-	/*if we charmed or simply summoned a pet, this function should get called*/
+	/* if we charmed or simply summoned a pet, this function should get called*/
 	void EventSummonPet(Pet* new_pet); 
-	/*if pet/charm died or whatever happned we should call this function*/
+	/* if pet/charm died or whatever happned we should call this function*/
 	void EventDismissPet();
 
 	/************************************************************************/
 	/* Item Interface                                                       */
 	/************************************************************************/
 	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
-	ARCTIC_INLINE void         ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
+	ARCTIC_INLINE void ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
 	// item interface variables
 	ItemInterface *     m_ItemInterface;
 
@@ -1196,20 +1191,20 @@ public:
 	/* Loot                                                                 */
 	/************************************************************************/
 	ARCTIC_INLINE const uint64& GetLootGUID() const { return m_lootGuid; }
-	ARCTIC_INLINE void         SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
-	void                SendLoot(uint64 guid,uint8 loot_type);
+	ARCTIC_INLINE void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
+	void SendLoot(uint64 guid,uint8 loot_type);
 	// loot variables
-	uint64              m_lootGuid;
-	uint64              m_currentLoot;
-	bool                m_insigniaTaken;
+	uint64 m_lootGuid;
+	uint64 m_currentLoot;
+	bool m_insigniaTaken;
 
 	/************************************************************************/
 	/* World Session                                                        */
 	/************************************************************************/
 	ARCTIC_INLINE WorldSession* GetSession() const { return m_session; }
-	void SetSession(WorldSession *s) { m_session = s; }
-	void SetBindPoint(float x, float y, float z, uint32 m, uint32 v) { m_bind_pos_x = x; m_bind_pos_y = y; m_bind_pos_z = z; m_bind_mapid = m; m_bind_zoneid = v;}
-	void SendDelayedPacket(WorldPacket *data, bool bDeleteOnSend)
+	ARCTIC_INLINE void SetSession(WorldSession *s) { m_session = s; }
+	ARCTIC_INLINE void SetBindPoint(float x, float y, float z, uint32 m, uint32 v) { m_bind_pos_x = x; m_bind_pos_y = y; m_bind_pos_z = z; m_bind_mapid = m; m_bind_zoneid = v;}
+	ARCTIC_INLINE void SendDelayedPacket(WorldPacket *data, bool bDeleteOnSend)
 	{
 		if(data == NULL) return;
 		if(GetSession() != NULL) GetSession()->SendPacket(data);
@@ -1264,7 +1259,7 @@ public:
     /************************************************************************/
 	void SetMovement(uint8 pType, uint32 flag);
 	void SetPlayerSpeed(uint8 SpeedType, float value);
-	float GetPlayerSpeed(){return m_runSpeed;}
+	ARCTIC_INLINE float GetPlayerSpeed(){return m_runSpeed;}
 	uint8 m_currentMovement;
 	bool m_isMoving;
 	uint8 m_isWaterWalking;
@@ -1277,14 +1272,14 @@ public:
 	void JoinedChannel(uint32 channelId);
 	void LeftChannel(uint32 channelId);
 	void CleanupChannels();
-	//Attack stuff
+	// Attack stuff
 	void EventAttackStart();
 	void EventAttackStop();
 	void EventAttackUpdateSpeed() { }
 	void EventDeath();
-	//Note:ModSkillLine -> value+=amt;ModSkillMax -->value=amt; --wierd
+
 	float GetSkillUpChance(uint32 id);
-	//ARCTIC_INLINE std::list<struct skilllines>getSkillLines() { return m_skilllines; }
+
 	float SpellCrtiticalStrikeRatingBonus;
 	float SpellHasteRatingBonus;
 	void UpdateAttackSpeed();
@@ -1299,36 +1294,37 @@ public:
 	ARCTIC_INLINE float GetHitFromSpell() { return m_hitfromspell; }
 	ARCTIC_INLINE float GetParryFromSpell() { return m_parryfromspell; }
 	ARCTIC_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
-	void SetBlockFromSpell(float value) { m_blockfromspell = value; }
-	void SetSpellCritFromSpell(float value) { m_spellcritfromspell = value; }
-	void SetParryFromSpell(float value) { m_parryfromspell = value; }
-	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
-	void SetHitFromMeleeSpell(float value) { m_hitfrommeleespell = value; }
-	void SetHitFromSpell(float value) { m_hitfromspell = value; }
+	ARCTIC_INLINE void SetBlockFromSpell(float value) { m_blockfromspell = value; }
+	ARCTIC_INLINE void SetSpellCritFromSpell(float value) { m_spellcritfromspell = value; }
+	ARCTIC_INLINE void SetParryFromSpell(float value) { m_parryfromspell = value; }
+	ARCTIC_INLINE void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
+	ARCTIC_INLINE void SetHitFromMeleeSpell(float value) { m_hitfrommeleespell = value; }
+	ARCTIC_INLINE void SetHitFromSpell(float value) { m_hitfromspell = value; }
 	ARCTIC_INLINE int32 GetHealthFromSpell() { return m_healthfromspell; }
 	ARCTIC_INLINE uint32 GetManaFromSpell() { return m_manafromspell; }
-	void SetHealthFromSpell(int32 value) { m_healthfromspell = value;}
-	void SetManaFromSpell(uint32 value) { m_manafromspell = value;}
+	ARCTIC_INLINE void SetHealthFromSpell(int32 value) { m_healthfromspell = value;}
+	ARCTIC_INLINE void SetManaFromSpell(uint32 value) { m_manafromspell = value;}
+
 	uint32 CalcTalentResetCost(uint32 resetnum);
+
 	void SendTalentResetConfirm();
 	void SendPetUntrainConfirm();
 	void SendDualTalentConfirm();
-	uint32 GetTalentResetTimes() { return m_talentresettimes; }
-	ARCTIC_INLINE void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
-	void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
-	ARCTIC_INLINE uint8 GetPlayerStatus() { return m_status; }
-	const float& GetBindPositionX( ) const { return m_bind_pos_x; }
-	const float& GetBindPositionY( ) const { return m_bind_pos_y; }
-	const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
-	const uint32& GetBindMapId( ) const { return m_bind_mapid; }
-	const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
-	ARCTIC_INLINE uint8 GetShapeShift()
-	{
-		return GetByte(UNIT_FIELD_BYTES_2,3);
-	}
 
-	
-	void delayAttackTimer(int32 delay)
+	ARCTIC_INLINE uint32 GetTalentResetTimes() { return m_talentresettimes; }
+	ARCTIC_INLINE void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
+	ARCTIC_INLINE void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
+	ARCTIC_INLINE uint8 GetPlayerStatus() { return m_status; }
+
+	ARCTIC_INLINE const float& GetBindPositionX( ) const { return m_bind_pos_x; }
+	ARCTIC_INLINE const float& GetBindPositionY( ) const { return m_bind_pos_y; }
+	ARCTIC_INLINE const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
+	ARCTIC_INLINE const uint32& GetBindMapId( ) const { return m_bind_mapid; }
+	ARCTIC_INLINE const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
+
+	ARCTIC_INLINE uint8 GetShapeShift() { return GetByte(UNIT_FIELD_BYTES_2,3); }
+
+	ARCTIC_INLINE void delayAttackTimer(int32 delay)
 	{
 		if(!delay)
 			return;
@@ -1339,15 +1335,15 @@ public:
 	
 	void SetShapeShift(uint8 ss);
 
-    //Showing Units WayPoints
+    // Showing Units WayPoints
 	AIInterface* waypointunit;
 	
 	uint32 m_nextSave;
-	//Tutorials
+	// Tutorials
 	uint32 GetTutorialInt(uint32 intId );
 	void SetTutorialInt(uint32 intId, uint32 value);
-	//Base stats calculations
-	//void CalcBaseStats();
+	// Base stats calculations
+	// void CalcBaseStats();
 	// Rest
 	uint32 SubtractRestXP(uint32 amount);
 	void AddCalculatedRestXP(uint32 seconds);
@@ -1456,12 +1452,12 @@ public:
 	SpellEntry *m_AutoShotSpell;
 	void _InitialReputation();
 	void UpdateNearbyGameObjects();
-	void EventMassSummonReset() { m_massSummonEnabled = false; }
+	ARCTIC_INLINE void EventMassSummonReset() { m_massSummonEnabled = false; }
 
 	bool m_massSummonEnabled;
 
 	uint32 m_moltenFuryDamageIncreasePct;
-	
+
 	void CalcResistance(uint32 type);
 	ARCTIC_INLINE float res_M_crit_get(){return m_resist_critical[0];}
 	ARCTIC_INLINE void res_M_crit_set(float newvalue){m_resist_critical[0]=newvalue;}
@@ -1577,20 +1573,20 @@ public:
 	bool ARCTIC_FASTCALL CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer, ByteBuffer *pCompressionBuffer);
 	void ClearAllPendingUpdates();
 	
-	uint32 GetArmorProficiency() { return armor_proficiency; }
-	uint32 GetWeaponProficiency() { return weapon_proficiency; }
+	ARCTIC_INLINE uint32 GetArmorProficiency() { return armor_proficiency; }
+	ARCTIC_INLINE uint32 GetWeaponProficiency() { return weapon_proficiency; }
 
 	void ResetHeartbeatCoords();
 
 	// speedhack buster!
-	LocationVector						m_lastHeartbeatPosition;
-	float								m_lastHeartbeatV; // velocity
-	uint32								m_startMoveTime;	// time
-	uint32								m_lastMovementPacketTimestamp;
-	int32								m_heartbeatDisable;
-	uint32								m_lastMoveTime;
-	bool 								m_speedChangeInProgress;
-	uint32								m_flyHackChances;
+	LocationVector m_lastHeartbeatPosition;
+	float m_lastHeartbeatV; // velocity
+	uint32 m_startMoveTime;	// time
+	uint32 m_lastMovementPacketTimestamp;
+	int32 m_heartbeatDisable;
+	uint32 m_lastMoveTime;
+	bool m_speedChangeInProgress;
+	uint32 m_flyHackChances;
 
 	void AddSplinePacket(uint64 guid, ByteBuffer* packet);
 	ByteBuffer* GetAndRemoveSplinePacket(uint64 guid);
@@ -1604,7 +1600,7 @@ public:
 	bool FlyCheat;
 	void ZoneUpdate(uint32 ZoneId);
 	ARCTIC_INLINE uint32 GetAreaID() { return m_AreaID; }
-	void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
+	ARCTIC_INLINE void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
 	ARCTIC_INLINE AreaTable *GetAreaDBC() { return m_areaDBC; }
 	
 	
@@ -1771,21 +1767,18 @@ public:
 	ARCTIC_INLINE void NullComboPoints() { if(!m_retainComboPoints) { m_comboTarget = 0; m_comboPoints = 0; m_spellcomboPoints=0; } UpdateComboPoints(); }
 	uint32 m_speedChangeCounter;
 
-	// HACKKKKK
+	// HACKKKKK =((
 	uint32 m_cheatDeathRank;
 
 	void SendAreaTriggerMessage(const char * message, ...);
-        
-	// Trade Target
-	//Player* getTradeTarget() {return mTradeTarget;};
 
-	ARCTIC_INLINE Player* GetTradeTarget()
+	ARCTIC_INLINE Player * GetTradeTarget()
 	{
 		if(!IsInWorld()) return NULL;
-		return m_mapMgr->GetPlayer((uint32)mTradeTarget);
+		return m_mapMgr->GetPlayer(mTradeTarget);
 	}
 
-	Item* getTradeItem(uint32 slot) {return mTradeItems[slot];};
+	ARCTIC_INLINE Item * getTradeItem(uint32 slot) {return mTradeItems[slot];};
         
 	// Water level related stuff (they are public because they need to be accessed fast)
 	// Nose level of the character (needed for proper breathing)
@@ -1863,15 +1856,17 @@ public:
     /************************************************************************/
     /* Spell Packet wrapper Please keep this separated                      */
     /************************************************************************/
+
     void SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4);
     void SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type);
     void SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 damage);
 	void SendWorldStateUpdate(uint32 WorldState, uint32 Value);
 	void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 	void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);
-    /************************************************************************/
-    /* End of SpellPacket wrapper                                           */
-    /************************************************************************/
+
+	/************************************************************************/
+	/* End of SpellPacket wrapper                                           */
+	/************************************************************************/
 
 	Mailbox* m_mailBox;
 	bool m_waterwalk;
@@ -1888,11 +1883,11 @@ public:
 	void CopyAndSendDelayedPacket(WorldPacket * data);
 	void PartLFGChannel();
 
-	uint32 GetLastLoginTime() { return 	m_timeLogoff; };
+	ARCTIC_INLINE uint32 GetLastLoginTime() { return m_timeLogoff; };
 
-	//Current value of Feral Attack Power from items
+	// Current value of Feral Attack Power from items
 	int32 m_feralAP;
-	bool	hasqueuedpet;
+	bool hasqueuedpet;
 
 protected:
 	uint32 m_timeLogoff;
@@ -2148,7 +2143,7 @@ public:
 
 	// Avenging Wrath...
 	bool mAvengingWrath;
-	void AvengingWrath() { mAvengingWrath = true; }
+	ARCTIC_INLINE void AvengingWrath() { mAvengingWrath = true; }
 	// Talent Specs
 	uint16 m_maxTalentPoints;
 	uint16 GetMaxTalentPoints();
