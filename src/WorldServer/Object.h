@@ -115,7 +115,6 @@ class MapMgr;
 class Vehicle;
 
 /***Casting Defines***/
-
 #define CAST(x,y) static_cast<x*>(y)
 #define TO_PLAYER(ptr) ((Player*)ptr)
 #define TO_UNIT(ptr) ((Unit*)ptr)
@@ -148,6 +147,7 @@ class Vehicle;
 //  Object
 //  Base object for every item, unit, player, corpse, container, etc
 //====================================================================
+
 class SERVER_DECL Object : public EventableObject
 {
 public:

@@ -2136,7 +2136,7 @@ public:
 	{
 		if(duelSpell && (
 				(p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||  
-				(u_caster != NULL && u_caster->IsPet() && TO< Pet* >(u_caster)->GetPetOwner() && TO< Pet* >(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))  
+				(u_caster != NULL && u_caster->IsPet() && TO_PET(u_caster)->GetPetOwner() && TO_PET(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))  
 			return true;
 		else
 			return false;
