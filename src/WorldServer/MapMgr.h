@@ -36,9 +36,9 @@ enum MapMgrTimers
 
 enum ObjectActiveState
 {
-	OBJECT_STATE_NONE	 = 0,
+	OBJECT_STATE_NONE = 0,
 	OBJECT_STATE_INACTIVE = 1,
-	OBJECT_STATE_ACTIVE   = 2,
+	OBJECT_STATE_ACTIVE = 2,
 };
 
 typedef unordered_set<Object* > ObjectSet;
@@ -54,10 +54,9 @@ typedef HM_NAMESPACE::hash_map<uint32, Vehicle*> VehicleSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, GameObject* > GameObjectSqlIdMap;
 
-#define MAX_TRANSPORTERS_PER_MAP 25
-
 class Transporter;
 #define RESERVE_EXPAND_SIZE 1024
+#define MAX_TRANSPORTERS_PER_MAP 25
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func
 
@@ -69,15 +68,15 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 	friend class MapScriptInterface;
 public:
 		
-	//This will be done in regular way soon
+	// This will be done in regular way soon
 
 	Mutex m_objectinsertlock;
 	ObjectSet m_objectinsertpool;
 	void AddObject(Object*);
 
-////////////////////////////////////////////////////////
-// Local (mapmgr) storage/generation of GameObjects
-/////////////////////////////////////////////
+	////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of GameObjects
+	////////////////////////////////////////////////////////
 	typedef HM_NAMESPACE::hash_map<const uint32, GameObject* > GameObjectMap;
 	GameObjectMap m_gameObjectStorage;
 	uint32 m_GOHighGuid;
@@ -95,9 +94,9 @@ public:
 		return (itr != m_gameObjectStorage.end()) ? m_gameObjectStorage[guid] : NULL;
 	}
 
-/////////////////////////////////////////////////////////
-// Local (mapmgr) storage/generation of Vehicles
-/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of Vehicles
+	/////////////////////////////////////////////////////////
 	uint32 m_VehicleArraySize;
 	uint32 m_VehicleHighGuid;
 	HM_NAMESPACE::unordered_map<const uint32,Vehicle*> m_VehicleStorage;
@@ -107,9 +106,9 @@ public:
 	{
 		return guid <= m_VehicleHighGuid ? m_VehicleStorage[guid] : NULL;
 	}
-/////////////////////////////////////////////////////////
-// Local (mapmgr) storage/generation of Creatures
-/////////////////////////////////////////////
+	/////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of Creatures
+	/////////////////////////////////////////////////////////
 	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
 	HM_NAMESPACE::unordered_map<const uint32,Creature*> m_CreatureStorage;
@@ -119,9 +118,9 @@ public:
 	{
 		return guid <= m_CreatureHighGuid ? m_CreatureStorage[guid] : NULL;
 	}
-//////////////////////////////////////////////////////////
-// Local (mapmgr) storage/generation of DynamicObjects
-////////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+	// Local (mapmgr) storage/generation of DynamicObjects
+	////////////////////////////////////////////
 	uint32 m_DynamicObjectHighGuid;
 	typedef HM_NAMESPACE::hash_map<const uint32, DynamicObject*> DynamicObjectStorageMap;
 	DynamicObjectStorageMap m_DynamicObjectStorage;
@@ -133,9 +132,9 @@ public:
 		return (itr != m_DynamicObjectStorage.end()) ? m_DynamicObjectStorage[guid] : NULL;
 	}
 
-//////////////////////////////////////////////////////////
-// Local (mapmgr) storage of pets
-///////////////////////////////////////////
+	//////////////////////////////////////////////////////////
+	// Local (mapmgr) storage of pets
+	//////////////////////////////////////////////////////////
 	typedef HM_NAMESPACE::hash_map<const uint32, Pet*> PetStorageMap;
 	PetStorageMap m_PetStorage;
 	__inline Pet* GetPet(const uint32 guid)
@@ -144,11 +143,11 @@ public:
 		return (itr != m_PetStorage.end()) ? m_PetStorage[guid] : NULL;
 	}
 
-//////////////////////////////////////////////////////////
-// Local (mapmgr) storage of players for faster lookup
-////////////////////////////////
-    
-    // double typedef lolz// a compile breaker..
+	//////////////////////////////////////////////////////////
+	// Local (mapmgr) storage of players for faster lookup
+	//////////////////////////////////////////////////////////
+
+	// double typedef lolz// a compile breaker..
 	typedef HM_NAMESPACE::hash_map<const uint32, Player*> PlayerStorageMap;
 
 	PlayerStorageMap m_PlayerStorage;
@@ -158,9 +157,9 @@ public:
 		return (itr != m_PlayerStorage.end()) ? m_PlayerStorage[guid] : NULL;
 	}
 
-//////////////////////////////////////////////////////////
-// Local (mapmgr) storage of combats in progress
-////////////////////////////////
+	//////////////////////////////////////////////////////////
+	// Local (mapmgr) storage of combats in progress
+	//////////////////////////////////////////////////////////
 	CombatProgressMap _combatProgress;
 	void AddCombatInProgress(uint64 guid)
 	{
@@ -181,9 +180,9 @@ public:
 		return (_combatProgress.size() > 0);
 	}
 
-//////////////////////////////////////////////////////////
-// Lookup Wrappers
-///////////////////////////////////
+	//////////////////////////////////////////////////////////
+	// Lookup Wrappers
+	//////////////////////////////////////////////////////////
 	Unit* GetUnit(const uint64 & guid);
 	Object* _GetObject(const uint64 & guid);
 
@@ -202,7 +201,7 @@ public:
 	void ChangeFarsightLocation(Player* plr, Unit* farsight, bool apply);
 	void ChangeFarsightLocation(Player* plr, float X, float Y, bool apply);
 
-	//! Mark object as updated
+	// Mark object as updated
 	void ObjectUpdated(Object* obj);
 	void UpdateCellActivity(uint32 x, uint32 y, int radius);
 
@@ -289,12 +288,12 @@ public:
 
 protected:
 
-	//! Collect and send updates to clients
+	// Collect and send updates to clients
 	void _UpdateObjects();
 
 private:
-	//! Objects that exist on map
- 
+	// Objects that exist on map
+
 	uint32 _mapId;
 	set<Object* > _mapWideStaticObjects;
 
@@ -370,7 +369,6 @@ public:
 	void RemoveAuraFromPlayers(int32 iFactionMask, uint32 uAuraId);
 	void RemovePositiveAuraFromPlayers(int32 iFactionMask, uint32 uAuraId);
 	void CastSpellOnPlayers(int32 iFactionMask, uint32 uSpellId);
-
 
 public:
 
