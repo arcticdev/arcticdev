@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _RCONSOLECOMMANDS_H
-#define _RCONSOLECOMMANDS_H
+#pragma once
 
 #include <Console/BaseConsole.h>
 
@@ -27,5 +26,3 @@ bool HandleRehashCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleBackupDBCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleSaveAllCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[]);
-
-#endif

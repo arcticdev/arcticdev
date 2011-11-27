@@ -4,10 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef REALMSERVER_CHAT_H
-#define REALMSERVER_CHAT_H
-
-//#include "SkillNameMgr.h"
+#pragma once
 
 class ChatHandler;
 class Session;
@@ -131,6 +128,4 @@ protected:
 	void SendMultilineMessage(Session *m_session, const char *str);
 };
 
-
 #define sChatHandler ChatHandler::getSingleton()
-#endif

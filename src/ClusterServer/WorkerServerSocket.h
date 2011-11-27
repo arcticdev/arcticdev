@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 class WServer;
 class Session;
 class WSSocket : public Socket

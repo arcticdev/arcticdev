@@ -202,7 +202,7 @@ void ClientMgr::DestroyRPlayerInfo(uint32 guid)
 	RPlayerInfo * rp;
 	m_lock.AcquireWriteLock();
 	ClientMap::iterator itr = m_clients.find(guid);
-	//no need for sync here, were under a write lock
+	// no need for sync here, were under a write lock
 	if(itr != m_clients.end() && --itr->second->references == 0)
 	{
 		rp = itr->second;

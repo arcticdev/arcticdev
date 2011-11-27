@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __RSTDAFX_H
-#define __RSTDAFX_H
+#pragma once
 
 #include <list>
 #include <vector>
@@ -61,5 +60,3 @@
 #include "Chat.h"
 #include "Channel.h"
 #include "ChannelMgr.h"
-
-#endif

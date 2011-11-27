@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __LOGON_COMM_SERVER_H
-#define __LOGON_COMM_SERVER_H
+#pragma once
 
 #include <RC4Engine.h>
 
@@ -50,5 +49,3 @@ public:
 };
 
 typedef void (LogonCommServerSocket::*logonpacket_handler)(WorldPacket&);
-
-#endif

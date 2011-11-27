@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _WORKER_OPCODES_H
-#define _WORKER_OPCODES_H
+#pragma once
 
 enum WorkerServerOpcodes
 {
@@ -67,7 +66,3 @@ enum cmsg_channel_update
 	PART_ALL_CHANNELS                      = 2,
 	JOIN_ALL_CHANNELS                      = 3,
 };
-
-#endif		// _WORKER_OPCODES_H
-
-

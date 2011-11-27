@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #include "../libs/CallBack.h"
 
 template<class Type>

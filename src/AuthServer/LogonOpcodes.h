@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __LOGONOPCODES_H
-#define __LOGONOPCODES_H
+#pragma once
 
 enum RealmListOpcodes
 {
@@ -51,5 +50,3 @@ enum RealmListOpcodes
 	// count
 	RMSG_COUNT									= 20,
 };
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef OBJECT_STORAGE_H
-#define OBJECT_STORAGE_H
+#pragma once
 
 extern SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >				ItemPrototypeStorage;
 extern SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >				CreatureNameStorage;
@@ -18,7 +17,3 @@ extern SQLStorage<MapInfo, HashMapStorageContainer<MapInfo> >						WorldMapInfoS
 void Storage_Cleanup();
 void Storage_Load();
 bool Storage_ReloadTable(const char * TableName);
-
-#endif
-
-

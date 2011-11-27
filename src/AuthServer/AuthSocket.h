@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef AUTHSOCKET_H
-#define AUTHSOCKET_H
+#pragma once
 
 #include "AccountCache.h"
 #include "AuthStructs.h"
@@ -82,5 +81,3 @@ public:
 	Patch * m_patch;
 	PatchJob * m_patchJob;
 };
-
-#endif

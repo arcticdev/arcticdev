@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef RLOGONCOMMHANDLER_H
-#define RLOGONCOMMHANDLER_H
+#pragma once
 
 typedef struct
 {
@@ -104,6 +103,3 @@ public:
 };
 
 #define sLogonCommHandler LogonCommHandler::getSingleton()
-
-#endif
-

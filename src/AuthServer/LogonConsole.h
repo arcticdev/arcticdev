@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __LOGONCONSOLE_H
-#define __LOGONCONSOLE_H
+#pragma once
 
 #include "Common.h"
 
@@ -45,5 +44,3 @@ protected:					// Protected methods:
 };
 
 #define sLogonConsole LogonConsole::getSingleton()
-
-#endif

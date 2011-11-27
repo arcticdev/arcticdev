@@ -30,7 +30,6 @@ void WServer::InitHandlers()
 
 WServer::WServer(uint32 id, WSSocket * s) : m_id(id), m_socket(s)
 {
-
 }
 
 void WServer::HandleRegisterWorker(WorldPacket & pck)

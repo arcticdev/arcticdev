@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #define MAX_WORKER_SERVERS 100
 #define MAX_SINGLE_MAPID 600
 

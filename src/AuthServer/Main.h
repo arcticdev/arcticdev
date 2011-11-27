@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #include "../libs/Singleton.h"
 
 extern bool mrunning;

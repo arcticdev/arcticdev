@@ -5,6 +5,7 @@
  */
 
 #include "LogonStdAfx.h"
+
 initialiseSingleton(AccountMgr);
 initialiseSingleton(IPBanner);
 initialiseSingleton(InformationCore);
@@ -99,8 +100,7 @@ void AccountMgr::AddAccount(Field* field)
 	{
 		//Accounts should be unbanned once the date is past their set expiry date.
 		acct->Banned = 0;
-		//me go boom :(
-		//printf("Account %s's ban has expired.\n",acct->UsernamePtr->c_str());
+
 		sLogonSQL->Execute("UPDATE accounts SET banned = 0 WHERE acct=%u",acct->AccountId);
 	}
 	acct->SetGMFlags(GMFlags.c_str());
@@ -121,7 +121,7 @@ void AccountMgr::AddAccount(Field* field)
 	if ( (uint32)UNIXTIME > acct->Muted && acct->Muted != 0 && acct->Muted != 1) //1 = perm ban?
 	{
 		//Accounts should be unbanned once the date is past their set expiry date.
-		acct->Muted= 0;
+		acct->Muted = 0;
 		DEBUG_LOG("AccountMgr","Account %s's mute has expired.", Username.c_str());
 		sLogonSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u",acct->AccountId);
 	}
@@ -154,7 +154,7 @@ void AccountMgr::AddAccount(Field* field)
 				if( bn.GetNumBytes() < 20 )
 				{
 					memcpy(acct->SrpHash, bn.AsByteArray(), bn.GetNumBytes());
-					for (int n=bn.GetNumBytes(); n<=19; n++)
+					for (int n=bn.GetNumBytes(); n <= 19; n++)
 						acct->SrpHash[n] = (uint8)0;
 					reverse_array(acct->SrpHash, 20);
 				}
@@ -188,7 +188,6 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 
 	if(id != acct->AccountId)
 	{
-		//printf("Account %u `%s` is a duplicate.\n", id, acct->Username.c_str());
 		sLog.outColor(TYELLOW, " >> deleting duplicate account %u [%s]...", id, Username.c_str());
 		sLog.outColor(TNORMAL, "\n");
 		sLogonSQL->Execute("DELETE FROM accounts WHERE acct=%u", id);

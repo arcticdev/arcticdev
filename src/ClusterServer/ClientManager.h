@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #define MAX_SESSIONS 3000
 
 class ClientMgr : public Singleton<ClientMgr>
