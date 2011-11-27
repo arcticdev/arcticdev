@@ -1092,46 +1092,9 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			if( pGroup != NULL )
 				pGroup->HandleUpdateFieldChange( index, TO_PLAYER(this) );
 		}
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-		case UNIT_FIELD_LEVEL:
-		case PLAYER_XP:
-			TO_PLAYER(this)->save_LevelXP();
-			break;
-
-		case PLAYER_FIELD_COINAGE:
-			TO_PLAYER(this)->save_Gold();
-			break;
-		}
-#endif
 	}
 }
 
-/*
-//must be in %
-void Object::ModPUInt32Value(const uint32 index, const int32 value, bool apply )
-{
-	ASSERT( index < m_valuesCount );
-	int32 basevalue = (int32)m_uint32Values[ index ];
-	if(apply)
-		m_uint32Values[ index ] += ((basevalue*value)/100);
-	else
-		m_uint32Values[ index ] = (basevalue*100)/(100+value);
-
-	if(IsInWorld())
-	{
-		m_updateMask.SetBit( index );
-
-		if(!m_objectUpdated )
-		{
-			m_mapMgr->ObjectUpdated(this);
-			m_objectUpdated = true;
-		}
-	}
-}
-*/
 uint32 Object::GetModPUInt32Value(const uint32 index, const int32 value)
 {
 	ASSERT( index < m_valuesCount );
@@ -1167,20 +1130,6 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 		// mana and energy regen
 		if( index == UNIT_FIELD_POWER1 || index == UNIT_FIELD_POWER4 )
 			TO_PLAYER( this )->SendPowerUpdate();
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-		case UNIT_FIELD_LEVEL:
-		case PLAYER_XP:
-			TO_PLAYER(this)->save_LevelXP();
-			break;
-
-		case PLAYER_FIELD_COINAGE:
-			TO_PLAYER(this)->save_Gold();
-			break;
-		}
-#endif
 	}
 }
 
@@ -1204,19 +1153,6 @@ void Object::ModSignedInt32Value(uint32 index, int32 value )
 
 	if(m_objectTypeId == TYPEID_PLAYER)
 	{
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-		case UNIT_FIELD_LEVEL:
-		case PLAYER_XP:
-			TO_PLAYER(this)->save_LevelXP();
-			break;
-
-		case PLAYER_FIELD_COINAGE:
-			TO_PLAYER(this)->save_Gold();
-			break;
-		}
-#endif
 	}
 }
 
