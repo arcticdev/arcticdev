@@ -1386,17 +1386,6 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 				{
 						sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 				}break;
-			//rogue	-	Mace Specialization.
-			case  13709:
-			case  13800:
-			case  13801:	
-			case  13802:
-			case  13803:	
-				{
-						sp->procFlags	=	PROC_ON_MELEE_ATTACK;
-		
-				}break;
-
 			//rogue	- Shadowstep
 			case 36563:	
 				{
