@@ -19,8 +19,8 @@ libshared_a_SOURCES = \
     Threading.h \
     Timer.h \
     UnixThreading.h \
-    Util.h \
-    Util.cpp \
+    Utilities/Util.h \
+    Utilities/Util.cpp \
     WinThreading.h \
     WorldPacket.h \
     crc32.cpp \

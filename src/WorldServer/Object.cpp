@@ -1683,12 +1683,6 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			TO_PLAYER(this)->CreateResetGuardHostileFlagEvent();
 		}
 
-/*		if(!pVictim->isInCombat() && pVictim->IsPlayer())
-			sHookInterface.OnEnterCombat( TO_PLAYER( pVictim ), TO_UNIT(this) );
-
-		if(IsPlayer() && ! TO_PLAYER(this)->isInCombat())
-			sHookInterface.OnEnterCombat( TO_PLAYER(this), TO_PLAYER(this) );*/
-			
 		if(IsPet())
 			plr = TO_PET(this)->GetPetOwner();
 		else if(IsPlayer())
