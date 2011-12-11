@@ -13,7 +13,7 @@
 class RWLock
 {
 public: 
-  
+
 	ARCTIC_INLINE void AcquireReadLock()
 	{
 		//_lock.Acquire();
@@ -22,7 +22,7 @@ public:
 		//_lock.Release();
 		_cond.EndSynchronized();
 	}
-	
+
 	ARCTIC_INLINE void ReleaseReadLock()
 	{
 		//_lock.Acquire();
@@ -51,13 +51,13 @@ public:
 		_cond.EndSynchronized();
 	}
 	ARCTIC_INLINE RWLock() : _cond(&_lock) {_readers=0;_writers=0;}
-  
+
 	private:
 		Mutex _lock;
 		Condition _cond;
 		volatile unsigned int _readers;
 		volatile unsigned int _writers;
-   
-}; 
+
+};
 
 #endif

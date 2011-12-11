@@ -67,8 +67,6 @@ void AchievementInterface::LoadFromDB( QueryResult * pResult )
 
 			uint32 r = atoi(posValue.c_str());
 			ad->counter[i] = r;
-
-			//printf("Loaded achievement: %u, %s\n", ae->ID, ad->completed ? "completed" : "incomplete" );
 		}
 
 		m_achivementDataMap.insert( make_pair( achievementid, ad) );

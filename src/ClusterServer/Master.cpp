@@ -5,14 +5,12 @@
  */
 
 #include "RStdAfx.h"
-#include "../libs/svn_revision.h"
+#include "svn_revision.h"
 #include <Console/CConsole.h>
 
 #ifndef WIN32
 #include <sched.h>
 #endif
-
-#include "svn_revision.h"
 
 #include <signal.h>
 
