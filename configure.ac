@@ -1,4 +1,6 @@
-## Process this file with autoconf to produce a configure script.
+# Process this file with autoconf to produce a configure script.
+# Prelude, basic settings for Autoconf
+# PACKAGE: WoWArcTic Foundation
 
 AC_INIT([ArcTic],
         [3.6],
