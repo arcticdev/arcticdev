@@ -17,7 +17,7 @@
 #include <Network/Network.h>
 
 #include "../libs/Log.h"
-#include "../libs/Util.h"
+#include "../libs/Utilities/Utility.h"
 #include "../libs/ByteBuffer.h"
 #include "../libs/Config/ConfigEnv.h"
 #include <zlib.h>

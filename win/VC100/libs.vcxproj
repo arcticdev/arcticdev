@@ -119,7 +119,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\libs_Debug_Win32\libs.lib</OutputFile>
+      <OutputFile>.\libs_Release_Win32\libs.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
@@ -174,9 +174,6 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
       <Message>Extracting SVN revision...</Message>
-      <Command>cd $(SolutionDir)\..\src\libs
-RevisionExtractor.exe
-</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -213,9 +210,6 @@ RevisionExtractor.exe
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
       <Message>Extracting SVN revision...</Message>
-      <Command>cd $(SolutionDir)\..\src\libs
-RevisionExtractor.exe
-</Command>
     </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -297,7 +291,7 @@ RevisionExtractor.exe
     <ClCompile Include="..\..\src\libs\MemoryLeaks.cpp" />
     <ClCompile Include="..\..\src\libs\MersenneTwister.cpp" />
     <ClCompile Include="..\..\src\libs\StackWalker.cpp" />
-    <ClCompile Include="..\..\src\libs\Utilities\Util.cpp" />
+    <ClCompile Include="..\..\src\libs\Utilities\Utility.cpp" />
     <ClCompile Include="..\..\src\libs\Log.cpp" />
     <ClCompile Include="..\..\src\libs\Console\CConsole.cpp" />
     <ClCompile Include="..\..\src\libs\Console\ConsoleListener.cpp" />
@@ -393,7 +387,7 @@ RevisionExtractor.exe
     <ClInclude Include="..\..\src\libs\StackBuffer.h" />
     <ClInclude Include="..\..\src\libs\StackWalker.h" />
     <ClInclude Include="..\..\src\libs\Timer.h" />
-    <ClInclude Include="..\..\src\libs\Utilities\Util.h" />
+    <ClInclude Include="..\..\src\libs\Utilities\Utility.h" />
     <ClInclude Include="..\..\src\libs\WoWGuid.h" />
     <ClInclude Include="..\..\src\libs\Log.h" />
     <ClInclude Include="..\..\src\libs\NGLog.h" />
