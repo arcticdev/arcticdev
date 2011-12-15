@@ -735,7 +735,7 @@ bool Player::Create(WorldPacket& data )
 		case RACE_GNOME:	AddTaximaskNode(6);							break;
 		case RACE_ORC:		AddTaximaskNode(23);						break;
 		case RACE_TROLL:	AddTaximaskNode(23);						break;
-		case RACE_UNDEAD:	AddTaximaskNode(11);						break;
+		case RACE_UNDEAD_PLAYER:	AddTaximaskNode(11);				break;
 		case RACE_NIGHTELF:	{AddTaximaskNode(26); AddTaximaskNode(27);}	break;
 		case RACE_BLOODELF:	AddTaximaskNode(82);						break;
 		case RACE_DRAENEI:	AddTaximaskNode(94);						break;
@@ -9780,7 +9780,7 @@ void Player::SetNoseLevel()
 			if (getGender()) m_noseLevel = 1.84f;
 			else m_noseLevel = 2.13f;
 		break;
-		case RACE_UNDEAD:
+		case RACE_UNDEAD_PLAYER:
 			if (getGender()) m_noseLevel = 1.61f;
 			else m_noseLevel = 1.8f;
 		break;
