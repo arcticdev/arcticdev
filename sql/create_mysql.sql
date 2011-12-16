@@ -1,0 +1,7 @@
+GRANT USAGE ON * . * TO 'arctic'@'localhost' IDENTIFIED BY 'arctic' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 ;
+CREATE DATABASE `worldserver` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE `characters` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE `logon` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+GRANT ALL PRIVILEGES ON `worldserver` . * TO 'arctic'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `characters` . * TO 'arctic'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON `logon` . * TO 'arctic'@'localhost' WITH GRANT OPTION;

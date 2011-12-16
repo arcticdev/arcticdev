@@ -1,0 +1,11 @@
+REVOKE ALL PRIVILEGES ON * . * FROM 'arctic'@'localhost';
+REVOKE ALL PRIVILEGES ON `worldserver` . * FROM 'arctic'@'localhost';
+REVOKE GRANT OPTION ON `worldserver` . * FROM 'arctic'@'localhost';
+REVOKE ALL PRIVILEGES ON `characters` . * FROM 'arctic'@'localhost';
+REVOKE GRANT OPTION ON `characters` . * FROM 'arctic'@'localhost';
+REVOKE ALL PRIVILEGES ON `logon` . * FROM 'arctic'@'localhost';
+REVOKE GRANT OPTION ON `logon` . * FROM 'arctic'@'localhost';
+DROP USER 'arctic'@'localhost';
+DROP DATABASE IF EXISTS `worldserver`;
+DROP DATABASE IF EXISTS `characters`;
+DROP DATABASE IF EXISTS `logon`;
