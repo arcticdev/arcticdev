@@ -1141,7 +1141,7 @@ uint8 WorldSession::CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldS
 void WorldSession::SendAccountDataTimes(uint32 mask)
 {
 	WorldPacket data( SMSG_ACCOUNT_DATA_TIMES, 68 );
-	data << uint32(UNIXTIME); // Set Unix Timing?
+	data << uint32(UNIXTIME); // unix time
 	data << uint8(1);
 	data << uint32(mask);
 

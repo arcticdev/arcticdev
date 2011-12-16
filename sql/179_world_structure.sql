@@ -1,8 +1,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
--- Table structure for `achievement_rewards`
+-- Table structure for achievement_rewards
 -- ----------------------------
-DROP TABLE IF EXISTS `achievement_rewards`;
 CREATE TABLE `achievement_rewards` (
   `achievementid` int(10) unsigned NOT NULL,
   `title_alliance` int(10) unsigned NOT NULL,
@@ -12,13 +11,8 @@ CREATE TABLE `achievement_rewards` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of achievement_rewards
+-- Table structure for ai_agents
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `ai_agents`
--- ----------------------------
-DROP TABLE IF EXISTS `ai_agents`;
 CREATE TABLE `ai_agents` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
   `type` enum('MELEE','RANGED','FLEE','SPELL','CALLFORHELP') NOT NULL DEFAULT 'SPELL',
@@ -35,13 +29,8 @@ CREATE TABLE `ai_agents` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='AI System';
 
 -- ----------------------------
--- Records of ai_agents
+-- Table structure for ai_threattospellid
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `ai_threattospellid`
--- ----------------------------
-DROP TABLE IF EXISTS `ai_threattospellid`;
 CREATE TABLE `ai_threattospellid` (
   `spell` int(11) unsigned NOT NULL DEFAULT '0',
   `mod` int(11) NOT NULL DEFAULT '0',
@@ -50,13 +39,8 @@ CREATE TABLE `ai_threattospellid` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='AI System';
 
 -- ----------------------------
--- Records of ai_threattospellid
+-- Table structure for areatriggers
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `areatriggers`
--- ----------------------------
-DROP TABLE IF EXISTS `areatriggers`;
 CREATE TABLE `areatriggers` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
   `type` tinyint(3) unsigned DEFAULT '0',
@@ -73,13 +57,8 @@ CREATE TABLE `areatriggers` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Trigger System';
 
 -- ----------------------------
--- Records of areatriggers
+-- Table structure for auctionhouse
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `auctionhouse`
--- ----------------------------
-DROP TABLE IF EXISTS `auctionhouse`;
 CREATE TABLE `auctionhouse` (
   `id` int(32) NOT NULL AUTO_INCREMENT,
   `creature_entry` bigint(64) unsigned NOT NULL DEFAULT '0',
@@ -89,13 +68,8 @@ CREATE TABLE `auctionhouse` (
 ) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=latin1 COMMENT='Auction House';
 
 -- ----------------------------
--- Records of auctionhouse
+-- Table structure for banned_phrases
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `banned_phrases`
--- ----------------------------
-DROP TABLE IF EXISTS `banned_phrases`;
 CREATE TABLE `banned_phrases` (
   `phrase` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`phrase`),
@@ -103,13 +77,8 @@ CREATE TABLE `banned_phrases` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of banned_phrases
+-- Table structure for clientaddons
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `clientaddons`
--- ----------------------------
-DROP TABLE IF EXISTS `clientaddons`;
 CREATE TABLE `clientaddons` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -121,13 +90,8 @@ CREATE TABLE `clientaddons` (
 ) ENGINE=MyISAM AUTO_INCREMENT=153 DEFAULT CHARSET=latin1 COMMENT='Client Addons';
 
 -- ----------------------------
--- Records of clientaddons
+-- Table structure for command_overrides
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `command_overrides`
--- ----------------------------
-DROP TABLE IF EXISTS `command_overrides`;
 CREATE TABLE `command_overrides` (
   `command_name` varchar(100) NOT NULL,
   `access_level` varchar(10) NOT NULL,
@@ -136,13 +100,8 @@ CREATE TABLE `command_overrides` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Commands System';
 
 -- ----------------------------
--- Records of command_overrides
+-- Table structure for creature_formations
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_formations`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_formations`;
 CREATE TABLE `creature_formations` (
   `spawn_id` int(30) unsigned NOT NULL DEFAULT '0',
   `target_spawn_id` int(30) unsigned NOT NULL DEFAULT '0',
@@ -153,13 +112,8 @@ CREATE TABLE `creature_formations` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of creature_formations
+-- Table structure for creature_names
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_names`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_names`;
 CREATE TABLE `creature_names` (
   `entry` int(20) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL,
@@ -184,13 +138,8 @@ CREATE TABLE `creature_names` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of creature_names
+-- Table structure for creature_proto
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_proto`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_proto`;
 CREATE TABLE `creature_proto` (
   `entry` int(30) unsigned NOT NULL DEFAULT '0',
   `minlevel` int(30) unsigned NOT NULL,
@@ -238,13 +187,8 @@ CREATE TABLE `creature_proto` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of creature_proto
+-- Table structure for creature_proto_heroic
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_proto_heroic`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_proto_heroic`;
 CREATE TABLE `creature_proto_heroic` (
   `entry` int(10) NOT NULL,
   `minlevel` int(10) unsigned NOT NULL DEFAULT '1',
@@ -267,13 +211,8 @@ CREATE TABLE `creature_proto_heroic` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of creature_proto_heroic
+-- Table structure for creature_quest_finisher
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_quest_finisher`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_quest_finisher`;
 CREATE TABLE `creature_quest_finisher` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
@@ -281,13 +220,8 @@ CREATE TABLE `creature_quest_finisher` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED COMMENT='Creature System';
 
 -- ----------------------------
--- Records of creature_quest_finisher
+-- Table structure for creature_quest_starter
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_quest_starter`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_quest_starter`;
 CREATE TABLE `creature_quest_starter` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
@@ -295,13 +229,8 @@ CREATE TABLE `creature_quest_starter` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED COMMENT='Creature System';
 
 -- ----------------------------
--- Records of creature_quest_starter
+-- Table structure for creature_spawns
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_spawns`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_spawns`;
 CREATE TABLE `creature_spawns` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `entry` int(30) NOT NULL,
@@ -331,13 +260,8 @@ CREATE TABLE `creature_spawns` (
 ) ENGINE=MyISAM AUTO_INCREMENT=6168571 DEFAULT CHARSET=latin1 COMMENT='Spawn System';
 
 -- ----------------------------
--- Records of creature_spawns
+-- Table structure for creature_staticspawns
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_staticspawns`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_staticspawns`;
 CREATE TABLE `creature_staticspawns` (
   `id` int(30) unsigned NOT NULL AUTO_INCREMENT,
   `entry` int(30) NOT NULL,
@@ -367,13 +291,8 @@ CREATE TABLE `creature_staticspawns` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Spawn System';
 
 -- ----------------------------
--- Records of creature_staticspawns
+-- Table structure for creature_waypoints
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creature_waypoints`
--- ----------------------------
-DROP TABLE IF EXISTS `creature_waypoints`;
 CREATE TABLE `creature_waypoints` (
   `spawnid` int(10) unsigned NOT NULL DEFAULT '0',
   `waypointid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -400,13 +319,8 @@ CREATE TABLE `creature_waypoints` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of creature_waypoints
+-- Table structure for creatureloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creatureloot`
--- ----------------------------
-DROP TABLE IF EXISTS `creatureloot`;
 CREATE TABLE `creatureloot` (
   `entryid` int(11) NOT NULL DEFAULT '0',
   `itemid` int(11) NOT NULL DEFAULT '0',
@@ -419,13 +333,8 @@ CREATE TABLE `creatureloot` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 PACK_KEYS=0 ROW_FORMAT=FIXED COMMENT='Loot System';
 
 -- ----------------------------
--- Records of creatureloot
+-- Table structure for creatureloot_gathering
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `creatureloot_gathering`
--- ----------------------------
-DROP TABLE IF EXISTS `creatureloot_gathering`;
 CREATE TABLE `creatureloot_gathering` (
   `entryid` int(10) unsigned NOT NULL DEFAULT '0',
   `itemid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -438,13 +347,8 @@ CREATE TABLE `creatureloot_gathering` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
 
 -- ----------------------------
--- Records of creatureloot_gathering
+-- Table structure for disenchantingloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `disenchantingloot`
--- ----------------------------
-DROP TABLE IF EXISTS `disenchantingloot`;
 CREATE TABLE `disenchantingloot` (
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '25',
@@ -457,13 +361,8 @@ CREATE TABLE `disenchantingloot` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of disenchantingloot
+-- Table structure for events
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `events`
--- ----------------------------
-DROP TABLE IF EXISTS `events`;
 CREATE TABLE `events` (
   `eventid` tinyint(3) unsigned NOT NULL COMMENT 'Id of event you want to trigger',
   `daynumber` tinyint(3) unsigned NOT NULL COMMENT '1 - 31 day of the month you want to trigger event',
@@ -477,13 +376,8 @@ CREATE TABLE `events` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of events
+-- Table structure for events_creature
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `events_creature`
--- ----------------------------
-DROP TABLE IF EXISTS `events_creature`;
 CREATE TABLE `events_creature` (
   `eventid` tinyint(3) unsigned NOT NULL COMMENT 'Relates to creature_spawn eventid',
   `id` tinyint(3) unsigned NOT NULL COMMENT 'Relates to creature_spawn id',
@@ -497,13 +391,8 @@ CREATE TABLE `events_creature` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of events_creature
+-- Table structure for events_gameobject
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `events_gameobject`
--- ----------------------------
-DROP TABLE IF EXISTS `events_gameobject`;
 CREATE TABLE `events_gameobject` (
   `eventid` tinyint(3) unsigned NOT NULL COMMENT 'This relates to gameobject_spawns eventid',
   `id` int(11) unsigned NOT NULL COMMENT 'Relates to gameobject_spawn id',
@@ -514,13 +403,8 @@ CREATE TABLE `events_gameobject` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of events_gameobject
+-- Table structure for fishing
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `fishing`
--- ----------------------------
-DROP TABLE IF EXISTS `fishing`;
 CREATE TABLE `fishing` (
   `Zone` int(11) unsigned NOT NULL DEFAULT '0',
   `MinSkill` int(11) unsigned DEFAULT NULL,
@@ -529,13 +413,8 @@ CREATE TABLE `fishing` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Fishing System';
 
 -- ----------------------------
--- Records of fishing
+-- Table structure for fishingloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `fishingloot`
--- ----------------------------
-DROP TABLE IF EXISTS `fishingloot`;
 CREATE TABLE `fishingloot` (
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '0',
@@ -547,13 +426,8 @@ CREATE TABLE `fishingloot` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
 
 -- ----------------------------
--- Records of fishingloot
+-- Table structure for gameobject_names
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_names`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_names`;
 CREATE TABLE `gameobject_names` (
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `Type` int(10) unsigned NOT NULL DEFAULT '0',
@@ -587,13 +461,8 @@ CREATE TABLE `gameobject_names` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Gameobject System';
 
 -- ----------------------------
--- Records of gameobject_names
+-- Table structure for gameobject_quest_finisher
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_quest_finisher`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_quest_finisher`;
 CREATE TABLE `gameobject_quest_finisher` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
@@ -601,13 +470,8 @@ CREATE TABLE `gameobject_quest_finisher` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
 
 -- ----------------------------
--- Records of gameobject_quest_finisher
+-- Table structure for gameobject_quest_item_binding
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_quest_item_binding`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_quest_item_binding`;
 CREATE TABLE `gameobject_quest_item_binding` (
   `entry` int(11) NOT NULL DEFAULT '0',
   `quest` int(11) NOT NULL DEFAULT '0',
@@ -616,13 +480,8 @@ CREATE TABLE `gameobject_quest_item_binding` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
 
 -- ----------------------------
--- Records of gameobject_quest_item_binding
+-- Table structure for gameobject_quest_pickup_binding
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_quest_pickup_binding`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_quest_pickup_binding`;
 CREATE TABLE `gameobject_quest_pickup_binding` (
   `entry` int(11) NOT NULL DEFAULT '0',
   `quest` int(11) NOT NULL DEFAULT '0',
@@ -630,13 +489,8 @@ CREATE TABLE `gameobject_quest_pickup_binding` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
 
 -- ----------------------------
--- Records of gameobject_quest_pickup_binding
+-- Table structure for gameobject_quest_starter
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_quest_starter`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_quest_starter`;
 CREATE TABLE `gameobject_quest_starter` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
@@ -644,13 +498,8 @@ CREATE TABLE `gameobject_quest_starter` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
 
 -- ----------------------------
--- Records of gameobject_quest_starter
+-- Table structure for gameobject_spawns
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_spawns`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_spawns`;
 CREATE TABLE `gameobject_spawns` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `Entry` int(10) unsigned NOT NULL DEFAULT '0',
@@ -674,13 +523,8 @@ CREATE TABLE `gameobject_spawns` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2113850 DEFAULT CHARSET=cp1251 COLLATE=cp1251_general_cs PACK_KEYS=0 ROW_FORMAT=FIXED COMMENT='Spawn System';
 
 -- ----------------------------
--- Records of gameobject_spawns
+-- Table structure for gameobject_staticspawns
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `gameobject_staticspawns`
--- ----------------------------
-DROP TABLE IF EXISTS `gameobject_staticspawns`;
 CREATE TABLE `gameobject_staticspawns` (
   `id` int(30) NOT NULL AUTO_INCREMENT,
   `entry` int(30) NOT NULL,
@@ -705,13 +549,8 @@ CREATE TABLE `gameobject_staticspawns` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Spawn System';
 
 -- ----------------------------
--- Records of gameobject_staticspawns
+-- Table structure for graveyards
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `graveyards`
--- ----------------------------
-DROP TABLE IF EXISTS `graveyards`;
 CREATE TABLE `graveyards` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position_x` float NOT NULL DEFAULT '0',
@@ -728,13 +567,8 @@ CREATE TABLE `graveyards` (
 ) ENGINE=MyISAM AUTO_INCREMENT=1409 DEFAULT CHARSET=latin1 COMMENT='Graveyard System';
 
 -- ----------------------------
--- Records of graveyards
+-- Table structure for item_quest_association
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `item_quest_association`
--- ----------------------------
-DROP TABLE IF EXISTS `item_quest_association`;
 CREATE TABLE `item_quest_association` (
   `item` int(11) NOT NULL DEFAULT '0',
   `quest` int(11) NOT NULL DEFAULT '0',
@@ -743,13 +577,8 @@ CREATE TABLE `item_quest_association` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
 
 -- ----------------------------
--- Records of item_quest_association
+-- Table structure for item_randomprop_groups
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `item_randomprop_groups`
--- ----------------------------
-DROP TABLE IF EXISTS `item_randomprop_groups`;
 CREATE TABLE `item_randomprop_groups` (
   `entry_id` int(30) NOT NULL,
   `randomprops_entryid` int(30) NOT NULL,
@@ -758,13 +587,8 @@ CREATE TABLE `item_randomprop_groups` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Item System';
 
 -- ----------------------------
--- Records of item_randomprop_groups
+-- Table structure for item_randomsuffix_groups
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `item_randomsuffix_groups`
--- ----------------------------
-DROP TABLE IF EXISTS `item_randomsuffix_groups`;
 CREATE TABLE `item_randomsuffix_groups` (
   `entry_id` int(30) NOT NULL,
   `randomsuffix_entryid` int(30) NOT NULL,
@@ -773,13 +597,8 @@ CREATE TABLE `item_randomsuffix_groups` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Item System';
 
 -- ----------------------------
--- Records of item_randomsuffix_groups
+-- Table structure for itemloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `itemloot`
--- ----------------------------
-DROP TABLE IF EXISTS `itemloot`;
 CREATE TABLE `itemloot` (
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '25',
@@ -792,13 +611,8 @@ CREATE TABLE `itemloot` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
 
 -- ----------------------------
--- Records of itemloot
+-- Table structure for itempages
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `itempages`
--- ----------------------------
-DROP TABLE IF EXISTS `itempages`;
 CREATE TABLE `itempages` (
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `text` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -807,13 +621,8 @@ CREATE TABLE `itempages` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Item System';
 
 -- ----------------------------
--- Records of itempages
+-- Table structure for itempetfood
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `itempetfood`
--- ----------------------------
-DROP TABLE IF EXISTS `itempetfood`;
 CREATE TABLE `itempetfood` (
   `entry` int(11) NOT NULL,
   `food_type` int(11) NOT NULL,
@@ -821,13 +630,8 @@ CREATE TABLE `itempetfood` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of itempetfood
+-- Table structure for items
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `items`
--- ----------------------------
-DROP TABLE IF EXISTS `items`;
 CREATE TABLE `items` (
   `entry` int(30) unsigned NOT NULL DEFAULT '0',
   `class` int(30) NOT NULL DEFAULT '0',
@@ -956,13 +760,8 @@ CREATE TABLE `items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Item System';
 
 -- ----------------------------
--- Records of items
+-- Table structure for map_checkpoint
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `map_checkpoint`
--- ----------------------------
-DROP TABLE IF EXISTS `map_checkpoint`;
 CREATE TABLE `map_checkpoint` (
   `entry` int(30) NOT NULL,
   `prereq_checkpoint_id` int(30) NOT NULL,
@@ -972,13 +771,8 @@ CREATE TABLE `map_checkpoint` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Map System';
 
 -- ----------------------------
--- Records of map_checkpoint
+-- Table structure for millingloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `millingloot`
--- ----------------------------
-DROP TABLE IF EXISTS `millingloot`;
 CREATE TABLE `millingloot` (
   `index` int(11) NOT NULL AUTO_INCREMENT,
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
@@ -992,13 +786,8 @@ CREATE TABLE `millingloot` (
 ) ENGINE=MyISAM AUTO_INCREMENT=114 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of millingloot
+-- Table structure for npc_gossip_textid
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `npc_gossip_textid`
--- ----------------------------
-DROP TABLE IF EXISTS `npc_gossip_textid`;
 CREATE TABLE `npc_gossip_textid` (
   `creatureid` int(10) unsigned NOT NULL DEFAULT '0',
   `textid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1006,13 +795,8 @@ CREATE TABLE `npc_gossip_textid` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
 
 -- ----------------------------
--- Records of npc_gossip_textid
+-- Table structure for npc_monstersay
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `npc_monstersay`
--- ----------------------------
-DROP TABLE IF EXISTS `npc_monstersay`;
 CREATE TABLE `npc_monstersay` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
   `event` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1028,13 +812,8 @@ CREATE TABLE `npc_monstersay` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
 
 -- ----------------------------
--- Records of npc_monstersay
+-- Table structure for npc_text
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `npc_text`
--- ----------------------------
-DROP TABLE IF EXISTS `npc_text`;
 CREATE TABLE `npc_text` (
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `prob0` float NOT NULL DEFAULT '0',
@@ -1121,13 +900,8 @@ CREATE TABLE `npc_text` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
 
 -- ----------------------------
--- Records of npc_text
+-- Table structure for objectloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `objectloot`
--- ----------------------------
-DROP TABLE IF EXISTS `objectloot`;
 CREATE TABLE `objectloot` (
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1140,26 +914,16 @@ CREATE TABLE `objectloot` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
 
 -- ----------------------------
--- Records of objectloot
+-- Table structure for petdefaultspells
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `petdefaultspells`
--- ----------------------------
-DROP TABLE IF EXISTS `petdefaultspells`;
 CREATE TABLE `petdefaultspells` (
   `entry` int(11) NOT NULL DEFAULT '0',
   `spell` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Pet System';
 
 -- ----------------------------
--- Records of petdefaultspells
+-- Table structure for pickpocketingloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `pickpocketingloot`
--- ----------------------------
-DROP TABLE IF EXISTS `pickpocketingloot`;
 CREATE TABLE `pickpocketingloot` (
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '25',
@@ -1171,13 +935,8 @@ CREATE TABLE `pickpocketingloot` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
 
 -- ----------------------------
--- Records of pickpocketingloot
+-- Table structure for playercreateinfo
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `playercreateinfo`
--- ----------------------------
-DROP TABLE IF EXISTS `playercreateinfo`;
 CREATE TABLE `playercreateinfo` (
   `Index` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `race` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -1207,13 +966,8 @@ CREATE TABLE `playercreateinfo` (
 ) ENGINE=MyISAM AUTO_INCREMENT=66 DEFAULT CHARSET=latin1 COMMENT='Player System';
 
 -- ----------------------------
--- Records of playercreateinfo
+-- Table structure for playercreateinfo_bars
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `playercreateinfo_bars`
--- ----------------------------
-DROP TABLE IF EXISTS `playercreateinfo_bars`;
 CREATE TABLE `playercreateinfo_bars` (
   `race` tinyint(3) unsigned DEFAULT NULL,
   `class` tinyint(3) unsigned DEFAULT NULL,
@@ -1224,13 +978,8 @@ CREATE TABLE `playercreateinfo_bars` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
 
 -- ----------------------------
--- Records of playercreateinfo_bars
+-- Table structure for playercreateinfo_items
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `playercreateinfo_items`
--- ----------------------------
-DROP TABLE IF EXISTS `playercreateinfo_items`;
 CREATE TABLE `playercreateinfo_items` (
   `indexid` int(4) NOT NULL,
   `protoid` int(4) NOT NULL,
@@ -1239,13 +988,8 @@ CREATE TABLE `playercreateinfo_items` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
 
 -- ----------------------------
--- Records of playercreateinfo_items
+-- Table structure for playercreateinfo_skills
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `playercreateinfo_skills`
--- ----------------------------
-DROP TABLE IF EXISTS `playercreateinfo_skills`;
 CREATE TABLE `playercreateinfo_skills` (
   `indexid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `skillid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1254,26 +998,16 @@ CREATE TABLE `playercreateinfo_skills` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
 
 -- ----------------------------
--- Records of playercreateinfo_skills
+-- Table structure for playercreateinfo_spells
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `playercreateinfo_spells`
--- ----------------------------
-DROP TABLE IF EXISTS `playercreateinfo_spells`;
 CREATE TABLE `playercreateinfo_spells` (
   `indexid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `spellid` smallint(5) unsigned NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
 
 -- ----------------------------
--- Records of playercreateinfo_spells
+-- Table structure for prestartqueries
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `prestartqueries`
--- ----------------------------
-DROP TABLE IF EXISTS `prestartqueries`;
 CREATE TABLE `prestartqueries` (
   `Query` varchar(1024) NOT NULL,
   `SingleShot` int(1) unsigned NOT NULL DEFAULT '1',
@@ -1282,13 +1016,8 @@ CREATE TABLE `prestartqueries` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of prestartqueries
+-- Table structure for professiondiscoveries
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `professiondiscoveries`
--- ----------------------------
-DROP TABLE IF EXISTS `professiondiscoveries`;
 CREATE TABLE `professiondiscoveries` (
   `SpellId` int(10) unsigned NOT NULL DEFAULT '0',
   `SpellToDiscover` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1298,13 +1027,8 @@ CREATE TABLE `professiondiscoveries` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of professiondiscoveries
+-- Table structure for prospectingloot
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `prospectingloot`
--- ----------------------------
-DROP TABLE IF EXISTS `prospectingloot`;
 CREATE TABLE `prospectingloot` (
   `entryid` int(11) unsigned NOT NULL DEFAULT '0',
   `itemid` int(11) unsigned NOT NULL DEFAULT '25',
@@ -1316,13 +1040,8 @@ CREATE TABLE `prospectingloot` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of prospectingloot
+-- Table structure for quests
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `quests`
--- ----------------------------
-DROP TABLE IF EXISTS `quests`;
 CREATE TABLE `quests` (
   `entry` int(11) unsigned NOT NULL,
   `ZoneId` int(11) NOT NULL DEFAULT '0',
@@ -1444,13 +1163,8 @@ CREATE TABLE `quests` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quests System';
 
 -- ----------------------------
--- Records of quests
+-- Table structure for randomcardcreation
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `randomcardcreation`
--- ----------------------------
-DROP TABLE IF EXISTS `randomcardcreation`;
 CREATE TABLE `randomcardcreation` (
   `SpellId` int(10) unsigned NOT NULL DEFAULT '0',
   `ItemId0` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1490,13 +1204,8 @@ CREATE TABLE `randomcardcreation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of randomcardcreation
+-- Table structure for randomitemcreation
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `randomitemcreation`
--- ----------------------------
-DROP TABLE IF EXISTS `randomitemcreation`;
 CREATE TABLE `randomitemcreation` (
   `SpellId` int(10) unsigned NOT NULL DEFAULT '0',
   `ItemToCreate` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1506,13 +1215,8 @@ CREATE TABLE `randomitemcreation` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of randomitemcreation
+-- Table structure for recall
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `recall`
--- ----------------------------
-DROP TABLE IF EXISTS `recall`;
 CREATE TABLE `recall` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
@@ -1524,13 +1228,8 @@ CREATE TABLE `recall` (
 ) ENGINE=MyISAM AUTO_INCREMENT=970 DEFAULT CHARSET=utf8 COMMENT='Tele Command';
 
 -- ----------------------------
--- Records of recall
+-- Table structure for reputation_creature_onkill
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `reputation_creature_onkill`
--- ----------------------------
-DROP TABLE IF EXISTS `reputation_creature_onkill`;
 CREATE TABLE `reputation_creature_onkill` (
   `creature_id` int(30) NOT NULL,
   `faction_change_alliance` int(30) NOT NULL,
@@ -1541,13 +1240,8 @@ CREATE TABLE `reputation_creature_onkill` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of reputation_creature_onkill
+-- Table structure for reputation_faction_onkill
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `reputation_faction_onkill`
--- ----------------------------
-DROP TABLE IF EXISTS `reputation_faction_onkill`;
 CREATE TABLE `reputation_faction_onkill` (
   `faction_id` int(30) NOT NULL,
   `change_factionid_alliance` int(30) NOT NULL,
@@ -1560,13 +1254,8 @@ CREATE TABLE `reputation_faction_onkill` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of reputation_faction_onkill
+-- Table structure for reputation_instance_onkill
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `reputation_instance_onkill`
--- ----------------------------
-DROP TABLE IF EXISTS `reputation_instance_onkill`;
 CREATE TABLE `reputation_instance_onkill` (
   `mapid` int(30) NOT NULL,
   `mob_rep_reward` int(30) NOT NULL,
@@ -1582,13 +1271,8 @@ CREATE TABLE `reputation_instance_onkill` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
 
 -- ----------------------------
--- Records of reputation_instance_onkill
+-- Table structure for scrollcreation
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `scrollcreation`
--- ----------------------------
-DROP TABLE IF EXISTS `scrollcreation`;
 CREATE TABLE `scrollcreation` (
   `SpellId` int(10) unsigned NOT NULL DEFAULT '0',
   `ItemId` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1596,13 +1280,8 @@ CREATE TABLE `scrollcreation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of scrollcreation
+-- Table structure for spell_coef_override
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spell_coef_override`
--- ----------------------------
-DROP TABLE IF EXISTS `spell_coef_override`;
 CREATE TABLE `spell_coef_override` (
   `id` int(11) DEFAULT '0',
   `Dspell_coef_override` float DEFAULT '0',
@@ -1612,39 +1291,24 @@ CREATE TABLE `spell_coef_override` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of spell_coef_override
+-- Table structure for spell_disable
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spell_disable`
--- ----------------------------
-DROP TABLE IF EXISTS `spell_disable`;
 CREATE TABLE `spell_disable` (
   `spellid` int(30) NOT NULL,
   `replacement_spellid` int(30) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
 
 -- ----------------------------
--- Records of spell_disable
+-- Table structure for spell_disable_trainers
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spell_disable_trainers`
--- ----------------------------
-DROP TABLE IF EXISTS `spell_disable_trainers`;
 CREATE TABLE `spell_disable_trainers` (
   `spellid` int(30) NOT NULL,
   `replacement_spellid` int(30) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Trainer System';
 
 -- ----------------------------
--- Records of spell_disable_trainers
+-- Table structure for spell_effects_override
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spell_effects_override`
--- ----------------------------
-DROP TABLE IF EXISTS `spell_effects_override`;
 CREATE TABLE `spell_effects_override` (
   `spellId` int(30) NOT NULL DEFAULT '0',
   `EffectID` int(30) NOT NULL,
@@ -1661,13 +1325,8 @@ CREATE TABLE `spell_effects_override` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of spell_effects_override
+-- Table structure for spell_forced_targets
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spell_forced_targets`
--- ----------------------------
-DROP TABLE IF EXISTS `spell_forced_targets`;
 CREATE TABLE `spell_forced_targets` (
   `spellid` int(8) unsigned NOT NULL,
   `target` int(8) unsigned NOT NULL DEFAULT '0',
@@ -1675,13 +1334,8 @@ CREATE TABLE `spell_forced_targets` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Spell System';
 
 -- ----------------------------
--- Records of spell_forced_targets
+-- Table structure for spell_proc
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spell_proc`
--- ----------------------------
-DROP TABLE IF EXISTS `spell_proc`;
 CREATE TABLE `spell_proc` (
   `spellID` int(30) NOT NULL DEFAULT '0',
   `ProcOnNameHash` int(30) unsigned NOT NULL DEFAULT '0',
@@ -1689,13 +1343,8 @@ CREATE TABLE `spell_proc` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of spell_proc
+-- Table structure for spelloverride
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `spelloverride`
--- ----------------------------
-DROP TABLE IF EXISTS `spelloverride`;
 CREATE TABLE `spelloverride` (
   `overrideId` int(30) unsigned NOT NULL DEFAULT '0',
   `spellId` int(30) unsigned NOT NULL DEFAULT '0',
@@ -1703,13 +1352,8 @@ CREATE TABLE `spelloverride` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
 
 -- ----------------------------
--- Records of spelloverride
+-- Table structure for teleport_coords
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `teleport_coords`
--- ----------------------------
-DROP TABLE IF EXISTS `teleport_coords`;
 CREATE TABLE `teleport_coords` (
   `entry` int(16) NOT NULL,
   `name` char(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -1722,13 +1366,8 @@ CREATE TABLE `teleport_coords` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='World System';
 
 -- ----------------------------
--- Records of teleport_coords
+-- Table structure for totemspells
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `totemspells`
--- ----------------------------
-DROP TABLE IF EXISTS `totemspells`;
 CREATE TABLE `totemspells` (
   `spell` int(10) unsigned NOT NULL DEFAULT '0',
   `castspell1` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1738,13 +1377,8 @@ CREATE TABLE `totemspells` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
 
 -- ----------------------------
--- Records of totemspells
+-- Table structure for trainer_defs
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `trainer_defs`
--- ----------------------------
-DROP TABLE IF EXISTS `trainer_defs`;
 CREATE TABLE `trainer_defs` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
   `required_skill` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1758,13 +1392,8 @@ CREATE TABLE `trainer_defs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Trainer System';
 
 -- ----------------------------
--- Records of trainer_defs
+-- Table structure for trainer_spells
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `trainer_spells`
--- ----------------------------
-DROP TABLE IF EXISTS `trainer_spells`;
 CREATE TABLE `trainer_spells` (
   `entry` int(11) unsigned NOT NULL DEFAULT '0',
   `cast_spell` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1780,13 +1409,8 @@ CREATE TABLE `trainer_spells` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Trainer System';
 
 -- ----------------------------
--- Records of trainer_spells
+-- Table structure for trainerspelloverride
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `trainerspelloverride`
--- ----------------------------
-DROP TABLE IF EXISTS `trainerspelloverride`;
 CREATE TABLE `trainerspelloverride` (
   `spellid` int(10) unsigned NOT NULL DEFAULT '0',
   `cost` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1800,13 +1424,8 @@ CREATE TABLE `trainerspelloverride` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Trainer System';
 
 -- ----------------------------
--- Records of trainerspelloverride
+-- Table structure for transport_creatures
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `transport_creatures`
--- ----------------------------
-DROP TABLE IF EXISTS `transport_creatures`;
 CREATE TABLE `transport_creatures` (
   `transport_entry` int(10) unsigned NOT NULL,
   `creature_entry` int(10) unsigned NOT NULL,
@@ -1817,13 +1436,8 @@ CREATE TABLE `transport_creatures` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of transport_creatures
+-- Table structure for vendors
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `vendors`
--- ----------------------------
-DROP TABLE IF EXISTS `vendors`;
 CREATE TABLE `vendors` (
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `item` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1835,13 +1449,8 @@ CREATE TABLE `vendors` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
 
 -- ----------------------------
--- Records of vendors
+-- Table structure for weather
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `weather`
--- ----------------------------
-DROP TABLE IF EXISTS `weather`;
 CREATE TABLE `weather` (
   `zoneId` int(11) unsigned NOT NULL DEFAULT '0',
   `high_chance` int(11) unsigned NOT NULL DEFAULT '0',
@@ -1854,39 +1463,24 @@ CREATE TABLE `weather` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Weather System';
 
 -- ----------------------------
--- Records of weather
+-- Table structure for wordfilter_character_names
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `wordfilter_character_names`
--- ----------------------------
-DROP TABLE IF EXISTS `wordfilter_character_names`;
 CREATE TABLE `wordfilter_character_names` (
   `regex_match` varchar(255) NOT NULL,
   `regex_ignore_if_matched` varchar(255) DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of wordfilter_character_names
+-- Table structure for wordfilter_chat
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `wordfilter_chat`
--- ----------------------------
-DROP TABLE IF EXISTS `wordfilter_chat`;
 CREATE TABLE `wordfilter_chat` (
   `regex_match` varchar(500) NOT NULL,
   `regex_ignore_if_matched` varchar(500) NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
--- Records of wordfilter_chat
+-- Table structure for worldmap_info
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `worldmap_info`
--- ----------------------------
-DROP TABLE IF EXISTS `worldmap_info`;
 CREATE TABLE `worldmap_info` (
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `screenid` int(10) unsigned DEFAULT '0',
@@ -1911,13 +1505,8 @@ CREATE TABLE `worldmap_info` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='World System';
 
 -- ----------------------------
--- Records of worldmap_info
+-- Table structure for worldstate_template
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `worldstate_template`
--- ----------------------------
-DROP TABLE IF EXISTS `worldstate_template`;
 CREATE TABLE `worldstate_template` (
   `mapid` int(11) NOT NULL,
   `zone_mask` int(30) NOT NULL,
@@ -1929,13 +1518,8 @@ CREATE TABLE `worldstate_template` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of worldstate_template
+-- Table structure for zoneguards
 -- ----------------------------
-
--- ----------------------------
--- Table structure for `zoneguards`
--- ----------------------------
-DROP TABLE IF EXISTS `zoneguards`;
 CREATE TABLE `zoneguards` (
   `zone` int(10) unsigned NOT NULL,
   `horde_entry` int(10) unsigned DEFAULT NULL,
@@ -1943,5 +1527,5 @@ CREATE TABLE `zoneguards` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='World System';
 
 -- ----------------------------
--- Records of zoneguards
+-- Records 
 -- ----------------------------
