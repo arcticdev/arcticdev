@@ -1303,7 +1303,7 @@ bool ChatHandler::HandleAddTitleCommand(const char* args, WorldSession* m_sessio
 		return true;
 	}
 	uint32 title = args ? atoi(args) : 0;
-	if(title == 0 || title > TITLE_END)
+	if(title == 0 || title > PVPTITLE_END)
 	{
 		RedSystemMessage(m_session, "A title number (numeric) is required to be specified after this command.");
 		return true;
@@ -1323,7 +1323,7 @@ bool ChatHandler::HandleRemoveTitleCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 	uint32 title = args ? atoi(args) : 0;
-	if(title == 0 || title > TITLE_END)
+	if(title == 0 || title > PVPTITLE_END)
 	{
 		RedSystemMessage(m_session, "A title number (numeric) is required to be specified after this command.");
 		return true;
@@ -1342,7 +1342,7 @@ bool ChatHandler::HandleGetKnownTitlesCommand(const char* args, WorldSession* m_
 		return true;
 	}
 	std::stringstream ss;
-	for(uint32 i=1;i<=TITLE_END;i++){
+	for(uint32 i=1;i<=PVPTITLE_END;i++){
 		if(plr->HasKnownTitle(i)){
 			ss << i << " ";
 		}
@@ -1358,7 +1358,7 @@ bool ChatHandler::HandleSetChosenTitleCommand(const char* args, WorldSession* m_
 		return true;
 	}
 	uint32 title = args ? atoi(args) : 0;
-	if(title == 0 || title > TITLE_END)
+	if(title == 0 || title > PVPTITLE_END)
 	{
 		RedSystemMessage(m_session, "A title number (numeric) is required to be specified after this command.");
 		return true;

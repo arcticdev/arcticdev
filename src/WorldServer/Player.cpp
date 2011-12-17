@@ -11752,7 +11752,7 @@ void Player::FullHPMP()
 void Player::SetKnownTitle( int32 title, bool set )
 {	
 	if( !( HasKnownTitle( title ) ^ set ) ||
-			title < 1 || title >= TITLE_END)
+			title < 1 || title >= PVPTITLE_END)
 		return;
 
 	if(title == GetUInt32Value(PLAYER_CHOSEN_TITLE)) // if it's the chosen title, remove it
