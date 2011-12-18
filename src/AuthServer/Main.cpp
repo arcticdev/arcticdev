@@ -304,7 +304,7 @@ void LogonServer::Run(int argc, char ** argv)
 	sLog.outString("==============================================================================");
 	Log.Line();
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
-	Log.Line();
+
 	if(do_version)
 		return;
 

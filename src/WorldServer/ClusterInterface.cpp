@@ -42,13 +42,12 @@ ClusterInterface::ClusterInterface()
 
 ClusterInterface::~ClusterInterface()
 {
-
 }
 
 string ClusterInterface::GenerateVersionString()
 {
 	std::stringstream ss;
-	ss << "ArcTic r";
+	ss << "ArcTic ";
 	ss << BUILD_HASH_STR;
 	ss << "/";
 	ss << CONFIG;

@@ -158,10 +158,8 @@ Unit::Unit()
 
 	m_threatModifyer = 0;
 	m_generatedThreatModifyer = 0;
-	for(uint32 i = 0; i < MAX_AURAS+MAX_PASSIVE_AURAS; ++i)
-		m_auras[i] = NULL;
-	
-	
+	memset(m_auras, NULL, sizeof(m_auras));
+
 	// diminishing return stuff
 	memset(m_diminishAuraCount, 0, DIMINISH_GROUPS);
 	memset(m_diminishCount, 0, DIMINISH_GROUPS*sizeof(uint16));
