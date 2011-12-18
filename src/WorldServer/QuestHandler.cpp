@@ -804,7 +804,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 						//CHECKS IF  ALREADY HAVE COMPLETED THE DAILY QUEST
 						if(pPlayer->HasFinishedDailyQuest(questid))
 						{
-							response = QUEST_SHARE_MSG_CANT_SHARE_TODAY;
+							response = QUEST_SHARE_MSG_CANT_BE_SHARED_TODAY;
 						}
 
 						//CHECKS IF IS IN THE PARTY

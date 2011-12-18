@@ -1042,7 +1042,7 @@ CREATE TABLE `quests` (
   `sort` int(10) unsigned NOT NULL DEFAULT '0',
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   `MinLevel` int(10) unsigned NOT NULL DEFAULT '0',
-  `questlevel` int(10) NOT NULL DEFAULT '0',
+  `QuestLevel` int(10) NOT NULL DEFAULT '0',
   `Type` int(10) unsigned NOT NULL DEFAULT '0',
   `RequiredRaces` int(10) unsigned NOT NULL DEFAULT '0',
   `RequiredClass` int(10) unsigned NOT NULL DEFAULT '0',
