@@ -80,7 +80,7 @@
 #include "LootMgr.h"
 #include "Unit.h"
 
-#include "libs\Arctic.h"
+#include "../libs/Utilities/Arctic.h"
 
 #include "AddonMgr.h"
 #include "AIInterface.h"
