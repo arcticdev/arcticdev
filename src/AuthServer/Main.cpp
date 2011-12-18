@@ -6,13 +6,13 @@
 
 #include "LogonStdAfx.h"
 #include <signal.h>
-#include "svn_revision.h"
+#include "revision.h"
 #ifndef WIN32
 #include <sys/resource.h>
 #endif
 #include "../libs/getopt.h"
 
-#define ARCTIC_BANNER "ArcTic - AuthServer r%s/%s-%s (%s)"
+#define ARCTIC_BANNER "ArcTic - AuthServer %s/%s-%s (%s)"
 
 #ifndef WIN32
 #include <sched.h>
@@ -39,10 +39,10 @@ void _OnSignal(int s)
 	{
 #ifndef WIN32
 	case SIGHUP:
-	   {
-		   sLog.outString("Received SIGHUP signal, reloading accounts.");
-		   AccountMgr::getSingleton().ReloadAccounts(true);
-	   }break;
+		{
+			sLog.outString("Received SIGHUP signal, reloading accounts.");
+			AccountMgr::getSingleton().ReloadAccounts(true);
+		}break;
 #endif
 	case SIGINT:
 	case SIGTERM:
@@ -299,7 +299,8 @@ void LogonServer::Run(int argc, char ** argv)
 	}
 
 	Log.Color(TBLUE);
-	printf(ARCTIC_BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	printf(ARCTIC_BANNER, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
+	Log.Line();	
 	sLog.outString("==============================================================================");
 	Log.Line();
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
@@ -439,9 +440,9 @@ void LogonServer::Run(int argc, char ** argv)
 	signal(SIGTERM, 0);
 	signal(SIGABRT, 0);
 #ifdef _WIN32
-        signal(SIGBREAK, 0);
+	signal(SIGBREAK, 0);
 #else
-        signal(SIGHUP, 0);
+	signal(SIGHUP, 0);
 #endif
 
 	pfc->kill();
@@ -495,7 +496,7 @@ void LogonServer::CheckForDeadSockets()
 		itr++;
 
 		diff = t - s->GetLastRecv();
-		if(diff > 240)		   // More than 4mins -> kill the socket.
+		if(diff > 240) // More than 4mins -> kill the socket.
 		{
 			_authSockets.erase(it2);
 			s->removedFromSet = true;

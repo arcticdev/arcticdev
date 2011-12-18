@@ -5,7 +5,7 @@
  */
 
 #include "Common.h"
-#include "svn_revision.h"
+#include "revision.h"
 
 #include "CrashHandler.h"
 #include "Log.h"

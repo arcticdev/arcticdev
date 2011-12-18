@@ -15,11 +15,7 @@
     #include <cstring>
 #endif
 
-#include <svn_revision.h>
-#define SCRIPTLIB_HIPART(x) ((x >> 16))
-#define SCRIPTLIB_LOPART(x) ((x & 0x0000ffff))
-#define SCRIPTLIB_VERSION_MINOR (BUILD_REVISION % 1000)
-#define SCRIPTLIB_VERSION_MAJOR (BUILD_REVISION / 1000)
+#include <revision.h>
 
 initialiseSingleton(ScriptMgr);
 initialiseSingleton(HookInterface);
@@ -87,16 +83,16 @@ void ScriptMgr::LoadScripts()
 				}
 				else
 				{
-					uint32 version = vcall();
+					const char *version = vcall();
 					uint32 stype = scall();
-					if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
+					if(strcmp( version, BUILD_HASH_STR ) != 0)
 					{
 						std::stringstream cmsg; 
 						cmsg << "Loading " << data.cFileName << ", crc:0x" << reinterpret_cast< uint32* >( mod );
 
 						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 						{
-							cmsg << ", Version:" << SCRIPTLIB_HIPART(version) << SCRIPTLIB_LOPART(version) << " delayed loading.";
+							cmsg << ' ' << std::string( BUILD_HASH_STR ) << " : ";
 
 							ScriptingEngine se;
 							se.Handle = mod;
@@ -108,7 +104,7 @@ void ScriptMgr::LoadScripts()
 						else
 						{
 							_handles.push_back(((SCRIPT_MODULE)mod));
-							cmsg << ", Version:" << SCRIPTLIB_HIPART(version) << SCRIPTLIB_LOPART(version);
+							cmsg << ' ' << std::string( BUILD_HASH_STR ) << " : ";
 							rcall(this);
 						}
 						Log.Success("ScriptMgr",cmsg.str().c_str());
@@ -188,11 +184,11 @@ char *ext;
 					{
 						int32 version = vcall();
 						uint32 stype = scall();
-						if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
+						if(strcmp( version, BUILD_HASH_STR ) != 0)
 						{
 							if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 							{
-								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+								printf("v%u.%u : ", std::string( BUILD_HASH_STR) /*BUILD_HASH_STR(version)*/);
 								printf("delayed load.\n");
 
 								ScriptingEngine se;
@@ -205,9 +201,9 @@ char *ext;
 							else
 							{
 								_handles.push_back(((SCRIPT_MODULE)mod));
-								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
+								printf("v%u.%u : ", std::string( BUILD_HASH_STR) /*BUILD_HASH_STR(version)*/);
 								rcall(this);
-								printf("loaded.\n");						
+								printf("loaded.\n");
 							}
 
 							++count;
@@ -215,7 +211,7 @@ char *ext;
 						else
 						{
 							dlclose(mod);
-							printf("version mismatch!\n");						
+							printf("version mismatch!\n");
 						}
 					}
 				}

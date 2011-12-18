@@ -7,14 +7,13 @@
 #include "StdAfx.h"
 #include <Console/CConsole.h>
 
-#define ARCTIC_BANNER "ArcTic - World Server r%s/%s-%s (%s)"
+#define ARCTIC_BANNER "ArcTic - World Server %s/%s-%s (%s)"
 
 #ifndef WIN32
 #include <sched.h>
 #endif
 
-#include "svn_revision.h"
-
+#include "revision.h"
 #include <signal.h>
 
 createFileSingleton( Master );
@@ -144,7 +143,8 @@ bool Master::Run(int argc, char ** argv)
 	g_localTime = *localtime(&UNIXTIME);
 
 	Log.Color(TBLUE);
-	printf(ARCTIC_BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	printf(ARCTIC_BANNER, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
+	Log.Line();
 	sLog.outString("==============================================================================");
 	Log.Line();
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");

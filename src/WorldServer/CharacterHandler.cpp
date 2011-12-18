@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 #include "AuthCodes.h"
-#include "svn_revision.h"
+#include "revision.h"
 
 #define BUG_TRACKER "https://github.com/arcticdev/arcticdev/issues"
 
@@ -26,7 +26,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 			if( !sWorld.VerifyName(pName, szLen) )
 			{
 				printf("renaming character %s, %u\n", pName,uGuid);
-                Player* pPlayer = objmgr.GetPlayer(uGuid);
+				Player* pPlayer = objmgr.GetPlayer(uGuid);
 				if( pPlayer != NULL )
 				{
 					pPlayer->rename_pending = true;
@@ -764,16 +764,14 @@ void WorldSession::FullLogin(Player* plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcTic r%s/%s-Windows-%s", MSG_COLOR_WHITE,
-		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
-	// Bugs
-	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUG_TRACKER);
+	_player->BroadcastMessage("Server: %sArcTic r%s/%s-Windows-%s", MSG_COLOR_WHITE, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
 #else
-	_player->BroadcastMessage("Server: %sArcTic r%s/%s-%s", MSG_COLOR_WHITE,
-		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+	_player->BroadcastMessage("Server: %sArcTic %s - %s-%s", MSG_COLOR_WHITE, PLATFORM_TEXT, ARCH);
+#endif
+	// Revision
+	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUG_TRACKER);
-#endif
 
 	if(sWorld.SendStatsOnJoin)
 	{
@@ -916,11 +914,11 @@ void WorldSession::HandleAlterAppearance(WorldPacket & recv_data)
 	if(oldHair != newHair)
 		cost += cutcosts->val;
 
-    if((oldColour != colour) && (oldHair == newHair))
-        cost += cutcosts->val * 0.5f;
+	if((oldColour != colour) && (oldHair == newHair))
+		cost += cutcosts->val * 0.5f;
 
-    if(oldFacialHair != newFacialHair)
-        cost += cutcosts->val * 0.75f;
+	if(oldFacialHair != newFacialHair)
+		cost += cutcosts->val * 0.75f;
 
 	if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < cost)
 	{

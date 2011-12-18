@@ -5,7 +5,7 @@
  */
 
 #include "RStdAfx.h"
-#include "svn_revision.h"
+#include "revision.h"
 #include <Console/CConsole.h>
 
 #ifndef WIN32
@@ -153,7 +153,7 @@ bool Master::Run(int argc, char ** argv)
 	/* Print Banner */
 	Log.Notice("Server", "==============================================================");
 	Log.Notice("Server", "| Cluster System - Realm Server                              |");
-	Log.Notice("Server", "| Version 1.0,                                               |", BUILD_REVISION);
+	Log.Notice("Server", "| Version 1.0                                                |");
 	Log.Notice("Server", "==============================================================");
 	Log.Line();
 

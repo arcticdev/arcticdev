@@ -92,8 +92,8 @@ esac
 
 AC_C_BIGENDIAN([AC_DEFINE(USING_BIG_ENDIAN)],[AC_DEFINE(USING_LITTLE_ENDIAN)],[])
 
-AC_CHECK_PROG([SVN], [svn], yes)
-if test -z "$SVN"; then AC_MSG_ERROR(Subversion not found); fi
+AC_CHECK_PROG([GIT], [git], yes)
+if test -z "$GIT"; then AC_MSG_ERROR(git not found); fi
 
 # Checks for libraries.
 
@@ -262,7 +262,7 @@ AC_DEFINE_UNQUOTED([PREFIX], "${prefix}", "Prefix")
 AC_DEFINE_UNQUOTED([SCRIPTDIR], "${scriptdir}", "librarydir")
 AC_DEFINE_UNQUOTED([CONFDIR], "${sysconfdir}", "configdir")
 
-AC_DEFINE_UNQUOTED([SVN_REVISION_DONE], `sh ./svn_revision.sh`, [SVN revision generated])
+AC_DEFINE_UNQUOTED([SVN_REVISION_DONE], `sh ./revision.sh`, [revision generated])
 
 AC_CONFIG_FILES([
    Makefile

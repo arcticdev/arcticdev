@@ -5,7 +5,7 @@
  */
 
 #include "RStdAfx.h"
-#include <svn_revision.h>
+#include <revision.h>
 #include <Console/BaseConsole.h>
 #include <Console/CConsole.h>
 #include "ConsoleCommands.h"
@@ -37,7 +37,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("ArcTic Core Information: \r\n");
 	pConsole->Write("======================================================================\r\n");
-	pConsole->Write("ArcTic Revision Information: r%s/%s-%s-%s\r\n", BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	pConsole->Write("ArcTic Revision Information %s/%s-%s-%s\r\n", BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
 	pConsole->Write("Server Uptime: %s\r\n", sRMaster.GetUptimeString().c_str());
 	pConsole->Write("Current Players: %u (%d GMs, %d queued)\r\n", count, gm,  0);
 	pConsole->Write("Alliance Online: %u\r\n",alliance);
