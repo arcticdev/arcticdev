@@ -177,7 +177,7 @@
     <ClCompile Include="..\..\src\libs\StackWalker.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\libs\Util.cpp">
+    <ClCompile Include="..\..\src\libs\Utilities\Utility.cpp">
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\libs\Log.cpp">
@@ -459,7 +459,8 @@
     <ClInclude Include="..\..\src\libs\Timer.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Util.h">
+    <ClInclude Include="..\..\src\libs\Utilities\Utility.h">
+
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\WoWGuid.h">

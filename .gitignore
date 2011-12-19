@@ -10,6 +10,8 @@ Thumbs.db
 *.vsp
 *.user
 *.tlog
+*.cache
+*.unsuccessfulbuild
 *.lastbuildstate
 *.exe
 *.pdb
@@ -41,7 +43,6 @@ Makefile.in
 #ignore for by mac os
 .DS_Store
 # Top-level generic files
-#
 bin
 build
 !.gitignore
