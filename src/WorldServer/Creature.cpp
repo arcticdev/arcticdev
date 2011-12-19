@@ -27,11 +27,11 @@ Creature::Creature(uint64 guid)
 	m_quests = NULL;
 	proto = NULL;
 	proto_heroic = NULL;
-	creature_info=NULL;
+	creature_info = NULL;
 
 
-	m_H_regenTimer=0;
-	m_P_regenTimer=0;
+	m_H_regenTimer = 0;
+	m_P_regenTimer = 0;
 	m_useAI = true;
 	mTaxiNode = 0;
 
@@ -40,20 +40,20 @@ Creature::Creature(uint64 guid)
 	m_enslaveCount = 0;
 	m_enslaveSpell = 0;
 	
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x = 0; x < 7; x++)
 	{
-		FlatResistanceMod[x]=0;
-		BaseResistanceModPct[x]=0;
-		ResistanceModPct[x]=0;
-		ModDamageDone[x]=0;
-		ModDamageDonePct[x]=1.0;
+		FlatResistanceMod[x] = 0;
+		BaseResistanceModPct[x] = 0;
+		ResistanceModPct[x] = 0;
+		ModDamageDone[x] = 0;
+		ModDamageDonePct[x] = 1.0;
 	}
 
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x = 0; x < 5; x++)
 	{
-		TotalStatModPct[x]=0;
-		StatModPct[x]=0;
-		FlatStatMod[x]=0;
+		TotalStatModPct[x] = 0;
+		StatModPct[x] = 0;
+		FlatStatMod[x] = 0;
 	}
 
 	SummonOwner = 0;
@@ -77,13 +77,13 @@ Creature::Creature(uint64 guid)
 	m_custom_waypoint_map = 0;
 	m_escorter = NULL;
 	m_limbostate = false;
-	m_corpseEvent=false;
-	m_respawnCell=NULL;
+	m_corpseEvent = false;
+	m_respawnCell = NULL;
 	m_walkSpeed = 2.5f;
 	m_runSpeed = MONSTER_NORMAL_RUN_SPEED;
 	m_base_runSpeed = m_runSpeed;
 	m_base_walkSpeed = m_walkSpeed;
-	m_noRespawn=false;
+	m_noRespawn = false;
     m_canRegenerateHP = true;
 	m_transportGuid = 0;
 	m_transportPosition = NULL;
@@ -93,7 +93,7 @@ Creature::Creature(uint64 guid)
 	m_lootMethod = -1;
 	m_noDeleteAfterDespawn = false;
 
-	spawnid=0;
+	spawnid = 0;
 }
 
 void Creature::Init()
@@ -1409,9 +1409,9 @@ void Creature::SetGuardWaypoints()
 			wp->z = GetMapMgr()->GetLandHeight(wp->x, wp->y);
 		wp->o = 0;
 		wp->backwardemoteid = 0;
-		wp->backwardemoteoneshot = 0;
+		wp->backwardemoteoneshot = false;
 		wp->forwardemoteid = 0;
-		wp->forwardemoteoneshot = 0;
+		wp->forwardemoteoneshot = false;
 		wp->backwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		wp->forwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		wp->forwardStandState = 0;

@@ -515,7 +515,7 @@ private:
 	//ModuleEntry e;
 	DWORD cbNeeded;
 	MODULEINFO mi;
-	HMODULE *hMods = 0;
+	HMODULE *hMods = NULL;
 	char *tt = NULL;
 	char *tt2 = NULL;
 	const SIZE_T TTBUFLEN = 8096;

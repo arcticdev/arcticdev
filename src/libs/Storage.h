@@ -221,12 +221,12 @@ public:
 		for(uint32 i = 0; i < _max; ++i)
 		{
 #ifndef STORAGE_ALLOCATION_POOLS
-			if(_array[i] != 0)
+			if(_array[i] != NULL)
 			{
 				delete _array[i];
 			}
 #endif
-			_array[i] = 0;
+			_array[i] = NULL;
 		}
 	}
 };
