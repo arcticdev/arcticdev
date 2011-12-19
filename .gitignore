@@ -45,4 +45,4 @@ Makefile.in
 bin
 build
 !.gitignore
-
+/src/libs/revision.h
