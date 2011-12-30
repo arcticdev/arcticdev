@@ -6,7 +6,6 @@
 
 #include "StdAfx.h"
 
-
 AIInterface::AIInterface()
 {
 	m_ChainAgroSet = NULL;
