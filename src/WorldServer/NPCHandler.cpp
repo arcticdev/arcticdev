@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -8,22 +8,22 @@
 
 trainertype trainer_types[TRAINER_TYPE_MAX] = 
 {
-{	"Warrior",			   0 },
-{	"Paladin",			   0 },
-{	"Rogue"  ,			   0 },
-{	"Warlock",			   0 },
-{	"Mage",				  0 },
-{	"Shaman",				0 },
-{	"Priest",				0 },
-{	"Hunter",				0 },
-{	"Druid",				 0 },
-{	"Leatherwork",		   2 },
-{	"Skinning",			  2 },
-{	"Fishing",			   2 },
-{	"First Aid",			 2 },
-{	"Physician",			 2 },
-{	"Engineer",			  2 },
-{	"Weapon Master",		 0 },
+{	"Warrior",               0 },
+{	"Paladin",               0 },
+{	"Rogue"  ,               0 },
+{	"Warlock",               0 },
+{	"Mage",                  0 },
+{	"Shaman",                0 },
+{	"Priest",                0 },
+{	"Hunter",                0 },
+{	"Druid",                 0 },
+{	"Leatherwork",           2 },
+{	"Skinning",              2 },
+{	"Fishing",               2 },
+{	"First Aid",             2 },
+{	"Physician",             2 },
+{	"Engineer",              2 },
+{	"Weapon Master",         0 },
 };
 
 bool CanTrainAt(Player* plr, Trainer * trn)
@@ -60,7 +60,6 @@ void WorldSession::SendTabardHelp(Creature* pCreature)
 	data << pCreature->GetGUID();
 	SendPacket( &data );
 }
-
 
 //////////////////////////////////////////////////////////////
 /// This function handles CMSG_BANKER_ACTIVATE:
@@ -130,7 +129,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 	data << pTrainer->TrainerType;
 
 	data << uint32(0);
-	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); itr++)
+	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
 	{
 		pSpell = &(*itr);
 		Status = TrainerGetSpellStatus(pSpell);
@@ -174,7 +173,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 	if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
 
 	TrainerSpell* pSpell=NULL;
-	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); itr++)
+	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
 	{
 		if( ( itr->pCastRealSpell && itr->pCastRealSpell->Id == TeachingSpellID ) ||
 			( itr->pLearnSpell && itr->pLearnSpell->Id == TeachingSpellID ) )
@@ -712,6 +711,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 #undef ITEM_ID_HEARTH_STONE
 #undef BIND_SPELL_ID
 }
+
 
 void WorldSession::SendSpiritHealerRequest(Creature* pCreature)
 {

@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -33,8 +33,8 @@ public:
   }
 
 #ifdef WIN32
-	ARCTIC_INLINE static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
-	ARCTIC_INLINE static type * getSingletonPtr( ) { return mSingleton; }
+	__forceinline static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
+	__forceinline static type * getSingletonPtr( ) { return mSingleton; }
 #else
 	ARCTIC_INLINE static type & getSingleton( ) { WPAssert( mSingleton ); return *mSingleton; }
 	ARCTIC_INLINE static type * getSingletonPtr( ) { return mSingleton; }

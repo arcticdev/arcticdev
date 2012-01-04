@@ -1,11 +1,9 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-// #pragma once is supported starting with _MCS_VER 1000, 
-// so we need not to check the version (because we only support _MSC_VER >= 1100)!
 #pragma once
 
 //#include <windows.h>

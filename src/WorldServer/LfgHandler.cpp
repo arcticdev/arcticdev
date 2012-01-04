@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -187,7 +187,7 @@ void WorldSession::HandleLfgClear(WorldPacket & recvPacket)
 			{
 				// all players have accepted
 				Group * pGroup = new Group(true);
-				for(set<Player*  >::iterator itr = _player->m_lfgMatch->AcceptedPlayers.begin(); itr != _player->m_lfgMatch->AcceptedPlayers.end(); itr++)
+				for(set<Player*  >::iterator itr = _player->m_lfgMatch->AcceptedPlayers.begin(); itr != _player->m_lfgMatch->AcceptedPlayers.end(); ++itr)
 					pGroup->AddMember((*itr)->m_playerInfo);
 
 				_player->m_lfgMatch->pGroup = pGroup;

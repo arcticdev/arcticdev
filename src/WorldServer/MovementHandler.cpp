@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -453,7 +453,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		/************************************************************************/
 		/* Distribute to all inrange players.                                   */
 		/************************************************************************/
-		for(unordered_set<Player*  >::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); itr++)
+		for(unordered_set<Player*  >::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 		{
 			if( (*itr)->GetSession() && (*itr)->IsInWorld() )
 			{
@@ -572,6 +572,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				_player->m_sentTeleportPosition.ChangeCoords(movement_info.x, movement_info.y, movement_info.z);
 			else if(!_player->m_TransporterGUID)
 			{
+				/* just walked into a transport */
+				if(_player->IsMounted())
+					TO_UNIT(_player)->Dismount();
+
 				// vehicles, meh
 				if( _player->m_CurrentVehicle )
 					_player->m_CurrentVehicle->RemovePassenger( _player );
@@ -612,6 +616,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/* Anti-Speed Hack Checks                                               */
 	/************************************************************************/
 
+	
+
 	/************************************************************************/
 	/* Breathing System                                                     */
 	/************************************************************************/
@@ -625,7 +631,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	/************************************************************************/
 	/* Update our position in the server.                                   */
 	/************************************************************************/
-
 	if( _player->m_CurrentCharm )
 		_player->m_CurrentCharm->SetPosition(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation);
 	else if ( _player->m_CurrentVehicle )
@@ -647,7 +652,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 	}	
 
-	if( !(movement_info.flags & MOVEFLAG_MOTION_MASK) )
+	if(  !(movement_info.flags & MOVEFLAG_MOTION_MASK) )
 	{
 		if( _player->m_isMoving )
 		{
@@ -705,7 +710,9 @@ void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMoveNotActiveMoverOpcode( WorldPacket & recv_data )
 {
+
 }
+
 
 void WorldSession::HandleSetActiveMoverOpcode( WorldPacket & recv_data )
 {
@@ -737,6 +744,7 @@ void WorldSession::HandleSetActiveMoverOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMoveSplineCompleteOpcode(WorldPacket &recvPacket)
 {
+
 }
 
 void WorldSession::HandleMountSpecialAnimOpcode(WorldPacket &recvdata)

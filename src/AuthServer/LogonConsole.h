@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __LOGONCONSOLE_H
+#define __LOGONCONSOLE_H
 
 #include "Common.h"
 
@@ -44,3 +45,5 @@ protected:					// Protected methods:
 };
 
 #define sLogonConsole LogonConsole::getSingleton()
+
+#endif

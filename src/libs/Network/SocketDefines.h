@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -71,7 +71,7 @@ public:
 		m_inUse = 0;
 	}
 
-	ARCTIC_INLINE void Reset(SocketIOEvent ev)
+	__forceinline void Reset(SocketIOEvent ev)
 	{
 		memset(&m_overlap, 0, sizeof(OVERLAPPED));
 		m_event = ev;

@@ -7,8 +7,135 @@
     <Filter Include="Launcher\Console">
       <UniqueIdentifier>{996c7ea9-77a8-4a31-9f8c-86c5cb50ef7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GM Commands">
+      <UniqueIdentifier>{abfaade0-a936-4170-b2c3-5f5896fe0d60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Chat, Channel, WayPoints">
+      <UniqueIdentifier>{71198247-dc86-43ba-be44-21c70da13d4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CreatureAI">
+      <UniqueIdentifier>{dd87d09e-0d15-4c68-854b-59c235e42f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database, Storage">
+      <UniqueIdentifier>{916430ef-5b98-4f7d-88c8-1e548111b38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject">
+      <UniqueIdentifier>{65ff4cb9-9d08-4f0c-a455-547e612bdaea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Aura">
+      <UniqueIdentifier>{5f6f613c-f3c2-451a-a4d2-e0e250ae80c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\CBattlegrounds, CBattlegroundManager">
+      <UniqueIdentifier>{365b9c02-b660-4638-9ec7-2294b1ae761f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\CBattlegrounds, CBattlegroundManager\Arena">
+      <UniqueIdentifier>{3edcc08a-813c-4bdb-bb85-e1ea3c06759e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\LfgMgr">
+      <UniqueIdentifier>{9f7d68ae-93b6-46d3-a899-4210345ece99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\LootRoll">
+      <UniqueIdentifier>{36623cb0-d58f-44dc-ad73-6a687cf19b98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\MailSystem">
+      <UniqueIdentifier>{a01e2627-36e7-41c3-89fa-dc80a95ac80f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\MapMgr">
+      <UniqueIdentifier>{7f00e890-bffc-4563-a0ca-20cba7bacafd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object">
+      <UniqueIdentifier>{63f5afb0-a841-44c1-ab80-27bc65b7e7b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\ObjectMgr">
+      <UniqueIdentifier>{38d7941a-b788-49bb-a238-0b061e50943e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\Corpse">
+      <UniqueIdentifier>{18741708-0688-4658-8bb7-b5a61a87986d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\DynamicObject">
+      <UniqueIdentifier>{d939837d-9db4-403b-8f35-e37136569c95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\GameObject, Transporter">
+      <UniqueIdentifier>{472aae12-64d1-488a-9b2d-f2d18eb0d7d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\Item">
+      <UniqueIdentifier>{25c6d339-6024-4238-bde0-95b0e7f20326}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\ObjectContainer">
+      <UniqueIdentifier>{1ce76e94-2a70-4c09-ae0d-342d60447ced}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\Unit">
+      <UniqueIdentifier>{149d2816-4b58-47b3-93c6-2f83afa99dac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\Unit\Creature">
+      <UniqueIdentifier>{92180599-3069-469a-a037-69c529b62172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\Object\Unit\Player">
+      <UniqueIdentifier>{ba38b551-1d17-414f-bb3d-a69367d970d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\QuestLogEntry">
+      <UniqueIdentifier>{012196a5-2fc3-4cdc-8757-ed7b7bd954ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\WeatherInfo">
+      <UniqueIdentifier>{9fcd0977-4b38-487e-9d29-7919ffef5f81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EventableObject\World">
+      <UniqueIdentifier>{b963d194-79da-4ba7-a63a-9cc262884368}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager Classes">
+      <UniqueIdentifier>{53b40eba-ddf0-4b68-9af7-34e109b4ba24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager Classes\AuctionHouse">
+      <UniqueIdentifier>{c230847f-1aa8-4ba2-b395-cc65759b746d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking, Handlers">
+      <UniqueIdentifier>{16479751-830d-45fa-b756-c57e5edd6ce0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking, Handlers\Handlers">
+      <UniqueIdentifier>{805a1fc9-9dae-458e-8da1-d89c69b58317}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking, Handlers\LogonComm">
+      <UniqueIdentifier>{bb0598f4-527a-4d54-8462-836bc375da4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking, Handlers\WorldSession">
+      <UniqueIdentifier>{cbf562c9-f7e9-4c73-a7b3-67a404d03128}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Spells">
+      <UniqueIdentifier>{a2205907-5693-4857-9949-faeb8da704a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading">
+      <UniqueIdentifier>{8dc4a4f8-88ca-4020-99a1-4e5c275b9533}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cluster">
+      <UniqueIdentifier>{e714dc72-9ccf-4a66-81c4-d6d51b22aa8f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\BattlegroundCommands.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\debugcmds.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Level0.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Level1.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Level2.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Level3.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\QuestCommands.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\RecallCommands.cpp">
+      <Filter>GM Commands</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\libs\CoreMemoryAllocator_Core.cpp">
       <Filter>Launcher</Filter>
     </ClCompile>
@@ -18,224 +145,575 @@
     <ClCompile Include="..\..\src\WorldServer\Master.cpp">
       <Filter>Launcher</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\WorldServer\CConsole.cpp">
-      <Filter>Launcher\Console</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\ConsoleCommands.cpp">
       <Filter>Launcher\Console</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\ConsoleListener.cpp">
       <Filter>Launcher\Console</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\WorldServer\AchievementInterface.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\AddonMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\AIInterface.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\AlteracValley.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ArathiBasin.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\AreaTrigger.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Arenas.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ArenaTeam.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\AuctionHouse.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\AuctionMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\BattlegroundCommands.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\BattlegroundHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\BattlegroundMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ChainAggroEntity.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Channel.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ChannelHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\CharacterHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Chat.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ChatHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ClusterInterface.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\CollideInterface.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\CombatHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Container.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Corpse.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Creature.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\DayWatcherThread.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\debugcmds.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\DuelHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\DynamicObject.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\EventableObject.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\EventMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\EyeOfTheStorm.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\faction.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\GameObject.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\GMTicket.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Group.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\GroupHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Guild.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\GuildHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\HonorHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\INGEvents.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Item.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ItemHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ItemInterface.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Level0.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Level1.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Level2.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Level3.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\LfgHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\LfgMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\LogonCommClient.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\LogonCommHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\LootMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\MailSystem.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Map.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\MapCell.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\MapMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\MapScriptInterface.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\MiscHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\MovementHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\NPCHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Object.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ObjectMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ObjectStorage.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Opcodes.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Pet.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\PetHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Player.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\PlayerPacketWrapper.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\QueryHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Quest.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\QuestCommands.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\QuestHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\QuestMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\RaidHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\RecallCommands.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ReputationHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\ScriptMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SkillHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SocialHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Spell.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SpellAuras.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SpellEffects.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SpellFixes.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SpellHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\SpellTarget.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Stats.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\StrandOfTheAncients.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TaxiHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TaxiMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TerrainMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TheIsleOfConquest.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TradeHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TransporterHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Unit.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\Vehicle.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WarsongGulch.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WayPoints.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WeatherMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WordFilter.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorkdSocketCluster.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorkerServerClient.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\World.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorldCreator.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorldRunnable.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorldSession.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorldSocket.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\WorldStateManager.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\Channel.cpp">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Chat.cpp">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WayPoints.cpp">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WordFilter.cpp">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AIInterface.cpp">
+      <Filter>CreatureAI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ObjectStorage.cpp">
+      <Filter>Database, Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\EventableObject.cpp">
+      <Filter>EventableObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SpellAuras.cpp">
+      <Filter>EventableObject\Aura</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AlteracValley.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ArathiBasin.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\BattlegroundMgr.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\EyeOfTheStorm.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\StrandOfTheAncients.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WarsongGulch.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Arenas.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager\Arena</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ArenaTeam.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager\Arena</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\LfgMgr.cpp">
+      <Filter>EventableObject\LfgMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\LootMgr.cpp">
+      <Filter>EventableObject\LootRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\MailSystem.cpp">
+      <Filter>EventableObject\MailSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\CollideInterface.cpp">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Map.cpp">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\MapCell.cpp">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\MapMgr.cpp">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\MapScriptInterface.cpp">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ObjectMgr.cpp">
+      <Filter>EventableObject\ObjectMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Corpse.cpp">
+      <Filter>EventableObject\Object\Corpse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\DynamicObject.cpp">
+      <Filter>EventableObject\Object\DynamicObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\GameObject.cpp">
+      <Filter>EventableObject\Object\GameObject, Transporter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\TransporterHandler.cpp">
+      <Filter>EventableObject\Object\GameObject, Transporter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\TheIsleOfConquest.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Container.cpp">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Item.cpp">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ItemInterface.cpp">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Object.cpp">
+      <Filter>EventableObject\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Stats.cpp">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Unit.cpp">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Creature.cpp">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Pet.cpp">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Vehicle.cpp">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Group.cpp">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Guild.cpp">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Player.cpp">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\PlayerPacketWrapper.cpp">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Quest.cpp">
+      <Filter>EventableObject\QuestLogEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\World.cpp">
+      <Filter>EventableObject\World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorldStateManager.cpp">
+      <Filter>EventableObject\World</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WeatherMgr.cpp">
+      <Filter>EventableObject\WeatherInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AddonMgr.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\EventMgr.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\QuestMgr.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ScriptMgr.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\TaxiMgr.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\TerrainMgr.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorldCreator.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AuctionHouse.cpp">
+      <Filter>Manager Classes\AuctionHouse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AuctionMgr.cpp">
+      <Filter>Manager Classes\AuctionHouse</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\BattlegroundHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ChannelHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\CharacterHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ChatHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\CombatHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\DuelHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\GMTicket.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\GroupHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\GuildHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\HonorHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ItemHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\LfgHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\MiscHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\MovementHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\NPCHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\PetHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\QueryHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\QuestHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\RaidHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ReputationHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SocialHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SkillHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SpellHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\TaxiHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\TradeHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\LogonCommClient.cpp">
+      <Filter>Networking, Handlers\LogonComm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\LogonCommHandler.cpp">
+      <Filter>Networking, Handlers\LogonComm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AreaTrigger.cpp">
+      <Filter>Networking, Handlers\WorldSession</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorldSession.cpp">
+      <Filter>Networking, Handlers\WorldSession</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Opcodes.cpp">
+      <Filter>Networking, Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorldSocket.cpp">
+      <Filter>Networking, Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Spell.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SpellEffects.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SpellFixes.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\SpellTarget.cpp">
+      <Filter>Spells</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\DayWatcherThread.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorldRunnable.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ClusterInterface.cpp">
+      <Filter>Cluster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\EventsSystem.cpp">
+      <Filter>EventableObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorldSocketCluster.cpp">
+      <Filter>Cluster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\AchievementInterface.cpp">
+      <Filter>Manager Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\faction.cpp">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\ChainAggroEntity.cpp">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WorkerServerClient.cpp">
+      <Filter>EventableObject\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\WorldServer\Const.h" />
+    <ClInclude Include="..\..\src\WorldServer\Packets.h" />
+    <ClInclude Include="..\..\src\WorldServer\StdAfx.h" />
     <ClInclude Include="..\..\src\WorldServer\Master.h">
       <Filter>Launcher</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\BaseConsole.h">
       <Filter>Launcher\Console</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\WorldServer\CConsole.h">
-      <Filter>Launcher\Console</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\ConsoleCommands.h">
       <Filter>Launcher\Console</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\WorldServer\AchievementInterface.h" />
-    <ClInclude Include="..\..\src\WorldServer\AddonMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\AIInterface.h" />
-    <ClInclude Include="..\..\src\WorldServer\AlteracValley.h" />
-    <ClInclude Include="..\..\src\WorldServer\ArathiBasin.h" />
-    <ClInclude Include="..\..\src\WorldServer\AreaTrigger.h" />
-    <ClInclude Include="..\..\src\WorldServer\Arenas.h" />
-    <ClInclude Include="..\..\src\WorldServer\ArenaTeam.h" />
-    <ClInclude Include="..\..\src\WorldServer\AuctionHouse.h" />
-    <ClInclude Include="..\..\src\WorldServer\AuctionMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\BattlegroundMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\CellHandler.h" />
-    <ClInclude Include="..\..\src\WorldServer\ChainAggroEntity.h" />
-    <ClInclude Include="..\..\src\WorldServer\Channel.h" />
-    <ClInclude Include="..\..\src\WorldServer\ChannelMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\Chat.h" />
-    <ClInclude Include="..\..\src\WorldServer\ClassSpells.h" />
-    <ClInclude Include="..\..\src\WorldServer\ClusterInterface.h" />
-    <ClInclude Include="..\..\src\WorldServer\CollideInterface.h" />
-    <ClInclude Include="..\..\src\WorldServer\Const.h" />
-    <ClInclude Include="..\..\src\WorldServer\Container.h" />
-    <ClInclude Include="..\..\src\WorldServer\Corpse.h" />
-    <ClInclude Include="..\..\src\WorldServer\Creature.h" />
-    <ClInclude Include="..\..\src\WorldServer\DayWatcherThread.h" />
-    <ClInclude Include="..\..\src\WorldServer\DynamicObject.h" />
-    <ClInclude Include="..\..\src\WorldServer\EventableObject.h" />
-    <ClInclude Include="..\..\src\WorldServer\EventMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\EyeOfTheStorm.h" />
-    <ClInclude Include="..\..\src\WorldServer\faction.h" />
-    <ClInclude Include="..\..\src\WorldServer\GameObject.h" />
-    <ClInclude Include="..\..\src\WorldServer\Group.h" />
-    <ClInclude Include="..\..\src\WorldServer\Guild.h" />
-    <ClInclude Include="..\..\src\WorldServer\HonorHandler.h" />
-    <ClInclude Include="..\..\src\WorldServer\Item.h" />
-    <ClInclude Include="..\..\src\WorldServer\ItemInterface.h" />
-    <ClInclude Include="..\..\src\WorldServer\ItemPrototype.h" />
-    <ClInclude Include="..\..\src\WorldServer\LfgMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\LogonCommClient.h" />
-    <ClInclude Include="..\..\src\WorldServer\LogonCommHandler.h" />
-    <ClInclude Include="..\..\src\WorldServer\LootMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\MailSystem.h" />
-    <ClInclude Include="..\..\src\WorldServer\MainServerDefines.h" />
-    <ClInclude Include="..\..\src\WorldServer\Map.h" />
-    <ClInclude Include="..\..\src\WorldServer\MapCell.h" />
-    <ClInclude Include="..\..\src\WorldServer\MapMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\MapScriptInterface.h" />
-    <ClInclude Include="..\..\src\WorldServer\MiscHandler.h" />
-    <ClInclude Include="..\..\src\WorldServer\NameTables.h" />
-    <ClInclude Include="..\..\src\WorldServer\NPCHandler.h" />
-    <ClInclude Include="..\..\src\WorldServer\Object.h" />
-    <ClInclude Include="..\..\src\WorldServer\ObjectMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\ObjectStorage.h" />
-    <ClInclude Include="..\..\src\WorldServer\Opcodes.h" />
-    <ClInclude Include="..\..\src\WorldServer\Packets.h" />
-    <ClInclude Include="..\..\src\WorldServer\Pet.h" />
-    <ClInclude Include="..\..\src\WorldServer\Player.h" />
-    <ClInclude Include="..\..\src\WorldServer\Quest.h" />
-    <ClInclude Include="..\..\src\WorldServer\QuestMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\ScriptMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\ScriptSetup.h" />
-    <ClInclude Include="..\..\src\WorldServer\SkillNameMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\Spell.h" />
-    <ClInclude Include="..\..\src\WorldServer\SpellAuras.h" />
-    <ClInclude Include="..\..\src\WorldServer\SpellFailure.h" />
-    <ClInclude Include="..\..\src\WorldServer\SpellNameHashes.h" />
-    <ClInclude Include="..\..\src\WorldServer\Stats.h" />
-    <ClInclude Include="..\..\src\WorldServer\StdAfx.h" />
-    <ClInclude Include="..\..\src\WorldServer\StrandOfTheAncients.h" />
-    <ClInclude Include="..\..\src\WorldServer\TaxiMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\TerrainMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\TheIsleOfConquest.h" />
-    <ClInclude Include="..\..\src\WorldServer\TransporterHandler.h" />
-    <ClInclude Include="..\..\src\WorldServer\Unit.h" />
-    <ClInclude Include="..\..\src\WorldServer\UpdateFields.h" />
-    <ClInclude Include="..\..\src\WorldServer\UpdateMask.h" />
-    <ClInclude Include="..\..\src\WorldServer\Vehicle.h" />
-    <ClInclude Include="..\..\src\WorldServer\WarsongGulch.h" />
-    <ClInclude Include="..\..\src\WorldServer\WeatherMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\WordFilter.h" />
-    <ClInclude Include="..\..\src\WorldServer\WorkerServerClient.h" />
-    <ClInclude Include="..\..\src\WorldServer\World.h" />
-    <ClInclude Include="..\..\src\WorldServer\WorldCreator.h" />
-    <ClInclude Include="..\..\src\WorldServer\WorldRunnable.h" />
-    <ClInclude Include="..\..\src\WorldServer\WorldSession.h" />
-    <ClInclude Include="..\..\src\WorldServer\WorldSocket.h" />
-    <ClInclude Include="..\..\src\WorldServer\WorldStateManager.h" />
+    <ClInclude Include="..\..\src\WorldServer\Channel.h">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ChannelMgr.h">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Chat.h">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WordFilter.h">
+      <Filter>Chat, Channel, WayPoints</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AIInterface.h">
+      <Filter>CreatureAI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ObjectStorage.h">
+      <Filter>Database, Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\EventableObject.h">
+      <Filter>EventableObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\SpellAuras.h">
+      <Filter>EventableObject\Aura</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AlteracValley.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ArathiBasin.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\BattlegroundMgr.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\EyeOfTheStorm.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\StrandOfTheAncients.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WarsongGulch.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Arenas.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ArenaTeam.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager\Arena</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\LfgMgr.h">
+      <Filter>EventableObject\LfgMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\LootMgr.h">
+      <Filter>EventableObject\LootRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\MailSystem.h">
+      <Filter>EventableObject\MailSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\CellHandler.h">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\CollideInterface.h">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Map.h">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\MapCell.h">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\MapMgr.h">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\MapScriptInterface.h">
+      <Filter>EventableObject\MapMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ObjectMgr.h">
+      <Filter>EventableObject\ObjectMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Corpse.h">
+      <Filter>EventableObject\Object\Corpse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\DynamicObject.h">
+      <Filter>EventableObject\Object\DynamicObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\GameObject.h">
+      <Filter>EventableObject\Object\GameObject, Transporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\TransporterHandler.h">
+      <Filter>EventableObject\Object\GameObject, Transporter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\TheIsleOfConquest.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Container.h">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Item.h">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ItemInterface.h">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ItemPrototype.h">
+      <Filter>EventableObject\Object\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Object.h">
+      <Filter>EventableObject\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\UpdateFields.h">
+      <Filter>EventableObject\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\UpdateMask.h">
+      <Filter>EventableObject\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Stats.h">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Unit.h">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Creature.h">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Pet.h">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Vehicle.h">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Group.h">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Guild.h">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Player.h">
+      <Filter>EventableObject\Object\Unit\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Quest.h">
+      <Filter>EventableObject\QuestLogEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\World.h">
+      <Filter>EventableObject\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorldStateManager.h">
+      <Filter>EventableObject\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WeatherMgr.h">
+      <Filter>EventableObject\WeatherInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AddonMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\EventMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\QuestMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ScriptMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ScriptSetup.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\SkillNameMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\TaxiMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\TerrainMgr.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorldCreator.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AuctionHouse.h">
+      <Filter>Manager Classes\AuctionHouse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AuctionMgr.h">
+      <Filter>Manager Classes\AuctionHouse</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\HonorHandler.h">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\MiscHandler.h">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\NPCHandler.h">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\LogonCommHandler.h">
+      <Filter>Networking, Handlers\LogonComm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\LogonCommClient.h">
+      <Filter>Networking, Handlers\LogonComm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AreaTrigger.h">
+      <Filter>Networking, Handlers\WorldSession</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorldSession.h">
+      <Filter>Networking, Handlers\WorldSession</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\NameTables.h">
+      <Filter>Networking, Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Opcodes.h">
+      <Filter>Networking, Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorldSocket.h">
+      <Filter>Networking, Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Spell.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\SpellFailure.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\DayWatcherThread.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorldRunnable.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ClusterInterface.h">
+      <Filter>Cluster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\AchievementInterface.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ClassSpells.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\SpellNameHashes.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\faction.h">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\ChainAggroEntity.h">
+      <Filter>EventableObject\Object\Unit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorkerServerClient.h">
+      <Filter>EventableObject\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\MainServerDefines.h">
+      <Filter>Database, Storage</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\WorldStates.h" />
   </ItemGroup>
   <ItemGroup>

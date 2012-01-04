@@ -1,13 +1,12 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
 
-static const char * EOTSCPNames[EOTS_TOWER_COUNT] =
-{
+static const char * EOTSCPNames[EOTS_TOWER_COUNT] = {
 	"Blood Elf Tower",
 	"Fel Reaver Ruins",
 	"Mage Tower",
@@ -620,7 +619,7 @@ void EyeOfTheStorm::UpdateCPs()
 		itrend = m_CPStatusGO[i]->GetInRangePlayerSetEnd();
 		plrcounts[0] = plrcounts[1] = 0;
 
-		for(; itr != itrend; itr++)
+		for(; itr != itrend; ++itr)
 		{ 
 			if( !(*itr)->IsPvPFlagged() || (*itr)->InStealth() || (*itr)->m_invisible || (*itr)->SchoolImmunityList[0] || (*itr)->m_bgFlagIneligible )
 				is_valid = false;
@@ -887,7 +886,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 		for(uint32 i = 0; i < 2; ++i)
 		{
-			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
 				(*itr)->Root();
 
@@ -986,7 +985,7 @@ void EyeOfTheStorm::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}

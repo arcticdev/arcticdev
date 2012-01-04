@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __ACCOUNTCACHE_H
+#define __ACCOUNTCACHE_H
 
 #include "Common.h"
 #include "../libs/Database/DatabaseEnv.h"
@@ -109,9 +110,9 @@ public:
 	{
 
 #ifdef WIN32
-		for(HM_NAMESPACE::hash_map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); itr++)
+		for(HM_NAMESPACE::hash_map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
 #else
-		for(map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); itr++)
+		for(map<string,Account*>::iterator itr = AccountDatabase.begin(); itr != AccountDatabase.end(); ++itr)
 #endif
 		{
 			delete itr->second;
@@ -231,3 +232,5 @@ public:
 #define sIPBanner IPBanner::getSingleton()
 #define sAccountMgr AccountMgr::getSingleton()
 #define sInfoCore InformationCore::getSingleton()
+
+#endif

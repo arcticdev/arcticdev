@@ -271,6 +271,17 @@ AC_CONFIG_FILES([
    src/WorldServer/Makefile
    src/AuthServer/Makefile
    src/ClusterServer/Makefile
+   src/scripts/Makefile
+   src/scripts/src/Makefile
+   src/scripts/src/GossipScripts/Makefile
+   src/scripts/src/InstanceScripts/Makefile
+   src/scripts/src/ServerStatusPlugin/Makefile
+   src/scripts/src/SpellHandlers/Makefile
+   src/scripts/src/ExtraScripts/Makefile
+   src/scripts/src/EventsScripts/Makefile
+   src/scripts/src/RaidsScripts/Makefile
+   src/scripts/src/MiscScripts/Makefile
+   src/scripts/src/QuestScripts/Makefile
 ])
 
 AC_OUTPUT
@@ -288,7 +299,7 @@ echo " Database modules:"
 echo "        mysql: ${MYSQL_VERSION}"
 if test "x$enable_postgres" = "xyes" ; then
   echo "   postgresql: ${POSTGRESQL_VERSION}"
-fi		
+fi
 if test "x$enable_sqlite" = "xyes" ; then
   echo "       sqlite: ${SQLITE_VERSION}"
 fi

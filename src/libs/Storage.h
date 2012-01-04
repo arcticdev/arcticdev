@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -221,12 +221,12 @@ public:
 		for(uint32 i = 0; i < _max; ++i)
 		{
 #ifndef STORAGE_ALLOCATION_POOLS
-			if(_array[i] != NULL)
+			if(_array[i] != 0)
 			{
 				delete _array[i];
 			}
 #endif
-			_array[i] = NULL;
+			_array[i] = 0;
 		}
 	}
 };
@@ -250,7 +250,7 @@ public:
 	 */
 	~HashMapStorageContainer()
 	{
-		for(typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin(); itr != _map.end(); itr++)
+		for(typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin(); itr != _map.end(); ++itr)
 			delete itr->second;
 	}
 
@@ -347,7 +347,7 @@ public:
 	void Clear()
 	{
 		typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin();
-		for(; itr != _map.end(); itr++)
+		for(; itr != _map.end(); ++itr)
 			delete itr->second;
 		_map.clear();
 	}
@@ -426,7 +426,7 @@ public:
 	*/
 	void GetNextElement()
 	{
-		itr++;
+		++itr;
 		if(itr == Source->_map.end())
 			StorageContainerIterator<T>::Set(0);
 		else

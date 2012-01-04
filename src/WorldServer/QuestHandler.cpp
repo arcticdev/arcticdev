@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -10,7 +10,7 @@ initialiseSingleton( QuestMgr );
 void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 {
 	DEBUG_LOG( "WORLD"," Received CMSG_QUESTGIVER_STATUS_QUERY." );
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
@@ -63,7 +63,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 void WorldSession::HandleQuestgiverHelloOpcode( WorldPacket & recv_data )
 {
 	DEBUG_LOG( "WORLD"," Received CMSG_QUESTGIVER_HELLO." );
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
@@ -94,7 +94,7 @@ void WorldSession::HandleQuestgiverHelloOpcode( WorldPacket & recv_data )
 void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 {
 	DEBUG_LOG( "WORLD"," Received CMSG_QUESTGIVER_QUERY_QUEST." );
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 
 	WorldPacket data;
@@ -196,7 +196,7 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 {
 	DEBUG_LOG( "WORLD"," Received CMSG_QUESTGIVER_ACCEPT_QUEST" );
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 
 	//WorldPacket data;
@@ -438,7 +438,7 @@ void WorldSession::HandleQuestlogRemoveQuestOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleQuestQueryOpcode( WorldPacket & recv_data )
 {
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 	DEBUG_LOG( "WORLD"," Received CMSG_QUEST_QUERY" );
 
@@ -463,7 +463,7 @@ void WorldSession::HandleQuestQueryOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data )
 {
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 	DEBUG_LOG( "WORLD"," Received CMSG_QUESTGIVER_REQUESTREWARD_QUEST." );
 
@@ -678,8 +678,7 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 			qst_giver = TO_OBJECT(quest_giver);
 		else
 			return;
-		//bValid = quest_giver->isQuestGiver();
-		//if(bValid)
+
 		bValid = true;
 			qst = QuestStorage.LookupEntry(quest_id);
 	}
@@ -696,8 +695,6 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	//FIXME: Some Quest givers talk in the end of the quest.
-	//   qst_giver->SendChatMessage(CHAT_MSG_MONSTER_SAY,LANG_UNIVERSAL,qst->GetQuestEndMessage().c_str());
 	QuestLogEntry *qle = _player->GetQuestLogForEntry(quest_id);
 
     if (!qle && !qst->is_repeatable)
@@ -711,12 +708,6 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 		OUT_DEBUG("WORLD: Quest not finished.");
 		return;
 	}
-
-	// remove icon
-	/*if(qst_giver->GetTypeId() == TYPEID_UNIT)
-	{
-		qst_giver->BuildFieldUpdatePacket(GetPlayer(), UNIT_DYNAMIC_FLAGS, qst_giver->GetUInt32Value(UNIT_DYNAMIC_FLAGS));
-	}*/
 
 	//check for room in inventory for all items
 	if(!sQuestMgr.CanStoreReward(_player,qst,reward_slot))
@@ -762,7 +753,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 			{
 				_player->GetGroup()->Lock();
 				GroupMembersSet::iterator itr;
-				for(itr = sgr->GetGroupMembersBegin(); itr != sgr->GetGroupMembersEnd(); itr++)
+				for(itr = sgr->GetGroupMembersBegin(); itr != sgr->GetGroupMembersEnd(); ++itr)
 				{
 					Player* pPlayer = (*itr)->m_loggedInPlayer;
 					if(pPlayer && pPlayer->GetGUID() !=  pguid)
@@ -804,7 +795,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 						//CHECKS IF  ALREADY HAVE COMPLETED THE DAILY QUEST
 						if(pPlayer->HasFinishedDailyQuest(questid))
 						{
-							response = QUEST_SHARE_MSG_CANT_BE_SHARED_TODAY;
+							response = QUEST_SHARE_MSG_CANT_SHARE_TODAY;
 						}
 
 						//CHECKS IF IS IN THE PARTY
@@ -838,7 +829,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
 {
-	if(!_player) return;
+
 	CHECK_INWORLD_RETURN;
 	uint64 guid;
 	uint8 msg;
@@ -859,4 +850,72 @@ void WorldSession::HandleQuestPushResult(WorldPacket& recvPacket)
 			GetPlayer()->SetQuestSharer(0);
 		}
 	}
+}
+
+void WorldSession::HandleQuestPOI(WorldPacket& recvPacket)
+{
+	CHECK_INWORLD_RETURN;
+	uint32 count;
+	recvPacket >> count;
+	
+	if (count >= 25)
+		return;
+	
+	DEBUG_LOG( "WORLD"," Received MSG_QUEST_PUSH_RESULT " );
+
+	WorldPacket data(SMSG_QUEST_POI_QUERY_RESPONSE, 4+(4+4)*count);
+	data << uint32(count);
+
+	for (uint32 i = 0; i < count; ++i)
+	{
+		uint32 questId;
+		recvPacket >> questId;
+
+		bool questOk = false;
+
+		uint16 questSlot = _player->FindQuestSlot(questId);
+
+		if (questSlot != 25)
+			questOk =_player->GetQuestSlotQuestId(questSlot) == questId;
+
+		if (questOk)
+		{
+			QuestPOIVector const *POI = objmgr.GetQuestPOIVector(questId);
+
+			if (POI)
+			{
+				data << uint32(questId);
+				data << uint32(POI->size());
+
+				for (QuestPOIVector::const_iterator itr = POI->begin(); itr != POI->end(); ++itr)
+				{
+					data << uint32(itr->Id);
+					data << int32(itr->ObjectiveIndex);
+					data << uint32(itr->MapId);
+					data << uint32(itr->AreaId);
+					data << uint32(itr->Unk2);
+					data << uint32(itr->Unk3);
+					data << uint32(itr->Unk4);
+					data << uint32(itr->points.size());
+
+					for (std::vector<QuestPOIPoint>::const_iterator itr2 = itr->points.begin(); itr2 != itr->points.end(); ++itr2)
+					{
+						data << int32(itr2->x);
+						data << int32(itr2->y);
+					}
+				}
+			}
+			else
+			{
+				data << uint32(questId);
+				data << uint32(0);
+			}
+		}
+		else
+		{
+			data << uint32(questId);
+			data << uint32(0);
+		}
+	}
+	SendPacket(&data);
 }

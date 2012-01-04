@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -81,6 +81,9 @@ class AVNode
 
 	// guards, need to be respawned when changes ownership
 	vector<Creature*> m_guards;
+
+	// peon locations, used in mines (todo)
+	vector<Creature*> m_peonLocations;
 
 	// control point (capturable)
 	GameObject* m_flag;

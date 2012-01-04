@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -12,7 +12,7 @@ EventableObject::~EventableObject()
 	/* decrement event count on all events */
 
 	EventMap::iterator itr = m_events.begin();
-	for(; itr != m_events.end(); itr++)
+	for(; itr != m_events.end(); ++itr)
 	{
 		if( itr->second->eventFlag & EVENT_FLAG_FIRE_ON_DELETE && !itr->second->deleted )
 		{
@@ -107,7 +107,7 @@ void EventableObject::event_RemoveEvents(uint32 EventType)
 	if(EventType == EVENT_REMOVAL_FLAG_ALL)
 	{
 		EventMap::iterator itr = m_events.begin();
-		for(; itr != m_events.end(); itr++)
+		for(; itr != m_events.end(); ++itr)
 		{
 			if( itr->second->eventFlag & EVENT_FLAG_FIRE_ON_DELETE && !itr->second->deleted )
 			{
@@ -171,7 +171,7 @@ void EventableObject::event_ModifyTimeLeft(uint32 EventType, uint32 TimeLeft,boo
 			if(unconditioned)
 				itr->second->currTime = TimeLeft;
 			else itr->second->currTime = ((int32)TimeLeft > itr->second->msTime) ? itr->second->msTime : (int32)TimeLeft;
-			itr++;
+			++itr;
 		} while(itr != m_events.upper_bound(EventType));
 	}
 
@@ -194,7 +194,7 @@ bool EventableObject::event_GetTimeLeft(uint32 EventType, uint32 * Time)
 		{
 			if( itr->second->deleted )
 			{
-				itr++;
+				++itr;
 				continue;
 			}
 
@@ -225,7 +225,7 @@ void EventableObject::event_ModifyTime(uint32 EventType, uint32 Time)
 		do 
 		{
 			itr->second->msTime = Time;
-			itr++;
+			++itr;
 		} while(itr != m_events.upper_bound(EventType));
 	}
 
@@ -247,7 +247,7 @@ void EventableObject::event_ModifyTimeAndTimeLeft(uint32 EventType, uint32 Time)
 		do 
 		{
 			itr->second->currTime = itr->second->msTime = Time;
-			itr++;
+			++itr;
 		} while(itr != m_events.upper_bound(EventType));
 	}
 
@@ -276,7 +276,7 @@ bool EventableObject::event_HasEvent(uint32 EventType)
 				ret = true;
 				break;
 			}
-			itr++;
+			++itr;
 		} while(itr != m_events.upper_bound(EventType));
 	}
 
@@ -296,7 +296,7 @@ EventableObjectHolder::~EventableObjectHolder()
 	/* decrement events reference count */
 	m_lock.Acquire();
 	EventList::iterator itr = m_events.begin();
-	for(; itr != m_events.end(); itr++)
+	for(; itr != m_events.end(); ++itr)
 		(*itr)->DecRef();
 	m_lock.Release();
 }
@@ -455,7 +455,7 @@ void EventableObjectHolder::AddObject(EventableObject* obj)
 		m_insertPoolLock.Acquire();
 		EventMap::iterator it2;
 
-		for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); itr++)
+		for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
 		{
 			// ignore deleted events (shouldn't be any in here, actually)
 			if(itr->second->deleted)
@@ -481,7 +481,7 @@ void EventableObjectHolder::AddObject(EventableObject* obj)
 		return;
 	}
 
-	for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); itr++)
+	for(EventMap::iterator itr = obj->m_events.begin(); itr != obj->m_events.end(); ++itr)
 	{
 		// ignore deleted events
 		if(itr->second->deleted)

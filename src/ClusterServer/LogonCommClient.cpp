@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -250,7 +250,7 @@ void LogonCommClientSocket::UpdateAccountCount(uint32 account_id, uint8 add)
 	WorldPacket data(RCMSG_UPDATE_CHARACTER_MAPPING_COUNT, 9);
 	set<uint32>::iterator itr = realm_ids.begin();
 
-	for(; itr != realm_ids.end(); itr++)
+	for(; itr != realm_ids.end(); ++itr)
 	{
 		data.clear();
 		data << (*itr) << account_id << add;
@@ -308,7 +308,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 		else
 			uncompressed << Remaining;
 
-		for(uint32 i = 0; i < 40000; ++i, itr++)
+		for(uint32 i = 0; i < 40000; ++i, ++itr)
 		{
             uncompressed << uint32(itr->first) << uint8(itr->second);
 			if(!--Remaining)

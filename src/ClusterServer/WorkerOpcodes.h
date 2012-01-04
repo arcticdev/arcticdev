@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef _WORKER_OPCODES_H
+#define _WORKER_OPCODES_H
 
 enum WorkerServerOpcodes
 {
@@ -59,10 +60,13 @@ enum msg_channel_action
 	CHANNEL_PART,
 	CHANNEL_SAY
 };
-
 enum cmsg_channel_update
 {
 	UPDATE_CHANNELS_ON_ZONE_CHANGE         = 1,
 	PART_ALL_CHANNELS                      = 2,
-	JOIN_ALL_CHANNELS                      = 3,
+	JOIN_ALL_CHANNELS                      = 3
 };
+
+#endif		// _WORKER_OPCODES_H
+
+

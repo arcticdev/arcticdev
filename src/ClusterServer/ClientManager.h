@@ -1,10 +1,8 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
-#pragma once
 
 #define MAX_SESSIONS 3000
 
@@ -108,7 +106,7 @@ public:
 	ARCTIC_INLINE Session* GetSessionByAccountId(uint32 Id)
 	{
 		m_lock.AcquireReadLock();
-		for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); itr++)
+		for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); ++itr)
 		{
 			if (!itr->second->deleted && itr->second->GetAccountId() == Id)
 			{
@@ -131,3 +129,5 @@ public:
 };
 
 #define sClientMgr ClientMgr::getSingleton()
+
+

@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -8,120 +8,92 @@
 #define WOWSERVER_QUEST_H
 
 using namespace std;
-/*
-2.3.0 research
-not available because low level = 1
-available but quest low level = 2
-question mark = 3 (not got objectives)
-blue question mark = 4
-blue exclamation mark = 5
-yellow exclamation mark = 6
-yellow question mark = 7
-finished = 8
-132 error = 9
-*/
 
 enum QUEST_STATUS
 {
-    QMGR_QUEST_NOT_AVAILABLE					= 0x00,	// There aren't any quests available.			| "No Mark"
-    QMGR_QUEST_AVAILABLELOW_LEVEL				= 0x01,	// Quest available, and your level isn't enough.| "Gray Quotation Mark !"
-    QMGR_QUEST_CHAT								= 0x02,	// Quest available it shows a talk balloon.		| "No Mark"
-    QMGR_QUEST_REPEATABLE_FINISHED_LOWLEVEL		= 0x03,
-    QMGR_QUEST_REPEATABLE_LOWLEVEL				= 0x04,
-    QMGR_QUEST_NOT_FINISHED						= 0x05,	// Quest isn't finished yet.					| "Gray Question ? Mark"
-    QMGR_QUEST_REPEATABLE_FINISHED				= 0x06,
-    QMGR_QUEST_REPEATABLE						= 0x07,	// Quest repeatable								| "Blue Question ? Mark"
-    QMGR_QUEST_AVAILABLE						= 0x08,	// Quest available, and your level is enough	| "Yellow Quotation ! Mark"
-    QMGR_QUEST_FINISHED							= 0x0A,	// Quest has been finished.						| "Yellow Question  ? Mark" (7 has no minimap icon)
-    // QUEST_ITEM_UPDATE						= 0x06	// Yellow Question "?" Mark. //Unknown
+	QMGR_QUEST_NOT_AVAILABLE		= 0x00,	// There aren't quests avaiable.				| "No Mark"
+	QMGR_QUEST_AVAILABLELOW_LEVEL	= 0x01,	// Quest avaiable, and your level isnt enough.	| "Gray Quotation Mark !"
+	QMGR_QUEST_CHAT					= 0x02,	// Quest avaiable it shows a talk baloon.		| "No Mark"
+	QMGR_QUEST_NOT_FINISHED			= 0x05,	// Quest isnt finished yet.						| "Gray Question ? Mark"
+	QMGR_QUEST_REPEATABLE_FINISHED	= 0x06,
+	QMGR_QUEST_REPEATABLE			= 0x07,	// Quest repeatable								| "Blue Question ? Mark" 
+	QMGR_QUEST_AVAILABLE			= 0x08,	// Quest avaiable, and your level is enough		| "Yellow Quotation ! Mark" 
+	QMGR_QUEST_FINISHED_2			= 0x09,  // Quest has been finished                      | "No icon on the minimap"
+	QMGR_QUEST_FINISHED				= 0x0A,	// Quest has been finished.						| "Yellow Question  ? Mark" (7 has no minimap icon)
+	//QUEST_ITEM_UPDATE				= 0x06	 // Yellow Question "?" Mark. //Unknown
 };
 
 enum QUEST_STATUS_RESPONSE
 {
-    QMGR_QUEST_0 = 0x00, // Yellow Exclamation mark.x
-    QMGR_QUEST_1 = 0x01, // Yellow Exclamation mark.x
-    QMGR_QUEST_2 = 0x02, // Yellow Exclamation mark.x
-    QMGR_QUEST_3 = 0x03, // Finished or HasQuest ? Yellow Questionmark : Blue Questionmark(Breaks client apparently).x
-    QMGR_QUEST_4 = 0x04, // Finished or HasQuest ? Yellow Questionmark : Blue Questionmark(Breaks client apparently).x
+	QMGR_QUEST_0 = 0x00, // Yellow Exclamation mark.x
+	QMGR_QUEST_1 = 0x01, // Yellow Exclamation mark.x
+	QMGR_QUEST_2 = 0x02, // Yellow Exclamation mark.x
+	QMGR_QUEST_3 = 0x03, // Finished or HasQuest ? Yellow Questionmark : Blue Questionmark(Breaks client apparently).x
+	QMGR_QUEST_4 = 0x04, // Finished or HasQuest ? Yellow Questionmark : Blue Questionmark(Breaks client apparently).x
 };
 
 enum QUESTGIVER_QUEST_TYPE
 {
-    QUESTGIVER_QUEST_START = 0x01,
-    QUESTGIVER_QUEST_END = 0x02,
+	QUESTGIVER_QUEST_START  = 0x01,
+	QUESTGIVER_QUEST_END	= 0x02,
 };
 
 enum QUEST_TYPE
 {
-    QUEST_GATHER = 0x01,
-    QUEST_SLAY = 0x02,
+	QUEST_GATHER	= 0x01,
+	QUEST_SLAY	  = 0x02,
 };
 
 enum QUEST_FLAG
 {
-    QUEST_FLAG_NONE								= 0x00000000,
-    QUEST_FLAG_DELIVER							= 0x00000001,
-    QUEST_FLAG_KILL								= 0x00000002,
-    QUEST_FLAG_SPEAKTO							= 0x00000004,
-    QUEST_FLAG_REPEATABLE						= 0x00000008,
-    QUEST_FLAG_EXPLORATION						= 0x00000010,
-    QUEST_FLAG_TIMED							= 0x00000020,
-    QUEST_FLAG_REPUTATION						= 0x00000080,
-    QUEST_FLAGS_UNK2							= 0x00000100, // Not used currently: _DELIVER_MORE Quest needs more than normal _q-item_ drops from mobs
-    QUEST_FLAGS_HIDDEN_REWARDS					= 0x00000200, // Items and money rewarded only sent in SMSG_QUESTGIVER_OFFER_REWARD (not in SMSG_QUESTGIVER_QUEST_DETAILS or in client quest log(SMSG_QUEST_QUERY_RESPONSE))
-    QUEST_FLAGS_AUTO_REWARDED					= 0x00000400, // These quests are automatically rewarded on quest complete and they will never appear in quest log client side.
-    QUEST_FLAGS_TBC_RACES						= 0x00000800, // Not used currently: Blood elf/Draenei starting zone quests
-    QUEST_FLAGS_DAILY							= 0x00001000, // Daily quest. Can be done once a day. Quests reset at regular intervals for all players.
-    QUEST_FLAGS_FLAGS_PVP						= 0x00002000, // activates PvP on accept
-    QUEST_FLAGS_UNK4							= 0x00004000, // ? Membership Card Renewal
-    QUEST_FLAGS_WEEKLY							= 0x00008000, // Weekly quest. Can be done once a week. Quests reset at regular intervals for all players.
-    QUEST_FLAGS_AUTOCOMPLETE					= 0x00010000, // auto complete
-    QUEST_FLAGS_UNK5							= 0x00020000, // has something to do with ReqItemId and SrcItemId
-    QUEST_FLAGS_UNK6							= 0x00040000, // use Objective text as Complete text
-    QUEST_FLAGS_AUTO_ACCEPT						= 0x00080000, // quests in starting areas
-
+	QUEST_FLAG_NONE		  = 0,   
+	QUEST_FLAG_DELIVER	   = 1,   
+	QUEST_FLAG_KILL		  = 2,   
+	QUEST_FLAG_SPEAKTO	   = 4,
+	QUEST_FLAG_REPEATABLE	= 8,   
+	QUEST_FLAG_EXPLORATION   = 16,
+	QUEST_FLAG_TIMED		 = 32,
+	QUEST_FLAG_REPUTATION	= 128,
 };
 
 enum FAILED_REASON
 {
-    FAILED_REASON_FAILED						= 0,
-    FAILED_REASON_INV_FULL						= 4,
-    FAILED_REASON_DUPE_ITEM_FOUND				= 17,
+	FAILED_REASON_FAILED			= 0,
+	FAILED_REASON_INV_FULL			= 4,
+    FAILED_REASON_DUPE_ITEM_FOUND   = 17,
 };
 
 enum INVALID_REASON
 {
-    INVALID_REASON_DONT_HAVE_REQ				= 0,
-    INVALID_REASON_DONT_HAVE_LEVEL				= 1,
-    INVALID_REASON_DONT_HAVE_RACE				= 6,
-    INVALID_REASON_COMPLETED_QUEST				= 7,
-    INVALID_REASON_HAVE_TIMED_QUEST				= 12,
-    INVALID_REASON_HAVE_QUEST					= 13,
-    // INVALID_REASON_DONT_HAVE_REQ_ITEMS		= 0x13,
-    // INVALID_REASON_DONT_HAVE_REQ_MONEY		= 0x15,
-    INVALID_REASON_DONT_HAVE_EXP_ACCOUNT		= 16,
-    INVALID_REASON_DONT_HAVE_REQ_ITEMS			= 21, // changed for 2.1.3
-    INVALID_REASON_DONT_HAVE_REQ_MONEY			= 23,
-    INVALID_REASON_REACHED_DAILY_LIMIT			= 26, // "you have completed xx daily quests today" confirmed :)
-    INVALID_REASON_UNKNOW27						= 27, // "You cannot completed quests once you have reached tired time"
+	INVALID_REASON_DONT_HAVE_REQ			= 0,
+	INVALID_REASON_DONT_HAVE_LEVEL			= 1,
+	INVALID_REASON_DONT_HAVE_RACE			= 6,
+	INVALID_REASON_COMPLETED_QUEST			= 7,
+	INVALID_REASON_HAVE_TIMED_QUEST			= 12,
+	INVALID_REASON_HAVE_QUEST				= 13,
+//	INVALID_REASON_DONT_HAVE_REQ_ITEMS	  = 0x13,
+//	INVALID_REASON_DONT_HAVE_REQ_MONEY	  = 0x15,
+	INVALID_REASON_DONT_HAVE_EXP_ACCOUNT	= 16,
+	INVALID_REASON_DONT_HAVE_REQ_ITEMS		= 21, //changed for 2.1.3
+	INVALID_REASON_DONT_HAVE_REQ_MONEY		= 23,
+	INVALID_REASON_UNKNOW26					= 26, //"you have completed 10 daily quests today"
+	INVALID_REASON_UNKNOW27					= 27,//"You cannot completed quests once you have reached tired time"
 };
 
 enum QUEST_SHARE
 {
-    QUEST_SHARE_MSG_SHARING_QUEST				= 0,
-    QUEST_SHARE_MSG_CANT_TAKE_QUEST				= 1,
-    QUEST_SHARE_MSG_ACCEPT_QUEST				= 2,
-    QUEST_SHARE_MSG_REFUSE_QUEST				= 3,
-    QUEST_SHARE_MSG_BUSY						= 4,
-    QUEST_SHARE_MSG_LOG_FULL					= 5,
-    QUEST_SHARE_MSG_HAVE_QUEST					= 6,
-    QUEST_SHARE_MSG_FINISH_QUEST				= 7,
-    QUEST_SHARE_MSG_CANT_BE_SHARED_TODAY		= 8,
-    QUEST_SHARE_MSG_SHARING_TIMER_EXPIRED		= 9,
-    QUEST_SHARE_MSG_NOT_IN_PARTY				= 10,
-    QUEST_SHARE_MSG_DIFFERENT_SERVER_DAILY		= 11,
+	QUEST_SHARE_MSG_SHARING_QUEST			= 0, 
+	QUEST_SHARE_MSG_CANT_TAKE_QUEST			= 1, 
+	QUEST_SHARE_MSG_ACCEPT_QUEST			= 2,
+	QUEST_SHARE_MSG_REFUSE_QUEST			= 3,
+	QUEST_SHARE_MSG_BUSY					= 4, 
+	QUEST_SHARE_MSG_LOG_FULL				= 5, 
+	QUEST_SHARE_MSG_HAVE_QUEST				= 6, 
+	QUEST_SHARE_MSG_FINISH_QUEST			= 7, 
+	QUEST_SHARE_MSG_CANT_SHARE_TODAY		= 8,
+	QUEST_SHARE_MSG_QUEST_TIMER_FINISHED	= 9,
+	QUEST_SHARE_MSG_NOT_IN_PARTY			= 10,
 };
-
 class QuestScript;
 #pragma pack(push,1)
 struct Quest
@@ -131,7 +103,7 @@ struct Quest
 	uint32 quest_sort;
 	uint32 quest_flags;
 	uint32 min_level;
-	uint32 quest_level;
+	uint32 max_level;
 	uint32 type;
 	uint32 required_races;
 	uint32 required_class;
@@ -201,7 +173,7 @@ struct Quest
 	uint32 receive_itemcount[4];
 	uint8 is_repeatable;
 
-	// Calculated variables (not in db)
+	//Calculated variables (not in db)
 	uint32 count_required_mob;
 	uint32 count_requiredquests;
 	uint32 count_requiredtriggers;

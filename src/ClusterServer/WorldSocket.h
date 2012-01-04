@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef REALMSERVER_WORLDSOCKET_H
+#define REALMSERVER_WORLDSOCKET_H
 
 #define WORLDSOCKET_SENDBUF_SIZE 131078
 #define WORLDSOCKET_RECVBUF_SIZE 16384
@@ -59,3 +60,5 @@ private:
 
 	Session * m_session;
 };
+
+#endif

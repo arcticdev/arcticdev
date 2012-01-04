@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -35,7 +35,7 @@ AuctionHouse::AuctionHouse(uint32 ID)
 
 AuctionHouse::~AuctionHouse()
 {
-	for(HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin(); itr != auctions.end(); itr++)
+	for(HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin(); itr != auctions.end(); ++itr)
 	{
 		itr->second->pItem->Delete();
 		delete itr->second;
@@ -82,7 +82,7 @@ void AuctionHouse::UpdateAuctions()
 	for(; itr != auctions.end();)
 	{
 		auct = itr->second;
-		itr++;
+		++itr;
 
 		if(t >= auct->ExpiryTime)
 		{
@@ -282,7 +282,7 @@ void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket * packet)
 	Auction * auct;
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		auct = itr->second;
 		if(auct->HighestBidder == plr->GetGUID())
@@ -305,7 +305,7 @@ void AuctionHouse::UpdateItemOwnerships(uint32 oldGuid, uint32 newGuid)
 	Auction * auct;
 	auctionLock.AcquireWriteLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		auct = itr->second;
 		if(auct->Owner == oldGuid)
@@ -333,7 +333,7 @@ void AuctionHouse::SendOwnerListPacket(Player* plr, WorldPacket * packet)
 	Auction * auct;
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		auct = itr->second;
 		if(auct->Owner == plr->GetGUID())
@@ -585,7 +585,7 @@ void AuctionHouse::SendAuctionList(Player* plr, WorldPacket * packet)
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	ItemPrototype * proto;
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		if(itr->second->Deleted) continue;
 		proto = itr->second->pItem->GetProto();
@@ -686,9 +686,7 @@ void AuctionHouse::LoadAuctions()
 		fields = result->Fetch();
 		auct = new Auction;
 		auct->Id = fields[0].GetUInt32();
-		
-		//Field *itemfields = objmgr.GetCachedItem(fields[2].GetUInt32());
-		//Item* pItem = (itemfields == NULL) ? NULL : objmgr.LoadItem(itemfields);
+
 		Item* pItem = objmgr.LoadItem(fields[2].GetUInt64());
 		if(!pItem)
 		{

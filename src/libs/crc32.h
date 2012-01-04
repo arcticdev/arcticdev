@@ -1,8 +1,9 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
+
 
 #ifndef CRC32_H
 #define CRC32_H

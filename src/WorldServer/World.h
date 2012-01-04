@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -23,7 +23,7 @@ class Battleground;
 
 enum Rates
 {
-	RATE_HEALTH = 0,
+	RATE_HEALTH=0,
 	RATE_POWER1,	
 	RATE_POWER2,	
 	RATE_POWER3,	
@@ -53,7 +53,7 @@ enum Rates
 
 enum IntRates
 {
-	INTRATE_SAVE = 0,
+	INTRATE_SAVE=0,
 	INTRATE_COMPRESSION,
 	INTRATE_PVPTIMER,
 	MAX_INTRATES
@@ -64,7 +64,7 @@ enum EventIdFlags
 	EVENTID_FLAG_NONE = 0,
 	EVENTID_FLAG_PHASE = 1,
 	EVENTID_FLAG_MODELID = 2,
-	EVENTID_FLAG_EQUIP = 4, // this obviously cannot be used for gameobjects
+	EVENTID_FLAG_EQUIP = 4, //this obviously cannot be used for gameobjects
 	EVENTID_FLAG_SPAWN = 8
 };
 
@@ -312,9 +312,9 @@ public:
 
 enum BasicTaskExecutorPriorities
 {
-	BTE_PRIORITY_LOW		= 0,
-	BTE_PRIORITY_MED		= 1,
-	BTW_PRIORITY_HIGH	   = 2,
+	BTE_PRIORITY_LOW = 0,
+	BTE_PRIORITY_MED = 1,
+	BTW_PRIORITY_HIGH = 2,
 };
 
 class TaskExecutor : public ThreadContext
@@ -346,8 +346,7 @@ public:
 
 	uint32 GetMaxLevel(Player* plr);
 
-	/** Reloads the config and sets all of the setting variables 
-	 */
+	/* Reloads the config and sets all of the setting variables */
 	void Rehash(bool load);
 
 	void CleanupCheaters();
@@ -608,7 +607,7 @@ protected:
 
 	QueueSet mQueuedSessions;
 
-	uint32	m_KickAFKPlayers;//don't lag the server if you are useless anyway :P
+	uint32	m_KickAFKPlayers; // don't lag the server if you are useless anyway :P
 
 public:
 	std::string GmClientChannel;
@@ -630,6 +629,11 @@ public:
 	static uint32 m_CEThreshold;
 	static float m_wallhackthreshold;
 
+	// Кик игроков с большим пингом
+	bool LatencyKickEnabled;
+	uint32 LatencyKickMax;
+	uint32 LatencyTimer;
+
 	// shutdown
 	uint32 m_shutdownTime;
 	uint32 m_shutdownType;
@@ -638,45 +642,6 @@ public:
 	void QueueShutdown(uint32 delay, uint32 type);
 	void CancelShutdown();
 	void UpdateShutdownStatus();
-
-	bool VerifyName(const char * name, size_t nlen)
-	{
-		const char * p;
-		size_t i;
-
-		static const char * bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\? <>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
-		static const char * allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		if(m_limitedNames)
-		{
-			for(i = 0; i < nlen; ++i)
-			{
-				p = allowedCharacters;
-				for(; *p != 0; ++p)
-				{
-					if(name[i] == *p)
-						goto cont;
-				}
-
-				return false;
-cont:
-				continue;
-			}
-		}
-		else
-		{
-			for(i = 0; i < nlen; ++i)
-			{
-				p = bannedCharacters;
-				while(*p != 0 && name[i] != *p && name[i] != 0)
-					++p;
-
-				if(*p != 0)
-					return false;
-			}
-		}
-
-		return true;
-	}
 };
 
 #define sWorld World::getSingleton()

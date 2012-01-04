@@ -1,22 +1,18 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "MemoryLeaks.h"
 
-//#include <vld.h>
-//#include <vldapi.h>
-
 #if COMPILER == MICROSOFT
 
 createFileSingleton( MemoryManager ) ;
 
-/// Catch memory leaks
+// Catch memory leaks
 MemoryManager::MemoryManager( )
 {
-  //VLDEnable();
 }
 
 #endif

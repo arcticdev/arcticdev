@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -27,6 +27,7 @@ enum HIGHGUID_TYPE
 	HIGHGUID_TYPE_TRANSPORTER		= 0x1FC00000,
 	HIGHGUID_TYPE_WAYPOINT			= 0x10000000,
 	HIGHGUID_TYPE_CORPSE			= 0x30000000,
+//===============================================
 	HIGHGUID_TYPE_MASK				= 0xFFF00000,
 	LOWGUID_ENTRY_MASK				= 0x00FFFFFF,
 };
@@ -115,6 +116,7 @@ class MapMgr;
 class Vehicle;
 
 /***Casting Defines***/
+
 #define CAST(x,y) static_cast<x*>(y)
 #define TO_PLAYER(ptr) ((Player*)ptr)
 #define TO_UNIT(ptr) ((Unit*)ptr)
@@ -147,7 +149,6 @@ class Vehicle;
 //  Object
 //  Base object for every item, unit, player, corpse, container, etc
 //====================================================================
-
 class SERVER_DECL Object : public EventableObject
 {
 public:
@@ -161,6 +162,7 @@ public:
 	virtual void Update ( uint32 time ) { }
   //! True if object exists in world
  
+	
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr* pMapMgr);
@@ -203,13 +205,14 @@ public:
 	void BuildFieldUpdatePacket(ByteBuffer * buf, uint32 Index, uint32 Value);
 
 	void DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32 unitEvent, uint32 spellId, bool no_remove_auras = false);
+	
 
 	virtual void DestroyForPlayer( Player* target ) const;
 
 	void BuildHeartBeatMsg( WorldPacket *data ) const;
 	WorldPacket * BuildTeleportAckMsg( const LocationVector & v);
-	ARCTIC_INLINE bool IsBeingTeleported() { return mSemaphoreTeleport; }
-	ARCTIC_INLINE void SetSemaphoreTeleport(bool semphsetting) { mSemaphoreTeleport = semphsetting; }
+	bool IsBeingTeleported() { return mSemaphoreTeleport; }
+	void SetSemaphoreTeleport(bool semphsetting) { mSemaphoreTeleport = semphsetting; }
 
 	bool SetPosition( float newX, float newY, float newZ, float newOrientation, bool allowPorting = false );
 	bool SetPosition( const LocationVector & v, bool allowPorting = false);
@@ -311,14 +314,15 @@ public:
 	void ARCTIC_FASTCALL RemoveFlag64( const uint32 index, uint64 newFlag );
 
 	ARCTIC_INLINE bool HasFlag( const uint32 index, uint32 flag ) const { return (m_uint32Values[ index ] & flag) != 0;	}
-
-	ARCTIC_INLINE void ClearUpdateMask( )
+	
+	////////////////////////////////////////
+	void ClearUpdateMask( )
 	{
 		m_updateMask.Clear();
 		m_objectUpdated = false;
 	}
 
-	ARCTIC_INLINE bool HasUpdateField(uint32 index) { return m_updateMask.GetBit(index); }
+	bool HasUpdateField(uint32 index) { return m_updateMask.GetBit(index); }
 
 	//use it to check if a object is in range of another
 	bool isInRange(Object* target, float range);
@@ -377,7 +381,7 @@ public:
 		return !( m_objectsInRange.find( pObj ) == m_objectsInRange.end() );
 	}
 	
-	ARCTIC_INLINE virtual void AddInRangeObject(Object* pObj)
+	virtual void AddInRangeObject(Object* pObj)
 	{
 		if( pObj == NULL )
 			return;
@@ -402,7 +406,7 @@ public:
 		return ( m_objectsInRange.size() > 0 );
 	}
 
-	ARCTIC_INLINE virtual void OnRemoveInRangeObject( Object* pObj )
+	virtual void OnRemoveInRangeObject( Object* pObj )
 	{
 		if( pObj->GetTypeId() == TYPEID_PLAYER )
 			m_inRangePlayers.erase( TO_PLAYER(pObj) );
@@ -450,9 +454,8 @@ public:
 		m_inRangePlayers.erase( TO_PLAYER(obj) );
 	}
 
+	bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	void UpdateOppFactionSet();
-
-	ARCTIC_INLINE bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	ARCTIC_INLINE unordered_set<Object* >::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
 	ARCTIC_INLINE unordered_set<Object* >::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
 	ARCTIC_INLINE unordered_set<Player*  >::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
@@ -486,17 +489,16 @@ public:
 	//*****************************************************************************************
 	//* SpellLog packets just to keep the code cleaner and better to read
 	//*****************************************************************************************
-
 	void SendSpellLog(Object* Caster, Object* Target,uint32 Ability, uint8 SpellLogType);
 	void SendSpellNonMeleeDamageLog( Object* Caster, Unit* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToSet );
 	void SendAttackerStateUpdate( Unit* Target, dealdamage *dmg, uint32 realdamage, uint32 abs, uint32 blocked_damage, uint32 hit_status, uint32 vstate );
 
-	// dynamic objects
+	//Dynamic objects
 	DynamicObject* dynObj;
 
-	// object faction
+	//object faction
 	void _setFaction();
-	ARCTIC_INLINE uint32 _getFaction(){return m_faction->Faction;}
+	uint32 _getFaction(){return m_faction->Faction;}
 	
 	FactionTemplateDBC *m_faction;
 	FactionDBC *m_factionDBC;
@@ -513,7 +515,7 @@ public:
 	bool m_inQueue;
 	ARCTIC_INLINE void SetMapMgr(MapMgr* mgr) { m_mapMgr = mgr; }
 
-	ARCTIC_INLINE void Delete()
+	void Delete()
 	{
 		if(IsInWorld())
 			RemoveFromWorld(true);
@@ -538,9 +540,9 @@ protected:
 	//void _Create (uint32 guidlow, uint32 guidhigh);
 	void _Create( uint32 mapid, float x, float y, float z, float ang);
 
-	// Mark values that need updating for specified player.
+	//! Mark values that need updating for specified player.
 	virtual void _SetUpdateBits(UpdateMask *updateMask, Player* target) const;
-	// Mark values that player should get when he/she/it sees object for first time.
+	//! Mark values that player should get when he/she/it sees object for first time.
 	virtual void _SetCreateBits(UpdateMask *updateMask, Player* target) const;
 
 	void _BuildMovementUpdate( ByteBuffer *data, uint16 flags, uint32 flags2, Player* target );
@@ -556,19 +558,19 @@ protected:
 
 	Mutex m_objlock;
 
-	// WoWGuid class
+	//! WoWGuid class
 	WoWGuid m_wowGuid;
 
-	 // Type id.
+	 //! Type id.
 	uint8 m_objectTypeId;
 
-	// Zone id.
+	//! Zone id.
 	uint32 m_zoneId;
-	// Continent/map id.
+	//! Continent/map id.
 	uint32 m_mapId;
-	// Map manager
+	//! Map manager
 	MapMgr* m_mapMgr;
-	// Current map cell
+	//! Current map cell
 	MapCell *m_mapCell;
 
 	LocationVector m_position;
@@ -578,23 +580,23 @@ protected:
 	// Semaphores - needed to forbid two operations on the same object at the same very time (may cause crashing\lack of data)
 	bool mSemaphoreTeleport;
 
-	// Object properties.
+	//! Object properties.
 	union {
 		uint32* m_uint32Values;
 		float* m_floatValues;
 	};
 
-	// Number of properties
+	//! Number of properties
 	uint32 m_valuesCount;
 
-	// List of object properties that need updating.
+	//! List of object properties that need updating.
 	UpdateMask m_updateMask;
 
 	//! True if object was updated
 	bool m_objectUpdated;
 
-	// Set of Objects in range.
-	// TODO: that functionality should be moved into WorldServer.
+	//! Set of Objects in range.
+	//! TODO: that functionality should be moved into WorldServer.
 	unordered_set<Object* > m_objectsInRange;
 	unordered_set<Player* > m_inRangePlayers;
 	unordered_set<Object* > m_oppFactsInRange;
@@ -602,7 +604,7 @@ protected:
 	int32 m_instanceId;
 
 	ExtensionSet * m_extensions;
-	void _SetExtension(const string& name, void* ptr); // so we can set from scripts. :)
+	void _SetExtension(const string& name, void* ptr);		// so we can set from scripts. :)
 
 public:
 

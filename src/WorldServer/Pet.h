@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -9,11 +9,6 @@
 
 #define PET_SPELL_SPAM_COOLDOWN 2000 //applied only to spells that have no cooldown
 
-/* Taken from ItemPetFood.dbc
- * Each value is equal to a flag
- * so 1 << PET_FOOD_BREAD for example
- * will result in a usable value.
- */
 enum PET_FOOD
 {
 	PET_FOOD_NONE,

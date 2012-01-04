@@ -1,12 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #ifndef _PLAYER_H
 #define _PLAYER_H
-
 struct BGScore;
 class Channel;
 class Creature;
@@ -21,7 +20,6 @@ class Pet;
 class Charter;
 class LFGMatch;
 struct LevelInfo;
-
 #define MAX_PET_NO 3
 #define PLAYER_NORMAL_RUN_SPEED 7.0f
 #define PLAYER_NORMAL_SWIM_SPEED 4.722222f
@@ -62,27 +60,16 @@ enum Classes
 
 enum Races
 {
-	RACE_HUMAN = 1, 
-	RACE_ORC = 2, 
-	RACE_DWARF = 3, 
-	RACE_NIGHTELF = 4, 
-	RACE_UNDEAD_PLAYER = 5, 
-	RACE_TAUREN = 6, 
-	RACE_GNOME = 7, 
-	RACE_TROLL = 8, 
-	// RACE_GOBLIN = 9, 
-	RACE_BLOODELF = 10, 
-	RACE_DRAENEI = 11, 
-	// RACE_FEL_ORC = 12, 
-	// RACE_NAGA = 13, 
-	// RACE_BROKEN = 14, 
-	// RACE_SKELETON = 15, 
-	// RACE_VRYKUL = 16, 
-	// RACE_TUSKARR = 17, 
-	// RACE_FOREST_TROLL = 18, 
-	// RACE_TAUNKA = 19, 
-	// RACE_NORTHREND_SKELETON = 20, 
-	// RACE_ICE_TROLL = 21 
+	RACE_HUMAN = 1,
+	RACE_ORC = 2,
+	RACE_DWARF = 3,
+	RACE_NIGHTELF = 4,
+	RACE_UNDEAD = 5,
+	RACE_TAUREN = 6,
+	RACE_GNOME = 7,
+	RACE_TROLL = 8,
+	RACE_BLOODELF = 10,
+	RACE_DRAENEI = 11,
 };
 
 enum PlayerStatus
@@ -93,150 +80,119 @@ enum PlayerStatus
 
 enum RankTitles
 {
-    PVPTITLE_NONE							= 0,
-    PVPTITLE_PRIVATE						= 1,
-    PVPTITLE_CORPORAL						= 2,
-    PVPTITLE_SERGEANT						= 3,
-    PVPTITLE_MASTER_SERGEANT				= 4,
-    PVPTITLE_SERGEANT_MAJOR					= 5,
-    PVPTITLE_KNIGHT							= 6,
-    PVPTITLE_KNIGHT_LIEUTENANT				= 7,
-    PVPTITLE_KNIGHT_CAPTAIN					= 8,
-    PVPTITLE_KNIGHT_CHAMPION				= 9,
-    PVPTITLE_LIEUTENANT_COMMANDER			= 10,
-    PVPTITLE_COMMANDER						= 11,
-    PVPTITLE_MARSHAL						= 12,
-    PVPTITLE_FIELD_MARSHAL					= 13,
-    PVPTITLE_GRAND_MARSHAL					= 14,
-    PVPTITLE_SCOUT							= 15,
-    PVPTITLE_GRUNT							= 16,
-    PVPTITLE_HSERGEANT						= 17,
-    PVPTITLE_SENIOR_SERGEANT				= 18,
-    PVPTITLE_FIRST_SERGEANT					= 19,
-    PVPTITLE_STONE_GUARD					= 20,
-    PVPTITLE_BLOOD_GUARD					= 21,
-    PVPTITLE_LEGIONNAIRE					= 22,
-    PVPTITLE_CENTURION						= 23,
-    PVPTITLE_CHAMPION						= 24,
-    PVPTITLE_LIEUTENANT_GENERAL				= 25,
-    PVPTITLE_GENERAL						= 26,
-    PVPTITLE_WARLORD						= 27,
-    PVPTITLE_HIGH_WARLORD					= 28,
-    PVPTITLE_GLADIATOR						= 29,
-    PVPTITLE_DUELIST						= 30,
-    PVPTITLE_RIVAL							= 31,
-    PVPTITLE_CHALLENGER						= 32,
-    PVPTITLE_SCARAB_LORD					= 33,
-    PVPTITLE_CONQUEROR						= 34,
-    PVPTITLE_JUSTICAR						= 35,
-    PVPTITLE_CHAMPION_OF_THE_NAARU			= 36,
-    PVPTITLE_MERCILESS_GLADIATOR			= 37,
-    PVPTITLE_OF_THE_SHATTERED_SUN			= 38,
-    PVPTITLE_HAND_OF_ADAL					= 39,
-    PVPTITLE_VENGEFUL_GLADIATOR				= 40,
-    PVPTITLE_BATTLEMASTER					= 41,
-    PVPTITLE_THE_SEEKER						= 42,
-    PVPTITLE_ELDER							= 43,
-    PVPTITLE_FLAME_WARDEN					= 44,
-    PVPTITLE_FLAME_KEEPER					= 45,
-    PVPTITLE_THE_EXALTED					= 46,
-    PVPTITLE_THE_EXPLORER					= 47,
-    PVPTITLE_THE_DIPLOMAT					= 48,
-    PVPTITLE_BRUTAL_GLADIATOR				= 49,
-    PVPTITLE_ARENA_MASTER					= 50,
-    PVPTITLE_SALTY							= 51,
-    PVPTITLE_CHEF							= 52,
-    PVPTITLE_THE_SUPREME					= 53,
-    PVPTITLE_OF_THE_TEN_STORMS				= 54,
-    PVPTITLE_OF_THE_EMERALD_DREAM			= 55,
-    PVPTITLE_DEADLY_GLADIATOR				= 56,
-    PVPTITLE_PROPHET						= 57,
-    PVPTITLE_THE_MALEFIC					= 58,
-    PVPTITLE_STALKER						= 59,
-    PVPTITLE_OF_THE_EBON_BLADE				= 60,
-    PVPTITLE_ARCHMAGE						= 61,
-    PVPTITLE_WARBRINGER						= 62,
-    PVPTITLE_ASSASSIN						= 63,
-    PVPTITLE_GRAND_MASTER_ALCHEMIST			= 64,
-    PVPTITLE_GRAND_MASTER_BLACKSMITH		= 65,
-    PVPTITLE_IRON_CHEF						= 66,
-    PVPTITLE_GRAND_MASTER_ENCHANTER			= 67,
-    PVPTITLE_GRAND_MASTER_ENGINEER			= 68,
-    PVPTITLE_DOCTOR							= 69,
-    PVPTITLE_GRAND_MASTER_ANGLER			= 70,
-    PVPTITLE_GRAND_MASTER_HERBALIST			= 71,
-    PVPTITLE_GRAND_MASTER_SCRIBE			= 72,
-    PVPTITLE_GRAND_MASTER_JEWLCRAFTER		= 73,
-    PVPTITLE_GRAND_MASTER_LETHERWORKER		= 74,
-    PVPTITLE_GRAND_MASTER_MINER				= 75,
-    PVPTITLE_GRAND_MASTER_SKINNER			= 76,
-    PVPTITLE_GRAND_MASTER_TAILOR			= 77,
-    PVPTITLE_OF_QUEL_THALAS					= 78,
-    PVPTITLE_OF_ARGUS						= 79,
-    PVPTITLE_OF_KHAZ_MODAN					= 80,
-    PVPTITLE_OF_GNOMEREGAN					= 81,
-    PVPTITLE_THE_LION_HEARTHED				= 82,
-    PVPTITLE_CHAMPION_OF_ELUNE				= 83,
-    PVPTITLE_HERO_OF_ORGIMMAR				= 84,
-    PVPTITLE_PLAINSRUNNER					= 85,
-    PVPTITLE_OF_THE_DARKSPEARTRIPE			= 86,
-    PVPTITLE_THE_FORSAKEN					= 87,
-    PVPTITLE_THE_MAGIC_SEEKER				= 88,
-    PVPTITLE_TWILIGHT_VANQUISHER			= 89,
-    PVPTITLE_CONQUEROR_OF_NAXXRAMAS			= 90,
-    PVPTITLE_HERO_OF_NORTHREND				= 91,
-    PVPTITLE_THE_HALLOWED					= 92,
-    PVPTITLE_LOREMASTER						= 93,
-    PVPTITLE_OF_THE_ALLIANCE				= 94,
-    PVPTITLE_OF_THE_HORDE					= 95,
-    PVPTITLE_THE_FLAWLESS_VICTOR			= 96,
-    PVPTITLE_CHAMPION_OF_THE_FROZEN_WASTES	= 97,
-    PVPTITLE_AMBASSADOR						= 98,
-    PVPTITLE_THE_ARGENT_CHAMPION			= 99,
-    PVPTITLE_GUARDIAN_OF_CENARIUS			= 100,
-    PVPTITLE_BREWMASTER						= 101,
-    PVPTITLE_MERRYMAKER						= 102,
-    PVPTITLE_THE_LOVE_FOOL					= 103,
-    PVPTITLE_MATRON							= 104,
-    PVPTITLE_PATRON							= 105,
-    PVPTITLE_OBSIDIAN_SLAYER				= 106,
-    PVPTITLE_OF_THE_NIGHTFALL				= 107,
-    PVPTITLE_THE_IMMORTAL					= 108,
-    PVPTITLE_THE_UNDYING					= 109,
-    PVPTITLE_JENKINS						= 110,
-    PVPTITLE_BLOODSAIL_ADMIRAL				= 111,
-    PVPTITLE_THE_INSANE						= 112,
-    PVPTITLE_OF_THE_EXODAR					= 113,
-    PVPTITLE_OF_DARNASSUS					= 114,
-    PVPTITLE_OF_IRONFORGE					= 115,
-    PVPTITLE_OF_STORMWIND					= 116,
-    PVPTITLE_OF_ORGRIMMAR					= 117,
-    PVPTITLE_OF_SENJIN						= 118,
-    PVPTITLE_OF_SILVERMOON					= 119,
-    PVPTITLE_OF_TUNDERBLUFF					= 120,
-    PVPTITLE_OF_THE_UNDERCITY				= 121,
-    PVPTITLE_THE_NOBLE						= 122,
-    PVPTITLE_CRUSADER						= 123,
-    PVPTITLE_DEATHS_DEMISE					= 124,
-    PVPTITLE_CELESTIAL_DEFENDER				= 125,
-    PVPTITLE_CONQUEROR_OF_ULDUAR			= 126,
-    PVPTITLE_CHAMPION_OF_ULDUAR				= 127,
-    PVPTITLE_VANQUISHER						= 128,
-    PVPTITLE_STARCALLER						= 129,
-    PVPTITLE_THE_ASTRAL_WALKER				= 130,
-    PVPTITLE_HERALD_OF_THE_TITANS			= 131,
-    PVPTITLE_FURIOUS_GLADIATOR				= 132,
-    PVPTITLE_THE_PILGRIM					= 133,
-    PVPTITLE_RELENTLESS_GLADIATOR			= 134,
-    PVPTITLE_GRAND_CRUSADER					= 135,
-    PVPTITLE_THE_ARGENT_DEFENDER			= 136,
-    PVPTITLE_THE_PATIENT                    = 137,
-    PVPTITLE_THE_LIGHT_OF_THE_DAWN          = 138,
-    PVPTITLE_BANE_OF_THE_FALLEN_KING        = 139,
-    PVPTITLE_THE_KINGSLAYER                 = 140,
-    PVPTITLE_OF_THE_ASHEN_VERDICT           = 141,
-    PVPTITLE_WRATHFUL_GLADIATOR             = 142,
-    PVPTITLE_END                            = 143
+	PVPTITLE_NONE					= 0,
+	PVPTITLE_PRIVATE				= 1,
+	PVPTITLE_CORPORAL				= 2,
+	PVPTITLE_SERGEANT				= 3,
+	PVPTITLE_MASTER_SERGEANT		= 4,
+	PVPTITLE_SERGEANT_MAJOR			= 5,
+	PVPTITLE_KNIGHT					= 6,
+	PVPTITLE_KNIGHT_LIEUTENANT		= 7,
+	PVPTITLE_KNIGHT_CAPTAIN			= 8,
+	PVPTITLE_KNIGHT_CHAMPION		= 9,
+	PVPTITLE_LIEUTENANT_COMMANDER	= 10,
+	PVPTITLE_COMMANDER				= 11,
+	PVPTITLE_MARSHAL				= 12,
+	PVPTITLE_FIELD_MARSHAL			= 13,
+	PVPTITLE_GRAND_MARSHAL			= 14,
+	PVPTITLE_SCOUT					= 15,
+	PVPTITLE_GRUNT					= 16,
+	PVPTITLE_HSERGEANT				= 17,
+	PVPTITLE_SENIOR_SERGEANT		= 18,
+	PVPTITLE_FIRST_SERGEANT			= 19,
+	PVPTITLE_STONE_GUARD			= 20,
+	PVPTITLE_BLOOD_GUARD			= 21,
+	PVPTITLE_LEGIONNAIRE			= 22,
+	PVPTITLE_CENTURION				= 23,
+	PVPTITLE_CHAMPION				= 24,
+	PVPTITLE_LIEUTENANT_GENERAL		= 25,
+	PVPTITLE_GENERAL				= 26,
+	PVPTITLE_WARLORD				= 27,
+	PVPTITLE_HIGH_WARLORD			= 28,
+	PVPTITLE_GLADIATOR				= 29,
+	PVPTITLE_DUELIST				= 30,
+	PVPTITLE_RIVAL					= 31,
+	PVPTITLE_CHALLENGER				= 32,
+	PVPTITLE_SCARAB_LORD			= 33,
+	PVPTITLE_CONQUEROR				= 34,
+	PVPTITLE_JUSTICAR				= 35,
+	PVPTITLE_CHAMPION_OF_THE_NAARU	= 36,
+	PVPTITLE_MERCILESS_GLADIATOR	= 37,
+	PVPTITLE_OF_THE_SHATTERED_SUN	= 38,
+	PVPTITLE_HAND_OF_ADAL			= 39,
+	PVPTITLE_VENGEFUL_GLADIATOR		= 40,
+	TITLE_BATTLEMASTER				= 41,
+	TITLE_ELDER						= 42,
+	TITLE_FLAME_WARDEN				= 43,
+	TITLE_FLAME_KEEPER				= 44,
+	TITLE_THE_EXALTED				= 45,
+	TITLE_THE_EXPLORER				= 46,
+	TITLE_THE_DIPLOMAT				= 47,
+	TITLE_BRUTAL_GLADIATOR			= 48,
+	TITLE_SEEKER					= 49,
+	TITLE_ARENA_MASTER				= 50,
+	TITLE_SALTY						= 51,
+	TITLE_CHEF						= 52,
+	TITLE_THE_SUPREME				= 53,
+	TITLE_OF_THE_TEN_STORMS			= 54,
+	TITLE_ARCH_DRUID				= 55,
+	TITLE_CRUSADER					= 56,
+	TITLE_PROPHET					= 57,
+	TITLE_THE_MALEFIC				= 58,
+	TITLE_STALKER					= 59,
+	TITLE_OF_THE_EBON_BLADE			= 60,
+	TITLE_ARCHMAGE					= 61,
+	TITLE_WARBRINGER				= 62,
+	TITLE_ASSASSIN					= 63,
+	TITLE_GRND_MSTR_ALCHEMIST		= 64,
+	TITLE_GRND_MSTR_BLACKSMITH		= 65,
+	TITLE_IRON_CHEF					= 66,
+	TITLE_GRND_MSTR_ENCHANTER		= 67,
+	TITLE_GRND_MSTR_ENGINEER		= 68,
+	TITLE_DOCTOR					= 69,
+	TITLE_GRND_MSTR_ANGLER			= 70,
+	TITLE_GRND_MSTR_HERBALIST		= 71,
+	TITLE_GRND_MSTR_SCRIBE			= 72,
+	TITLE_GRND_MSTR_JEWELCRAFT		= 73,
+	TITLE_GRND_MSTR_LEATHERWORK		= 74,
+	TITLE_GRND_MSTR_MINER			= 75,
+	TITLE_GRND_MSTR_SKINNER			= 76,
+	TITLE_GRND_MSTR_TAILOR			= 77,
+	TITLE_OF_QUEL_THALAS			= 78,
+	TITLE_OF_ARGUS					= 79,
+	TITLE_OF_KHAZ_MODAN				= 80,
+	TITLE_GNOMEREGAN				= 81,
+	TITLE_LION_HEARTED				= 82,
+	TITLE_CHAMPION_OF_ELUNE			= 83,
+	TITLE_HERO_OF_ORGRIMMAR			= 84,
+	TITLE_PLAINSRUNNER				= 85,
+	TITLE_OF_THE_DARKSPEAR			= 86,
+	TITLE_THE_FORSAKEN				= 87,
+	TITLE_THE_MAGIC_SEEKER			= 88,
+	TITLE_TWILIGHT_VANQUISHER		= 89,
+	TITLE_CONQUEROR_OF_NAXXRAMA		= 90,
+	TITLE_HERO_OF_NORTHREND			= 91,
+	TITLE_THE_HALLOWED				= 92,
+	TITLE_LOREMASTER				= 93,
+	TITLE_OF_THE_ALLIANCE			= 94,
+	TITLE_OF_THE_HORDE				= 95,
+	TITLE_THE_FLAWLESS_VICTOR		= 96,
+	TITLE_CHAMP_OF_FROZEN_WASTE		= 97,
+	TITLE_AMBASSADOR				= 98,
+	TITLE_THE_ARGENT_CHAMPION		= 99,
+	TITLE_GUARDIAN_OF_CENARIUS		= 100,
+	TITLE_BREWMASTER				= 101,
+	TITLE_MERRYMAKER				= 102,
+	TITLE_THE_LOVE_FOOL				= 103,
+	TITLE_MATRON					= 104,
+	TITLE_PATRON					= 105,
+	TITLE_OBSIDIAN_SLAYER			= 106,
+	TITLE_OF_THE_NIGHTFALL			= 107,
+	TITLE_THE_IMMORTAL				= 108,
+	TITLE_THE_UNDYING				= 109,
+	TITLE_JENKINS					= 110,
+	TITLE_BLOODSAIL_ADMIRAL			= 111,
+	TITLE_END						= 112,
 };
 
 enum PvPAreaStatus
@@ -293,7 +249,7 @@ enum PlayerFlags
     PLAYER_FLAG_NOCLOAK				= 0x800,
     PLAYER_FLAG_NEED_REST_3_HOURS	= 0x1000,
     PLAYER_FLAG_NEED_REST_5_HOURS	= 0x2000,
-    PLAYER_FLAG_PVP_TIMER			= 0x40000,
+	PLAYER_FLAG_PVP_TIMER			= 0x40000,
 };
 
 enum CharterTypes
@@ -789,6 +745,8 @@ typedef std::map<uint32, PlayerSkill>				SkillMap;
 typedef std::set<Player* *>					ReferenceSet;
 typedef std::map<uint32, PlayerCooldown>			PlayerCooldownMap;
 
+//#define OPTIMIZED_PLAYER_SAVING
+
 class SERVER_DECL Player : public Unit
 {
 	friend class WorldSession;
@@ -950,7 +908,7 @@ public:
 	void				SetQuestLogSlot(QuestLogEntry *entry, uint32 slot);
 
 	ARCTIC_INLINE void		PushToRemovedQuests(uint32 questid)	{ m_removequests.insert(questid);}
-	ARCTIC_INLINE uint32	GetFinishedDailiesCount() { return (uint32)m_finishedDailyQuests.size(); }
+	ARCTIC_INLINE uint32		GetFinishedDailiesCount() { return (uint32)m_finishedDailyQuests.size(); }
 	void				AddToFinishedQuests(uint32 quest_id);
 	void				AddToFinishedDailyQuests(uint32 quest_id);
 	void				EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_slot, uint32 interval);
@@ -966,9 +924,12 @@ public:
 	void				RemoveQuestsFromLine(int skill_line);
 	void				ResetDailyQuests();
 	uint16				FindQuestSlot(uint32 questid);
+	uint32				GetQuestSlotQuestId(uint16 slot) const { return GetUInt32Value(PLAYER_QUEST_LOG_1_1 + slot * 5 + (uint32)NULL); }
 
 	//Quest related variables
+	uint32 m_questbarrier1[25];
 	QuestLogEntry*		m_questlog[25];
+	uint32 m_questbarrier2[25];
 	std::set<uint32>	m_QuestGOInProgress;
 	std::set<uint32>	m_removequests;
 	std::set<uint32>	m_finishedQuests;
@@ -995,12 +956,12 @@ public:
 	void CalcDamage();
 	uint32 GetMainMeleeDamage(uint32 AP_owerride); //i need this for windfury
 
-	ARCTIC_INLINE const uint64& GetSelection( ) const { return m_curSelection; }
-	ARCTIC_INLINE void SetSelection(const uint64 &guid) { m_curSelection = guid; }
+    const uint64& GetSelection( ) const { return m_curSelection; }
+	void SetSelection(const uint64 &guid) { m_curSelection = guid; }
 	
-	/************************************************************************/
-	/* Spells                                                               */
-	/************************************************************************/
+    /************************************************************************/
+    /* Spells                                                               */
+    /************************************************************************/
 	bool HasSpell(uint32 spell);
 	bool HasDeletedSpell(uint32 spell);
 	void smsg_InitialSpells();
@@ -1011,7 +972,7 @@ public:
 	void removeSpellByHashName(uint32 hash);
 	bool removeSpell(uint32 SpellID, bool MoveToDeleted, bool SupercededSpell, uint32 SupercededSpellID);
 
-    // Please do not inline!
+    // PLEASE DO NOT INLINE!
     void AddOnStrikeSpell(SpellEntry* sp, uint32 delay)
     {
         m_onStrikeSpells.insert( map< SpellEntry*, pair<uint32, uint32> >::value_type( sp, make_pair( delay, 0 ) ) );
@@ -1045,6 +1006,7 @@ public:
 	void AddShapeShiftSpell(uint32 id);
 	void RemoveShapeShiftSpell(uint32 id);
 	void CheckSpellUniqueTargets(SpellEntry *sp, uint64 guid);
+
 
     /************************************************************************/
     /* Actionbar                                                            */
@@ -1097,13 +1059,19 @@ public:
 	/************************************************************************/
 	/* Groups                                                               */
 	/************************************************************************/
-	ARCTIC_INLINE void			SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
-	ARCTIC_INLINE uint32		GetInviter() { return m_GroupInviter; }
-	ARCTIC_INLINE bool			InGroup() { return (m_playerInfo->m_Group != NULL && !m_GroupInviter); }
-	ARCTIC_INLINE bool			IsGroupLeader() { return (m_playerInfo->m_Group != NULL && m_playerInfo->m_Group->GetLeader() == m_playerInfo); }
-
+	void                SetInviter(uint32 pInviter) { m_GroupInviter = pInviter; }
+	ARCTIC_INLINE uint32       GetInviter() { return m_GroupInviter; }
+	ARCTIC_INLINE bool         InGroup() { return (m_playerInfo->m_Group != NULL && !m_GroupInviter); }
+	bool                IsGroupLeader()
+	{
+		if(m_playerInfo->m_Group != NULL)
+		{
+			if(m_playerInfo->m_Group->GetLeader() == m_playerInfo)
+				return true;
+		}
+		return false;
+	}
 	bool IsGroupMember(Player* plyr);
-
 	ARCTIC_INLINE int		HasBeenInvited() { return m_GroupInviter != 0; }
 	ARCTIC_INLINE Group*	GetGroup() { return m_playerInfo != NULL ? m_playerInfo->m_Group : NULL; }
 	ARCTIC_INLINE uint32	GetGroupID() { return m_playerInfo != NULL ? m_playerInfo->m_Group? m_playerInfo->m_Group->GetID(): NULL: NULL; }
@@ -1123,8 +1091,8 @@ public:
 	ARCTIC_INLINE void		UnSetBanned() { m_banned = 0; }
 	ARCTIC_INLINE string	GetBanReason() {return m_banreason;}
 
-	ARCTIC_INLINE void SetGuardHostileFlag(bool val) { if(val) SetFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); else RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); UpdateOppFactionSet(); }
-	ARCTIC_INLINE void CreateResetGuardHostileFlagEvent()
+	void SetGuardHostileFlag(bool val) { if(val) SetFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); else RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_UNKNOWN2); UpdateOppFactionSet(); }
+	void CreateResetGuardHostileFlagEvent()
 	{
 		event_RemoveEvents( EVENT_GUARD_HOSTILE );
 		sEventMgr.AddEvent(this, &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
@@ -1135,36 +1103,34 @@ public:
 	/************************************************************************/
 	/* Guilds                                                               */
 	/************************************************************************/
-
-	ARCTIC_INLINE bool IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
-	ARCTIC_INLINE uint32 GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
-	void SetGuildId(uint32 guildId);
-	ARCTIC_INLINE uint32 GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
-	void SetGuildRank(uint32 guildRank);
-	ARCTIC_INLINE uint32 GetGuildInvitersGuid() { return m_invitersGuid; }
-	ARCTIC_INLINE void SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
-	ARCTIC_INLINE void UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
+	ARCTIC_INLINE  bool        IsInGuild() {return (m_uint32Values[PLAYER_GUILDID] != 0) ? true : false;}
+	ARCTIC_INLINE uint32       GetGuildId() { return m_uint32Values[PLAYER_GUILDID]; }
+	void                SetGuildId(uint32 guildId);
+	ARCTIC_INLINE uint32       GetGuildRank() { return m_uint32Values[PLAYER_GUILDRANK]; }
+	void                SetGuildRank(uint32 guildRank);
+	uint32              GetGuildInvitersGuid() { return m_invitersGuid; }
+	void                SetGuildInvitersGuid( uint32 guid ) { m_invitersGuid = guid; }
+	void                UnSetGuildInvitersGuid() { m_invitersGuid = 0; }
 
 	/************************************************************************/
 	/* Duel                                                                 */
 	/************************************************************************/
-
-	void RequestDuel(Player* pTarget);
-	void DuelBoundaryTest();
-	void EndDuel(uint8 WinCondition);
-	void DuelCountdown();
-	ARCTIC_INLINE void SetDuelStatus(uint8 status) { m_duelStatus = status; }
-	ARCTIC_INLINE uint8 GetDuelStatus() { return m_duelStatus; }
-	ARCTIC_INLINE void SetDuelState(uint8 state) { m_duelState = state; }
-	ARCTIC_INLINE uint8 GetDuelState() { return m_duelState; }
+	void                RequestDuel(Player* pTarget);
+	void                DuelBoundaryTest();
+	void                EndDuel(uint8 WinCondition);
+	void                DuelCountdown();
+	void                SetDuelStatus(uint8 status) { m_duelStatus = status; }
+	ARCTIC_INLINE uint8        GetDuelStatus() { return m_duelStatus; }
+	void                SetDuelState(uint8 state) { m_duelState = state; }
+	ARCTIC_INLINE uint8        GetDuelState() { return m_duelState; }
 	// duel variables
-	Player *DuelingWith;
+	Player*             DuelingWith;
 
 	/************************************************************************/
 	/* Trade                                                                */
 	/************************************************************************/
-	void SendTradeUpdate(void);
-	ARCTIC_INLINE void ResetTradeVariables()
+	void                SendTradeUpdate(void);
+	void         ResetTradeVariables()
 	{
 		mTradeGold = 0;
 		for(uint8 i = 0; i < 7; ++i)
@@ -1191,18 +1157,18 @@ public:
 		else
 			return NULL;
 	}
-	void SpawnPet(uint32 pet_number);
-	void DespawnPet();
-	ARCTIC_INLINE uint32 GetFirstPetNumber(void)
+	void						SpawnPet(uint32 pet_number);
+	void						DespawnPet();
+	uint32						GetFirstPetNumber(void)
 	{
 		if(m_Pets.size() == 0) return 0;
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
 		return itr->first;
 	}
-	ARCTIC_INLINE PlayerPet* GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
-	ARCTIC_INLINE void SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
-	ARCTIC_INLINE uint8 GetStableSlotCount(void) { return m_StableSlotCount; }
-	ARCTIC_INLINE uint8 GetUnstabledPetNumber(void)
+	ARCTIC_INLINE PlayerPet*	GetFirstPet(void) { return GetPlayerPet(GetFirstPetNumber()); }
+	ARCTIC_INLINE void			SetStableSlotCount(uint8 count) { m_StableSlotCount = count; }
+	ARCTIC_INLINE uint8			GetStableSlotCount(void) { return m_StableSlotCount; }
+	uint8						GetUnstabledPetNumber(void)
 	{
 		if(m_Pets.size() == 0) return 0;
 		std::map<uint32, PlayerPet*>::iterator itr = m_Pets.begin();
@@ -1211,18 +1177,19 @@ public:
 				return itr->first;
 		return NULL;
 	}
-	/* if we charmed or simply summoned a pet, this function should get called*/
+	/*if we charmed or simply summoned a pet, this function should get called*/
 	void EventSummonPet(Pet* new_pet); 
-	/* if pet/charm died or whatever happned we should call this function*/
+	/*if pet/charm died or whatever happned we should call this function*/
 	void EventDismissPet();
 
 	/************************************************************************/
 	/* Item Interface                                                       */
 	/************************************************************************/
 	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
-	ARCTIC_INLINE void ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
+	ARCTIC_INLINE void         ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
 	// item interface variables
 	ItemInterface *     m_ItemInterface;
+	void EventCheckCurrencies();
 
 	ARCTIC_INLINE AchievementInterface* GetAchievementInterface() { return m_achievementInterface; }
 	AchievementInterface * m_achievementInterface;
@@ -1231,20 +1198,20 @@ public:
 	/* Loot                                                                 */
 	/************************************************************************/
 	ARCTIC_INLINE const uint64& GetLootGUID() const { return m_lootGuid; }
-	ARCTIC_INLINE void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
-	void SendLoot(uint64 guid,uint8 loot_type);
+	ARCTIC_INLINE void         SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
+	void                SendLoot(uint64 guid,uint8 loot_type);
 	// loot variables
-	uint64 m_lootGuid;
-	uint64 m_currentLoot;
-	bool m_insigniaTaken;
+	uint64              m_lootGuid;
+	uint64              m_currentLoot;
+	bool                m_insigniaTaken;
 
 	/************************************************************************/
 	/* World Session                                                        */
 	/************************************************************************/
 	ARCTIC_INLINE WorldSession* GetSession() const { return m_session; }
-	ARCTIC_INLINE void SetSession(WorldSession *s) { m_session = s; }
-	ARCTIC_INLINE void SetBindPoint(float x, float y, float z, uint32 m, uint32 v) { m_bind_pos_x = x; m_bind_pos_y = y; m_bind_pos_z = z; m_bind_mapid = m; m_bind_zoneid = v;}
-	ARCTIC_INLINE void SendDelayedPacket(WorldPacket *data, bool bDeleteOnSend)
+	void SetSession(WorldSession *s) { m_session = s; }
+	void SetBindPoint(float x, float y, float z, uint32 m, uint32 v) { m_bind_pos_x = x; m_bind_pos_y = y; m_bind_pos_z = z; m_bind_mapid = m; m_bind_zoneid = v;}
+	void SendDelayedPacket(WorldPacket *data, bool bDeleteOnSend)
 	{
 		if(data == NULL) return;
 		if(GetSession() != NULL) GetSession()->SendPacket(data);
@@ -1299,7 +1266,7 @@ public:
     /************************************************************************/
 	void SetMovement(uint8 pType, uint32 flag);
 	void SetPlayerSpeed(uint8 SpeedType, float value);
-	ARCTIC_INLINE float GetPlayerSpeed(){return m_runSpeed;}
+	float GetPlayerSpeed(){return m_runSpeed;}
 	uint8 m_currentMovement;
 	bool m_isMoving;
 	uint8 m_isWaterWalking;
@@ -1312,14 +1279,14 @@ public:
 	void JoinedChannel(uint32 channelId);
 	void LeftChannel(uint32 channelId);
 	void CleanupChannels();
-	// Attack stuff
+	//Attack stuff
 	void EventAttackStart();
 	void EventAttackStop();
 	void EventAttackUpdateSpeed() { }
 	void EventDeath();
-
+	//Note:ModSkillLine -> value+=amt;ModSkillMax -->value=amt; --wierd
 	float GetSkillUpChance(uint32 id);
-
+	//ARCTIC_INLINE std::list<struct skilllines>getSkillLines() { return m_skilllines; }
 	float SpellCrtiticalStrikeRatingBonus;
 	float SpellHasteRatingBonus;
 	void UpdateAttackSpeed();
@@ -1334,37 +1301,36 @@ public:
 	ARCTIC_INLINE float GetHitFromSpell() { return m_hitfromspell; }
 	ARCTIC_INLINE float GetParryFromSpell() { return m_parryfromspell; }
 	ARCTIC_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
-	ARCTIC_INLINE void SetBlockFromSpell(float value) { m_blockfromspell = value; }
-	ARCTIC_INLINE void SetSpellCritFromSpell(float value) { m_spellcritfromspell = value; }
-	ARCTIC_INLINE void SetParryFromSpell(float value) { m_parryfromspell = value; }
-	ARCTIC_INLINE void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
-	ARCTIC_INLINE void SetHitFromMeleeSpell(float value) { m_hitfrommeleespell = value; }
-	ARCTIC_INLINE void SetHitFromSpell(float value) { m_hitfromspell = value; }
+	void SetBlockFromSpell(float value) { m_blockfromspell = value; }
+	void SetSpellCritFromSpell(float value) { m_spellcritfromspell = value; }
+	void SetParryFromSpell(float value) { m_parryfromspell = value; }
+	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
+	void SetHitFromMeleeSpell(float value) { m_hitfrommeleespell = value; }
+	void SetHitFromSpell(float value) { m_hitfromspell = value; }
 	ARCTIC_INLINE int32 GetHealthFromSpell() { return m_healthfromspell; }
 	ARCTIC_INLINE uint32 GetManaFromSpell() { return m_manafromspell; }
-	ARCTIC_INLINE void SetHealthFromSpell(int32 value) { m_healthfromspell = value;}
-	ARCTIC_INLINE void SetManaFromSpell(uint32 value) { m_manafromspell = value;}
-
+	void SetHealthFromSpell(int32 value) { m_healthfromspell = value;}
+	void SetManaFromSpell(uint32 value) { m_manafromspell = value;}
 	uint32 CalcTalentResetCost(uint32 resetnum);
-
 	void SendTalentResetConfirm();
 	void SendPetUntrainConfirm();
 	void SendDualTalentConfirm();
-
-	ARCTIC_INLINE uint32 GetTalentResetTimes() { return m_talentresettimes; }
+	uint32 GetTalentResetTimes() { return m_talentresettimes; }
 	ARCTIC_INLINE void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
-	ARCTIC_INLINE void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
+	void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
 	ARCTIC_INLINE uint8 GetPlayerStatus() { return m_status; }
+	const float& GetBindPositionX( ) const { return m_bind_pos_x; }
+	const float& GetBindPositionY( ) const { return m_bind_pos_y; }
+	const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
+	const uint32& GetBindMapId( ) const { return m_bind_mapid; }
+	const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
+	ARCTIC_INLINE uint8 GetShapeShift()
+	{
+		return GetByte(UNIT_FIELD_BYTES_2,3);
+	}
 
-	ARCTIC_INLINE const float& GetBindPositionX( ) const { return m_bind_pos_x; }
-	ARCTIC_INLINE const float& GetBindPositionY( ) const { return m_bind_pos_y; }
-	ARCTIC_INLINE const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
-	ARCTIC_INLINE const uint32& GetBindMapId( ) const { return m_bind_mapid; }
-	ARCTIC_INLINE const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
-
-	ARCTIC_INLINE uint8 GetShapeShift() { return GetByte(UNIT_FIELD_BYTES_2,3); }
-
-	ARCTIC_INLINE void delayAttackTimer(int32 delay)
+	
+	void delayAttackTimer(int32 delay)
 	{
 		if(!delay)
 			return;
@@ -1375,15 +1341,15 @@ public:
 	
 	void SetShapeShift(uint8 ss);
 
-    // Showing Units WayPoints
+    //Showing Units WayPoints
 	AIInterface* waypointunit;
 	
 	uint32 m_nextSave;
-	// Tutorials
+	//Tutorials
 	uint32 GetTutorialInt(uint32 intId );
 	void SetTutorialInt(uint32 intId, uint32 value);
-	// Base stats calculations
-	// void CalcBaseStats();
+	//Base stats calculations
+	//void CalcBaseStats();
 	// Rest
 	uint32 SubtractRestXP(uint32 amount);
 	void AddCalculatedRestXP(uint32 seconds);
@@ -1492,12 +1458,12 @@ public:
 	SpellEntry *m_AutoShotSpell;
 	void _InitialReputation();
 	void UpdateNearbyGameObjects();
-	ARCTIC_INLINE void EventMassSummonReset() { m_massSummonEnabled = false; }
+	void EventMassSummonReset() { m_massSummonEnabled = false; }
 
 	bool m_massSummonEnabled;
 
 	uint32 m_moltenFuryDamageIncreasePct;
-
+	
 	void CalcResistance(uint32 type);
 	ARCTIC_INLINE float res_M_crit_get(){return m_resist_critical[0];}
 	ARCTIC_INLINE void res_M_crit_set(float newvalue){m_resist_critical[0]=newvalue;}
@@ -1613,20 +1579,20 @@ public:
 	bool ARCTIC_FASTCALL CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer, ByteBuffer *pCompressionBuffer);
 	void ClearAllPendingUpdates();
 	
-	ARCTIC_INLINE uint32 GetArmorProficiency() { return armor_proficiency; }
-	ARCTIC_INLINE uint32 GetWeaponProficiency() { return weapon_proficiency; }
+	uint32 GetArmorProficiency() { return armor_proficiency; }
+	uint32 GetWeaponProficiency() { return weapon_proficiency; }
 
 	void ResetHeartbeatCoords();
 
 	// speedhack buster!
-	LocationVector m_lastHeartbeatPosition;
-	float m_lastHeartbeatV; // velocity
-	uint32 m_startMoveTime;	// time
-	uint32 m_lastMovementPacketTimestamp;
-	int32 m_heartbeatDisable;
-	uint32 m_lastMoveTime;
-	bool m_speedChangeInProgress;
-	uint32 m_flyHackChances;
+	LocationVector						m_lastHeartbeatPosition;
+	float								m_lastHeartbeatV; // velocity
+	uint32								m_startMoveTime;	// time
+	uint32								m_lastMovementPacketTimestamp;
+	int32								m_heartbeatDisable;
+	uint32								m_lastMoveTime;
+	bool 								m_speedChangeInProgress;
+	uint32								m_flyHackChances;
 
 	void AddSplinePacket(uint64 guid, ByteBuffer* packet);
 	ByteBuffer* GetAndRemoveSplinePacket(uint64 guid);
@@ -1640,7 +1606,7 @@ public:
 	bool FlyCheat;
 	void ZoneUpdate(uint32 ZoneId);
 	ARCTIC_INLINE uint32 GetAreaID() { return m_AreaID; }
-	ARCTIC_INLINE void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
+	void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
 	ARCTIC_INLINE AreaTable *GetAreaDBC() { return m_areaDBC; }
 	
 	
@@ -1659,7 +1625,8 @@ public:
 	time_t m_fallDisabledUntil;
 	uint32 m_honorToday;
 	uint32 m_honorYesterday;
-	
+	uint32 LatencyKickTimer;
+
 	void RolloverHonor();
 	uint32 m_honorPoints;
 	uint32 m_honorRolloverTime;
@@ -1807,18 +1774,21 @@ public:
 	ARCTIC_INLINE void NullComboPoints() { if(!m_retainComboPoints) { m_comboTarget = 0; m_comboPoints = 0; m_spellcomboPoints=0; } UpdateComboPoints(); }
 	uint32 m_speedChangeCounter;
 
-	// HACKKKKK =((
+	// HACKKKKK
 	uint32 m_cheatDeathRank;
 
 	void SendAreaTriggerMessage(const char * message, ...);
+        
+	// Trade Target
+	//Player* getTradeTarget() {return mTradeTarget;};
 
-	ARCTIC_INLINE Player * GetTradeTarget()
+	ARCTIC_INLINE Player* GetTradeTarget()
 	{
 		if(!IsInWorld()) return NULL;
-		return m_mapMgr->GetPlayer(mTradeTarget);
+		return m_mapMgr->GetPlayer((uint32)mTradeTarget);
 	}
 
-	ARCTIC_INLINE Item * getTradeItem(uint32 slot) {return mTradeItems[slot];};
+	Item* getTradeItem(uint32 slot) {return mTradeItems[slot];};
         
 	// Water level related stuff (they are public because they need to be accessed fast)
 	// Nose level of the character (needed for proper breathing)
@@ -1857,6 +1827,27 @@ public:
 	int32 m_rap_mod_pct;
 	void SummonRequest(uint32 Requestor, uint32 ZoneID, uint32 MapID, uint32 InstanceID, const LocationVector & Position);
 	uint8 m_lastMoveType;
+#ifdef OPTIMIZED_PLAYER_SAVING
+	void save_LevelXP();
+	void save_Skills();
+	void save_ExploreData();
+	void save_Gold();
+	void save_Misc();
+	void save_PositionHP();
+	void save_BindPosition();
+	void save_Honor();
+	void save_EntryPoint();
+	void save_Taxi();
+	void save_Transporter();
+	void save_Spells();
+	void save_Actions();
+	void save_Reputation();
+	void save_Auras();
+	void save_InstanceType();
+	void save_Zone();
+	void save_PVP();
+#endif
+
 #ifdef CLUSTERING
 	void EventRemoveAndDelete();
 	void PackPlayerData(ByteBuffer & data);
@@ -1875,17 +1866,15 @@ public:
     /************************************************************************/
     /* Spell Packet wrapper Please keep this separated                      */
     /************************************************************************/
-
     void SendLevelupInfo(uint32 level, uint32 Hp, uint32 Mana, uint32 Stat0, uint32 Stat1, uint32 Stat2, uint32 Stat3, uint32 Stat4);
     void SendLogXPGain(uint64 guid, uint32 NormalXP, uint32 RestedXP, bool type);
     void SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 damage);
 	void SendWorldStateUpdate(uint32 WorldState, uint32 Value);
 	void SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra);
 	void Gossip_SendPOI(float X, float Y, uint32 Icon, uint32 Flags, uint32 Data, const char* Name);
-
-	/************************************************************************/
-	/* End of SpellPacket wrapper                                           */
-	/************************************************************************/
+    /************************************************************************/
+    /* End of SpellPacket wrapper                                           */
+    /************************************************************************/
 
 	Mailbox* m_mailBox;
 	bool m_waterwalk;
@@ -1902,11 +1891,11 @@ public:
 	void CopyAndSendDelayedPacket(WorldPacket * data);
 	void PartLFGChannel();
 
-	ARCTIC_INLINE uint32 GetLastLoginTime() { return m_timeLogoff; };
+	uint32 GetLastLoginTime() { return 	m_timeLogoff; };
 
-	// Current value of Feral Attack Power from items
+	//Current value of Feral Attack Power from items
 	int32 m_feralAP;
-	bool hasqueuedpet;
+	bool	hasqueuedpet;
 
 protected:
 	uint32 m_timeLogoff;
@@ -2143,7 +2132,7 @@ public:
 
 	ARCTIC_INLINE bool HasKnownTitle( int32 title )
 	{
-		if(title < 1 || title > PVPTITLE_END)
+		if(title < 1 || title > TITLE_END)
 			return false;  // Title doesn't exist
 		if(title < 64)
 			return ( GetUInt64Value( PLAYER__FIELD_KNOWN_TITLES ) & uint64(1) << title ) != (uint64) 0;
@@ -2162,7 +2151,7 @@ public:
 
 	// Avenging Wrath...
 	bool mAvengingWrath;
-	ARCTIC_INLINE void AvengingWrath() { mAvengingWrath = true; }
+	void AvengingWrath() { mAvengingWrath = true; }
 	// Talent Specs
 	uint16 m_maxTalentPoints;
 	uint16 GetMaxTalentPoints();

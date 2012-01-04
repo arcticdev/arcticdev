@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -10,11 +10,12 @@
 
 SQLCallbackBase::~SQLCallbackBase()
 {
+
 }
 
 Database::Database() : ThreadContext()
 {
-	_counter = 0;
+	_counter=0;
 	m_connections = NULL;
 	mConnectionCount = -1;   // Not connected.
 	ThreadRunning = true;
@@ -183,7 +184,7 @@ void Database::PerformQueryBuffer(QueryBuffer * b, DatabaseConnection * ccon)
 	if( ccon == NULL )
 		con = GetFreeConnection();
 	
-	for(vector<char*>::iterator itr = b->queries.begin(); itr != b->queries.end(); itr++)
+	for(vector<char*>::iterator itr = b->queries.begin(); itr != b->queries.end(); ++itr)
 	{
 		_SendQuery(con, *itr, false);
 		delete[] (*itr);
@@ -309,7 +310,7 @@ void AsyncQuery::AddQuery(const char * format, ...)
 void AsyncQuery::Perform()
 {
 	DatabaseConnection * conn = db->GetFreeConnection();
-	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); itr++)
+	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
 		itr->result = db->FQuery(itr->query, conn);
 
 	conn->Busy.Release();
@@ -321,7 +322,7 @@ void AsyncQuery::Perform()
 AsyncQuery::~AsyncQuery()
 {
 	delete func;
-	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); itr++)
+	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
 	{
 		if(itr->result)
 			delete itr->result;

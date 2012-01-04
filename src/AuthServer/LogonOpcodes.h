@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __LOGONOPCODES_H
+#define __LOGONOPCODES_H
 
 enum RealmListOpcodes
 {
@@ -50,3 +51,5 @@ enum RealmListOpcodes
 	// count
 	RMSG_COUNT									= 20,
 };
+
+#endif

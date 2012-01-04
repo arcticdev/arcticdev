@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
+
 #define WORLD_UPDATE_DELAY 50
 
 WorldRunnable::WorldRunnable() : ThreadContext()
@@ -51,9 +52,6 @@ bool WorldRunnable::run()
 		else
 			diff=now-execution_start; // time used for updating 
 
-		/*This is execution time compensating system
-			if execution took more than default delay 
-			no need to make this sleep*/
 		if(diff<WORLD_UPDATE_DELAY)
 		Sleep(WORLD_UPDATE_DELAY-diff);
 	}

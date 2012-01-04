@@ -1,11 +1,10 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "LogonStdAfx.h"
-
 initialiseSingleton(AccountMgr);
 initialiseSingleton(IPBanner);
 initialiseSingleton(InformationCore);
@@ -65,7 +64,7 @@ void AccountMgr::ReloadAccounts(bool silent)
 	for(; itr != AccountDatabase.end();)
 	{
 		it2 = itr;
-		itr++;
+		++itr;
 
 		if(account_list.find(it2->first) == account_list.end())
 		{
@@ -121,7 +120,7 @@ void AccountMgr::AddAccount(Field* field)
 	if ( (uint32)UNIXTIME > acct->Muted && acct->Muted != 0 && acct->Muted != 1) //1 = perm ban?
 	{
 		//Accounts should be unbanned once the date is past their set expiry date.
-		acct->Muted = 0;
+		acct->Muted= 0;
 		DEBUG_LOG("AccountMgr","Account %s's mute has expired.", Username.c_str());
 		sLogonSQL->Execute("UPDATE accounts SET muted = 0 WHERE acct=%u",acct->AccountId);
 	}
@@ -154,7 +153,7 @@ void AccountMgr::AddAccount(Field* field)
 				if( bn.GetNumBytes() < 20 )
 				{
 					memcpy(acct->SrpHash, bn.AsByteArray(), bn.GetNumBytes());
-					for (int n=bn.GetNumBytes(); n <= 19; n++)
+					for (int n=bn.GetNumBytes(); n<=19; n++)
 						acct->SrpHash[n] = (uint8)0;
 					reverse_array(acct->SrpHash, 20);
 				}
@@ -188,6 +187,7 @@ void AccountMgr::UpdateAccount(Account * acct, Field * field)
 
 	if(id != acct->AccountId)
 	{
+		//printf("Account %u `%s` is a duplicate.\n", id, acct->Username.c_str());
 		sLog.outColor(TYELLOW, " >> deleting duplicate account %u [%s]...", id, Username.c_str());
 		sLog.outColor(TNORMAL, "\n");
 		sLogonSQL->Execute("DELETE FROM accounts WHERE acct=%u", id);
@@ -338,7 +338,7 @@ bool IPBanner::Add(const char * ip, uint32 dur)
 bool IPBanner::Remove(const char * ip)
 {
 	listBusy.Acquire();
-	for(list<IPBan>::iterator itr = banList.begin(); itr != banList.end(); itr++)
+	for(list<IPBan>::iterator itr = banList.begin(); itr != banList.end(); ++itr)
 	{
 		if( !strcmp(ip, itr->db_ip.c_str()) )
 		{
@@ -404,7 +404,7 @@ Realm * InformationCore::AddRealm(uint32 realm_id, Realm * rlm)
 
 Realm * InformationCore::GetRealm(uint32 realm_id)
 {
-	Realm * ret = NULL;
+	Realm * ret = 0;
 
 	realmLock.Acquire();
 	map<uint32, Realm*>::iterator itr = m_realms.find(realm_id);
@@ -419,7 +419,7 @@ Realm * InformationCore::GetRealm(uint32 realm_id)
 int32 InformationCore::GetRealmIdByName(string Name)
 {
 	map<uint32, Realm*>::iterator itr = m_realms.begin();
-	for(; itr != m_realms.end(); itr++)
+	for(; itr != m_realms.end(); ++itr)
 		if (itr->second->Name == Name)
 		{
 			return itr->first;
@@ -468,7 +468,7 @@ void InformationCore::SendRealms(AuthSocket * Socket)
 	// loop realms :/
 	map<uint32, Realm*>::iterator itr = m_realms.begin();
 	HM_NAMESPACE::hash_map<uint32, uint8>::iterator it;
-	for(; itr != m_realms.end(); itr++)
+	for(; itr != m_realms.end(); ++itr)
 	{
 		data << itr->second->Icon;
 		data << uint8(0);		// delete when using data << itr->second->Lock;
@@ -514,7 +514,7 @@ void InformationCore::TimeoutSockets()
 	{
 		s = *itr;
 		it2 = itr;
-		itr++;
+		++itr;
 
 		if(!s->removed && (t - s->last_ping) > 60)
 		{
@@ -564,7 +564,7 @@ void InformationCore::CheckServers()
 	{
 		s = *itr;
 		it2 = itr;
-		itr++;
+		++itr;
 
 		if(!IsServerAllowed(s->GetRemoteAddress().s_addr))
 		{

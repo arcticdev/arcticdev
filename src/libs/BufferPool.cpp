@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -8,8 +8,7 @@
 #include "Log.h"
 #include "BufferPool.h"
 
-size_t BufferPool::BufferBucket::buffer_sizes[BUFFER_BUCKET_COUNT] =
-{
+size_t BufferPool::BufferBucket::buffer_sizes[BUFFER_BUCKET_COUNT] = {
 	20,			// 20 bytes
 	50,			// 50 bytes
 	100,		// 100 bytes

@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __STRUCTURES_H
+#define __STRUCTURES_H
 
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
 
@@ -340,3 +341,5 @@ struct MapInfo
 };
 
 #endif //_GAME
+
+#endif //__STRUCTURES_H

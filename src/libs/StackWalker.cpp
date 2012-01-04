@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -13,6 +13,7 @@
 #pragma comment(lib, "version.lib")  // for "VerQueryValue"
 
 #include "StackWalker.h"
+
 
 // If VC7 and later, then use the shipped 'dbghelp.h'-file
 #if _MSC_VER >= 1300
@@ -515,7 +516,7 @@ private:
 	//ModuleEntry e;
 	DWORD cbNeeded;
 	MODULEINFO mi;
-	HMODULE *hMods = NULL;
+	HMODULE *hMods = 0;
 	char *tt = NULL;
 	char *tt2 = NULL;
 	const SIZE_T TTBUFLEN = 8096;

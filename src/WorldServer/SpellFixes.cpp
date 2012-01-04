@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -68,8 +68,6 @@ void CreateDummySpell(uint32 id)
 	dbcSpell.SetRow(id,sp);
 	sWorld.dummyspells.push_back(sp);
 }
-
-
 
 uint32 GetSpellClass(SpellEntry *sp)
 {
@@ -378,9 +376,7 @@ void GenerateNameHashesFile()
 	//guards and the enum declaration
 	sLog.outDebug("GenerateNameHashesFile: Writing header to file");
 	out << "/*" << endl;
-	out << " * Arctic MMORPG Server Software" << endl;
-	out << " * Copyright (c) 2008-2011 Arctic Server Team" << endl;
-	out << " * See COPYING for license details." << endl;
+	out << " * ArcTic MMORPG Server" << endl;
 	out << " */" << endl;
 	out << endl;
 	out << "/* This file has been automatically generated, please do not modify. */" << endl;
@@ -392,10 +388,6 @@ void GenerateNameHashesFile()
 	out << "enum SpellNameHashes" << endl;
 	out << "{" << endl;
 
-	//iterate over the vector containing the fields
-	//that we built and write each line to the file
-	//and add a comment to the end to keep up the
-	//comment ratio, this is just for my vanity :)
 	sLog.outDebug("GenerateNameHashesFile: Writing fields to file");
 	counter = 0;
 	for (std::vector<std::string>::iterator it = fields.begin(); it != fields.end(); it++)
@@ -404,15 +396,15 @@ void GenerateNameHashesFile()
 		out << *it << "\t//" << counter << endl;
 	}
 
-	//Close the enum
+	// Close the enum
 	out << "};" << endl;
 
-	//Close the ifdef for the header guard
+	// Close the ifdef for the header guard
 	out << endl;
 	out << "#endif		// _SPELLHASHES_H" << endl;
 
-	//We have finished writing!
-	//Close the file
+	// We have finished writing!
+	// Close the file
 	out.close();
 	sLog.outDebug("GenerateNameHashesFile: Done!");
 }
@@ -1386,6 +1378,17 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 				{
 						sp->EffectMiscValue[0] = SMT_MISC_EFFECT;
 				}break;
+			//rogue	-	Mace Specialization.
+			case  13709:
+			case  13800:
+			case  13801:	
+			case  13802:
+			case  13803:	
+				{
+						sp->procFlags	=	PROC_ON_MELEE_ATTACK;
+		
+				}break;
+
 			//rogue	- Shadowstep
 			case 36563:	
 				{
@@ -7259,7 +7262,6 @@ void ApplyNormalFixes()
 			}
 		}
 
-
 		//////////////////////////////////////////
 		// SHAMAN								//
 		//////////////////////////////////////////
@@ -7436,7 +7438,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupRow(x);
 		ApplySingleSpellFixes(sp);
 	}
-	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); itr++)
+	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); ++itr)
 		ApplySingleSpellFixes(*itr);
 
 
@@ -7496,6 +7498,5 @@ void ApplyNormalFixes()
 	sp2->DurationIndex = 41;
 	sp2->EffectApplyAuraName[1] = SPELL_AURA_DUMMY;
 	dbcSpell.SetRow(62388,sp2);
-
 
 }

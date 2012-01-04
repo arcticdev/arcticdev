@@ -1,7 +1,6 @@
 INCLUDES += -I$(srcdir) -I$(srcdir)/../libs
 
 bin_PROGRAMS = AuthServer
-
 AuthServer_SOURCES = \
 	AccountCache.cpp \
 	AccountCache.h \

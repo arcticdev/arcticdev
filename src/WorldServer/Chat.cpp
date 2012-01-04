@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -452,7 +452,6 @@ void CommandTableStorage::Init()
 		{ "status",	   '2', &ChatHandler::HandleQuestStatusCommand,		"Lists the status of quest <id>",						NULL, 0, 0, 0},
 		{ "spawn",	   '2', &ChatHandler::HandleQuestSpawnCommand,		"Port to spawn location for quest <id>",				NULL, 0, 0, 0},
 		{ "start",	   '2', &ChatHandler::HandleQuestStartCommand,		"Starts quest <id>",									NULL, 0, 0, 0},
-		{ "resetdailies",'2', &ChatHandler::HandleResetDailiesCommand,	"Reset dailies from <PlayerName>",						NULL, 0, 0, 0},
 		{ NULL,		    0,  NULL,										"",														NULL, 0, 0, 0},
 	};
 	dupe_command_table(questCommandTable, _questCommandTable);
@@ -997,7 +996,6 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 	else
 		mv = 0;
 
-	//valid UNIT_FIELD?
 	if(field <= OBJECT_END || field > UNIT_END )
 	{  
 		RedSystemMessage(m_session, "Specified field is not valid.");
@@ -1162,7 +1160,6 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 			if(fieldmax) {
 				cr->SetFloatValue(fieldmax, mv);
 			}
-			//cr->SaveToDB();
 		}
 		else
 		{
@@ -1174,19 +1171,13 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 
 bool ChatHandler::HandleGetPosCommand(const char* args, WorldSession *m_session)
 {
-	/*if(m_session->GetPlayer()->GetSelection() == 0) return false;
-	Creature* creature = objmgr.GetCreature(m_session->GetPlayer()->GetSelection());
-
-	if(!creature) return false;
-	BlueSystemMessage(m_session, "Creature Position: \nX: %f\nY: %f\nZ: %f\n", creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ());
-	return true;*/
-
 	uint32 spell = atol(args);
 	SpellEntry *se = dbcSpell.LookupEntry(spell);
 	if(se)
 		BlueSystemMessage(m_session, "SpellIcon for %d is %d", se->Id, se->SpellIconID);
 	return true;
 }
+
 
 bool ChatHandler::HandleDebugRetroactiveQuestAchievements(const char *args, WorldSession *m_session)
 {
@@ -1196,23 +1187,4 @@ bool ChatHandler::HandleDebugRetroactiveQuestAchievements(const char *args, Worl
 	pTarget->RetroactiveCompleteQuests();
 	m_session->GetPlayer()->BroadcastMessage("Done.");
 	return true;
-}
-
-bool ChatHandler::HandleResetDailiesCommand( const char *args ,WorldSession *m_session )
-{
-	char Name[100];
-	if(sscanf(args, "%s", Name) != 1)
-	{
-		SystemMessage(m_session, "Invaild syntax.");
-		return false;
-	}
-
-	PlayerInfo * pInfo = objmgr.GetPlayerInfoByName(Name);
-	if( pInfo && pInfo->m_loggedInPlayer )
-	{
-		pInfo->m_loggedInPlayer->ResetDailyQuests();
-		SystemMessage(m_session, "Dailies reseted.");
-		return true;
-	}
-	return false;
 }

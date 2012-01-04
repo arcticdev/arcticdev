@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -10,16 +10,13 @@ void WorldSession::HandlePetAction(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
-	//WorldPacket data;
+	// WorldPacket data;
 	uint64 petGuid = 0;
 	uint16 misc = 0;
 	uint16 action = 0;
 
 	uint64 targetguid = 0;
 	recv_data >> petGuid >> misc >> action;
-	//recv_data.hexlike();
-
-	//printf("Pet_Action: 0x%.4X 0x%.4X\n", misc, action);
 
 	if(GET_TYPE_FROM_GUID(petGuid) == HIGHGUID_TYPE_UNIT)
 	{
@@ -332,7 +329,7 @@ void WorldSession::HandleStabledPetList(WorldPacket & recv_data)
 	data << uint8(_player->m_StableSlotCount);
 	uint8 i=0;
 	bool HasActive = false;
-	for(std::map<uint32, PlayerPet*>::iterator itr = _player->m_Pets.begin(); itr != _player->m_Pets.end(); itr++)
+	for(std::map<uint32, PlayerPet*>::iterator itr = _player->m_Pets.begin(); itr != _player->m_Pets.end(); ++itr)
 	{
 		data << uint32(itr->first); // pet no
 		data << uint32(itr->second->entry); // entryid
@@ -380,6 +377,9 @@ void WorldSession::HandleBuyStableSlot(WorldPacket &recv_data)
 		_player->m_StableSlotCount = MAX_STABLE_SLOTS;
 	else
 		_player->m_StableSlotCount++;
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_Misc();
+#endif
 }
 
 

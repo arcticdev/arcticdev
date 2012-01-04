@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __RSTDAFX_H
+#define __RSTDAFX_H
 
 #include <list>
 #include <vector>
@@ -24,7 +25,7 @@
 #include "../libs/crc32.h"
 #include "../libs/LocationVector.h"
 
-#include <zlib.h>
+#include "../../dep/vc/include/zlib.h"
 
 #include "../libs/Database/DatabaseEnv.h"
 #include "../libs/Database/DBCStores.h"
@@ -60,3 +61,5 @@
 #include "Chat.h"
 #include "Channel.h"
 #include "ChannelMgr.h"
+
+#endif

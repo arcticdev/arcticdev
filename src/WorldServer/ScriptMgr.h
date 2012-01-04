@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -117,7 +117,7 @@ typedef bool(*exp_handle_dummy_aura)(uint32 i, Aura* pAura, bool apply);
 typedef void(*exp_script_register)(ScriptMgr * mgr);
 typedef uint32(*exp_get_script_type)();
 
-typedef const char*(*exp_get_version)();
+typedef uint32(*exp_get_version)();
 
 /* Hashmap typedefs */
 typedef HM_NAMESPACE::hash_map<uint32, exp_create_creature_ai> CreatureCreateMap;

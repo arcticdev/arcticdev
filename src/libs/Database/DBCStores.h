@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -9,7 +9,7 @@
 
 #include "Common.h"
 #include "DataStore.h"
-#include "Utilities/Timer.h"
+#include "Timer.h"
 
 #pragma pack(push,1)
 struct AchievementCriteriaEntry;
@@ -1728,5 +1728,7 @@ extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 
 bool LoadDBCs();
 bool LoadRSDBCs();
+void FreeRSDBCs();
+void FreeDBCs();
 
 #endif

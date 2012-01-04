@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -244,6 +244,7 @@ public:
 	GossipMenuItem GetItem(uint32 Id);
 	ARCTIC_INLINE void SetTextID(uint32 TID) { TextId = TID; }
 
+
 protected:
 	uint32 TextId;
 	uint64 CreatureGuid;
@@ -310,9 +311,9 @@ public:
 	ARCTIC_INLINE bool IsFull() { return (SignatureCount == Slots); }
 };
 
-typedef std::map<uint32, std::list<SpellEntry*>* >                  OverrideIdMap;
+typedef std::map<uint32, std::list<SpellEntry*>* >            OverrideIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Player*  >             PlayerStorageMap;
-typedef std::list<GM_Ticket*>                                       GmTicketList;
+typedef std::list<GM_Ticket*>                                 GmTicketList;
 
 #ifndef WIN32
 #ifndef TRHAX
@@ -339,6 +340,31 @@ typedef HM_NAMESPACE::hash_map<string, PlayerInfo*> PlayerNameStringIndexMap;
 
 typedef std::map<uint32, uint32> PetLevelupSpellSet;
 typedef std::map<uint32, PetLevelupSpellSet> PetLevelupSpellMap;
+
+struct QuestPOIPoint
+{
+    int32 x;
+    int32 y;
+    QuestPOIPoint() : x(0), y(0) {}
+    QuestPOIPoint(int32 _x, int32 _y) : x(_x), y(_y) {}
+};
+
+struct QuestPOI
+{
+    uint32 Id;
+    int32 ObjectiveIndex;
+    uint32 MapId;
+    uint32 AreaId;
+    uint32 Unk2;
+    uint32 Unk3;
+    uint32 Unk4;
+    std::vector<QuestPOIPoint> points;
+    QuestPOI() : Id(0), ObjectiveIndex(0), MapId(0), AreaId(0), Unk2(0), Unk3(0), Unk4(0) {}
+    QuestPOI(uint32 id, int32 objIndex, uint32 mapId, uint32 areaId, uint32 unk2, uint32 unk3, uint32 unk4) : Id(id), ObjectiveIndex(objIndex), MapId(mapId), AreaId(areaId), Unk2(unk2), Unk3(unk3), Unk4(unk4) {}
+};
+
+typedef std::vector<QuestPOI> QuestPOIVector;
+typedef std::tr1::unordered_map<uint32, QuestPOIVector> QuestPOIMap;
 
 class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >
 {
@@ -381,6 +407,7 @@ public:
 	GmTicketList        GM_TicketList;
 	TotemSpellMap       m_totemSpells;
 	OverrideIdMap       mOverrideIdMap;
+	QuestPOIMap			mQuestPOIMap;
 
 	Player* GetPlayer(const char* name, bool caseSensitive = true);
 	Player* GetPlayer(uint32 guid);
@@ -505,12 +532,18 @@ public:
 	RWLock _playerslock;
 	uint32 m_hiPlayerGuid;
 	
-	void AddPlayer(Player* p);//add it to global storage
+	void AddPlayer(Player* p); // add it to global storage
 	void RemovePlayer(Player* p);
 
+	QuestPOIVector const* GetQuestPOIVector(uint32 questId)
+	{
+		QuestPOIMap::const_iterator itr = mQuestPOIMap.find(questId);
+		if (itr != mQuestPOIMap.end())
+			return &itr->second;
+		return NULL;
+	}
 
 	// Serialization
-
 	void LoadQuests();
 	void LoadPlayersInfo();
 	void LoadPlayerCreateInfo();
@@ -528,6 +561,8 @@ public:
 	void LoadAIThreatToSpellId();
 	void LoadReputationModifierTable(const char * tablename, ReputationModMap * dmap);
 	void LoadReputationModifiers();
+	void LoadQuestPOI();
+
 	ReputationModifier * GetReputationModifier(uint32 entry_id, uint32 faction_id);
 
 	void SetHighestGuids();
@@ -644,7 +679,7 @@ protected:
 	
 	set<uint32> m_disabled_spells;
 
-	uint32 TransportersCount;
+	uint64 TransportersCount;
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*> m_playersinfo;
 	PlayerNameStringIndexMap m_playersInfoByName;
 	

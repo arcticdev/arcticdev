@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -682,17 +682,17 @@ public:
 		DamageMap.clear();
 	}
 
-	ARCTIC_INLINE bool DidHeal(uint32 guidLow)
+	bool DidHeal(uint32 guidLow)
 	{
 		return (m_healed.find(guidLow) != m_healed.end());
 	}
 
-	ARCTIC_INLINE bool HealedBy(uint32 guidLow)
+	bool HealedBy(uint32 guidLow)
 	{
 		return (m_healers.find(guidLow) != m_healers.end());
 	}
 
-	ARCTIC_INLINE bool DidDamageTo(uint64 guid)
+	bool DidDamageTo(uint64 guid)
 	{
 		return (DamageMap.find(guid) != DamageMap.end());
 	}
@@ -839,32 +839,32 @@ public:
 	bool HasAuraWithMechanic(uint32 mechanic);
 	bool HasPosAuraWithMechanic(uint32 mechanic);
 	bool HasNegAuraWithMechanic(uint32 mechanic);
-
+	
 	void GiveGroupXP(Unit* pVictim, Player* PlayerInGroup);
 
-	// Combat / Death Status
+	/// Combat / Death Status
 	ARCTIC_INLINE bool isAlive() { return m_deathState == ALIVE; };
 	ARCTIC_INLINE bool isDead() { return  m_deathState != ALIVE; };
-	ARCTIC_INLINE virtual void setDeathState(DeathState s) { m_deathState = s; };
-	ARCTIC_INLINE DeathState getDeathState() { return m_deathState; }
+	virtual void setDeathState(DeathState s) { m_deathState = s; };
+	DeathState getDeathState() { return m_deathState; }
 	void OnDamageTaken();
 
 	bool IsFFAPvPFlagged();
 	void SetFFAPvPFlag();
 	void RemoveFFAPvPFlag();
 
-	// Add Aura to unit
+	//! Add Aura to unit
 	void AddAura(Aura* aur);
-	// Remove aura from unit
+	//! Remove aura from unit
 	void RemoveAura(Aura* aur);
 	void RemoveAuraBySlot(uint16 Slot);
 	void RemoveAuraNoReturn(uint32 spellId);
 	bool RemovePositiveAura(uint32 spellId);
 	bool RemoveNegativeAura(uint32 spellId);
 	bool RemoveAura(uint32 spellId,uint64 guid = 0);
-	bool RemoveAuraByNameHash(uint32 namehash); // required to remove weaker instances of a spell
-	bool RemoveAuraPosByNameHash(uint32 namehash); // required to remove weaker instances of a spell
-	bool RemoveAuraNegByNameHash(uint32 namehash); // required to remove weaker instances of a spell
+	bool RemoveAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
+	bool RemoveAuraPosByNameHash(uint32 namehash);//required to remove weaker instances of a spell
+	bool RemoveAuraNegByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAuras(uint32 * SpellIds);
 
 	void EventRemoveAura(uint32 SpellId)
@@ -872,7 +872,7 @@ public:
 		RemoveAura(SpellId);
 	}
 
-	// Remove all auras
+	//! Remove all auras
 	void RemoveAllAuras();
 	bool RemoveAllAuras(uint32 spellId,uint64 guid = 0); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
     void RemoveAllAurasOfType(uint32 auratype);//ex:to remove morph spells
@@ -966,14 +966,14 @@ public:
 	void RemoveBeacons();
 
 	// AIInterface
-	ARCTIC_INLINE AIInterface *GetAIInterface() { return m_aiInterface; }
+	AIInterface *GetAIInterface() { return m_aiInterface; }
 
 	void ReplaceAIInterface(AIInterface *new_interface) ;
 
-	ARCTIC_INLINE int32 GetThreatModifier() { return m_threatModifyer; }
-	ARCTIC_INLINE void ModThreatModifier(int32 mod) { m_threatModifyer += mod; }
-	ARCTIC_INLINE int32 GetGeneratedThreatModifier() { return m_generatedThreatModifyer; }
-	ARCTIC_INLINE void ModGeneratedThreatModifier(int32 mod) { m_generatedThreatModifyer += mod; }
+	int32 GetThreatModifier() { return m_threatModifyer; }
+	void ModThreatModifier(int32 mod) { m_threatModifyer += mod; }
+	int32 GetGeneratedThreatModifier() { return m_generatedThreatModifyer; }
+	void ModGeneratedThreatModifier(int32 mod) { m_generatedThreatModifyer += mod; }
 
 	// DK:Affect
 	ARCTIC_INLINE uint32 IsPacified() { return m_pacified; }
@@ -1030,7 +1030,7 @@ public:
 	ARCTIC_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };
 	ARCTIC_INLINE uint32 GetOldEmote() { return m_oldEmote; }
 	void EventSummonPetExpire();
-	ARCTIC_INLINE void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);}
+	void EventAurastateExpire(uint32 aurastateflag){RemoveFlag(UNIT_FIELD_AURASTATE,aurastateflag);}
 	void EventHealthChangeSinceLastUpdate();
 
 	void SetStandState (uint8 standstate);
@@ -1140,7 +1140,7 @@ public:
 	void RemoveStealth();
 	void RemoveInvisibility();
 
-	ARCTIC_INLINE void ChangePetTalentPointModifier(bool Increment) { Increment ? m_PetTalentPointModifier++ : m_PetTalentPointModifier-- ; };
+	void ChangePetTalentPointModifier(bool Increment) { Increment ? m_PetTalentPointModifier++ : m_PetTalentPointModifier-- ; };
 	bool m_isPet;
 	uint32 m_stealth;
 	bool m_can_stealth;
@@ -1335,7 +1335,7 @@ protected:
 
 	uint32 m_charmtemp;
 
-	HM_NAMESPACE::hash_map<uint32, SpellEntry*> m_DummyAuras;
+	std::map<uint32, SpellEntry*> m_DummyAuras;
 };
 
 #endif

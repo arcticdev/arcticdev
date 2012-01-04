@@ -1,19 +1,20 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
 #include <Console/CConsole.h>
 
-#define ARCTIC_BANNER "ArcTic - World Server %s/%s-%s (%s)"
+#define BANNER "WoWArcTic MMORPG Server :: WorldServerr%u/%s-%s-%s\n"
 
 #ifndef WIN32
 #include <sched.h>
 #endif
 
-#include "revision.h"
+#include "svn_revision.h"
+
 #include <signal.h>
 
 createFileSingleton( Master );
@@ -75,8 +76,13 @@ struct Addr
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
-static const char* default_config_file = "conf/WorldServer.conf";
-static const char* default_realm_config_file = "conf/AuthServer.conf";
+#ifdef WIN32
+        static const char* default_config_file = "conf/WorldServer.conf";
+        static const char* default_realm_config_file = "conf/Realms.conf";
+#else
+        static const char* default_config_file = CONFDIR "/conf/WorldServer.conf";
+        static const char* default_realm_config_file = CONFDIR "/conf/Realms.conf";
+#endif
 
 bool bServerShutdown = false;
 bool StartConsoleListener();
@@ -142,14 +148,12 @@ bool Master::Run(int argc, char ** argv)
 	UNIXTIME = time(NULL);
 	g_localTime = *localtime(&UNIXTIME);
 
-	Log.Color(TBLUE);
-	printf(ARCTIC_BANNER, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
-	Log.Line();
-	sLog.outString("==============================================================================");
-	Log.Line();
+	sLog.outString("===============================================================================");
+	printf(BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outString("===============================================================================");
+	sLog.outString("");
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
 	Log.Line();
-
 	if( do_check_conf )
 	{
 		Log.Notice( "Config", "Checking config file: %s", config_file );
@@ -203,10 +207,10 @@ bool Master::Run(int argc, char ** argv)
 	}	
 
 	if(Config.RealmConfig.SetSource(realm_config_file))
-		Log.Success( "Config", ">> AuthServer.conf" );
+		Log.Success( "Config", ">> Realms.conf" );
 	else
 	{
-		Log.Error( "Config", ">> AuthServer.conf" );
+		Log.Error( "Config", ">> Realms.conf" );
 		return false;
 	}
 
@@ -218,9 +222,6 @@ bool Master::Run(int argc, char ** argv)
 
 	Log.Line();
 	sLog.outString( "" );
-
-	//ScriptSystem = new ScriptEngine;
-	//ScriptSystem->Reload();
 
 	new EventMgr;
 	new World;
@@ -292,7 +293,7 @@ bool Master::Run(int argc, char ** argv)
 	sLog.Init(Config.MainConfig.GetIntDefault("LogLevel", "File", -1),Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1));
 
 	/* write pid file */
-	FILE * fPid = fopen( "arctic.pid", "w" );
+	FILE * fPid = fopen( "world.pid", "w" );
 	if( fPid )
 	{
 		uint32 pid;
@@ -346,6 +347,7 @@ bool Master::Run(int argc, char ** argv)
 			UNIXTIME = time(NULL);
 			g_localTime = *localtime(&curTime);
 		}
+
 		sSocketGarbageCollector.Update();
 
 		/* UPDATE */
@@ -381,9 +383,11 @@ bool Master::Run(int argc, char ** argv)
 			Sleep( 100 );
 	}
 
+
 	Log.Notice( "CharacterLoaderThread", "Exiting..." );
 	ctl->Terminate();
 	ctl = NULL;
+
 
 	sWorld.LogoutPlayers(); //(Also saves players).
 	CharacterDatabase.Execute("UPDATE characters SET online = 0");
@@ -434,7 +438,9 @@ bool Master::Run(int argc, char ** argv)
 	delete LogonCommHandler::getSingletonPtr();
 
 	Log.Notice( "World", "~World()" );
+	//delete World::getSingletonPtr();
 	World::getSingletonPtr()->Destructor();
+
 
 	sScriptMgr.UnloadScripts();
 	delete ScriptMgr::getSingletonPtr();
@@ -460,7 +466,7 @@ bool Master::Run(int argc, char ** argv)
 	delete Player_Log;
 
 	// remove pid
-	remove( "arctic.pid" );
+	remove( "world.pid" );
 	g_bufferPool.Destroy();
 
 	Log.Notice( "Shutdown", "Shutdown complete." );
@@ -476,8 +482,8 @@ bool Master::_StartDB()
 {
 	string hostname, username, password, database;
 	int port = 0;
-
 	// Configure Main Database
+	
 	bool result = Config.MainConfig.GetString( "WorldDatabase", "Username", &username );
 	Config.MainConfig.GetString( "WorldDatabase", "Password", &password );
 	result = !result ? result : Config.MainConfig.GetString( "WorldDatabase", "Hostname", &hostname );
@@ -530,6 +536,7 @@ void Master::_StopDB()
 }
 
 #ifndef WIN32
+// Unix crash handler :oOoOoOoOoOo
 volatile bool m_crashed = false;
 void segfault_handler(int c)
 {
@@ -563,6 +570,7 @@ void segfault_handler(int c)
 	abort();
 }
 #endif
+
 
 void Master::_HookSignals()
 {
@@ -626,7 +634,10 @@ void OnCrash( bool Terminate )
 	}
 
 	sLog.outString( "Closing." );
-
+	
+	// beep
+	//printf("\x7");
+	
 	// Terminate Entire Application
 	if( Terminate )
 	{

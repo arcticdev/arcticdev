@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -31,7 +31,7 @@ TerrainMgr::~TerrainMgr()
 	// Big memory cleanup, whee.
 	if(CellInformation)
 	{
-		for(uint32 x = 0; x < _sizeX; x++)
+		for(uint32 x = 0; x < _sizeX; ++x)
 		{
 			for(uint32 y = 0; y < _sizeY; ++y)
 			{
@@ -48,7 +48,7 @@ TerrainMgr::~TerrainMgr()
 	mutex.Acquire();
 
 	// Big memory cleanup, whee.
-	for(uint32 x = 0; x < _sizeX; x++)
+	for(uint32 x = 0; x < _sizeX; ++x)
 	{
 		delete [] CellInformation[x];
 	}
@@ -104,7 +104,7 @@ bool TerrainMgr::LoadTerrainHeader()
 
 	// Allocate both storage arrays.
 	CellInformation = new CellTerrainInformation**[_sizeX];
-	for(uint32 x = 0; x < _sizeX; x++)
+	for(uint32 x = 0; x < _sizeX; ++x)
 	{
 		CellInformation[x] = new CellTerrainInformation*[_sizeY];
 		for(uint32 y = 0; y < _sizeY; ++y)
@@ -148,7 +148,7 @@ bool TerrainMgr::LoadTerrainHeader()
 
 	// Allocate both storage arrays.
 	CellInformation = new CellTerrainInformation**[_sizeX];
-	for(uint32 x = 0; x < _sizeX; x++)
+	for(uint32 x = 0; x < _sizeX; ++x)
 	{
 		CellInformation[x] = new CellTerrainInformation*[_sizeY];
 		for(uint32 y = 0; y < _sizeY; ++y)

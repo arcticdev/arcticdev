@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -15,7 +15,11 @@
     #include <cstring>
 #endif
 
-#include <revision.h>
+#include <svn_revision.h>
+#define SCRIPTLIB_HIPART(x) ((x >> 16))
+#define SCRIPTLIB_LOPART(x) ((x & 0x0000ffff))
+#define SCRIPTLIB_VERSION_MINOR (BUILD_REVISION % 1000)
+#define SCRIPTLIB_VERSION_MAJOR (BUILD_REVISION / 1000)
 
 initialiseSingleton(ScriptMgr);
 initialiseSingleton(HookInterface);
@@ -27,6 +31,7 @@ ScriptMgr::ScriptMgr()
 
 ScriptMgr::~ScriptMgr()
 {
+
 }
 
 struct ScriptingEngine
@@ -83,16 +88,16 @@ void ScriptMgr::LoadScripts()
 				}
 				else
 				{
-					const char *version = vcall();
+					uint32 version = vcall();
 					uint32 stype = scall();
-					if(strcmp( version, BUILD_HASH_STR ) != 0)
+					if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
 					{
 						std::stringstream cmsg; 
 						cmsg << "Loading " << data.cFileName << ", crc:0x" << reinterpret_cast< uint32* >( mod );
 
 						if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 						{
-							cmsg << ' ' << std::string( BUILD_HASH_STR ) << " : ";
+							cmsg << ", Version:" << SCRIPTLIB_HIPART(version) << SCRIPTLIB_LOPART(version) << " delayed loading.";
 
 							ScriptingEngine se;
 							se.Handle = mod;
@@ -104,7 +109,7 @@ void ScriptMgr::LoadScripts()
 						else
 						{
 							_handles.push_back(((SCRIPT_MODULE)mod));
-							cmsg << ' ' << std::string( BUILD_HASH_STR ) << " : ";
+							cmsg << ", Version:" << SCRIPTLIB_HIPART(version) << SCRIPTLIB_LOPART(version);
 							rcall(this);
 						}
 						Log.Success("ScriptMgr",cmsg.str().c_str());
@@ -122,7 +127,7 @@ void ScriptMgr::LoadScripts()
 		FindClose(find_handle);
 		Log.Notice("ScriptMgr","Loaded %u external libraries.", count);
 		Log.Notice("ScriptMgr","Loading optional scripting engines...");
-		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); itr++)
+		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
 		{
 			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_AS )
 			{
@@ -184,11 +189,11 @@ char *ext;
 					{
 						int32 version = vcall();
 						uint32 stype = scall();
-						if(strcmp( version, BUILD_HASH_STR ) != 0)
+						if(SCRIPTLIB_LOPART(version) == SCRIPTLIB_VERSION_MINOR && SCRIPTLIB_HIPART(version) == SCRIPTLIB_VERSION_MAJOR)
 						{
 							if( stype & SCRIPT_TYPE_SCRIPT_ENGINE )
 							{
-								printf("v%u.%u : ", std::string( BUILD_HASH_STR) /*BUILD_HASH_STR(version)*/);
+								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
 								printf("delayed load.\n");
 
 								ScriptingEngine se;
@@ -201,9 +206,9 @@ char *ext;
 							else
 							{
 								_handles.push_back(((SCRIPT_MODULE)mod));
-								printf("v%u.%u : ", std::string( BUILD_HASH_STR) /*BUILD_HASH_STR(version)*/);
+								printf("v%u.%u : ", SCRIPTLIB_HIPART(version), SCRIPTLIB_LOPART(version));
 								rcall(this);
-								printf("loaded.\n");
+								printf("loaded.\n");						
 							}
 
 							++count;
@@ -211,7 +216,7 @@ char *ext;
 						else
 						{
 							dlclose(mod);
-							printf("version mismatch!\n");
+							printf("version mismatch!\n");						
 						}
 					}
 				}
@@ -224,7 +229,7 @@ char *ext;
 		sLog.outString("");
 
 		sLog.outString("Loading optional scripting engines...");
-		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); itr++)
+		for(vector<ScriptingEngine>::iterator itr = ScriptEngines.begin(); itr != ScriptEngines.end(); ++itr)
 		{
 			if( itr->Type & SCRIPT_TYPE_SCRIPT_ENGINE_AS )
 			{
@@ -255,14 +260,14 @@ void ScriptMgr::UnloadScripts()
 	if(HookInterface::getSingletonPtr())
 		delete HookInterface::getSingletonPtr();
 
-	for(CustomGossipScripts::iterator itr = _customgossipscripts.begin(); itr != _customgossipscripts.end(); itr++)
+	for(CustomGossipScripts::iterator itr = _customgossipscripts.begin(); itr != _customgossipscripts.end(); ++itr)
 		(*itr)->Destroy();
 	_customgossipscripts.clear();
 	delete this->DefaultGossipScript;
 	this->DefaultGossipScript=NULL;
 
 	LibraryHandleMap::iterator itr = _handles.begin();
-	for(; itr != _handles.end(); itr++)
+	for(; itr != _handles.end(); ++itr)
 	{
 #ifdef WIN32
 		FreeLibrary(((HMODULE)*itr));
@@ -743,7 +748,7 @@ void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 #define OUTER_LOOP_BEGIN(type, fptr_type) if(!sScriptMgr._hooks[type].size()) { \
 	return; } \
 	fptr_type call; \
-	for(ServerHookList::iterator itr = sScriptMgr._hooks[type].begin(); itr != sScriptMgr._hooks[type].end(); itr++) { \
+	for(ServerHookList::iterator itr = sScriptMgr._hooks[type].begin(); itr != sScriptMgr._hooks[type].end(); ++itr) { \
 	call = ((fptr_type)*itr);
 
 #define OUTER_LOOP_END }
@@ -752,7 +757,7 @@ void ScriptMgr::register_hook(ServerHookEvents event, void * function_pointer)
 	return true; } \
 	fptr_type call; \
 	bool ret_val = true; \
-	for(ServerHookList::iterator itr = sScriptMgr._hooks[type].begin(); itr != sScriptMgr._hooks[type].end(); itr++) { \
+	for(ServerHookList::iterator itr = sScriptMgr._hooks[type].begin(); itr != sScriptMgr._hooks[type].end(); ++itr) { \
 		call = ((fptr_type)*itr);
 
 #define OUTER_LOOP_END_COND } return ret_val;

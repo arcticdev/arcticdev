@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -248,6 +248,10 @@ void Player::SetStanding(uint32 Faction, int32 Value)
 			m_session->SendPacket(&data);
 		}
 	}
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	save_Reputation();
+#endif
 }
 
 Standing Player::GetStandingRank(uint32 Faction)
@@ -340,6 +344,10 @@ void Player::ModStanding(uint32 Faction, int32 Value)
 			m_session->SendPacket(&data);
 		}
    }
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	save_Reputation();
+#endif
 }
 
 void Player::SetAtWar(uint32 Faction, bool Set)
@@ -371,6 +379,10 @@ void Player::SetAtWar(uint32 Faction, bool Set)
 
 		UpdateInrangeSetsBasedOnReputation();
 	}
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	save_Reputation();
+#endif
 }
 
 void WorldSession::HandleSetAtWarOpcode(WorldPacket& recv_data)
@@ -392,7 +404,7 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 	Unit* pUnit;
 	bool rep_value;
 	bool enemy_current;
-	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++ )
+	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
 	{
 		if( (*itr)->GetTypeId() != TYPEID_UNIT )
 			continue;
@@ -440,7 +452,7 @@ void Player::Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop)
 	if(modifier != 0)
 	{
 		// Apply this data.
-		for(vector<ReputationMod>::iterator itr = modifier->mods.begin(); itr != modifier->mods.end(); itr++)
+		for(vector<ReputationMod>::iterator itr = modifier->mods.begin(); itr != modifier->mods.end(); ++itr)
 		{
 			if(!(*itr).faction[team])
 				continue;
@@ -491,5 +503,8 @@ void Player::Reputation_OnTalk(FactionDBC * dbc)
 		if(IsInWorld())
 			m_session->OutPacket(SMSG_SET_FACTION_VISIBLE, 4, &dbc->RepListId);
 
+#ifdef OPTIMIZED_PLAYER_SAVING
+		save_Reputation();
+#endif
 	}
 }

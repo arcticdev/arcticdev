@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
+
 void WorldSession::SendTradeStatus(uint32 TradeStatus)
 {
 	OutPacket(SMSG_TRADE_STATUS, 4, &TradeStatus);

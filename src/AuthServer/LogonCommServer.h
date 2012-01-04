@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __LOGON_COMM_SERVER_H
+#define __LOGON_COMM_SERVER_H
 
 #include <RC4Engine.h>
 
@@ -49,3 +50,5 @@ public:
 };
 
 typedef void (LogonCommServerSocket::*logonpacket_handler)(WorldPacket&);
+
+#endif

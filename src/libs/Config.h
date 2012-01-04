@@ -1,14 +1,14 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-// Arctic Configuration Header File
+// ArcTic Configuration Header File
 // Feel free to customize to your needs.
 
-#ifndef _ARCTICCONFIG_H
-#define _ARCTICCONFIG_H
+#ifndef __CONFIG_H
+#define __CONFIG_H
 
 /* Enable/distance Sticky NPC movement, npcs will follow terrain.
  * This code is optimized and shouldn't use too much CPU usage (the usage per npc is in nanoseconds)

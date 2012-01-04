@@ -2,4 +2,4 @@
 # Copyright (c) 2008-2011 Arctic Server Team
 # See COPYING for license details.
 
-SUBDIRS = libs AuthServer WorldServer #scripts
+SUBDIRS = libs AuthServer WorldServer scripts

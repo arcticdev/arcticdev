@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -141,7 +141,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << lootSlot;
 		Player* plr;
-		for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); itr++)
+		for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); ++itr)
 		{
 			plr = _player->GetMapMgr()->GetPlayer((*itr));
 			if( plr != NULL )
@@ -160,7 +160,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 	/* any left yet? (for fishing bobbers) */
 	if(pGO && pGO->GetEntry() ==GO_FISHING_BOBBER)
 	{
-		for(vector<__LootItem>::iterator itr = pLootObj->m_loot.items.begin(); itr != pLootObj->m_loot.items.end(); itr++)
+		for(vector<__LootItem>::iterator itr = pLootObj->m_loot.items.begin(); itr != pLootObj->m_loot.items.end(); ++itr)
 		{
 			if( itr->iItemsCount > 0 )
 				return;
@@ -187,7 +187,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		return;
 
 	uint32 money = pLootObj->m_loot.gold;
-	for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); itr++)
+	for(LooterSet::iterator itr = pLootObj->m_loot.looters.begin(); itr != pLootObj->m_loot.looters.end(); ++itr)
 	{
 		if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 			plr->GetSession()->OutPacket(SMSG_LOOT_CLEAR_MONEY);
@@ -216,7 +216,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		for(uint32 i = 0; i < party->GetSubGroupCount(); i++)
 		{
 			sgrp = party->GetSubGroup(i);
-			for(itr = sgrp->GetGroupMembersBegin(); itr != sgrp->GetGroupMembersEnd(); itr++)
+			for(itr = sgrp->GetGroupMembersBegin(); itr != sgrp->GetGroupMembersEnd(); ++itr)
 			{
 				if((*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->GetZoneId() == _player->GetZoneId() && _player->GetInstanceID() == (*itr)->m_loggedInPlayer->GetInstanceID())
 					targets.push_back((*itr)->m_loggedInPlayer);
@@ -233,7 +233,7 @@ void WorldSession::HandleLootMoneyOpcode( WorldPacket & recv_data )
 		StackPacket pkt(SMSG_LOOT_MONEY_NOTIFY, databuf, 50);
 		pkt << share;
 
-		for(vector<Player*  >::iterator itr = targets.begin(); itr != targets.end(); itr++)
+		for(vector<Player*  >::iterator itr = targets.begin(); itr != targets.end(); ++itr)
 		{
 			if(((*itr)->GetUInt32Value(PLAYER_FIELD_COINAGE) + share) >= PLAYER_MAX_GOLD)
 				continue;
@@ -272,7 +272,7 @@ void WorldSession::HandleLootOpcode( WorldPacket & recv_data )
 				for(uint32 i = 0; i < party->GetSubGroupCount(); ++i)
 				{
 					s = party->GetSubGroup(i);
-					for(itr = s->GetGroupMembersBegin(); itr != s->GetGroupMembersEnd(); itr++)
+					for(itr = s->GetGroupMembersBegin(); itr != s->GetGroupMembersEnd(); ++itr)
 					{
 						if((*itr)->m_loggedInPlayer && _player->GetZoneId() == (*itr)->m_loggedInPlayer->GetZoneId())
 						{
@@ -542,7 +542,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	while(itr !=iend && sent_count < 50)
 	{
 		plr = itr->second;
-		itr++;
+		++itr;
 		bool queriedPlayerIsGM = false;
 		if(plr->GMPermissions.find("a"))
 		{
@@ -655,7 +655,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	while(itr !=iend && sent_count < 50)
 	{
 		plr = itr->second;
-		itr++;
+		++itr;
 
 		if(!plr->GetSession() || !plr->IsInWorld())
 			continue;
@@ -1157,6 +1157,10 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 			GetPlayer()->setAction(button,action,type,misc);
 		} 
 	}
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_Actions();
+#endif
 }
 
 void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket &recvPacket)
@@ -1165,6 +1169,9 @@ void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket &recvPacket)
 	recvPacket >> factionid;
 	GetPlayer()->SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, factionid);
 
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_Misc();
+#endif
 }
 
 void WorldSession::HandleTogglePVPOpcode(WorldPacket& recv_data)
@@ -1225,8 +1232,12 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 	_player->SetUInt32Value(PLAYER_AMMO_ID, ammoId);
 	_player->CalcDamage();
 
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_Misc();
+#endif
 }
 
+#define OPEN_CHEST 11437
 void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 {
  	CHECK_INWORLD_RETURN;
@@ -1265,7 +1276,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 		}break;
 		case GAMEOBJECT_TYPE_CHEST://cast da spell
 		{
-			spellInfo = dbcSpell.LookupEntry(11437);
+			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
 			spell = (new Spell(plyr, spellInfo, true, NULL));
 			_player->m_currentSpell = spell;
 			targets.m_unitTarget = obj->GetGUID();
@@ -1685,21 +1696,21 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 
 	switch(recv_data.GetOpcode())
 	{
-		case CMSG_MOVE_WATER_WALK_ACK:
-			_player->m_waterwalk = _player->m_setwaterwalk;
-			break;
+	case CMSG_MOVE_WATER_WALK_ACK:
+		_player->m_waterwalk = _player->m_setwaterwalk;
+		break;
 
-		case CMSG_MOVE_SET_CAN_FLY_ACK:
-			_player->FlyCheat = _player->m_setflycheat;
-			break;
+	case CMSG_MOVE_SET_CAN_FLY_ACK:
+		_player->FlyCheat = _player->m_setflycheat;
+		break;
 
-		case CMSG_FORCE_RUN_SPEED_CHANGE_ACK:
-		case CMSG_FORCE_RUN_BACK_SPEED_CHANGE_ACK:
-		case CMSG_FORCE_SWIM_SPEED_CHANGE_ACK:
-		case CMSG_FORCE_SWIM_BACK_SPEED_CHANGE_ACK:
-		case CMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE_ACK:
-		case CMSG_FORCE_FLIGHT_SPEED_CHANGE_ACK:
-		if(_player->m_speedChangeInProgress)
+	case CMSG_FORCE_RUN_SPEED_CHANGE_ACK:
+	case CMSG_FORCE_RUN_BACK_SPEED_CHANGE_ACK:
+	case CMSG_FORCE_SWIM_SPEED_CHANGE_ACK:
+	case CMSG_FORCE_SWIM_BACK_SPEED_CHANGE_ACK:
+	case CMSG_FORCE_FLIGHT_BACK_SPEED_CHANGE_ACK:
+	case CMSG_FORCE_FLIGHT_SPEED_CHANGE_ACK:
+	if(_player->m_speedChangeInProgress)
 		{
 			_player->ResetHeartbeatCoords();
 			_player->DelaySpeedHack( 5000 );			// give the client a chance to fall/catch up
@@ -1707,6 +1718,64 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 		}
 		break;
 	}
+
+   /* uint16 opcode = recv_data.GetOpcode();
+	std::stringstream ss;
+	ss << "Received ";
+	switch( opcode )
+	{
+	case CMSG_MOVE_FEATHER_FALL_ACK:			ss << "Move_Feather_Fall"; break;
+	case CMSG_MOVE_WATER_WALK_ACK:			  ss << "Move_Water_Walk"; break;
+	case CMSG_MOVE_KNOCK_BACK_ACK:			  ss << "Move_Knock_Back"; break;
+	case CMSG_MOVE_HOVER_ACK:				   ss << "Move_Hover"; break;
+	case CMSG_FORCE_WALK_SPEED_CHANGE_ACK:	  ss << "Force_Walk_Speed_Change"; break;
+	case CMSG_FORCE_SWIM_SPEED_CHANGE_ACK:	  ss << "Force_Swim_Speed_Change"; break;
+	case CMSG_FORCE_SWIM_BACK_SPEED_CHANGE_ACK: ss << "Force_Swim_Back_Speed_Change"; break;
+	case CMSG_FORCE_TURN_RATE_CHANGE_ACK:	   ss << "Force_Turn_Rate_Change"; break;
+	case CMSG_FORCE_RUN_SPEED_CHANGE_ACK:	   ss << "Force_Run_Speed_Change"; break;
+	case CMSG_FORCE_RUN_BACK_SPEED_CHANGE_ACK:  ss << "Force_Run_Back_Speed_Change"; break;
+	case CMSG_FORCE_MOVE_ROOT_ACK:			  ss << "Force_Move_Root"; break;
+	case CMSG_FORCE_MOVE_UNROOT_ACK:			ss << "Force_Move_Unroot"; break;
+	default:									ss << "Unknown"; break;
+	}
+	ss << " Acknowledgement. PktSize: " << recv_data.size();
+	OUT_DEBUG( ss.str().c_str() );*/
+
+	/*uint16 opcode = recv_data.GetOpcode();
+	if (opcode == CMSG_FORCE_RUN_SPEED_CHANGE_ACK)
+	{
+ 
+		uint64 GUID;
+		uint32 Flags, unk0, unk1, d_time;
+		float X, Y, Z, O, speed;
+		
+		recv_data >> GUID;
+		recv_data >> unk0 >> Flags;
+		if (Flags & (0x2000 | 0x6000))			 //0x2000 == jumping  0x6000 == Falling
+		{
+			uint32 unk2, unk3, unk4, unk5;
+			float OldSpeed;
+
+			recv_data >> d_time;
+			recv_data >> X >> Y >> Z >> O;
+			recv_data >> unk2 >> unk3;						  //no idea, maybe unk2 = flags2
+			recv_data >> unk4 >> unk5;						  //no idea
+			recv_data >> OldSpeed >> speed;
+		}
+		else													//single check
+		{
+			recv_data >> d_time;
+			recv_data >> X >> Y >> Z >> O;
+			recv_data >> unk1 >> speed;
+		}
+		
+		// if its not good kick player???
+		if (_player->GetPlayerSpeed() != speed)
+		{
+			sLog.outError("SpeedChange player:%s is NOT correct, its set to: %f he seems to be cheating",_player->GetName(), speed);
+		}
+	}*/
+
 }
 
 void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
@@ -1886,7 +1955,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		data.SetOpcode(SMSG_LOOT_REMOVED);
 		data << slotid;
 		Player* plr;
-		for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); itr++)
+		for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
 		{
 			if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 				plr->GetSession()->SendPacket(&data);
@@ -2138,7 +2207,7 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
         m_Group->Lock();
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
 		{
-			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); itr++)
+			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
 			{
 				if((*itr)->m_loggedInPlayer)
 				{
@@ -2154,6 +2223,10 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
         _player->iInstanceType = data;
         sInstanceMgr.ResetSavedInstances(_player);
     }
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+	_player->save_InstanceType();
+#endif
 }
 
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
@@ -2229,3 +2302,12 @@ void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 	data << (uint32)UNIXTIME;;
 	SendPacket(&data);
 }
+
+void WorldSession::HandleReadyForAccountDataTimes(WorldPacket& recv_data)
+{
+	// empty opcode
+	sLog.outDebug("WORLD: CMSG_READY_FOR_ACCOUNT_DATA_TIMES");
+
+	SendAccountDataTimes(GLOBAL_CACHE_MASK);
+}
+

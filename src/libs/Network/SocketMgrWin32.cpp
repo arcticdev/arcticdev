@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -32,7 +32,7 @@ void SocketMgr::SpawnWorkerThreads()
 
 	uint8 threadcnt = uint8(si.dwNumberOfProcessors*2);
 	DEBUG_LOG("IOCP","Spawning %u worker threads.", threadcnt);
-	for(long x = 0; x < threadcnt; x++)
+	for(long x = 0; x < threadcnt; ++x)
 		ThreadPool.ExecuteTask(new SocketWorkerThread());
 }
 
@@ -111,11 +111,11 @@ void SocketMgr::CloseAll()
 	list<Socket*> tokill;
 
 	socketLock.Acquire();
-	for(set<Socket*>::iterator itr = _sockets.begin(); itr != _sockets.end(); itr++)
+	for(set<Socket*>::iterator itr = _sockets.begin(); itr != _sockets.end(); ++itr)
 		tokill.push_back(*itr);
 	socketLock.Release();
 
-	for(list<Socket*>::iterator itr = tokill.begin(); itr != tokill.end(); itr++)
+	for(list<Socket*>::iterator itr = tokill.begin(); itr != tokill.end(); ++itr)
 		(*itr)->Disconnect();
 
 	size_t size;

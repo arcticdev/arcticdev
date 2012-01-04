@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -118,7 +118,7 @@ Creature::~Creature()
 
 	if(m_custom_waypoint_map != 0)
 	{
-		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); itr++)
+		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
 			delete (*itr);
 		delete m_custom_waypoint_map;
 	}
@@ -719,7 +719,7 @@ void Creature::AddVendorItem(uint32 itemid, uint32 amount)
 }
 void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 {
-	for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); itr++)
+	for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
 	{
 		if(itr->itemid == itemid)
 		{
@@ -742,7 +742,7 @@ void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 }
 void Creature::UpdateItemAmount(uint32 itemid)
 {
-	for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); itr++)
+	for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
 	{
 		if(itr->itemid == itemid)
 		{
@@ -989,7 +989,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 ////////////AI
 	
 	// kek
-	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); itr++)
+	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
 		m_aiInterface->addSpellToList(*itr);
 	}
@@ -1180,7 +1180,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	////////////AI
 
 	// kek
-	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); itr++)
+	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
 		m_aiInterface->addSpellToList(*itr);
 	}
@@ -1255,7 +1255,7 @@ void Creature::OnPushToWorld()
 	{
 		set<uint32>::iterator itr = proto->start_auras.begin();
 		SpellEntry * sp = NULL;
-		for(; itr != proto->start_auras.end(); itr++)
+		for(; itr != proto->start_auras.end(); ++itr)
 		{
 			sp = dbcSpell.LookupEntry((*itr));
 			if(sp != NULL)
@@ -1296,7 +1296,7 @@ void Creature::OnPushToWorld()
 	m_aiInterface->m_is_in_instance = (m_mapMgr->GetMapInfo()->type!=INSTANCE_NULL) ? true : false;
 	if (HasItems())
 	{
-		for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); itr++)
+		for(std::vector<CreatureItem>::iterator itr = m_SellItems->begin(); itr != m_SellItems->end(); ++itr)
 		{
 				if (itr->max_amount == 0)
 					itr->available_amount=0;
@@ -1354,7 +1354,7 @@ void Creature::DestroyCustomWaypointMap()
 {
 	if(m_custom_waypoint_map)
 	{
-		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); itr++)
+		for(WayPointMap::iterator itr = m_custom_waypoint_map->begin(); itr != m_custom_waypoint_map->end(); ++itr)
 		{
 			delete (*itr);
 		}
@@ -1409,9 +1409,9 @@ void Creature::SetGuardWaypoints()
 			wp->z = GetMapMgr()->GetLandHeight(wp->x, wp->y);
 		wp->o = 0;
 		wp->backwardemoteid = 0;
-		wp->backwardemoteoneshot = false;
+		wp->backwardemoteoneshot = 0;
 		wp->forwardemoteid = 0;
-		wp->forwardemoteoneshot = false;
+		wp->forwardemoteoneshot = 0;
 		wp->backwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		wp->forwardskinid = m_uint32Values[UNIT_FIELD_NATIVEDISPLAYID];
 		wp->forwardStandState = 0;

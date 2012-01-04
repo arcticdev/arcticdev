@@ -1,15 +1,16 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef _R_MASTER_H
+#define _R_MASTER_H
 
 #include "Common.h"
 #include "Config/ConfigEnv.h"
 #include "Database/DatabaseEnv.h"
-#include "getopt.h"
+#include "Getopt.h"
 
 #ifndef _VERSION
 # define _VERSION "3.3.5"
@@ -67,3 +68,5 @@ private:
 };
 
 #define sRMaster Master::getSingleton()
+
+#endif

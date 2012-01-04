@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -246,4 +246,79 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayfmt, true, dbcWorldMapOverlay, true);
 
 	return true;
+}
+
+void FreeRSDBCs()
+{
+	dbcArea.Cleanup();
+	dbcChatChannels.Cleanup();
+}
+
+void FreeDBCs()
+{
+	dbcAchievement.Cleanup();
+	dbcAchivementCriteria.Cleanup();
+	dbcAreaGroup.Cleanup();
+	dbcArea.Cleanup();
+	// dbcAreaTrigger.Cleanup();
+	dbcAuctionHouse.Cleanup();
+	dbcBankSlotPrices.Cleanup();
+	dbcBarberShopStyle.Cleanup();
+	dbcChatChannels.Cleanup();
+	dbcCharTitlesEntry.Cleanup();
+	// dbcCurrencyTypesStore.Cleanup();
+	dbcCharClass.Cleanup();
+	dbcCharRace.Cleanup();
+	dbcCreatureDisplayInfo.Cleanup();
+	dbcCreatureFamily.Cleanup();
+	dbcCreatureSpellData.Cleanup();
+	dbcDurabilityQuality.Cleanup();
+	dbcEmoteEntry.Cleanup();
+	dbcFaction.Cleanup();
+	dbcFactionTemplate.Cleanup();
+	dbcGemProperty.Cleanup();
+	dbcGlyphProperty.Cleanup();
+	dbcBarberShopPrices.Cleanup();
+	dbcMeleeCrit.Cleanup();
+	dbcMeleeCritBase.Cleanup();
+	dbcSpellCrit.Cleanup();
+	dbcSpellCritBase.Cleanup();
+	dbcCombatRating.Cleanup();
+	dbcHPRegen.Cleanup();
+	dbcManaRegen.Cleanup();
+	dbcHPRegenBase.Cleanup();
+	dbcManaRegenBase.Cleanup();
+	dbcItemExtendedCost.Cleanup();
+	dbcItemSet.Cleanup();
+	dbcRandomProps.Cleanup();
+	dbcItemRandomSuffix.Cleanup();
+	// dbcItemLimitCategory.Cleanup();
+	dbcLock.Cleanup();
+	dbcMap.Cleanup();
+	// dbcScalingStatDistribution.Cleanup();
+	// dbcScalingStatValues.Cleanup();
+	dbcStableSlotPrices.Cleanup();
+	dbcSkillLine.Cleanup();
+	dbcSkillLineSpell.Cleanup();
+	dbcSpell.Cleanup();
+	dbcSpellCastTime.Cleanup();
+	dbcSpellDuration.Cleanup();	
+	dbcEnchant.Cleanup();
+	dbcSpellRadius.Cleanup();
+	dbcSpellRange.Cleanup();
+	dbcSpellRuneCost.Cleanup();
+	dbcSpellShapeshiftForm.Cleanup();
+	dbcSummonProps.Cleanup();
+	dbcTalent.Cleanup();
+	dbcTalentTab.Cleanup();
+	dbcTaxiNode.Cleanup();
+	dbcTaxiPath.Cleanup();
+	dbcTaxiPathNode.Cleanup();
+	dbcVehicle.Cleanup();
+	dbcVehicleSeat.Cleanup();
+	dbcWorldMapOverlay.Cleanup();
+	// dbcDestructibleModelData.Cleanup();
+	// dbcPvPDifficulty.Cleanup();
+	// dbcBattlemasterList.Cleanup();
+	// dbcMailTemplate.Cleanup();
 }

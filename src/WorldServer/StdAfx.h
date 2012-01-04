@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -39,7 +39,7 @@
 #include "../libs/Collision/vmap/IVMapManager.h"
 #include "../libs/Collision/vmap/VMapManager.h"
 
-#include <zlib.h>
+#include "../../dep/vc/include/zlib.h"
 
 #include "../libs/Database/DatabaseEnv.h"
 #include "../libs/Database/DBCStores.h"
@@ -56,7 +56,7 @@
 #include "../libs/CircularQueue.h"
 #include "../libs/Threading/RWLock.h"
 #include "../libs/Threading/Condition.h"
-#include "../libs/getopt.h"
+#include "../libs/Getopt.h"
 #include "../libs/BufferPool.h"
 
 #include "Const.h"
@@ -79,8 +79,6 @@
 #include "Object.h"
 #include "LootMgr.h"
 #include "Unit.h"
-
-#include "../libs/Utilities/Arctic.h"
 
 #include "AddonMgr.h"
 #include "AIInterface.h"
@@ -162,7 +160,6 @@
 
 #include "Master.h"
 #include "BaseConsole.h"
-#include "CConsole.h"
-//#define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
+// #define COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS 1
 
 #endif

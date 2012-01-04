@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -72,7 +72,7 @@ class BufferPool
 			if( m_packetBuffer.size() < new_size )
 				m_packetBuffer.resize(new_size);
 
-			for( x = 0; x < m_packetBufferCount; x++ )
+			for( x = 0; x < m_packetBufferCount; ++x )
 			{
 				m_packetBuffer[x] = new WorldPacket(0, m_byteSize);
 				m_packetBuffer[x]->m_bufferPool = (int8)m_size;
@@ -131,10 +131,10 @@ class BufferPool
 			printf(" Bucket[%u]: %u bytes: sz = %u resv = %u alloc: %d used: %u mem: %.3f K\n    [", m_size, m_byteSize, m_packetBufferCount, (uint32)m_packetBuffer.size(), 
 				m_allocCounter, m_used, (float(mem) / 1024.0f));
 
-			for( x = 0; x < blocks; x++ )
+			for( x = 0; x < blocks; ++x )
 				printf("=");
 
-			for( ; x < 50; x++ )
+			for( ; x < 50; ++x )
 				printf(" ");
 
 			printf("]\n");
@@ -157,7 +157,7 @@ class BufferPool
 				if( m_packetBuffer.size() < cnt )
 					m_packetBuffer.resize(cnt);
 
-				for( x = m_packetBufferCount; x < cnt; x++ )
+				for( x = m_packetBufferCount; x < cnt; ++x )
 				{
 					m_packetBuffer[x] = new WorldPacket(0, m_byteSize);
 					m_packetBuffer[x]->m_bufferPool = -1;
@@ -195,7 +195,7 @@ protected:
 	static int8 GetBufferPool(size_t sz)
 	{
 		int8 x;
-		for( x = 0; x < BUFFER_BUCKET_COUNT; x++ )
+		for( x = 0; x < BUFFER_BUCKET_COUNT; ++x )
 		{
 			if( BufferBucket::buffer_sizes[x] >= sz )
 				return x;
@@ -238,7 +238,7 @@ public:
 	void Init()
 	{
 		uint32 x;
-		for( x = 0; x < BUFFER_BUCKET_COUNT; x++ )
+		for( x = 0; x < BUFFER_BUCKET_COUNT; ++x )
 			m_buckets[x] = new BufferBucketNode(new BufferBucket(*this, (BUFFERPOOL_BUCKET_SIZE)x));
 	}
 
@@ -247,7 +247,7 @@ public:
 	void Destroy()
 	{
 		uint32 x;
-		for( x = 0; x < BUFFER_BUCKET_COUNT; x++ )
+		for( x = 0; x < BUFFER_BUCKET_COUNT; ++x )
 			delete m_buckets[x];
 	}
 
@@ -256,7 +256,7 @@ public:
 	void Stats()
 	{
 		uint32 x;
-		for( x = 0; x < BUFFER_BUCKET_COUNT; x++ )
+		for( x = 0; x < BUFFER_BUCKET_COUNT; ++x )
 		{
 			m_buckets[x]->m_lock.Acquire();
 			m_buckets[x]->m_bucket->Stats();
@@ -269,7 +269,7 @@ public:
 	void Optimize()
 	{
 		uint32 x;
-		for( x = 0; x < BUFFER_BUCKET_COUNT; x++ )
+		for( x = 0; x < BUFFER_BUCKET_COUNT; ++x )
 		{
 			m_buckets[x]->m_lock.Acquire();
 			m_buckets[x]->m_bucket->Optimize();

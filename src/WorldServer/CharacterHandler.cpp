@@ -1,14 +1,54 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
+
 #include "AuthCodes.h"
-#include "revision.h"
+#include "svn_revision.h"
 
 #define BUG_TRACKER "https://github.com/arcticdev/arcticdev/issues"
+
+bool VerifyName(const char * name, size_t nlen)
+{
+	const char * p;
+	size_t i;
+
+	static const char * bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\? <>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
+	static const char * allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	if(sWorld.m_limitedNames)
+	{
+		for(i = 0; i < nlen; ++i)
+		{
+			p = allowedCharacters;
+			for(; *p != 0; ++p)
+			{
+				if(name[i] == *p)
+					goto cont;
+			}
+
+			return false;
+cont:
+			continue;
+		}
+	}
+	else
+	{
+		for(i = 0; i < nlen; ++i)
+		{
+			p = bannedCharacters;
+			while(*p != 0 && name[i] != *p && name[i] != 0)
+				++p;
+
+			if(*p != 0)
+				return false;
+		}
+	}
+
+	return true;
+}
 
 bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_session)
 {
@@ -23,10 +63,10 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 			const char * pName = result->Fetch()[1].GetString();
 			size_t szLen = strlen(pName);
 
-			if( !sWorld.VerifyName(pName, szLen) )
+			if( !VerifyName(pName, szLen) )
 			{
 				printf("renaming character %s, %u\n", pName,uGuid);
-				Player* pPlayer = objmgr.GetPlayer(uGuid);
+                Player* pPlayer = objmgr.GetPlayer(uGuid);
 				if( pPlayer != NULL )
 				{
 					pPlayer->rename_pending = true;
@@ -49,7 +89,7 @@ void CapitalizeString(string& arg)
 {
 	if(arg.length() == 0) return;
 	arg[0] = toupper(arg[0]);
-	for(uint32 x = 1; x < arg.size(); x++)
+	for(uint32 x = 1; x < arg.size(); ++x)
 		arg[x] = tolower(arg[x]);
 }
 
@@ -276,7 +316,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	recv_data >> name >> race >> class_;
 	recv_data.rpos(0);
 
-	if(!sWorld.VerifyName(name.c_str(), name.length()))
+	if(!VerifyName(name.c_str(), name.length()))
 	{
 		OutPacket(SMSG_CHAR_CREATE, 1, "\x32");
 		return;
@@ -681,7 +721,8 @@ void WorldSession::FullLogin(Player* plr)
 	_player->ResetTitansGrip();
 
 	// Set TIME OF LOGIN
-	CharacterDatabase.Execute ("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
+	CharacterDatabase.Execute (
+		"UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
 
 	bool enter_world = true;
 #ifndef CLUSTERING
@@ -742,13 +783,11 @@ void WorldSession::FullLogin(Player* plr)
 			WorldPacket data(50);
 			data.Initialize(SMSG_GUILD_EVENT);
 			data << uint8(GUILD_EVENT_MOTD);
-			data << uint8(1);
-
+			data << uint8(0x01);
 			if(pGuild->GetMOTD())
 				data << pGuild->GetMOTD();
 			else
 				data << uint8(0);
-
 			SendPacket(&data);
 
 			pGuild->LogGuildEvent(GUILD_EVENT_HASCOMEONLINE, 1, plr->GetName());
@@ -764,12 +803,12 @@ void WorldSession::FullLogin(Player* plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	_player->BroadcastMessage("Server: %sArcTic r%s/%s-Windows-%s", MSG_COLOR_WHITE, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
+	_player->BroadcastMessage("Server: %ArcTic %s r%u/%s-Win-%s %s(www.wow-mod.com)", MSG_COLOR_WHITE, BUILD_TAG,
+		BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
 #else
-	_player->BroadcastMessage("Server: %sArcTic %s - %s-%s", MSG_COLOR_WHITE, PLATFORM_TEXT, ARCH);
+	_player->BroadcastMessage("Server: %ArcTic %s r%u/%s-%s %s(www.wow-mod.com)", MSG_COLOR_WHITE, BUILD_TAG,
+		BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
-	// Revision
-	_player->BroadcastMessage("Build hash: %s%s", MSG_COLOR_CYAN, BUILD_HASH_STR);
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_SEXHOTPINK, BUG_TRACKER);
 
@@ -834,7 +873,7 @@ bool ChatHandler::HandleRenameCommand(const char * args, WorldSession * m_sessio
 	if(sscanf(args, "%s %s", name1, name2) != 2)
 		return false;
 
-	if(sWorld.VerifyName(name2, strlen(name2)) == false)
+	if(VerifyName(name2, strlen(name2)) == false)
 	{
 		RedSystemMessage(m_session, "That name is invalid or contains invalid characters.");
 		return true;
@@ -914,11 +953,11 @@ void WorldSession::HandleAlterAppearance(WorldPacket & recv_data)
 	if(oldHair != newHair)
 		cost += cutcosts->val;
 
-	if((oldColour != colour) && (oldHair == newHair))
-		cost += cutcosts->val * 0.5f;
+    if((oldColour != colour) && (oldHair == newHair))
+        cost += cutcosts->val * 0.5f;
 
-	if(oldFacialHair != newFacialHair)
-		cost += cutcosts->val * 0.75f;
+    if(oldFacialHair != newFacialHair)
+        cost += cutcosts->val * 0.75f;
 
 	if(_player->GetUInt32Value(PLAYER_FIELD_COINAGE) < cost)
 	{
@@ -934,6 +973,41 @@ void WorldSession::HandleAlterAppearance(WorldPacket & recv_data)
 	_player->SetByte(PLAYER_BYTES, 3, (uint8)colour);
 	_player->SetByte(PLAYER_BYTES_2, 0, newFacialHair);
 	_player->SetStandState(0);
+}
+
+void WorldSession::HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data) 
+{
+	uint64 guid;
+	uint32 error = 0;
+
+	std::string declinedname[6];
+
+	CHECK_PACKET_SIZE(recv_data, 8+6);
+
+	recv_data >> guid;
+	for(int i = 0; i < 6; ++i)
+	{
+		recv_data >> declinedname[i];
+
+		if(declinedname[i].empty())
+			error = 1;
+
+		CharacterDatabase.EscapeString(declinedname[i]);
+	}
+
+	for(int i = 1; i < 6; ++i)
+	{
+		if( declinedname[i].size() < declinedname[0].size() )
+			error = 1;
+	}
+
+	if(!error)
+		CharacterDatabase.Query("REPLACE INTO character_declinedname (guid, genitive, dative, accusative, instrumental, prepositional) VALUES ('%u','%s','%s','%s','%s','%s')", GUID_LOPART(guid), declinedname[1].c_str(),declinedname[2].c_str(),declinedname[3].c_str(),declinedname[4].c_str(),declinedname[5].c_str());
+
+	WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT,4+8);
+	data << (uint32)error;
+	data << guid;
+	SendPacket(&data);
 }
 
 void WorldSession::HandleCharacterCustomization( WorldPacket & recv_data )
@@ -970,7 +1044,7 @@ void WorldSession::HandleCharacterCustomization( WorldPacket & recv_data )
 	string name;
 	recv_data >> name;
 
-	if(!sWorld.VerifyName(name.c_str(), name.length()))
+	if(!VerifyName(name.c_str(), name.length()))
 	{
 		uint8 err = CHAR_NAME_INVALID_CHARACTER;
 		OutPacket(SMSG_CHAR_CUSTOMIZE, 1, &err);

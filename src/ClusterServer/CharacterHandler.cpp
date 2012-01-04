@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -93,7 +93,7 @@ void Session::HandleCharacterEnum(WorldPacket & pck)
 				}
 			}
 
-			if(info) // PET INFO uint32 displayid,   uint32 level,       uint32 familyid
+			if(info)
 				data << uint32(info->Male_DisplayID) << uint32(10) << uint32(info->Family);
 			else
 				data << uint32(0) << uint32(0) << uint32(0);

@@ -1,25 +1,22 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "LogonStdAfx.h"
 #include <signal.h>
-#include "revision.h"
+#include "svn_revision.h"
 #ifndef WIN32
 #include <sys/resource.h>
 #endif
-#include "../libs/getopt.h"
+#include "../libs/Getopt.h"
 
-#define ARCTIC_BANNER "ArcTic - AuthServer %s/%s-%s (%s)"
+#define BANNER "WoWArcTic MMORPG Server :: AuthServer r%u/%s-%s-%s\n"
 
 #ifndef WIN32
 #include <sched.h>
 #endif
-
-//#include <vld.h>
-//#include <vldapi.h>
 
 // Database impl
 Database * sLogonSQL;
@@ -39,10 +36,10 @@ void _OnSignal(int s)
 	{
 #ifndef WIN32
 	case SIGHUP:
-		{
-			sLog.outString("Received SIGHUP signal, reloading accounts.");
-			AccountMgr::getSingleton().ReloadAccounts(true);
-		}break;
+	   {
+		   sLog.outString("Received SIGHUP signal, reloading accounts.");
+		   AccountMgr::getSingleton().ReloadAccounts(true);
+	   }break;
 #endif
 	case SIGINT:
 	case SIGTERM:
@@ -96,12 +93,12 @@ bool startdb()
 	bool result;
 
 	// Configure Logon Database...
-	result = Config.MainConfig.GetString("LogonDatabase", "Username", &lusername);
-	result = !result ? result : Config.MainConfig.GetString("LogonDatabase", "Password", &lpassword);
-	result = !result ? result : Config.MainConfig.GetString("LogonDatabase", "Hostname", &lhostname);
-	result = !result ? result : Config.MainConfig.GetString("LogonDatabase", "Name", &ldatabase);
-	result = !result ? result : Config.MainConfig.GetInt("LogonDatabase", "Port", &lport);
-	result = !result ? result : Config.MainConfig.GetInt("LogonDatabase", "Type", &ltype);
+	result = Config.MainConfig.GetString("AuthDatabase", "Username", &lusername);
+	result = !result ? result : Config.MainConfig.GetString("AuthDatabase", "Password", &lpassword);
+	result = !result ? result : Config.MainConfig.GetString("AuthDatabase", "Hostname", &lhostname);
+	result = !result ? result : Config.MainConfig.GetString("AuthDatabase", "Name", &ldatabase);
+	result = !result ? result : Config.MainConfig.GetInt("AuthDatabase", "Port", &lport);
+	result = !result ? result : Config.MainConfig.GetInt("AuthDatabase", "Type", &ltype);
 
 	if(result == false)
 	{
@@ -134,7 +131,7 @@ vector<AllowedIP> m_allowedModIps;
 bool IsServerAllowed(unsigned int IP)
 {
 	m_allowedIpLock.Acquire();
-	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); itr++)
+	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); ++itr)
 	{
 		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
 		{
@@ -149,7 +146,7 @@ bool IsServerAllowed(unsigned int IP)
 bool IsServerAllowedMod(unsigned int IP)
 {
 	m_allowedIpLock.Acquire();
-	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); itr++)
+	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); ++itr)
 	{
 		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
 		{
@@ -163,8 +160,11 @@ bool IsServerAllowedMod(unsigned int IP)
 
 bool Rehash()
 {
+#ifdef WIN32
 	char * config_file = "conf/AuthServer.conf";
-
+#else
+	char * config_file = (char*)CONFDIR "/conf/AuthServer.conf";
+#endif
 	if(!Config.MainConfig.SetSource(config_file))
 	{
 		printf("Config file could not be rehashed.\n");
@@ -184,7 +184,7 @@ bool Rehash()
 	m_allowedIps.clear();
 	m_allowedModIps.clear();
 	vector<string>::iterator itr;
-	for(itr = vips.begin(); itr != vips.end(); itr++)
+	for(itr = vips.begin(); itr != vips.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
@@ -210,7 +210,7 @@ bool Rehash()
 		m_allowedIps.push_back(tmp);
 	}
 
-	for(itr = vipsmod.begin(); itr != vipsmod.end(); itr++)
+	for(itr = vipsmod.begin(); itr != vipsmod.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
@@ -297,14 +297,13 @@ void LogonServer::Run(int argc, char ** argv)
 		sLog.m_fileLogLevel = -1;
 		sLog.m_screenLogLevel = 3;
 	}
-
-	Log.Color(TBLUE);
-	printf(ARCTIC_BANNER, BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
-	Log.Line();	
-	sLog.outString("==============================================================================");
-	Log.Line();
+	
+	sLog.outString("===============================================================================");
+	printf(BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	sLog.outString("===============================================================================");
+	sLog.outString("");
 	sLog.outString("The key combination <Ctrl-C> will safely shut down the server at any time.");
-
+	sLog.outString("");
 	if(do_version)
 		return;
 
@@ -322,8 +321,8 @@ void LogonServer::Run(int argc, char ** argv)
 
 		return;
 	}
+	
 
-	sLog.outString("");
 	Log.Notice("System","Initializing Random Number Generators...");
 
 	Log.Notice("Config", "Loading Config Files...");
@@ -348,6 +347,7 @@ void LogonServer::Run(int argc, char ** argv)
 	sAccountMgr.ReloadAccounts(true);
 	Log.Notice("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
 	Log.Line();
+
 
 	// Spawn periodic function caller thread for account reload every 10mins
 	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh",600);
@@ -399,7 +399,7 @@ void LogonServer::Run(int argc, char ** argv)
 #endif
 
 		/* write pid file */
-	FILE * fPid = fopen("logonserver.pid", "w");
+	FILE * fPid = fopen("logon.pid", "w");
 	if(fPid)
 	{
 		uint32 pid;
@@ -440,9 +440,9 @@ void LogonServer::Run(int argc, char ** argv)
 	signal(SIGTERM, 0);
 	signal(SIGABRT, 0);
 #ifdef _WIN32
-	signal(SIGBREAK, 0);
+        signal(SIGBREAK, 0);
 #else
-	signal(SIGHUP, 0);
+        signal(SIGHUP, 0);
 #endif
 
 	pfc->kill();
@@ -465,7 +465,7 @@ void LogonServer::Run(int argc, char ** argv)
 	ThreadPool.Shutdown();
 
 	// delete pid file
-	remove("logonserver.pid");
+	remove("logon.pid");
 
 	delete AccountMgr::getSingletonPtr();
 	delete InformationCore::getSingletonPtr();
@@ -478,6 +478,7 @@ void LogonServer::Run(int argc, char ** argv)
 
 void OnCrash(bool Terminate)
 {
+
 }
 
 void LogonServer::CheckForDeadSockets()
@@ -493,10 +494,10 @@ void LogonServer::CheckForDeadSockets()
 	{
 		it2 = itr;
 		s = (*it2);
-		itr++;
+		++itr;
 
 		diff = t - s->GetLastRecv();
-		if(diff > 240) // More than 4mins -> kill the socket.
+		if(diff > 240)		   // More than 4mins -> kill the socket.
 		{
 			_authSockets.erase(it2);
 			s->removedFromSet = true;

@@ -159,7 +159,7 @@
     <ClCompile Include="..\..\src\libs\Threading\ThreadPool.cpp">
       <Filter>Threading\Threadpool</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\libs\getopt.cpp">
+    <ClCompile Include="..\..\src\libs\Getopt.cpp">
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\libs\CallBack.cpp">
@@ -177,7 +177,7 @@
     <ClCompile Include="..\..\src\libs\StackWalker.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\libs\Utilities\Utility.cpp">
+    <ClCompile Include="..\..\src\libs\Util.cpp">
       <Filter>Util</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\libs\Log.cpp">
@@ -417,7 +417,7 @@
     <ClInclude Include="..\..\src\libs\Threading\ThreadPool.h">
       <Filter>Threading\Threadpool</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\getopt.h">
+    <ClInclude Include="..\..\src\libs\Getopt.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\ByteBuffer.h">
@@ -441,7 +441,7 @@
     <ClInclude Include="..\..\src\libs\MersenneTwister.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\AuthServer\PeriodicFunctionCall_Thread.h">
+    <ClInclude Include="..\..\src\ascent-logonserver\PeriodicFunctionCall_Thread.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\PreallocatedQueue.h">
@@ -459,8 +459,7 @@
     <ClInclude Include="..\..\src\libs\Timer.h">
       <Filter>Util</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Utilities\Utility.h">
-
+    <ClInclude Include="..\..\src\libs\Util.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\WoWGuid.h">

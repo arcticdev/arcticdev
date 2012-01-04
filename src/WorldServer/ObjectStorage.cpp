@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -82,86 +82,93 @@ void ObjectMgr::LoadProfessionDiscoveries()
 
 void ObjectMgr::LoadExtraCreatureProtoStuff()
 {
-	StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
-	CreatureProto * cn;
-	while(!itr->AtEnd())
 	{
-		cn = itr->Get();
-		if(itr->Get()->aura_string)
+		StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
+		CreatureProto * cn;
+		while(!itr->AtEnd())
 		{
-			string auras = string(itr->Get()->aura_string);
-			vector<string> aurs = StrSplit(auras, " ");
-			for(vector<string>::iterator it = aurs.begin(); it != aurs.end(); ++it)
+			cn = itr->Get();
+			if(itr->Get()->aura_string)
 			{
-				uint32 id = atol((*it).c_str());
-				if(id)
-					itr->Get()->start_auras.insert( id );
+				string auras = string(itr->Get()->aura_string);
+				vector<string> aurs = StrSplit(auras, " ");
+				for(vector<string>::iterator it = aurs.begin(); it != aurs.end(); ++it)
+				{
+					uint32 id = atol((*it).c_str());
+					if(id)
+						itr->Get()->start_auras.insert( id );
+				}
 			}
+
+			if(!itr->Get()->MinHealth)
+				itr->Get()->MinHealth = 1;
+			if(!itr->Get()->MaxHealth)
+				itr->Get()->MaxHealth = 1;
+			if (itr->Get()->AttackType > SCHOOL_ARCANE)
+				itr->Get()->AttackType = SCHOOL_NORMAL;
+
+			cn->m_canFlee = cn->m_canRangedAttack = cn->m_canCallForHelp = false;
+			cn->m_fleeHealth = 0.0f;
+			// please.... m_fleeDuration is a uint32...
+			//cn->m_fleeDuration = 0.0f;
+			cn->m_fleeDuration = 0;
+
+			if(!itr->Inc())
+				break;
 		}
 
-		if(!itr->Get()->MinHealth)
-			itr->Get()->MinHealth = 1;
-		if(!itr->Get()->MaxHealth)
-			itr->Get()->MaxHealth = 1;
-		if (itr->Get()->AttackType > SCHOOL_ARCANE)
-			itr->Get()->AttackType = SCHOOL_NORMAL;
-
-		cn->m_canFlee = cn->m_canRangedAttack = cn->m_canCallForHelp = false;
-		cn->m_fleeHealth = 0.0f;
-		// please.... m_fleeDuration is a uint32...
-		//cn->m_fleeDuration = 0.0f;
-		cn->m_fleeDuration = 0;
-
-		if(!itr->Inc())
-			break;
+		itr->Destruct();
 	}
 
-	itr->Destruct();
-
-	StorageContainerIterator<CreatureInfo> * itr2 = CreatureNameStorage.MakeIterator();
-	CreatureInfo * ci;
-	while(!itr2->AtEnd())
 	{
-		ci = itr2->Get();
+		StorageContainerIterator<CreatureInfo> * itr = CreatureNameStorage.MakeIterator();
+		CreatureInfo * ci;
+		while(!itr->AtEnd())
+		{
+			ci = itr->Get();
 
-		ci->lowercase_name = string(ci->Name);
-		for(uint32 j = 0; j < ci->lowercase_name.length(); ++j)
-			ci->lowercase_name[j] = tolower(ci->lowercase_name[j]); // Darvaleo 2008/08/15 - Copied lowercase conversion logic from ItemPrototype task
+			ci->lowercase_name = string(ci->Name);
+			for(uint32 j = 0; j < ci->lowercase_name.length(); ++j)
+				ci->lowercase_name[j] = tolower(ci->lowercase_name[j]); // Darvaleo 2008/08/15 - Copied lowercase conversion logic from ItemPrototype task
 
-		ci->gossip_script = sScriptMgr.GetDefaultGossipScript();
+			ci->gossip_script = sScriptMgr.GetDefaultGossipScript();
 
-		if(!itr2->Inc())
-			break;
+			if(!itr->Inc())
+				break;
+		}
+		itr->Destruct();
 	}
-	itr2->Destruct();
 
-	StorageContainerIterator<Quest> * itr3 = QuestStorage.MakeIterator();
-	Quest * qst;
-	while(!itr3->AtEnd())
 	{
-		qst = itr3->Get();
-		qst->pQuestScript = NULL;
+		StorageContainerIterator<Quest> * itr = QuestStorage.MakeIterator();
+		Quest * qst;
+		while(!itr->AtEnd())
+		{
+			qst = itr->Get();
+			qst->pQuestScript = NULL;
 
-		if( !itr3->Inc() )
-			break;
+			if( !itr->Inc() )
+				break;
+		}
+		itr->Destruct();
 	}
-	itr3->Destruct();
 
 	// Load AI Agents
 	if(!Config.MainConfig.GetBoolDefault("Server", "LoadAIAgents", true))
+		return;
+
+	QueryResult * result = WorldDatabase.Query( "SELECT Entry,Type+0,Chance,MaxCount,Spell,SpellType+0,TargetType+0,CoolDown,floatMisc1,Misc2 FROM ai_agents" );
+	CreatureProto * cn = NULL;
+
+	if( result != NULL )
 	{
-		QueryResult * result = WorldDatabase.Query( "SELECT Entry,Type+0,Chance,MaxCount,Spell,SpellType+0,TargetType+0,CoolDown,floatMisc1,Misc2 FROM ai_agents" );
-		CreatureProto * cn = NULL;
-
-		if( result != NULL )
+		AI_Spell *sp = NULL;
+		SpellEntry * spe = NULL;
+		uint32 entry = 0;
+		uint32 spellID = 0;
+		uint16 agent = 0;
+		uint32 counter = 0;
 		{
-			AI_Spell *sp = NULL;
-			SpellEntry * spe = NULL;
-			uint32 entry = 0;
-			uint32 spellID = 0;
-			uint16 agent = 0;
-			uint32 counter = 0;
-
 			do
 			{
 				sp = NULL;
@@ -176,7 +183,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				int32 tcd = fields[7].GetInt32();
 
 				cn = CreatureProtoStorage.LookupEntry(entry);
-				if( cn == NULL )
+				if(  cn == NULL )
 				{
 					Log.Warning("AIAgent", "Agent skipped, NPC %u does not exist.", fields[0].GetUInt32());
 					continue;
@@ -235,9 +242,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 							if (sp->spell->Attributes & ATTRIBUTES_PASSIVE) //passive skills
 							{
 								cooldown = 1000*60*60*4; //once per 4 hours :P
-							}
-							else
-							{
+							}else{
 								if( sp->spell->CastingTimeIndex )
 									cooldown = GetCastTime( dbcSpellCastTime.LookupEntry( sp->spell->CastingTimeIndex ));
 
@@ -250,9 +255,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 							{
 								Log.Warning("AIAgent","SpellId %u has no CoolDownTime in DBC. Forced to GCD.", spellID );
 								sp->cooldown=1500;
-							}
-							else
-							{
+							}else{
 								sp->cooldown=cooldown;
 							}
 						}
@@ -262,7 +265,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					case AGENT_RANGED:
 					{
 						cn->m_canRangedAttack = true;
-						cn->m_RangedAttackSpell = (spellID ? spellID : 15620);
+						cn->m_RangedAttackSpell = (spellID?spellID:15620);
 						cn->m_SpellSoundid = sp->Misc2;
 						delete sp;
 						sp = NULL;
@@ -273,8 +276,16 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					{
 						// % health 
 						cn->m_canFlee = true;
-						cn->m_fleeHealth = (sp->floatMisc1 ? sp->floatMisc1 : 100.0f);	//if left to zero, start running inmeadetely
-						cn->m_fleeDuration = (sp->Misc2 ? sp->Misc2 : 10000);
+						if(sp->floatMisc1)
+							cn->m_fleeHealth = sp->floatMisc1;
+						else //if left to zero, start running inmeadetely
+							cn->m_fleeHealth = 100.0f;
+
+						if(sp->Misc2)
+							cn->m_fleeDuration = sp->Misc2;
+						else
+							cn->m_fleeDuration = 10000;
+
 						delete sp;
 						sp = NULL;
 						counter += 1;
@@ -283,7 +294,11 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					case AGENT_CALLFORHELP:
 					{
 						cn->m_canCallForHelp = true;
-						cn->m_callForHelpHealth = (sp->floatMisc1 ? sp->floatMisc1 : 0.2f);
+						if(sp->floatMisc1)
+							cn->m_callForHelpHealth = sp->floatMisc1;
+						else
+							cn->m_callForHelpHealth = 0.2f;
+
 						delete sp;
 						sp = NULL;
 						counter += 1;
@@ -302,14 +317,14 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					cn->spells.push_back(sp);
 				sp = NULL;
 			}while( result->NextRow() );
-			delete result;
-
-			if(counter)
-				Log.Notice("AIAgent","Loaded %u ai_agents from database",counter);
-			else
-				Log.Warning("AIAgent","No ai_agents found in database");
 		}
+		if(counter)
+			Log.Notice("AIAgent","Loaded %u ai_agents from database",counter);
+		else
+			Log.Warning("AIAgent","No ai_agents found in database");
 	}
+	if(result)
+		delete result;
 }
 
 void ObjectMgr::LoadExtraItemStuff()
@@ -766,7 +781,7 @@ bool Storage_ReloadTable(const char * TableName)
 	
 	uint32 len = (uint32)strlen(TableName);
 	uint32 len2;
-	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); itr++)
+	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); ++itr)
 	{
 		len2=(uint32)itr->second.length();
 		if(!strnicmp(TableName, itr->second.c_str(), min(len,len2)))
@@ -788,7 +803,7 @@ void Storage_LoadAdditionalTables()
 	if(strs.empty())
 		return;
 
-	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); itr++)
+	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); ++itr)
 	{
 		char s1[200];
 		char s2[200];
@@ -803,3 +818,6 @@ void Storage_LoadAdditionalTables()
 		}
 	}
 }
+
+
+

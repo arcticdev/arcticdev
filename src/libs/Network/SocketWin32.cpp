@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -24,17 +24,6 @@ void Socket::WriteCallback()
 		WSABUF buf;
 		buf.len = (ULONG)writeBuffer.GetContiguiousBytes();
 		buf.buf = (char*)writeBuffer.GetBufferStart();
-
-		/*OverlappedStruct * ov = new OverlappedStruct(SOCKET_IO_EVENT_WRITE_END);
-		int r = WSASend(m_fd, &buf, 1, &w_length, flags, &ov->m_overlap, 0);
-		if(r == SOCKET_ERROR)
-		{
-			if(WSAGetLastError() != WSA_IO_PENDING)
-			{
-				DecSendLock();
-				Disconnect();
-			}
-		}*/
 
 		m_writeEvent.Mark();
 		m_writeEvent.Reset(SOCKET_IO_EVENT_WRITE_END);
@@ -69,15 +58,6 @@ void Socket::SetupReadEvent()
 	buf.len = (ULONG)readBuffer.GetSpace();
 	buf.buf = (char*)readBuffer.GetBuffer();	
 
-	// event that will trigger after data is receieved
-	/*OverlappedStruct * ov = new OverlappedStruct(SOCKET_IO_EVENT_READ_COMPLETE);
-
-	if(WSARecv(m_fd, &buf, 1, &r_length, &flags, &ov->m_overlap, 0) == SOCKET_ERROR)
-	{
-		if(WSAGetLastError() != WSA_IO_PENDING)
-			Disconnect();
-	}*/
-
 	m_readEvent.Mark();
 	m_readEvent.Reset(SOCKET_IO_EVENT_READ_COMPLETE);
 	if(WSARecv(m_fd, &buf, 1, &r_length, &flags, &m_readEvent.m_overlap, 0) == SOCKET_ERROR)
@@ -101,8 +81,7 @@ void Socket::ReadCallback(uint32 len)
 
 void Socket::AssignToCompletionPort()
 {
-	/*HANDLE h = */CreateIoCompletionPort((HANDLE)m_fd, m_completionPort, (ULONG_PTR)this, 0);
-	//__asm int 3;
+	CreateIoCompletionPort((HANDLE)m_fd, m_completionPort, (ULONG_PTR)this, 0);
 }
 
 void Socket::BurstPush()

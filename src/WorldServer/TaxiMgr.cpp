@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -225,7 +225,7 @@ void TaxiPath::SendMoveForTime(Player *riding, Player *to, uint32 time)
 			break;
 
 		*data << pn->x << pn->y << pn->z;
-		itr++;
+		++itr;
 		++nodecounter;
 	}
 	

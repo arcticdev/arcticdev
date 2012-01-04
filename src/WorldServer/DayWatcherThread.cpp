@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -463,6 +463,7 @@ void DayWatcherThread::update_arena()
 
 	objmgr.UpdateArenaTeamWeekly();
 
+	//===========================================================================
 	last_arena_time = UNIXTIME;
 	dupe_tm_pointer(localtime(&last_arena_time), &local_last_arena_time);
 	m_dirty = true;

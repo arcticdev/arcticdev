@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
+
 Mutex m_transportGuidGen;
 uint32 m_transportGuidMax = 50;
 
@@ -283,7 +284,11 @@ bool Transporter::GenerateWaypoints()
 
 WaypointIterator Transporter::GetNextWaypoint()
 {
-	return ((++mCurrentWaypoint) == m_WayPoints.end() ? m_WayPoints.begin() : mCurrentWaypoint);
+	WaypointIterator iter = mCurrentWaypoint;
+	iter++;
+	if (iter == m_WayPoints.end())
+		iter = m_WayPoints.begin();
+	return iter;
 }
 
 uint32 TimeStamp();
@@ -296,23 +301,26 @@ void Transporter::UpdatePosition()
 	
 	while (((m_timer - mCurrentWaypoint->first) % m_pathTime) >= ((mNextWaypoint->first - mCurrentWaypoint->first) % m_pathTime))
 	{
+		/*printf("%s from %u %f %f %f to %u %f %f %f\n", this->GetInfo()->Name,
+			mCurrentWaypoint->second.mapid, mCurrentWaypoint->second.x,mCurrentWaypoint->second.y,mCurrentWaypoint->second.z,
+			mNextWaypoint->second.mapid, mNextWaypoint->second.x,mNextWaypoint->second.y,mNextWaypoint->second.z);*/
+
 		mCurrentWaypoint = mNextWaypoint;
 		mNextWaypoint = GetNextWaypoint();
-		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport)
-		{
+		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport) {
+			//mCurrentWaypoint = mNextWaypoint;
+			//mNextWaypoint = GetNextWaypoint();
 			TransportPassengers(mNextWaypoint->second.mapid, GetMapId(),
 				mNextWaypoint->second.x, mNextWaypoint->second.y, mNextWaypoint->second.z);
 			break;
-		}
-		else
-		{
+		} else {
 			SetPosition(mNextWaypoint->second.x, mNextWaypoint->second.y,
 				mNextWaypoint->second.z, m_position.o, false);
 		}
 
 		if(mCurrentWaypoint->second.delayed)
 		{
-			PlaySoundToSet(5495);
+			PlaySoundToSet(5495);		// BoatDockedWarning.wav
 		}
 	}
 }
@@ -335,7 +343,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 		for(; itr != mPassengers.end();)
 		{
 			it2 = itr;
-			itr++;
+			++itr;
 
 			Player* plr = objmgr.GetPlayer(it2->first);
 			if(!plr)
@@ -368,6 +376,9 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			// Lucky bitch. Do it like on official.
 			if(plr->isDead())
 			{
+				/*plr->ResurrectPlayer(NULL);
+				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+				plr->SetUInt32Value(UNIT_FIELD_POWER1, plr->GetUInt32Value(UNIT_FIELD_MAXPOWER1));*/
 				plr->RemoteRevive();
 			}
 
@@ -393,13 +404,14 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 
 Transporter::Transporter(uint64 guid) : GameObject(guid)
 {
+
 }
 
 Transporter::~Transporter()
 {
 sEventMgr.RemoveEvents(this);
 
-	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); itr++)
+	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
 		if(itr->second->GetTypeId()==TYPEID_UNIT)
 			delete TO_CREATURE( itr->second )->m_transportPosition;
@@ -422,7 +434,8 @@ void ObjectMgr::LoadTransporters()
 	QueryResult * QR = WorldDatabase.Query("SELECT entry FROM gameobject_names WHERE type = %u", GAMEOBJECT_TYPE_MO_TRANSPORT);
 	if(!QR) return;
 
-	TransportersCount = QR->GetRowCount();
+	int64 total = QR->GetRowCount();
+	TransportersCount=total;
 	do 
 	{
 		uint32 entry = QR->Fetch()[0].GetUInt32();
@@ -434,7 +447,7 @@ void ObjectMgr::LoadTransporters()
 			pTransporter->Destructor();
 		}else
 		{
-			AddTransport(pTransporter);
+            AddTransport(pTransporter);
 
 			QueryResult * result2 = WorldDatabase.Query("SELECT * FROM transport_creatures WHERE transport_entry = %u", entry);
 			if(result2)
@@ -497,7 +510,7 @@ uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* ta
 	uint32 cnt = Object::BuildCreateUpdateBlockForPlayer(data, target);
 
 	// add all the npcs to the packet
-	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); itr++)
+	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
 		LocationVector v_offset = GetPosition();
 		v_offset.x = v_offset.x + TO_CREATURE(itr->second)->m_transportPosition->x;

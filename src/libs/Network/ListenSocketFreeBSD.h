@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -47,7 +47,7 @@ public:
         }
 
         // bind.. well attempt to.
-        int ret = ::bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
+        int ret = bind(m_socket, (const sockaddr*)&m_address, sizeof(m_address));
         if(ret != 0)
         {
             printf("Bind unsuccessful on port %u.", Port);
@@ -70,6 +70,16 @@ public:
         if(m_opened)
             Close();
     }
+
+    /*void Update()
+    {
+        aSocket = accept(m_socket, (sockaddr*)&m_tempAddress, (socklen_t*)&len);
+        if(aSocket == -1)
+            return;
+
+        dsocket = new T(aSocket);
+        dsocket->Accept(&m_tempAddress);
+    }*/
 
 	void OnAccept()
 	{

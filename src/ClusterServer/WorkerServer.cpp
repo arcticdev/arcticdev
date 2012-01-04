@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -45,7 +45,7 @@ void WServer::HandleRegisterWorker(WorldPacket & pck)
 	/* allocate initial instances for this worker */
 	sClusterMgr.AllocateInitialInstances(this, maps);
 
-	for (std::vector<uint32>::iterator itr=instancedmaps.begin(); itr!=instancedmaps.end(); itr++)
+	for (std::vector<uint32>::iterator itr=instancedmaps.begin(); itr!=instancedmaps.end(); ++itr)
 	{
 		Instance* i=new Instance;
 		i->InstanceId = 0;

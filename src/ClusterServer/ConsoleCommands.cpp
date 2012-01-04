@@ -1,11 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "RStdAfx.h"
-#include <revision.h>
+#include <svn_revision.h>
 #include <Console/BaseConsole.h>
 #include <Console/CConsole.h>
 #include "ConsoleCommands.h"

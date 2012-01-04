@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -9,8 +9,9 @@
 #include <Common.h>
 #include <Network/Network.h>
 #include <Config/ConfigEnv.h>
-#include <revision.h>
+#include <svn_revision.h>
 #include <Console/BaseConsole.h>
+
 #include "BaseConsole.h"
 #include "ConsoleCommands.h"
 

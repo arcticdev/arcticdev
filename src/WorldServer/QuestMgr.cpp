@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -106,7 +106,7 @@ uint32 QuestMgr::PlayerMeetsReqs(Player* plr, Quest* qst, bool skiplevelcheck)
 	}
 
 	// check quest level
-	if(plr->getLevel() >= (qst->quest_level + 5))
+	if( plr->getLevel() >= ( qst->max_level + 5 ) )
 		return QMGR_QUEST_CHAT;
 
 	return status;
@@ -203,7 +203,7 @@ uint8 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 			status = tmp_status;
 	}
 
-	for(itr = q_begin; itr != q_end; itr++)
+	for(itr = q_begin; itr != q_end; ++itr)
 	{
 		uint32 tmp_status = CalcQuestStatus(quest_giver, plr, *itr);	// save a call
 		if (tmp_status > status)
@@ -249,7 +249,7 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 		return 0;
 	}
 
-	for(itr = q_begin; itr != q_end; itr++)
+	for(itr = q_begin; itr != q_end; ++itr)
 	{
 		if (CalcQuestStatus(quest_giver, plr, *itr) >= QMGR_QUEST_CHAT)
 		{
@@ -556,7 +556,7 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player* plr,
 				default:
 					*data << status;
 				}
-				*data << (*it)->qst->quest_level << uint32(0);
+				*data << (*it)->qst->max_level << uint32(0);
 				*data << (*it)->qst->title;
 			}
 		}
@@ -952,7 +952,7 @@ void QuestMgr::OnQuestAccepted(Player* plr, Quest* qst, Object* qst_giver)
 
 void QuestMgr::GiveQuestTitleReward(Player* plr, Quest* qst)
 {
-	if(!qst->reward_title || qst->reward_title > PVPTITLE_END)
+	if(!qst->reward_title || qst->reward_title > TITLE_END)
 		return;
 
 	plr->SetKnownTitle(qst->reward_title, true);
@@ -1433,25 +1433,59 @@ uint32 QuestMgr::GenerateRewardMoney( Player* pl, Quest * qst )
 		return float2int32(qst->reward_money * sWorld.getRate(RATE_QUEST_MONEY));
 }
 
-uint32 QuestMgr::GenerateQuestXP(Player* plr, Quest *qst)
+uint32 QuestMgr::GenerateQuestXP(Player* plr, Quest *qst)	
 {	
 	if(qst->is_repeatable)
-		return 0;
-	{
-		if( plr->getLevel() <= qst->quest_level +  5 )
-			return qst->reward_xp;	
-		if( plr->getLevel() == qst->quest_level +  6 )
-			return (uint32)(qst->reward_xp * 0.8);
-		if( plr->getLevel() == qst->quest_level +  7 )
-			return (uint32)(qst->reward_xp * 0.6);
-		if( plr->getLevel() == qst->quest_level +  8 )
-			return (uint32)(qst->reward_xp * 0.4);
-		if( plr->getLevel() == qst->quest_level +  9 )
-		return (uint32)(qst->reward_xp * 0.2);
-	else
-		return 0;
-	}
+		return 0;	
+	{	
+  if( plr->getLevel() <= qst->max_level +  5 )
+	  return qst->reward_xp;	
+  if( plr->getLevel() == qst->max_level +  6 )
+	  return (uint32)(qst->reward_xp * 0.8);
+  if( plr->getLevel() == qst->max_level +  7 )
+	  return (uint32)(qst->reward_xp * 0.6);
+  if( plr->getLevel() == qst->max_level +  8 )
+	  return (uint32)(qst->reward_xp * 0.4);
+  if( plr->getLevel() == qst->max_level +  9 )
+	  return (uint32)(qst->reward_xp * 0.2);
+			 
+  else
+	  return 0;
+   }   
 }
+/*
+#define XP_INC 50
+#define XP_DEC 10
+#define XP_INC100 15
+#define XP_DEC100 5
+	double xp, pxp, mxp, mmx;
+
+	// hack fix
+	xp  = qst->max_level * XP_INC;
+	if(xp <= 0)
+		xp = 1;
+
+	pxp  = xp + (xp / 100) * XP_INC100;
+
+	xp   = XP_DEC;
+
+	mxp  = xp + (xp / 100) * XP_DEC100;
+
+	mmx = (pxp - mxp);
+
+	if(qst->quest_flags & QUEST_FLAG_SPEAKTO)
+		mmx *= 0.6;
+	if(qst->quest_flags & QUEST_FLAG_TIMED)
+		mmx *= 1.1;
+	if(qst->quest_flags & QUEST_FLAG_EXPLORATION)
+		mmx *= 1.2;
+
+	if(mmx < 0)
+		return 1;
+
+	mmx *= sWorld.getRate(RATE_QUESTXP);
+	return (int)mmx;*/
+
 
 void QuestMgr::SendQuestInvalid(INVALID_REASON reason, Player* plyr)
 {
@@ -1593,7 +1627,7 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 			return false;
 		}
 		
-		for(itr = q_begin; itr != q_end; itr++) 
+		for(itr = q_begin; itr != q_end; ++itr) 
 			if (sQuestMgr.CalcQuestStatus(qst_giver, plr, *itr) >= QMGR_QUEST_CHAT)
 				break;
 
@@ -1872,7 +1906,7 @@ void QuestMgr::LoadExtraQuestStuff()
 
 	it->Destruct();
 
-	for(map<uint32, set<uint32> >::iterator itr = tmp_map.begin(); itr != tmp_map.end(); itr++)
+	for(map<uint32, set<uint32> >::iterator itr = tmp_map.begin(); itr != tmp_map.end(); ++itr)
 	{
 		GameObjectInfo *inf = GameObjectNameStorage.LookupEntry(itr->first);
 		if( inf == NULL )

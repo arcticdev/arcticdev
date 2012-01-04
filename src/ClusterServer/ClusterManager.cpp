@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -75,7 +75,7 @@ Instance * ClusterMgr::GetPrototypeInstanceByMapId(uint32 MapId)
 
 	Instance* i = NULL;
 	uint32 min = 500000;
-	for (; itr != InstancedMaps.upper_bound(MapId); itr++)
+	for (; itr != InstancedMaps.upper_bound(MapId); ++itr)
 	{
 		if (itr->second->MapCount < min)
 		{
@@ -120,7 +120,7 @@ void ClusterMgr::AllocateInitialInstances(WServer * server, vector<uint32>& pref
 	vector<uint32> result;
 	result.reserve(10);
 
-	for(vector<uint32>::iterator itr = preferred.begin(); itr != preferred.end(); itr++)
+	for(vector<uint32>::iterator itr = preferred.begin(); itr != preferred.end(); ++itr)
 	{
 		if(SingleInstanceMaps[*itr] == 0)
 		{
@@ -129,7 +129,7 @@ void ClusterMgr::AllocateInitialInstances(WServer * server, vector<uint32>& pref
 	}
 	m_lock.ReleaseReadLock();
 
-	for(vector<uint32>::iterator itr = result.begin(); itr != result.end(); itr++)
+	for(vector<uint32>::iterator itr = result.begin(); itr != result.end(); ++itr)
 	{
 		CreateInstance(*itr, server);
 	}
@@ -263,7 +263,7 @@ void ClusterMgr::OnServerDisconnect(WServer* s)
 		}
 	}
 
-	for (InstanceMap::iterator itr=Instances.begin(); itr!=Instances.end(); itr++)
+	for (InstanceMap::iterator itr=Instances.begin(); itr!=Instances.end(); ++itr)
 	{
 		if (itr->second->Server == s)
 		{
@@ -278,7 +278,7 @@ void ClusterMgr::OnServerDisconnect(WServer* s)
 		}
 	}
 
-	for (std::multimap<uint32, Instance*>::iterator itr=InstancedMaps.begin(); itr!=InstancedMaps.end(); itr++)
+	for (std::multimap<uint32, Instance*>::iterator itr=InstancedMaps.begin(); itr!=InstancedMaps.end(); ++itr)
 	{
 		if (itr->second->Server == s)
 		{
