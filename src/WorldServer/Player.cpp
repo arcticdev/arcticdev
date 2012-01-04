@@ -3459,7 +3459,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetFlag(UNIT_FIELD_FLAGS_2,UNIT_FLAG2_REGENERATE_POWER); // enables automatic power regen
 	m_session->FullLogin(this);
 	if(m_session)
-		m_session->m_loggingInPlayer=NULL;
+		m_session->m_loggingInPlayer = NULL;
 
 	if( !isAlive() )
 		myCorpse = objmgr.GetCorpseByOwner(GetLowGUID());
@@ -8557,52 +8557,11 @@ void Player::BroadcastMessage(const char* Format, ...)
 	m_session->SendPacket(data);
 	delete data;
 }
-/*
-const double BaseRating []= {
-	2.5,//weapon_skill_ranged!!!!
-	1.5,//defense=comba_r_1
-	12,//dodge
-	20,//parry=3
-	5,//block=4
-	10,//melee hit
-	10,//ranged hit
-	8,//spell hit=7
-	14,//melee critical strike=8
-	14,//ranged critical strike=9
-	14,//spell critical strike=10
-	0,//
-	0,
-	0,
-	25,//resilience=14
-	25,//resil .... meaning unknown
-	25,//resil .... meaning unknown
-	10,//MELEE_HASTE_RATING=17
-	10,//RANGED_HASTE_RATING=18
-	10,//spell_haste_rating = 19???
-	2.5,//melee weapon skill==20
-	2.5,//melee second hand=21
 
-};
-*/
 float Player::CalcPercentForRating( uint32 index, uint32 rating )
 {
 	uint32 relative_index = index - (PLAYER_FIELD_COMBAT_RATING_1);
-	/*if( relative_index <= 10 || ( relative_index >= 14 && relative_index <= 21 ) )
-	{
-		double rating = (double)m_uint32Values[index];
-		int level = getLevel();
-		if( level < 10 )//this is not dirty fix -> it is from wowwiki
-			level = 10;
-		double cost;
-		if( level < 60 )
-			cost = ( double( level ) - 8.0 ) / 52.0;
-		else
-			cost = 82.0 / ( 262.0 - 3.0 *  double( level ) );
-		return float( rating / ( BaseRating[relative_index] * cost ) );
-	}
-	else
-		return 0.0f;*/
-	
+
 	uint32 level = m_uint32Values[UNIT_FIELD_LEVEL];
 	if( level > 100 )
 		level = 100;
@@ -8624,11 +8583,11 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, float X, float Y, flo
 
 bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 {
-	//abort duel if other map or new distance becomes bigger then 1600
+	// abort duel if other map or new distance becomes bigger then 1600
 	if(DuelingWith && (MapID != GetMapId() || m_position.Distance2DSq(vec) >= 1600) )		// 40
 		EndDuel(DUEL_WINNER_RETREAT);
 
-	//retrieve our bind point in case vector is 0,0,0
+	// retrieve our bind point in case vector is 0,0,0
 	if( vec.x == 0 && vec.y == 0 && vec.z == 0 )
 	{
 		vec.x = GetBindPositionX();
@@ -8644,7 +8603,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 	if(!mi)
 		return false;
 
-	//are we changing instance or map?
+	// are we changing instance or map?
 	if(InstanceID && (uint32)m_instanceId != InstanceID)
 	{
 		force_new_world = true;
@@ -8657,10 +8616,10 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 		force_new_world = true;
 	}
 
-	//We are going to another map
+	// We are going to another map
 	if(force_new_world )
 	{
-		//Do we need TBC expansion?
+		// Do we need TBC expansion?
 		if(mi->flags & WMI_INSTANCE_XPACK_01 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_01) && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 		{
 			WorldPacket msg(SMSG_MOTD, 50);
@@ -8669,7 +8628,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 			return false;
 		}
 
-		//Do we need WOTLK expansion?
+		// Do we need WOTLK expansion?
 		if(mi->flags & WMI_INSTANCE_XPACK_02 && !m_session->HasFlag(ACCOUNT_FLAG_XPACK_02))
 		{
 			WorldPacket msg(SMSG_MOTD, 50);
@@ -8682,7 +8641,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 		TO_UNIT(this)->Dismount();
 	}
 
-	//no flying outside new continents
+	// no flying outside new continents
 	if((GetShapeShift() == FORM_FLIGHT || GetShapeShift() == FORM_SWIFT) && MapID != 530 && MapID != 571 )
 		RemoveShapeShiftSpell(m_ShapeShifted);
 
@@ -8691,7 +8650,7 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 		m_UnderwaterState &= ~UNDERWATERSTATE_UNDERWATER;
 
 #ifndef CLUSTERING
-	//all set...relocate
+	// all set...relocate
 	_Relocate(MapID, vec, true, force_new_world, InstanceID);
 #else
 	if(force_new_world)
@@ -8816,10 +8775,10 @@ void Player::UpdatePvPArea()
         }
         else
         {
-            //contested territory
+            // contested territory
             if(sWorld.GetRealmType() == REALM_PVP)
             {
-                //automaticaly sets pvp flag on contested territorys.
+                // automaticaly sets pvp flag on contested territorys.
                 if(!IsPvPFlagged())
 					SetPvPFlag();
 				StopPvPTimer();

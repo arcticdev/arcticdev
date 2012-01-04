@@ -2299,15 +2299,12 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
 	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
-	data << (uint32)UNIXTIME;;
+	data << (uint32)UNIXTIME;
 	SendPacket(&data);
 }
 
 void WorldSession::HandleReadyForAccountDataTimes(WorldPacket& recv_data)
 {
-	// empty opcode
 	sLog.outDebug("WORLD: CMSG_READY_FOR_ACCOUNT_DATA_TIMES");
-
 	SendAccountDataTimes(GLOBAL_CACHE_MASK);
 }
-

@@ -395,13 +395,6 @@ void Database::thread_proc_query()
 void Database::QueueAsyncQuery(AsyncQuery * query)
 {
 	query->db = this;
-	/*if(qt == NULL)
-	{
-		query->Perform();
-		return;
-	}
-
-	qqueries_queue.push(query);*/
 	query->Perform();
 }
 

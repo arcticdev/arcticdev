@@ -1,12 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
 
-//initialiseSingleton( DayWatcherThread );
 template <> DayWatcherThread * Singleton < DayWatcherThread > :: mSingleton = 0;
 
 #ifdef WIN32

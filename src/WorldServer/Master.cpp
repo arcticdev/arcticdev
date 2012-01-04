@@ -7,7 +7,7 @@
 #include "StdAfx.h"
 #include <Console/CConsole.h>
 
-#define BANNER "WoWArcTic MMORPG Server :: WorldServerr%u/%s-%s-%s\n"
+#define BANNER "WoWArcTic MMORPG Server :: WorldServer r%u/%s-%s-%s\n"
 
 #ifndef WIN32
 #include <sched.h>

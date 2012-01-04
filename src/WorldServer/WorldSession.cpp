@@ -874,6 +874,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_SHOWING_HELM].handler = &WorldSession::HandleToggleHelmOpcode;
 	WorldPacketHandlers[CMSG_SET_TITLE].handler = &WorldSession::HandleSetVisibleRankOpcode;
 	WorldPacketHandlers[CMSG_COMPLAIN].handler = &WorldSession::HandleReportSpamOpcode;
+	WorldPacketHandlers[CMSG_WORLD_STATE_UI_TIMER_UPDATE].handler = &WorldSession::HandleWorldStateUITimerUpdate;
 
 	WorldPacketHandlers[CMSG_PET_CAST_SPELL].handler = &WorldSession::HandleAddDynamicTargetOpcode;
 
