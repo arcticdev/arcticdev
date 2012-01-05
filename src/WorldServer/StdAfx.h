@@ -41,9 +41,9 @@
 
 #include "../../dep/vc/include/zlib.h"
 
-#include "../libs/Database/DatabaseEnv.h"
-#include "../libs/Database/DBCStores.h"
-#include "../libs/Database/dbcfile.h"
+#include <DataStorage/DatabaseEnv.h>
+#include <DataStorage/DBCStores.h>
+#include <DataStorage/dbcfile.h>
 
 #include <Network/Network.h>
 

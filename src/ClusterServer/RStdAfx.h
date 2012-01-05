@@ -27,9 +27,9 @@
 
 #include "../../dep/vc/include/zlib.h"
 
-#include "../libs/Database/DatabaseEnv.h"
-#include "../libs/Database/DBCStores.h"
-#include "../libs/Database/dbcfile.h"
+#include "../libs/DataStorage/DatabaseEnv.h"
+#include "../libs/DataStorage/DBCStores.h"
+#include "../libs/DataStorage/dbcfile.h"
 #include "../libs/FastQueue.h"
 #include "../libs/Threading/RWLock.h"
 
