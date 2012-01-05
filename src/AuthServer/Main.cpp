@@ -321,7 +321,6 @@ void LogonServer::Run(int argc, char ** argv)
 
 		return;
 	}
-	
 
 	Log.Notice("System","Initializing Random Number Generators...");
 
@@ -348,7 +347,6 @@ void LogonServer::Run(int argc, char ** argv)
 	Log.Notice("AccountMgr", "%u accounts are loaded and ready.", sAccountMgr.GetCount());
 	Log.Line();
 
-
 	// Spawn periodic function caller thread for account reload every 10mins
 	int atime = Config.MainConfig.GetIntDefault("Rates", "AccountRefresh",600);
 	atime *= 1000;
@@ -360,8 +358,8 @@ void LogonServer::Run(int argc, char ** argv)
 	uint32 sport = Config.MainConfig.GetIntDefault("Listen", "ServerPort", 8093);
 	string host = Config.MainConfig.GetStringDefault("Listen", "Host", "0.0.0.0");
 	string shost = Config.MainConfig.GetStringDefault("Listen", "ISHost", host.c_str());
-	min_build = Config.MainConfig.GetIntDefault("Client", "MinBuild", 6180);
-	max_build = Config.MainConfig.GetIntDefault("Client", "MaxBuild", 6999);
+	min_build = Config.MainConfig.GetIntDefault("Client", "MinBuild", 12340);
+	max_build = Config.MainConfig.GetIntDefault("Client", "MaxBuild", 12340);
 	string logon_pass = Config.MainConfig.GetStringDefault("LogonServer", "RemotePassword", "r3m0t3b4d");
 	Sha1Hash hash;
 	hash.UpdateData(logon_pass);
@@ -399,7 +397,7 @@ void LogonServer::Run(int argc, char ** argv)
 #endif
 
 		/* write pid file */
-	FILE * fPid = fopen("logon.pid", "w");
+	FILE * fPid = fopen("conf/AuthServer.pid", "w");
 	if(fPid)
 	{
 		uint32 pid;
@@ -465,7 +463,7 @@ void LogonServer::Run(int argc, char ** argv)
 	ThreadPool.Shutdown();
 
 	// delete pid file
-	remove("logon.pid");
+	remove("conf/AuthServer.pid");
 
 	delete AccountMgr::getSingletonPtr();
 	delete InformationCore::getSingletonPtr();

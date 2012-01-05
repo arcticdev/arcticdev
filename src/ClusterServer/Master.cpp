@@ -303,7 +303,7 @@ bool Master::Run(int argc, char ** argv)
 	sLog.Init(Config.ClusterConfig.GetIntDefault("LogLevel", "File", -1),Config.ClusterConfig.GetIntDefault("LogLevel", "Screen", 1));
 
 	/* write pid file */
-	FILE * fPid = fopen( "ClusterServer.pid", "w" );
+	FILE * fPid = fopen( "conf/ClusterServer.pid", "w" );
 	if( fPid )
 	{
 		uint32 pid;
@@ -410,7 +410,7 @@ bool Master::Run(int argc, char ** argv)
 	delete console;
 
 	// remove pid
-	remove( "ClusterServer.pid" );
+	remove( "conf/ClusterServer.pid" );
 
 	Log.Notice( "Shutdown", "Shutdown complete." );
 
