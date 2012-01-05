@@ -285,7 +285,7 @@ bool Master::Run(int argc, char ** argv)
 	sLog.Init(Config.MainConfig.GetIntDefault("LogLevel", "File", -1),Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1));
 
 	/* write pid file */
-	FILE * fPid = fopen( "world.pid", "w" );
+	FILE * fPid = fopen( "conf/WorldServer.pid", "w" );
 	if( fPid )
 	{
 		uint32 pid;
@@ -457,7 +457,7 @@ bool Master::Run(int argc, char ** argv)
 	delete Player_Log;
 
 	// remove pid
-	remove("world.pid");
+	remove("conf/WorldServer.pid");
 	g_bufferPool.Destroy();
 
 	Log.Notice("Shutdown", "Shutdown complete.");
