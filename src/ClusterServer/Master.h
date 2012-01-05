@@ -9,7 +9,7 @@
 
 #include "Common.h"
 #include "Config/ConfigEnv.h"
-#include "Database/DatabaseEnv.h"
+#include "DataStorage/DatabaseEnv.h"
 #include "Getopt.h"
 
 #ifndef _VERSION

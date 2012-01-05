@@ -23,9 +23,9 @@
 
 #include "../../dep/vc/include/zlib.h"
 
-#include "../libs/Database/DatabaseEnv.h"
-#include "../libs/Database/DBCStores.h"
-#include "../libs/Database/dbcfile.h"
+#include "../libs/DataStorage/DatabaseEnv.h"
+#include "../libs/DataStorage/DBCStores.h"
+#include "../libs/DataStorage/dbcfile.h"
 
 #include "../libs/Auth/BigNumber.h"
 #include "../libs/Auth/Sha1.h"
