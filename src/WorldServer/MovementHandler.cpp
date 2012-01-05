@@ -572,10 +572,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				_player->m_sentTeleportPosition.ChangeCoords(movement_info.x, movement_info.y, movement_info.z);
 			else if(!_player->m_TransporterGUID)
 			{
-				/* just walked into a transport */
-				if(_player->IsMounted())
-					TO_UNIT(_player)->Dismount();
-
 				// vehicles, meh
 				if( _player->m_CurrentVehicle )
 					_player->m_CurrentVehicle->RemovePassenger( _player );
@@ -605,18 +601,11 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				_player->m_TransporterZ = movement_info.transZ;
 			}
 		}
-		/*float x = movement_info.x - movement_info.transX;
-		float y = movement_info.y - movement_info.transY;
-		float z = movement_info.z - movement_info.transZ;
-		Transporter* trans = _player->m_CurrentTransporter;
-		if(trans) sChatHandler.SystemMessageToPlr(_player, "Client t pos: %f %f\nServer t pos: %f %f   Diff: %f %f", x,y, trans->GetPositionX(), trans->GetPositionY(), trans->CalcDistance(x,y,z), trans->CalcDistance(movement_info.x, movement_info.y, movement_info.z));*/
 	}
 
 	/************************************************************************/
 	/* Anti-Speed Hack Checks                                               */
 	/************************************************************************/
-
-	
 
 	/************************************************************************/
 	/* Breathing System                                                     */
@@ -656,7 +645,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	{
 		if( _player->m_isMoving )
 		{
-			//printf("MOVING: FALSE (Packet %s)\n", LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
 			_player->_SpeedhackCheck();
 			_player->m_isMoving = false;
 			_player->m_startMoveTime = 0;
@@ -666,7 +654,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 	{
 		if( !_player->m_isMoving )
 		{
-			//printf("MOVING: TRUE (Packet %s)\n", LookupName( recv_data.GetOpcode(), g_worldOpcodeNames ) );
 			_player->m_isMoving = true;
 			_player->m_startMoveTime = movement_info.time;
 			_player->m_lastHeartbeatPosition.ChangeCoords(movement_info.x, movement_info.y, movement_info.z);
@@ -680,10 +667,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		_player->m_startMoveTime = _player->m_lastMoveTime;
 		_player->m_cheatEngineChances = 2;
 	}
-
-#if defined(_DEBUG)
-	//CollideInterface.setDebugPoint(movement_info.x, movement_info.y, movement_info.z, movement_info.orientation);
-#endif
 }
 
 void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
@@ -744,7 +727,6 @@ void WorldSession::HandleSetActiveMoverOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMoveSplineCompleteOpcode(WorldPacket &recvPacket)
 {
-
 }
 
 void WorldSession::HandleMountSpecialAnimOpcode(WorldPacket &recvdata)
