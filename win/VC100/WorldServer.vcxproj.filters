@@ -16,9 +16,6 @@
     <Filter Include="CreatureAI">
       <UniqueIdentifier>{dd87d09e-0d15-4c68-854b-59c235e42f97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Database, Storage">
-      <UniqueIdentifier>{916430ef-5b98-4f7d-88c8-1e548111b38a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EventableObject">
       <UniqueIdentifier>{65ff4cb9-9d08-4f0c-a455-547e612bdaea}</UniqueIdentifier>
     </Filter>
@@ -109,6 +106,9 @@
     <Filter Include="Cluster">
       <UniqueIdentifier>{e714dc72-9ccf-4a66-81c4-d6d51b22aa8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DataStorage">
+      <UniqueIdentifier>{916430ef-5b98-4f7d-88c8-1e548111b38a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp" />
@@ -167,7 +167,7 @@
       <Filter>CreatureAI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\ObjectStorage.cpp">
-      <Filter>Database, Storage</Filter>
+      <Filter>DataStorage</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\EventableObject.cpp">
       <Filter>EventableObject</Filter>
@@ -481,7 +481,7 @@
       <Filter>CreatureAI</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\ObjectStorage.h">
-      <Filter>Database, Storage</Filter>
+      <Filter>DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\EventableObject.h">
       <Filter>EventableObject</Filter>
@@ -712,7 +712,7 @@
       <Filter>EventableObject\World</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\MainServerDefines.h">
-      <Filter>Database, Storage</Filter>
+      <Filter>DataStorage</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\WorldStates.h" />
   </ItemGroup>

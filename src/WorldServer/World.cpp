@@ -147,7 +147,62 @@ World::~World()
 
 void World::Destructor()
 {
-	delete this;
+	dummyspells.clear();
+
+	Log.Notice("ObjectMgr", "~ObjectMgr()");
+	delete ObjectMgr::getSingletonPtr();
+
+	Log.Notice("LootMgr", "~LootMgr()");
+	delete LootMgr::getSingletonPtr();
+
+	Log.Notice("LfgMgr", "~LfgMgr()");
+	delete LfgMgr::getSingletonPtr();
+
+	Log.Notice("ChannelMgr", "~ChannelMgr()");
+	delete ChannelMgr::getSingletonPtr();
+
+	Log.Notice("QuestMgr", "~QuestMgr()");
+	delete QuestMgr::getSingletonPtr();
+
+	Log.Notice("WeatherMgr", "~WeatherMgr()");
+	delete WeatherMgr::getSingletonPtr();
+
+	Log.Notice("TaxiMgr", "~TaxiMgr()");
+	delete TaxiMgr::getSingletonPtr();
+
+	Log.Notice("ChatHandler", "~ChatHandler()");
+	delete ChatHandler::getSingletonPtr();
+
+	Log.Notice("CBattlegroundManager", "~CBattlegroundManager()");
+	delete CBattlegroundManager::getSingletonPtr();
+
+	Log.Notice("AuctionMgr", "~AuctionMgr()");
+	delete AuctionMgr::getSingletonPtr();
+
+	Log.Notice("WorldStateTemplateManager", "~WorldStateTemplateManager()");
+	delete WorldStateTemplateManager::getSingletonPtr();
+
+	Log.Notice("DayWatcherThread", "~DayWatcherThread()");
+	delete DayWatcherThread::getSingletonPtr();
+
+	Log.Notice("InstanceMgr", "~InstanceMgr()");
+	sInstanceMgr.Shutdown();
+
+	Log.Notice("WordFilter", "~WordFilter()");
+	delete g_characterNameFilter;
+	g_characterNameFilter = NULL;
+	delete g_chatFilter;
+	g_chatFilter = NULL;
+
+	for( AreaTriggerMap::iterator i = m_AreaTrigger.begin( ); i != m_AreaTrigger.end( ); i++ )
+		delete i->second;
+	m_AreaTrigger.clear();
+
+	eventholder = 0;
+	delete eventholder;
+	eventholder = NULL;
+
+	Storage_Cleanup();
 }
 
 WorldSession* World::FindSession(uint32 id)

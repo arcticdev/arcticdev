@@ -604,9 +604,9 @@ struct AuraCheckResponse
 
 enum AURA_CHECK_RESULT
 {
-	AURA_CHECK_RESULT_NONE				  = 1,
-	AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT   = 2,
-	AURA_CHECK_RESULT_LOWER_BUFF_PRESENT	= 3,
+	AURA_CHECK_RESULT_NONE                 = 1,
+	AURA_CHECK_RESULT_HIGHER_BUFF_PRESENT  = 2,
+	AURA_CHECK_RESULT_LOWER_BUFF_PRESENT   = 3,
 };
 
 enum CUSTOM_TIMERS
@@ -739,8 +739,6 @@ public:
 		m_duelWield = enabled;
 	}
 
-	
-
 	/// State flags are server-only flags to help me know when to do stuff, like die, or attack
 	ARCTIC_INLINE void addStateFlag(uint32 f) { m_state |= f; };
 	ARCTIC_INLINE bool hasStateFlag(uint32 f) { return (m_state & f ? true : false); }
@@ -872,7 +870,7 @@ public:
 		RemoveAura(SpellId);
 	}
 
-	//! Remove all auras
+	// Remove all auras
 	void RemoveAllAuras();
 	bool RemoveAllAuras(uint32 spellId,uint64 guid = 0); //remove stacked auras but only if they come from the same caster. Shaman purge If GUID = 0 then removes all auras with this spellid
     void RemoveAllAurasOfType(uint32 auratype);//ex:to remove morph spells
@@ -880,7 +878,7 @@ public:
 	bool RemoveAllPosAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAllNegAuraByNameHash(uint32 namehash);//required to remove weaker instances of a spell
 	bool RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel , bool HostileOnly ); // Removes all (de)buffs on unit of a specific mechanic type.
-	
+
 	void RemoveAllNegativeAuras();
 
 	Aura* FindPositiveAuraByNameHash(uint32 namehash);
@@ -895,10 +893,10 @@ public:
 	void CastSpell(Spell* pSpell);
 	void InterruptCurrentSpell();
 
-	//caller is the caster
+	// caller is the caster
 	int32 GetSpellBonusDamage(Unit* pVictim, SpellEntry *spellInfo,int32 base_dmg, bool isdot, bool healing);
 
-	//guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
+	// guardians are temporary spawn that will inherit master faction and will folow them. Apart from that they have their own mind
 	Unit* CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float angle, uint32 lvl, uint8 Slot);
 
 	uint32 m_addDmgOnce;
@@ -911,7 +909,7 @@ public:
 	uint32 m_canMove;
 
 	uint32 m_lastHauntInitialDamage;
-	
+
 	// Spell Effect Variables
 	int32 m_silenced;
 	bool m_damgeShieldsInUse;
@@ -957,12 +955,12 @@ public:
 		m_DummyAuras[namehash] = NULL;
 	}
 
-	//Custom timers
+	// Custom timers
 	uint32 m_CustomTimers[NUM_CUSTOM_TIMERS];
 
-	//Beacon of Light
-	Unit* BeaconCaster;//if we receive heal from him
-	Unit* BeaconTarget;//heal him for this same value
+	// Beacon of Light
+	Unit* BeaconCaster; // if we receive heal from him
+	Unit* BeaconTarget; // heal him for this same value
 	void RemoveBeacons();
 
 	// AIInterface
@@ -981,7 +979,7 @@ public:
 	ARCTIC_INLINE uint32 IsFeared() { return m_fearmodifiers; }
 	ARCTIC_INLINE uint32 GetResistChanceMod() { return m_resistChance; }
 	ARCTIC_INLINE void SetResistChanceMod(uint32 amount) { m_resistChance=amount; }
-	
+
 	ARCTIC_INLINE uint16 HasNoInterrupt() { return m_noInterrupt; }
 	bool setDetectRangeMod(uint64 guid, int32 amount);
 	void unsetDetectRangeMod(uint64 guid);
@@ -995,7 +993,7 @@ public:
 	float GetDamageDonePctMod(uint32 school);
 	int32 DamageTakenMod[7];
 	float DamageTakenPctMod[7];
-	//float DamageTakenPctModOnHP35; DEPRECATED, YAY!
+	// float DamageTakenPctModOnHP35; DEPRECATED, YAY!
 	float CritMeleeDamageTakenPctMod[7];
 	float CritRangedDamageTakenPctMod[7];
 	int32 RangedDamageTaken;
@@ -1012,7 +1010,7 @@ public:
 	uint32 MechanicsDispels[NUM_MECHANIC];
 	float MechanicsResistancesPCT[NUM_MECHANIC]; 
 	float ModDamageTakenByMechPCT[NUM_MECHANIC];
-	//int32 RangedDamageTakenPct; 
+	// int32 RangedDamageTakenPct; 
 
 	//SM
 	int32 * SM[SPELL_MODIFIERS][2]; // 0 = flat, 1 = percent
@@ -1059,14 +1057,14 @@ public:
 	uint32 GetResistance(uint32 type);	
 
 	uint32 m_teleportAckCounter;
-	//Vehicle
+	// Vehicle
 	uint8 m_inVehicleSeatId;
 	Vehicle* m_CurrentVehicle;
 
-	//Pet
+	// Pet
 	ARCTIC_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
 	
-	//In-Range
+	// In-Range
 	virtual void AddInRangeObject(Object* pObj);
 	virtual void OnRemoveInRangeObject(Object* pObj);
 	void ClearInRangeSet();
@@ -1236,10 +1234,10 @@ public:
 	Player* m_redirectSpellPackets;
 	void UpdateVisibility();
 
-	//! Is PVP flagged?
+	// Is PVP flagged?
 	bool IsPvPFlagged();
 	void SetPvPFlag();
-	//! Removal
+	// Removal
 	void RemovePvPFlag();
 
 	struct {
@@ -1247,15 +1245,15 @@ public:
 		uint32 max;
 	} m_soulSiphon;
 
-	//solo target auras
+	// solo target auras
 	uint32 m_hotStreakCount;
 	uint32 m_incanterAbsorption;
 	uint32 m_frozenTargetCharges;
 	uint32 m_frozenTargetId;
 	uint32 polySpell;
-	uint32 m_special_state; //flags for special states (stunned,rooted etc)
+	uint32 m_special_state; // flags for special states (stunned,rooted etc)
 	
-//	uint32 fearSpell;
+	// uint32 fearSpell;
 	CombatStatusHandler CombatStatus;
 	bool m_temp_summon;
 
@@ -1294,13 +1292,13 @@ protected:
 
 	uint32 m_H_regenTimer;
 	uint32 m_P_regenTimer;
-	uint32 m_interruptedRegenTime; //PowerInterruptedegenTimer.
-	uint32 m_state;		 // flags for keeping track of some states
-	uint32 m_attackTimer;   // timer for attack
+	uint32 m_interruptedRegenTime; // PowerInterruptedegenTimer.
+	uint32 m_state; // flags for keeping track of some states
+	uint32 m_attackTimer; // timer for attack
 	uint32 m_attackTimer_1;
 	bool m_duelWield;
 
-	/// Combat
+	// Combat
 	DeathState m_deathState;
 
 	// Stealth
@@ -1308,8 +1306,8 @@ protected:
 	uint32 m_stealthDetectBonus;	
 	
 	// DK:pet
-	//uint32 m_pet_state;
-	//uint32 m_pet_action;
+	// uint32 m_pet_state;
+	// uint32 m_pet_action;
 	uint8 m_PetTalentPointModifier;
 
 	// Spell currently casting
@@ -1320,7 +1318,7 @@ protected:
 
 	bool m_useAI;
 	bool m_spellsbusy;
-	bool can_parry;//will be enabled by block spell
+	bool can_parry; // will be enabled by block spell
 	int32 m_threatModifyer;
 	int32 m_generatedThreatModifyer;
 
@@ -1335,7 +1333,7 @@ protected:
 
 	uint32 m_charmtemp;
 
-	std::map<uint32, SpellEntry*> m_DummyAuras;
+	HM_NAMESPACE::hash_map<uint32, SpellEntry*> m_DummyAuras;
 };
 
 #endif

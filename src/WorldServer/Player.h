@@ -908,7 +908,8 @@ public:
 	void				SetQuestLogSlot(QuestLogEntry *entry, uint32 slot);
 
 	ARCTIC_INLINE void		PushToRemovedQuests(uint32 questid)	{ m_removequests.insert(questid);}
-	ARCTIC_INLINE uint32		GetFinishedDailiesCount() { return (uint32)m_finishedDailyQuests.size(); }
+	ARCTIC_INLINE uint32	GetFinishedDailiesCount() { return (uint32)m_finishedDailyQuests.size(); }
+
 	void				AddToFinishedQuests(uint32 quest_id);
 	void				AddToFinishedDailyQuests(uint32 quest_id);
 	void				EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_slot, uint32 interval);
