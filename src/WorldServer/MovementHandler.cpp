@@ -16,8 +16,6 @@
 
 uint32 TimeStamp()
 {
-	//return timeGetTime();
-
 	FILETIME ft;
 	uint64 t;
 	GetSystemTimeAsFileTime(&ft);
@@ -507,7 +505,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 			/*if player is a rogue or druid(in cat form), then apply -17 modifier to fall distance.
 			these checks need improving, low level rogue/druid should not receive this benefit*/
 			if( ( _player->getClass() == ROGUE ) || ( _player->GetShapeShift() == FORM_CAT ) )
-				falldistance -=17;
+				falldistance -= 17;
 
 			//checks that player has fallen more than 12 units, otherwise no damage will be dealt
 			//falltime check is also needed here, otherwise sudden changes in Z axis position, such as using !recall, may result in death
@@ -572,6 +570,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				_player->m_sentTeleportPosition.ChangeCoords(movement_info.x, movement_info.y, movement_info.z);
 			else if(!_player->m_TransporterGUID)
 			{
+				/* just walked into a transport */
+				if(_player->IsMounted())
+					TO_UNIT(_player)->Dismount();
+
 				// vehicles, meh
 				if( _player->m_CurrentVehicle )
 					_player->m_CurrentVehicle->RemovePassenger( _player );
