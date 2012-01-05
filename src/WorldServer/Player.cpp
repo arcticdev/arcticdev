@@ -18,7 +18,7 @@ Player::Player( uint32 guid )
 	m_objectTypeId = TYPEID_PLAYER;
 	m_valuesCount = PLAYER_END;
 	m_uint32Values = _fields;
-	memset(m_uint32Values, 0,(PLAYER_END)*sizeof(uint32));
+	memset(m_uint32Values, 0, (PLAYER_END)*sizeof(uint32));
 	m_updateMask.SetCount(PLAYER_END);
 	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_PLAYER|TYPE_UNIT|TYPE_OBJECT);
 	SetUInt32Value( OBJECT_FIELD_GUID,guid);
@@ -29,7 +29,7 @@ Player::Player( uint32 guid )
 void Player::Init()
 {
 	m_mailBox = new Mailbox( GetUInt32Value(OBJECT_FIELD_GUID) );
-	m_ItemInterface		 = new ItemInterface(TO_PLAYER(this));
+	m_ItemInterface = new ItemInterface(TO_PLAYER(this));
 	m_achievementInterface = new AchievementInterface(TO_PLAYER(this));
 
 	m_bgSlot = 0;
@@ -105,7 +105,8 @@ void Player::Init()
 	Lfgcomment = "";
 	m_flyHackChances = 5;
 
-	for(int i = 0; i < 3; i++)
+	int i;
+	for(i = 0; i < 3; i++)
 	{
 		LfgType[i] = 0;
 		LfgDungeonId[i] = 0;
@@ -116,17 +117,14 @@ void Player::Init()
 	LfmDungeonId = 0;
 	LfmType = 0;
 
-	for(int32 i = 0; i < NUM_MECHANIC; i++)
-	{
+	for(i = 0; i < NUM_MECHANIC; i++)
 		MechanicDurationPctMod[i] = 1.0f;
-	}
 
 	m_invitersGuid = 0;
 
 	m_currentMovement = MOVE_UNROOT;
 	m_isGmInvisible = false;
 
-	// DK
 	m_invitersGuid = 0;
 
 	// Trade
@@ -142,17 +140,13 @@ void Player::Init()
 	// WayPoint
 	waypointunit = NULL;
 
-	// PVP
-	// PvPTimeoutEnabled = false;
-
 	// Tutorials
-	for ( int aX = 0 ; aX < 8 ; aX++ )
-		m_Tutorials[ aX ] = 0x00;
+	memset(m_Tutorials, 0x00, sizeof(uint32)*8);
 
 	m_lootGuid = 0;
 	m_banned = false;
 
-	//Bind possition
+	// Bind possition
 	m_bind_pos_x = 0;
 	m_bind_pos_y = 0;
 	m_bind_pos_z = 0;
@@ -173,11 +167,11 @@ void Player::Init()
 
 	// Battleground
 	m_bgEntryPointMap = 0;
-	m_bgEntryPointX = 0;	
+	m_bgEntryPointX = 0;
 	m_bgEntryPointY = 0;
 	m_bgEntryPointZ = 0;
 	m_bgEntryPointO = 0;
-	for(uint32 i = 0; i < 3; ++i)
+	for(i = 0; i < 3; ++i)
 	{
 		m_bgQueueType[i] = 0;
 		m_bgQueueInstanceId[i] = 0;
@@ -187,10 +181,9 @@ void Player::Init()
 	m_bg = NULL;
 
 	m_bgHasFlag = false;
-	m_bgEntryPointInstance  = 0;
+	m_bgEntryPointInstance = 0;
 
 	// gm stuff
-	// m_invincible = false;
 	bGMTagOn = false;
 	CooldownCheat = false;
 	CastTimeCheat = false;
@@ -199,9 +192,9 @@ void Player::Init()
 	FlyCheat = false;
 
 	//FIX for professions
-	weapon_proficiency = 0x4000;//2^14
-	//FIX for shit like shirt etc
-	armor_proficiency	   = 1;
+	weapon_proficiency = 0x4000; // 2^14
+	// FIX for shit like shirt etc
+	armor_proficiency = 1;
 
 	m_bUnlimitedBreath = false;
 	m_UnderwaterState = 0;
@@ -212,7 +205,7 @@ void Player::Init()
 	m_BreathDamageTimer = 0;
 	LatencyKickTimer = 0;
 
-	//transport shit
+	// transport shit
 	m_TransporterGUID = 0;
 	m_TransporterX = 0.0f;
 	m_TransporterY = 0.0f;
@@ -232,240 +225,240 @@ void Player::Init()
 
 	m_GM_SelectedGO = NULL;
 
-	for(uint32 x = 0; x < 7; x++)
+	for(i = 0; i < 7; i++)
 	{
-		FlatResistanceModifierPos[x] = 0;
-		FlatResistanceModifierNeg[x] = 0;
-		BaseResistanceModPctPos[x] = 0;
-		BaseResistanceModPctNeg[x] = 0; 
-		ResistanceModPctPos[x] = 0;
-		ResistanceModPctNeg[x] = 0;
-		SpellDelayResist[x] = 0;
-		m_casted_amount[x] = 0;
+		FlatResistanceModifierPos[i] = 0;
+		FlatResistanceModifierNeg[i] = 0;
+		BaseResistanceModPctPos[i] = 0;
+		BaseResistanceModPctNeg[i] = 0; 
+		ResistanceModPctPos[i] = 0;
+		ResistanceModPctNeg[i] = 0;
+		SpellDelayResist[i] = 0;
+		m_casted_amount[i] = 0;
 	} 
 
-	for(uint32 a = 0; a < 6; a++)
+	int x;
+	for(i = 0; i < 6; i++)
 	{
-		for(uint32 x = 0; x < 7; x++)
+		for(x = 0; x < 7; x++)
 		{	
-			SpellDmgDoneByAttribute[a][x] = 0;
-			SpellHealDoneByAttribute[a][x] = 0;
+			SpellDmgDoneByAttribute[i][x] = 0;
+			SpellHealDoneByAttribute[i][x] = 0;
 		}
 	}
 
-		for(uint32 x = 0; x < 5; x++)
-		{
-			FlatStatModPos[x] = 0;
-			FlatStatModNeg[x] = 0;
-			StatModPctPos[x] = 0;
-			StatModPctNeg[x] = 0;
-			TotalStatModPctPos[x] = 0;
-			TotalStatModPctNeg[x] = 0;
-		}
+	for(x = 0; x < 5; x++)
+	{
+		FlatStatModPos[x] = 0;
+		FlatStatModNeg[x] = 0;
+		StatModPctPos[x] = 0;
+		StatModPctNeg[x] = 0;
+		TotalStatModPctPos[x] = 0;
+		TotalStatModPctNeg[x] = 0;
+	}
 
+	for(x = 0; x < 12; x++)
+	{
+		IncreaseDamageByType[x] = 0;
+		IncreaseDamageByTypePCT[x] = 0;
+		IncreaseCricticalByTypePCT[x] = 0;
+	}
 
-		for(uint32 x = 0; x < 12; x++)
-		{
-			IncreaseDamageByType[x] = 0;
-			IncreaseDamageByTypePCT[x] = 0;
-			IncreaseCricticalByTypePCT[x] = 0;
-		}
+	PctIgnoreRegenModifier = 0.0f;
+	m_retainedrage = 0;
+	DetectedRange = 0;
+	m_targetIcon = 0;
+	m_MountSpellId = 0;
+	bHasBindDialogOpen = false;
+	m_CurrentCharm = NULL;
+	m_CurrentTransporter = NULL;
+	m_SummonedObject = NULL;
+	m_currentLoot = 0;
+	pctReputationMod = 0;
+	roll = 0;
+	mUpdateCount = 0;
+	mCreationCount = 0;
+	bCreationBuffer.reserve(40000);
+	bUpdateBuffer.reserve(30000); // ought to be > than enough ;)
+	mOutOfRangeIds.reserve(1000);
+	mOutOfRangeIdCount = 0;
 
-		PctIgnoreRegenModifier  = 0.0f;
-		m_retainedrage = 0;
-		DetectedRange = 0;
-		m_targetIcon = 0;
-		m_MountSpellId = 0;
-		bHasBindDialogOpen = false;
-		m_CurrentCharm = NULL;
-		m_CurrentTransporter = NULL;
-		m_SummonedObject = NULL;
-		m_currentLoot = (uint64)NULL;
-		pctReputationMod = 0;
-		roll = 0;
-		mUpdateCount = 0;
-		mCreationCount = 0;
-		bCreationBuffer.reserve(40000);
-		bUpdateBuffer.reserve(30000);//ought to be > than enough ;)
-		mOutOfRangeIds.reserve(1000);
-		mOutOfRangeIdCount	  = 0;
+	bProcessPending = false;
+	memset(m_questlog, NULL, sizeof(QuestLogEntry*)*25);
 
-		bProcessPending = false;
-		for(int i = 0; i < 25; ++i)
-			m_questlog[i] = NULL;
+	CurrentGossipMenu = NULL;
 
-		CurrentGossipMenu	   = NULL;
+	ResetHeartbeatCoords();
 
-		ResetHeartbeatCoords();
+	m_AreaID = 0;
+	m_areaDBC = NULL;
+	m_actionsDirty = false;
+	rageFromDamageDealt = 0;
 
-		m_AreaID = 0;
-		m_areaDBC = NULL;
-		m_actionsDirty = false;
-		rageFromDamageDealt	 = 0;
+	m_honorToday = 0;
+	m_honorYesterday = 0;
+	m_honorPoints = 0;
+	m_killsToday = 0;
+	m_killsYesterday = 0;
+	m_killsLifetime = 0;
+	m_honorless = false;
+	m_lastSeenWeather = 0;
+	m_attacking = false;
 
-		m_honorToday = 0;
-		m_honorYesterday = 0;
-		m_honorPoints = 0;
-		m_killsToday = 0;
-		m_killsYesterday = 0;
-		m_killsLifetime = 0;
-		m_honorless = false;
-		m_lastSeenWeather = 0;
-		m_attacking = false;
+	myCorpse = NULL;
 
-		myCorpse = NULL;
+	blinked = false;
+	m_speedhackChances = 3;
+	m_explorationTimer = getMSTime();
+	linkTarget = NULL;
+	stack_cheat = false;
+	triggerpass_cheat = false;
+	m_pvpTimer = 0;
+	m_globalCooldown = 0;
+	m_lastHonorResetTime = 0;
+	memset(&mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
+	tutorialsDirty = true;
+	m_TeleportState = 1;
+	m_beingPushed = false;
+	m_FlyingAura = 0;
+	resend_speed = false;
+	rename_pending = false;
+	recustomize_pending = false;
+	titanGrip = false;
+	iInstanceType = 0;
+	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
-		blinked = false;
-		m_speedhackChances = 3;
-		m_explorationTimer = getMSTime();
-		linkTarget = NULL;
-		stack_cheat = false;
-		triggerpass_cheat = false;
-		m_pvpTimer = 0;
-		m_globalCooldown = 0;
-		m_lastHonorResetTime = 0;
-		memset(&mActions, 0, PLAYER_ACTION_BUTTON_SIZE);
-		tutorialsDirty = true;
-		m_TeleportState = 1;
-		m_beingPushed = false;
-		m_FlyingAura = 0;
-		resend_speed = false;
-		rename_pending = false;
-		recustomize_pending = false;
-		titanGrip = false;
-		iInstanceType = 0;
-		memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
+	m_comboTarget = 0;
+	m_comboPoints = 0;
 
-		m_comboTarget = 0;
-		m_comboPoints = 0;
+	SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, 0.0f);
+	SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, 0.0f);
 
-		SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER, 0.0f);
-		SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, 0.0f);
+	UpdateLastSpeeds();
 
-		UpdateLastSpeeds();
+	m_resist_critical[0] = 0;
+	m_resist_critical[1] = 0;
+	m_castFilterEnabled = false;
 
-		m_resist_critical[0]=m_resist_critical[1] = 0;
-		m_castFilterEnabled = false;
+	for (x = 0; x <3; x++)
+	{
+		m_resist_hit[x] = 0;
+		m_skipCastCheck[x] = 0;
+		m_castFilter[x] = 0;
+	}
+	for(i = 0; i < 6; ++i)
+	{
+		m_runes[i] = baseRunes[i];
+	}
+	m_maxTalentPoints = 0;
+	m_talentActiveSpec = 0;
+	m_talentSpecsCount = 1;
+	ok_to_remove = false;
+	trigger_on_stun = 0;
+	trigger_on_stun_chance = 100;
+	m_modphyscritdmgPCT = 0;
+	m_RootedCritChanceBonus = 0;
 
-		m_resist_critical[0]=m_resist_critical[1] = 0;
-		m_castFilterEnabled = false;
-		for (uint32 x =0;x<3;x++)
-		{
-			m_resist_hit[x]=0;
-			m_skipCastCheck[x] = 0;
-			m_castFilter[x] = 0;
-		}
-		for(int i = 0; i < 6; ++i)
-		{
-			m_runes[i] = baseRunes[i];
-		}
-		m_maxTalentPoints = 0;
-		m_talentActiveSpec = 0;
-		m_talentSpecsCount = 1;
-		ok_to_remove = false;
-		trigger_on_stun = 0;
-		trigger_on_stun_chance = 100;
-		m_modphyscritdmgPCT = 0;
-		m_RootedCritChanceBonus = 0;
+	for(i = 0; i < 6; i++)
+		m_runes[i] = baseRunes[i];
 
-		for(int i = 0; i < 6; ++i)
-			m_runes[i] = baseRunes[i];
+	ok_to_remove = false;
+	trigger_on_stun = 0;
+	trigger_on_stun_chance = 100;
+	m_modphyscritdmgPCT = 0;
+	m_RootedCritChanceBonus = 0;
 
-		ok_to_remove = false;
-		trigger_on_stun = 0;
-		trigger_on_stun_chance = 100;
-		m_modphyscritdmgPCT = 0;
-		m_RootedCritChanceBonus = 0;
+	m_ModInterrMRegenPCT = 0;
+	m_ModInterrMRegen = 0;
+	m_rap_mod_pct = 0;
+	m_modblockabsorbvalue = 0;
+	m_modblockvaluefromspells = 0;
+	m_summoner = 0;
+	m_summonInstanceId = 0;
+	m_summonMapId = 0;
+	m_lastMoveType = 0;
+	m_tempSummon = NULL;
+	m_spellcomboPoints = 0;
 
-		m_ModInterrMRegenPCT = 0;
-		m_ModInterrMRegen =0;
-		m_rap_mod_pct = 0;
-		m_modblockabsorbvalue = 0;
-		m_modblockvaluefromspells = 0;
-		m_summoner = m_summonInstanceId = m_summonMapId = 0;
-		m_lastMoveType = 0;
-		m_tempSummon = NULL;
-		m_spellcomboPoints = 0;
+	memset(m_pendingBattleground, NULL, sizeof(CBattleground*)*3);
 
-		for(uint8 i = 0; i < 3 ; ++i)
-			m_pendingBattleground[i] = NULL;
-
-		m_deathVision = false;
-		m_retainComboPoints = false;
-		last_heal_spell = NULL;
-		m_playerInfo = NULL;
-		m_sentTeleportPosition.ChangeCoords(999999.0f,999999.0f,999999.0f);
-		m_speedChangeCounter=1;
-		memset(&m_bgScore,0,sizeof(BGScore));
-		m_arenaPoints = 0;
-		memset(&m_spellIndexTypeTargets, 0, sizeof(uint64)*NUM_SPELL_TYPE_INDEX);
-		m_base_runSpeed = m_runSpeed;
-		m_base_walkSpeed = m_walkSpeed;
-		m_arenateaminviteguid=0;
-		m_arenaPoints=0;
-		m_honorRolloverTime=0;
-		hearth_of_wild_pct = 0;
-		raidgrouponlysent=false;
-		m_waterwalk=false;
-		m_setwaterwalk=false;
-		m_areaSpiritHealer_guid=0;
-		m_CurrentTaxiPath=NULL;
-		m_setflycheat = false;
-		m_fallDisabledUntil = 0;
-		m_lfgMatch = NULL;
-		m_lfgInviterGuid = 0;
-		m_mountCheckTimer = 0;
-		m_taxiMapChangeNode = 0;
-		m_startMoveTime = 0;
-		m_canCastSpellsWhileDead = false;
+	m_deathVision = false;
+	m_retainComboPoints = false;
+	last_heal_spell = NULL;
+	m_playerInfo = NULL;
+	m_sentTeleportPosition.ChangeCoords(999999.0f,999999.0f,999999.0f);
+	m_speedChangeCounter = 1;
+	memset(&m_bgScore, 0, sizeof(BGScore));
+	m_arenaPoints = 0;
+	memset(&m_spellIndexTypeTargets, 0, sizeof(uint64)*NUM_SPELL_TYPE_INDEX);
+	m_base_runSpeed = m_runSpeed;
+	m_base_walkSpeed = m_walkSpeed;
+	m_arenateaminviteguid = 0;
+	m_arenaPoints = 0;
+	m_honorRolloverTime = 0;
+	hearth_of_wild_pct = 0;
+	raidgrouponlysent = false;
+	m_waterwalk = false;
+	m_setwaterwalk = false;
+	m_areaSpiritHealer_guid = 0;
+	m_CurrentTaxiPath = NULL;
+	m_setflycheat = false;
+	m_fallDisabledUntil = 0;
+	m_lfgMatch = NULL;
+	m_lfgInviterGuid = 0;
+	m_mountCheckTimer = 0;
+	m_taxiMapChangeNode = 0;
+	m_startMoveTime = 0;
+	m_canCastSpellsWhileDead = false;
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
-		m_movementBuffer.reserve(5000);
+	m_movementBuffer.reserve(5000);
 #endif
 
-		m_heartbeatDisable = 0;
-		m_safeFall = 0;
-		m_noFallDamage = false;
-		z_axisposition = 0.0f;
-		m_KickDelay = 0;
-		m_speedhackCheckTimer = 0;
-		m_speedChangeInProgress = false;
-		m_passOnLoot = false;
-		m_changingMaps = true;
-		m_vampiricEmbrace = 0;
-		m_magnetAura = NULL;
-		m_lastMoveTime = 0;
-		m_lastMovementPacketTimestamp = 0;
-		m_cheatEngineChances = 2;
-		m_mageInvisibility = false;
-		mWeakenedSoul = false;
-		mForbearance = false;
-		mExhaustion = false;
-		mHypothermia = false;
-		mSated = false;
-		mAvengingWrath = true;
-		m_flyhackCheckTimer = 0;
-		m_bgFlagIneligible = 0;
-		m_moltenFuryDamageIncreasePct = 0;
-		m_insigniaTaken = false;
-		mSpellsUniqueTargets.clear();
+	m_heartbeatDisable = 0;
+	m_safeFall = 0;
+	m_noFallDamage = false;
+	z_axisposition = 0.0f;
+	m_KickDelay = 0;
+	m_speedhackCheckTimer = 0;
+	m_speedChangeInProgress = false;
+	m_passOnLoot = false;
+	m_changingMaps = true;
+	m_vampiricEmbrace = 0;
+	m_magnetAura = NULL;
+	m_lastMoveTime = 0;
+	m_lastMovementPacketTimestamp = 0;
+	m_cheatEngineChances = 2;
+	m_mageInvisibility = false;
+	mWeakenedSoul = false;
+	mForbearance = false;
+	mExhaustion = false;
+	mHypothermia = false;
+	mSated = false;
+	mAvengingWrath = true;
+	m_flyhackCheckTimer = 0;
+	m_bgFlagIneligible = 0;
+	m_moltenFuryDamageIncreasePct = 0;
+	m_insigniaTaken = false;
+	mSpellsUniqueTargets.clear();
 
-		m_wratings.clear();
-		m_QuestGOInProgress.clear();
-		m_removequests.clear();
-		m_finishedQuests.clear();
-		m_finishedDailyQuests.clear();
-		quest_spells.clear();
-		quest_mobs.clear();
-		loginauras.clear();
-		OnMeleeAuras.clear();
-		m_Pets.clear();
-		m_itemsets.clear();
-		m_channels.clear();
-		m_visibleObjects.clear();
-		mSpells.clear();
-		for(uint32 i = 0; i < 21; ++i)
-			m_WeaponSubClassDamagePct[i] = 1.0f;
+	m_wratings.clear();
+	m_QuestGOInProgress.clear();
+	m_removequests.clear();
+	m_finishedQuests.clear();
+	m_finishedDailyQuests.clear();
+	quest_spells.clear();
+	quest_mobs.clear();
+	loginauras.clear();
+	OnMeleeAuras.clear();
+	m_Pets.clear();
+	m_itemsets.clear();
+	m_channels.clear();
+	m_visibleObjects.clear();
+	mSpells.clear();
+
+	for(i = 0; i < 21; i++)
+		m_WeaponSubClassDamagePct[i] = 1.0f;
 
 	Unit::Init();
 }
@@ -737,10 +730,10 @@ bool Player::Create(WorldPacket& data )
 	uint8 powertype = myClass->power_type;
 
 	// Automatically add the race's taxi hub to the character's taximask at creation time ( 1 << (taxi_node_id-1) )
-	memset(m_taximask,0,sizeof(m_taximask));
+	memset(m_taximask, 0, sizeof(m_taximask));
 	if(class_ == DEATHKNIGHT)
 	{
-		for(uint8 i=0;i<12;++i)
+		for(uint8 i = 0; i < 12; ++i)
 			m_taximask[i] |= DKNodesMask[i];
 	}
 
@@ -821,8 +814,8 @@ bool Player::Create(WorldPacket& data )
 		SetUInt32Value(UNIT_FIELD_DISPLAYID, info->displayId - gender );
 		SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, info->displayId - gender );
 	}
-	//SetFloatValue(UNIT_FIELD_MINDAMAGE, info->mindmg );
-	//SetFloatValue(UNIT_FIELD_MAXDAMAGE, info->maxdmg );
+	// SetFloatValue(UNIT_FIELD_MINDAMAGE, info->mindmg );
+	// SetFloatValue(UNIT_FIELD_MAXDAMAGE, info->maxdmg );
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, info->attackpower );
 	SetUInt32Value(PLAYER_BYTES, ((skin) | (face << 8) | (hairStyle << 16) | (hairColor << 24)));
 	//PLAYER_BYTES_2							   GM ON/OFF	 BANKBAGSLOTS   RESTEDSTATE
@@ -1090,7 +1083,6 @@ void Player::Update( uint32 p_time )
 		else
 			m_pvpTimer -= p_time;
 	}
-
 	// BLooD_LorD: Кикаем игроков с большим пингом
 	if(m_session->_latency >= sWorld.LatencyKickMax)
 	{
@@ -1107,30 +1099,27 @@ void Player::Update( uint32 p_time )
 		LatencyKickTimer -= p_time;
 	}
 
-	if (GetMapMgr() && GetMapMgr()->IsCollisionEnabled())
+	if( GetMapMgr()->IsCollisionEnabled() && mstime >= m_mountCheckTimer )
 	{
-		if( mstime >= m_mountCheckTimer )
+		if( CollideInterface.IsIndoor( m_mapId, m_position.x, m_position.y, m_position.z ) )
 		{
-			if( CollideInterface.IsIndoor( m_mapId, m_position.x, m_position.y, m_position.z ) )
+			// Mount expired?
+			if(IsMounted())
 			{
-				// Mount expired?
-				if(IsMounted())
-				{
-					// Qiraj battletanks work everywhere on map 531
-					if (! (m_mapId == 531 && ( m_MountSpellId == 25953 || m_MountSpellId == 26054 || m_MountSpellId == 26055 || m_MountSpellId == 26056 )) )
-						TO_UNIT(this)->Dismount();
-				}
-				// Now remove all auras that are only usable outdoors (e.g. Travel form)
-				for(uint32 x=0;x<MAX_AURAS;x++)
-				{
-					if(m_auras[x] != NULL && m_auras[x]->m_spellProto && (m_auras[x]->m_spellProto->Attributes & ATTRIBUTES_ONLY_OUTDOORS))
-					{
-						RemoveAuraBySlot(x);
-					}
-				}
+				// Qiraj battletanks work everywhere on map 531
+				if (! (m_mapId == 531 && ( m_MountSpellId == 25953 || m_MountSpellId == 26054 || m_MountSpellId == 26055 || m_MountSpellId == 26056 )) )
+					TO_UNIT(this)->Dismount();
 			}
-			m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
+			// Now remove all auras that are only usable outdoors (e.g. Travel form)
+			for(uint32 x = 0; x < MAX_AURAS; x++)
+			{
+				if(m_auras[x] != NULL && m_auras[x]->m_spellProto && (m_auras[x]->m_spellProto->Attributes & ATTRIBUTES_ONLY_OUTDOORS))
+				{
+					RemoveAuraBySlot(x);
+				}
+			}	
 		}
+		m_mountCheckTimer = mstime + COLLISION_MOUNT_CHECK_INTERVAL;
 	}
 
 	if( mstime >= m_speedhackCheckTimer )
@@ -5004,50 +4993,8 @@ void Player::SetTutorialInt(uint32 intId, uint32 value)
 	tutorialsDirty = true;
 }
 
-//Player stats calculation for saving at lvl up, etc
-/*void Player::CalcBaseStats()
-{//TO_PLAYER(TO_PLAYER(this))->getClass() == HUNTER ||
-	//TODO take into account base stats at create
-	uint32 AP, RAP;
-	//Save AttAck power
-	if(getClass() == ROGUE || getClass() == HUNTER)
-	{
-		AP = GetBaseUInt32Value(UNIT_FIELD_STAT0) + GetBaseUInt32Value(UNIT_FIELD_STAT1);
-		RAP = (GetBaseUInt32Value(UNIT_FIELD_STAT1) * 2);
-		SetBaseUInt32Value(UNIT_FIELD_ATTACK_POWER, AP);
-		SetBaseUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER, RAP);
-	}
-	else
-	{
-		AP = (GetBaseUInt32Value(UNIT_FIELD_STAT0) * 2);
-		RAP = (GetBaseUInt32Value(UNIT_FIELD_STAT1) * 2);
-		SetBaseUInt32Value(UNIT_FIELD_ATTACK_POWER, AP);
-		SetBaseUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER, RAP);
-	}
-
-}*/
-
 void Player::UpdateHit(int32 hit)
 {
-   /*std::list<Affect*>::iterator i;
-	Affect::ModList::const_iterator j;
-	Affect *aff;
-	uint32 in = hit;
-	for (i = GetAffectBegin(); i != GetAffectEnd(); i++)
-	{
-		aff = *i;
-		for (j = aff->GetModList().begin();j != aff->GetModList().end(); j++)
-		{
-			Modifier mod = (*j);
-			if ((mod.GetType() == SPELL_AURA_MOD_HIT_CHANCE))
-			{
-				SpellEntry *spellInfo = sSpellStore.LookupEntry(aff->GetSpellId());
-				if (this->canCast(spellInfo))
-					in += mod.GetAmount();
-			}
-		}
-	}
-	SetHitFromSpell(in);*/
 }
 
 void Player::UpdateChances()
@@ -5409,12 +5356,24 @@ uint32 Player::SubtractRestXP(uint32 amount)
 
 void Player::AddCalculatedRestXP(uint32 seconds)
 {
+	// When a player rests in a city or at an inn they will gain rest bonus at a very slow rate. 
+	// Eight hours of rest will be needed for a player to gain one "bubble" of rest bonus. 
+	// At any given time, players will be able to accumulate a maximum of 30 "bubbles" worth of rest bonus which 
+	// translates into approximately 1.5 levels worth of rested play (before your character returns to normal rest state).
+	// Thanks to the comforts of a warm bed and a hearty meal, players who rest or log out at an Inn will 
+	// accumulate rest credit four times faster than players logged off outside of an Inn or City. 
+	// Players who log out anywhere else in the world will earn rest credit four times slower.
+	// http://www.worldofwarcraft.com/info/basics/resting.html
+
+
 	// Define xp for a full bar ( = 20 bubbles)
 	uint32 xp_to_lvl = uint32(lvlinfo->XPToNextLevel);
 
 	// get RestXP multiplier from config.
 	float bubblerate = sWorld.getRate(RATE_RESTXP);
 
+	// One bubble (5% of xp_to_level) for every 8 hours logged out.
+	// if multiplier RestXP (from conf/WorldServer.conf) is f.e 2, you only need 4hrs/bubble.
 	uint32 rested_xp = uint32(0.05f * xp_to_lvl * ( seconds / (3600 * ( 8 / bubblerate))));
 
 	// if we are at a resting area rest_XP goes 4 times faster (making it 1 bubble every 2 hrs)
@@ -8638,7 +8597,8 @@ bool Player::SafeTeleport(uint32 MapID, uint32 InstanceID, LocationVector vec)
 		}
 		
 		// Dismount
-		TO_UNIT(this)->Dismount();
+		if(this->IsMounted())
+			this->Dismount();
 	}
 
 	// no flying outside new continents
@@ -8751,7 +8711,7 @@ void Player::UpdatePvPArea()
 	}
 	else
 	{
-        //Enemy city check
+        // Enemy city check
         if(m_areaDBC->AreaFlags & AREA_CITY_AREA || m_areaDBC->AreaFlags & AREA_CITY)
         {
             if((m_areaDBC->category == AREAC_ALLIANCE_TERRITORY && GetTeam() == 1) || (m_areaDBC->category == AREAC_HORDE_TERRITORY && GetTeam() == 0) ||
@@ -8797,7 +8757,7 @@ void Player::UpdatePvPArea()
 		}
 	}
 
-	if(m_areaDBC->AreaFlags & AREA_PVP_ARENA)			/* ffa pvp arenas will come later */
+	if(m_areaDBC->AreaFlags & AREA_PVP_ARENA) /* ffa pvp arenas will come later */
 	{
 		if(!IsPvPFlagged()) SetPvPFlag();
 
@@ -8836,7 +8796,7 @@ void Player::LoginPvPSetup()
 		// Honorless target at 1st entering world. 
 		CastSpell(TO_UNIT(this), PLAYER_HONORLESS_TARGET_SPELL, true);
 
-		//initialise BG
+		// initialise BG
 		if(GetMapMgr() && GetMapMgr()->m_battleground != NULL && !GetMapMgr()->m_battleground->HasStarted())
 			GetMapMgr()->m_battleground->OnAddPlayer(this);
 	}
@@ -8985,7 +8945,7 @@ void Player::CompleteLoading()
 
 	ApplySpec(m_talentActiveSpec, true);
 
-	if(!isDead())//only add aura's to the living (death aura set elsewhere)
+	if(!isDead()) // only add aura's to the living (death aura set elsewhere)
 	{
 		std::list<LoginAura>::iterator i,i2;
 		for(i =  loginauras.begin();i!=loginauras.end();)
@@ -8995,13 +8955,13 @@ void Player::CompleteLoading()
 			// this stuff REALLY needs to be fixed - Burlex
 			SpellEntry * sp = dbcSpell.LookupEntry((*i2).id);
 
-			//do not load auras that only exist while pet exist. We should recast these when pet is created anyway
+			// do not load auras that only exist while pet exist. We should recast these when pet is created anyway
 			if ( sp->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET )
 				continue;
 
 			Aura* a = NULL;
 			a = (new Aura(sp,(*i2).dur,TO_OBJECT(this),TO_UNIT(this)));
-			for(uint32 x =0;x<3;x++)
+			for(uint32 x = 0; x < 3; x++)
 			{
 				if(sp->Effect[x]==SPELL_EFFECT_APPLY_AURA)
 					a->AddMod(sp->EffectApplyAuraName[x],sp->EffectBasePoints[x]+1,sp->EffectMiscValue[x],x);
@@ -9019,7 +8979,7 @@ void Player::CompleteLoading()
 	// this needs to be after the cast of passive spells, because it will cast ghost form, after the remove making it in ghost alive, if no corpse.
 
 	if(iActivePet)
-		SpawnPet(iActivePet);	   // only spawn if >0
+		SpawnPet(iActivePet); // only spawn if >0
 
 	// Banned
 	if(IsBanned())
@@ -9047,7 +9007,7 @@ void Player::CompleteLoading()
 
 void Player::OnWorldPortAck()
 {
-	//only rezz if player is porting to a instance portal
+	// only rezz if player is porting to a instance portal
 	MapInfo *pPMapinfo = NULL;
 	pPMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
 
@@ -9064,8 +9024,6 @@ void Player::OnWorldPortAck()
 			welcome_msg += ". ";
 			if(pPMapinfo->type != INSTANCE_NONRAID && m_mapMgr->pInstance)
 			{
-				/*welcome_msg += "This instance is scheduled to reset on ";
-				welcome_msg += asctime(localtime(&m_mapMgr->pInstance->m_expiration));*/
 				welcome_msg += "This instance is scheduled to reset on ";
 				welcome_msg += ConvertTimeStampToDataTime((uint32)m_mapMgr->pInstance->m_expiration);
 			}
@@ -9094,19 +9052,19 @@ void Player::ModifyBonuses(uint32 type,int32 val)
 			FlatStatModPos[1] += val;
 			CalcStat( 1 );
 			break;
-		case STRENGTH: //modify strength
+		case STRENGTH: // modify strength
 			FlatStatModPos[0] += val;
 			CalcStat( 0 );
 			break;
-		case INTELLECT: //modify intellect 
+		case INTELLECT: // modify intellect 
 			FlatStatModPos[3] += val;
 			CalcStat( 3 );
 			break;
-		 case SPIRIT: //modify spirit
+		 case SPIRIT: // modify spirit
 			FlatStatModPos[4] += val;
 			CalcStat( 4 );
 			break;
-		case STAMINA: //modify stamina
+		case STAMINA: // modify stamina
 			FlatStatModPos[2] += val;
 			CalcStat( 2 );
 			break;
@@ -9182,33 +9140,33 @@ void Player::ModifyBonuses(uint32 type,int32 val)
 			}break;
 		case MELEE_HASTE_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HASTE, val );//melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HASTE, val ); // melee
 			}break;
 		case RANGED_HASTE_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HASTE, val );//ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HASTE, val ); // ranged
 			}break;
 		case SPELL_HASTE_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HASTE, val );//spell
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HASTE, val ); // spell
 			}break;
 		case HIT_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT, val );//melee
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT, val );//ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT, val ); // melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT, val ); // ranged
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT, val );
 			}break;
 		case CRITICAL_STRIKE_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_CRIT, val );//melee
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_CRIT, val );//ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_CRIT, val ); // melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_CRIT, val ); // ranged
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_CRIT, val );
 			}break;
-		case HIT_AVOIDANCE_RATING:// this is guessed based on layout of other fields
+		case HIT_AVOIDANCE_RATING: // this is guessed based on layout of other fields
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val );//melee
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val );//ranged
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val );//spell
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HIT_AVOIDANCE, val ); // melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HIT_AVOIDANCE, val ); // ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HIT_AVOIDANCE, val ); // spell
 			}break;
 		case CRITICAL_AVOIDANCE_RATING:
 			{
@@ -9220,14 +9178,14 @@ void Player::ModifyBonuses(uint32 type,int32 val)
 			}break;
 		case RESILIENCE_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE, val );//melee
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_CRIT_RESILIENCE, val );//ranged
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE, val );//spell
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_CRIT_RESILIENCE, val ); // melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_CRIT_RESILIENCE, val ); // ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_CRIT_RESILIENCE, val ); // spell
 			}break;
 		case HASTE_RATING:
 			{
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HASTE, val );//melee
-				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HASTE, val );//ranged
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_MELEE_HASTE, val ); // melee
+				ModUnsigned32Value( PLAYER_RATING_MODIFIER_RANGED_HASTE, val ); // ranged
 				ModUnsigned32Value( PLAYER_RATING_MODIFIER_SPELL_HASTE, val );
 			}break;
 		case ATTACK_POWER:
@@ -9245,7 +9203,7 @@ void Player::ModifyBonuses(uint32 type,int32 val)
 			}break;
 		case SPELL_HEALING_DONE:
 			{
-				for(uint32 school=1;school < 7; ++school)
+				for(uint32 school = 1; school < 7; ++school)
 				{
 					HealDoneMod[school] += val;
 				}
@@ -9253,7 +9211,7 @@ void Player::ModifyBonuses(uint32 type,int32 val)
 			}break;
 		case SPELL_DAMAGE_DONE:
 			{
-				for(uint32 school=1;school < 7; ++school)
+				for(uint32 school = 1; school < 7; ++school)
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
 				}
@@ -9268,7 +9226,7 @@ void Player::ModifyBonuses(uint32 type,int32 val)
 			}break;
 		case SPELL_POWER:
 			{
-				for(uint32 school=1;school < 7; ++school)
+				for(uint32 school = 1; school < 7; ++school)
 				{
 					ModUnsigned32Value( PLAYER_FIELD_MOD_DAMAGE_DONE_POS + school, val );
 					HealDoneMod[school] += val;
@@ -9296,8 +9254,8 @@ void Player::SaveAuras(stringstream &ss)
 {
    
 	// Add player auras
-//	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	// for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL)
 		{
@@ -9357,7 +9315,7 @@ void Player::SaveAuras(stringstream &ss)
 			if( aur->m_spellProto->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP) // To prevent food/drink bug
 				skip = true;
 
-			//disabled proc spells until proper loading is fixed. Some spells tend to block or not remove when restored
+			// disabled proc spells until proper loading is fixed. Some spells tend to block or not remove when restored
 			if(aur->GetSpellProto()->procFlags)
 			{
 				skip = true;
@@ -9367,7 +9325,7 @@ void Player::SaveAuras(stringstream &ss)
 			{
 				skip = true;
 			}
-			//we are going to cast passive spells anyway on login so no need to save auras for them
+			// we are going to cast passive spells anyway on login so no need to save auras for them
             if(aur->IsPassive())
 				skip = true;
 
@@ -9384,7 +9342,7 @@ void Player::SetShapeShift(uint8 ss)
 	uint8 old_ss = GetByte( UNIT_FIELD_BYTES_2, 3 );
 	SetByte( UNIT_FIELD_BYTES_2, 3, ss );
 
-	//remove auras that we should not have
+	// remove auras that we should not have
 	for( uint32 x = 0; x < MAX_AURAS + MAX_PASSIVE_AURAS; x++ )
 	{
 		if( m_auras[x] != NULL )
@@ -9409,9 +9367,9 @@ void Player::SetShapeShift(uint8 ss)
 				{
 					switch( m_auras[x]->GetSpellProto()->EffectApplyAuraName[y])
 					{
-					case SPELL_AURA_MOD_ROOT: //Root
-					case SPELL_AURA_MOD_DECREASE_SPEED: //Movement speed
-					case SPELL_AURA_MOD_CONFUSE:  //Confuse (polymorph)
+					case SPELL_AURA_MOD_ROOT: // Root
+					case SPELL_AURA_MOD_DECREASE_SPEED: // Movement speed
+					case SPELL_AURA_MOD_CONFUSE: // Confuse (polymorph)
 						{
 							RemoveAuraBySlot(x);
 						}
@@ -9478,18 +9436,11 @@ void Player::CalcDamage()
 		if(IsInFeralForm())
 		{
 			uint32 lev = getLevel();
-			/*if(ss==FORM_CAT)
-				r = delta + ap_bonus * 1000.0;
-			else
-				r = delta + ap_bonus * 2500.0;*/
 
 			if(ss == FORM_CAT)
 				r = lev + delta + ap_bonus * 1000.0f;
 			else
 				r = lev + delta + ap_bonus * 2500.0f;
-			
-			//SetFloatValue(UNIT_FIELD_MINDAMAGE,r);
-			//SetFloatValue(UNIT_FIELD_MAXDAMAGE,r);
 
 			r *= 0.9f;
 			r *= 1.1f;
@@ -9573,13 +9524,12 @@ void Player::CalcDamage()
 
 /////////////second hand end
 ///////////////////////////RANGED
-		cr=0;
+		cr = 0;
 		if((it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED)))
 		{
-			if(it->GetProto()->SubClass != 19)//wands do not have bonuses from RAP & ammo
+			if(it->GetProto()->SubClass != 19) // wands do not have bonuses from RAP & ammo
 			{
-//				ap_bonus = (GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER)+(int32)GetUInt32Value(UNIT_FIELD_RANGED_ATTACK_POWER_MODS))/14000.0;
-				//modified by Zack : please try to use premade functions if possible to avoid forgetting stuff
+				// modified by Zack : please try to use premade functions if possible to avoid forgetting stuff
 				ap_bonus = GetRAP()/14000.0f;
 				bonus = ap_bonus*it->GetProto()->Delay;
 				
@@ -9591,7 +9541,7 @@ void Player::CalcDamage()
 						bonus+=((xproto->Damage[0].Min+xproto->Damage[0].Max)*it->GetProto()->Delay)/2000.0f;
 					}
 				}
-			}else bonus =0;
+			}else bonus = 0;
 			
 			r = BaseRangedDamage[0]+delta+bonus;
 			r *= tmp;
@@ -9613,19 +9563,6 @@ void Player::CalcDamage()
 		}
 		SetUInt32Value( PLAYER_RATING_MODIFIER_RANGED_SKILL, cr );
 
-/////////////////////////////////RANGED end
-
-	/*	//tmp = 1;
-		tmp = 0;
-		for(i = damagedone.begin();i != damagedone.end();i++)
-		if(i->second.wclass==(uint32)-1)  //any weapon
-			tmp += i->second.value/100.0f;
-		
-		//display only modifiers for any weapon
-
-		// OMG?
-		ModFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT ,tmp);*/
- 
 }
 
 uint32 Player::GetMainMeleeDamage(uint32 AP_owerride)
@@ -9779,13 +9716,7 @@ void Player::removeSoulStone()
 }
 
 void Player::SoftDisconnect()
-{/*
-      sEventMgr.RemoveEvents(TO_PLAYER(this), EVENT_PLAYER_SOFT_DISCONNECT);
-	  WorldSession *session=GetSession();
-      session->LogoutPlayer(true);
-	  session->Disconnect();*/
-
-	// NOOB NOOB BIG BIG NOOB NOOB
+{
 	m_session->Disconnect();
 }
 
@@ -9999,7 +9930,6 @@ void Player::RemoveFromBattlegroundQueue(uint32 queueSlot, bool forced)
 #ifdef CLUSTERING
 void Player::EventRemoveAndDelete()
 {
-
 }
 #endif
 
@@ -10034,21 +9964,21 @@ void Player::_AddSkillLine(uint32 SkillLine, uint32 Curr_sk, uint32 Max_sk)
 		m_skills.insert( make_pair( SkillLine, inf ) );
 		_UpdateSkillFields();
 	}
-	//Add to proficiency
+	// Add to proficiency
 	if((prof=(ItemProf *)GetProficiencyBySkill(SkillLine)))
 	{
 		packetSMSG_SET_PROFICICENCY pr;
 		pr.ItemClass = prof->itemclass;
-		if(prof->itemclass==4)
+		if(prof->itemclass == 4)
 		{
 				armor_proficiency|=prof->subclass;
-				//SendSetProficiency(prof->itemclass,armor_proficiency);
+				// SendSetProficiency(prof->itemclass,armor_proficiency);
 				pr.Profinciency = armor_proficiency;
 		}
 		else
 		{
 				weapon_proficiency|=prof->subclass;
-				//SendSetProficiency(prof->itemclass,weapon_proficiency);
+				// SendSetProficiency(prof->itemclass,weapon_proficiency);
 				pr.Profinciency = weapon_proficiency;
 		}
 		m_session->OutPacket( SMSG_SET_PROFICIENCY, sizeof( packetSMSG_SET_PROFICICENCY ), &pr );
@@ -10282,13 +10212,13 @@ void Player::_UpdateMaxSkillCounts()
 			}
 		}
 
-		//Update new max, forced to be within limits
+		// Update new max, forced to be within limits
 		itr->second.MaximumValue = new_max > 450 ? 450 : new_max < 1 ? 1 : new_max;
 
-		//Check if current is below nem max, if so, set new current to new max
+		// Check if current is below nem max, if so, set new current to new max
 		itr->second.CurrentValue = itr->second.CurrentValue > new_max ? new_max : itr->second.CurrentValue;
 	}
-	//Always update client to prevent cached data messing up things later.
+	// Always update client to prevent cached data messing up things later.
 	_UpdateSkillFields();
 }
 
@@ -10424,7 +10354,7 @@ void Player::_AdvanceAllSkills(uint32 count)
 			itr->second.CurrentValue += count;
 			if(itr->second.CurrentValue >= itr->second.MaximumValue)
 				itr->second.CurrentValue = itr->second.MaximumValue;
-			dirty=true;
+			dirty = true;
 		}
 	}
 
@@ -12011,7 +11941,9 @@ void Player::GenerateLoot(Corpse* pCorpse)
 	pCorpse->m_loot.gold = 500;
 		
 	if( m_bg != NULL )
+	{
 		m_bg->HookGenerateLoot(TO_PLAYER(this), pCorpse);
+	}
 }
 
 uint32 Player::GetMaxPersonalRating()
@@ -12108,10 +12040,7 @@ void Player::CheckSpellUniqueTargets(SpellEntry *sp, uint64 guid)
 
 bool Player::HasBattlegroundQueueSlot()
 {
-	if( m_bgIsQueued[0] &&  m_bgIsQueued[1] && m_bgIsQueued[2] )
-		return false;
-
-	return true;
+	return !(m_bgIsQueued[0] &&  m_bgIsQueued[1] && m_bgIsQueued[2]);
 }
 
 uint32 Player::GetBGQueueSlot()
@@ -12414,13 +12343,13 @@ void Player::SetTaximaskNode(uint32 nodeidx, bool Unset)
 	uint32 submask = 1<<((nodeidx-1)%32);
 	if(Unset)
 	{
-		//We have this node allready? Remove it
+		// We have this node allready? Remove it
 		if ((GetTaximask(field)& submask) == submask)  
 			SetTaximask(field,(GetTaximask(field)& ~submask));
 	}
 	else
 	{
-		//We don't have this node allready? Add it.
+		// We don't have this node allready? Add it.
 		if ((GetTaximask(field)& submask) != submask)  
 			SetTaximask(field,(GetTaximask(field)|submask));
 	}

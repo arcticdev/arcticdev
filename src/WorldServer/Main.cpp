@@ -40,14 +40,14 @@ int unix_main(int argc, char ** argv)
 
 #else
 
-int win32_main( int argc, char ** argv )
+int win32_main(int argc, char ** argv)
 {
-	SetThreadName( "Main Thread" );
+	SetThreadName("Main Thread");
 	StartCrashHandler();
 
 	THREAD_TRY_EXECUTION
 	{
-		sMaster.Run( argc, argv );
+		sMaster.Run(argc, argv);
 	}
 	THREAD_HANDLE_CRASH;
 	exit( 0 );

@@ -2303,6 +2303,19 @@ void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 	SendPacket(&data);
 }
 
+void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )
+{
+	if(!_player->IsInWorld())
+	{
+		SKIP_READ_PACKET(recv_data);
+		return;
+	}
+
+	uint64 guid;
+	recv_data >> guid;
+	GameObject* gameobj = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
+}
+
 void WorldSession::HandleReadyForAccountDataTimes(WorldPacket& recv_data)
 {
 	sLog.outDebug("WORLD: CMSG_READY_FOR_ACCOUNT_DATA_TIMES");

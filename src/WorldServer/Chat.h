@@ -129,7 +129,6 @@ enum Languages
 #define CHECKSESSION if(m_session == NULL) return NULL; \
 	if(m_session->GetPlayer() == NULL) return NULL;
 
-
 class ChatCommand
 {
 public:
@@ -482,7 +481,7 @@ protected:
 	bool HandleLookupObjectCommand(const char * args, WorldSession * m_session);
 	bool HandleLookupSpellCommand(const char * args, WorldSession * m_session);
 
-	//bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
+	// bool HandleReloadScriptsCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcPossessCommand(const char * args, WorldSession * m_session);
 	bool HandleNpcUnPossessCommand(const char * args, WorldSession * m_session);
 	bool HandleRehashCommand(const char * args, WorldSession * m_session);
@@ -506,6 +505,7 @@ protected:
 	bool HandleQuestSpawnCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStartCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStatusCommand(const char * args, WorldSession * m_session);
+	bool HandleResetDailiesCommand(const char *args ,WorldSession *m_session);
 
 	/* ai agent debug commands */
 	bool HandleAIAgentDebugBegin(const char * args, WorldSession * m_session);
@@ -544,7 +544,6 @@ protected:
 
 	bool HandleDebugRetroactiveQuestAchievements(const char *args, WorldSession *m_session);
 };
-
 
 #define sChatHandler ChatHandler::getSingleton()
 #endif

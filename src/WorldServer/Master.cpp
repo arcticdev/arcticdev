@@ -9,6 +9,9 @@
 
 #define BANNER "WoWArcTic MMORPG Server :: WorldServer r%u/%s-%s-%s\n"
 
+static const char* default_config_file = "conf/WorldServer.conf";
+static const char* default_realm_config_file = "conf/Realms.conf";
+
 #ifndef WIN32
 #include <sched.h>
 #endif
@@ -76,14 +79,6 @@ struct Addr
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
-#ifdef WIN32
-        static const char* default_config_file = "conf/WorldServer.conf";
-        static const char* default_realm_config_file = "conf/Realms.conf";
-#else
-        static const char* default_config_file = CONFDIR "/conf/WorldServer.conf";
-        static const char* default_realm_config_file = CONFDIR "/conf/Realms.conf";
-#endif
-
 bool bServerShutdown = false;
 bool StartConsoleListener();
 void CloseConsoleListener();
@@ -140,7 +135,7 @@ bool Master::Run(int argc, char ** argv)
 	/* set new log levels if used as argument*/
 	if( screen_log_level != (int)DEF_VALUE_NOT_SET )
 		sLog.SetScreenLoggingLevel(screen_log_level);
-	
+
 	if( file_log_level != (int)DEF_VALUE_NOT_SET )
 		sLog.SetFileLoggingLevel(file_log_level);
 
@@ -176,9 +171,8 @@ bool Master::Run(int argc, char ** argv)
 		return true;
 	}
 
-	//use these log_level until we are fully started up.
+	// use these log_level until we are fully started up.
 	sLog.Init(-1, 3);
-
 #ifndef WIN32
 	if(geteuid() == 0 || getegid() == 0)
 		Log.LargeErrorMessage( LARGERRORMESSAGE_WARNING, "You are running ArcTic as root.", "This is not needed, and may be a possible security risk.", "It is advised to hit CTRL+C now and", "start as a non-privileged user.", NULL);
@@ -250,7 +244,7 @@ bool Master::Run(int argc, char ** argv)
 
 	g_bufferPool.Init();
 	sWorld.SetStartTime((uint32)UNIXTIME);
-	
+
 	WorldRunnable * wr = new WorldRunnable();
 	ThreadPool.ExecuteTask(wr);
 
@@ -284,10 +278,8 @@ bool Master::Run(int argc, char ** argv)
 	else
 		DEBUG_LOG("RemoteConsole", "Not enabled or failed listen.");
 
-	
 	LoadingTime = getMSTime() - LoadingTime;
 	Log.Success("Server","Ready for connections. Startup time: %ums\n", LoadingTime );
-	
 
 	//Update sLog to obey config setting
 	sLog.Init(Config.MainConfig.GetIntDefault("LogLevel", "File", -1),Config.MainConfig.GetIntDefault("LogLevel", "Screen", 1));
@@ -336,7 +328,7 @@ bool Master::Run(int argc, char ** argv)
 		if(! ((++loopcounter) % 10000) )		// 5mins
 		{
 			ThreadPool.ShowStats();
-			ThreadPool.IntegrityCheck();//Checks if THREAD_RESERVE is met
+			ThreadPool.IntegrityCheck(); // Checks if THREAD_RESERVE is met
 			g_bufferPool.Optimize();
 		}
 
@@ -356,21 +348,21 @@ bool Master::Run(int argc, char ** argv)
 		if( 50 > etime )
 		{
 #ifdef WIN32
-			WaitForSingleObject( hThread, 50 - etime );
+			WaitForSingleObject(hThread, 50 - etime);
 #else
-			Sleep( 50 - etime );
+			Sleep(50 - etime);
 #endif
 		}
 	}
 
 	// begin server shutdown
-	Log.Notice( "Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( (uint32)UNIXTIME).c_str() );
+	Log.Notice("Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( (uint32)UNIXTIME).c_str());
 	bServerShutdown = true;
 
 	_UnhookSignals();
 
     wr->Terminate();
-	
+
 	/* Shut down console system */
 	CloseConsoleListener();
 	console->terminate();
@@ -378,22 +370,20 @@ bool Master::Run(int argc, char ** argv)
 
 	if( lootmgr.is_loading )
 	{
-		Log.Notice( "Shutdown", "Waiting for loot to finish loading..." );
+		Log.Notice("Shutdown", "Waiting for loot to finish loading...");
 		while( lootmgr.is_loading )
 			Sleep( 100 );
 	}
 
-
-	Log.Notice( "CharacterLoaderThread", "Exiting..." );
+	Log.Notice("CharacterLoaderThread", "Exiting...");
 	ctl->Terminate();
 	ctl = NULL;
-
 
 	sWorld.LogoutPlayers(); //(Also saves players).
 	CharacterDatabase.Execute("UPDATE characters SET online = 0");
 
 	// send a query to wake it up if its inactive
-	Log.Notice( "Database", "Clearing all pending queries..." );
+	Log.Notice("Database", "Clearing all pending queries...");
 
 	// kill the database thread first so we don't lose any queries/data
 	CharacterDatabase.EndThreads();
@@ -415,12 +405,13 @@ bool Master::Run(int argc, char ** argv)
 #endif
 	sSocketMgr.CloseAll();
 
-	Log.Notice("AddonMgr", "~AddonMgr()");
 	sAddonMgr.SaveToDB();
+	Log.Notice("AddonMgr", "~AddonMgr()");
 	delete AddonMgr::getSingletonPtr();
 
 	Log.Notice("AuctionMgr", "~AuctionMgr()");
 	delete AuctionMgr::getSingletonPtr();
+
 	Log.Notice("LootMgr", "~LootMgr()");
 	delete LootMgr::getSingletonPtr();
 
@@ -437,21 +428,21 @@ bool Master::Run(int argc, char ** argv)
 
 	delete LogonCommHandler::getSingletonPtr();
 
-	Log.Notice( "World", "~World()" );
-	//delete World::getSingletonPtr();
-	World::getSingletonPtr()->Destructor();
-
+	Log.Notice("World", "~World()");
+	// delete World::getSingletonPtr();
+	// World::getSingletonPtr()->Destructor();
+	sWorld.Destructor();
 
 	sScriptMgr.UnloadScripts();
 	delete ScriptMgr::getSingletonPtr();
 
-	Log.Notice( "EventMgr", "~EventMgr()" );
+	Log.Notice("EventMgr", "~EventMgr()");
 	delete EventMgr::getSingletonPtr();
 
-	Log.Notice( "Database", "Closing Connections..." );
+	Log.Notice("Database", "Closing Connections...");
 	_StopDB();
 
-	Log.Notice( "Network", "Deleting Network Subsystem..." );
+	Log.Notice("Network", "Deleting Network Subsystem...");
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
 
@@ -466,15 +457,14 @@ bool Master::Run(int argc, char ** argv)
 	delete Player_Log;
 
 	// remove pid
-	remove( "world.pid" );
+	remove("world.pid");
 	g_bufferPool.Destroy();
 
-	Log.Notice( "Shutdown", "Shutdown complete." );
+	Log.Notice("Shutdown", "Shutdown complete.");
 
 #ifdef WIN32
 	WSACleanup();
 #endif
-
 	return true;
 }
 
@@ -482,8 +472,8 @@ bool Master::_StartDB()
 {
 	string hostname, username, password, database;
 	int port = 0;
+
 	// Configure Main Database
-	
 	bool result = Config.MainConfig.GetString( "WorldDatabase", "Username", &username );
 	Config.MainConfig.GetString( "WorldDatabase", "Password", &password );
 	result = !result ? result : Config.MainConfig.GetString( "WorldDatabase", "Hostname", &hostname );

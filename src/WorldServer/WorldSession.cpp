@@ -492,6 +492,9 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_CHAR_RENAME].handler = &WorldSession::HandleCharRenameOpcode;
 	WorldPacketHandlers[CMSG_CHAR_RENAME].status = STATUS_AUTHED;
 
+	WorldPacketHandlers[CMSG_CHAR_CUSTOMIZE].handler = &WorldSession::HandleCharacterCustomization;
+	WorldPacketHandlers[CMSG_CHAR_CUSTOMIZE].status = STATUS_AUTHED;
+
 	WorldPacketHandlers[CMSG_PLAYER_LOGIN].handler = &WorldSession::HandlePlayerLoginOpcode; 
 	WorldPacketHandlers[CMSG_PLAYER_LOGIN].status = STATUS_AUTHED;
 
@@ -577,7 +580,8 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_SET_SELECTION].handler = &WorldSession::HandleSetSelectionOpcode;
 	WorldPacketHandlers[CMSG_STANDSTATECHANGE].handler = &WorldSession::HandleStandStateChangeOpcode;
 	WorldPacketHandlers[CMSG_CANCEL_MOUNT_AURA].handler = &WorldSession::HandleDismountOpcode;
-	
+	WorldPacketHandlers[CMSG_GAMEOBJ_REPORT_USE].handler = &WorldSession::HandleGameobjReportUseOpCode;
+
 	// Friends
 	WorldPacketHandlers[CMSG_CONTACT_LIST].handler = &WorldSession::HandleFriendListOpcode;
 	WorldPacketHandlers[CMSG_ADD_FRIEND].handler = &WorldSession::HandleAddFriendOpcode;
@@ -649,15 +653,7 @@ void WorldSession::InitPacketHandlerTable()
 
 	// LFG System
 	WorldPacketHandlers[CMSG_SET_LFG_COMMENT].handler = &WorldSession::HandleSetLookingForGroupComment;
-	// WorldPacketHandlers[MSG_LOOKING_FOR_GROUP].handler = &WorldSession::HandleMsgLookingForGroup;
-	// WorldPacketHandlers[CMSG_SET_LOOKING_FOR_GROUP].handler = &WorldSession::HandleSetLookingForGroup;
-	// WorldPacketHandlers[CMSG_SET_LOOKING_FOR_MORE].handler = &WorldSession::HandleSetLookingForMore;
-	// WorldPacketHandlers[CMSG_LFG_SET_AUTOJOIN].handler = &WorldSession::HandleEnableAutoJoin;
-	// WorldPacketHandlers[CMSG_LFG_CLEAR_AUTOJOIN].handler = &WorldSession::HandleDisableAutoJoin;
-	// WorldPacketHandlers[CMSG_LFM_SET_AUTOFILL].handler = &WorldSession::HandleEnableAutoAddMembers;
-	// WorldPacketHandlers[CMSG_LFM_CLEAR_AUTOFILL].handler = &WorldSession::HandleDisableAutoAddMembers;
-	// WorldPacketHandlers[CMSG_CLEAR_LOOKING_FOR_GROUP].handler = &WorldSession::HandleLfgClear;
-	
+
 	// Taxi / NPC Interaction
 	WorldPacketHandlers[CMSG_ENABLETAXI].handler = &WorldSession::HandleTaxiQueryAvaibleNodesOpcode;
 	WorldPacketHandlers[CMSG_TAXINODE_STATUS_QUERY].handler = &WorldSession::HandleTaxiNodeStatusQueryOpcode;
@@ -907,8 +903,6 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_QUESTGIVER_STATUS_MULTIPLE_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
 	WorldPacketHandlers[CMSG_ALTER_APPEARANCE].handler = &WorldSession::HandleAlterAppearance;
 	WorldPacketHandlers[CMSG_REMOVE_GLYPH].handler = &WorldSession::HandleRemoveGlyph;
-	WorldPacketHandlers[CMSG_CHAR_CUSTOMIZE].handler = &WorldSession::HandleCharacterCustomization;
-	WorldPacketHandlers[CMSG_CHAR_CUSTOMIZE].status = STATUS_AUTHED;
 
 	WorldPacketHandlers[CMSG_QUERY_INSPECT_ACHIEVEMENTS].handler = &WorldSession::HandleAchievementInspect;
 
@@ -987,19 +981,6 @@ void WorldSession::SendChatPacket(WorldPacket * data, uint32 langpos, int32 lang
 
 void WorldSession::SendItemPushResult(Item* pItem, bool Created, bool Received, bool SendToSet, bool NewItem, uint8 DestBagSlot, uint32 DestSlot, uint32 AddCount)
 {
-	/*WorldPacket data(SMSG_ITEM_PUSH_RESULT, 60);
-	data << _player->GetGUID();
-	data << uint32(Received);
-	data << uint32(Created);
-	data << uint32(1);
-	data << uint8(DestBagSlot);
-	data << uint32(NewItem ? DestSlot : 0xFFFFFFFF);
-	data << pItem->GetEntry();
-	data << pItem->GetItemRandomSuffixFactor();
-	data << pItem->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID);
-	data << AddCount;
-	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT);*/
-
 	packetSMSG_ITEM_PUSH_RESULT data;
 	data.guid = _player->GetGUID();
 	data.received = Received;
@@ -1015,16 +996,6 @@ void WorldSession::SendItemPushResult(Item* pItem, bool Created, bool Received, 
 
 	if(SendToSet)
 	{
-		/*if(Created)
-			_player->SendMessageToSet(&data, true);
-		else
-		{*/
-			/*if(_player->GetGroup())
-				_player->GetGroup()->SendPacketToAll(&data);
-			else
-				SendPacket(&data);*/
-		/*}*/
-
 		if( _player->GetGroup() )
 			_player->GetGroup()->OutPacketToAll( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
 		else
@@ -1032,14 +1003,13 @@ void WorldSession::SendItemPushResult(Item* pItem, bool Created, bool Received, 
 	}
 	else
 	{
-		//SendPacket(&data);
+		// SendPacket(&data);
 		OutPacket( SMSG_ITEM_PUSH_RESULT, sizeof( packetSMSG_ITEM_PUSH_RESULT ), &data );
 	}
 }
 
 void WorldSession::Delete()
 {
-	//deleteMutex.Acquire();
 	delete this;
 }
 

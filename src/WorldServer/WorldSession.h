@@ -137,7 +137,6 @@ typedef struct Cords {
 	float x,y,z;
 }Cords;
 
-
 class MovementInfo
 {
 public:
@@ -169,6 +168,7 @@ public:
 #define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
 #define CHECK_GUID_EXISTS(guidx) if(_player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
+#define SKIP_READ_PACKET(pckt) pckt.rpos(pckt.wpos())
 
 #define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
 #define NOTIFICATION_MESSAGE_FAILURE "The requested action could not be performed."
@@ -378,7 +378,8 @@ protected:
 	void HandlePlayedTimeOpcode(WorldPacket & recv_data);
 	void HandleSetSheathedOpcode(WorldPacket & recv_data);
 	void HandleCompleteCinematic(WorldPacket & recv_data);
-	void HandleInspectOpcode( WorldPacket & recv_data );
+	void HandleInspectOpcode(WorldPacket & recv_data);
+	void HandleGameobjReportUseOpCode(WorldPacket& recv_data);
 
 	// Gm Ticket System in GMTicket.cpp:
 	void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);
@@ -426,7 +427,7 @@ protected:
 	void HandleRequestRaidInfoOpcode(WorldPacket& recvPacket);
 	void HandleReadyCheckOpcode(WorldPacket& recv_data);
 	void HandleGroupPromote(WorldPacket& recv_data);
-	
+
 	// LFG opcodes
 	void HandleEnableAutoJoin(WorldPacket& recvPacket);
 	void HandleDisableAutoJoin(WorldPacket& recvPacket);

@@ -48,3 +48,4 @@ build
 !.gitignore
 /src/libs/revision.h
 *.idb
+*.svn

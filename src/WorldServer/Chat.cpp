@@ -452,6 +452,7 @@ void CommandTableStorage::Init()
 		{ "status",	   '2', &ChatHandler::HandleQuestStatusCommand,		"Lists the status of quest <id>",						NULL, 0, 0, 0},
 		{ "spawn",	   '2', &ChatHandler::HandleQuestSpawnCommand,		"Port to spawn location for quest <id>",				NULL, 0, 0, 0},
 		{ "start",	   '2', &ChatHandler::HandleQuestStartCommand,		"Starts quest <id>",									NULL, 0, 0, 0},
+		{ "resetdailies", '2', &ChatHandler::HandleResetDailiesCommand, "Reset dailies from <PlayerName>",                      NULL, 0, 0, 0},
 		{ NULL,		    0,  NULL,										"",														NULL, 0, 0, 0},
 	};
 	dupe_command_table(questCommandTable, _questCommandTable);
@@ -1187,4 +1188,22 @@ bool ChatHandler::HandleDebugRetroactiveQuestAchievements(const char *args, Worl
 	pTarget->RetroactiveCompleteQuests();
 	m_session->GetPlayer()->BroadcastMessage("Done.");
 	return true;
+}
+
+bool ChatHandler::HandleResetDailiesCommand( const char *args ,WorldSession *m_session )
+{
+	char Name[100];
+	if(sscanf(args, "%s", Name) != 1)
+	{
+		SystemMessage(m_session, "Invaild syntax.");
+		return false;
+	}
+	PlayerInfo * pInfo = objmgr.GetPlayerInfoByName(Name);
+	if( pInfo && pInfo->m_loggedInPlayer )
+	{
+		pInfo->m_loggedInPlayer->ResetDailyQuests();
+		SystemMessage(m_session, "Dailies reseted.");
+		return true;
+	}
+	return false;
 }
