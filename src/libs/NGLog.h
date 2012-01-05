@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -278,7 +278,7 @@ public:
 		printf("*                        MAJOR ERROR/WARNING                        *\n");
 		printf("*                        ===================                        *\n");
 
-		for(std::vector<char*>::iterator itr = lines.begin(); itr != lines.end(); itr++)
+		for(std::vector<char*>::iterator itr = lines.begin(); itr != lines.end(); ++itr)
 		{
 			i = strlen(*itr);
 			j = (i<=65) ? 65 - i : 0;
@@ -296,7 +296,7 @@ public:
 
 #ifdef WIN32
 		std::string str = "MAJOR ERROR/WARNING:\n";
-		for(std::vector<char*>::iterator itr = lines.begin(); itr != lines.end(); itr++)
+		for(std::vector<char*>::iterator itr = lines.begin(); itr != lines.end(); ++itr)
 		{
 			str += *itr;
 			str += "\n";

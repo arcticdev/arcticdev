@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -27,24 +27,24 @@ public:
 	// Object Managing
 	void AddObject(Object* obj); 
 	void RemoveObject(Object* obj);
-	ARCTIC_INLINE bool HasObject(Object* obj) { return (_objects.find(obj) != _objects.end()); }
-	ARCTIC_INLINE bool HasPlayers() { return ((_playerCount > 0) ? true : false); }
+	bool HasObject(Object* obj) { return (_objects.find(obj) != _objects.end()); }
+	bool HasPlayers() { return ((_playerCount > 0) ? true : false); }
 	ARCTIC_INLINE size_t GetObjectCount() { return _objects.size(); }
 	void RemoveObjects();
 	ARCTIC_INLINE ObjectSet::iterator Begin() { return _objects.begin(); }
 	ARCTIC_INLINE ObjectSet::iterator End() { return _objects.end(); }
 
-	// State Related
+	//State Related
 	void SetActivity(bool state);
 
 	ARCTIC_INLINE bool IsActive() { return _active; }
 	ARCTIC_INLINE bool IsLoaded() { return _loaded; }
 
-	// Object Loading Managing
+	//Object Loading Managing
 	void LoadObjects(CellSpawns * sp);
 	ARCTIC_INLINE uint32 GetPlayerCount() { return _playerCount; }
 
-	// ING Events
+	//ING Events
 	void RemoveEventIdObjects(uint8 eventToRemove);
 	void ModifyEventIdSetting(bool active, uint8 eventId);
 	void LoadEventIdObjects(CellSpawns * sp, uint8 eventId);
@@ -55,11 +55,11 @@ public:
 	void CancelPendingUnload();
 	void Unload();
 
-	ARCTIC_INLINE void SetPermanentActivity(bool val) { _forcedActive = val; }
-	ARCTIC_INLINE bool IsForcedActive() { return _forcedActive; }
+	void SetPermanentActivity(bool val) { _forcedActive = val; }
+	bool IsForcedActive() { return _forcedActive; }
 
-	ARCTIC_INLINE uint16 GetPositionX() { return _x; }
-	ARCTIC_INLINE uint16 GetPositionY() { return _y; }
+	uint16 GetPositionX() { return _x; }
+	uint16 GetPositionY() { return _y; }
 
 	ObjectSet _respawnObjects;
 

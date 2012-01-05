@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -506,7 +506,6 @@ protected:
 	bool HandleQuestSpawnCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStartCommand(const char * args, WorldSession * m_session);
 	bool HandleQuestStatusCommand(const char * args, WorldSession * m_session);
-	bool HandleResetDailiesCommand( const char *args ,WorldSession *m_session );
 
 	/* ai agent debug commands */
 	bool HandleAIAgentDebugBegin(const char * args, WorldSession * m_session);

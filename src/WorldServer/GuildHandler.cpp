@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -549,12 +549,6 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			return;
 		}
 
-		if(!sWorld.VerifyName(name.c_str(), name.length()))
-		{
-			SendNotification("That name is invalid or contains invalid characters.");
-			return;
-		}
-
 		ArenaTeam * t = objmgr.GetArenaTeamByName(name, arena_type);
 		if(t != NULL)
 		{
@@ -631,12 +625,6 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 		if(_player->m_playerInfo->charterId[CHARTER_TYPE_GUILD] != 0)
 		{
 			SendNotification("You already have a guild charter.");
-			return;
-		}
-
-		if(!sWorld.VerifyName(name.c_str(), name.length()))
-		{
-			SendNotification("That name is invalid or contains invalid characters.");
 			return;
 		}
 

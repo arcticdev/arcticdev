@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -286,10 +286,7 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 		SendPartyCommandResult(_player, 0, "", ERR_PARTY_YOU_ARE_NOT_LEADER);
 		return;
 	}
-	
-	// TODO: fix me zed 
-	//Player* plyr = objmgr.GetPlayer((uint32)lootMaster);
-	//if(!plyr)return;
+
 	Group* pGroup = _player->GetGroup();
 	if( pGroup != NULL)
 		pGroup->SetLooter( _player, lootMethod, threshold );

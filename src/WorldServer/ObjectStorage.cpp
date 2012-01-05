@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -204,7 +204,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->Misc2 = fields[9].GetUInt32();
 				sp->autocast_type=(uint32)-1;
 				sp->custom_pointer=false;
-				sp->procCounter=0;
+				sp->procCounter = 0;
 
 				//Set cooldowntimer
 				sp->cooldowntime=getMSTime();
@@ -258,7 +258,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						}
 						counter += 1;
 					}break;
-	
+
 					case AGENT_RANGED:
 					{
 						cn->m_canRangedAttack = true;
@@ -335,7 +335,7 @@ void ObjectMgr::LoadExtraItemStuff()
 		gtr->Inc();
 	}
 	gtr->Destruct();
-	
+
 
 	StorageContainerIterator<ItemPrototype> * itr = ItemPrototypeStorage.MakeIterator();
 	ItemPrototype * pItemPrototype;
@@ -368,7 +368,7 @@ void ObjectMgr::LoadExtraItemStuff()
 		if(iter != foodItems.end())
 			ft = iter->second;
 		pItemPrototype->FoodType = ft ;
-	
+
 		pItemPrototype->gossip_script=NULL;
 
 		// forced pet entries
@@ -763,10 +763,10 @@ bool Storage_ReloadTable(const char * TableName)
 	}
 	else
 		return false;
-	
+
 	uint32 len = (uint32)strlen(TableName);
 	uint32 len2;
-	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); itr++)
+	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); ++itr)
 	{
 		len2=(uint32)itr->second.length();
 		if(!strnicmp(TableName, itr->second.c_str(), min(len,len2)))
@@ -788,7 +788,7 @@ void Storage_LoadAdditionalTables()
 	if(strs.empty())
 		return;
 
-	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); itr++)
+	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); ++itr)
 	{
 		char s1[200];
 		char s2[200];

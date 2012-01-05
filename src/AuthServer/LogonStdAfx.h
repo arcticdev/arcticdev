@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -17,10 +17,11 @@
 #include <Network/Network.h>
 
 #include "../libs/Log.h"
-#include "../libs/Utilities/Utility.h"
+#include "../libs/Util.h"
 #include "../libs/ByteBuffer.h"
 #include "../libs/Config/ConfigEnv.h"
-#include <zlib.h>
+
+#include "../../dep/vc/include/zlib.h"
 
 #include "../libs/Database/DatabaseEnv.h"
 #include "../libs/Database/DBCStores.h"

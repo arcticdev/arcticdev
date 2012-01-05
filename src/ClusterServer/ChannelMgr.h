@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef __CHANNELMGR_H
+#define __CHANNELMGR_H
 
 class Channel;
 
@@ -34,3 +35,5 @@ class ChannelMgr :  public Singleton < ChannelMgr >
 };
 
 #define channelmgr ChannelMgr::getSingleton()
+
+#endif

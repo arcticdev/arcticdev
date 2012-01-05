@@ -19,8 +19,8 @@ libshared_a_SOURCES = \
     Threading.h \
     Timer.h \
     UnixThreading.h \
-    Utilities/Utility.h \
-    Utilities/Utility.cpp \
+    Util.h \
+    Util.cpp \
     WinThreading.h \
     WorldPacket.h \
     crc32.cpp \
@@ -31,8 +31,8 @@ libshared_a_SOURCES = \
     Threading/Mutex.cpp \
     Threading/ThreadPool.cpp \
     Storage.h \
-    getopt.h \
-    getopt.cpp \
+    Getopt.h \
+    Getopt.cpp \
     CrashHandler.h \
     CrashHandler.cpp \
     Auth/BigNumber.cpp \
@@ -118,4 +118,3 @@ libshared_a_SOURCES = \
     Collision/g3dlite/Vector3.cpp \
     Collision/g3dlite/Vector4.cpp \
     Collision/g3dlite/format.cpp
-

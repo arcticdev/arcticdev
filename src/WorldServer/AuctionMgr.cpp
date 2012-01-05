@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -63,7 +63,7 @@ void AuctionMgr::Update()
 		return;
 		
 	vector<AuctionHouse*>::iterator itr = auctionHouses.begin();
-	for(; itr != auctionHouses.end(); itr++)
+	for(; itr != auctionHouses.end(); ++itr)
 	{
 		(*itr)->UpdateDeletionQueue();
 

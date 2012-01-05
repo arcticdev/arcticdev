@@ -1,15 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #ifndef _SP_GARBAGE_COLLECTOR_H
 #define _SP_GARBAGE_COLLECTOR_H
-
-//Reference based smart pointers
-//Save while using hahsmaps etc for reference increasing.
-//shared pointers will auto delete themselves but even with a purposed delete the pointer will be safe ;P
 
 template <class T> class SharedPointer;
 template <class T>

@@ -1,12 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
 
-//initialiseSingleton( DayWatcherThread );
 template <> DayWatcherThread * Singleton < DayWatcherThread > :: mSingleton = 0;
 
 #ifdef WIN32
@@ -125,7 +124,7 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 
 			return ( (now_time->tm_mday / 7) != (last_time->tm_mday / 7) );
 		}
-		
+
 	case MONTHLY:
 		return (now_time->tm_mon != last_time->tm_mon);
 
@@ -201,7 +200,7 @@ bool DayWatcherThread::run()
 			{
 				if(!(*itr)->eventbyhour)
 					continue;
-				
+
 				if((*itr)->isactive)
 				{
 					if((*itr)->lastactivated && !CheckHourlyEvent(&local_currenttime, (*itr)->starthour, (*itr)->endhour))
@@ -244,7 +243,7 @@ bool DayWatcherThread::run()
 			dupe_tm_pointer(localtime(&last_eventid_time), &local_last_eventid_time);
 			m_dirty = true;
 		}
-		
+
 		if(runEvents = true)
 		{
 			if(_loaded)
@@ -431,7 +430,7 @@ void DayWatcherThread::update_arena()
 					{
 						Y *= sWorld.getRate(RATE_ARENAPOINTMULTIPLIER5X);
 					}
-					
+
 					if(Y > 1.0)
 						arenapointsPerTeam[i] += long2int32(double(ceil(Y)));
 				}
@@ -446,10 +445,10 @@ void DayWatcherThread::update_arena()
 				if(plr != NULL)
 				{
 					plr->m_arenaPoints = arenapoints;
-					
+
 					/* update visible fields (must be done through an event because of no uint lock */
 					sEventMgr.AddEvent(plr, &Player::RecalculateHonor, EVENT_PLAYER_UPDATE, 100, 1, 0);
-	
+
 					/* send a little message :> */
 					sChatHandler.SystemMessage(plr->GetSession(), "Your arena points have been updated! Check your PvP tab!");
 				}

@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -343,7 +343,7 @@ void Arena::OnCreate()
 	}
 
 	/* push gates into world */
-	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 		(*itr)->PushToWorld(m_mapMgr);
 
 	
@@ -365,14 +365,14 @@ void Arena::OnStart()
 {
 	/* remove arena readyness buff */
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player* plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
 		}
 	}
 
 	/* open gates */
-	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -459,7 +459,7 @@ void Arena::Finish()
 			teams[i]->m_stat_rating += m_deltaRating[i];
 			if ((int32)teams[i]->m_stat_rating < 0) teams[i]->m_stat_rating = 0;
 
-			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); itr++)
+			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
 				PlayerInfo * info = objmgr.GetPlayerInfo(*itr);
 				if (info)
@@ -586,23 +586,6 @@ LocationVector Arena::GetStartingCoords(uint32 Team)
 
 bool Arena::HookHandleRepop(Player* plr)
 {
-	// 559, 562, 572
-	/*
-	A start
-	H start
-	Repop
-	572 1295.322388 1585.953369 31.605387
-	572 1277.105103 1743.956177 31.603209
-	572 1286.112061 1668.334961 39.289127
-
-	562 6184.806641 236.643463 5.037095
-	562 6292.032227 287.570343 5.003577
-	562 6241.171875 261.067322 0.891833
-
-	559 4085.861328 2866.750488 12.417445
-	559 4027.004883 2976.964844 11.600499
-	559 4057.042725 2918.686523 13.051933
-	*/
 	LocationVector dest(0,0,0,0);
 	switch(m_mapMgr->GetMapId())
 	{

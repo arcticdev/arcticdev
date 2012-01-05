@@ -62,14 +62,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Release_Win32\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Release_Win32\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Release_x64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Release_x64\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Debug_Win32\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Debug_Win32\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Debug_x64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Debug_x64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Win32_Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Win32_Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Win32_Release_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Win32_Release_x64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Win32_Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Win32_Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Win32_Debug_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Win32_Debug_x64\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -84,9 +84,6 @@
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <PreBuildEvent>
-      <Message>Extracting git revision...</Message>
-    </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -105,7 +102,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_Release_Win32/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Win32_Release/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -119,7 +116,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\libs_Release_Win32\libs.lib</OutputFile>
+      <OutputFile>.\libs_Win32_Release\libs.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
@@ -128,9 +125,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <PreBuildEvent>
-      <Message>Extracting git revision...</Message>
-    </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
@@ -138,7 +132,7 @@
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\..\src\libs; ..\..\src\libs\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\libs;  ..\..\src\libs\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;WIN32;NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -149,7 +143,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_x64_release/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Win32_Release_x64/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -172,20 +166,18 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <PreBuildEvent>
-      <Message>Extracting git revision...</Message>
-    </PreBuildEvent>
     <ClCompile>
+      <AdditionalOptions>/Zm250 /MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\libs; ..\..\src\libs\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\libs;  ..\..\src\libs\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_win32_debug/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Win32_Debug/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -208,16 +200,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <PreBuildEvent>
-      <Message>Extracting git revision...</Message>
-    </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\src\libs; ..\..\src\libs\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\libs;  ..\..\src\libs\g3dlite;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;X64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -285,13 +274,13 @@
     <ClCompile Include="..\..\src\libs\Network\SocketWin32.cpp" />
     <ClCompile Include="..\..\src\libs\Threading\Mutex.cpp" />
     <ClCompile Include="..\..\src\libs\Threading\ThreadPool.cpp" />
-    <ClCompile Include="..\..\src\libs\getopt.cpp" />
+    <ClCompile Include="..\..\src\libs\Getopt.cpp" />
     <ClCompile Include="..\..\src\libs\CallBack.cpp" />
     <ClCompile Include="..\..\src\libs\CrashHandler.cpp" />
     <ClCompile Include="..\..\src\libs\MemoryLeaks.cpp" />
     <ClCompile Include="..\..\src\libs\MersenneTwister.cpp" />
     <ClCompile Include="..\..\src\libs\StackWalker.cpp" />
-    <ClCompile Include="..\..\src\libs\Utilities\Utility.cpp" />
+    <ClCompile Include="..\..\src\libs\Util.cpp" />
     <ClCompile Include="..\..\src\libs\Log.cpp" />
     <ClCompile Include="..\..\src\libs\Console\CConsole.cpp" />
     <ClCompile Include="..\..\src\libs\Console\ConsoleListener.cpp" />
@@ -373,7 +362,7 @@
     <ClInclude Include="..\..\src\libs\Threading\Threading.h" />
     <ClInclude Include="..\..\src\libs\Threading\ThreadStarter.h" />
     <ClInclude Include="..\..\src\libs\Threading\ThreadPool.h" />
-    <ClInclude Include="..\..\src\libs\getopt.h" />
+    <ClInclude Include="..\..\src\libs\Getopt.h" />
     <ClInclude Include="..\..\src\libs\ByteBuffer.h" />
     <ClInclude Include="..\..\src\libs\CallBack.h" />
     <ClInclude Include="..\..\src\libs\CrashHandler.h" />
@@ -387,7 +376,7 @@
     <ClInclude Include="..\..\src\libs\StackBuffer.h" />
     <ClInclude Include="..\..\src\libs\StackWalker.h" />
     <ClInclude Include="..\..\src\libs\Timer.h" />
-    <ClInclude Include="..\..\src\libs\Utilities\Utility.h" />
+    <ClInclude Include="..\..\src\libs\Util.h" />
     <ClInclude Include="..\..\src\libs\WoWGuid.h" />
     <ClInclude Include="..\..\src\libs\Log.h" />
     <ClInclude Include="..\..\src\libs\NGLog.h" />

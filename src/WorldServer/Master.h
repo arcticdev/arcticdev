@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -14,7 +14,7 @@
 #include "MainServerDefines.h"
 
 #ifndef _VERSION
-# define _VERSION "3.3.5a(build 12340)"
+# define _VERSION "3.3.5"
 #endif
 
 #if PLATFORM == PLATFORM_WIN32

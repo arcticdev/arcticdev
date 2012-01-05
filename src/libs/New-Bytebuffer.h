@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -22,7 +22,7 @@ class SERVER_DECL ByteBuffer
 	uint32 m_buffersize;
 
 public:
-	/* Allocates/reallocates buffer with specified size.
+	/** Allocates/reallocates buffer with specified size.
 	 */
 	void reserve(size_t res)
 	{

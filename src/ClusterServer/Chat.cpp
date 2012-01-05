@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -11,12 +11,10 @@ initialiseSingleton( ChatHandler );
 
 ChatHandler::ChatHandler()
 {
-	//SkillNameManager = new SkillNameMgr;
 }
 
 ChatHandler::~ChatHandler()
 {
-	//delete SkillNameManager;
 }
 
 void ChatHandler::SendMultilineMessage(Session *m_session, const char *str)
@@ -61,15 +59,6 @@ int ChatHandler::ParseCommands(const char* text, Session *session)
 		return 0;
 
 	text++;
-
-	//TODO:: pass this packet to the world server so it can process the command!!!
-
-	/*
-	if(!ExecuteCommandInTable(CommandTableStorage::getSingleton().Get(), text, session))
-		{
-			SystemMessage(session, "There is no such command, or you do not have access to it.");
-		}*/
-	
 
 	return 1;
 }

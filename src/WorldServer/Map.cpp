@@ -1,12 +1,8 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
-// Class Map
-// Holder for all instances of each mapmgr, handles transferring
-// players between, and template holding.
 
 #include "StdAfx.h"
 
@@ -53,23 +49,14 @@ Map::~Map()
 			{
 				if(spawns[x][y])
 				{	
-					CellSpawns * sp = spawns[x][y];
-					for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
-					{
-						if((*i)->eventinfo)
-							delete (*i)->eventinfo;
+					CellSpawns * sp=spawns[x][y];
+						for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
 						delete (*i);
-					}
-
 					for(GOSpawnList::iterator it = sp->GOSpawns.begin();it!=sp->GOSpawns.end();it++)
-					{
-						if((*it)->eventinfo)
-							delete (*it)->eventinfo;
 						delete (*it);
-					}
 
 					delete sp;
-					spawns[x][y] = NULL;
+					spawns[x][y]=NULL;
 				}
 			}
 			delete [] spawns[x];
@@ -77,17 +64,9 @@ Map::~Map()
 	}
 
 	for(CreatureSpawnList::iterator i = staticSpawns.CreatureSpawns.begin(); i != staticSpawns.CreatureSpawns.end(); ++i)
-	{
-		if((*i)->eventinfo)
-			delete (*i)->eventinfo;
-		delete (*i);
-	}
-	for(GOSpawnList::iterator i = staticSpawns.GOSpawns.begin(); i != staticSpawns.GOSpawns.end(); ++i)
-	{
-		if((*i)->eventinfo)
-			delete (*i)->eventinfo;
 		delete *i;
-	}
+	for(GOSpawnList::iterator i = staticSpawns.GOSpawns.begin(); i != staticSpawns.GOSpawns.end(); ++i)
+		delete *i;
 
 	// collision
 	if (sWorld.Collision && _mapInfo->collision)
@@ -103,8 +82,8 @@ bool CheckResultLengthCreatures(QueryResult * res)
 		{
 			first_table_warning = false;
 			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "One of your creature_spawns table has the wrong column count.",
-															"ArcTic has skipped loading this table in order to avoid crashing.",
-															"Please correct this, if you do not no spawns will show.", NULL);
+				"ArcTic has skipped loading this table in order to avoid crashing.",
+				"Please correct this, if you do not no spawns will show.", NULL);
 		}
 
 		return false;
@@ -122,8 +101,8 @@ bool CheckResultLengthGameObject(QueryResult * res)
 		{
 			first_table_warningg = false;
 			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "One of your gameobject_spawns table has the wrong column count.",
-															"ArcTic has skipped loading this table in order to avoid crashing.",
-															"Please correct this, if you do not no spawns will show.", NULL);
+				"ArcTic has skipped loading this table in order to avoid crashing.",
+				"Please correct this, if you do not no spawns will show.", NULL);
 		}
 
 		return false;

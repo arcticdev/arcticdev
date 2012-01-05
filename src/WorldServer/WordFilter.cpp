@@ -1,12 +1,12 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
 extern "C" {
-#include <pcre.h>
+#include "../../../dep/vc/include/pcre.h"
 };
 
 #define REPLACE_FILTER 1
@@ -141,7 +141,7 @@ void WordFilter::Load(const char * szTableName)
 
 	m_filters = new WordFilterMatch*[lItems.size()];
 	i = 0;
-	for(itr = lItems.begin(); itr != lItems.end(); itr++)
+	for(itr = lItems.begin(); itr != lItems.end(); ++itr)
 		m_filters[i++] = (*itr);
 
 	m_filterCount = i;

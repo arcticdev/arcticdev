@@ -1,11 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "RStdAfx.h"
-#include "revision.h"
+#include "svn_revision.h"
 
 WSSocket::WSSocket(SOCKET fd) : Socket(fd, 100000, 100000)
 {
@@ -191,7 +191,7 @@ void WSSocket::SendWoWPacket(Session * from, WorldPacket * pck)
 void WSSocket::OnConnect()
 {
 	WorldPacket data(ISMSG_AUTH_REQUEST, 4);
-	data << uint32(BUILD_HASH_STR);
+	data << uint32(BUILD_REVISION);
 	SendPacket(&data);
 }
 

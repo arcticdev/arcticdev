@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -105,7 +105,7 @@ void SocketMgr::thread_function()
 			/* burlex: oh my god, this sucks cock. :P this is the reason they invented
 			 * poll() :P
 			 */
-			for(itr = fds.begin(); itr != fds.end(); itr++)
+			for(itr = fds.begin(); itr != fds.end(); ++itr)
 			{
 				s = itr->second;
 

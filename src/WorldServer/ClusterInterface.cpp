@@ -1,11 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
-#include "revision.h"
+#include "svn_revision.h"
 
 #ifdef CLUSTERING
 
@@ -47,8 +47,8 @@ ClusterInterface::~ClusterInterface()
 string ClusterInterface::GenerateVersionString()
 {
 	std::stringstream ss;
-	ss << "ArcTic ";
-	ss << BUILD_HASH_STR;
+	ss << "ArcTic r";
+	ss << BUILD_REVISION;
 	ss << "/";
 	ss << CONFIG;
 	ss << "-";
@@ -128,7 +128,7 @@ void ClusterInterface::HandleAuthRequest(WorldPacket & pck)
 
 	WorldPacket data(ICMSG_AUTH_REPLY, 50);
 	data.append(key, 20);
-	data << uint32(BUILD_HASH_STR);
+	data << uint32(BUILD_REVISION);
 	data << GenerateVersionString();
 	SendPacket(&data);
 
@@ -173,12 +173,11 @@ void ClusterInterface::HandleAuthResult(WorldPacket & pck)
 	}
 
 	WorldPacket data(ICMSG_REGISTER_WORKER, 4 + (sizeof(std::vector<uint32>::size_type) * maps.size()) + (sizeof(std::vector<uint32>::size_type) * instancedmaps.size()));
-	data << uint32(BUILD_HASH_STR);
+	data << uint32(BUILD_REVISION);
 	data << maps;
 	data << instancedmaps;
 	SendPacket(&data);
 }
-
 
 void ClusterInterface::HandleRegisterResult(WorldPacket & pck)
 {
@@ -199,7 +198,6 @@ void ClusterInterface::HandleCreateInstance(WorldPacket & pck)
 
 void ClusterInterface::HandleDestroyInstance(WorldPacket & pck)
 {
-
 }
 
 void ClusterInterface::HandlePlayerLogin(WorldPacket & pck)
@@ -271,7 +269,6 @@ void ClusterInterface::HandleDestroyPlayerInfo(WorldPacket & pck)
 			player->SetSession(NULL);
 		}
 	}
-
 }
 
 void ClusterInterface::HandlePackedPlayerInfo(WorldPacket & pck)
@@ -332,7 +329,6 @@ void ClusterInterface::DestroySession(uint32 sid)
 	}
 }
 
-
 void ClusterInterface::HandleWoWPacket(WorldPacket & pck)
 {
 	uint32 size, sid;
@@ -366,8 +362,6 @@ void ClusterInterface::HandlePlayerChangedServers(WorldPacket & pck)
 	WorldSession * s = _sessions[sessionid];
 	Player* plr = s->GetPlayer();
 
-
-
 	/* build the packet with the players information */
 	WorldPacket data(ICMSG_PLAYER_CHANGE_SERVER_INFO, 1000);
 	data << sessionid << GUID_LOPART(plr->GetGUID());
@@ -386,36 +380,6 @@ void ClusterInterface::RequestTransfer(Player* plr, uint32 MapId, uint32 Instanc
 	data << plr->GetSession()->GetSocket()->GetSessionId() << MapId << InstanceId << vec << vec.o;
 	SendPacket(&data);
 }
-
-/*
-void ClusterInterface::RequestWhisper(Player* plr, uint32 senderguid, uint32 recieveguid, int32 lang, string msg, string misc)
-{
-	WorldPacket data(ICMSG_WHISPER, 1000);
-	data << plr->GetSession()->GetSocket()->GetSessionId() << senderguid << recieveguid << lang << msg << misc;
-	SendPacket(&data);
-}
-
-void ClusterInterface::HandleWhisperResult(WorldPacket & pck)
-{
-	int32 lang;
-	uint32 senderguid, recieveguid;
-	string msg, misc;
-	Player* player;
-
-	pck >> senderguid >> recieveguid;
-
-	player = objmgr.GetPlayer(recieveguid);
-
-	if (player == NULL)
-		return;
-
-
-	pck >> lang >> msg >> misc;
-
-	player->BuildWhisperData(senderguid, recieveguid, lang, msg, misc);
-
-}
-*/
 
 void ClusterInterface::HandleTeleportResult(WorldPacket & pck)
 {
@@ -485,9 +449,6 @@ void ClusterInterface::HandleTeleportResult(WorldPacket & pck)
 		pRPlayer->Pack(data);
 		sClusterInterface.SendPacket(&data);
 
-		//oh ye, we need to set player to delete later, remove player from world, and destroy session
-		//we must set sessions player to null so we don't send any logout crap
-		//WE MUST REMOVE ALL AURAS BEFORE REMOVING FROM WORLD :D
 		sEventMgr.AddEvent(s->GetPlayer(), &Player::HandleClusterRemove, EVENT_UNK, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }

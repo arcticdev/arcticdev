@@ -1,23 +1,20 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "Common.h"
-#include "getopt.h"
+#include "Getopt.h"
 
 int arg_counter = 1;
 char arctic_optarg[514];
 int arctic_getopt_long_only(int ___argc, char *const *___argv, const char *__shortopts, const struct arctic_option *__longopts, int *__longind)
 {
-	// burlex todo: handle the shortops, at the moment it only works with longopts.
-
 	if (___argc == 1 || arg_counter == ___argc)			// No arguments (apart from filename)
 		return -1;
 
 	const char * opt = ___argv[arg_counter];
-//	int return_val = 0;
 
 	// if we're not an option, return an error.
 	if (strnicmp(opt, "--", 2) != 0)

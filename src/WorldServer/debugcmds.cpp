@@ -1,12 +1,8 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
-/////////////////////////////////////////////////
-//  Debug Chat Commands
-//
 
 #include "StdAfx.h"
 
@@ -777,11 +773,11 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 	{
 		if(!itr->second)
 		{
-			itr++;
+			++itr;
 			continue;
 		}
 		sstext << "guid: " << itr->first->GetGUID() << " | threat: " << itr->second << "| threat after mod: " << (itr->second + itr->first->GetThreatModifier()) << "\n";
-		itr++;
+		++itr;
 	}
 
 	SendMultilineMessage(m_session, sstext.str().c_str());

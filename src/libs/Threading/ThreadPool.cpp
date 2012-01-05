@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -124,8 +124,7 @@ void CThreadPool::Startup(uint8 ThreadCount)
 void CThreadPool::ShowStats()
 {
 	_mutex.Acquire();
-	DEBUG_LOG("ArcTic >> ", "ThreadPool Status");
-	DEBUG_LOG("ThreadPool", "============================================");
+	DEBUG_LOG("ThreadPool", "============ ThreadPool Status =============");
 	DEBUG_LOG("ThreadPool", "Active Threads: %u", m_activeThreads.size());
 	DEBUG_LOG("ThreadPool", "Suspended Threads: %u", m_freeThreads.size());
 	DEBUG_LOG("ThreadPool", "Requested-To-Freed Ratio: %.3f%% (%u/%u)", float( float(_threadsRequestedSinceLastCheck+1) / float(_threadsExitedSinceLastCheck+1) * 100.0f ), _threadsRequestedSinceLastCheck, _threadsExitedSinceLastCheck);
@@ -153,7 +152,7 @@ void CThreadPool::IntegrityCheck(uint8 ThreadCount)
 	}
 	else if(gobbled < ThreadCount)
 	{
-		// this means while we didn't run out of threads, we were getting damn low.
+        // this means while we didn't run out of threads, we were getting damn low.
 		// spawn enough threads to keep the reserve amount up.
 		uint32 new_threads = (THREAD_RESERVE - gobbled);
 		for(uint32 i = 0; i < new_threads; ++i)
@@ -190,7 +189,7 @@ void CThreadPool::KillFreeThreads(uint32 count)
 	Thread * t;
 	ThreadSet::iterator itr;
 	uint32 i;
-	for(i = 0, itr = m_freeThreads.begin(); i < count && itr != m_freeThreads.end(); ++i, itr++)
+	for(i = 0, itr = m_freeThreads.begin(); i < count && itr != m_freeThreads.end(); ++i, ++itr)
 	{
 		t = *itr;
 		t->ExecutionTarget = NULL; 
@@ -209,7 +208,7 @@ void CThreadPool::Shutdown()
 	KillFreeThreads((uint32)m_freeThreads.size());
 	_threadsToExit += (uint32)m_activeThreads.size();
 
-	for(ThreadSet::iterator itr = m_activeThreads.begin(); itr != m_activeThreads.end(); itr++)
+	for(ThreadSet::iterator itr = m_activeThreads.begin(); itr != m_activeThreads.end(); ++itr)
 	{
 		if((*itr)->ExecutionTarget)
 			(*itr)->ExecutionTarget->OnShutdown();

@@ -1,12 +1,14 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "RStdAfx.h"
-#include "revision.h"
+#include <svn_revision.h>
 #include <Console/CConsole.h>
+
+#define BANNER "ArcTic :: Realm Server  r%u/%s-%s-%s\n"
 
 #ifndef WIN32
 #include <sched.h>
@@ -22,9 +24,6 @@ volatile bool Master::m_stopEvent = false;
 // Database defines.
 Database* Database_Character;
 Database* Database_World;
-
-static const char* default_config_file = "conf/ClusterServer.conf";
-static const char* default_realm_config_file = "conf/AuthServer.conf";
 
 void Master::_OnSignal(int s)
 {
@@ -50,6 +49,7 @@ void Master::_OnSignal(int s)
 
 Master::Master()
 {
+
 }
 
 Master::~Master()
@@ -67,6 +67,14 @@ struct Addr
 };
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
+
+#ifdef WIN32
+static const char* default_config_file = "conf/ClusterServer.conf";
+static const char* default_realm_config_file = "Realms.conf";
+#else
+static const char* default_config_file = CONFDIR "conf/ClusterServer.conf";
+static const char* default_realm_config_file = CONFDIR "/conf/Realms.conf";
+#endif
 
 volatile bool bServerShutdown = false;
 
@@ -151,10 +159,10 @@ bool Master::Run(int argc, char ** argv)
 	g_localTime = *localtime(&UNIXTIME);
 
 	/* Print Banner */
-	Log.Notice("Server", "==============================================================");
-	Log.Notice("Server", "| Cluster System - Realm Server                              |");
-	Log.Notice("Server", "| Version 1.0                                                |");
-	Log.Notice("Server", "==============================================================");
+	Log.Notice("Server", "============================================================");
+	Log.Notice("Server", "| Cluster System - Realm Server                            |");
+	Log.Notice("Server", "| Version 1.0, Revision %04u                               |", BUILD_REVISION);
+	Log.Notice("Server", "============================================================");
 	Log.Line();
 
 	if( do_check_conf )

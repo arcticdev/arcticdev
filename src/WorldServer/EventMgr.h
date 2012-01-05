@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -403,7 +403,7 @@ public:
 	{
 		holderLock.Acquire();
 		HolderMap::iterator itr = mHolders.begin();
-		for(; itr != mHolders.end(); itr++)
+		for(; itr != mHolders.end(); ++itr)
 		{
 			if(itr->second == holder)
 			{

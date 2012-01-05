@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -9,7 +9,9 @@
 
 #include <stdlib.h>
 #include "Common.h"
-#include <openssl/sha.h>
+
+#include "../../../dep/VC/include/openssl/sha.h"
+
 #include "Auth/BigNumber.h"
 
 class Sha1Hash

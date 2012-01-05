@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef AUTHSOCKET_H
+#define AUTHSOCKET_H
 
 #include "AccountCache.h"
 #include "AuthStructs.h"
@@ -81,3 +82,5 @@ public:
 	Patch * m_patch;
 	PatchJob * m_patchJob;
 };
+
+#endif

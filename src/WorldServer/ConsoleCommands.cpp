@@ -1,11 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
-#include <revision.h>
+#include <svn_revision.h>
 #include "ConsoleCommands.h"
 
 bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
@@ -32,7 +32,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("ArcTic Information: \r\n");
 	pConsole->Write("======================================================================\r\n");
-	pConsole->Write("ArcTic Revision Information %s/%s-%s-%s\r\n", BUILD_HASH_STR, CONFIG, PLATFORM_TEXT, ARCH);
+	pConsole->Write("ArcTic Revision Information %s/%s-%s-%s\r\n", BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	pConsole->Write("Server Uptime: %s\r\n", sWorld.GetUptimeString().c_str());
 	pConsole->Write("Current Players: %u (%d GMs, %d queued)\r\n", clientsNum, gm,  0);
 	pConsole->Write("Alliance Online: %u\r\n",sWorld.AlliancePlayers);
@@ -355,5 +355,3 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 	pConsole->Write("======================================================\r\n\r\n");
 	return true;
 }
-
-

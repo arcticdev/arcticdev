@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -16,10 +16,9 @@ ObjectMgr::ObjectMgr()
 	m_mailid = 0;
 	m_hiPlayerGuid = 0;
 	m_hiCorpseGuid = 0;
-	m_hiArenaTeamId=0;
-	m_hiGuildId=0;
+	m_hiArenaTeamId = 0;
+	m_hiGuildId = 0;
 }
-
 
 ObjectMgr::~ObjectMgr()
 {
@@ -84,7 +83,7 @@ ObjectMgr::~ObjectMgr()
 	for(uint32 i = 0 ; i < NUM_MONSTER_SAY_EVENTS ; ++i)
 	{
 		NpcMonsterSay * p;
-		for(MonsterSayMap::iterator itr = mMonsterSays[i].begin(); itr != mMonsterSays[i].end(); itr++)
+		for(MonsterSayMap::iterator itr = mMonsterSays[i].begin(); itr != mMonsterSays[i].end(); ++itr)
 		{
 			p = itr->second;
 			for(uint32 j = 0; j < p->TextCount; ++j)
@@ -100,27 +99,27 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("ObjectMgr", "Deleting Charters...");
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); itr++)
+		for(HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr =  m_charters[i].begin(); itr != m_charters[i].end(); ++itr)
 		{
 			delete itr->second;
 		}
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Reputation Tables...");
-	for(ReputationModMap::iterator itr = this->m_reputation_creature.begin(); itr != m_reputation_creature.end(); itr++)
+	for(ReputationModMap::iterator itr = this->m_reputation_creature.begin(); itr != m_reputation_creature.end(); ++itr)
 	{
 		ReputationModifier * mod = itr->second;
 		mod->mods.clear();
 		delete mod;
 	}
-	for(ReputationModMap::iterator itr = this->m_reputation_faction.begin(); itr != m_reputation_faction.end(); itr++)
+	for(ReputationModMap::iterator itr = this->m_reputation_faction.begin(); itr != m_reputation_faction.end(); ++itr)
 	{
 		ReputationModifier * mod = itr->second;
 		mod->mods.clear();
 		delete mod;
 	}
 
-	for(HM_NAMESPACE::hash_map<uint32,InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); itr++)
+	for(HM_NAMESPACE::hash_map<uint32,InstanceReputationModifier*>::iterator itr = this->m_reputation_instance.begin(); itr != this->m_reputation_instance.end(); ++itr)
 	{
 		InstanceReputationModifier * mod = itr->second;
 		mod->mods.clear();
@@ -131,7 +130,7 @@ ObjectMgr::~ObjectMgr()
 	for(GroupMap::iterator itr = m_groups.begin(); itr != m_groups.end();)
 	{
 		Group* pGroup = itr->second;
-		itr++;
+		++itr;
 
 		if( pGroup != NULL )
 		{
@@ -148,7 +147,7 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
-	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); itr++)
+	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
 	{
 		itr->second->m_Group=NULL;
 		free(itr->second->name);
@@ -156,11 +155,11 @@ ObjectMgr::~ObjectMgr()
 	}
 
 	Log.Notice("ObjectMgr", "Deleting GM Tickets...");
-	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); itr++)
+	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); ++itr)
 		delete (*itr);
 
 	Log.Notice("ObjectMgr", "Deleting Arena Teams..."); 
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); itr++) 
+	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr) 
 		delete itr->second;
 
 	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
@@ -169,7 +168,7 @@ ObjectMgr::~ObjectMgr()
 		delete (*itr);	
 
 	Log.Notice("ObjectMgr", "Deleting Achievement Cache...");
-	for(AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.begin(); itr != m_achievementCriteriaMap.end(); itr++)
+	for(AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.begin(); itr != m_achievementCriteriaMap.end(); ++itr)
 		delete (itr->second);
 
 	Log.Notice("ObjectMgr", "Deleting Achievement Quest Map...");
@@ -177,7 +176,7 @@ ObjectMgr::~ObjectMgr()
 		delete qitr->second;
 
 	Log.Notice("ObjectMgr", "Deleting Pet Levelup Spells...");
-	for(PetLevelupSpellMap::iterator itr = mPetLevelupSpellMap.begin(); itr != mPetLevelupSpellMap.end(); itr++)
+	for(PetLevelupSpellMap::iterator itr = mPetLevelupSpellMap.begin(); itr != mPetLevelupSpellMap.end(); ++itr)
 	{
 		itr->second.clear();
 	}
@@ -259,7 +258,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 	GroupMap::iterator itr;
 	Group * ret=NULL;
 	m_groupLock.AcquireReadLock();
-	for(itr = m_groups.begin(); itr != m_groups.end(); itr++)
+	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
 		if(itr->second->GetLeader()==pPlayer->m_playerInfo)
 		{
@@ -278,8 +277,8 @@ Group * ObjectMgr::GetGroupById(uint32 id)
 	Group * ret=NULL;
 	m_groupLock.AcquireReadLock();
 	itr = m_groups.find(id);
-	if(itr!=m_groups.end())
-		ret=itr->second;
+	if(itr != m_groups.end())
+		ret = itr->second;
 
 	m_groupLock.ReleaseReadLock();
 	return ret;
@@ -288,20 +287,21 @@ Group * ObjectMgr::GetGroupById(uint32 id)
 //
 // Player names
 //
+
 void ObjectMgr::DeletePlayerInfo( uint32 guid )
 {
 	PlayerInfo * pl;
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*>::iterator i;
 	PlayerNameStringIndexMap::iterator i2;
 	playernamelock.AcquireWriteLock();
-	i=m_playersinfo.find(guid);
-	if(i==m_playersinfo.end())
+	i = m_playersinfo.find(guid);
+	if(i == m_playersinfo.end())
 	{
 		playernamelock.ReleaseWriteLock();
 		return;
 	}
 	
-	pl=i->second;
+	pl = i->second;
 	if(pl->m_Group)
 	{
 		pl->m_Group->RemovePlayer(pl);
@@ -334,8 +334,8 @@ PlayerInfo *ObjectMgr::GetPlayerInfo( uint32 guid )
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*>::iterator i;
 	PlayerInfo * rv;
 	playernamelock.AcquireReadLock();
-	i=m_playersinfo.find(guid);
-	if(i!=m_playersinfo.end())
+	i = m_playersinfo.find(guid);
+	if(i != m_playersinfo.end())
 		rv = i->second;
 	else
 		rv = NULL;
@@ -374,8 +374,6 @@ void ObjectMgr::RenamePlayerInfo(PlayerInfo * pn, const char * oldname, const ch
 void ObjectMgr::LoadSpellSkills()
 {
 	uint32 i;
-//	int total = sSkillStore.GetNumRows();
-
 	for(i = 0; i < dbcSkillLineSpell.GetNumRows(); i++)
 	{
 		skilllinespell *sp = dbcSkillLineSpell.LookupRow(i);
@@ -401,7 +399,7 @@ void ObjectMgr::LoadPlayersInfo()
 	{
 		period = (result->GetRowCount() / 20) + 1;
 		c = 0;
-		
+
 		do
 		{
 			Field *fields = result->Fetch();
@@ -439,7 +437,7 @@ void ObjectMgr::LoadPlayersInfo()
 			ARCTIC_TOLOWER(lpn);
 			m_playersInfoByName[lpn] = pn;
 
-			//this is startup -> no need in lock -> don't use addplayerinfo
+			// this is startup -> no need in lock -> don't use addplayerinfo
 			 m_playersinfo[(uint32)pn->guid]=pn;
 
 			 if( !((++c) % period) )
@@ -517,8 +515,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		pPlayerCreateInfo->mindmg = fields[22].GetFloat();
 		pPlayerCreateInfo->maxdmg = fields[23].GetFloat();
 
-		QueryResult *sk_sql = WorldDatabase.Query(
-			"SELECT * FROM playercreateinfo_skills WHERE indexid=%u",pPlayerCreateInfo->index);
+		QueryResult *sk_sql = WorldDatabase.Query( "SELECT * FROM playercreateinfo_skills WHERE indexid=%u",pPlayerCreateInfo->index );
 
 		if(sk_sql)
 		{
@@ -533,8 +530,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 			} while(sk_sql->NextRow());
 			delete sk_sql;
 		}
-		QueryResult *sp_sql = WorldDatabase.Query(
-			"SELECT * FROM playercreateinfo_spells WHERE indexid=%u",pPlayerCreateInfo->index);
+		QueryResult *sp_sql = WorldDatabase.Query( "SELECT * FROM playercreateinfo_spells WHERE indexid=%u",pPlayerCreateInfo->index );
 
 		if(sp_sql)
 		{
@@ -545,8 +541,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 			delete sp_sql;
 		}
 	  
-		QueryResult *items_sql = WorldDatabase.Query(
-			"SELECT * FROM playercreateinfo_items WHERE indexid=%u",pPlayerCreateInfo->index);
+		QueryResult *items_sql = WorldDatabase.Query( "SELECT * FROM playercreateinfo_items WHERE indexid=%u",pPlayerCreateInfo->index );
 		
 		if(items_sql)
 		{
@@ -562,8 +557,7 @@ void ObjectMgr::LoadPlayerCreateInfo()
 		   delete items_sql;
 		}
 
-		QueryResult *bars_sql = WorldDatabase.Query(
-			"SELECT * FROM playercreateinfo_bars WHERE class=%u",pPlayerCreateInfo->class_ );
+		QueryResult *bars_sql = WorldDatabase.Query( "SELECT * FROM playercreateinfo_bars WHERE class=%u",pPlayerCreateInfo->class_ );
 
 		if(bars_sql)
 		{
@@ -659,7 +653,7 @@ Corpse* ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 	CorpseMap::const_iterator itr;
 	Corpse* rv = NULL;
 	_corpseslock.Acquire();
-	for (itr = m_corpses.begin();itr != m_corpses.end(); itr++)
+	for (itr = m_corpses.begin();itr != m_corpses.end(); ++itr)
 	{
 		if(itr->second->GetUInt32Value(CORPSE_FIELD_OWNER) == ownerguid)
 		{
@@ -675,7 +669,7 @@ Corpse* ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 
 void ObjectMgr::DelinkPlayerCorpses(Player* pOwner)
 {
-	//dupe protection agaisnt crashs
+	// dupe protection agaisnt crashs
 	Corpse* c;
 	c=this->GetCorpseByOwner(pOwner->GetLowGUID());
 	if(!c)return;
@@ -747,6 +741,45 @@ void ObjectMgr::SaveGMTicket(uint64 guid, QueryBuffer * buf)
 		buf->AddQueryStr(ss2.str());
 }
 
+void ObjectMgr::LoadQuestPOI()
+{
+	uint32 count = 0;
+	QueryResult *result = WorldDatabase.Query("SELECT questId, id, objIndex, mapid, WorldMapAreaId, FloorId, unk3, unk4 FROM quest_poi order by questId");
+	if(!result)
+		return;
+
+    if(result)
+    {
+		Field *fields = result->Fetch();
+		uint32 questId            = fields[0].GetUInt32();
+		uint32 id                 = fields[1].GetUInt32();
+		int32 objIndex            = fields[2].GetInt32();
+		uint32 mapId              = fields[3].GetUInt32();
+		uint32 WorldMapAreaId     = fields[4].GetUInt32();
+		uint32 FloorId            = fields[5].GetUInt32();
+		uint32 unk3               = fields[6].GetUInt32();
+		uint32 unk4               = fields[7].GetUInt32();
+		QuestPOI POI(id, objIndex, mapId, WorldMapAreaId, FloorId, unk3, unk4);
+		QueryResult *points = WorldDatabase.Query("SELECT x, y FROM quest_poi_points WHERE questId='%u' AND id='%i'", questId, id);
+		if (points)
+		{
+			do
+			{
+				Field *pointFields = points->Fetch();
+				int32 x = pointFields[0].GetInt32();
+				int32 y = pointFields[1].GetInt32();
+				QuestPOIPoint point(x, y);
+				POI.points.push_back(point);
+			}while (points->NextRow());
+        }
+
+		mQuestPOIMap[questId].push_back(POI);
+		++count;
+	} while (result->NextRow());
+
+	Log.Notice("ObjectMgr", "%u quest POI definitions.", count);
+}
+
 void ObjectMgr::SetHighestGuids()
 {
 	QueryResult *result;
@@ -807,17 +840,16 @@ void ObjectMgr::SetHighestGuids()
 		delete result;
 	}
 
-	Log.Notice("ObjectMgr", "HighGuid(CORPSE) = %u", m_hiCorpseGuid);
-	Log.Notice("ObjectMgr", "HighGuid(PLAYER) = %u", m_hiPlayerGuid);
-	Log.Notice("ObjectMgr", "HighGuid(GAMEOBJ) = %u", m_hiGameObjectSpawnId);
-	Log.Notice("ObjectMgr", "HighGuid(UNIT) = %u", m_hiCreatureSpawnId);
-	Log.Notice("ObjectMgr", "HighGuid(ITEM) = %u", m_hiItemGuid);
-	Log.Notice("ObjectMgr", "HighGuid(CONTAINER) = %u", m_hiContainerGuid);
-	Log.Notice("ObjectMgr", "HighGuid(GROUP) = %u", m_hiGroupId);
-	Log.Notice("ObjectMgr", "HighGuid(CHARTER) = %u", m_hiCharterId);
-	Log.Notice("ObjectMgr", "HighGuid(GUILD) = %u", m_hiGuildId);
+	Log.Notice("ObjectMgr", "Corpse Guid = %u", m_hiCorpseGuid);
+	Log.Notice("ObjectMgr", "Player Guid = %u", m_hiPlayerGuid);
+	Log.Notice("ObjectMgr", "GameObject Spawn = %u", m_hiGameObjectSpawnId);
+	Log.Notice("ObjectMgr", "Creature Spawn = %u", m_hiCreatureSpawnId);
+	Log.Notice("ObjectMgr", "Item Guid = %u", m_hiItemGuid);
+	Log.Notice("ObjectMgr", "Container Guid = %u", m_hiContainerGuid);
+	Log.Notice("ObjectMgr", "Group Id = %u", m_hiGroupId);
+	Log.Notice("ObjectMgr", "Charter Id = %u", m_hiCharterId);
+	Log.Notice("ObjectMgr", "Guild Id = %u", m_hiGuildId);
 }
-
 
 uint32 ObjectMgr::GenerateMailID()
 {
@@ -875,7 +907,7 @@ Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
 	{
 		std::string strName = name;
 		ARCTIC_TOLOWER(strName);
-		for (itr = _players.begin(); itr != _players.end(); itr++)
+		for (itr = _players.begin(); itr != _players.end(); ++itr)
 		{
 			if(!stricmp(itr->second->GetNameString()->c_str(), strName.c_str()))
 			{
@@ -886,7 +918,7 @@ Player* ObjectMgr::GetPlayer(const char* name, bool caseSensitive)
 	}
 	else
 	{
-		for (itr = _players.begin(); itr != _players.end(); itr++)
+		for (itr = _players.begin(); itr != _players.end(); ++itr)
 		{
 			if(!strcmp(itr->second->GetName(), name))
 			{
@@ -1134,6 +1166,7 @@ void ObjectMgr::LoadAIThreatToSpellId()
 
 	if(!result)
 	{
+		delete result;
 		return;
 	}
 
@@ -1192,7 +1225,6 @@ Item* ObjectMgr::LoadItem(uint64 guid)
 	{
 		ItemPrototype * pProto = ItemPrototypeStorage.LookupEntry(result->Fetch()[2].GetUInt32());
 		if(!pProto)
-			delete result;
 			return NULL;
 
 		if(pProto->InventoryType == INVTYPE_BAG)
@@ -1276,7 +1308,7 @@ void ObjectMgr::CorpseCollectorUnload()
 	for (itr = m_corpses.begin(); itr != m_corpses.end();)
 	{
 		Corpse* c =itr->second;
-		itr++;
+		++itr;
 		if(c->IsInWorld())
 			c->RemoveFromWorld(false);
 
@@ -1745,7 +1777,7 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 {
 	// Iterate levelinfo map until we find the right class+race.
 	LevelInfoMap::iterator itr = mLevelInfo.begin();
-	for(; itr != mLevelInfo.end(); itr++ )
+	for(; itr != mLevelInfo.end(); ++itr )
 	{
 		if( itr->first.first == Race && itr->first.second == Class)
 		{
@@ -1774,7 +1806,7 @@ uint32 ObjectMgr::GetPetSpellCooldown(uint32 SpellId)
 		return pscd > PET_SPELL_SPAM_COOLDOWN ? pscd : PET_SPELL_SPAM_COOLDOWN;
 	}
 	Log.Error("ObjectMgr","GetPetSpellCooldown tried to add a non existing spell %d",SpellId);
-	return 600000;//
+	return 600000;
 }
 
 void ObjectMgr::LoadSpellOverride()
@@ -2044,7 +2076,7 @@ Transporter* ObjectMgr::GetTransporterByEntry(uint32 entry)
 	Transporter* rv = NULL;
 	_TransportLock.Acquire();
 	HM_NAMESPACE::hash_map<uint32, Transporter* >::iterator itr = mTransports.begin();
-	for(; itr != mTransports.end(); itr++)
+	for(; itr != mTransports.end(); ++itr)
 	{
 		if(itr->second->GetEntry() == entry)
 		{
@@ -2202,7 +2234,7 @@ Charter * ObjectMgr::GetCharterByItemGuid(uint64 guid)
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
-		for(; itr != m_charters[i].end(); itr++)
+		for(; itr != m_charters[i].end(); ++itr)
 		{
 			if(itr->second->ItemGuid == guid)
 			{
@@ -2221,7 +2253,7 @@ Charter * ObjectMgr::GetCharterByGuid(uint64 playerguid, CharterTypes type)
 	for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
 	{
 		HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[i].begin();
-		for(; itr != m_charters[i].end(); itr++)
+		for(; itr != m_charters[i].end(); ++itr)
 		{
 			if(playerguid == itr->second->LeaderGuid)
 			{
@@ -2248,7 +2280,7 @@ Charter * ObjectMgr::GetCharterByName(string &charter_name, CharterTypes Type)
 	Charter * rv = 0;
 	m_charterLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Charter*>::iterator itr = m_charters[Type].begin();
-	for(; itr != m_charters[Type].end(); itr++)
+	for(; itr != m_charters[Type].end(); ++itr)
 	{
 		if(itr->second->GuildName == charter_name)
 		{
@@ -2572,7 +2604,7 @@ ArenaTeam * ObjectMgr::GetArenaTeamById(uint32 id)
 ArenaTeam * ObjectMgr::GetArenaTeamByName(string & name, uint32 Type)
 {
 	m_arenaTeamLock.Acquire();
-	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); itr++)
+	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); ++itr)
 	{
 		if(!strnicmp(itr->second->m_name.c_str(), name.c_str(), name.size()))
 		{
@@ -2620,12 +2652,12 @@ void ObjectMgr::UpdateArenaTeamRankings()
 	{
 		vector<ArenaTeam*> ranking;
 		
-		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); itr++)
+		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
 			ranking.push_back(itr->second);
 
 		std::sort(ranking.begin(), ranking.end(), ArenaSorter());
 		uint32 rank = 1;
-		for(vector<ArenaTeam*>::iterator itr = ranking.begin(); itr != ranking.end(); itr++)
+		for(vector<ArenaTeam*>::iterator itr = ranking.begin(); itr != ranking.end(); ++itr)
 		{
 			if((*itr)->m_stat_ranking != rank)
 			{
@@ -2643,7 +2675,7 @@ void ObjectMgr::UpdateArenaTeamWeekly()
 	m_arenaTeamLock.Acquire();
 	for(uint32 i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
 	{
-		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); itr++)
+		for(HM_NAMESPACE::hash_map<uint32,ArenaTeam*>::iterator itr = m_arenaTeamMap[i].begin(); itr != m_arenaTeamMap[i].end(); ++itr)
 		{
 			ArenaTeam *team = itr->second;
 			if(team)
@@ -2688,19 +2720,19 @@ void ObjectMgr::LoadPetLevelupSpellMap()
 
 	for	(uint32	i =	0; i < dbcCreatureFamily.GetNumRows(); ++i)
 	{
-		//Valid hunter pet family?
+		// Valid hunter pet family?
 		creatureFamily = dbcCreatureFamily.LookupEntry(i);
 		if(!creatureFamily || creatureFamily->pettalenttype < 0)
 			continue;
 
 		for(uint32 j = 0; j < dbcSkillLineSpell.GetNumRows(); ++j)
 		{
-			//Valid skill line?
+			// Valid skill line?
 			sk = dbcSkillLineSpell.LookupEntry(j);
 			if(!sk || sk->racemask != 0 || sk->classmask != 0)
 				continue;
 
-			//Vaild pet-family spell?
+			// Vaild pet-family spell?
 			sp = dbcSpell.LookupEntry(sk->spell);
 			if(!sp || sp->SpellFamilyName != SPELLFAMILY_HUNTER)
 				continue;
@@ -2900,7 +2932,7 @@ void ObjectMgr::LoadPetLevelupSpellMap()
 				}break;
 				default:
 				{
-					Log.Error("ObjectMgr",	"Unhandled creature	family %u",	creatureFamily->ID);
+					Log.Error("ObjectMgr", "Unhandled creature family %u", creatureFamily->ID);
 				}break;
 			}
 			mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel]	=	sk->spell;

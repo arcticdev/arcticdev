@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -942,29 +942,7 @@ AVNode::AVNode( AlteracValley* parent, AVNodeTemplate *tmpl, uint32 nodeid) : m_
 
 AVNode::~AVNode()
 {
-	if(m_boss && !m_boss->IsInWorld())
-		m_boss->Destructor();
 
-	if(m_flag && !m_flag->IsInWorld())
-		m_flag->Destructor();
-
-	if(m_aura && !m_aura->IsInWorld())
-		m_aura->Destructor();
-
-	if(m_glow && !m_glow->IsInWorld())
-		m_glow->Destructor();
-
-	if(m_homeNPC && !m_homeNPC->IsInWorld())
-		m_homeNPC->Destructor();
-
-	if(m_spiritGuide && !m_spiritGuide->IsInWorld())
-		m_spiritGuide->Destructor();
-
-	vector<Creature*>::iterator itr;
-	for(itr = m_guards.begin(); itr != m_guards.end(); itr++)
-		(*itr)->Destructor();
-
-	m_guards.clear();
 }
 
 void AVNode::Assault(Player* plr)
@@ -1189,7 +1167,7 @@ void AVNode::Spawn()
 	if( m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED || m_state == AV_NODE_STATE_HORDE_CONTROLLED )
 	{
 		OUT_DEBUG("AVNode::Spawn(%s) : despawning guards", m_template->m_name);
-		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); itr++)
+		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); ++itr)
 			(*itr)->Despawn(0, 0);
 		
 		m_guards.clear();
@@ -1402,11 +1380,7 @@ void AlteracValley::Init()
 
 AlteracValley::~AlteracValley()
 {
-	for(uint8 i = 0; i < AV_NUM_CONTROL_POINTS; ++i)
-	{
-		if(m_nodes[i])
-		delete m_nodes[i];
-	}
+
 }
 
 bool AlteracValley::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
@@ -1457,7 +1431,7 @@ bool AlteracValley::HookHandleRepop(Player* plr)
 
 	if(m_started)
 	{
-		for(x = 0; x < AV_NUM_CONTROL_POINTS; x++)
+		for(x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		{
 			// skip non-graveyards
 			if( !m_nodes[x]->m_template->m_isGraveyard )
@@ -1524,7 +1498,7 @@ void AlteracValley::OnCreate()
 		}
 	}
 	
-	for(uint32 x = 0; x < AV_NUM_CONTROL_POINTS; x++)
+	for(uint32 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		m_nodes[x] = new AVNode(TO_ALTERACVALLEY(this), &g_nodeTemplates[x], x);
 
 	// generals/leaders!
@@ -1543,13 +1517,13 @@ void AlteracValley::OnCreate()
 void AlteracValley::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	// open gates
-	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -1681,7 +1655,7 @@ void AlteracValley::Finish(uint32 losingTeam)
 	for(uint32 i = 0; i < 2; ++i)
 	{
 		uint32 diff = abs((int32)(m_reinforcements[i] - m_reinforcements[i ? 0 : 1]));
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->Root();
 
@@ -1704,7 +1678,7 @@ void AlteracValley::Finish(uint32 losingTeam)
 		}
 
 		int towerSaved = 0;
-		for(int x = 0; x < AV_NUM_CONTROL_POINTS; x++)
+		for(int x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		{
 			// skip non-graveyards
 			if( !m_nodes[x]->m_template->m_isGraveyard && !m_nodes[x]->m_destroyed &&
@@ -1795,11 +1769,6 @@ void AlteracValley::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 
 void AlteracValley::EventUpdateResources()
 {
-/*	for(uint32 i = 0; i < 2; i++)
-	{
-		AddReinforcements( i, m_mineControl[i] );
-	}
-	sEventMgr.AddEvent(this, &AlteracValley::EventUpdateResources, EVENT_BATTLEGROUND_RESOURCEUPDATE, 45000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);*/
 }
 
 void AlteracValley::EventAssaultControlPoint(uint32 x)

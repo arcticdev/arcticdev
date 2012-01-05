@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -10,7 +10,8 @@
 #include <string>
 #include "../Threading/Queue.h"
 #include "../CallBack.h"
-#include <mysql/mysql.h>
+
+#include "../../../dep/vc/include/mysql/mysql.h"
 
 using namespace std;
 class QueryResult;

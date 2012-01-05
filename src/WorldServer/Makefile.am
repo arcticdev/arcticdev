@@ -1,7 +1,6 @@
 INCLUDES += -I$(srcdir)/../libs
 
 bin_PROGRAMS = WorldServer
-
 WorldServer_SOURCES = \
     CollideInterface.cpp \
     CollideInterface.h \
@@ -187,8 +186,6 @@ WorldServer_SOURCES = \
     Main.cpp \
     Master.cpp \
     Master.h \
-    CConsole.cpp \
-    CConsole.h \
     BaseConsole.h \
     ConsoleCommands.cpp \
     ConsoleCommands.h \

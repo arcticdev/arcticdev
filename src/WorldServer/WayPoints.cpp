@@ -1,12 +1,8 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
-///////////////////////////////////////////////
-//  Waypoint Commands
-//
 
 #include "StdAfx.h"
 
@@ -1046,9 +1042,9 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		wp->o = 0;
 		wp->waittime = 5000;
 		wp->flags = 0;
-		wp->forwardemoteoneshot = false;
+		wp->forwardemoteoneshot = 0;
 		wp->forwardemoteid = 0;
-		wp->backwardemoteoneshot = false;
+		wp->backwardemoteoneshot = 0;
 		wp->backwardemoteid = 0;
 		wp->forwardskinid = 0;
 		wp->backwardskinid = 0;
@@ -1212,7 +1208,7 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 	float dist2;
 	Player* plr = m_session->GetPlayer();
 	unordered_set<Object* >::iterator itr;
-	for(itr = plr->GetInRangeSetBegin(); itr != plr->GetInRangeSetEnd(); itr++)
+	for(itr = plr->GetInRangeSetBegin(); itr != plr->GetInRangeSetEnd(); ++itr)
 	{
 		if( (dist2 = plr->GetDistance2dSq(*itr)) < dist && (*itr)->GetTypeId() == TYPEID_UNIT )
 		{

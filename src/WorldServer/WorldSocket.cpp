@@ -1,14 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "StdAfx.h"
 #include "AuthCodes.h"
-
-/* echo send/received packets to console */
-//#define ECHO_PACKET_LOG_TO_CONSOLE 1
 
 #ifndef CLUSTERING
 #pragma pack(push, 1)
@@ -31,8 +28,6 @@ WorldSocket::WorldSocket(SOCKET fd) : Socket(fd, sWorld.SocketSendBufSize, sWorl
 	mSize = mOpcode = mRemaining = 0;
 	_latency = 0;
 	mSession = NULL;
-	// This was causing WEIRD crashes in arc -- if you have a problem with it ask marcelo
-	//mSeed = rand() % 0xFFFFFFF0 + 10;
 	mSeed = RandomUInt();
 	pAuthenticationPacket = NULL;
 	mQueued = false;

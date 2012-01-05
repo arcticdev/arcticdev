@@ -1,12 +1,13 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #include "RStdAfx.h"
 
-static const uint32 LanguageSkills[NUM_LANGUAGES] = {
+static const uint32 LanguageSkills[NUM_LANGUAGES] =
+{
 	0,				// UNIVERSAL		0x00
 	109,			// ORCISH			0x01
 	113,			// DARNASSIAN		0x02
@@ -65,14 +66,6 @@ void Session::HandleMessagechatOpcode( WorldPacket & recv_data )
 	if( lang >= NUM_LANGUAGES )
 		return;
 
-	/*
-	if(GetPlayer()->IsBanned())
-		{
-			SystemMessage("You cannot do that when banned.");
-			return;
-		}*/
-	
-
 	string msg, misc;
 
 	// special misc
@@ -83,11 +76,6 @@ void Session::HandleMessagechatOpcode( WorldPacket & recv_data )
 	}
 	else
 		recv_data >> msg;
-
-	/*
-	if(!sHookInterface.OnChat(TO_PLAYER(_player), type, lang, msg, misc))
-			return;*/
-	
 
 	// Idiots spamming giant pictures through the chat system
 	if( msg.find("|TInterface") != string::npos || msg.find("\n") != string::npos)
@@ -138,13 +126,15 @@ void Session::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(lang > 0 && LanguageSkills[lang] /* && _player->_HasSkillLine(LanguageSkills[lang]) == false*/)
 				return;
 
-			if(lang==0 && !CanUseCommand("c"))
+			if(lang == 0 && !CanUseCommand("c"))
 				return;
 
-					data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand("c") || player->GetSession()->CanUseCommand("c")) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), uint64(GetPlayer()->Guid), GetPlayer()->GMPermissions.size() ? 4 : 0 );
+			{
+				data = sChatHandler.FillMessageData( CHAT_MSG_WHISPER, ((CanUseCommand("c") || player->GetSession()->CanUseCommand("c")) && lang != -1) ? LANG_UNIVERSAL : lang,  msg.c_str(), uint64(GetPlayer()->Guid), GetPlayer()->GMPermissions.size() ? 4 : 0 );
 
 				player->GetSession()->SendPacket(data);
 				delete data;
+			}
 
 			//Sent the to Users id as the channel, this should be fine as it's not used for whisper
 

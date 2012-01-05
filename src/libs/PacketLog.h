@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -16,10 +16,10 @@ class PacketLog : public Singleton< PacketLog > {
 public:
     PacketLog();
     ~PacketLog();
-    // utility functions
+    //utility functions
     int hextoint(char c);
     char makehexchar(int i);
-    // general log functions
+    //general log functions
     void HexDump(const unsigned char* data, size_t length, const char* file);
     void HexDump(const char *data, size_t length, const char* file);
     void HexDumpStr(const char *msg, const char *data, size_t len, const char* file);

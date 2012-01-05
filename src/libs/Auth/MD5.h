@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -8,7 +8,9 @@
 #define _MD5_H
 
 #include <stdlib.h>
-#include <openssl/md5.h>
+
+#include "../../../dep/VC/include/openssl/md5.h"
+
 #include "Common.h"
 
 class MD5Hash

@@ -1,6 +1,7 @@
 /*
+/*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -12,17 +13,6 @@
 class Socket;
 class SERVER_DECL SocketMgr : public Singleton<SocketMgr>
 {
-//#ifdef WIN32
-	/* Because windows uses global fd's (not starting from 0 for every app) we have to make this
-	 * a lot larger :( 
-	 */
-//	Socket * fds[FD_SETSIZE * 1500];
-//#else
-	/* Unix sockets start from 0 for every process.
-	 */
-//	Socket * fds[FD_SETSIZE];
-//#endif
-
 	/** FD->Pointer Map
 	 */
 	map<int, Socket*> fds;

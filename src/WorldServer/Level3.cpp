@@ -1,12 +1,8 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
-/////////////////////////////////////////////////
-//  Admin Chat Commands
-//
 
 #include "StdAfx.h"
 #include "ObjectMgr.h"
@@ -1051,7 +1047,7 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 	BlueSystemMessage(m_session, "Searching item set %u...", setid);
 	uint32 start = getMSTime();
 	sGMLog.writefromsession(m_session, "used add item set command, set %u, target %s", setid, chr->GetName());
-	for(std::list<ItemPrototype*>::iterator itr = l->begin(); itr != l->end(); itr++)
+	for(std::list<ItemPrototype*>::iterator itr = l->begin(); itr != l->end(); ++itr)
 	{
 		Item* itm = objmgr.CreateItem((*itr)->ItemId, m_session->GetPlayer());
 		if(!itm) continue;
@@ -1303,7 +1299,7 @@ bool ChatHandler::HandleAddTitleCommand(const char* args, WorldSession* m_sessio
 		return true;
 	}
 	uint32 title = args ? atoi(args) : 0;
-	if(title == 0 || title > PVPTITLE_END)
+	if(title == 0 || title > TITLE_END)
 	{
 		RedSystemMessage(m_session, "A title number (numeric) is required to be specified after this command.");
 		return true;
@@ -1323,7 +1319,7 @@ bool ChatHandler::HandleRemoveTitleCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 	uint32 title = args ? atoi(args) : 0;
-	if(title == 0 || title > PVPTITLE_END)
+	if(title == 0 || title > TITLE_END)
 	{
 		RedSystemMessage(m_session, "A title number (numeric) is required to be specified after this command.");
 		return true;
@@ -1342,7 +1338,7 @@ bool ChatHandler::HandleGetKnownTitlesCommand(const char* args, WorldSession* m_
 		return true;
 	}
 	std::stringstream ss;
-	for(uint32 i=1;i<=PVPTITLE_END;i++){
+	for(uint32 i=1;i<=TITLE_END;i++){
 		if(plr->HasKnownTitle(i)){
 			ss << i << " ";
 		}
@@ -1358,7 +1354,7 @@ bool ChatHandler::HandleSetChosenTitleCommand(const char* args, WorldSession* m_
 		return true;
 	}
 	uint32 title = args ? atoi(args) : 0;
-	if(title == 0 || title > PVPTITLE_END)
+	if(title == 0 || title > TITLE_END)
 	{
 		RedSystemMessage(m_session, "A title number (numeric) is required to be specified after this command.");
 		return true;
@@ -2656,7 +2652,7 @@ bool ChatHandler::HandleAIAgentDebugBegin(const char * args, WorldSession * m_se
 	} while(result->NextRow());
 	delete result;
 
-	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); itr++)
+	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); ++itr)
 	{
 		result = WorldDatabase.Query("SELECT * FROM ai_agents WHERE spell = %u", (*itr)->Id);
 		ASSERT(result);
@@ -2929,7 +2925,7 @@ bool ChatHandler::HandleCollisionTestIndoor(const char * args, WorldSession * m_
 	}
 	else
 	{
-		SystemMessage(m_session, "ArcTic was not compiled with collision support.");
+		SystemMessage(m_session, "Was not compiled with collision support.");
 		return true;
 	}
 }
@@ -2962,7 +2958,7 @@ bool ChatHandler::HandleCollisionTestLOS(const char * args, WorldSession * m_ses
 	}
 	else
 	{
-		SystemMessage(m_session, "ArcTic was not compiled with collision support.");
+		SystemMessage(m_session, "Was not compiled with collision support.");
 		return true;
 	}
 }
@@ -2987,7 +2983,7 @@ bool ChatHandler::HandleCollisionGetHeight(const char * args, WorldSession * m_s
 	}
 	else
 	{
-		SystemMessage(m_session, "ArcTic was not compiled with collision support.");
+		SystemMessage(m_session, "Was not compiled with collision support.");
 		return true;
 	}
 }
@@ -3077,7 +3073,7 @@ bool ChatHandler::HandleClearBonesCommand(const char *args, WorldSession *m_sess
 	Object::InRangeSet::iterator itr;
 	Object* obj;
 
-	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); itr++)
+	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); ++itr)
 	{
 		obj = *itr;
 		if(!obj)
@@ -3099,7 +3095,7 @@ bool ChatHandler::HandleClearCorpsesCommand(const char *args, WorldSession *m_se
 	Object::InRangeSet::iterator itr;
 	Object* obj;
 
-	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); itr++)
+	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); ++itr)
 	{
 		obj = *itr;
 		if(!obj)

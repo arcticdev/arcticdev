@@ -1,10 +1,8 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
-#pragma once
 
 #define MAX_WORKER_SERVERS 100
 #define MAX_SINGLE_MAPID 600
@@ -81,3 +79,4 @@ public:
 };
 
 #define sClusterMgr ClusterMgr::getSingleton()
+

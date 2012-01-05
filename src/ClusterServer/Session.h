@@ -1,10 +1,11 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef _R_SESSION_H
+#define _R_SESSION_H
 
 typedef void(Session::*SessionPacketHandler)(WorldPacket&);
 
@@ -119,7 +120,7 @@ public:
 	void HandlePageTextQueryOpcode( WorldPacket & recv_data );
 	void HandleItemNameQueryOpcode( WorldPacket & recv_data );
 
-	// Channel Opcodes (ChannelHandler.cpp)
+	/// Channel Opcodes (ChannelHandler.cpp)
 	void HandleChannelJoin(WorldPacket& recvPacket);
 	void HandleChannelLeave(WorldPacket& recvPacket);
 	void HandleChannelList(WorldPacket& recvPacket);
@@ -140,3 +141,7 @@ public:
 	void HandleChannelRosterQuery(WorldPacket & recvPacket);
 	void HandleMessagechatOpcode( WorldPacket & recv_data );
 };
+
+#endif
+
+

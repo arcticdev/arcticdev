@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -290,7 +290,7 @@ uint32 Object::BuildValuesUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	UpdateMask updateMask;
 	updateMask.SetCount( m_valuesCount );
 	_SetUpdateBits( &updateMask, target );
-	for(uint32 x = 0; x < m_valuesCount; x++)
+	for(uint32 x = 0; x < m_valuesCount; ++x)
 	{
 		if(updateMask.GetBit(x))
 		{
@@ -801,7 +801,7 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 	unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin();
 	unordered_set<Player*  >::iterator it_end = m_inRangePlayers.end();
 	int gm = ( m_objectTypeId == TYPEID_PLAYER ? TO_PLAYER(this)->m_isGmInvisible : 0 );
-	for(; itr != it_end; itr++)
+	for(; itr != it_end; ++itr)
 	{
 		ASSERT((*itr)->GetSession());
 		if( gm )
@@ -836,7 +836,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		uint32 myteam=TO_PLAYER(this)->GetTeam();
 		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
 		{
-			for(; itr != it_end; itr++)
+			for(; itr != it_end; ++itr)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam && PhasedCanInteract(*itr))
@@ -845,7 +845,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		}
 		else
 		{
-			for(; itr != it_end; itr++)
+			for(; itr != it_end; ++itr)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetTeam()==myteam && PhasedCanInteract(*itr))
@@ -857,7 +857,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 	{
 		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
 		{
-			for(; itr != it_end; itr++)
+			for(; itr != it_end; ++itr)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetSession()->GetPermissionCount() > 0 && PhasedCanInteract(*itr))
@@ -866,7 +866,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		}
 		else
 		{
-			for(; itr != it_end; itr++)
+			for(; itr != it_end; ++itr)
 			{
 				ASSERT((*itr)->GetSession());
 				if( PhasedCanInteract(*itr) )
@@ -1092,9 +1092,46 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			if( pGroup != NULL )
 				pGroup->HandleUpdateFieldChange( index, TO_PLAYER(this) );
 		}
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+		switch(index)
+		{
+		case UNIT_FIELD_LEVEL:
+		case PLAYER_XP:
+			TO_PLAYER(this)->save_LevelXP();
+			break;
+
+		case PLAYER_FIELD_COINAGE:
+			TO_PLAYER(this)->save_Gold();
+			break;
+		}
+#endif
 	}
 }
 
+/*
+//must be in %
+void Object::ModPUInt32Value(const uint32 index, const int32 value, bool apply )
+{
+	ASSERT( index < m_valuesCount );
+	int32 basevalue = (int32)m_uint32Values[ index ];
+	if(apply)
+		m_uint32Values[ index ] += ((basevalue*value)/100);
+	else
+		m_uint32Values[ index ] = (basevalue*100)/(100+value);
+
+	if(IsInWorld())
+	{
+		m_updateMask.SetBit( index );
+
+		if(!m_objectUpdated )
+		{
+			m_mapMgr->ObjectUpdated(this);
+			m_objectUpdated = true;
+		}
+	}
+}
+*/
 uint32 Object::GetModPUInt32Value(const uint32 index, const int32 value)
 {
 	ASSERT( index < m_valuesCount );
@@ -1130,6 +1167,20 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 		// mana and energy regen
 		if( index == UNIT_FIELD_POWER1 || index == UNIT_FIELD_POWER4 )
 			TO_PLAYER( this )->SendPowerUpdate();
+
+#ifdef OPTIMIZED_PLAYER_SAVING
+		switch(index)
+		{
+		case UNIT_FIELD_LEVEL:
+		case PLAYER_XP:
+			TO_PLAYER(this)->save_LevelXP();
+			break;
+
+		case PLAYER_FIELD_COINAGE:
+			TO_PLAYER(this)->save_Gold();
+			break;
+		}
+#endif
 	}
 }
 
@@ -1153,6 +1204,19 @@ void Object::ModSignedInt32Value(uint32 index, int32 value )
 
 	if(m_objectTypeId == TYPEID_PLAYER)
 	{
+#ifdef OPTIMIZED_PLAYER_SAVING
+		switch(index)
+		{
+		case UNIT_FIELD_LEVEL:
+		case PLAYER_XP:
+			TO_PLAYER(this)->save_LevelXP();
+			break;
+
+		case PLAYER_FIELD_COINAGE:
+			TO_PLAYER(this)->save_Gold();
+			break;
+		}
+#endif
 	}
 }
 
@@ -1683,6 +1747,12 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			TO_PLAYER(this)->CreateResetGuardHostileFlagEvent();
 		}
 
+/*		if(!pVictim->isInCombat() && pVictim->IsPlayer())
+			sHookInterface.OnEnterCombat( TO_PLAYER( pVictim ), TO_UNIT(this) );
+
+		if(IsPlayer() && ! TO_PLAYER(this)->isInCombat())
+			sHookInterface.OnEnterCombat( TO_PLAYER(this), TO_PLAYER(this) );*/
+			
 		if(IsPet())
 			plr = TO_PET(this)->GetPetOwner();
 		else if(IsPlayer())
@@ -2947,7 +3017,10 @@ void Object::CastSpell( Object* Target, SpellEntry* Sp, bool triggered )
 
 void Object::CastSpell( Object* Target, uint32 SpellID, bool triggered )
 {
-	CastSpell(Target, dbcSpell.LookupEntry(SpellID), triggered); // schnek: one null check should be more than enough, or? ;)
+	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
+	if(ent == 0) return;
+
+	CastSpell(Target, ent, triggered);
 }
 
 void Object::CastSpell( uint64 targetGuid, SpellEntry* Sp, bool triggered )
@@ -2962,5 +3035,8 @@ void Object::CastSpell( uint64 targetGuid, SpellEntry* Sp, bool triggered )
 
 void Object::CastSpell( uint64 targetGuid, uint32 SpellID, bool triggered )
 {
-	CastSpell(targetGuid, dbcSpell.LookupEntry(SpellID), triggered); // schnek: one null check should be more than enough, or? ;)
+	SpellEntry * ent = dbcSpell.LookupEntry(SpellID);
+	if(ent == 0) return;
+
+	CastSpell(targetGuid, ent, triggered);
 }

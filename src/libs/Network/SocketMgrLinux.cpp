@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -12,6 +12,8 @@ void SocketMgr::AddSocket(Socket * s)
 {
 	if(fds[s->GetFd()] != NULL)
 	{
+		//fds[s->GetFd()]->Delete();
+		//fds[s->GetFd()] = NULL;
 		s->Delete();
 		return;
 	}

@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -17,67 +17,6 @@ class Player;
 class Item;
 class Group;
 class Aura;
-/* Spell Ranges:(for 1.10.2)
-Range ID|Range|Description
-1       0-0     Self Only
-2       0-5     Combat Range
-3       0-20    Short Range
-4       0-30    Medium Range
-5       0-40    Long Range
-6       0-100   Vision Range
-7       0-10    Very Short Range
-8       10-20   Short Range
-9       10-30   Medium Range
-10      10-40   Long Range
-11      0-15    Shorter Range
-12      0-5     Interact Range
-13      0-50000 Anywhere
-14      0-60    Extra Long Range
-34      0-25    Medium-Short Range
-35      0-35    Medium-Long Range
-36      0-45    Longer Range
-37      0-50    Extended Range
-38      10-25   Extra Medium Range
-54      5-30    Geoff Monster Shoot
-74      8-30    Ranged Weapon
-94      8-40    Sting
-95      8-25    Charge
-96      0-2     Trap
-114     8-35    Hunter Range Hunter
-134     0-80    Tower 80 Tower
-135     0-100   Tower 100 Tower
-*/
-
-/*FLAT PCT
-0    x    x
-1    x    x
-2    x    x
-3         x
-4    x
-5    x    x
-6    x    x
-7    x =  x//both add % to crit
-8    x    x
-9         x
-10   x    x
-11   x    x
-12   x
-13    
-14   x    x
-15        x
-16   x    
-17   x
-18   x    x
-19   x
-20        x
-21    
-22   x    x
-23   x(enslave dem)
-24    
-25
-26   x(obsolete)
-27        x
-*/
 
 enum SUMMON_TYPE
 {
@@ -96,9 +35,9 @@ enum SUMMON_TYPE
 	SUMMON_TYPE_WATER_ELEMENTAL = 1561,
 };
 
-//wooohooo, there are 19 spells that actually require to add a proccounter for these 
-//first spell catched is "presence of mind"
-//an ugly solution would be to add a proc flag to remove aura on event it should expire (like attack or cast) but that is only if count=1
+// wooohooo, there are 19 spells that actually require to add a proccounter for these 
+// first spell catched is "presence of mind"
+// an ugly solution would be to add a proc flag to remove aura on event it should expire (like attack or cast) but that is only if count=1
 enum SPELL_MODIFIER_TYPE
 {
     SMT_DAMAGE_DONE         =0,// increases the damage done by spell by x% dmg (flat as x dmg)
@@ -2121,26 +2060,6 @@ public:
 	uint32 m_pushbackCount;
 
     bool duelSpell;
-
-	////////////////////////////////////////////////////////////////////////////////
-	// bool DuelSpellNoMoreValid()
-	//  Tells if the Spell was being casted while dueling but now the duel is over
-	//
-	// Return Value
-	//  Returns true if Spell is now invalid because the duel is over.
-	//  Returns false if Spell is valid.
-	//
-	///////////////////////////////////////////////////////////////////////////////
-
-	bool DuelSpellNoMoreValid()
-	{
-		if(duelSpell && (
-				(p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||  
-				(u_caster != NULL && u_caster->IsPet() && TO_PET(u_caster)->GetPetOwner() && TO_PET(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))  
-			return true;
-		else
-			return false;
-	}
 
 	ARCTIC_INLINE void safe_cancel()
 	{

@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -156,7 +156,7 @@ namespace VMAP
             #ifdef _ASSEMBLER_DEBUG
             if(mapId == 0)                                  // "Azeroth" just for debug
             {
-                for(int x=28; x<29 && result; x++)          //debug
+                for(int x=28; x<29 && result; ++x)          //debug
                 {
                     for(int y=28; y<29 && result; ++y)
                     {
@@ -165,7 +165,7 @@ namespace VMAP
                         // ignore test (13), Test (29) , development (451)
                         if(mapId != 369 && mapId != 13 && mapId != 29 && mapId != 451)
                         {
-                            for(int x=0; x<66 && result; x++)
+                            for(int x=0; x<66 && result; ++x)
                             {
                                 for(int y=0; y<66 && result; ++y)
                                 {

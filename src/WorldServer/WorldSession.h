@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -164,7 +164,7 @@ public:
 	void write(WorldPacket & data);
 };
 
-#define PLAYER_LOGOUT_DELAY (20*1000)		/* 20 seconds should be more than enough to gank ya. */
+#define PLAYER_LOGOUT_DELAY (20*1000) /* 20 seconds should be more than enough to gank ya. */
 
 #define CHECK_INWORLD_RETURN if(_player == NULL || !_player->IsInWorld()) { return; }
 #define CHECK_GUID_EXISTS(guidx) if(_player->GetMapMgr()->GetUnit((guidx)) == NULL) { return; }
@@ -172,7 +172,7 @@ public:
 
 #define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
 #define NOTIFICATION_MESSAGE_FAILURE "The requested action could not be performed."
-//#define CHECK_PACKET_SIZE(x, y) if(y > 0 && x.size() < y) { _socket->Disconnect(); return; }
+// #define CHECK_PACKET_SIZE(x, y) if(y > 0 && x.size() < y) { _socket->Disconnect(); return; }
 
 void EncodeHex(const char* source, char* dest, uint32 size);
 void DecodeHex(const char* source, char* dest, uint32 size);
@@ -251,7 +251,7 @@ public:
 			delete [] sAccountData[index].data;
 		sAccountData[index].data = data;
 		sAccountData[index].sz = sz;
-		if(!initial && !sAccountData[index].bIsDirty)		// Mark as "changed" or "dirty"
+		if(!initial && !sAccountData[index].bIsDirty) // Mark as "changed" or "dirty"
 			sAccountData[index].bIsDirty = true;
 		else if(initial)
 			sAccountData[index].bIsDirty = false;
@@ -308,7 +308,7 @@ public:
 	bool bDeleted;
 	ARCTIC_INLINE uint32 GetInstance() { return instanceId; }
 	Mutex deleteMutex;
-	void _HandleAreaTriggerOpcode(uint32 id);//real handle
+	void _HandleAreaTriggerOpcode(uint32 id); // real handle
 	int32 m_moveDelayTime;
 	int32 m_clientTimeDelay;
 
@@ -332,13 +332,14 @@ protected:
 	uint8 m_highestLevel;
 	uint8 DeleteCharacter(uint32 guid);
 
-	/// Login screen opcodes (PlayerHandler.cpp):
+	// Login screen opcodes (PlayerHandler.cpp):
 	void HandleCharEnumOpcode(WorldPacket& recvPacket);
 	void HandleCharDeleteOpcode(WorldPacket& recvPacket);
 	void HandleCharCreateOpcode(WorldPacket& recvPacket);
 	void HandlePlayerLoginOpcode(WorldPacket& recvPacket);
+	void HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data); // russian nicknames support
 
-	/// Authentification and misc opcodes (MiscHandler.cpp):
+	// Authentification and misc opcodes (MiscHandler.cpp):
 	void HandlePingOpcode(WorldPacket& recvPacket);
 	void HandleAuthSessionOpcode(WorldPacket& recvPacket);
 	void HandleRepopRequestOpcode(WorldPacket& recvPacket);
@@ -372,14 +373,14 @@ protected:
 	void HandleTogglePVPOpcode(WorldPacket& recvPacket);
 	void HandleAmmoSetOpcode(WorldPacket& recvPacket);
 	void HandleGameObjectUse(WorldPacket& recvPacket);
-	//void HandleJoinChannelOpcode(WorldPacket& recvPacket);
-	//void HandleLeaveChannelOpcode(WorldPacket& recvPacket);
+	// void HandleJoinChannelOpcode(WorldPacket& recvPacket);
+	// void HandleLeaveChannelOpcode(WorldPacket& recvPacket);
 	void HandlePlayedTimeOpcode(WorldPacket & recv_data);
 	void HandleSetSheathedOpcode(WorldPacket & recv_data);
 	void HandleCompleteCinematic(WorldPacket & recv_data);
 	void HandleInspectOpcode( WorldPacket & recv_data );
 
-	/// Gm Ticket System in GMTicket.cpp:
+	// Gm Ticket System in GMTicket.cpp:
 	void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);
 	void HandleGMTicketUpdateOpcode(WorldPacket& recvPacket);
 	void HandleGMTicketDeleteOpcode(WorldPacket& recvPacket);
@@ -387,7 +388,7 @@ protected:
 	void HandleGMTicketSystemStatusOpcode(WorldPacket& recvPacket);
 	void HandleGMTicketToggleSystemStatusOpcode(WorldPacket& recvPacket);
 
-	/// Opcodes implemented in QueryHandler.cpp:
+	// Opcodes implemented in QueryHandler.cpp:
 	void HandleNameQueryOpcode(WorldPacket& recvPacket);
 	void HandleQueryTimeOpcode(WorldPacket& recvPacket);
 	void HandleCreatureQueryOpcode(WorldPacket& recvPacket);
@@ -395,7 +396,7 @@ protected:
 	void HandleItemNameQueryOpcode( WorldPacket & recv_data );
 	void HandlePageTextQueryOpcode( WorldPacket & recv_data );
 
-	/// Opcodes implemented in MovementHandler.cpp
+	// Opcodes implemented in MovementHandler.cpp
 	void HandleMoveWorldportAckOpcode( WorldPacket& recvPacket );
 	void HandleMovementOpcodes( WorldPacket& recvPacket );
 	void HandleMoveFallResetOpcode( WorldPacket & recvPacket);
@@ -404,7 +405,7 @@ protected:
 	void HandleSetActiveMoverOpcode( WorldPacket & recv_data );
 	void HandleMoveTeleportAckOpcode( WorldPacket & recv_data );
 
-	/// Opcodes implemented in GroupHandler.cpp:
+	// Opcodes implemented in GroupHandler.cpp:
 	void HandleGroupInviteOpcode(WorldPacket& recvPacket);
 	void HandleGroupCancelOpcode(WorldPacket& recvPacket);
 	void HandleGroupAcceptOpcode(WorldPacket& recvPacket);
@@ -440,13 +441,13 @@ protected:
 	void HandleLfgInviteAccept(WorldPacket & recvPacket);
 	void HandleLfgInviteDeny(WorldPacket & recvPacket);
 
-	/// Taxi opcodes (TaxiHandler.cpp)
+	// Taxi opcodes (TaxiHandler.cpp)
 	void HandleTaxiNodeStatusQueryOpcode(WorldPacket& recvPacket);
 	void HandleTaxiQueryAvaibleNodesOpcode(WorldPacket& recvPacket);
 	void HandleActivateTaxiOpcode(WorldPacket& recvPacket);
 	void HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket);
 
-	/// NPC opcodes (NPCHandler.cpp)
+	// NPC opcodes (NPCHandler.cpp)
 	void HandleTabardVendorActivateOpcode(WorldPacket& recvPacket);
 	void HandleBankerActivateOpcode(WorldPacket& recvPacket);
 	void HandleBuyBankSlotOpcode(WorldPacket& recvPacket); 
@@ -480,7 +481,7 @@ protected:
 	void HandleMailTime(WorldPacket & recv_data);
 	void HandleMailCreateTextItem(WorldPacket & recv_data );
 
-	/// Item opcodes (ItemHandler.cpp)
+	// Item opcodes (ItemHandler.cpp)
 	void HandleSwapInvItemOpcode(WorldPacket& recvPacket);
 	void HandleSwapItemOpcode(WorldPacket& recvPacket);
 	void HandleDestroyItemOpcode(WorldPacket& recvPacket);
@@ -500,11 +501,11 @@ protected:
 	void HandleCancelTemporaryEnchantmentOpcode(WorldPacket &recvPacket);
 	void HandleInsertGemOpcode(WorldPacket &recvPacket);
 
-	/// Combat opcodes (CombatHandler.cpp)
+	// Combat opcodes (CombatHandler.cpp)
 	void HandleAttackSwingOpcode(WorldPacket& recvPacket);
 	void HandleAttackStopOpcode(WorldPacket& recvPacket);
 
-	/// Spell opcodes (SpellHandler.cpp)
+	// Spell opcodes (SpellHandler.cpp)
 	void HandleUseItemOpcode(WorldPacket& recvPacket);
 	void HandleCastSpellOpcode(WorldPacket& recvPacket);
 	void HandleCancelCastOpcode(WorldPacket& recvPacket);
@@ -513,13 +514,13 @@ protected:
 	void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data);
 	void HandleAddDynamicTargetOpcode(WorldPacket & recvPacket);
 
-	/// Skill opcodes (SkillHandler.spp)
+	// Skill opcodes (SkillHandler.spp)
 	//void HandleSkillLevelUpOpcode(WorldPacket& recvPacket);
 	void HandleLearnTalentOpcode(WorldPacket& recvPacket);
 	void HandleLearnPreviewTalents(WorldPacket& recv_data);
 	void HandleUnlearnTalents( WorldPacket & recv_data );
 
-	/// Quest opcodes (QuestHandler.cpp)
+	// Quest opcodes (QuestHandler.cpp)
 	void HandleQuestgiverStatusQueryOpcode(WorldPacket& recvPacket);
 	void HandleQuestgiverHelloOpcode(WorldPacket& recvPacket);
 	void HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvPacket);
@@ -532,19 +533,20 @@ protected:
 	void HandleQuestlogRemoveQuestOpcode(WorldPacket& recvPacket);
 	void HandlePushQuestToPartyOpcode(WorldPacket &recvPacket);
 	void HandleQuestPushResult(WorldPacket &recvPacket);
+	void HandleQuestPOI(WorldPacket &recvPacket);
 
-	/// Chat opcodes (Chat.cpp)
+	// Chat opcodes (Chat.cpp)
 	void HandleMessagechatOpcode(WorldPacket& recvPacket);
 	void HandleTextEmoteOpcode(WorldPacket& recvPacket);
 	void HandleReportSpamOpcode(WorldPacket& recvPacket);
 
-	/// Corpse opcodes (Corpse.cpp)
+	// Corpse opcodes (Corpse.cpp)
 	void HandleCorpseReclaimOpcode( WorldPacket& recvPacket );
 	void HandleCorpseQueryOpcode( WorldPacket& recvPacket );
 	void HandleResurrectResponseOpcode(WorldPacket& recvPacket);
 
 #ifndef CLUSTERING
-	/// Channel Opcodes (ChannelHandler.cpp)
+	// Channel Opcodes (ChannelHandler.cpp)
 	void HandleChannelJoin(WorldPacket& recvPacket);
 	void HandleChannelLeave(WorldPacket& recvPacket);
 	void HandleChannelList(WorldPacket& recvPacket);
@@ -583,9 +585,9 @@ protected:
 
 	// Guild
 	void HandleGuildQuery(WorldPacket & recv_data);
-	void HandleCreateGuild(WorldPacket & recv_data);				   
-	void HandleInviteToGuild(WorldPacket & recv_data);			  
-	void HandleGuildAccept(WorldPacket & recv_data);			 
+	void HandleCreateGuild(WorldPacket & recv_data);
+	void HandleInviteToGuild(WorldPacket & recv_data);
+	void HandleGuildAccept(WorldPacket & recv_data);
 	void HandleGuildDecline(WorldPacket & recv_data);
 	void HandleGuildInfo(WorldPacket & recv_data);
 	void HandleGuildRoster(WorldPacket & recv_data);
@@ -657,15 +659,15 @@ protected:
 	void HandleSetActionBarTogglesOpcode(WorldPacket &recvPacket);
 	void HandleMoveSplineCompleteOpcode(WorldPacket &recvPacket);
 
-	/// Helper functions
+	// Helper functions
 	void SetNpcFlagsForTalkToQuest(const uint64& guid, const uint64& targetGuid);
 
-	//Tutorials
+	// Tutorials
 	void HandleTutorialFlag ( WorldPacket & recv_data );
 	void HandleTutorialClear( WorldPacket & recv_data );
 	void HandleTutorialReset( WorldPacket & recv_data );
 
-	//Acknowledgements
+	// Acknowledgements
 	void HandleAcknowledgementOpcodes( WorldPacket & recv_data );
 	void HandleMountSpecialAnimOpcode(WorldPacket& recv_data);	
 
@@ -679,7 +681,7 @@ protected:
 	void HandleSetVisibleRankOpcode(WorldPacket& recv_data);
 	void HandlePetSetActionOpcode(WorldPacket& recv_data);
 
-	//instances
+	// instances
 	void HandleResetInstanceOpcode(WorldPacket& recv_data);
     void HandleDungeonDifficultyOpcode(WorldPacket& recv_data);
 
@@ -706,6 +708,10 @@ protected:
 	void HandleWorldportOpcode(WorldPacket & recv_data);
 	void HandleWrapItemOpcode(WorldPacket& recv_data);
 
+	// VOICECHAT
+	void HandleEnableMicrophoneOpcode(WorldPacket & recv_data);
+	void HandleVoiceChatQueryOpcode(WorldPacket & recv_data);
+	void HandleChannelVoiceQueryOpcode(WorldPacket & recv_data);
 	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
 
 	void HandleSetFriendNote(WorldPacket & recv_data);
@@ -717,9 +723,11 @@ protected:
 	void HandleAchievementInspect(WorldPacket & recv_data);
 	void HandleRemoveGlyph(WorldPacket & recv_data);
 	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
-	void HandleCharacterCustomization(WorldPacket & recv_data);
 
-	//Vehicles
+	void HandleCharacterCustomization(WorldPacket & recv_data);
+	void HandleReadyForAccountDataTimes(WorldPacket& recv_data);
+
+	// Vehicles
 	void HandleVehicleDismiss(WorldPacket & recv_data);
 	void HandleSpellClick( WorldPacket & recv_data );
 

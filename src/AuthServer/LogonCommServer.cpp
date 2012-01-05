@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -51,7 +51,7 @@ void LogonCommServerSocket::OnDisconnect()
 	if(!removed)
 	{
 		set<uint32>::iterator itr = server_ids.begin();
-		for(; itr != server_ids.end(); itr++)
+		for(; itr != server_ids.end(); ++itr)
 			sInfoCore.SetRealmOffline((*itr), this);
 
 		sInfoCore.RemoveServerSocket(this);
@@ -118,7 +118,8 @@ void LogonCommServerSocket::HandlePacket(WorldPacket & recvData)
 		return;
 	}
 
-	static logonpacket_handler Handlers[RMSG_COUNT] = {
+	static logonpacket_handler Handlers[RMSG_COUNT] =
+	{
 		NULL,												// RMSG_NULL
 		&LogonCommServerSocket::HandleRegister,				// RCMSG_REGISTER_REALM
 		NULL,												// RSMSG_REALM_REGISTERED

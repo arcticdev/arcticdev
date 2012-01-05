@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -292,7 +292,7 @@ void WorldSession::HandleInrangeQuestgiverQuery(WorldPacket & recv_data)
 	//    64 guid
 	//    8 status
 
-	for( itr = _player->m_objectsInRange.begin(); itr != _player->m_objectsInRange.end(); itr++ )
+	for( itr = _player->m_objectsInRange.begin(); itr != _player->m_objectsInRange.end(); ++itr )
 	{
 		pCreature = TO_CREATURE(*itr);
 		if( pCreature->GetTypeId() != TYPEID_UNIT )

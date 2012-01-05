@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -435,4 +435,4 @@ enum ECorpseFields
 
 #define PLAYER_VISIBLE_ITEM_LENGTH                (PLAYER_VISIBLE_ITEM_2_ENTRYID - PLAYER_VISIBLE_ITEM_1_ENTRYID)
 
-#endif		// __UPDATEFIELDS_H
+#endif // __UPDATEFIELDS_H

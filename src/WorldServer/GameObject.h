@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -119,6 +119,9 @@ enum GameObjectDynFlags
 class SERVER_DECL GameObject : public Object
 {
 public:
+	/************************************************************************/
+	/* LUA Stuff                                                            */
+	/************************************************************************/
 
 	GameObject(uint64 guid);
 	~GameObject( );
@@ -142,7 +145,8 @@ public:
 	// Serialization
 	void SaveToDB();
 	void SaveToFile(std::stringstream & name);
-
+	//bool LoadFromDB(uint32 guid);
+	//void LoadFromDB(GameObjectTemplate *t);
 	void DeleteFromDB();
 	void EventCloseDoor();
 	uint64 m_rotation;

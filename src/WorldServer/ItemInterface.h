@@ -1,19 +1,19 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
 #ifndef _ITEMINTERFACE_H
 #define _ITEMINTERFACE_H
 
-#define INVALID_BACKPACK_SLOT ((int8)(0xFF)) //In 1.8 client marked wrong slot like this
+#define INVALID_BACKPACK_SLOT ((uint8)(0xFF)) //In 1.8 client marked wrong slot like this
 
 struct SlotResult
 {
 	SlotResult() { ContainerSlot = -1, Slot = -1, Result = false; }
-	int8 ContainerSlot;
-	int8 Slot;
+	uint8 ContainerSlot;
+	uint8 Slot;
 	bool Result;
 };
 
@@ -39,15 +39,15 @@ private:
 	Item* m_pItems[MAX_INVENTORY_SLOT];
 	Item* m_pBuyBack[MAX_BUYBACK_SLOT];
 
-	AddItemResult m_AddItem(Item* item, int8 ContainerSlot, int8 slot);
+	AddItemResult m_AddItem(Item* item, uint8 ContainerSlot, uint8 slot);
 
 public:
 	friend class ItemIterator;
 	ItemInterface( Player* pPlayer );
 	~ItemInterface();
 
-	ARCTIC_INLINE Player* GetOwner() { return m_pOwner; }
-	bool IsBagSlot(int8 slot);
+	Player* GetOwner() { return m_pOwner; }
+	bool IsBagSlot(uint8 slot);
 
 	uint32 m_CreateForPlayer(ByteBuffer *data);
 	void m_DestroyForPlayer();
@@ -55,18 +55,18 @@ public:
 	void mLoadItemsFromDatabase(QueryResult * result);
 	void mSaveItemsToDatabase(bool first, QueryBuffer * buf);
 
-	Item* GetInventoryItem(int8 slot);
-	Item* GetInventoryItem(int8 ContainerSlot, int8 slot);
-	int8 GetInventorySlotById(uint32 ID);
-	int8 GetInventorySlotByGuid(uint64 guid);
-	int8 GetBagSlotByGuid(uint64 guid);
+	Item* GetInventoryItem(uint8 slot);
+	Item* GetInventoryItem(uint8 ContainerSlot, uint8 slot);
+	uint8 GetInventorySlotById(uint32 ID);
+	uint8 GetInventorySlotByGuid(uint64 guid);
+	uint8 GetBagSlotByGuid(uint64 guid);
 
-	Item* SafeAddItem(uint32 ItemId, int8 ContainerSlot, int8 slot);
-	AddItemResult SafeAddItem(Item* pItem, int8 ContainerSlot, int8 slot);
-	Item* SafeRemoveAndRetreiveItemFromSlot(int8 ContainerSlot, int8 slot, bool destroy); //doesnt destroy item from memory
+	Item* SafeAddItem(uint32 ItemId, uint8 ContainerSlot, uint8 slot);
+	AddItemResult SafeAddItem(Item* pItem, uint8 ContainerSlot, uint8 slot);
+	Item* SafeRemoveAndRetreiveItemFromSlot(uint8 ContainerSlot, uint8 slot, bool destroy); //doesnt destroy item from memory
 	Item* SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy);
 	Item* SafeRemoveAndRetreiveItemByGuidRemoveStats(uint64 guid, bool destroy);
-	bool SafeFullRemoveItemFromSlot(int8 ContainerSlot, int8 slot); //destroys item fully
+	bool SafeFullRemoveItemFromSlot(uint8 ContainerSlot, uint8 slot); //destroys item fully
 	bool SafeFullRemoveItemByGuid(uint64 guid); //destroys item fully
 	AddItemResult AddItemToFreeSlot(Item* item);
 	AddItemResult AddItemToFreeBankSlot(Item* item);
@@ -95,22 +95,22 @@ public:
 	SlotResult FindFreeInventorySlot(ItemPrototype *proto);
 	SlotResult FindFreeBankSlot(ItemPrototype *proto);
 	SlotResult FindAmmoBag();
-	int8 FindFreeBackPackSlot();
-	int8 FindFreeKeyringSlot();
-	int8 FindSpecialBag(Item* item);
+	uint8 FindFreeBackPackSlot();
+	uint8 FindFreeKeyringSlot();
+	uint8 FindSpecialBag(Item* item);
 
 
-	int8 CanEquipItemInSlot(int8 DstInvSlot, int8 slot, ItemPrototype* item, bool ignore_combat = false, bool skip_2h_check = false);
-	int8 CanReceiveItem(ItemPrototype * item, uint32 amount, ItemExtendedCostEntry *ec);
-	int8 CanAffordItem(ItemPrototype * item,uint32 amount, Creature* pVendor, ItemExtendedCostEntry *ec);
-	int8 GetItemSlotByType(uint32 type);
+	uint8 CanEquipItemInSlot(uint8 DstInvSlot, uint8 slot, ItemPrototype* item, bool ignore_combat = false, bool skip_2h_check = false);
+	uint8 CanReceiveItem(ItemPrototype * item, uint32 amount, ItemExtendedCostEntry *ec);
+	uint8 CanAffordItem(ItemPrototype * item,uint32 amount, Creature* pVendor, ItemExtendedCostEntry *ec);
+	uint8 GetItemSlotByType(uint32 type);
 	Item* GetItemByGUID(uint64 itemGuid);
 
 
 	void BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint8 Error);
-	void SwapItemSlots(int8 srcslot, int8 dstslot);
+	void SwapItemSlots(uint8 srcslot, uint8 dstslot);
 
-	int8 GetInternalBankSlotFromPlayer(int8 islot); //converts inventory slots into 0-x numbers
+	uint8 GetInternalBankSlotFromPlayer(uint8 islot); //converts inventory slots into 0-x numbers
 
 	//buyback stuff
 	ARCTIC_INLINE Item* GetBuyBack(int32 slot) 
@@ -128,43 +128,34 @@ public:
 	void CheckAreaItems();
 
 public:
-	ARCTIC_INLINE bool VerifyBagSlots(int8 ContainerSlot, int8 Slot)
+	ARCTIC_INLINE bool VerifyBagSlots(uint8 ContainerSlot, uint8 Slot)
 	{
-		if( ContainerSlot < -1 || Slot < 0 )
-			return false;
-
 		if( ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END) )
 			return false;
 
-		if( ContainerSlot == -1 && (Slot >= INVENTORY_SLOT_ITEM_END  || Slot <= EQUIPMENT_SLOT_END) )
+		if( ContainerSlot == ((uint8)-1) && (Slot >= INVENTORY_SLOT_ITEM_END  || Slot <= EQUIPMENT_SLOT_END) )
 			return false;
 			
 		return true;
 	}
 
-	ARCTIC_INLINE bool VerifyBagSlotsWithBank(int8 ContainerSlot, int8 Slot)
+	ARCTIC_INLINE bool VerifyBagSlotsWithBank(uint8 ContainerSlot, uint8 Slot)
 	{
-		if( ContainerSlot < -1 || Slot < 0 )
-			return false;
-
 		if( ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END) )
 			return false;
 
-		if( ContainerSlot == -1 && (Slot >= MAX_INVENTORY_SLOT || Slot <= EQUIPMENT_SLOT_END) )
+		if( ContainerSlot == ((uint8)-1) && (Slot >= MAX_INVENTORY_SLOT || Slot <= EQUIPMENT_SLOT_END) )
 			return false;
 
 		return true;
 	}
 
-	ARCTIC_INLINE bool VerifyBagSlotsWithInv(int8 ContainerSlot, int8 Slot)
+	ARCTIC_INLINE bool VerifyBagSlotsWithInv(uint8 ContainerSlot, uint8 Slot)
 	{
-		if( ContainerSlot < -1 || Slot < 0 )
-			return false;
-
 		if( ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END) )
 			return false;
 
-		if( ContainerSlot == -1 && Slot >= MAX_INVENTORY_SLOT )
+		if( ContainerSlot == ((uint8)-1) && Slot >= MAX_INVENTORY_SLOT )
 			return false;
 
 		return true;
@@ -175,13 +166,13 @@ class ItemIterator
 {
 	bool m_atEnd;
 	bool m_searchInProgress;
-	uint32 m_slot;
-	uint32 m_containerSlot;
-	Container* m_container;
-	Item* m_currentItem;
+	uint8 m_slot;
+	uint8 m_containerSlot;
+	Container*  m_container;
+	Item*  m_currentItem;
 	ItemInterface* m_target;
 public:
-	ItemIterator(ItemInterface* target) : m_atEnd(false),m_searchInProgress(false),m_slot(0),m_containerSlot(0),m_container(NULL),m_target(target) {}
+	ItemIterator(ItemInterface* target) : m_atEnd(false), m_searchInProgress(false), m_slot(0), m_containerSlot(0), m_container(NULL), m_target(target) {}
 	~ItemIterator() { if(m_searchInProgress) { EndSearch(); } }
 
 	void BeginSearch()
@@ -212,6 +203,12 @@ public:
 	Item* operator->() const
 	{
 		return m_currentItem;
+	}
+
+	ItemIterator* operator++()
+	{
+		Increment();
+		return this;
 	}
 
 	void Increment()

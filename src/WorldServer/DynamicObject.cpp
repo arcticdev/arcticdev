@@ -1,6 +1,6 @@
 /*
  * Arctic MMORPG Server Software
- * Copyright (c) 2008-2011 Arctic Server Team
+ * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
@@ -163,7 +163,7 @@ void DynamicObject::UpdateTargets()
 		float radius = m_floatValues[DYNAMICOBJECT_RADIUS]*m_floatValues[DYNAMICOBJECT_RADIUS];
 
 		Object::InRangeSet::iterator itr,itr2;
-		for( itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); itr++)
+		for( itr = GetInRangeSetBegin(); itr != GetInRangeSetEnd(); ++itr)
 		{
 			itr2 = itr;
 
