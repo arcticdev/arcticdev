@@ -301,26 +301,22 @@ void Transporter::UpdatePosition()
 	
 	while (((m_timer - mCurrentWaypoint->first) % m_pathTime) >= ((mNextWaypoint->first - mCurrentWaypoint->first) % m_pathTime))
 	{
-		/*printf("%s from %u %f %f %f to %u %f %f %f\n", this->GetInfo()->Name,
-			mCurrentWaypoint->second.mapid, mCurrentWaypoint->second.x,mCurrentWaypoint->second.y,mCurrentWaypoint->second.z,
-			mNextWaypoint->second.mapid, mNextWaypoint->second.x,mNextWaypoint->second.y,mNextWaypoint->second.z);*/
-
 		mCurrentWaypoint = mNextWaypoint;
 		mNextWaypoint = GetNextWaypoint();
-		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport) {
-			//mCurrentWaypoint = mNextWaypoint;
-			//mNextWaypoint = GetNextWaypoint();
-			TransportPassengers(mNextWaypoint->second.mapid, GetMapId(),
-				mNextWaypoint->second.x, mNextWaypoint->second.y, mNextWaypoint->second.z);
+		if (mNextWaypoint->second.mapid != GetMapId() || mCurrentWaypoint->second.teleport)
+		{
+			TransportPassengers(mNextWaypoint->second.mapid, GetMapId(), mNextWaypoint->second.x, mNextWaypoint->second.y, mNextWaypoint->second.z);
 			break;
-		} else {
+		}
+		else
+		{
 			SetPosition(mNextWaypoint->second.x, mNextWaypoint->second.y,
 				mNextWaypoint->second.z, m_position.o, false);
 		}
 
 		if(mCurrentWaypoint->second.delayed)
 		{
-			PlaySoundToSet(5495);		// BoatDockedWarning.wav
+			PlaySoundToSet(5495); // BoatDockedWarning.wav
 		}
 	}
 }
@@ -376,9 +372,6 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			// Lucky bitch. Do it like on official.
 			if(plr->isDead())
 			{
-				/*plr->ResurrectPlayer(NULL);
-				plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
-				plr->SetUInt32Value(UNIT_FIELD_POWER1, plr->GetUInt32Value(UNIT_FIELD_MAXPOWER1));*/
 				plr->RemoteRevive();
 			}
 
@@ -404,12 +397,11 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 
 Transporter::Transporter(uint64 guid) : GameObject(guid)
 {
-
 }
 
 Transporter::~Transporter()
 {
-sEventMgr.RemoveEvents(this);
+	sEventMgr.RemoveEvents(this);
 
 	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
 	{
