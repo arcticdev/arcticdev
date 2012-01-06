@@ -13,7 +13,7 @@ bool Refocus(uint32 i, Spell* pSpell)
     if(playerTarget == 0) return true;
 
     SpellSet::const_iterator itr = playerTarget->mSpells.begin();
-    for(; itr != playerTarget->mSpells.end(); ++itr)
+    for(; itr != playerTarget->mSpells.end(); itr++)
     {
         if((*itr) == 24531)       // skip calling spell.. otherwise spammies! :D
             continue;

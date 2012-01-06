@@ -184,11 +184,11 @@ private:
 #endif
 };
 
-/** Connect to a server.
-* @param hostname Hostname or IP address to connect to
-* @param port Port to connect to
-* @return templated type if successful, otherwise null
-*/
+/* Connect to a server.
+ * @param hostname Hostname or IP address to connect to
+ * @param port Port to connect to
+ * @return templated type if successful, otherwise null
+ */
 template<class T>
 T* ConnectTCPSocket(const char * hostname, u_short port)
 {

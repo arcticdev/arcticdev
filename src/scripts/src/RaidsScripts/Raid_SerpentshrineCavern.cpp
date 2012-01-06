@@ -390,7 +390,7 @@ public:
 		Unit* RandomTarget = NULL;
 		std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{ 
 			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
 			{
@@ -633,7 +633,7 @@ public:
 	{
 		//count greyheart spellbinders
 		Creature* creature = NULL;
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{
 			if((*itr)->GetTypeId() == TYPEID_UNIT)
 			{
@@ -1039,7 +1039,7 @@ public:
 				//attack nearest player
 				Player* NearestPlayer;
 				float NearestDist = 0;
-				for(unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
+				for(unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); itr++) 
 				{
 					if(isHostile(_unit, (*itr)) && ((*itr)->GetDistance2dSq(_unit) < NearestDist || !NearestDist))
 					{
@@ -1101,7 +1101,7 @@ public:
 		Unit* RandomTarget = NULL;
 		std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{ 
 			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER) && isAttackable(_unit, (*itr)))
 			{
@@ -1303,7 +1303,7 @@ public:
 		CataclysmicBoltTimer = 10;
 		Unit* RandomTarget = NULL;
 		std::vector<Unit*> TargetTable;
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{ 
 			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
 			{
@@ -1504,7 +1504,7 @@ public:
 		if(!HealingWaveTimer)
 		{
 			vector<Unit*> TargetTable;
-			for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+			for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 			{
 				if((*itr)->GetTypeId() == TYPEID_UNIT && isFriendly(_unit, (*itr)))
 					TargetTable.push_back(TO_UNIT(*itr));
@@ -2024,7 +2024,7 @@ public:
 	{
 		//despawn enchanted elemental, tainted elemental, coilfang elite, coilfang strider
 		Creature* creature = NULL;
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{
 			if((*itr)->GetTypeId() == TYPEID_UNIT)
 			{
@@ -2122,7 +2122,7 @@ public:
 
 		//if nobody is in range, shot or multishot
 		bool InRange = false;
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{
 			if(isHostile(_unit, (*itr)) && _unit->GetDistance2dSq((*itr)) < 100) //10 yards
 			{
@@ -2206,7 +2206,7 @@ public:
 				//attack nearest target
 				Unit* nearest = NULL;
 				float nearestdist = 0;
-				for(unordered_set<Object*>::iterator itr = summoned->GetInRangeSetBegin(); itr != summoned->GetInRangeSetEnd(); ++itr) 
+				for(unordered_set<Object*>::iterator itr = summoned->GetInRangeSetBegin(); itr != summoned->GetInRangeSetEnd(); itr++) 
 				{
 					if(((*itr)->GetTypeId() == TYPEID_PLAYER || (*itr)->GetTypeId() == TYPEID_UNIT) && isHostile(summoned, (*itr)) && (summoned->GetDistance2dSq((*itr)) < nearestdist || !nearestdist) )
 					{
@@ -2230,7 +2230,7 @@ public:
 				//attack nearest target
 				Unit* nearest = NULL;
 				float nearestdist = 0;
-				for(unordered_set<Object*>::iterator itr = summoned->GetInRangeSetBegin(); itr != summoned->GetInRangeSetEnd(); ++itr) 
+				for(unordered_set<Object*>::iterator itr = summoned->GetInRangeSetBegin(); itr != summoned->GetInRangeSetEnd(); itr++) 
 				{
 					if(((*itr)->GetTypeId() == TYPEID_PLAYER || (*itr)->GetTypeId() == TYPEID_UNIT) && isHostile(summoned, (*itr)) && (summoned->GetDistance2dSq((*itr)) < nearestdist || !nearestdist) )
 					{
@@ -2255,7 +2255,7 @@ public:
 		{
 			//despawn enchanted elementals
 			Creature* creature = NULL;
-			for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+			for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 			{
 				if((*itr)->GetTypeId() == TYPEID_UNIT)
 				{
@@ -2381,7 +2381,7 @@ public:
 		Unit* RandomTarget = NULL;
 		std::vector<Unit*> TargetTable;		/* From M4ksiu - Big THX to Capt who helped me with std stuff to make it simple and fully working <3 */
 												/* If anyone wants to use this function, then leave this note!										 */
-		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+		for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 		{ 
 			if (isHostile(_unit, (*itr)) && ((*itr)->GetTypeId()== TYPEID_UNIT || (*itr)->GetTypeId() == TYPEID_PLAYER))
 			{

@@ -1017,7 +1017,7 @@ public:
             }
             // Summon a spirit for each player  
             std::list<Player*>::iterator itr = mTargets.begin();
-            for(; itr != mTargets.end(); ++itr)
+            for(; itr != mTargets.end(); itr++)
             {        
                 _unit->CastSpellAoF((*itr)->GetPositionX(),(*itr)->GetPositionY(),(*itr)->GetPositionZ(), spells[4].info, spells[4].instant);
             }
@@ -1132,7 +1132,7 @@ public:
         float distance;
         std::list<Creature*> mTargets;
         std::list<Creature*>::iterator itr = mTargets.begin();
-        for(; itr != mTargets.end(); ++itr)
+        for(; itr != mTargets.end(); itr++)
         {
             if((*itr)->GetGUID() == CN_LETHON)
             {

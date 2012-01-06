@@ -226,7 +226,7 @@ void Channel::SetOwner(Player* oldpl, Player* plr)
 
 	if(plr == NULL)
 	{
-		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 		{
 			if(itr->second & CHANNEL_FLAG_OWNER)
 			{
@@ -249,7 +249,7 @@ void Channel::SetOwner(Player* oldpl, Player* plr)
 	}
 	else
 	{
-		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 		{
 			if(itr->second & CHANNEL_FLAG_OWNER)
 			{
@@ -746,7 +746,7 @@ void Channel::List(Player* plr)
 	data << uint8(1) << m_name;
 	data << uint8(m_flags);
 	data << uint32(m_members.size());
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		data << itr->first->GetGUID();
 		flags = 0;
@@ -780,7 +780,7 @@ void Channel::GetOwner(Player* plr)
 		return;
 	}
 
-	for(itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		if(itr->second & CHANNEL_FLAG_OWNER)
 		{
@@ -795,7 +795,7 @@ ChannelMgr::~ChannelMgr()
 	for(int i = 0; i < 2; ++i)
 	{
 		ChannelList::iterator itr = this->Channels[i].begin();
-		for(; itr != this->Channels[i].end(); ++itr)
+		for(; itr != this->Channels[i].end(); itr++)
 		{
 			delete itr->second;
 		}
@@ -806,7 +806,7 @@ ChannelMgr::~ChannelMgr()
 Channel::~Channel()
 {
 	m_lock.Acquire();
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 		itr->first->LeftChannel(m_channelId);
 	m_lock.Release();
 	m_deleted = true;
@@ -815,7 +815,7 @@ Channel::~Channel()
 void Channel::SendToAll(WorldPacket * data)
 {
 	Guard guard(m_lock);
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		if( itr->first->GetSession() )
 			itr->first->GetSession()->SendPacket(data);
@@ -825,7 +825,7 @@ void Channel::SendToAll(WorldPacket * data)
 void Channel::SendToAll(WorldPacket * data, Player* plr)
 {
 	Guard guard(m_lock);
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr) 
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++) 
 	{
 		if ( itr->first != plr && itr->first->GetSession() )
 			itr->first->GetSession()->SendPacket(data);
@@ -842,7 +842,7 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, Player* p, uint32 type_
 		cl = &Channels[p->GetTeam()];
 
 	lock.Acquire();
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(!stricmp(name, itr->first.c_str()))
 		{
@@ -853,7 +853,7 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, Player* p, uint32 type_
 
 	// make sure the name isn't banned
 	m_confSettingLock.Acquire();
-	for(vector<string>::iterator itr = m_bannedChannels.begin(); itr != m_bannedChannels.end(); ++itr)
+	for(vector<string>::iterator itr = m_bannedChannels.begin(); itr != m_bannedChannels.end(); itr++)
 	{
 		if(!strnicmp( name, itr->c_str(), itr->size() ) )
 		{
@@ -880,7 +880,7 @@ Channel * ChannelMgr::GetChannel(const char *name, Player* p)
 		cl = &Channels[p->GetTeam()];
 
 	lock.Acquire();
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(!stricmp(name, itr->first.c_str()))
 		{
@@ -915,7 +915,7 @@ Channel * ChannelMgr::GetChannel(const char *name, uint32 team)
 		cl = &Channels[team];
 
 	lock.Acquire();
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(!stricmp(name, itr->first.c_str()))
 		{
@@ -937,7 +937,7 @@ void ChannelMgr::RemoveChannel(Channel * chn)
 
 	lock.Acquire();
 	m_idToChannel.erase(chn->m_channelId);
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(itr->second == chn)
 		{

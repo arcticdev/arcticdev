@@ -124,7 +124,7 @@ void ArenaTeam::Destroy()
 			tokill.push_back(m_members[i].Info);
 	}
 
-	for(vector<PlayerInfo*>::iterator itr = tokill.begin(); itr != tokill.end(); ++itr)
+	for(vector<PlayerInfo*>::iterator itr = tokill.begin(); itr != tokill.end(); itr++)
 	{
 		RemoveMember(*itr);
 	}

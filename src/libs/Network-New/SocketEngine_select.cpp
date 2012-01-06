@@ -56,7 +56,7 @@ void SelectEngine::MessageLoop()
 		FD_ZERO(&exception);
 
         m_socketLock.Acquire();
-		for(itr = m_sockets.begin(); itr != m_sockets.end(); ++itr)
+		for(itr = m_sockets.begin(); itr != m_sockets.end(); itr++)
 		{
 			FD_SET( itr->second->GetFd(), itr->second->Writable() ? &writable : &readable );
 		}
@@ -94,7 +94,7 @@ void SelectEngine::Shutdown()
 	for(map<int, BaseSocket*>::iterator itr = m_sockets.begin(); itr != m_sockets.end(); )
 	{
 		s = itr->second;
-		++itr;
+		itr++;
 		s->Delete();
 	}
 	m_socketLock.Release();

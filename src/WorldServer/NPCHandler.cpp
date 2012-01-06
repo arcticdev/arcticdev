@@ -129,7 +129,7 @@ void WorldSession::SendTrainerList(Creature* pCreature)
 	data << pTrainer->TrainerType;
 
 	data << uint32(0);
-	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
+	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); itr++)
 	{
 		pSpell = &(*itr);
 		Status = TrainerGetSpellStatus(pSpell);
@@ -173,7 +173,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 	if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
 
 	TrainerSpell* pSpell=NULL;
-	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); ++itr)
+	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); itr++)
 	{
 		if( ( itr->pCastRealSpell && itr->pCastRealSpell->Id == TeachingSpellID ) ||
 			( itr->pLearnSpell && itr->pLearnSpell->Id == TeachingSpellID ) )

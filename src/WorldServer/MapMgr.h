@@ -3,7 +3,6 @@
  * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
 #ifndef __MAPMGR_H
 #define __MAPMGR_H
 
@@ -202,7 +201,7 @@ public:
 	void ChangeFarsightLocation(Player* plr, Unit* farsight, bool apply);
 	void ChangeFarsightLocation(Player* plr, float X, float Y, bool apply);
 
-	//! Mark object as updated
+	// Mark object as updated
 	void ObjectUpdated(Object* obj);
 	void UpdateCellActivity(uint32 x, uint32 y, int radius);
 
@@ -289,11 +288,11 @@ public:
 
 protected:
 
-	//! Collect and send updates to clients
+	// Collect and send updates to clients
 	void _UpdateObjects();
 
 private:
-	//! Objects that exist on map
+	// Objects that exist on map
  
 	uint32 _mapId;
 	set<Object* > _mapWideStaticObjects;

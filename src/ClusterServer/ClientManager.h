@@ -106,7 +106,7 @@ public:
 	ARCTIC_INLINE Session* GetSessionByAccountId(uint32 Id)
 	{
 		m_lock.AcquireReadLock();
-		for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); ++itr)
+		for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); itr++)
 		{
 			if (!itr->second->deleted && itr->second->GetAccountId() == Id)
 			{

@@ -393,7 +393,7 @@ void WorldSession::HandleAddDynamicTargetOpcode(WorldPacket & recvPacket)
 			caster = _player->m_CurrentCharm;
 		if( caster != NULL )
 		{
-			for(itr = caster->GetAIInterface()->m_spells.begin(); itr != caster->GetAIInterface()->m_spells.end(); ++itr)
+			for(itr = caster->GetAIInterface()->m_spells.begin(); itr != caster->GetAIInterface()->m_spells.end(); itr++)
 			{
 				if( (*itr)->spell->Id == spellid )
 					break;

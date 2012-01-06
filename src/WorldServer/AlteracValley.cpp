@@ -1167,7 +1167,7 @@ void AVNode::Spawn()
 	if( m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED || m_state == AV_NODE_STATE_HORDE_CONTROLLED )
 	{
 		OUT_DEBUG("AVNode::Spawn(%s) : despawning guards", m_template->m_name);
-		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); ++itr)
+		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); itr++)
 			(*itr)->Despawn(0, 0);
 		
 		m_guards.clear();
@@ -1517,13 +1517,13 @@ void AlteracValley::OnCreate()
 void AlteracValley::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	// open gates
-	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -1655,7 +1655,7 @@ void AlteracValley::Finish(uint32 losingTeam)
 	for(uint32 i = 0; i < 2; ++i)
 	{
 		uint32 diff = abs((int32)(m_reinforcements[i] - m_reinforcements[i ? 0 : 1]));
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
 			(*itr)->Root();
 

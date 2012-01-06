@@ -339,7 +339,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 		for(; itr != mPassengers.end();)
 		{
 			it2 = itr;
-			++itr;
+			itr++;
 
 			Player* plr = objmgr.GetPlayer(it2->first);
 			if(!plr)
@@ -403,7 +403,7 @@ Transporter::~Transporter()
 {
 	sEventMgr.RemoveEvents(this);
 
-	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
+	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); itr++)
 	{
 		if(itr->second->GetTypeId()==TYPEID_UNIT)
 			delete TO_CREATURE( itr->second )->m_transportPosition;
@@ -426,8 +426,7 @@ void ObjectMgr::LoadTransporters()
 	QueryResult * QR = WorldDatabase.Query("SELECT entry FROM gameobject_names WHERE type = %u", GAMEOBJECT_TYPE_MO_TRANSPORT);
 	if(!QR) return;
 
-	int64 total = QR->GetRowCount();
-	TransportersCount=total;
+	TransportersCount = QR->GetRowCount();
 	do 
 	{
 		uint32 entry = QR->Fetch()[0].GetUInt32();
@@ -439,7 +438,7 @@ void ObjectMgr::LoadTransporters()
 			pTransporter->Destructor();
 		}else
 		{
-            AddTransport(pTransporter);
+			AddTransport(pTransporter);
 
 			QueryResult * result2 = WorldDatabase.Query("SELECT * FROM transport_creatures WHERE transport_entry = %u", entry);
 			if(result2)
@@ -502,7 +501,7 @@ uint32 Transporter::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* ta
 	uint32 cnt = Object::BuildCreateUpdateBlockForPlayer(data, target);
 
 	// add all the npcs to the packet
-	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); ++itr)
+	for(TransportNPCMap::iterator itr = m_npcs.begin(); itr != m_npcs.end(); itr++)
 	{
 		LocationVector v_offset = GetPosition();
 		v_offset.x = v_offset.x + TO_CREATURE(itr->second)->m_transportPosition->x;

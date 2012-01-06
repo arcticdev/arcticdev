@@ -189,7 +189,7 @@ void CThreadPool::KillFreeThreads(uint32 count)
 	Thread * t;
 	ThreadSet::iterator itr;
 	uint32 i;
-	for(i = 0, itr = m_freeThreads.begin(); i < count && itr != m_freeThreads.end(); ++i, ++itr)
+	for(i = 0, itr = m_freeThreads.begin(); i < count && itr != m_freeThreads.end(); ++i, itr++)
 	{
 		t = *itr;
 		t->ExecutionTarget = NULL; 
@@ -208,7 +208,7 @@ void CThreadPool::Shutdown()
 	KillFreeThreads((uint32)m_freeThreads.size());
 	_threadsToExit += (uint32)m_activeThreads.size();
 
-	for(ThreadSet::iterator itr = m_activeThreads.begin(); itr != m_activeThreads.end(); ++itr)
+	for(ThreadSet::iterator itr = m_activeThreads.begin(); itr != m_activeThreads.end(); itr++)
 	{
 		if((*itr)->ExecutionTarget)
 			(*itr)->ExecutionTarget->OnShutdown();

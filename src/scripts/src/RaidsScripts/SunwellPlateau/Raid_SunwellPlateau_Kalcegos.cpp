@@ -160,7 +160,7 @@ namespace SUNWELL_KALECGOS
 		{
 			vector<Unit*> targetMap;
 			PlayerSet::iterator itr = _unit->GetInRangePlayerSetBegin();
-			for(; itr != _unit->GetInRangePlayerSetEnd(); ++itr)
+			for(; itr != _unit->GetInRangePlayerSetEnd(); itr++)
 			{
 				if( (*itr) && (*itr)->isAlive() )
 				{
@@ -269,7 +269,7 @@ namespace SUNWELL_KALECGOS
 		void const PauseEvent(uint32 evt,time_t extendedtime)
 		{
 			vector<CallBackManager*>::iterator itr = cbMap.begin();
-			for(; itr != cbMap.end(); ++itr)
+			for(; itr != cbMap.end(); itr++)
 			{
 				if( (*itr)->evtype == evt)
 					(*itr)->interval += extendedtime;
@@ -279,7 +279,7 @@ namespace SUNWELL_KALECGOS
 		void const StopAllEvents()
 		{
 			vector<CallBackManager*>::iterator itr = cbMap.begin();
-			for(; itr != cbMap.end(); ++itr)
+			for(; itr != cbMap.end(); itr++)
 				(*itr)->deleted = true;
 		}
 		void const SetFly(bool fly)
@@ -403,7 +403,7 @@ namespace SUNWELL_KALECGOS
 			range[1] = 0x00;
 			cbm = new CallBackManager(KALECGOS_ARCANE_BUFFET,new CallbackP1<DRAGON_KALECGOS,uint32>(this,&DRAGON_KALECGOS::CastScriptSpell,KALECGOS_ARCANE_BUFFET),9000,0,false,range);
 			buffer.insert(cbm);
-			for(set<CallBackManager*>::iterator itr = buffer.begin(); itr != buffer.end(); ++itr)
+			for(set<CallBackManager*>::iterator itr = buffer.begin(); itr != buffer.end(); itr++)
 			{
 				cbMap.push_back((*itr));
 			}
@@ -490,7 +490,7 @@ namespace SUNWELL_KALECGOS
 		{
 			vector<Unit*> targetMap;
 			PlayerSet::iterator itr = _unit->GetInRangePlayerSetBegin();
-			for(; itr != _unit->GetInRangePlayerSetEnd(); ++itr)
+			for(; itr != _unit->GetInRangePlayerSetEnd(); itr++)
 			{
 				if( (*itr) && (*itr)->isAlive() )
 				{
@@ -582,7 +582,7 @@ namespace SUNWELL_KALECGOS
 			{
 				StopAllEvents();
 				PlayerSet::iterator itr = _unit->GetInRangePlayerSetBegin();
-				for(; itr != _unit->GetInRangePlayerSetEnd(); ++itr)
+				for(; itr != _unit->GetInRangePlayerSetEnd(); itr++)
 				{
 					if( (*itr)->HasAura(SPECTRAL_PLAYERBUFF) )
 						(*itr)->RemoveAura(SPECTRAL_PLAYERBUFF);
@@ -630,7 +630,7 @@ namespace SUNWELL_KALECGOS
 		void const PauseEvent(uint32 evt,time_t extendedtime)
 		{
 			vector<CallBackManager*>::iterator itr = cbMap.begin();
-			for(; itr != cbMap.end(); ++itr)
+			for(; itr != cbMap.end(); itr++)
 			{
 				if( (*itr)->evtype == evt)
 					(*itr)->interval += extendedtime;
@@ -640,7 +640,7 @@ namespace SUNWELL_KALECGOS
 		void const StopAllEvents()
 		{
 			vector<CallBackManager*>::iterator itr = cbMap.begin();
-			for(; itr != cbMap.end(); ++itr)
+			for(; itr != cbMap.end(); itr++)
 				(*itr)->deleted = true;
 		}
 		void const HandleCallBacks()
@@ -773,7 +773,7 @@ namespace SUNWELL_KALECGOS
 		void const PauseEvent(uint32 evt,time_t extendedtime)
 		{
 			vector<CallBackManager*>::iterator itr = cbMap.begin();
-			for(; itr != cbMap.end(); ++itr)
+			for(; itr != cbMap.end(); itr++)
 			{
 				if( (*itr)->evtype == evt)
 					(*itr)->interval += extendedtime;
@@ -783,7 +783,7 @@ namespace SUNWELL_KALECGOS
 		void const StopAllEvents()
 		{
 			vector<CallBackManager*>::iterator itr = cbMap.begin();
-			for(; itr != cbMap.end(); ++itr)
+			for(; itr != cbMap.end(); itr++)
 				(*itr)->deleted = true;
 		}
 		void const HandleCallBacks()

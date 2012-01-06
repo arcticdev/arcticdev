@@ -119,7 +119,7 @@ public:
 
 	ARCTIC_INLINE bool IsContainer(){ return ( m_objectTypeId == TYPEID_CONTAINER ) ? true : false; }
 	
-	//! DB Serialization
+	// DB Serialization
 	void LoadFromDB( Field *fields, Player* plr, bool light );
 	void SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer* buf );
 	bool LoadAuctionItemFromDB( uint64 guid );
@@ -152,44 +152,44 @@ public:
 			return itr->second.ApplyTime;
 	}
 
-	//! Adds an enchantment to the item.
+	// Adds an enchantment to the item.
 	int32 AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Perm = false, bool apply = true, bool RemoveAtLogout = false, uint32 Slot_ = 0, uint32 RandomSuffix = 0 );
 	uint32 GetSocketsCount();
 
-	//! Removes an enchantment from the item.
+	// Removes an enchantment from the item.
 	void RemoveEnchantment( uint32 EnchantmentSlot );
 	
 	// Removes related temporary enchants
 	void RemoveRelatedEnchants( EnchantEntry* newEnchant );
 
-	//! Adds the bonus on an enchanted item.
+	// Adds the bonus on an enchanted item.
 	void ApplyEnchantmentBonus( uint32 Slot, bool Apply );
 
-	//! Applies all enchantment bonuses (use on equip)
+	// Applies all enchantment bonuses (use on equip)
 	void ApplyEnchantmentBonuses();
 
-	//! Removes all enchantment bonuses (use on dequip)
+	// Removes all enchantment bonuses (use on dequip)
 	void RemoveEnchantmentBonuses();
 
-	//! Event to remove an enchantment.
+	// Event to remove an enchantment.
 	void EventRemoveEnchantment( uint32 Slot );
 
-	//! Check if we have an enchantment of this id?
+	// Check if we have an enchantment of this id?
 	int32 HasEnchantment( uint32 Id );
 
-	//! Modify the time of an existing enchantment.
+	// Modify the time of an existing enchantment.
 	void ModifyEnchantmentTime( uint32 Slot, uint32 Duration );
 
-	//! Find free enchantment slot.
+	// Find free enchantment slot.
 	int32 FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type );
 
-	//! Removes all enchantments.
+	// Removes all enchantments.
 	void RemoveAllEnchantments( bool OnlyTemporary );
 
-	//! Sends SMSG_ITEM_UPDATE_ENCHANT_TIME
+	// Sends SMSG_ITEM_UPDATE_ENCHANT_TIME
 	void SendEnchantTimeUpdate( uint32 Slot, uint32 Duration );
 
-	//! Applies any random properties the item has.
+	// Applies any random properties the item has.
 	void ApplyRandomProperties( bool apply );
 
 	void RemoveProfessionEnchant();

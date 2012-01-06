@@ -363,14 +363,16 @@ void ArathiBasin::OnCreate()
 
 void ArathiBasin::OnStart()
 {
-	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
+	for(uint32 i = 0; i < 2; ++i)
+	{
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	// open gates
-	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
+	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -487,7 +489,7 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 	if((current_resources - m_lastHonorGainResources[Team]) >= m_resToGainBH)
 	{
 		m_lastHonorGainResources[Team] += m_resToGainBH;
-		for(set< Player* >::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
+		for(set< Player* >::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); itr++)
 		{
 			(*itr)->m_bgScore.BonusHonor += m_bonusHonor;
 			HonorHandler::AddHonorPointsToPlayer((*itr), m_bonusHonor);
@@ -519,7 +521,7 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		for(uint32 i = 0; i < 2; ++i)
 		{
 			uint32 diff = abs((int32)(m_resources[i] - m_resources[i ? 0 : 1]));
-			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 			{
 				(*itr)->Root();
 

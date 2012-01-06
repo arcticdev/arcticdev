@@ -18,16 +18,13 @@ class SERVER_DECL Mutex
 public:
 	friend class Condition;
 
-	/** Initializes a mutex class, with InitializeCriticalSection / pthread_mutex_init
-	 */
+	/* Initializes a mutex class, with InitializeCriticalSection / pthread_mutex_init */
 	Mutex();
 
-	/** Deletes the associated critical section / mutex
-	 */
+	/* Deletes the associated critical section / mutex */
 	~Mutex();
 
-	/** Acquires this mutex. If it cannot be acquired immediately, it will block.
-	 */
+	/* Acquires this mutex. If it cannot be acquired immediately, it will block. */
 	ARCTIC_INLINE void Acquire()
 	{
 #ifndef WIN32
@@ -37,8 +34,7 @@ public:
 #endif
 	}
 
-	/** Releases this mutex. No error checking performed
-	 */
+	/* Releases this mutex. No error checking performed */
 	ARCTIC_INLINE void Release()
 	{
 #ifndef WIN32
@@ -48,7 +44,7 @@ public:
 #endif
 	}
 
-	/** Attempts to acquire this mutex. If it cannot be acquired (held by another thread)
+	/* Attempts to acquire this mutex. If it cannot be acquired (held by another thread)
 	 * it will return false.
 	 * @return false if cannot be acquired, true if it was acquired.
 	 */
@@ -63,18 +59,15 @@ public:
 
 protected:
 #ifdef WIN32
-	/** Critical section used for system calls
-	 */
+	/* Critical section used for system calls */
 	CRITICAL_SECTION cs;
 
 #else
-	/** Static mutex attribute
-	 */
+	/* Static mutex attribute */
 	static bool attr_initalized;
 	static pthread_mutexattr_t attr;
 
-	/** pthread struct used in system calls
-	 */
+	/* pthread struct used in system calls */
 	pthread_mutex_t mutex;
 #endif
 };

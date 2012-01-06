@@ -70,7 +70,7 @@ public:
 			assert(stringOffset < file.stringSize);
 			return reinterpret_cast<char*>(file.stringTable + stringOffset);
 		}
-		//used by external tool
+		// used by external tool
 		const void *getRowStart() const
 		{
 			return reinterpret_cast<void*>(offset);
@@ -113,24 +113,23 @@ public:
 		friend class DBCFile;
 		friend class DBCFile::Iterator;
 	};
-	/** Iterator that iterates over records
-	*/
+	/* Iterator that iterates over records */
 	class Iterator
 	{
 	public:
 		Iterator(DBCFile &file, unsigned char *offset): 
 			record(file, offset) {}
-		/// Advance (prefix only)
+		// Advance (prefix only)
 		Iterator & operator++() { 
 			record.offset += record.file.recordSize;
 			return *this; 
 		}	
-		/// Return address of current instance
+		// Return address of current instance
 		Record const & operator*() const { return record; }
 		const Record* operator->() const {
 			return &record;
 		}
-		/// Comparison
+		// Comparison
 		bool operator==(const Iterator &b) const
 		{
 			return record.offset == b.record.offset;
@@ -145,20 +144,15 @@ public:
 
 	// Get record by id
 	Record getRecord(size_t id);
-	/// Get begin iterator over records
+	// Get begin iterator over records
 	Iterator begin();
-	/// Get begin iterator over records
+	// Get begin iterator over records
 	Iterator end();
-	/// Trivial
+	// Trivial
 	size_t getRecordCount() const { return recordCount;}
 	size_t getFieldCount() const { return fieldCount; }
-////////////////////////////////////////////////////////////////////////////////////////////
-/*
-	int AddRecord(); //simply add an empty record to the end of the data section
-	int AddString(const char *new_string); //simply add an empty record to the end of the string section
-*/
+
 	int GetRecordSize() { return recordSize; }
-////////////////////////////////////////////////////////////////////////////////////////////
 private:
 	std::string filename;
 	unsigned int recordSize;

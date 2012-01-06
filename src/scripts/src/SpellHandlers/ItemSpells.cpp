@@ -124,7 +124,7 @@ bool HolidayCheer(uint32 i, Spell* pSpell)
 	Unit* target;
 	float dist = pSpell->GetRadius(i);
 
-	for(ObjectSet::iterator itr = pSpell->m_caster->GetInRangeSetBegin(); itr != pSpell->m_caster->GetInRangeSetEnd(); ++itr)
+	for(ObjectSet::iterator itr = pSpell->m_caster->GetInRangeSetBegin(); itr != pSpell->m_caster->GetInRangeSetEnd(); itr++)
 	{
 		if((*itr)->IsUnit())
 			target = TO_UNIT(*itr);

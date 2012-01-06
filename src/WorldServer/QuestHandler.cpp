@@ -753,7 +753,7 @@ void WorldSession::HandlePushQuestToPartyOpcode(WorldPacket &recv_data)
 			{
 				_player->GetGroup()->Lock();
 				GroupMembersSet::iterator itr;
-				for(itr = sgr->GetGroupMembersBegin(); itr != sgr->GetGroupMembersEnd(); ++itr)
+				for(itr = sgr->GetGroupMembersBegin(); itr != sgr->GetGroupMembersEnd(); itr++)
 				{
 					Player* pPlayer = (*itr)->m_loggedInPlayer;
 					if(pPlayer && pPlayer->GetGUID() !=  pguid)
@@ -887,7 +887,7 @@ void WorldSession::HandleQuestPOI(WorldPacket& recvPacket)
 				data << uint32(questId);
 				data << uint32(POI->size());
 
-				for (QuestPOIVector::const_iterator itr = POI->begin(); itr != POI->end(); ++itr)
+				for (QuestPOIVector::const_iterator itr = POI->begin(); itr != POI->end(); itr++)
 				{
 					data << uint32(itr->Id);
 					data << int32(itr->ObjectiveIndex);

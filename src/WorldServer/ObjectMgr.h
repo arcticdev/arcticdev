@@ -379,18 +379,18 @@ public:
 	typedef std::set<AchievementCriteriaEntry*>							AchievementCriteriaSet;
 	
     // HashMap typedef's
-    typedef HM_NAMESPACE::hash_map<uint64, Item* >                ItemMap;
-	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>                 CorpseCollectorMap;
-	typedef HM_NAMESPACE::hash_map<uint32, PlayerInfo*>                 PlayerNameMap;
-	typedef HM_NAMESPACE::hash_map<uint32, PlayerCreateInfo*>           PlayerCreateInfoMap;
-	typedef HM_NAMESPACE::hash_map<uint32, Guild*>                      GuildMap;
-	typedef HM_NAMESPACE::hash_map<uint32, skilllinespell*>             SLMap;
-	typedef HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>*>  VendorMap;
-    typedef HM_NAMESPACE::hash_map<uint32, Transporter* >         TransportMap;
-	typedef HM_NAMESPACE::hash_map<uint32, Trainer*>                    TrainerMap;
-	typedef HM_NAMESPACE::hash_map<uint32, std::vector<TrainerSpell*> > TrainerSpellMap;
-    typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>         ReputationModMap;
-    typedef HM_NAMESPACE::hash_map<uint32, Corpse* >              CorpseMap;
+    typedef HM_NAMESPACE::hash_map<uint64, Item* >						ItemMap;
+	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>					CorpseCollectorMap;
+	typedef HM_NAMESPACE::hash_map<uint32, PlayerInfo*>					PlayerNameMap;
+	typedef HM_NAMESPACE::hash_map<uint32, PlayerCreateInfo*>			PlayerCreateInfoMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Guild*>						GuildMap;
+	typedef HM_NAMESPACE::hash_map<uint32, skilllinespell*>				SLMap;
+	typedef HM_NAMESPACE::hash_map<uint32, std::vector<CreatureItem>*>	VendorMap;
+    typedef HM_NAMESPACE::hash_map<uint32, Transporter* >				TransportMap;
+	typedef HM_NAMESPACE::hash_map<uint32, Trainer*>					TrainerMap;
+	typedef HM_NAMESPACE::hash_map<uint32, std::vector<TrainerSpell*> >	TrainerSpellMap;
+    typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>			ReputationModMap;
+    typedef HM_NAMESPACE::hash_map<uint32, Corpse* >					CorpseMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Group*>						GroupMap;
     
     // Map typedef's
@@ -483,7 +483,7 @@ public:
 	map<uint32,set<Quest*>*> ZoneToQuestMap;
 	void LoadAchievements();
 
-	//Corpse Stuff
+	// Corpse Stuff
 	Corpse* GetCorpseByOwner(uint32 ownerguid);
 	void CorpseCollectorUnload();
 	void DespawnCorpse(uint64 Guid);
@@ -503,11 +503,11 @@ public:
 
 	skilllinespell* GetSpellSkill(uint32 id);
 
-	//Vendors
+	// Vendors
 	std::vector<CreatureItem> *GetVendorList(uint32 entry);
 	void SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_);
 
-	//Totem
+	// Totem
 	SpellEntry* GetTotemSpell(uint32 spellId);
 
 	std::list<ItemPrototype*>* GetListForItemSet(uint32 setid);
@@ -679,18 +679,18 @@ protected:
 	
 	set<uint32> m_disabled_spells;
 
-	uint64 TransportersCount;
+	uint32 TransportersCount;
 	HM_NAMESPACE::hash_map<uint32,PlayerInfo*> m_playersinfo;
 	PlayerNameStringIndexMap m_playersInfoByName;
-	
+
 	HM_NAMESPACE::hash_map<uint32,WayPointMap*> m_waypoints;//stored by spawnid
 	uint32 m_hiCreatureSpawnId;
-	
+
 	Mutex m_CreatureSpawnIdMutex;
 	Mutex m_GOSpawnIdMutex;
 
 	uint32 m_hiGameObjectSpawnId;
-	
+
 	///// Object Tables ////
 	// These tables are modified as creatures are created and destroyed in the world
 
@@ -725,10 +725,6 @@ protected:
 	PetLevelupSpellMap  mPetLevelupSpellMap;
 };
 
-
 #define objmgr ObjectMgr::getSingleton()
 
-//void SetProgressBar(int, int, const char*);
-//void ClearProgressBar();
-
-#endif
+#endif // _OBJECTMGR_H

@@ -9,7 +9,7 @@
 
 
 //	###		Classes Quests	###
-void SetupDruid(ScriptMgr * mgr);
+//void SetupDruid(ScriptMgr * mgr);
 void SetupMage(ScriptMgr * mgr);
 void SetupPaladin(ScriptMgr * mgr);
 void SetupWarrior(ScriptMgr * mgr);

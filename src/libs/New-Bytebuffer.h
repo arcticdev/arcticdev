@@ -22,8 +22,7 @@ class SERVER_DECL ByteBuffer
 	uint32 m_buffersize;
 
 public:
-	/** Allocates/reallocates buffer with specified size.
-	 */
+	/* Allocates/reallocates buffer with specified size. */
 	void reserve(size_t res)
 	{
 		if(m_buffer)
@@ -34,53 +33,46 @@ public:
 		m_buffersize = res;
 	}
 
-	/** Creates a bytebuffer with the default size
-	 */
+	/* Creates a bytebuffer with the default size */
 	ByteBuffer() : m_readPos(0), m_writePos(0), m_buffer(0)
 	{
 		reserve(DEFAULT_SIZE);
 	}
 
-	/** Creates a bytebuffer with the specified size
-	 */
+	/* Creates a bytebuffer with the specified size */
 	ByteBuffer(size_t res) : m_readPos(0), m_writePos(0), m_buffer(0)
 	{
         reserve(DEFAULT_SIZE);
 	}
 
-	/** Frees the allocated buffer
-	 */
+	/* Frees the allocated buffer */
 	~ByteBuffer()
 	{
 		free(m_buffer);
 	}
 
-	/** Resets read/write indexes
-	 */
+	/* Resets read/write indexes */
 	inline void clear()
 	{
 		m_readPos = m_writePos = 0;
 	}
 
-	/** Sets write position
-	 */
+	/* Sets write position */
 	inline void resize(size_t size)
 	{
 		m_writePos = size;
 	}
 
-	/** Returns the buffer pointer
-	 */
+	/* Returns the buffer pointer */
 	inline const uint8 * contents()
 	{
 		return m_buffer;
 	}
 
-	/** Gets the buffer size.
-	 */
+	/* Gets the buffer size. */
 	uint32 GetBufferSize() { return m_writePos; }
 
-	/** Reads sizeof(T) bytes from the buffer
+	/* Reads sizeof(T) bytes from the buffer
 	 * @return the bytes read
 	 */
 	template<typename T>
@@ -93,8 +85,7 @@ public:
 		return ret;
 	}
 
-	/** Reads x bytes from the buffer
-	 */
+	/* Reads x bytes from the buffer */
 	void read(uint8 * buffer, size_t len)
 	{
 		if(m_readPos + len > m_writePos)
@@ -104,7 +95,7 @@ public:
 		m_readPos += len;
 	}
 
-	/** Writes sizeof(T) bytes to the buffer, while checking for overflows.
+	/* Writes sizeof(T) bytes to the buffer, while checking for overflows.
 	 * @param T data The data to be written
 	 */
 	template<typename T>
@@ -117,10 +108,10 @@ public:
 		m_writePos += sizeof(T);
 	}
 
-	/** writes x bytes to the buffer, while checking for overflows
+	/* writes x bytes to the buffer, while checking for overflows
 	 * @param ptr the data to be written
 	 * @param size byte count
-	*/
+	 */
 	void Write(const uint8 * data, size_t size)
 	{
 		if(m_writePos + size > m_buffersize)
@@ -130,7 +121,7 @@ public:
 		m_writePos += size;
 	}
 
-	/** Ensures the buffer is big enough to fit the specified number of bytes.
+	/* Ensures the buffer is big enough to fit the specified number of bytes.
 	 * @param bytes number of bytes to fit
 	 */
 	inline void EnsureBufferSize(uint32 Bytes)
@@ -139,18 +130,15 @@ public:
 			reserve(m_buffersize + DEFAULT_INCREASE_SIZE);
 	}
 
-	/** These are the default read/write operators.
-	 */
+	/* These are the default read/write operators. */
 #define DEFINE_BUFFER_READ_OPERATOR(type) void operator >> (type& dest) { dest = Read<type>(); }
 #define DEFINE_BUFFER_WRITE_OPERATOR(type) void operator << (const type src) { Write<type>(src); }
 
-	/** Fast read/write operators without using the templated read/write functions.
-	 */
+	/* Fast read/write operators without using the templated read/write functions. */
 #define DEFINE_FAST_READ_OPERATOR(type, size) ByteBuffer& operator >> (type& dest) { if(m_readPos + size > m_writePos) { dest = (type)0; return *this; } else { dest = *(type*)&m_buffer[m_readPos]; m_readPos += size; return *this; } }
 #define DEFINE_FAST_WRITE_OPERATOR(type, size) ByteBuffer& operator << (const type src) { if(m_writePos + size > m_buffersize) { reserve(m_buffersize + DEFAULT_INCREASE_SIZE); } *(type*)&m_buffer[m_writePos] = src; m_writePos += size; return *this; }
 
-	/** Integer/float r/w operators
-	*/
+	/* Integer/float r/w operators */
 	DEFINE_FAST_READ_OPERATOR(uint64, 8);
 	DEFINE_FAST_READ_OPERATOR(uint32, 4);
 	DEFINE_FAST_READ_OPERATOR(uint16, 2);
@@ -173,13 +161,11 @@ public:
 	DEFINE_FAST_WRITE_OPERATOR(float, 4);
 	DEFINE_FAST_WRITE_OPERATOR(double, 8);
 
-	/** boolean (1-byte) read/write operators
-	 */
+	/*  boolean (1-byte) read/write operators */
 	DEFINE_FAST_WRITE_OPERATOR(bool, 1);
 	ByteBuffer& operator >> (bool & dst) { dst = (Read<char>() > 0 ? true : false); return *this; }
 
-	/** string (null-terminated) operators
-	 */
+	/* string (null-terminated) operators */
 	ByteBuffer& operator << (const std::string & value) { EnsureBufferSize(value.length() + 1); memcpy(&m_buffer[m_writePos], value.c_str(), value.length()+1); m_writePos += (value.length() + 1); return *this; }
 	ByteBuffer& operator >> (std::string & dest)
 	{
@@ -194,8 +180,7 @@ public:
 		return *this;
 	}
 
-	/** WoWGuid read/write operators
-	 */
+	/* WoWGuid read/write operators */
 	ByteBuffer& operator << (const WoWGuid & value)
 	{
 		EnsureBufferSize(value.GetNewGuidLen() + 1);
@@ -214,8 +199,7 @@ public:
 		return *this;
 	}
 
-	/** LocationVector read/write operators
-	 */
+	/* LocationVector read/write operators */
 	ByteBuffer& operator << (const LocationVector & val)
 	{
 		// burlex: I would've done this as one memcpy.. but we don't know how the struct alignment is gonna come out :/
@@ -233,13 +217,12 @@ public:
 		return *this;
 	}
 
-	/** Gets the write position
+	/* Gets the write position
 	 * @return buffer size
 	 */
 	inline size_t size() { return m_writePos; }
 
-	/** read/write position setting/getting
-	 */
+	/** read/write position setting/getting */
 	inline size_t rpos() { return m_readPos; }
 	inline size_t wpos() { return m_writePos; }
 	inline void rpos(size_t p) { ASSERT(p <= m_writePos); m_readPos = p; }

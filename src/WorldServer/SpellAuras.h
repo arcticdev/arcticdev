@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-//! 4-bit flag
+// 4-bit flag
 enum AURA_FLAGS
 {
 	AFLAG_EMPTY = 0x0,

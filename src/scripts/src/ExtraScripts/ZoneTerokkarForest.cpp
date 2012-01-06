@@ -148,7 +148,7 @@ public:
 		bool is_valid;
 		Player* plr;
 		
-		for(; itr != itrend; ++itr)
+		for(; itr != itrend; itr++)
 		{
 			if( !(*itr)->IsPvPFlagged() || (*itr)->InStealth() )
 				is_valid = false;

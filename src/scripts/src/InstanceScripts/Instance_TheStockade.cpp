@@ -332,7 +332,7 @@ public:
 						_unit->CastSpellAoF(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(), spells[i].info, spells[i].instant); break;
 		   			case TARGET_RANDOM_SINGLE:{
 						std::vector<Unit* > target_list;
-						for (unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr)
+						for (unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); itr++)
 						{
 							target = TO_UNIT(*itr);
 							if(target)

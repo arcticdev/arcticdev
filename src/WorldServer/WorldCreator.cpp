@@ -112,7 +112,7 @@ void InstanceMgr::Shutdown()
 	{
 		if(m_instances[i] != NULL)
 		{
-			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); ++itr)
+			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); itr++)
 			{
 				if(itr->second->m_mapMgr)
 					itr->second->m_mapMgr->KillThread();
@@ -260,7 +260,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				++itr;
+				itr++;
 
 				//we have an instance,but do we own it?
 				uint8 owns = PlayerOwnsInstance(in, plr);
@@ -414,7 +414,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				++itr;
+				itr++;
 
 				// Is this our instance?
 				uint8 owns = PlayerOwnsInstance(in, plr);
@@ -502,7 +502,7 @@ MapMgr* InstanceMgr::GetInstance(uint32 MapId, uint32 InstanceId)
 		for(itr = instancemap->begin(); itr != instancemap->end();)
 		{
 			in = itr->second;
-			++itr;
+			itr++;
 
 			// this is our instance.
 			if(in->m_mapMgr == NULL)
@@ -586,7 +586,7 @@ Instance * InstanceMgr::GetSavedInstance(uint32 map_id, uint32 guid)
 						return itr->second;
 					}
 					itr->second->m_SavedLock.Release();
-					++itr;
+					itr++;
 				}
 			}
 		}
@@ -702,7 +702,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 				for(itr = instancemap->begin(); itr != instancemap->end();)
 				{
 					in = itr->second;
-					++itr;
+					itr++;
 
 					if(in->m_mapMgr==NULL)
 						continue;
@@ -823,7 +823,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				++itr;
+				itr++;
 
 				if(	(in->m_mapInfo->type == INSTANCE_NONRAID || in->m_mapInfo->type == INSTANCE_MULTIMODE )&&  plr->GetGroupID() == in->m_creatorGroup )
 				{
@@ -876,7 +876,7 @@ void InstanceMgr::ResetHeroicInstances()
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				++itr;
+				itr++;
 
 				// use a "soft" delete here.
 				if(in->m_difficulty == MODE_HEROIC)
@@ -955,7 +955,7 @@ void InstanceMgr::CheckForExpiredInstances()
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				++itr;
+				itr++;
 
 				// use a "soft" delete here.
 				if(in->m_mapInfo->type != INSTANCE_NONRAID && HasInstanceExpired(in))
@@ -986,7 +986,7 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player* plr)
 				for(itr = instancemap->begin(); itr != instancemap->end();)
 				{
 					in = itr->second;
-					++itr;
+					itr++;
 
 					if( in->m_mapInfo->type == INSTANCE_NONRAID && PlayerOwnsInstance(in, plr))
 					{
@@ -1105,7 +1105,7 @@ void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player* pPlayer)
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				++itr;
+				itr++;
 
 				bool eject = false;
 
@@ -1271,6 +1271,6 @@ FormationMgr::FormationMgr()
 FormationMgr::~FormationMgr()
 {
 	FormationMap::iterator itr;
-	for(itr = m_formations.begin(); itr != m_formations.end(); ++itr)
+	for(itr = m_formations.begin(); itr != m_formations.end(); itr++)
 		delete itr->second;
 }

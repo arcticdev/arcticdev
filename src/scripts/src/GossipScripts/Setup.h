@@ -15,7 +15,7 @@ void SetupShattrathGossip(ScriptMgr * mgr);
 void SetupTanarisGossip(ScriptMgr * mgr);
 void SetupMoongladeGossip(ScriptMgr * mgr);
 void SetupStormwindGossip(ScriptMgr * mgr);
-void SetupTheramoreGossip(ScriptMgr * mgr);
+//void SetupTheramoreGossip(ScriptMgr * mgr);
 void SetupTeldrassilGossip(ScriptMgr * mgr);
 void SetupBoreanTundraGossip(ScriptMgr * mgr);
 void SetupWyrmrestTempleGossip(ScriptMgr * mgr);

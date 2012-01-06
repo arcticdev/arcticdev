@@ -38,7 +38,7 @@ AddonMgr::AddonMgr()
 AddonMgr::~AddonMgr()
 {
 	std::map<std::string, AddonEntry*>::iterator itr;
-	for(itr = KnownAddons.begin(); itr!=KnownAddons.end(); ++itr) 
+	for(itr = KnownAddons.begin(); itr!=KnownAddons.end(); itr++) 
 	{
 		delete itr->second;
 	}

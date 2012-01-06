@@ -18,47 +18,38 @@ struct Overlapped
 
 class iocpEngine : public SocketEngine
 {
-	/** Our completion port
-	 */
+	/* Our completion port */
 	HANDLE m_completionPort;
 
-	/** Socket set lock
-	 */
+	/* Socket set lock */
 	Mutex m_socketLock;
 
-	/** Socket set
-	 */
+	/* Socket set */
 	set<BaseSocket*> m_sockets;
 
-	/** Spawned thread count
-	 */
+	/* Spawned thread count */
 	int thread_count;
 
 public:
 	iocpEngine();
 	~iocpEngine();
 
-	/** Adds a socket to the engine.
-	 */
+	/* Adds a socket to the engine. */
 	void AddSocket(BaseSocket * s);
 
-	/** Removes a socket from the engine. It should not receive any more events.
-	 */
+	/* Removes a socket from the engine. It should not receive any more events. */
 	void RemoveSocket(BaseSocket * s);
 
-	/** This is called when a socket has data to write for the first time.
-	 */
+	/* This is called when a socket has data to write for the first time. */
 	void WantWrite(BaseSocket * s);
 
-	/** Spawn however many worker threads this engine requires
-	 */
+	/* Spawn however many worker threads this engine requires */
 	void SpawnThreads();
 
-	/** Called by SocketWorkerThread, this is the network loop.
-	 */
+	/* Called by SocketWorkerThread, this is the network loop. */
 	void MessageLoop();
 
-	/** Shutdown the socket engine, disconnect any associated sockets and 
+	/* Shutdown the socket engine, disconnect any associated sockets and 
 	 * deletes itself and the socket deleter.
 	 */
 	void Shutdown();
@@ -76,4 +67,3 @@ inline void CreateSocketEngine() { new iocpEngine; }
 
 #endif		// NETLIB_IOCP
 #endif		// _NETLIB_SOCKETENGINE_IOCP_H
-

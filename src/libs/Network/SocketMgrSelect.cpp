@@ -105,7 +105,7 @@ void SocketMgr::thread_function()
 			/* burlex: oh my god, this sucks cock. :P this is the reason they invented
 			 * poll() :P
 			 */
-			for(itr = fds.begin(); itr != fds.end(); ++itr)
+			for(itr = fds.begin(); itr != fds.end(); itr++)
 			{
 				s = itr->second;
 

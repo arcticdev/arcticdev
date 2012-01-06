@@ -19,10 +19,10 @@ ClientMgr::~ClientMgr()
 {
 	Log.Debug("ClientMgr", "~ClientMgr");
 
-	for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); ++itr)
+	for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); itr++)
 		delete itr->second;
 
-	for (ClientMap::iterator itr=m_clients.begin(); itr!=m_clients.end(); ++itr)
+	for (ClientMap::iterator itr=m_clients.begin(); itr!=m_clients.end(); itr++)
 		delete itr->second;
 };
 
@@ -38,7 +38,7 @@ void ClientMgr::SendPackedClientInfo(WServer * server)
 	/* pack them all togther, w000t! */
 	ClientMap::iterator itr = m_clients.begin();
 	RPlayerInfo * pi;
-	for(; itr != m_clients.end(); ++itr)
+	for(; itr != m_clients.end(); itr++)
 	{
 		pi = itr->second;
 		pi->Pack(uncompressed);
@@ -115,7 +115,7 @@ Session * ClientMgr::CreateSession(uint32 AccountId)
 	}
 
 	//ok, if we have a session with this account, add it to delete queue
-	for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); ++itr)
+	for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); itr++)
 		if (itr->second->GetAccountId() == AccountId)
 			m_pendingdeletesessionids.push_back(itr->first);
 
@@ -136,7 +136,7 @@ void ClientMgr::Update()
 {
 	//get teh write lock for this so we don't fuck up other things
 	m_lock.AcquireWriteLock();
-	for (std::vector<uint32>::iterator itr=m_pendingdeletesessionids.begin(); itr!=m_pendingdeletesessionids.end(); ++itr)
+	for (std::vector<uint32>::iterator itr=m_pendingdeletesessionids.begin(); itr!=m_pendingdeletesessionids.end(); itr++)
 	{
 		SessionMap::iterator itr2 = m_sessions.find(*itr);
 		if (itr2 == m_sessions.end()) //uh oh
@@ -158,7 +158,7 @@ void ClientMgr::Update()
 	}
 	m_lock.ReleaseWriteLock();
 
-	for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); ++itr)
+	for (SessionMap::iterator itr=m_sessions.begin(); itr!=m_sessions.end(); itr++)
 		if (!itr->second->deleted)
 			itr->second->Update();
 }
@@ -191,7 +191,7 @@ RPlayerInfo * ClientMgr::CreateRPlayer(uint32 guid)
 	}
 	else
 	{
-		++itr->second->references;
+		itr++->second->references;
 		m_lock.ReleaseWriteLock();
 		return itr->second;
 	}

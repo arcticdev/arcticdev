@@ -162,7 +162,7 @@ public:
 		}
 		return *this;
 	}
-	//! Only does X,Y,Z!
+	// Only does X,Y,Z!
 	ByteBuffer & operator << (const LocationVector & vec)
 	{
 		append<float>(vec.x);
@@ -171,7 +171,7 @@ public:
 		return *this;
 	}
 
-	//! Only does X,Y,Z!
+	// Only does X,Y,Z!
 	ByteBuffer & operator >> (LocationVector & vec)
 	{
 		vec.x = read<float>();

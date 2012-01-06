@@ -162,7 +162,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 				for(itr = c->CreatureSpawns.begin(); itr != c->CreatureSpawns.end();)
 				{
 					itr2 = itr;
-					++itr;
+					itr++;
 					if((*itr2) == unit->m_spawn)
 					{
 						c->CreatureSpawns.erase(itr2);
@@ -659,7 +659,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 			for(itr = c->GOSpawns.begin(); itr != c->GOSpawns.end();)
 			{
 				itr2 = itr;
-				++itr;
+				itr++;
 				if((*itr2) == GObj->m_spawn)
 				{
 					c->GOSpawns.erase(itr2);

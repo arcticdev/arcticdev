@@ -108,9 +108,10 @@ static const uint32 EOTSHordeDisplayFields[EOTS_TOWER_COUNT] = {
 #define EOTS_CAPTURE_DISTANCE 900 /*30*/
 const uint32 EOTSTowerIds[EOTS_TOWER_COUNT] = { EOTS_GO_BE_TOWER, EOTS_GO_FELREAVER, EOTS_GO_MAGE_TOWER, EOTS_GO_DRAENEI_TOWER };
 
-/**
+/*
  * WorldStates
  */
+
 #define EOTS_NETHERWING_FLAG_SPELL 34976
 //#define EOTS_CAPTURE_RATE 20
 
@@ -412,10 +413,11 @@ void EyeOfTheStorm::DropFlag(Player* plr)
 
 	plr->CastSpell(plr, BG_RECENTLY_DROPPED_FLAG, true);
 
-	/**
+	/*
 	* let's apply the same rules as wsg, reallocate guid, 
 	* reposition, spawn.
-	 */
+	*/
+
 	m_dropFlag->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 	m_dropFlag->SetPosition( plr->GetPosition() );
 	m_dropFlag->PushToWorld( m_mapMgr );
@@ -619,7 +621,7 @@ void EyeOfTheStorm::UpdateCPs()
 		itrend = m_CPStatusGO[i]->GetInRangePlayerSetEnd();
 		plrcounts[0] = plrcounts[1] = 0;
 
-		for(; itr != itrend; ++itr)
+		for(; itr != itrend; itr++)
 		{ 
 			if( !(*itr)->IsPvPFlagged() || (*itr)->InStealth() || (*itr)->m_invisible || (*itr)->SchoolImmunityList[0] || (*itr)->m_bgFlagIneligible )
 				is_valid = false;
@@ -886,7 +888,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 		for(uint32 i = 0; i < 2; ++i)
 		{
-			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 			{
 				(*itr)->Root();
 
@@ -985,7 +987,7 @@ void EyeOfTheStorm::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}

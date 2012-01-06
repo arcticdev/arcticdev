@@ -23,15 +23,13 @@ protected:
 
 public:
 
-	/** Constructor, sets buffer pointers and zeros write/read positions.
-	 */
+	/* Constructor, sets buffer pointers and zeros write/read positions. */
 	StackBuffer(uint8* ptr, uint32 sz) : m_stackBuffer(ptr), m_readPos(0), m_writePos(0), m_bufferPointer(&m_stackBuffer[0]), m_heapBuffer(0), m_space(sz) {}
 
-	/** Destructor, frees heap buffer if it exists
-	 */
+	/* Destructor, frees heap buffer if it exists */
 	~StackBuffer() { if(m_heapBuffer) free(m_heapBuffer); }
 
-	/** Re-allocates the buffer on the heap. This allows it to expand past the original specified size.
+	/* Re-allocates the buffer on the heap. This allows it to expand past the original specified size.
 	 * This is only a failsafe and should be avoided at all costs, as it is quite heavy. 
 	 */
 	void ReallocateOnHeap()
@@ -52,16 +50,15 @@ public:
 		}
 	}
 
-	/** Gets the buffer pointer
+	/* Gets the buffer pointer
 	 * @return the buffer pointer
 	 */
 	uint8 * GetBufferPointer() { return m_bufferPointer; }
 
-	/** Gets the current write position.
-	 */
+	/* Gets the current write position. */
 	size_t GetWritePos() { return m_writePos; }
 
-	/** Reads sizeof(T) bytes from the buffer
+	/* Reads sizeof(T) bytes from the buffer
 	 * @return the bytes read
 	 */
 	template<typename T>
@@ -74,7 +71,7 @@ public:
 		return ret;
 	}
 
-	/** Writes sizeof(T) bytes to the buffer, while checking for overflows.
+	/* Writes sizeof(T) bytes to the buffer, while checking for overflows.
 	 * @param T data The data to be written
 	 */
 	template<typename T>
@@ -90,7 +87,7 @@ public:
 		m_writePos += sizeof(T);
 	}
 
-	/** writes x bytes to the buffer, while checking for overflows
+	/* writes x bytes to the buffer, while checking for overflows
 	 * @param ptr the data to be written
 	 * @param size byte count
 	 */
@@ -103,7 +100,7 @@ public:
 		m_writePos += uint32(size);
 	}
 
-	/** Ensures the buffer is big enough to fit the specified number of bytes.
+	/* Ensures the buffer is big enough to fit the specified number of bytes.
 	 * @param bytes number of bytes to fit
 	 */
 	ARCTIC_INLINE void EnsureBufferSize(size_t Bytes)
@@ -112,18 +109,15 @@ public:
 			ReallocateOnHeap();
 	}
 
-	/** These are the default read/write operators.
-	 */
+	/* These are the default read/write operators. */
 #define DEFINE_BUFFER_READ_OPERATOR(type) void operator >> (type& dest) { dest = Read<type>(); }
 #define DEFINE_BUFFER_WRITE_OPERATOR(type) void operator << (type src) { Write<type>(src); }
 
-	/** Fast read/write operators without using the templated read/write functions.
-	 */
+	/* Fast read/write operators without using the templated read/write functions. */
 #define DEFINE_FAST_READ_OPERATOR(type, size) StackBuffer& operator >> (type& dest) { if(m_readPos + size > m_writePos) { dest = (type)0; return *this; } else { dest = *(type*)&m_bufferPointer[m_readPos]; m_readPos += size; return *this; } }
 #define DEFINE_FAST_WRITE_OPERATOR(type, size) StackBuffer& operator << (type src) { if(m_writePos + size > m_space) { ReallocateOnHeap(); } *(type*)&m_bufferPointer[m_writePos] = src; m_writePos += size; return *this; }
 
-	/** Integer/float r/w operators
-	 */
+	/* Integer/float r/w operators */
 	DEFINE_FAST_READ_OPERATOR(uint64, 8);
 	DEFINE_FAST_READ_OPERATOR(uint32, 4);
 	DEFINE_FAST_READ_OPERATOR(uint16, 2);
@@ -146,13 +140,11 @@ public:
 	DEFINE_FAST_WRITE_OPERATOR(float, 4);
 	DEFINE_FAST_WRITE_OPERATOR(double, 8);
 
-	/** boolean (1-byte) read/write operators
-	 */
+	/* boolean (1-byte) read/write operators */
 	DEFINE_FAST_WRITE_OPERATOR(bool, 1);
 	StackBuffer& operator >> (bool & dst) { dst = (Read<char>() > 0 ? true : false); return *this; }
 
-	/** string (null-terminated) operators
-	 */
+	/* string (null-terminated) operators */
 	StackBuffer& operator << (std::string & value) { EnsureBufferSize(value.length() + 1); memcpy(&m_bufferPointer[m_writePos], value.c_str(), value.length()+1); m_writePos += (value.length() + 1); return *this; }
 	StackBuffer& operator >> (std::string & dest)
 	{
@@ -176,8 +168,7 @@ public:
 		return *this;
 	}
 
-	/** WoWGuid read/write operators
-	 */
+	/* WoWGuid read/write operators */
 	StackBuffer& operator << (const WoWGuid & value)
 	{
 		EnsureBufferSize(value.GetNewGuidLen() + 1);
@@ -197,8 +188,7 @@ public:
 		return *this;
 	}
 
-	/** LocationVector read/write operators
-	 */
+	/* LocationVector read/write operators */
 	StackBuffer& operator << (LocationVector & val)
 	{
 		// burlex: I would've done this as one memcpy.. but we don't know how the struct alignment is gonna come out :/
@@ -216,11 +206,10 @@ public:
 		return *this;
 	}
 
-	/** Clears the buffer
-	 */
+	/* Clears the buffer */
 	void Clear() { m_writePos = m_readPos = 0; }
 
-	/** Gets the write position
+	/* Gets the write position
 	 * @return buffer size
 	 */
 	size_t GetSize() { return m_writePos; }

@@ -801,7 +801,7 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 	unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin();
 	unordered_set<Player*  >::iterator it_end = m_inRangePlayers.end();
 	int gm = ( m_objectTypeId == TYPEID_PLAYER ? TO_PLAYER(this)->m_isGmInvisible : 0 );
-	for(; itr != it_end; ++itr)
+	for(; itr != it_end; itr++)
 	{
 		ASSERT((*itr)->GetSession());
 		if( gm )
@@ -836,7 +836,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		uint32 myteam=TO_PLAYER(this)->GetTeam();
 		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetSession()->GetPermissionCount() > 0 && (*itr)->GetTeam()==myteam && PhasedCanInteract(*itr))
@@ -845,7 +845,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		}
 		else
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetTeam()==myteam && PhasedCanInteract(*itr))
@@ -857,7 +857,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 	{
 		if(gminvis && data->GetOpcode()!=SMSG_MESSAGECHAT)
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if((*itr)->GetSession()->GetPermissionCount() > 0 && PhasedCanInteract(*itr))
@@ -866,7 +866,7 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 		}
 		else
 		{
-			for(; itr != it_end; ++itr)
+			for(; itr != it_end; itr++)
 			{
 				ASSERT((*itr)->GetSession());
 				if( PhasedCanInteract(*itr) )
@@ -1062,7 +1062,7 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 	}
 }
 
-//! Set uint32 property
+// Set uint32 property
 void Object::SetUInt32Value( const uint32 index, const uint32 value )
 {
 	ASSERT( index < m_valuesCount );
@@ -1236,7 +1236,8 @@ void Object::ModFloatValue(const uint32 index, const float value )
 		}
 	}
 }
-//! Set uint64 property
+
+// Set uint64 property
 void Object::SetUInt64Value( const uint32 index, const uint64 value )
 {
 	assert( index + 1 < m_valuesCount );
@@ -1259,7 +1260,7 @@ void Object::SetUInt64Value( const uint32 index, const uint64 value )
 	}
 }
 
-//! Set float property
+// Set float property
 void Object::SetFloatValue( const uint32 index, const float value )
 {
 	ASSERT( index < m_valuesCount );

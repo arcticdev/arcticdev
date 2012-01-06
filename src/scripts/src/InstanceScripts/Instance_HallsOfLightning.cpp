@@ -621,7 +621,7 @@ bool ShatteringStomp(uint32 i, Spell* pSpell)
 
 	Unit* _unit = pSpell->u_caster;
 	Creature* golem = NULL;
-	for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); ++itr) 
+	for(unordered_set<Object*>::iterator itr = _unit->GetInRangeSetBegin(); itr != _unit->GetInRangeSetEnd(); itr++) 
 	{
 		if( (*itr) && (*itr)->IsCreature() )
 		{

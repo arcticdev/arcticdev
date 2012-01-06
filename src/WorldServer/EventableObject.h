@@ -9,7 +9,7 @@
 
 class EventableObjectHolder;
 
-/**
+/*
   * @class EventableObject
   * EventableObject means that the class inheriting this is able to take
   * events. This 'base' class will store and update these events upon
@@ -62,7 +62,7 @@ protected:
 	
 };
 
-/**
+/*
   * @class EventableObjectHolder
   * EventableObjectHolder will store eventable objects, and remove/add them when they change
   * from one holder to another (changing maps / instances).

@@ -12,7 +12,7 @@
 #endif
 
 // pooled allocations
-//#define STORAGE_ALLOCATION_POOLS 1
+// #define STORAGE_ALLOCATION_POOLS 1
 #define STORAGE_ARRAY_MAX 200000
 
 #ifdef STORAGE_ALLOCATION_POOLS
@@ -48,36 +48,29 @@ public:
 };
 #endif
 
-/** Base iterator class, returned by MakeIterator() functions.
- */
+/* Base iterator class, returned by MakeIterator() functions. */
 template<class T>
 class SERVER_DECL StorageContainerIterator
 {
 protected:
-	/** Currently referenced object
-	 */
+	/* Currently referenced object */
 	T * Pointer;
 public:
 	virtual ~StorageContainerIterator() {}
 
-	/** Returns the currently stored object
-	 */
+	/* Returns the currently stored object */
 	ARCTIC_INLINE T * Get() { return Pointer; }
 
-	/** Sets the current object to P
-	 */
+	/* Sets the current object to P */
 	ARCTIC_INLINE void Set(T * P) { Pointer = P; }
 
-	/** Are we at the end of the storage container?
-	 */
+	/* Are we at the end of the storage container? */
 	ARCTIC_INLINE bool AtEnd() { return (Pointer == 0); }
 
-	/** Virtual function to increment to the next element
-	 */
+	/* Virtual function to increment to the next element */
 	virtual bool Inc() = 0;
 
-	/** Virtual function to destroy the iterator
-	 */
+	/* Virtual function to destroy the iterator */
 	virtual void Destruct() = 0;
 };
 
@@ -90,27 +83,22 @@ public:
 	void InitPool(uint32 cnt) { _pool.Init( cnt ); }
 #endif
 
-	/** This is where the magic happens :P
-	 */
+	/* This is where the magic happens :P */
 	T ** _array;
 
-	/** Maximum possible entry 
-	 */
+	/* Maximum possible entry */
 	uint32 _max;
 
-	/** Returns an iterator currently referencing the start of the container
-	 */
+	/* Returns an iterator currently referencing the start of the container */
 	StorageContainerIterator<T> * MakeIterator();
 
-	/** Do we need to get the max?
-	*/
+	/* Do we need to get the max? */
 	bool NeedsMax()
 	{
 		return true;
 	}
 
-	/** Creates the array with specified maximum
-	 */
+	/* Creates the array with specified maximum */
 	void Setup(uint32 Max)
 	{
 		_array = new T*[Max];
@@ -118,12 +106,11 @@ public:
 		memset(_array, 0, sizeof(T*) * Max);
 	}
 	
-	/** Sets up the array with a different maximum
-	 */
+	/* Sets up the array with a different maximum */
 	void Resetup(uint32 Max)
 	{
 		if(Max < _max)
-			return;		// no need to realloc
+			return; // no need to realloc
 
         T ** a = new T*[Max];
 		memset(a,0,sizeof(T*)*Max);
@@ -133,8 +120,7 @@ public:
 		_max = Max;
 	}
 
-	/** Frees the container array and all elements inside it
-	 */
+	/* Frees the container array and all elements inside it */
 	~ArrayStorageContainer()
 	{
 #ifndef STORAGE_ALLOCATION_POOLS
@@ -147,7 +133,7 @@ public:
 		delete [] _array;
 	}
 
-	/** Allocates entry Entry in the array and sets the pointer, and returns
+	/* Allocates entry Entry in the array and sets the pointer, and returns
 	 * the allocated memory.
 	 */
 	T * AllocateEntry(uint32 Entry)
@@ -163,8 +149,7 @@ public:
 		return _array[Entry];
 	}
 
-	/** Deallocates the entry Entry in the array and sets the pointer to null.
-	 */
+	/* Deallocates the entry Entry in the array and sets the pointer to null. */
 	bool DeallocateEntry(uint32 Entry)
 	{
 		if(Entry >= _max || _array[Entry] == NULL)
@@ -177,8 +162,7 @@ public:
 		return true;
 	}
 
-	/** Looks up entry Entry and returns the pointer if it is existant, otherwise null.
-	 */
+	/* Looks up entry Entry and returns the pointer if it is existant, otherwise null. */
 	T * LookupEntry(uint32 Entry)
 	{
 		if(Entry >= _max)
@@ -187,7 +171,7 @@ public:
 			return _array[Entry];
 	}
 
-	/** Sets the pointer to entry Entry to Pointer, and if it already exists frees the existing
+	/* Sets the pointer to entry Entry to Pointer, and if it already exists frees the existing
 	 * element.
 	 */
 	bool SetEntry(uint32 Entry, T * Pointer)
@@ -204,8 +188,7 @@ public:
 		return true;
 	}
 
-	/** Returns the current pointer if it exists, otherwise allocates it.
-	 */
+	/* Returns the current pointer if it exists, otherwise allocates it. */
 	T * LookupEntryAllocate(uint32 Entry)
 	{
 		T * ret = LookupEntry(Entry);
@@ -214,8 +197,7 @@ public:
 		return ret;
 	}
 
-	/** Deletes all entries in the container.
-	 */
+	/* Deletes all entries in the container. */
 	void Clear()
 	{
 		for(uint32 i = 0; i < _max; ++i)
@@ -242,27 +224,23 @@ public:
 
 	typename HM_NAMESPACE::hash_map<uint32, T*> _map;
 
-	/** Returns an iterator currently referencing the start of the container
-	 */
+	/* Returns an iterator currently referencing the start of the container */
 	StorageContainerIterator<T> * MakeIterator();
 
-	/** Frees the container array and all elements inside it
-	 */
+	/* Frees the container array and all elements inside it */
 	~HashMapStorageContainer()
 	{
-		for(typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin(); itr != _map.end(); ++itr)
+		for(typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin(); itr != _map.end(); itr++)
 			delete itr->second;
 	}
 
-	/** Do we need to get the max?
-	 */
+	/* Do we need to get the max? */
 	bool NeedsMax()
 	{
 		return false;
 	}
 
-	/** Creates the array with specified maximum
-	 */
+	/* Creates the array with specified maximum */
 	void Setup(uint32 Max)
 	{
 
@@ -273,7 +251,7 @@ public:
 
 	}
 
-	/** Allocates entry Entry in the array and sets the pointer, and returns
+	/* Allocates entry Entry in the array and sets the pointer, and returns
 	 * the allocated memory.
 	 */
 	T * AllocateEntry(uint32 Entry)
@@ -289,8 +267,7 @@ public:
 		return n;
 	}
 
-	/** Deallocates the entry Entry in the array and sets the pointer to null.
-	 */
+	/* Deallocates the entry Entry in the array and sets the pointer to null. */
 	bool DeallocateEntry(uint32 Entry)
 	{
 		typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.find(Entry);
@@ -313,7 +290,7 @@ public:
 		return itr->second;
 	}
 
-	/** Sets the pointer to entry Entry to Pointer, and if it already exists frees the existing
+	/* Sets the pointer to entry Entry to Pointer, and if it already exists frees the existing
 	 * element.
 	 */
 	bool SetEntry(uint32 Entry, T * Pointer)
@@ -332,8 +309,7 @@ public:
 		return true;
 	}
 
-	/** Returns the current pointer if it exists, otherwise allocates it.
-	 */
+	/* Returns the current pointer if it exists, otherwise allocates it. */
 	T * LookupEntryAllocate(uint32 Entry)
 	{
 		T * ret = LookupEntry(Entry);
@@ -342,12 +318,11 @@ public:
 		return ret;
 	}
 
-	/** Deletes all entries in the container.
-	 */
+	/* Deletes all entries in the container. */
 	void Clear()
 	{
 		typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin();
-		for(; itr != _map.end(); ++itr)
+		for(; itr != _map.end(); itr++)
 			delete itr->second;
 		_map.clear();
 	}
@@ -360,8 +335,7 @@ class SERVER_DECL ArrayStorageIterator : public StorageContainerIterator<T>
 	uint32 MyIndex;
 public:
 
-	/** Increments the iterator
-	*/
+	/* Increments the iterator */
 	bool Inc()
 	{
 		GetNextElement();
@@ -371,22 +345,19 @@ public:
 			return false;
 	}
 
-	/** Frees the memory occupied by this iterator
-	*/
+	/* Frees the memory occupied by this iterator */
 	void Destruct()
 	{
 		delete this;
 	}
 
-	/** Constructor
-	*/
+	/* Constructor */
 	ArrayStorageIterator(ArrayStorageContainer<T> * S) : StorageContainerIterator<T>(), Source(S), MyIndex(0)
 	{
 		GetNextElement();
 	}
 
-	/** Sets the next element pointer, or to 0 if we reached the end
-	*/
+	/* Sets the next element pointer, or to 0 if we reached the end */
 	void GetNextElement()
 	{
 		while(MyIndex < Source->_max)
@@ -411,8 +382,7 @@ class SERVER_DECL HashMapStorageIterator : public StorageContainerIterator<T>
 	typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr;
 public:
 
-	/** Constructor
-	*/
+	/* Constructor */
 	HashMapStorageIterator(HashMapStorageContainer<T> * S) : StorageContainerIterator<T>(), Source(S)
 	{
 		itr = S->_map.begin();
@@ -422,19 +392,17 @@ public:
 			StorageContainerIterator<T>::Set(itr->second);
 	}
 
-	/** Gets the next element, or if we reached the end sets it to 0
-	*/
+	/* Gets the next element, or if we reached the end sets it to 0 */
 	void GetNextElement()
 	{
-		++itr;
+		itr++;
 		if(itr == Source->_map.end())
 			StorageContainerIterator<T>::Set(0);
 		else
 			StorageContainerIterator<T>::Set(itr->second);
 	}
 
-	/** Returns true if we're not at the end, otherwise false.
-	*/
+	/* Returns true if we're not at the end, otherwise false. */
 	bool Inc()
 	{
 		GetNextElement();
@@ -444,8 +412,7 @@ public:
 			return false;
 	}
 
-	/** Frees the memory occupied by this iterator
-	*/
+	/* Frees the memory occupied by this iterator */
 	void Destruct()
 	{
 		delete this;
@@ -478,39 +445,33 @@ public:
 	ARCTIC_INLINE char * GetIndexName() { return _indexName; }
 	ARCTIC_INLINE char * GetFormatString() { return _formatString; }
 
-	/** False constructor to fool compiler
-	 */
+	/* False constructor to fool compiler */
 	Storage() {}
 	virtual ~Storage() {}
 
-	/** Makes an iterator, w00t!
-	 */
+	/* Makes an iterator, w00t! */
 	StorageContainerIterator<T> * MakeIterator()
 	{
 		return _storage.MakeIterator();
 	}
 
-	/** Calls the storage container lookup function.
-	 */
+	/* Calls the storage container lookup function. */
 	T * LookupEntry(uint32 Entry)
 	{
 		return _storage.LookupEntry(Entry);
 	}
 
-	/** Reloads the content in this container.
-	 */
+	/* Reloads the content in this container. */
     	virtual void Reload() = 0;
 
-	/** Loads the container using the specified name and format string
-	 */
+	/* Loads the container using the specified name and format string */
 	virtual void Load(const char * IndexName, const char * FormatString)
 	{
 		_indexName = strdup(IndexName);
 		_formatString = strdup(FormatString);
 	}
 
-	/** Frees the duplicated strings and all entries inside the storage container
-	 */
+	/* Frees the duplicated strings and all entries inside the storage container */
 	virtual void Cleanup()
 	{
 		printf("Deleting database cache of `%s`...\n", _indexName);
@@ -528,8 +489,7 @@ public:
 		free(_formatString);
 	}
 
-	/** Frees any string elements inside blocks. 
-	 */
+	/* Frees any string elements inside blocks. */
 	void FreeBlock(T * Allocated)
 	{
 		char * p = _formatString;
@@ -538,7 +498,7 @@ public:
 		{
 			switch(*p)
 			{
-			case 's':		// string is the only one we have to actually do anything for here
+			case 's': // string is the only one we have to actually do anything for here
 					free((*(char**)structpointer));
 					structpointer += sizeof(char*);
 				break;
@@ -568,8 +528,7 @@ public:
 	SQLStorage() : Storage<T, StorageType>() {}
 	~SQLStorage() {}
 
-	/** Loads the block using the format string.
-	 */
+	/* Loads the block using the format string. */
 	ARCTIC_INLINE void LoadBlock(Field * fields, T * Allocated)
 	{
 		char * p = Storage<T, StorageType>::_formatString;
@@ -626,8 +585,7 @@ public:
 		}
 	}
 
-	/** Loads from the table.
-	 */
+	/* Loads from the table. */
 	void Load(const char * IndexName, const char * FormatString)
 	{
 		//printf("Loading database cache from `%s`...\n", IndexName);
@@ -752,8 +710,7 @@ public:
 		delete result;
 	}
 
-	/** Reloads the storage container
-	 */
+	/* Reloads the storage container */
 	void Reload()
 	{
 		Log.Notice("Storage", "Reloading database cache from `%s`...\n", Storage<T, StorageType>::_indexName);

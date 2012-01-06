@@ -138,7 +138,7 @@ World::~World()
 	delete eventholder;
 
 	Storage_Cleanup();
-	for(list<SpellEntry*>::iterator itr = dummyspells.begin(); itr != dummyspells.end(); ++itr)
+	for(list<SpellEntry*>::iterator itr = dummyspells.begin(); itr != dummyspells.end(); itr++)
 		delete *itr;
 
 	Log.Notice("DBCs", "FreeDBCs()");
@@ -669,7 +669,7 @@ bool World::SetInitialWorldSettings()
 
 		InspectTalentTabPages[talent_class + 1][tab_info->TabPage] = tab_info->TalentTabID;
 
-		for( std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); ++itr )
+		for( std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); itr++ )
 		{
 			uint32 talent_id = itr->first & 0xFFFF;
 			TalentEntry const* talent_info = dbcTalent.LookupEntry( talent_id );
@@ -834,7 +834,7 @@ void World::UpdateSessions(uint32 diff)
 	{
 		GlobalSession = (*itr);
 		it2 = itr;
-		++itr;
+		itr++;
 		//We have been moved to mapmgr, remove us here.
 		if( GlobalSession->GetInstance() != 0 )
 		{
@@ -1029,7 +1029,7 @@ WorldSession* World::FindSessionByName(const char * Name)//case insensetive
 
 	// loop sessions, see if we can find him
 	SessionMap::iterator itr = m_sessions.begin();
-	for(; itr != m_sessions.end(); ++itr)
+	for(; itr != m_sessions.end(); itr++)
 	{
 		if(!stricmp(itr->second->GetAccountName().c_str(),Name))
 		{
@@ -1076,7 +1076,7 @@ Task * TaskList::GetTask()
 	queueLock.Acquire();
 
 	Task* t = 0;
-	for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); ++itr)
+	for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); itr++)
 	{
 		if(!(*itr)->in_progress)
 		{
@@ -1137,7 +1137,7 @@ void TaskList::wait()
 	{
 		queueLock.Acquire();
 		has_tasks = false;
-		for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); ++itr)
+		for(set<Task*>::iterator itr = tasks.begin(); itr != tasks.end(); itr++)
 		{
 			if(!(*itr)->completed)
 			{
@@ -2166,7 +2166,7 @@ void World::DisconnectUsersWithAccount(const char * account, WorldSession * m_se
 	for(itr = m_sessions.begin(); itr != m_sessions.end();)
 	{
 		worldsession = (itr->second);
-		++itr;
+		itr++;
 
 		if(!stricmp(account, worldsession->GetAccountNameS()))
 		{
@@ -2187,7 +2187,7 @@ void World::DisconnectUsersWithIP(const char * ip, WorldSession * m_session)
 	for(itr = m_sessions.begin(); itr != m_sessions.end();)
 	{
 		worldsession = (itr->second);
-		++itr;
+		itr++;
 
 		if(!worldsession->GetSocket())
 			continue;
@@ -2212,7 +2212,7 @@ void World::DisconnectUsersWithPlayerName(const char * plr, WorldSession * m_ses
 	for(itr = m_sessions.begin(); itr != m_sessions.end();)
 	{
 		worldsession = (itr->second);
-		++itr;
+		itr++;
 
 		if(!worldsession->GetPlayer())
 			continue;

@@ -78,10 +78,13 @@ void DayWatcherThread::LoadEventIdSettings()
 		events->starthour = fields[5].GetUInt8();
 		events->endhour = fields[6].GetUInt8();
 		m_eventIdList.push_back(events);
-	} while(result->NextRow());
+	}
+	while(result->NextRow());
 
+	delete result;
 	m_creatureEventSpawnMaps.clear();
 	m_gameobjectEventSpawnMaps.clear();
+
 	uint8 eventid;
 
 	result = WorldDatabase.Query("SELECT eventid FROM events");
@@ -292,7 +295,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 
 	/* delete objects in pending respawn state */
 	Object* pObject;
-	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
+	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); itr++)
 	{
 		pObject = *itr;
 		if(!pObject)

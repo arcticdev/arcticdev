@@ -262,7 +262,7 @@ Unit::~Unit()
 	}
 
 	// clear tmpAura pointers
-	for(map<uint32, Aura* >::iterator itr = tmpAura.begin(); itr != tmpAura.end(); ++itr)
+	for(map<uint32, Aura* >::iterator itr = tmpAura.begin(); itr != tmpAura.end(); itr++)
 	{
 		if( itr->second )
 		{
@@ -292,7 +292,7 @@ Unit::~Unit()
 
 	m_damageShields.clear();
 
-	for (std::list<ReflectSpellSchool*>::iterator itr=m_reflectSpellSchool.begin(); itr!=m_reflectSpellSchool.end(); ++itr)
+	for (std::list<ReflectSpellSchool*>::iterator itr=m_reflectSpellSchool.begin(); itr!=m_reflectSpellSchool.end(); itr++)
 		delete (*itr);
 	m_reflectSpellSchool.clear();
 
@@ -470,7 +470,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 		GroupMembersSet::iterator itr;
 		for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++)
 		{
-			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); itr++)
 			{
 				if((*itr)->getLevel() < sWorld.LevelCap)
 					(*itr)->GiveXP(xp, pVictim->GetGUID(), true);
@@ -483,7 +483,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 	GroupMembersSet::iterator itr;
 	pGroup->Lock();
 	for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
-		for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+		for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); itr++)
 		{
 			pGroupGuy = (*itr)->m_loggedInPlayer;
 			if( pGroupGuy && 
@@ -565,7 +565,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 	{
 		itr2 = itr;
 		if( itr != m_procSpells.end() )
-			++itr;
+			itr++;
 
 		if( itr2->deleted )
 		{
@@ -2321,7 +2321,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 											if( TargetCount == 10 )
 												break;
 
-											for(GroupMembersSet::iterator itr = caster->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != caster->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); ++itr)
+											for(GroupMembersSet::iterator itr = caster->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != caster->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); itr++)
 											{
 												if((*itr)->m_loggedInPlayer && TargetCount <= 10)
 												{
@@ -2837,8 +2837,8 @@ uint32 Unit::GetSpellDidHitResult( Unit* pVictim, uint32 weapon_damage_type, Spe
 	//--------------------------------by damage type and by weapon type-------------------------
 	if( weapon_damage_type == RANGED ) 
 	{
-		dodge=0.0f;
-		parry=0.0f;
+		dodge = 0.0f;
+		parry = 0.0f;
 	}
 	else if(IsPlayer())
 	{
@@ -3712,7 +3712,7 @@ else
 
 			// Loop on hit spells, and strike with those.
 			for( map< SpellEntry*, pair< uint32, uint32 > >::iterator itr = TO_PLAYER(this)->m_onStrikeSpells.begin();
-				itr != TO_PLAYER(this)->m_onStrikeSpells.end(); ++itr )
+				itr != TO_PLAYER(this)->m_onStrikeSpells.end(); itr++ )
 			{
 				if( itr->second.first )
 				{
@@ -3957,7 +3957,7 @@ else
 
 			if (ex->deleted) continue;
 
-			for(unordered_set<Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr)
+			for(unordered_set<Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++)
 			{
 				if (!(*itr) || (*itr) == pVictim || !(*itr)->IsUnit())
 					continue;
@@ -6086,7 +6086,7 @@ void Unit::UpdateVisibility()
 		for( Object::InRangeSet::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end();)
 		{
 			pObj = (*itr);
-			++itr;
+			itr++;
 
 			can_see = plr->CanSee(pObj);
 			is_visible = plr->GetVisibility(pObj, &it3);
@@ -6244,7 +6244,7 @@ bool Unit::GetSpeedDecrease()
 	m_speedModifier -= m_slowdown;
 	m_slowdown = 0;
 	map< uint32, int32 >::iterator itr = speedReductionMap.begin();
-	for(; itr != speedReductionMap.end(); ++itr)
+	for(; itr != speedReductionMap.end(); itr++)
 		m_slowdown = (int32)min( m_slowdown, itr->second );
 
 	if(m_slowdown<-100)
@@ -6644,7 +6644,7 @@ void CombatStatusHandler::ClearAttackers()
 	// this is a FORCED function, only use when the reference will be destroyed.
 	AttackTMap::iterator itr = m_attackTargets.begin();
 	Unit* pt;
-	for(; itr != m_attackTargets.end(); ++itr)
+	for(; itr != m_attackTargets.end(); itr++)
 	{
 		pt = m_Unit->GetMapMgr()->GetUnit(itr->first);
 		if(pt)
@@ -6674,7 +6674,7 @@ void CombatStatusHandler::ClearHealers()
 {
 	HealedSet::iterator itr = m_healed.begin();
 	Player* pt;
-	for(; itr != m_healed.end(); ++itr)
+	for(; itr != m_healed.end(); itr++)
 	{
 		pt = m_Unit->GetMapMgr()->GetPlayer(*itr);
 		if(pt)
@@ -6684,7 +6684,7 @@ void CombatStatusHandler::ClearHealers()
 		}
 	}
 
-	for(itr = m_healers.begin(); itr != m_healers.end(); ++itr)
+	for(itr = m_healers.begin(); itr != m_healers.end(); itr++)
 	{
 		pt = m_Unit->GetMapMgr()->GetPlayer(*itr);
 		if(pt)
@@ -6895,7 +6895,7 @@ void Creature::UpdateLootAnimation(Player* Looter)
 	if( m_loot.HasLoot(Looter) )
 	{
 		// update players with lootable flags
-		for(unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
+		for(unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); itr++)
 		{
 			Player* plr = *itr;
 			if( ( plr->GetLowGUID() == m_taggingPlayer ) ||
@@ -6911,7 +6911,7 @@ void Creature::UpdateLootAnimation(Player* Looter)
 	else
 	{
 		// we are still alive, probably updating tapped state
-		for(unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); ++itr)
+		for(unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); itr++)
 		{
 			if( !m_taggingPlayer )
 			{
@@ -6949,7 +6949,7 @@ void Creature::ClearTag()
 void Object::ClearLoot()
 {
 	// better cancel any rolls just in case.
-	for(vector<__LootItem>::iterator itr = m_loot.items.begin(); itr != m_loot.items.end(); ++itr)
+	for(vector<__LootItem>::iterator itr = m_loot.items.begin(); itr != m_loot.items.end(); itr++)
 	{
 		if( itr->roll != NULL )
 		{
@@ -7205,7 +7205,7 @@ void Unit::OnAuraRemove(uint32 NameHash, Unit* m_target)
 	}
 }
 
-//! Is PVP flagged?
+// Is PVP flagged?
 bool Unit::IsPvPFlagged()
 {
 	return HasByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
@@ -7220,7 +7220,7 @@ void Unit::SetPvPFlag()
 	SetByteFlag(UNIT_FIELD_BYTES_2, 1, U_FIELD_BYTES_FLAG_PVP);
 }
 
-//! Removal
+// Removal
 void Unit::RemovePvPFlag()
 {
 	if(IsPlayer())

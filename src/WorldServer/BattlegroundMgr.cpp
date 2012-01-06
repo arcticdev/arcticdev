@@ -246,7 +246,7 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
  	{
 		/* Append the battlegrounds */
 		m_instanceLock.Acquire();
-		for(map<uint32, CBattleground* >::iterator itr = m_instances[BattlegroundType].begin(); itr != m_instances[BattlegroundType].end(); ++itr)
+		for(map<uint32, CBattleground* >::iterator itr = m_instances[BattlegroundType].begin(); itr != m_instances[BattlegroundType].end(); itr++)
 		{
 			if( itr->second->GetLevelGroup() == LevelGroup  && !itr->second->HasEnded() )
 			{
@@ -385,7 +385,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 void ErasePlayerFromList(uint32 guid, list<uint32>* l)
 {
-	for(list<uint32>::iterator itr = l->begin(); itr != l->end(); ++itr)
+	for(list<uint32>::iterator itr = l->begin(); itr != l->end(); itr++)
 	{
 		if((*itr) == guid)
 		{
@@ -861,11 +861,11 @@ void CBattlegroundManager::RemoveGroupFromQueues(Group * grp)
 			if((*itr) == grp->GetID())
 				itr = m_queuedGroups[i].erase(itr);
 			else
-				++itr;
+				itr++;
 		}
 	}
 
-	for(GroupMembersSet::iterator itr = grp->GetSubGroup(0)->GetGroupMembersBegin(); itr != grp->GetSubGroup(0)->GetGroupMembersEnd(); ++itr)
+	for(GroupMembersSet::iterator itr = grp->GetSubGroup(0)->GetGroupMembersBegin(); itr != grp->GetSubGroup(0)->GetGroupMembersEnd(); itr++)
 		if((*itr)->m_loggedInPlayer)
 		{
 			for(uint32 i = 0; i < 2; ++i)
@@ -883,7 +883,7 @@ void CBattlegroundManager::RemoveGroupFromQueues(Group * grp)
 bool CBattlegroundManager::CanCreateInstance(uint32 Type, uint32 LevelGroup)
 {
 	/*uint32 lc = 0;
-	for(map<uint32, CBattleground* >::iterator itr = m_instances[Type].begin(); itr != m_instances[Type].end(); ++itr)
+	for(map<uint32, CBattleground* >::iterator itr = m_instances[Type].begin(); itr != m_instances[Type].end(); itr++)
 	{
 		if(itr->second->GetLevelGroup() == LevelGroup)
 		{
@@ -929,7 +929,7 @@ CBattleground::~CBattleground()
 		for(uint32 j = 0; j < m_groups[i]->GetSubGroupCount(); ++j) {
 			for(GroupMembersSet::iterator itr = m_groups[i]->GetSubGroup(j)->GetGroupMembersBegin(); itr != m_groups[i]->GetSubGroup(j)->GetGroupMembersEnd();) {
 				inf = (*itr);
-				++itr;
+				itr++;
 				m_groups[i]->RemovePlayer(inf);
 			}
 		}
@@ -1019,7 +1019,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 	uint32 fcount = BGPvPDataFieldCount[GetType()];
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
 			if( (*itr)->m_isGmInvisible ) continue;
 			*data << (*itr)->GetGUID();
@@ -1433,7 +1433,7 @@ void CBattleground::DistributePacketToAll(WorldPacket * packet)
 		if( !m_players[i].size() )
 			continue;
 
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 			(*itr)->GetSession()->SendPacket(packet);
 	}
 	m_mainLock.Release();
@@ -1447,7 +1447,7 @@ void CBattleground::DistributePacketToTeam(WorldPacket * packet, uint32 Team)
 		m_mainLock.Release();
 		return;
 	}
-	for(set<Player*  >::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); ++itr)
+	for(set<Player*  >::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); itr++)
 		(*itr)->GetSession()->SendPacket(packet);
 	m_mainLock.Release();
 }
@@ -1789,7 +1789,7 @@ void CBattleground::Close()
 		for(itr = m_players[i].begin(); itr != m_players[i].end();)
 		{
 			plr = *itr;
-			++itr;
+			itr++;
 			RemovePlayer(plr, false);
 		}
 
@@ -1936,7 +1936,7 @@ void CBattleground::EventResurrectPlayers()
 	WorldPacket data(50);
 	for(i = m_resurrectMap.begin(); i != m_resurrectMap.end(); ++i)
 	{
-		for(itr = i->second.begin(); itr != i->second.end(); ++itr)
+		for(itr = i->second.begin(); itr != i->second.end(); itr++)
 		{
 			plr = m_mapMgr->GetPlayer(*itr);
 			if(plr && plr->isDead())
@@ -2161,7 +2161,7 @@ void CBattleground::QueueAtNearestSpiritGuide(Player* plr, Creature* old)
 	set<uint32> *closest = NULL;
 	m_lock.Acquire();
 	map<Creature*, set<uint32> >::iterator itr = m_resurrectMap.begin();
-	for(; itr != m_resurrectMap.end(); ++itr)
+	for(; itr != m_resurrectMap.end(); itr++)
 	{
 		if( itr->first == old )
 			continue;

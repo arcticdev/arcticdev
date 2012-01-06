@@ -102,7 +102,7 @@ bool OrbOfMurlocControl(uint32 i, Spell* pSpell)
 	Unit* mTarget;
 	Creature* cTarget;
 
-	for(ObjectSet::iterator itr = pSpell->m_caster->GetInRangeSetBegin(); itr != pSpell->m_caster->GetInRangeSetEnd(); ++itr)
+	for(ObjectSet::iterator itr = pSpell->m_caster->GetInRangeSetBegin(); itr != pSpell->m_caster->GetInRangeSetEnd(); itr++)
 	{
 		if((*itr)->IsUnit())
 			mTarget = TO_UNIT(*itr);

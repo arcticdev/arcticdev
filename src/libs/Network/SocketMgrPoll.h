@@ -18,20 +18,16 @@
 class Socket;
 class SERVER_DECL SocketMgr : public Singleton<SocketMgr>
 {
-	/* Unix sockets start from 0 for every process.
-	 */
+	/* Unix sockets start from 0 for every process. */
 	Socket * fds[SOCKET_HOLDER_SIZE];
 
-	/** How many sockets are we holding? 
-	 */
+	/* How many sockets are we holding? */
 	int socket_count;
 
-	/** Highest fd - used in poll() call.
-	 */
+	/* Highest fd - used in poll() call. */
 	int highest_fd;
 
-	/** Our poll set.
-	 */
+	/* Our poll set. */
 	struct pollfd poll_events[SOCKET_HOLDER_SIZE];
 
 public:
@@ -39,11 +35,10 @@ public:
 	SocketMgr();
 	~SocketMgr();
 
-	/// returns number of sockets in array
+	// returns number of sockets in array
 	inline int Count() { return socket_count; }
 
-	/** socket removal/adding
-	 */
+	/* socket removal/adding */
 	void AddSocket(Socket * s);
 	void RemoveSocket(Socket * s);
 	void WantWrite(int fd);
