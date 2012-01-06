@@ -851,9 +851,9 @@ public:
 	void SetFFAPvPFlag();
 	void RemoveFFAPvPFlag();
 
-	//! Add Aura to unit
+	// Add Aura to unit
 	void AddAura(Aura* aur);
-	//! Remove aura from unit
+	// Remove aura from unit
 	void RemoveAura(Aura* aur);
 	void RemoveAuraBySlot(uint16 Slot);
 	void RemoveAuraNoReturn(uint32 spellId);

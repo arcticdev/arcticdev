@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 #include "Setup.h"
-
+/*
 // Cassa Crimsonwing
 #define GOSSIP_CASSA_CRIMSONWING    "Lady Jaina told me to speak to yo about using a gryphon to survey Alcaz Island."
 
@@ -94,3 +94,4 @@ void SetupTheramoreGossip(ScriptMgr * mgr)
 	mgr->register_gossip_script(23704, CassaCrimsonwingGossip); // Cassa Crimsonwing
 	mgr->register_gossip_script(4944, CaptainGarranVimesGossip); // Captain Garran Vimes
 }
+*/

@@ -7,8 +7,7 @@
 #ifndef _FASTQUEUE_H
 #define _FASTQUEUE_H
 
-/** dummy lock to use a non-locked queue.
- */
+/* dummy lock to use a non-locked queue. */
 class DummyLock
 {
 public:
@@ -16,8 +15,7 @@ public:
 	ARCTIC_INLINE void Release() { }
 };
 
-/** linked-list style queue
- */
+/* linked-list style queue */
 template<class T, class LOCK>
 class FastQueue
 {

@@ -124,7 +124,7 @@ void AIInterface::Init(Unit* un, AIType at, MovementType mt)
 
 AIInterface::~AIInterface()
 {
-	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
+	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
 		delete (*itr);
 	m_spells.clear();
 
@@ -757,7 +757,7 @@ void AIInterface::_UpdateTargets()
 				tokill.push_back(itr->first);
 			}
 		}
-		for(deque< Unit >::iterator itr = tokill.begin(); itr != tokill.end(); ++itr)
+		for(deque< Unit >::iterator itr = tokill.begin(); itr != tokill.end(); itr++)
 			m_aiTargets.erase((*itr));
 		tokill.clear();*/
 
@@ -1361,7 +1361,7 @@ Unit* AIInterface::FindTarget()
 	for( itr = m_Unit->GetInRangeOppFactsSetBegin(); itr != m_Unit->GetInRangeOppFactsSetEnd(); )
 	{
 		it2 = itr;
-		++itr;
+		itr++;
 
 		pObj = (*it2);
 		if( pObj->GetTypeId() == TYPEID_PLAYER )
@@ -1834,7 +1834,7 @@ void AIInterface::SendMoveToPacket(float toX, float toY, float toZ, float toO, u
 	if( m_Unit->GetTypeId() == TYPEID_PLAYER )
 		TO_PLAYER(m_Unit)->GetSession()->SendPacket(&data);
 
-	for(unordered_set<Player*  >::iterator itr = m_Unit->GetInRangePlayerSetBegin(); itr != m_Unit->GetInRangePlayerSetEnd(); ++itr)
+	for(unordered_set<Player*  >::iterator itr = m_Unit->GetInRangePlayerSetBegin(); itr != m_Unit->GetInRangePlayerSetEnd(); itr++)
 	{
 		if( (*itr)->GetPositionNC().Distance2DSq( m_Unit->GetPosition() ) >= World::m_movementCompressThresholdCreatures )
 			(*itr)->AppendMovementData( SMSG_MONSTER_MOVE, uint32(data.GetSize()), (const uint8*)data.GetBufferPointer() );
@@ -2192,7 +2192,7 @@ void AIInterface::deleteWayPoint(uint32 wpid)
 	for(itr = m_waypoints->begin(); itr != m_waypoints->end();)
 	{
 		it2 = itr;
-		++itr;
+		itr++;
 		if((*it2) == NULL || (*it2)->id == wpid)
 		{
 			delete (*it2);
@@ -2203,7 +2203,7 @@ void AIInterface::deleteWayPoint(uint32 wpid)
 	}
 
 	m_waypoints->clear();
-	for(WayPointMap::iterator itr = new_waypoints.begin(); itr != new_waypoints.end(); ++itr)
+	for(WayPointMap::iterator itr = new_waypoints.begin(); itr != new_waypoints.end(); itr++)
 	{
 		(*itr)->id = newpid++;
 		m_waypoints->push_back(*itr);
@@ -2355,7 +2355,7 @@ void AIInterface::deleteWaypoints()
 	if(!m_waypoints)
 		return;
 
-	for(WayPointMap::iterator itr = m_waypoints->begin(); itr != m_waypoints->end(); ++itr)
+	for(WayPointMap::iterator itr = m_waypoints->begin(); itr != m_waypoints->end(); itr++)
 	{
 		if((*itr) != NULL)
 			delete (*itr);
@@ -2956,7 +2956,7 @@ AI_Spell *AIInterface::getSpell()
 		else
 		{
 			//start searching the list for a suitable spell. 
-			for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
+			for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
 			{
 				sp = (*itr);
 
@@ -3261,13 +3261,13 @@ void AIInterface::addAssistTargets(Unit* Friend)
 
 void AIInterface::WipeHateList()
 {
-	for(TargetMap::iterator itr = m_aiTargets.begin(); itr != m_aiTargets.end(); ++itr)
+	for(TargetMap::iterator itr = m_aiTargets.begin(); itr != m_aiTargets.end(); itr++)
 		itr->second = 0;
 	m_currentHighestThreat = 0;
 }
 void AIInterface::ClearHateList() //without leaving combat
 {
-	for(TargetMap::iterator itr = m_aiTargets.begin(); itr != m_aiTargets.end(); ++itr)
+	for(TargetMap::iterator itr = m_aiTargets.begin(); itr != m_aiTargets.end(); itr++)
 		itr->second = 1;
 	m_currentHighestThreat = 1;
 }
@@ -3448,7 +3448,7 @@ void AIInterface::WipeReferences()
 
 void AIInterface::ResetProcCounts()
 {
-	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
+	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
 		if((*itr)->procCount)
 			(*itr)->procCounter=0;
 }

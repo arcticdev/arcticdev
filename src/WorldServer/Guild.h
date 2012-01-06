@@ -11,6 +11,7 @@ struct PlayerInfo;
 
 #define MAX_GUILD_RANKS 10
 #define MAX_GUILD_MEMBERS 500
+
 enum PETITION_TURNIN_ERRORS
 {
 	ERR_PETITION_OK,
@@ -18,15 +19,6 @@ enum PETITION_TURNIN_ERRORS
 	ERR_PETITION_IN_GUILD,
 	ERR_PETITION_CREATOR,
 	ERR_PETITION_NOT_ENOUGH_SIGNATURES,
-
-	//PETITION_YOU_ALREADY_IN_A_GUILD = 0x02,
-	//PETITION_YOU_NEED_MORE_SIGNS	= 0x04,
-	//ERR_PET_SPELL_DEAD
-	//ERR_PETITION_DECLINED_S
-	//ERR_PETITION_SIGNED_S
-	//ERR_PETITION_SIGNED
-	//ERR_PETITION_OFFERED
-
 };
 
 enum GUILDEMBLEM_ERRORS
@@ -56,93 +48,38 @@ enum MONEY
 
 enum CommandErrors
 {
-	GUILD_U_HAVE_INVITED = 0x00,
-	GUILD_INTERNAL				= 0x01,
-	GUILD_ALREADY_IN_GUILD		= 0x02,
-	ALREADY_IN_GUILD			  = 0x03,
-	INVITED_TO_GUILD			  = 0x04,
-	ALREADY_INVITED_TO_GUILD	  = 0x05,
-	GUILD_NAME_INVALID			= 0x06,
-	GUILD_NAME_EXISTS			 = 0x07,
-	GUILD_LEADER_LEAVE			= 0x08,
-	GUILD_PERMISSIONS			 = 0x08,
-	GUILD_PLAYER_NOT_IN_GUILD	 = 0x09,
-	GUILD_PLAYER_NOT_IN_GUILD_S   = 0x0A,
-	GUILD_PLAYER_NOT_FOUND		= 0x0B,
-	GUILD_NOT_ALLIED			  = 0x0C,
+	GUILD_U_HAVE_INVITED                        = 0x00,
+	GUILD_INTERNAL                              = 0x01,
+	GUILD_ALREADY_IN_GUILD                      = 0x02,
+	ALREADY_IN_GUILD                            = 0x03,
+	INVITED_TO_GUILD                            = 0x04,
+	ALREADY_INVITED_TO_GUILD                    = 0x05,
+	GUILD_NAME_INVALID                          = 0x06,
+	GUILD_NAME_EXISTS                           = 0x07,
+	GUILD_LEADER_LEAVE                          = 0x08,
+	GUILD_PERMISSIONS                           = 0x08,
+	GUILD_PLAYER_NOT_IN_GUILD                   = 0x09,
+	GUILD_PLAYER_NOT_IN_GUILD_S                 = 0x0A,
+	GUILD_PLAYER_NOT_FOUND                      = 0x0B,
+	GUILD_NOT_ALLIED                            = 0x0C,
 };
 
-//for uint32(0)<<name<<code
 enum GUILD_COMMAND_RESULTS
 {
-	C_R_CREATED							 = 1,
-	C_R_ALREADY_IN_GUILD					= 2,
-	C_R_TARGET_ALREADY_IN_GUILD			 = 3,
-	C_R_ALREADY_INVITED_TO_GUILD			= 4,
-	C_R_TARGET_ALREADY_INVITED_TO_GUILD	 = 5,
-	C_R_GUILDNAME_HAS_INVALID_CHARACTERS	= 6,
-	C_R_GUILD_NAME_EXISTS				   = 7,
-	C_R_DONT_HAVE_PERMISSION				= 8,
-	C_R_NOT_IN_GUILD						= 9,
-	C_R_TARGET_IS_NOT_IN_YOUR_GUILD		 = 10,
-	C_R_NAME_NOT_FOUND					  = 11,
-	C_R_CANT_INVITE_PLYRS_FROM_OPP_ALLIANCE = 12,
-	C_R_NAME_RANK_TOO_HIGH				  = 13,
-	C_R_NAME_RANK_AT_LOWEST_RANK			= 14,
-	/*
-	ERR_NO_GUILD_CHARTER
-
-	ERR_GUILD_NAME_NAME_CONSECUTIVE_SPACES
-	ERR_GUILD_NAME_INVALID_SPACE
-	ERR_GUILD_NAME_RESERVED
-	ERR_GUILD_NAME_PROFANE
-	ERR_GUILD_NAME_MIXED_LANGUAGES
-	ERR_GUILD_NAME_TOO_SHORT
-
-	ERR_GUILD_ENTER_NAME
-
-	ERR_GUILD_NAME_EXISTS_S
-	ERR_GUILD_NAME_INVALID
-
-	ERR_GUILD_RANK_TOO_LOW_S
-	ERR_GUILD_RANK_TOO_HIGH_S
-	ERR_GUILD_RANK_IN_USE
-	ERR_GUILD_RANKS_LOCKED
-	ERR_GUILD_LEADER_LEAVE
-	ERR_GUILD_NOT_ALLIED
-	ERR_GUILD_DISBANDED
-	ERR_GUILD_LEADER_CHANGED_SS
-	ERR_GUILD_LEADER_IS_S
-	ERR_GUILD_INTERNAL
-	ERR_GUILD_NOT_IN_A_GUILD
-	ERR_GUILD_CANT_DEMOTE_S
-	ERR_GUILD_CANT_PROMOTE_S
-	ERR_GUILD_PLAYER_NOT_IN_GUILD
-	ERR_GUILD_PLAYER_NOT_IN_GUILD_S
-	ERR_GUILD_PLAYER_NOT_FOUND_S
-	ERR_GUILD_LEADER_SELF
-	ERR_GUILD_LEADER_S
-	ERR_GUILD_DISBAND_SELF
-	ERR_GUILD_DISBAND_S
-	ERR_GUILD_REMOVE_SELF
-	ERR_GUILD_REMOVE_SS
-	ERR_GUILD_LEAVE_S
-	ERR_GUILD_QUIT_S
-	ERR_GUILD_DEMOTE_SSS
-	ERR_GUILD_PROMOTE_SSS
-	ERR_GUILD_FOUNDER_S
-	ERR_GUILD_JOIN_S
-	ERR_GUILD_PERMISSIONS
-	ERR_GUILD_DECLINE_S
-	ERR_GUILD_ACCEPT
-	ERR_ALREADY_IN_GUILD
-	ERR_INVITED_TO_GUILD
-	ERR_ALREADY_INVITED_TO_GUILD_S
-	ERR_ALREADY_IN_GUILD_S
-	ERR_INVITED_TO_GUILD_SS
-	ERR_GUILD_INVITE_S
-	ERR_GUILD_CREATE_S
-	*/
+	C_R_CREATED                                 = 1,
+	C_R_ALREADY_IN_GUILD                        = 2,
+	C_R_TARGET_ALREADY_IN_GUILD                 = 3,
+	C_R_ALREADY_INVITED_TO_GUILD                = 4,
+	C_R_TARGET_ALREADY_INVITED_TO_GUILD         = 5,
+	C_R_GUILDNAME_HAS_INVALID_CHARACTERS        = 6,
+	C_R_GUILD_NAME_EXISTS                       = 7,
+	C_R_DONT_HAVE_PERMISSION                    = 8,
+	C_R_NOT_IN_GUILD                            = 9,
+	C_R_TARGET_IS_NOT_IN_YOUR_GUILD             = 10,
+	C_R_NAME_NOT_FOUND                          = 11,
+	C_R_CANT_INVITE_PLYRS_FROM_OPP_ALLIANCE     = 12,
+	C_R_NAME_RANK_TOO_HIGH                      = 13,
+	C_R_NAME_RANK_AT_LOWEST_RANK                = 14,
 };
 
 enum typecommand
@@ -190,31 +127,24 @@ enum GuildRankRights
 	GR_RIGHT_GUILD_BANK_DEPOSIT_ITEMS	= 0x02,
 };
 
-
-//#define GUILDRANK_INVITE GUILDRANK_VETERAN
-//#define GUILDRANK_KICK GUILDRANK_OFFICER
-//#define GUILDRANK_PROMOTE GUILDRANK_VETERAN
-//#define GUILDRANK_DEMOTE GUILDRANK_VETERAN
-//#define GUILDRANK_MOTD GUILDRANK_OFFICER
-
 enum GuildEvent
 {
-	GUILD_EVENT_PROMOTION		   =0x0,
-	GUILD_EVENT_DEMOTION			=0x1,
-	GUILD_EVENT_MOTD				=0x2,
-	GUILD_EVENT_JOINED			  =0x3,
-	GUILD_EVENT_LEFT				=0x4,
-	GUILD_EVENT_REMOVED			 =0x5,
-	GUILD_EVENT_LEADER_IS		   =0x6,
-	GUILD_EVENT_LEADER_CHANGED	  =0x7,
-	GUILD_EVENT_DISBANDED		   =0x8,
-	GUILD_EVENT_TABARDCHANGE		=0x9,
-	GUILD_EVENT_UNK1				=0xA,
-	GUILD_EVENT_UNK2				=0xB,
-	GUILD_EVENT_HASCOMEONLINE	   =0xC,
-	GUILD_EVENT_HASGONEOFFLINE	  =0xD,
-	GUILD_EVENT_BANKTABBOUGHT		= 0xF,
-	GUILD_EVENT_SETNEWBALANCE		= 0x11,
+	GUILD_EVENT_PROMOTION          = 0x0,
+	GUILD_EVENT_DEMOTION           = 0x1,
+	GUILD_EVENT_MOTD               = 0x2,
+	GUILD_EVENT_JOINED             = 0x3,
+	GUILD_EVENT_LEFT               = 0x4,
+	GUILD_EVENT_REMOVED            = 0x5,
+	GUILD_EVENT_LEADER_IS          = 0x6,
+	GUILD_EVENT_LEADER_CHANGED     = 0x7,
+	GUILD_EVENT_DISBANDED          = 0x8,
+	GUILD_EVENT_TABARDCHANGE       = 0x9,
+	GUILD_EVENT_UNK1               = 0xA,
+	GUILD_EVENT_UNK2               = 0xB,
+	GUILD_EVENT_HASCOMEONLINE      = 0xC,
+	GUILD_EVENT_HASGONEOFFLINE     = 0xD,
+	GUILD_EVENT_BANKTABBOUGHT      = 0xF,
+	GUILD_EVENT_SETNEWBALANCE      = 0x11,
 };
 enum GuildLogEventE
 {
@@ -317,15 +247,13 @@ public:
 	static Guild* Create();
 	bool LoadFromDB(Field * f);
 
-	/** Log entry processing
-	 */
+	/* Log entry processing */
 protected:
 	uint32 m_hiLogId;
 public:
 	uint32 GenerateGuildLogEventId();
 	
-	/* guild bank logging calls
-	 */
+	/* guild bank logging calls */
 	void LogGuildBankActionMoney(uint8 iAction, uint32 uGuid, uint32 uAmount);
 	void LogGuildBankAction(uint8 iAction, uint32 uGuid, uint32 uEntry, uint8 iStack, GuildBankTab * pTab);
 	static void ClearOutOfDateLogEntries();
@@ -333,108 +261,88 @@ public:
 	/* only call at first create/save */
 	void CreateInDB();
 
-	/** Sets new MOTD, and updates in database
-	 */
+	/* Sets new MOTD, and updates in database */
 	void SetMOTD(const char * szNewMotd, WorldSession * pClient);
 
-	/** Gets MOTD
-	 */
+	/* Gets MOTD */
 	ARCTIC_INLINE const char * GetMOTD() const { return m_motd; }
 
-	/** Sets guild information, updates in database
-	 */
+	/* Sets guild information, updates in database */
 	void SetGuildInformation(const char * szGuildInformation, WorldSession * pClient);
 
-	/** Gets guild information
-	 */
+	/* Gets guild information */
 	ARCTIC_INLINE const char * GetGuildInformation() const { return m_guildInfo; }
 
-	/** Sends the guild roster to this client.
-	 */
+	/* Sends the guild roster to this client. */
 	void SendGuildRoster(WorldSession * pClient);
 
-	/** Sends the guild query response to this client.
-	 */
+	/* Sends the guild query response to this client. */
 	void SendGuildQuery(WorldSession * pClient);
 
-	/** Adds a member to the guild, saves him into the database.
+	/* Adds a member to the guild, saves him into the database.
 	 * A provided rank of -1 means the lowest rank.
 	 */
 	void AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 ForcedRank = -1);
 
-	/** Removes a member from the guild.
+	/* Removes a member from the guild.
 	 * If this member is the guild master, the guild will be automatically handed down to the next
 	 * highest member.
 	 */
 	void RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient);
 
-	/** Promotes a member of a guild.
+	/* Promotes a member of a guild.
 	 * Do not use for changing guild master. Use ChangeGuildMaster() for that instead.
 	 */
 	void PromoteGuildMember(PlayerInfo * pMember, WorldSession * pClient);
 
-	/** Demotes a member of a guild.
+	/* Demotes a member of a guild.
 	 * Do not use for changing guild master. Use ChangeGuildMaster() for that instead.
 	 */
 	void DemoteGuildMember(PlayerInfo * pMember, WorldSession * pClient);
 
-	/** Changes the guild master of the guild.
-	 */
+	/* Changes the guild master of the guild. */
 	void ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient);
 
-	/** Sends a guild command packet to the client.
-	 */
+	/* Sends a guild command packet to the client. */
 	static void SendGuildCommandResult(WorldSession * pClient, uint32 iCmd, const char * szMsg, uint32 iType);
 
-	/** Logs a guild event and sends it to all online players.
-	 */
+	/* Logs a guild event and sends it to all online players. */
 	void LogGuildEvent(uint8 iEvent, uint8 iStringCount, ...);
 	
-	/** Guild event logging.
-	 */
+	/* Guild event logging. */
 	void AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...);
 
-	/** Creates a guild from a charter.
-	 */
+	/* Creates a guild from a charter. */
 	void CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn);
 
-	/** Sends a packet to all online players.
-	 */
+	/* Sends a packet to all online players. */
 	void SendPacket(WorldPacket * data);
 
-	/** Sends a guild chat message.
-	 */
+	/* Sends a guild chat message. */
 	void GuildChat(const char * szMessage, WorldSession * pClient, int32 iType);
 
-	/** Sends an officer chat message.
-	 */
+	/* Sends an officer chat message. */
 	void OfficerChat(const char * szMessage, WorldSession * pClient, int32 iType);
 
-	/** Sends the guild log to a player.
-	 */
+	/* Sends the guild log to a player. */
 	void SendGuildLog(WorldSession * pClient);
 	void SendGuildBankLog(WorldSession * pClient, uint8 iSlot);
 
-	/** Sets the public note for a player.
-	 */
+	/* Sets the public note for a player. */
 	void SetPublicNote(PlayerInfo * pMember, const char * szNewNote, WorldSession * pClient);
 
-	/** Sets the officer note for a player.
-	 */
+	/* Sets the officer note for a player. */
 	void SetOfficerNote(PlayerInfo * pMember, const char * szNewNote, WorldSession * pClient);
 
-	/** Disbands a guild.
-	 */
+	/* Disbands a guild. */
 	void Disband();
 
-	/** creation time stuff
-	 */
+	/* creation time stuff */
 	uint32 creationDay;
 	uint32 creationMonth;
 	uint32 creationYear;
 
-	/** Getters :P
-	 */
+	/* Getters :P */
 	ARCTIC_INLINE const char * GetGuildName() const { return m_guildName; }
 	ARCTIC_INLINE const uint32 GetGuildLeader() const { return m_guildLeader; }
 	ARCTIC_INLINE const uint32 GetGuildId() const { return m_guildId; }
@@ -446,28 +354,22 @@ public:
 	map<PlayerInfo*, GuildMember*>::iterator GetGuildMembersBegin() { return m_members.begin(); }
 	map<PlayerInfo*, GuildMember*>::iterator GetGuildMembersEnd() { return m_members.end(); }
 	
-	/** Creates a guild rank with the specified permissions.
-	 */
+	/* Creates a guild rank with the specified permissions. */
 	GuildRank * CreateGuildRank(const char * szRankName, uint32 iPermissions, bool bFullGuildBankPermissions);
 
-	/** "Pops" or removes the bottom guild rank.
-	 */
+	/* "Pops" or removes the bottom guild rank. */
 	void RemoveGuildRank(WorldSession * pClient);
 
-	/** Buys a new guild bank tab, usable only by guild master 
-	 */
+	/* Buys a new guild bank tab, usable only by guild master */
 	void BuyBankTab(WorldSession * pClient);
 
-	/** Deposits money into the guild bank, usable by any member.
-	 */
+	/* Deposits money into the guild bank, usable by any member. */
 	void DepositMoney(WorldSession * pClient, uint32 uAmount);
 
-	/** Withdraws money from the guild bank, usable by members with that permission.
-	 */
+	/* Withdraws money from the guild bank, usable by members with that permission. */
 	void WithdrawMoney(WorldSession * pClient, uint32 uAmount);
 
-	/** Retrieves a guild rank for editing
-	 */
+	/* Retrieves a guild rank for editing */
 	ARCTIC_INLINE GuildRank * GetGuildRank(uint32 Id)
 	{ 
 		if(Id >= MAX_GUILD_RANKS)
@@ -476,8 +378,7 @@ public:
 		return m_ranks[Id];
 	}
 
-	/** Gets a guild bank tab for editing/viewing
-	 */
+	/* Gets a guild bank tab for editing/viewing */
 
 	ARCTIC_INLINE GuildBankTab * GetBankTab(uint32 Id)
 	{
@@ -487,8 +388,7 @@ public:
 		return m_bankTabs[Id];
 	}
 
-	/** Gets a guild member struct
-	 */
+	/* Gets a guild member struct */
 	ARCTIC_INLINE GuildMember * GetGuildMember(PlayerInfo * pInfo)
 	{
 		GuildMemberMap::iterator itr;
@@ -500,33 +400,29 @@ public:
 		return ret;
 	}
 
-	/** Sends the guild bank to this client.
-	 */
+	/* Sends the guild bank to this client. */
 	void SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 updated_slot1 = -1, int8 updated_slot2 = -1);
 	void SendGuildBankInfo(WorldSession * pClient);
 
-	/** Changes the tabard info.
-	 */
+	/* Changes the tabard info.  */
 	void SetTabardInfo(uint32 EmblemStyle, uint32 EmblemColor, uint32 BorderStyle, uint32 BorderColor, uint32 BackgroundColor);
 	
-	/** Sends the guild information packet to the specified client.
-	 */
+	/* Sends the guild information packet to the specified client. */
 	void SendGuildInfo(WorldSession * pClient);
 
-	/** Force a guild leader change internally
+	/* Force a guild leader change internally
 	 * used for char renames, etc.
 	 */
 	void ForceLeaderChange(uint32 newGuid) { m_guildLeader = newGuid; }
 
 protected:
 	
-	/** Enables/disables command logging.
+	/* Enables/disables command logging.
 	 * Use when performing mass events such as guild creation or destruction.
 	 */
 	bool m_commandLogging;
 	
-	/** Internal variables
-	 */
+	/* Internal variables */
 	uint32 m_guildId;
 	uint32 m_emblemStyle;
 	uint32 m_emblemColor;
@@ -545,17 +441,14 @@ protected:
 	char * m_guildInfo;
 	char * m_motd;
 	
-	/** Guild Member Map.
-	 */
+	/* Guild Member Map. */
 	typedef map<PlayerInfo*, GuildMember*> GuildMemberMap;
 	GuildMemberMap m_members;
 
-	/** Guild Rank Information.
-	 */
+	/* Guild Rank Information. */
 	GuildRank * m_ranks[MAX_GUILD_RANKS];
 
-	/** Guild log. Ordered in first event -> last event.
-	 */
+	/* Guild log. Ordered in first event -> last event. */
 	typedef list<GuildLogEvent*> GuildLogList;
 	GuildLogList m_log;
 	list<GuildBankEvent*> m_moneyLog;
@@ -564,26 +457,10 @@ protected:
 	 */
 	Mutex m_lock;
 
-	/** finds the lowest rank
-	 */
+	/* finds the lowest rank */
 	GuildRank * FindLowestRank();
 	GuildRank * FindHighestRank();
 };
 
 
 #endif
-
-/*0,1->guild created
-2->you are already in guild
-3->selection is already in guild
-4->you have been already invited to guild
-5->selection is already invited to guild
-6->guildname contains invalid characters pls rename
-7->there is an already guild named "name"
-8->you dont have permission to do that
-9->you are not in guild
-10->selection isnot in your guild
-11->"name" not found
-12->you cannot invite players from opposite alliance
-13->"name"'s rank is too high
-14->"name" is already at lowest rank*/

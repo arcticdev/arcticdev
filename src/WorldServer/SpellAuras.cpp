@@ -1224,7 +1224,7 @@ void Aura::EventRelocateRandomTarget()
 	set<Unit* > enemies;
 
 	unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin();
-	for(; itr != m_caster->GetInRangeSetEnd(); ++itr)
+	for(; itr != m_caster->GetInRangeSetEnd(); itr++)
 	{
 		if( !(*itr)->IsUnit() )
 			continue;
@@ -1366,7 +1366,7 @@ void Aura::EventUpdatePlayerAA(float r)
 
 			for(uint32 x = 0; x < plr->GetGroup()->GetSubGroupCount(); ++x )
 			{
-				for(GroupMembersSet::iterator itr = plr->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != plr->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); ++itr)
+				for(GroupMembersSet::iterator itr = plr->GetGroup()->GetSubGroup( x )->GetGroupMembersBegin(); itr != plr->GetGroup()->GetSubGroup( x )->GetGroupMembersEnd(); itr++)
 				{
 					if((*itr) && (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer != plr && (*itr)->m_loggedInPlayer->GetDistanceSq(m_caster) <= r)
 					{
@@ -1408,7 +1408,7 @@ void Aura::EventUpdatePlayerAA(float r)
 	{
 		Unit* target;
 		Object::InRangeSet::iterator itr = m_caster->GetInRangeSetBegin();
-		for(; itr != m_caster->GetInRangeSetEnd(); ++itr)
+		for(; itr != m_caster->GetInRangeSetEnd(); itr++)
 		{
 			if( !(*itr) )
 				continue;
@@ -1450,7 +1450,7 @@ void Aura::EventUpdatePlayerAA(float r)
 	{
 		Unit* target;
 		Object::InRangeSet::iterator itr = m_caster->GetInRangeOppFactsSetBegin();
-		for(; itr != m_caster->GetInRangeOppFactsSetEnd(); ++itr)
+		for(; itr != m_caster->GetInRangeOppFactsSetEnd(); itr++)
 		{
 			if( !(*itr) )
 				continue;
@@ -1524,7 +1524,7 @@ void Aura::EventUpdatePlayerAA(float r)
 	for(itr = targets.begin(); itr != targets.end(); )
 	{
 		it2 = itr;
-		++itr;
+		itr++;
 
 		// Check if the target is 'valid'.
 		Unit* unt = NULL;
@@ -1573,7 +1573,7 @@ void Aura::RemoveAA()
 {
 	AreaAuraList::iterator itr;
 
-	for(itr = targets.begin(); itr != targets.end(); ++itr)
+	for(itr = targets.begin(); itr != targets.end(); itr++)
 	{
 		// Check if the target is 'valid'; must be on same mapmgr
 		Player* iplr = NULL;
@@ -3245,7 +3245,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		{
 			target_threat.reserve(m_caster->GetInRangeCount()); // this helps speed
 
-			for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr)
+			for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++)
 			{
 				if((*itr)->GetTypeId() != TYPEID_UNIT)
 					continue;
@@ -3266,7 +3266,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 			*/
 			uint32 threat = base_threat / (count * 2);
 
-			for(std::vector<Unit* >::iterator itr = target_threat.begin(); itr != target_threat.end(); ++itr)
+			for(std::vector<Unit* >::iterator itr = target_threat.begin(); itr != target_threat.end(); itr++)
 			{
 				// for now we'll just use heal amount as threat.. we'll prolly need a formula though
 				(TO_UNIT(*itr))->GetAIInterface()->HealReaction(m_caster, m_target, threat, m_spellProto);
@@ -5862,7 +5862,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			for(itr = pTarget->GetInRangeSetBegin(); itr != pTarget->GetInRangeSetEnd();)
 			{
 				itr2 = itr;
-				++itr;
+				itr++;
 
 				pObject = (*itr2);
 
@@ -7710,7 +7710,7 @@ void Aura::SpellAuraForceReaction( bool apply )
 
 	WorldPacket data( SMSG_SET_FORCED_REACTIONS, ( 8 * p_target->m_forcedReactions.size() ) + 4 );
 	data << uint32(p_target->m_forcedReactions.size());
-	for( itr = p_target->m_forcedReactions.begin(); itr != p_target->m_forcedReactions.end(); ++itr )
+	for( itr = p_target->m_forcedReactions.begin(); itr != p_target->m_forcedReactions.end(); itr++ )
 	{
 		data << itr->first;
 		data << itr->second;
@@ -7880,7 +7880,7 @@ void Aura::SpellAuraModStealthLevel(bool apply)
 		{
 			// check for stealh spells
 			uint32 stealth_id = 1784;
-			for(SpellSet::iterator itr = TO_PLAYER(m_target)->mSpells.begin(); itr != TO_PLAYER(m_target)->mSpells.end(); ++itr)
+			for(SpellSet::iterator itr = TO_PLAYER(m_target)->mSpells.begin(); itr != TO_PLAYER(m_target)->mSpells.end(); itr++)
 			{
 				if((*itr) == 1787 || (*itr) == 1786 || (*itr) == 1785 || (*itr) == 1784)
 				{

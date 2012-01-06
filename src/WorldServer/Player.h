@@ -787,7 +787,6 @@ public:
 	void _AdvanceAllSkills(uint32 count);
 	void _ModifySkillMaximum(uint32 SkillLine, uint32 NewMax);
 
-
 	void RecalculateHonor();
 
 	LfgMatch * m_lfgMatch;
@@ -1714,16 +1713,16 @@ public:
 	******************/
 	uint32 m_pvpTimer;
 
-	//! Do this on /pvp off
+	// Do this on /pvp off
 	ARCTIC_INLINE void ResetPvPTimer();
-	//! Stop the timer for pvp off
+	// Stop the timer for pvp off
 	ARCTIC_INLINE void StopPvPTimer() { RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TIMER); m_pvpTimer = 0; }
 	
-	//! Called at login to add the honorless buff, etc.
+	// Called at login to add the honorless buff, etc.
 	void LoginPvPSetup();
-	//! Update our pvp area (called when zone changes)
+	// Update our pvp area (called when zone changes)
 	void UpdatePvPArea();
-	//! PvP Toggle (called on /pvp)
+	// PvP Toggle (called on /pvp)
 	void PvPToggle();
 
 	ARCTIC_INLINE uint32 LastHonorResetTime() const { return m_lastHonorResetTime; }

@@ -141,7 +141,7 @@ void WordFilter::Load(const char * szTableName)
 
 	m_filters = new WordFilterMatch*[lItems.size()];
 	i = 0;
-	for(itr = lItems.begin(); itr != lItems.end(); ++itr)
+	for(itr = lItems.begin(); itr != lItems.end(); itr++)
 		m_filters[i++] = (*itr);
 
 	m_filterCount = i;

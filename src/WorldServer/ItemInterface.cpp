@@ -708,6 +708,16 @@ bool ItemInterface::SafeFullRemoveItemByGuid(uint64 guid)
 		}
 	}
 
+
+
+
+
+
+
+
+
+
+
 	for(i = INVENTORY_CURRENCY_START; i < INVENTORY_CURRENCY_END; i++)
 	{
 		Item* item = GetInventoryItem(i);

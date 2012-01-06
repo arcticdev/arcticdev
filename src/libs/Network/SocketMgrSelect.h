@@ -13,16 +13,13 @@
 class Socket;
 class SERVER_DECL SocketMgr : public Singleton<SocketMgr>
 {
-	/** FD->Pointer Map
-	 */
+	/* FD->Pointer Map */
 	map<int, Socket*> fds;
 
-	/** How many sockets are we holding? 
-	 */
+	/* How many sockets are we holding? */
 	int socket_count;
 
-	/** Our FD sets 
-	 */
+	/* Our FD sets */
 	FD_SET m_allSet;
 	FD_SET m_readableSet;
 	FD_SET m_writableSet;
@@ -34,11 +31,10 @@ public:
 	SocketMgr();
 	~SocketMgr();
 
-	/// returns number of sockets in array
+	// returns number of sockets in array
 	inline int Count() { return socket_count; }
 
-	/** socket removal/adding
-	 */
+	/* socket removal/adding */
 	void AddSocket(Socket * s);
 	void AddListenSocket(Socket * s);
 	void RemoveSocket(Socket * s);

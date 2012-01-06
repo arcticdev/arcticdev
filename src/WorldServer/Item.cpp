@@ -49,7 +49,7 @@ Item::~Item()
 	sEventMgr.RemoveEvents( this );
 
 	EnchantmentMap::iterator itr;
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); itr++ )
 	{
 		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
 		{
@@ -159,7 +159,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	uint32 time_left;
 	uint32 enchslot;
 
-	for( vector<string>::iterator itr = enchants.begin(); itr != enchants.end(); ++itr )
+	for( vector<string>::iterator itr = enchants.begin(); itr != enchants.end(); itr++ )
 	{
 		if( sscanf( (*itr).c_str(), "%u,%u,%u", (unsigned int*)&enchant_id, (unsigned int*)&time_left, (unsigned int*)&enchslot) == 3 )
 		{
@@ -304,7 +304,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	if( Enchantments.size() > 0 )
 	{
 		EnchantmentMap::iterator itr = Enchantments.begin();
-		for(; itr != Enchantments.end(); ++itr)
+		for(; itr != Enchantments.end(); itr++)
 		{
 			if( itr->second.RemoveAtLogout )
 				continue;

@@ -6032,7 +6032,7 @@ void ApplyNormalFixes()
 				/* proc spell referencing non-existant spell. create a dummy spell for use w/ it. */
 				CreateDummySpell(sp->EffectTriggerSpell[b]);
 			}
-			/** Load teaching spells (used for hunters when learning pets wild abilities) */
+			/* Load teaching spells (used for hunters when learning pets wild abilities) */
 			if(sp->Effect[b]==SPELL_EFFECT_LEARN_SPELL && sp->EffectImplicitTargetA[b]==EFF_TARGET_PET)
 			{
 				map<uint32,uint32>::iterator itr = sWorld.TeachingSpellMap.find(sp->EffectTriggerSpell[b]);
@@ -7438,7 +7438,7 @@ void ApplyNormalFixes()
 		sp = dbcSpell.LookupRow(x);
 		ApplySingleSpellFixes(sp);
 	}
-	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); ++itr)
+	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); itr++)
 		ApplySingleSpellFixes(*itr);
 
 

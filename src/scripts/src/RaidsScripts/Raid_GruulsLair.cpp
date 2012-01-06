@@ -515,7 +515,7 @@ class GruulTheDragonkillerAI : public ArcTicScriptCreatureAI
 				if (pCurrentTarget != NULL)
 				{
 					Unit* pTarget = pCurrentTarget;
-					for (unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
+					for (unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); itr++) 
 					{
 						Player* pPlayer = TO_PLAYER(*itr);
 						if (!pPlayer->isAlive())
@@ -548,7 +548,7 @@ class GruulTheDragonkillerAI : public ArcTicScriptCreatureAI
 	UnitArray GetInRangePlayers()
 	{
 		UnitArray TargetArray;
-		for (unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); ++itr) 
+		for (unordered_set<Player*>::iterator itr = _unit->GetInRangePlayerSetBegin(); itr != _unit->GetInRangePlayerSetEnd(); itr++) 
 		{ 
 			if (IsValidUnitTarget(*itr, TargetFilter_None))
 			{

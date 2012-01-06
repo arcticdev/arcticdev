@@ -56,12 +56,11 @@ int win32_main(int argc, char ** argv)
 
 #endif
 
-int main( int argc, char ** argv )
+int main(int argc, char ** argv)
 {
 #ifdef WIN32
-	win32_main( argc, argv );
+	win32_main(argc, argv);
 #else
-	unix_main( argc, argv );
+	unix_main(argc, argv);
 #endif
 }
-

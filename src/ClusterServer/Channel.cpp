@@ -226,7 +226,7 @@ void Channel::SetOwner(RPlayerInfo* oldpl, RPlayerInfo* plr)
 
 	if(plr == NULL)
 	{
-		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 		{
 			if(itr->second & CHANNEL_FLAG_OWNER)
 			{
@@ -249,7 +249,7 @@ void Channel::SetOwner(RPlayerInfo* oldpl, RPlayerInfo* plr)
 	}
 	else
 	{
-		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+		for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 		{
 			if(itr->second & CHANNEL_FLAG_OWNER)
 			{
@@ -746,7 +746,7 @@ void Channel::List(RPlayerInfo* plr)
 	data << uint8(1) << m_name;
 	data << uint8(m_flags);
 	data << uint32(m_members.size());
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		data << uint64(itr->first->Guid);
 		flags = 0;
@@ -780,7 +780,7 @@ void Channel::GetOwner(RPlayerInfo* plr)
 		return;
 	}
 
-	for(itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		if(itr->second & CHANNEL_FLAG_OWNER)
 		{
@@ -796,7 +796,7 @@ Channel::~Channel()
 	WorldPacket data(ISMSG_CHANNEL_ACTION, 9);
 
 	m_lock.Acquire();
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		data << uint8(CHANNEL_PART); //joined channel
 		data << uint32(itr->first->Guid);
@@ -813,7 +813,7 @@ Channel::~Channel()
 void Channel::SendToAll(WorldPacket * data)
 {
 	Guard guard(m_lock);
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr)
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		if( itr->first->GetSession() )
 			itr->first->GetSession()->SendPacket(data);
@@ -823,7 +823,7 @@ void Channel::SendToAll(WorldPacket * data)
 void Channel::SendToAll(WorldPacket * data, RPlayerInfo* plr)
 {
 	Guard guard(m_lock);
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); ++itr) 
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++) 
 	{
 		if ( itr->first != plr && itr->first->GetSession() )
 			itr->first->GetSession()->SendPacket(data);
@@ -840,7 +840,7 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, RPlayerInfo* p, uint32 
 		cl = &Channels[p->Team];
 
 	lock.Acquire();
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(!stricmp(name, itr->first.c_str()))
 		{
@@ -851,7 +851,7 @@ Channel * ChannelMgr::GetCreateChannel(const char *name, RPlayerInfo* p, uint32 
 
 	// make sure the name isn't banned
 	m_confSettingLock.Acquire();
-	for(vector<string>::iterator itr = m_bannedChannels.begin(); itr != m_bannedChannels.end(); ++itr)
+	for(vector<string>::iterator itr = m_bannedChannels.begin(); itr != m_bannedChannels.end(); itr++)
 	{
 		if(!strnicmp( name, itr->c_str(), itr->size() ) )
 		{
@@ -878,7 +878,7 @@ Channel * ChannelMgr::GetChannel(const char *name, RPlayerInfo* p)
 		cl = &Channels[p->Team];
 
 	lock.Acquire();
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(!stricmp(name, itr->first.c_str()))
 		{
@@ -913,7 +913,7 @@ Channel * ChannelMgr::GetChannel(const char *name, uint32 team)
 		cl = &Channels[team];
 
 	lock.Acquire();
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(!stricmp(name, itr->first.c_str()))
 		{
@@ -935,7 +935,7 @@ void ChannelMgr::RemoveChannel(Channel * chn)
 
 	lock.Acquire();
 	m_idToChannel.erase(chn->m_channelId);
-	for(itr = cl->begin(); itr != cl->end(); ++itr)
+	for(itr = cl->begin(); itr != cl->end(); itr++)
 	{
 		if(itr->second == chn)
 		{
@@ -960,7 +960,7 @@ ChannelMgr::~ChannelMgr()
 	for(int i = 0; i < 2; ++i)
 	{
 		ChannelList::iterator itr = this->Channels[i].begin();
-		for(; itr != this->Channels[i].end(); ++itr)
+		for(; itr != this->Channels[i].end(); itr++)
 		{
 			delete itr->second;
 		}

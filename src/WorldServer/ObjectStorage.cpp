@@ -6,16 +6,15 @@
 
 #include "StdAfx.h"
 
-/** Table formats converted to strings
-b = bool
-c = uint8
-h = uint16
-u = uint32
-i = int32
-f = float
-s = string
-x = skip
-*/
+/*
+ * +------------------------------------------------+
+ * | Table formats are converted to strings.        |
+ * +----------+-----------+------------+------------+
+ * | b = bool | c = uint8 | h = uint16 | u = uint32 |
+ * | i = int32| f = float | s = string | x = skip   |
+ * +----------+-----------+------------+------------+
+ */
+
 const char * gAchievementRewardFormat					= "uuuu";
 const char * gAreaTriggerFormat							= "ucuusffffuu";
 const char * gCreatureNameFormat						= "usssuuuuuuuuuuuffcc";
@@ -29,14 +28,13 @@ const char * gItemPrototypeFormat						= "uuuussssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
 const char * gNpcTextFormat								= "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
 const char * gQuestFormat								= "uuuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuc";
 const char * gTeleportCoordFormat						= "uxuffff";
-const char * gWorldMapInfoFormat						= "uuuuufffusuuuuuufub"; //The last bool(b) for Clustering
+const char * gWorldMapInfoFormat						= "uuuuufffusuuuuuufub"; // The last bool(b) for Clustering
 const char * gRandomItemCreationFormat					= "uuuu";
 const char * gRandomCardCreationFormat					= "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gScrollCreationFormat						= "uu";
 const char * gZoneGuardsFormat							= "uuu";
 
-/** SQLStorage symbols
- */
+/* SQLStorage symbols */
 SERVER_DECL SQLStorage<AchievementReward, HashMapStorageContainer<AchievementReward> >		AchievementRewardStorage;
 SERVER_DECL SQLStorage<AreaTrigger, HashMapStorageContainer<AreaTrigger> >					AreaTriggerStorage;
 SERVER_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >				CreatureNameStorage;
@@ -55,7 +53,6 @@ SERVER_DECL SQLStorage<ZoneGuardEntry, HashMapStorageContainer<ZoneGuardEntry> >
 SERVER_DECL SQLStorage<RandomItemCreation, HashMapStorageContainer<RandomItemCreation> >	RandomItemCreationStorage;
 SERVER_DECL SQLStorage<RandomCardCreation, HashMapStorageContainer<RandomCardCreation> >	RandomCardCreationStorage;
 SERVER_DECL SQLStorage<ScrollCreation, HashMapStorageContainer<ScrollCreation> >			ScrollCreationStorage;
-
 
 SERVER_DECL set<string> ExtraMapCreatureTables;
 SERVER_DECL set<string> ExtraMapGameObjectTables;
@@ -108,8 +105,6 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 		cn->m_canFlee = cn->m_canRangedAttack = cn->m_canCallForHelp = false;
 		cn->m_fleeHealth = 0.0f;
-		// please.... m_fleeDuration is a uint32...
-		//cn->m_fleeDuration = 0.0f;
 		cn->m_fleeDuration = 0;
 
 		if(!itr->Inc())
@@ -206,7 +201,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				sp->custom_pointer=false;
 				sp->procCounter = 0;
 
-				//Set cooldowntimer
+				// Set cooldowntimer
 				sp->cooldowntime=getMSTime();
 
 				switch(sp->agent)
@@ -229,12 +224,12 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 						if( tcd < 0 ) // -1 will force dbc lookup
 						{
-							//now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
+							// now this will not be exact cooldown but maybe a bigger one to not make him spam spells to often
 							uint32 cooldown = 0;
 
-							if (sp->spell->Attributes & ATTRIBUTES_PASSIVE) //passive skills
+							if (sp->spell->Attributes & ATTRIBUTES_PASSIVE) // passive skills
 							{
-								cooldown = 1000*60*60*4; //once per 4 hours :P
+								cooldown = 1000*60*60*4; // once per 4 hours :P
 							}
 							else
 							{
@@ -289,7 +284,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						counter += 1;
 					}break;
 
-					//Unsupported Agent type, don't add to list
+					// Unsupported Agent type, don't add to list
 					default:
 					{
 						Log.Warning("AIAgent","Skipping in-valid  entry %u for ai_type %u.", sp->entryId, sp->agent );
@@ -297,7 +292,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						sp = NULL;
 					}break;
 				}
-				//Valid; add to list
+				// Valid; add to list
 				if(sp != NULL)
 					cn->spells.push_back(sp);
 				sp = NULL;
@@ -330,7 +325,7 @@ void ObjectMgr::LoadExtraItemStuff()
 	StorageContainerIterator<GameObjectInfo> *gtr = GameObjectNameStorage.MakeIterator();
 	while(!gtr->AtEnd())
 	{
-		gtr->Get()->InvolvedQuestCount =0;
+		gtr->Get()->InvolvedQuestCount = 0;
 		gtr->Get()->InvolvedQuestIds = NULL;
 		gtr->Inc();
 	}
@@ -519,8 +514,7 @@ void Storage_FillTaskList(TaskList & tl)
 	make_task(TeleportCoordStorage, TeleportCoords, HashMapStorageContainer, "teleport_coords", gTeleportCoordFormat);
 	make_task(FishingZoneStorage, FishingZoneEntry, HashMapStorageContainer, "fishing", gFishingFormat);
 	make_task(NpcTextStorage, GossipText, HashMapStorageContainer, "npc_text", gNpcTextFormat);
-	make_task(WorldMapInfoStorage, MapInfo, ArrayStorageContainer, "worldmap_info", gWorldMapInfoFormat); //without cluster
-//	tl.AddTask(new Task(new CallbackP2<SQLStorage< MapInfo, ArrayStorageContainer<MapInfo> >, std::string, const char*>(&WorldMapInfoStorage, &SQLStorage< MapInfo, ArrayStorageContainer<MapInfo> >::Load, worldmap_info, gWorldMapInfoFormat))); //With Cluster
+	make_task(WorldMapInfoStorage, MapInfo, ArrayStorageContainer, "worldmap_info", gWorldMapInfoFormat); // without cluster
 	make_task(ZoneGuardStorage, ZoneGuardEntry, HashMapStorageContainer, "zoneguards", gZoneGuardsFormat);
 	make_task(AchievementRewardStorage, AchievementReward, HashMapStorageContainer, "achievement_rewards", gAchievementRewardFormat);
 	make_task(RandomItemCreationStorage, RandomItemCreation, HashMapStorageContainer, "randomitemcreation", gRandomItemCreationFormat);
@@ -715,7 +709,6 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 	else if(!stricmp(TableName, "graveyards"))			// Graveyards
 		GraveyardStorage.LoadAdditionalData(SecondName, gGraveyardFormat);
 	else if(!stricmp(TableName, "worldmap_info"))		// WorldMapInfo without Cluster
-//	else if(!stricmp(TableName, Config.MainConfig.GetStringDefault("Cluster", "MapInfoTable", "worldmap_info").c_str()))		// WorldMapInfo with Cluster
 		WorldMapInfoStorage.LoadAdditionalData(SecondName, gWorldMapInfoFormat);
 	else if(!stricmp(TableName, "zoneguards"))
 		ZoneGuardStorage.LoadAdditionalData(SecondName, gZoneGuardsFormat);
@@ -751,7 +744,6 @@ bool Storage_ReloadTable(const char * TableName)
 	else if(!stricmp(TableName, "graveyards"))			// Graveyards
 		GraveyardStorage.Reload();
 	else if(!stricmp(TableName, "worldmap_info"))		// WorldMapInfo without cluster
-//	else if(!stricmp(TableName, Config.MainConfig.GetStringDefault("Cluster", "MapInfoTable", "worldmap_info").c_str()))		//WorldMap Info with Cluster
 		WorldMapInfoStorage.Reload();
 	else if(!stricmp(TableName, "zoneguards"))
 		ZoneGuardStorage.Reload();
@@ -766,7 +758,7 @@ bool Storage_ReloadTable(const char * TableName)
 
 	uint32 len = (uint32)strlen(TableName);
 	uint32 len2;
-	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); ++itr)
+	for(vector<pair<string,string> >::iterator itr = additionalTables.begin(); itr != additionalTables.end(); itr++)
 	{
 		len2=(uint32)itr->second.length();
 		if(!strnicmp(TableName, itr->second.c_str(), min(len,len2)))
@@ -788,7 +780,7 @@ void Storage_LoadAdditionalTables()
 	if(strs.empty())
 		return;
 
-	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); ++itr)
+	for(vector<string>::iterator itr = strs.begin(); itr != strs.end(); itr++)
 	{
 		char s1[200];
 		char s2[200];

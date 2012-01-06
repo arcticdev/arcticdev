@@ -7,7 +7,7 @@
 #include "StdAfx.h"
 #include "Setup.h"
 #include "../Common/EasyFunctions.h"
-
+/*
 bool CenarionMoondust(uint32 i, Spell* pSpell) // Body And Heart (Alliance)
 {
   const float pos[] = {6348.540039f, 128.124176f, 22.024008f, 4.172032f}; // x, y, z, o
@@ -51,7 +51,6 @@ bool CenarionLunardust(uint32 i, Spell* pSpell) // Body And Heart (Horde)
 
   return true;
 }
-
 
 class Lunaclaw : public CreatureAIScript
 {
@@ -384,6 +383,5 @@ void SetupDruid(ScriptMgr * mgr)
   //Register gossip scripts
   mgr->register_gossip_script(12144, MoonkinGhostGossip); // Ghost of Lunaclaw
   mgr->register_gossip_script(11956, BearGhostGossip); // Great Bear Spirit
-  
-}
-
+ 
+}*/

@@ -89,7 +89,7 @@ public:
 		_unit->PlaySoundToSet(SOUND_ALLIANCE_CAPTURE);
 
 		unordered_set<Unit*>::iterator itr = slaves.begin();
-		for(; itr != slaves.end(); ++itr)
+		for(; itr != slaves.end(); itr++)
 		{
 			Unit*  pSlave = *itr;
 			if(pSlave && pSlave->isAlive())
@@ -102,7 +102,7 @@ public:
 		RemoveAIUpdateEvent();
 
 		unordered_set<Unit*>::iterator itr = slaves.begin();
-		for(; itr != slaves.end(); ++itr)
+		for(; itr != slaves.end(); itr++)
 		{
 			Unit*  pSlave = *itr;
 			if(pSlave && pSlave->isAlive())
@@ -149,7 +149,7 @@ public:
 		}
 
 		unordered_set<Unit*>::iterator itr = slaves.begin();
-		for(; itr != slaves.end(); ++itr)
+		for(; itr != slaves.end(); itr++)
 		{
 			Unit*  pSlave = *itr;
 			if(pSlave && pSlave->isAlive())
@@ -263,7 +263,7 @@ public:
 		_unit->PlaySoundToSet(SOUND_HORDE_CAPTURE);
 
 		unordered_set<Unit*>::iterator itr = slaves.begin();
-		for(; itr != slaves.end(); ++itr)
+		for(; itr != slaves.end(); itr++)
 		{
 			Unit*  pSlave = *itr;
 			if(pSlave && pSlave->isAlive())
@@ -282,7 +282,7 @@ public:
 		_unit->RemoveAura(VANNDAR_AVATAR);
 
 		unordered_set<Unit*>::iterator itr = slaves.begin();
-		for(; itr != slaves.end(); ++itr)
+		for(; itr != slaves.end(); itr++)
 		{
 			Unit*  pSlave = *itr;
 			if(pSlave && pSlave->isAlive())
@@ -334,7 +334,7 @@ public:
 		}
 
 		unordered_set<Unit*>::iterator itr = slaves.begin();
-		for(; itr != slaves.end(); ++itr)
+		for(; itr != slaves.end(); itr++)
 		{
 			Unit*  pSlave = *itr;
 			if(pSlave && pSlave->isAlive())

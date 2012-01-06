@@ -203,7 +203,7 @@ uint8 QuestMgr::CalcStatus(Object* quest_giver, Player* plr)
 			status = tmp_status;
 	}
 
-	for(itr = q_begin; itr != q_end; ++itr)
+	for(itr = q_begin; itr != q_end; itr++)
 	{
 		uint32 tmp_status = CalcQuestStatus(quest_giver, plr, *itr);	// save a call
 		if (tmp_status > status)
@@ -249,7 +249,7 @@ uint32 QuestMgr::ActiveQuestsCount(Object* quest_giver, Player* plr)
 		return 0;
 	}
 
-	for(itr = q_begin; itr != q_end; ++itr)
+	for(itr = q_begin; itr != q_end; itr++)
 	{
 		if (CalcQuestStatus(quest_giver, plr, *itr) >= QMGR_QUEST_CHAT)
 		{
@@ -1627,7 +1627,7 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 			return false;
 		}
 		
-		for(itr = q_begin; itr != q_end; ++itr) 
+		for(itr = q_begin; itr != q_end; itr++) 
 			if (sQuestMgr.CalcQuestStatus(qst_giver, plr, *itr) >= QMGR_QUEST_CHAT)
 				break;
 
@@ -1906,7 +1906,7 @@ void QuestMgr::LoadExtraQuestStuff()
 
 	it->Destruct();
 
-	for(map<uint32, set<uint32> >::iterator itr = tmp_map.begin(); itr != tmp_map.end(); ++itr)
+	for(map<uint32, set<uint32> >::iterator itr = tmp_map.begin(); itr != tmp_map.end(); itr++)
 	{
 		GameObjectInfo *inf = GameObjectNameStorage.LookupEntry(itr->first);
 		if( inf == NULL )

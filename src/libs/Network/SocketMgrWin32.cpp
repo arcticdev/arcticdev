@@ -111,11 +111,11 @@ void SocketMgr::CloseAll()
 	list<Socket*> tokill;
 
 	socketLock.Acquire();
-	for(set<Socket*>::iterator itr = _sockets.begin(); itr != _sockets.end(); ++itr)
+	for(set<Socket*>::iterator itr = _sockets.begin(); itr != _sockets.end(); itr++)
 		tokill.push_back(*itr);
 	socketLock.Release();
 
-	for(list<Socket*>::iterator itr = tokill.begin(); itr != tokill.end(); ++itr)
+	for(list<Socket*>::iterator itr = tokill.begin(); itr != tokill.end(); itr++)
 		(*itr)->Disconnect();
 
 	size_t size;

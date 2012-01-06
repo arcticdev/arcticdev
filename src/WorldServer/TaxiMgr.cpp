@@ -225,7 +225,7 @@ void TaxiPath::SendMoveForTime(Player *riding, Player *to, uint32 time)
 			break;
 
 		*data << pn->x << pn->y << pn->z;
-		++itr;
+		itr++;
 		++nodecounter;
 	}
 	

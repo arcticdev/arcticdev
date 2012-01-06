@@ -9,36 +9,31 @@
 
 class StraightBuffer : public BaseBuffer
 {
-	/** Pointer to buffer
-	 */
+	/* Pointer to buffer */
 	char * m_buffer;
 
-	/** How many bytes were allocated
-	 */
+	/* How many bytes were allocated */
 	size_t space;
 
-	/** How many bytes are currently stored
-	 */
+	/* How many bytes are currently stored */
 	size_t written;
 
 public:
 
-	/** Constructor
-	 */
+	/* Constructor */
 	StraightBuffer()
 	{
         space = written = 0;
 		m_buffer = 0;
 	}
 
-	/** Destructor
-	 */
+	/* Destructor */
 	~StraightBuffer()
 	{
 		free(m_buffer);
 	}
 
-	/** Read bytes from the buffer
+	/* Read bytes from the buffer
 	 * @param destination pointer to destination where bytes will be written
 	 * @param bytes number of bytes to read
 	 * @return true if there was enough data, false otherwise
@@ -64,7 +59,7 @@ public:
 		}
 	}
 
-	/** Write bytes to the buffer
+	/* Write bytes to the buffer
 	 * @param data pointer to the data to be written
 	 * @param bytes number of bytes to be written
 	 * @return true if was successful, otherwise false
@@ -89,21 +84,19 @@ public:
 		}
 	}
 
-	/** Returns the number of available bytes left.
-	 */
+	/* Returns the number of available bytes left. */
 	size_t GetSpace()
 	{
 		return (space - written);
 	}
 
-	/** Returns the number of bytes currently stored in the buffer.
-	 */
+	/* Returns the number of bytes currently stored in the buffer. */
 	size_t GetSize()
 	{
 		return written;
 	}
 
-	/** Removes len bytes from the front of the buffer
+	/* Removes len bytes from the front of the buffer
 	 * @param len the number of bytes to "cut"
 	 */
 	void Remove(size_t len)
@@ -114,14 +107,13 @@ public:
 			memcpy(&m_buffer[0], &m_buffer[len], written);
 	}
 
-	/** Returns a pointer at the "end" of the buffer, where new data can be written
-	 */
+	/* Returns a pointer at the "end" of the buffer, where new data can be written */
 	void * GetBuffer()
 	{
 		return &m_buffer[written];
 	}
 
-	/** Allocate the buffer with room for size bytes
+	/* Allocate the buffer with room for size bytes
 	 * @param size the number of bytes to allocate
 	 */
 	void Allocate(size_t size)
@@ -130,7 +122,7 @@ public:
 		space = size;
 	}
 
-	/** Increments the "writen" pointer forward len bytes
+	/* Increments the "writen" pointer forward len bytes
 	 * @param len number of bytes to step
 	 */
 	void IncrementWritten(size_t len)
@@ -139,8 +131,7 @@ public:
 		ASSERT(space >= written);
 	}
 
-	/** Returns a pointer at the "beginning" of the buffer, where data can be pulled from
-	 */
+	/* Returns a pointer at the "beginning" of the buffer, where data can be pulled from */
 	void * GetBufferOffset()
 	{
 		return m_buffer;

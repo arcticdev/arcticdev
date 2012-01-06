@@ -803,9 +803,9 @@ void WorldSession::FullLogin(Player* plr)
 
 	// Send revision (if enabled)
 #ifdef WIN32
-	// _player->BroadcastMessage("Server: ArcTic %s r%u/%s-Win-%s %s(www.github.com/arcticdev)", MSG_COLOR_WHITE, BUILD_TAG, BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
+	// _player->BroadcastMessage("Core server: ArcTic %s r%u/%s-Windows-%s (www.github.com/arcticdev)", MSG_COLOR_WHITE, BUILD_TAG, BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
 #else
-	// _player->BroadcastMessage("Server: ArcTic %s r%u/%s-%s %s(www.github.com/arcticdev)", MSG_COLOR_WHITE, BUILD_TAG, BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
+	// _player->BroadcastMessage("Core server: ArcTic %s r%u/%s-%s (www.github.com/arcticdev)", MSG_COLOR_WHITE, BUILD_TAG, BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
 #endif
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_LIGHTBLUE, BUG_TRACKER);

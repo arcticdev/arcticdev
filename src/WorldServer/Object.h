@@ -160,7 +160,7 @@ public:
 	virtual void Init();
 
 	virtual void Update ( uint32 time ) { }
-  //! True if object exists in world
+	// True if object exists in world
  
 	
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
@@ -194,7 +194,7 @@ public:
 	ARCTIC_INLINE bool IsGameObject() { return m_objectTypeId == TYPEID_GAMEOBJECT; }
 	bool IsPet();
 
-	//! This includes any nested objects we have, inventory for example.
+	// This includes any nested objects we have, inventory for example.
 	virtual uint32 ARCTIC_FASTCALL BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
 	uint32 ARCTIC_FASTCALL BuildValuesUpdateBlockForPlayer( ByteBuffer *buf, Player* target );
 	uint32 ARCTIC_FASTCALL BuildValuesUpdateBlockForPlayer( ByteBuffer * buf, UpdateMask * mask );
@@ -249,11 +249,11 @@ public:
 	float CalcDistance(Object* Oa, float ObX, float ObY, float ObZ);
 	float CalcDistance(float OaX, float OaY, float OaZ, float ObX, float ObY, float ObZ);
 
-	//! Only for MapMgr use
+	// Only for MapMgr use
 	ARCTIC_INLINE MapCell* GetMapCell() const { return m_mapCell; }
-	//! Only for MapMgr use
+	// Only for MapMgr use
 	ARCTIC_INLINE void SetMapCell(MapCell* cell) { m_mapCell = cell; }
-	//! Only for MapMgr use
+	// Only for MapMgr use
 	ARCTIC_INLINE MapMgr* GetMapMgr() const { return m_mapMgr; }
 
 	ARCTIC_INLINE void SetMapId(uint32 newMap) { m_mapId = newMap; }
@@ -262,13 +262,13 @@ public:
 	ARCTIC_INLINE const uint32 GetMapId( ) const { return m_mapId; }
 	ARCTIC_INLINE const uint32& GetZoneId( ) const { return m_zoneId; }
 
-	//! Get uint32 property
+	// Get uint32 property
 	ARCTIC_INLINE const uint32& GetUInt32Value( uint32 index ) const { return m_uint32Values[ index ]; }
 
-	//! Get uint64 property
+	// Get uint64 property
 	ARCTIC_INLINE const uint64& GetUInt64Value( uint32 index ) const { return *((uint64*)&(m_uint32Values[ index ])); }
 
-	//! Get float property
+	// Get float property
 	ARCTIC_INLINE const float& GetFloatValue( uint32 index ) const { return m_floatValues[ index ]; }
 
 	void ARCTIC_FASTCALL ModFloatValue(const uint32 index, const float value );
@@ -276,7 +276,7 @@ public:
 	void ModUnsigned32Value(uint32 index, int32 mod);
 	uint32 GetModPUInt32Value(const uint32 index, const int32 value);
 
-	//! Set uint32 property
+	// Set uint32 property
 	void SetByte(uint32 index, uint32 index1,uint8 value);
 
 	ARCTIC_INLINE uint8 GetByte(uint32 i,uint32 i1) { return ((uint8*)m_uint32Values)[i*4+i1]; }
@@ -297,10 +297,10 @@ public:
 	void EventSetUInt32Value(uint32 index, uint32 value);
 	void ARCTIC_FASTCALL SetUInt32Value( const uint32 index, const uint32 value );
 
-	//! Set uint64 property
+	// Set uint64 property
 	void ARCTIC_FASTCALL SetUInt64Value( const uint32 index, const uint64 value );
 
-	//! Set float property
+	// Set float property
 	void ARCTIC_FASTCALL SetFloatValue( const uint32 index, const float value );
 
 	void ARCTIC_FASTCALL SetFlag( const uint32 index, uint32 newFlag );
@@ -466,12 +466,12 @@ public:
 	ARCTIC_INLINE void SendMessageToSet(StackPacket * data, bool self) { OutPacketToSet(data->GetOpcode(), (uint16)data->GetSize(), data->GetBufferPointer(), self); }
 	void OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool self);
 
-	//! Fill values with data from a space seperated string of uint32s.
+	// Fill values with data from a space seperated string of uint32s.
 	void LoadValues(const char* data);
 
 	ARCTIC_INLINE uint16 GetValuesCount() const { return m_valuesCount; }
 
-	//! Blizzard seem to send those for all object types. weird.
+	// Blizzard seem to send those for all object types. weird.
 	float m_walkSpeed;
 	float m_runSpeed;
 	float m_backWalkSpeed;
@@ -537,12 +537,12 @@ public:
 protected:
 	Object (  );
 
-	//void _Create (uint32 guidlow, uint32 guidhigh);
+	// void _Create (uint32 guidlow, uint32 guidhigh);
 	void _Create( uint32 mapid, float x, float y, float z, float ang);
 
-	//! Mark values that need updating for specified player.
+	// Mark values that need updating for specified player.
 	virtual void _SetUpdateBits(UpdateMask *updateMask, Player* target) const;
-	//! Mark values that player should get when he/she/it sees object for first time.
+	// Mark values that player should get when he/she/it sees object for first time.
 	virtual void _SetCreateBits(UpdateMask *updateMask, Player* target) const;
 
 	void _BuildMovementUpdate( ByteBuffer *data, uint16 flags, uint32 flags2, Player* target );
@@ -558,19 +558,19 @@ protected:
 
 	Mutex m_objlock;
 
-	//! WoWGuid class
+	// WoWGuid class
 	WoWGuid m_wowGuid;
 
-	 //! Type id.
+	// Type id.
 	uint8 m_objectTypeId;
 
-	//! Zone id.
+	// Zone id.
 	uint32 m_zoneId;
-	//! Continent/map id.
+	// Continent/map id.
 	uint32 m_mapId;
-	//! Map manager
+	// Map manager
 	MapMgr* m_mapMgr;
-	//! Current map cell
+	// Current map cell
 	MapCell *m_mapCell;
 
 	LocationVector m_position;
@@ -580,23 +580,23 @@ protected:
 	// Semaphores - needed to forbid two operations on the same object at the same very time (may cause crashing\lack of data)
 	bool mSemaphoreTeleport;
 
-	//! Object properties.
+	// Object properties.
 	union {
 		uint32* m_uint32Values;
 		float* m_floatValues;
 	};
 
-	//! Number of properties
+	// Number of properties
 	uint32 m_valuesCount;
 
-	//! List of object properties that need updating.
+	// List of object properties that need updating.
 	UpdateMask m_updateMask;
 
-	//! True if object was updated
+	// True if object was updated
 	bool m_objectUpdated;
 
-	//! Set of Objects in range.
-	//! TODO: that functionality should be moved into WorldServer.
+	// Set of Objects in range.
+	// TODO: that functionality should be moved into WorldServer.
 	unordered_set<Object* > m_objectsInRange;
 	unordered_set<Player* > m_inRangePlayers;
 	unordered_set<Object* > m_oppFactsInRange;

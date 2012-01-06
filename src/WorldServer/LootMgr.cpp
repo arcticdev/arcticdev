@@ -61,12 +61,12 @@ T* RandomChoiceVector( vector<pair<T*, float> > & variant )
 	if(variant.size() == 0)
 		return NULL;
 
-	for(itr = variant.begin(); itr != variant.end(); ++itr)
+	for(itr = variant.begin(); itr != variant.end(); itr++)
 		totalChance += itr->second;
 
 	val = RandomFloat(totalChance);
 	
-	for(itr = variant.begin(); itr != variant.end(); ++itr)
+	for(itr = variant.begin(); itr != variant.end(); itr++)
 	{
 		val -= itr->second;
 		if (val <= 0) return itr->first;
@@ -295,7 +295,7 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 	uint32 itemid;
 
 	//for(itr=loot_db.begin();itr!=loot_db.end();++itr)
-	for( itr = db_cache.begin(); itr != db_cache.end(); ++itr)
+	for( itr = db_cache.begin(); itr != db_cache.end(); itr++)
 	{
 		entry_id = (*itr).first;
 		if(LootTable->end()==LootTable->find(entry_id))
@@ -447,7 +447,7 @@ void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenc
 			item_to_remove = loot->items.begin();
 			item_quality = 0;
 			quest_item = false;
-			for( itr = loot->items.begin(); itr != loot->items.end(); ++itr )
+			for( itr = loot->items.begin(); itr != loot->items.end(); itr++ )
 			{
 				item_quality = (*itr).item.itemproto->Quality;
 				quest_item = (*itr).item.itemproto->Class == ITEM_CLASS_QUEST;
@@ -691,7 +691,7 @@ void LootRoll::Finalize()
 
 	WorldPacket data(34);
 
-	for(std::map<uint32, uint32>::iterator itr = m_NeedRolls.begin(); itr != m_NeedRolls.end(); ++itr)
+	for(std::map<uint32, uint32>::iterator itr = m_NeedRolls.begin(); itr != m_NeedRolls.end(); itr++)
 	{
 		if(itr->second > highest)
 		{
@@ -703,7 +703,7 @@ void LootRoll::Finalize()
 
 	if(!highest)
 	{
-		for(std::map<uint32, uint32>::iterator itr = m_GreedRolls.begin(); itr != m_GreedRolls.end(); ++itr)
+		for(std::map<uint32, uint32>::iterator itr = m_GreedRolls.begin(); itr != m_GreedRolls.end(); itr++)
 		{
 			if(itr->second > highest)
 			{
@@ -841,7 +841,7 @@ void LootRoll::Finalize()
 	data.Initialize(SMSG_LOOT_REMOVED);
 	data << uint8(_slotid);
 	Player* plr;
-	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
+	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); itr++)
 	{
 		if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 			plr->GetSession()->SendPacket(&data);
@@ -960,7 +960,7 @@ bool Loot::HasLoot(Player* Looter)
 bool Loot::HasItems(Player* Looter)
 {
 	// check items
-	for(vector<__LootItem>::iterator itr = items.begin(); itr != items.end(); ++itr)
+	for(vector<__LootItem>::iterator itr = items.begin(); itr != items.end(); itr++)
 	{
 		if( itr->iItemsCount > 0 )
 		{

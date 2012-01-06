@@ -159,7 +159,7 @@ void iocpEngine::Shutdown()
 	for(itr = m_sockets.begin(); itr != m_sockets.end();)
 	{
 		s = *itr;
-		++itr;
+		itr++;
 
 		s->Delete();
 	}

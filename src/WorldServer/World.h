@@ -576,7 +576,7 @@ protected:
 
 private:
 	EventableObjectHolder * eventholder;
-	//! Timers
+	// Timers
 	typedef HM_NAMESPACE::hash_map<uint32, WorldSession*> SessionMap;
 	SessionMap m_sessions;
 	RWLock m_sessionlock;

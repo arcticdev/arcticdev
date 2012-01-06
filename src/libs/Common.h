@@ -164,14 +164,6 @@ enum MsTimeVariables
 #define ARCH "X86"
 #endif
 
-/*#if COMPILER == COMPILER_MICROSOFT
-#  pragma warning( disable : 4267 ) // conversion from 'size_t' to 'int', possible loss of data
-#  pragma warning( disable : 4311 ) // 'type cast': pointer truncation from HMODULE to uint32
-#  pragma warning( disable : 4786 ) // identifier was truncated to '255' characters in the debug information
-#  pragma warning( disable : 4146 )
-#  pragma warning( disable : 4800 )
-#endif*/
-
 #if PLATFORM == PLATFORM_WIN32
 #define STRCASECMP stricmp
 #else
@@ -220,7 +212,6 @@ enum MsTimeVariables
 					   + __GNUC_MINOR__ * 100 \
 					   + __GNUC_PATCHLEVEL__)
 #endif
-
 
 #ifndef WIN32
 #ifndef X64
@@ -531,25 +522,6 @@ ARCTIC_INLINE uint32 now()
 #ifndef WIN32
 #define Sleep(ms) usleep(1000*ms)
 #endif
-
-/*#ifdef WIN32
-#ifndef __SHOW_STUPID_WARNINGS__
-#pragma warning(disable:4018)
-#pragma warning(disable:4244)
-#pragma warning(disable:4305) 
-#pragma warning(disable:4748)
-#pragma warning(disable:4800) 
-#pragma warning(disable:4996)
-#pragma warning(disable:4251)
-#endif	  
-#endif
-
-#undef INTEL_COMPILER
-#ifdef INTEL_COMPILER
-#pragma warning(disable:279)
-#pragma warning(disable:1744)
-#pragma warning(disable:1740)
-#endif*/
 
 #include "Util.h"
 struct WayPoint

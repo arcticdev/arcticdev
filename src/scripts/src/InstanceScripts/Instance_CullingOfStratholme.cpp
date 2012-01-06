@@ -144,7 +144,7 @@ public:
 				int32 lowest = 0;
 				if( _unit->GetAIInterface()->getAITargetsCount() > 0 )
 				{
-					for(TargetMap::iterator itr = _unit->GetAIInterface()->GetAITargets()->begin(); itr != _unit->GetAIInterface()->GetAITargets()->end(); ++itr)
+					for(TargetMap::iterator itr = _unit->GetAIInterface()->GetAITargets()->begin(); itr != _unit->GetAIInterface()->GetAITargets()->end(); itr++)
 					{
 						if( itr->second == 0 ) continue;
 						if( lowest == 0 || ( itr->second + itr->first->GetThreatModifier() ) < lowest )

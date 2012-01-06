@@ -15,7 +15,7 @@ class RC4Engine
 
 public:
 
-    //! RC4Engine constructor. Must supply a key and the length of that array.
+    // RC4Engine constructor. Must supply a key and the length of that array.
     RC4Engine(const unsigned char * keybytes, unsigned int keylen)
     {
         Setup(keybytes, keylen);
@@ -23,10 +23,10 @@ public:
 
     RC4Engine() : Initialized(false) {}
 
-    //! Destructor
+    // Destructor
     ~RC4Engine() { }
 
-    //! Initializes permutation, etc.
+    // Initializes permutation, etc.
     void Setup(const unsigned char * keybytes, const unsigned int keylen)
     {
         unsigned int i = 0;
@@ -51,8 +51,8 @@ public:
         Initialized = true;
     }
 
-    //! Processes the specified array. The same function is used for both
-    //  encryption and decryption.
+    // Processes the specified array. The same function is used for both
+    // encryption and decryption.
     void Process(unsigned char * input, unsigned char * output, unsigned int len)
     {
         unsigned int i = 0;
@@ -74,7 +74,7 @@ public:
 };
 
 
-//! Reverses the bytes in an array in the opposite order.
+// Reverses the bytes in an array in the opposite order.
 __inline void ReverseBytes(unsigned char * Pointer, unsigned int Length)
 {
 	unsigned char * Temp = (unsigned char*)malloc(Length);
