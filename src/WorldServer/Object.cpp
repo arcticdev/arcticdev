@@ -1092,46 +1092,9 @@ void Object::SetUInt32Value( const uint32 index, const uint32 value )
 			if( pGroup != NULL )
 				pGroup->HandleUpdateFieldChange( index, TO_PLAYER(this) );
 		}
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-		case UNIT_FIELD_LEVEL:
-		case PLAYER_XP:
-			TO_PLAYER(this)->save_LevelXP();
-			break;
-
-		case PLAYER_FIELD_COINAGE:
-			TO_PLAYER(this)->save_Gold();
-			break;
-		}
-#endif
 	}
 }
 
-/*
-//must be in %
-void Object::ModPUInt32Value(const uint32 index, const int32 value, bool apply )
-{
-	ASSERT( index < m_valuesCount );
-	int32 basevalue = (int32)m_uint32Values[ index ];
-	if(apply)
-		m_uint32Values[ index ] += ((basevalue*value)/100);
-	else
-		m_uint32Values[ index ] = (basevalue*100)/(100+value);
-
-	if(IsInWorld())
-	{
-		m_updateMask.SetBit( index );
-
-		if(!m_objectUpdated )
-		{
-			m_mapMgr->ObjectUpdated(this);
-			m_objectUpdated = true;
-		}
-	}
-}
-*/
 uint32 Object::GetModPUInt32Value(const uint32 index, const int32 value)
 {
 	ASSERT( index < m_valuesCount );
@@ -1167,20 +1130,6 @@ void Object::ModUnsigned32Value(uint32 index, int32 mod)
 		// mana and energy regen
 		if( index == UNIT_FIELD_POWER1 || index == UNIT_FIELD_POWER4 )
 			TO_PLAYER( this )->SendPowerUpdate();
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-		case UNIT_FIELD_LEVEL:
-		case PLAYER_XP:
-			TO_PLAYER(this)->save_LevelXP();
-			break;
-
-		case PLAYER_FIELD_COINAGE:
-			TO_PLAYER(this)->save_Gold();
-			break;
-		}
-#endif
 	}
 }
 
@@ -1201,23 +1150,7 @@ void Object::ModSignedInt32Value(uint32 index, int32 value )
 			m_objectUpdated = true;
 		}
 	}
-
 	if(m_objectTypeId == TYPEID_PLAYER)
-	{
-#ifdef OPTIMIZED_PLAYER_SAVING
-		switch(index)
-		{
-		case UNIT_FIELD_LEVEL:
-		case PLAYER_XP:
-			TO_PLAYER(this)->save_LevelXP();
-			break;
-
-		case PLAYER_FIELD_COINAGE:
-			TO_PLAYER(this)->save_Gold();
-			break;
-		}
-#endif
-	}
 }
 
 void Object::ModFloatValue(const uint32 index, const float value )
@@ -1708,10 +1641,10 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 	if(!no_remove_auras)
 	{
 		float breakchance = 35.0f;
-		if( spellId == 51514)// && IsUnit() && HasDummyAura(SPELL_HASH_GLYPH_OF_HEX) ) wait till 3.1
+		if( spellId == 51514)
 			breakchance += 15.0f;
 
-		//zack 2007 04 24 : root should not remove self (and also other unknown spells)
+		// zack 2007 04 24 : root should not remove self (and also other unknown spells)
 		if(spellId)
 		{
 			pVictim->RemoveAurasByInterruptFlagButSkip(AURA_INTERRUPT_ON_ANY_DAMAGE_TAKEN, spellId);
@@ -1748,12 +1681,6 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			TO_PLAYER(this)->CreateResetGuardHostileFlagEvent();
 		}
 
-/*		if(!pVictim->isInCombat() && pVictim->IsPlayer())
-			sHookInterface.OnEnterCombat( TO_PLAYER( pVictim ), TO_UNIT(this) );
-
-		if(IsPlayer() && ! TO_PLAYER(this)->isInCombat())
-			sHookInterface.OnEnterCombat( TO_PLAYER(this), TO_PLAYER(this) );*/
-			
 		if(IsPet())
 			plr = TO_PET(this)->GetPetOwner();
 		else if(IsPlayer())
@@ -1762,7 +1689,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		if(plr != NULL && plr->GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_UNIT) // Units can't tag..
 			TO_CREATURE(pVictim)->Tag(plr);
 
-		//is this correct this
+		// is this correct this
 		if( pVictim != 
 			TO_UNIT(this) )
 		{
@@ -1771,7 +1698,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 
-        ///Rage
+        // Rage
         float val;
 
 		if( pVictim->GetPowerType() == POWER_TYPE_RAGE 
@@ -1791,7 +1718,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 
 	
-	//* BATTLEGROUND DAMAGE COUNTER *//
+	//* Battleground damage counter *//
 	if( pVictim != TO_UNIT(this) )
 	{
 		if( IsPlayer() )

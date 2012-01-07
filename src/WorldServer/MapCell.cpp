@@ -82,7 +82,6 @@ void MapCell::SetActivity(bool state)
 void MapCell::RemoveObjects()
 {
 	ObjectSet::iterator itr;
-	//uint32 ltime = getMSTime();
 
 	/* delete objects in pending respawn state */
 	Object* pObject;
@@ -94,25 +93,27 @@ void MapCell::RemoveObjects()
 		
 		switch(pObject->GetTypeId())
 		{
-		case TYPEID_UNIT: {
+		case TYPEID_UNIT:
+			{
 				if( pObject->IsVehicle() )
 				{
 					_mapmgr->_reusable_guids_vehicle.push_back( pObject->GetUIdFromGUID() );
-					TO_VEHICLE(pObject)->m_respawnCell=NULL;
+					TO_VEHICLE(pObject)->m_respawnCell = NULL;
 					TO_VEHICLE(pObject)->Destructor();
 				}
 				else if( !pObject->IsPet() )
 				{
 					_mapmgr->_reusable_guids_creature.push_back( pObject->GetUIdFromGUID() );
-					TO_CREATURE(pObject)->m_respawnCell=NULL;
+					TO_CREATURE(pObject)->m_respawnCell = NULL;
 					TO_CREATURE(pObject)->Destructor();
 				}
 			}break;
 
-		case TYPEID_GAMEOBJECT: {
-			TO_GAMEOBJECT(pObject)->m_respawnCell=NULL;
+		case TYPEID_GAMEOBJECT:
+		{
+			TO_GAMEOBJECT(pObject)->m_respawnCell = NULL;
 			TO_GAMEOBJECT(pObject)->Destructor();
-			}break;
+		}break;
 		default:
 			pObject->Destructor();
 			break;
@@ -121,8 +122,8 @@ void MapCell::RemoveObjects()
 	}
 	_respawnObjects.clear();
 
-	//This time it's simpler! We just remove everything :)
-	Object* obj; //do this outside the loop!
+	// This time it's simpler! We just remove everything :)
+	Object* obj; // do this outside the loop!
 	for(itr = _objects.begin(); itr != _objects.end();)
 	{
 		obj = (*itr);
@@ -143,8 +144,6 @@ void MapCell::RemoveObjects()
 				continue;
 		}
 
-
-
 		if( obj->Active )
 			obj->Deactivate( _mapmgr );
 
@@ -164,7 +163,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 	_loaded = true;
 	Instance * pInstance = _mapmgr->pInstance;
 
-	if(sp->CreatureSpawns.size())//got creatures
+	if(sp->CreatureSpawns.size()) // got creatures
 	{
 		Vehicle* v = NULL;
 		Creature* c = NULL;
@@ -175,8 +174,6 @@ void MapCell::LoadObjects(CellSpawns * sp)
 				if(pInstance->m_killedNpcs.find((*i)->id) != pInstance->m_killedNpcs.end())
 					continue;
 
-/*				if((*i)->respawnNpcLink && pInstance->m_killedNpcs.find((*i)->respawnNpcLink) != pInstance->m_killedNpcs.end())
-					continue;*/
 			}
 			if(!(*i)->eventid)
 			{
@@ -236,7 +233,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 		}
 	}
 
-	if(sp->GOSpawns.size())//got GOs
+	if(sp->GOSpawns.size()) // got GOs
 	{
 		GameObject* go;
 		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
@@ -261,20 +258,17 @@ void MapCell::LoadObjects(CellSpawns * sp)
 	}
 }
 
-
 void MapCell::QueueUnloadPending()
 {
 	if(_unloadpending)
 		return;
 
 	_unloadpending = true;
-	//DEBUG_LOG("MapCell", "Queueing pending unload of cell %u %u", _x, _y);
 	sEventMgr.AddEvent(_mapmgr, &MapMgr::UnloadCell,(uint32)_x,(uint32)_y,MAKE_CELL_EVENT(_x,_y),sWorld.map_unload_time * 1000,1,0);
 }
 
 void MapCell::CancelPendingUnload()
 {
-	//DEBUG_LOG("MapCell", "Cancelling pending unload of cell %u %u", _x, _y);
 	if(!_unloadpending)
 		return;
 
@@ -283,11 +277,10 @@ void MapCell::CancelPendingUnload()
 
 void MapCell::Unload()
 {
-	//DEBUG_LOG("MapCell", "Unloading cell %u %u", _x, _y);
 	ASSERT(_unloadpending);
 	if(_active)
 		return;
 
 	RemoveObjects();
-	_unloadpending=false;
+	_unloadpending = false;
 }

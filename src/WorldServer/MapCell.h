@@ -34,17 +34,17 @@ public:
 	ARCTIC_INLINE ObjectSet::iterator Begin() { return _objects.begin(); }
 	ARCTIC_INLINE ObjectSet::iterator End() { return _objects.end(); }
 
-	//State Related
+	// State Related
 	void SetActivity(bool state);
 
 	ARCTIC_INLINE bool IsActive() { return _active; }
 	ARCTIC_INLINE bool IsLoaded() { return _loaded; }
 
-	//Object Loading Managing
+	// Object Loading Managing
 	void LoadObjects(CellSpawns * sp);
 	ARCTIC_INLINE uint32 GetPlayerCount() { return _playerCount; }
 
-	//ING Events
+	// Events System
 	void RemoveEventIdObjects(uint8 eventToRemove);
 	void ModifyEventIdSetting(bool active, uint8 eventId);
 	void LoadEventIdObjects(CellSpawns * sp, uint8 eventId);

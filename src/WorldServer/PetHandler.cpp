@@ -377,11 +377,7 @@ void WorldSession::HandleBuyStableSlot(WorldPacket &recv_data)
 		_player->m_StableSlotCount = MAX_STABLE_SLOTS;
 	else
 		_player->m_StableSlotCount++;
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Misc();
-#endif
 }
-
 
 void WorldSession::HandlePetSetActionOpcode(WorldPacket& recv_data)
 {
