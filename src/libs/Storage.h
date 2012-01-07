@@ -203,12 +203,12 @@ public:
 		for(uint32 i = 0; i < _max; ++i)
 		{
 #ifndef STORAGE_ALLOCATION_POOLS
-			if(_array[i] != 0)
+			if(_array[i] != NULL)
 			{
 				delete _array[i];
 			}
 #endif
-			_array[i] = 0;
+			_array[i] = NULL;
 		}
 	}
 };
@@ -243,12 +243,10 @@ public:
 	/* Creates the array with specified maximum */
 	void Setup(uint32 Max)
 	{
-
 	}
 
 	void Resetup(uint32 Max)
 	{
-
 	}
 
 	/* Allocates entry Entry in the array and sets the pointer, and returns

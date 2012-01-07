@@ -171,7 +171,6 @@ void AuthSocket::HandleChallenge()
 		return;
 	}
 
-
 	// Check that the account isn't banned.
 	if(m_account->Banned == 1)
 	{
@@ -243,7 +242,7 @@ void AuthSocket::HandleProof()
 	// patch
 	if(m_patch&&!m_account)
 	{
-		//RemoveReadBufferBytes(75,false);
+		// RemoveReadBufferBytes(75,false);
 		GetReadBuffer().Remove(75);
 		DEBUG_LOG("AuthLogonProof","Intitiating PatchJob");
 		uint8 bytes[2] = {0x01,0x0a};
@@ -342,12 +341,6 @@ void AuthSocket::HandleProof()
 	// Store sessionkey
 	m_account->SetSessionKey(m_sessionkey.AsByteArray());
 
-//	OUT_DEBUG("========================\nSession key: ");
-//	for(uint32 z = 0; z < 40; ++z)
-//		OUT_DEBUG("%.2X ", m_account->SessionKey[z]);
-//	OUT_DEBUG("\n========================\n");
-
-
 	// let the client know
 	sha.Initialize();
 	sha.UpdateBigNumbers(&A, &M, &m_sessionkey, 0);
@@ -400,7 +393,7 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 #define AUTH_RECHALLENGE 2
 #define AUTH_REPROOF 3
 #define REALM_LIST 16
-#define INITIATE_TRANSFER 48		// 0x30
+#define INITIATE_TRANSFER 48	// 0x30
 #define TRANSFER_DATA 49		// 0x31
 #define ACCEPT_TRANSFER 50		// 0x32
 #define RESUME_TRANSFER 51		// 0x33
@@ -408,60 +401,61 @@ void AuthSocket::SendProofError(uint8 Error, uint8 * M2)
 #define MAX_AUTH_CMD 53
 
 typedef void (AuthSocket::*AuthHandler)();
-static AuthHandler Handlers[MAX_AUTH_CMD] = {
-		&AuthSocket::HandleChallenge,			// 0
-		&AuthSocket::HandleProof,				// 1
-		&AuthSocket::HandleReconnectChallenge,	// 2
-		&AuthSocket::HandleReconnectProof,		// 3
-		NULL,									// 4
-		NULL,									// 5
-		NULL,									// 6
-		NULL,									// 7
-		NULL,									// 8
-		NULL,									// 9
-		NULL,									// 10
-		NULL,									// 11
-		NULL,									// 12
-		NULL,									// 13
-		NULL,									// 14
-		NULL,									// 15
-		&AuthSocket::HandleRealmlist,			// 16
-		NULL,									// 17
-		NULL,									// 18
-		NULL,									// 19
-		NULL,									// 20
-		NULL,									// 21
-		NULL,									// 22
-		NULL,									// 23
-		NULL,									// 24
-		NULL,									// 25
-		NULL,									// 26
-		NULL,									// 27
-		NULL,									// 28
-		NULL,									// 29
-		NULL,									// 30
-		NULL,									// 31
-		NULL,									// 32
-		NULL,									// 33
-		NULL,									// 34
-		NULL,									// 35
-		NULL,									// 36
-		NULL,									// 37
-		NULL,									// 38
-		NULL,									// 39
-		NULL,									// 40
-		NULL,									// 41
-		NULL,									// 42
-		NULL,									// 43
-		NULL,									// 44
-		NULL,									// 45
-		NULL,									// 46
-		NULL,									// 47
-		NULL,									// 48
-		NULL,									// 49
-		&AuthSocket::HandleTransferAccept,		// 50
-		&AuthSocket::HandleTransferResume,		// 51
-		&AuthSocket::HandleTransferCancel,		// 52
+static AuthHandler Handlers[MAX_AUTH_CMD] =
+{
+	&AuthSocket::HandleChallenge,			// 0
+	&AuthSocket::HandleProof,				// 1
+	&AuthSocket::HandleReconnectChallenge,	// 2
+	&AuthSocket::HandleReconnectProof,		// 3
+	NULL,									// 4
+	NULL,									// 5
+	NULL,									// 6
+	NULL,									// 7
+	NULL,									// 8
+	NULL,									// 9
+	NULL,									// 10
+	NULL,									// 11
+	NULL,									// 12
+	NULL,									// 13
+	NULL,									// 14
+	NULL,									// 15
+	&AuthSocket::HandleRealmlist,			// 16
+	NULL,									// 17
+	NULL,									// 18
+	NULL,									// 19
+	NULL,									// 20
+	NULL,									// 21
+	NULL,									// 22
+	NULL,									// 23
+	NULL,									// 24
+	NULL,									// 25
+	NULL,									// 26
+	NULL,									// 27
+	NULL,									// 28
+	NULL,									// 29
+	NULL,									// 30
+	NULL,									// 31
+	NULL,									// 32
+	NULL,									// 33
+	NULL,									// 34
+	NULL,									// 35
+	NULL,									// 36
+	NULL,									// 37
+	NULL,									// 38
+	NULL,									// 39
+	NULL,									// 40
+	NULL,									// 41
+	NULL,									// 42
+	NULL,									// 43
+	NULL,									// 44
+	NULL,									// 45
+	NULL,									// 46
+	NULL,									// 47
+	NULL,									// 48
+	NULL,									// 49
+	&AuthSocket::HandleTransferAccept,		// 50
+	&AuthSocket::HandleTransferResume,		// 51
+	&AuthSocket::HandleTransferCancel,		// 52
 };
 
 void AuthSocket::OnRead()
@@ -556,7 +550,6 @@ void AuthSocket::HandleReconnectChallenge()
 		SendChallengeError(CE_NO_ACCOUNT);
 		return;
 	}
-
 
 	// Check that the account isn't banned.
 	if(m_account->Banned == 1)

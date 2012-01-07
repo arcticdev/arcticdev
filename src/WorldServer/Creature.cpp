@@ -23,12 +23,10 @@ Creature::Creature(uint64 guid)
 	SetUInt64Value( OBJECT_FIELD_GUID,guid);
 	m_wowGuid.Init(GetGUID());
 
-
 	m_quests = NULL;
 	proto = NULL;
 	proto_heroic = NULL;
 	creature_info = NULL;
-
 
 	m_H_regenTimer = 0;
 	m_P_regenTimer = 0;
