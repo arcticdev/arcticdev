@@ -48,3 +48,4 @@ build
 /src/libs/revision.h
 *.idb
 *.svn
+*.lib

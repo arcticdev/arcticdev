@@ -43,32 +43,6 @@ bool LfgMgr::AttemptLfgJoin(Player* pl, uint32 LfgDungeonId)
 
 	if( !pl->IsInWorld() )
 		return false;
-
-	// if the player has autojoin enabled,
-	// search for any groups that have auto add members enabled, also have this dungeon, and add him
-	// if one is found.
-	/*LfgPlayerList itr;
-	Player* plr;
-
-	// make sure the dungeon is usable by autojoin (should never be true)
-	if(LfgDungeonTypes[LfgDungeonId] != LFG_DUNGEON && LfgDungeonTypes[LfgDungeonId] != LFG_HEROIC_DUNGEON)
-		return false;
-
-	m_lock.Acquire();
-
-	for(itr = m_lookingForGroup[LfgDungeonId].begin(); itr != m_lookingForGroup[LfgDungeonId].end(); itr++) {
-		plr = *itr;
-		if(plr->m_AutoAddMem) {
-			if(plr->GetGroup() && !plr->GetGroup()->IsFull() && plr->GetGroup()->GetGroupType() == GROUP_TYPE_PARTY) {
-				plr->GetGroup()->AddMember(pl->m_playerInfo);
-				pl->SendMeetingStoneQueue(LfgDungeonId, 0);
-				m_lock.Release();
-				return true;
-			}
-		}
-	}
-
-	m_lock.Release();*/
 	return false;
 }
 
@@ -263,81 +237,6 @@ void LfgMgr::SendLfgList( Player* plr, uint32 Dungeon )
 	//SubGroup * sgrp;
 
 	m_lock.Acquire();
-
-	/*WorldPacket data(MSG_LOOKING_FOR_GROUP, ((m_lookingForGroup[Dungeon].size() + m_lookingForMore[Dungeon].size()) * 20) + 20);
-	data << LfgDungeonTypes[Dungeon];
-	data << Dungeon;
-	data << uint32(m_lookingForGroup[Dungeon].size());
-	data << uint32(m_lookingForGroup[Dungeon].size());
-
-	for(itr = m_lookingForGroup[Dungeon].begin(); itr != m_lookingForGroup[Dungeon].end(); itr++)
-	{
-		pl = *itr;
-		if(pl->GetTeam() != plr->GetTeam() || pl == plr)
-			continue;
-
-        ++count;
-		data << pl->GetNewGUID();
-		data << pl->getLevel();
-		data << pl->GetZoneId();
-		data << uint8(0);		// 1=LFG?
-
-        for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-			data << pl->LfgDungeonId[i] << uint8(0) << pl->LfgType[i];
-
-		data << pl->Lfgcomment;
-
-		// LFG members are never in parties.
-		data << uint32(0);
-	}
-
-	for(itr = m_lookingForMore[Dungeon].begin(); itr != m_lookingForMore[Dungeon].end(); itr++)
-	{
-		pl = *itr;
-		if(pl->GetTeam() != plr->GetTeam() || pl == plr)
-			continue;
-
-		++count;
-		data << pl->GetNewGUID();
-		data << pl->getLevel();
-		data << pl->GetZoneId();
-		data << uint8(1);		// 1=LFM?
-
-		for(i = 0; i < MAX_LFG_QUEUE_ID; ++i)
-			data << pl->LfgDungeonId[i] << uint8(0) << pl->LfgType[i];
-
-		data << pl->Lfgcomment;
-
-		if(pl->GetGroup() && pl->GetGroup()->GetGroupType() == GROUP_TYPE_PARTY)
-		{
-			pl->GetGroup()->Lock();
-			sgrp = pl->GetGroup()->GetSubGroup(0);
-			data << uint32(sgrp->GetMemberCount() - 1);
-			for(it2 = sgrp->GetGroupMembersBegin(); it2 != sgrp->GetGroupMembersEnd(); ++it2)
-			{
-				if((*it2)->m_loggedInPlayer)
-					data << (*it2)->m_loggedInPlayer->GetNewGUID();
-				else
-				{
-					tguid = (*it2)->guid;
-					FastGUIDPack(data, tguid);
-				}
-			}
-
-			pl->GetGroup()->Unlock();
-		}
-		else
-			data << uint32(0);
-	}
-
-	m_lock.Release();
-
-	//*(uint32*)(data.contents()[8]) = count;
-	//*(uint32*)(data.contents()[12]) = count;
-	data.put(8, count);
-	data.put(12, count);
-
-    plr->GetSession()->SendPacket(&data);*/
 }
 
 void LfgMgr::SetPlayerInLfmList(Player* pl, uint32 LfgDungeonId)
