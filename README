@@ -12,11 +12,12 @@ Source code is written in the draft C/C++, it is open,
 it is possible to change it, enter their amendments 
 and improvements to recompile at its discretion.
 
-ArcTic implemented under the operating system Linux, Mac OS , 
-Microsoft è FreeBSD. ArcTic a project is full functional the 
-world of retinue of server Warcraft, including server for authentification,
-client updates, salient the World of maintenance, and battle-field. 
-Additional possibilities include instruments for a construction and development of playing content.
+ArcTic implemented under the operating system Linux,
+Mac OS, Microsoft and  FreeBSD. ArcTic a project is full
+functional the world of retinue of server Warcraft, including server 
+for authentification, client updates,  salient 
+the World of maintenance, and battle-field. Additional possibilities
+include instruments for a construction and development of playing content.
 
 For further information on the ArcTic project, please visit our project web
 site at <www.github.com/arcticdev>
