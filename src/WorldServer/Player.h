@@ -81,7 +81,7 @@ enum Races
     // RACE_TAUNKA = 19, 
     // RACE_NORTHREND_SKELETON = 20, 
     // RACE_ICE_TROLL = 21 
-}
+};
 
 enum PlayerStatus
 {

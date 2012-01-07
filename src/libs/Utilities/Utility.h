@@ -7,7 +7,7 @@
 #ifndef _UTIL_H
 #define _UTIL_H
 
-#include "Common.h"
+#include "../Common.h"
 
 //////////////////////////////////////////////////////////////////////////
 // String Functions

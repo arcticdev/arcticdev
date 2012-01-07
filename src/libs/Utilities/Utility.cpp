@@ -4,7 +4,7 @@
  * See COPYING for license details.
  */
 
-#include "Common.h"
+#include "../Common.h"
 
 using namespace std;
 

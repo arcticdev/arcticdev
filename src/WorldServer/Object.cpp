@@ -1150,7 +1150,6 @@ void Object::ModSignedInt32Value(uint32 index, int32 value )
 			m_objectUpdated = true;
 		}
 	}
-	if(m_objectTypeId == TYPEID_PLAYER)
 }
 
 void Object::ModFloatValue(const uint32 index, const float value )

@@ -16,7 +16,6 @@ Thumbs.db
 *.exe
 *.pdb
 *.exp
-*.lib
 *.log
 *.manifest
 *.pch
