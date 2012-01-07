@@ -17,7 +17,7 @@ libshared_a_SOURCES = \
     MemoryLeaks.h \
     Singleton.h \
     Threading.h \
-    Timer.h \
+    Utilities/Timer.h \
     UnixThreading.h \
     Utilities/Utility.h \
     Utilities/Utility.cpp \

@@ -5,7 +5,7 @@
  */
 
 #include "MersenneTwister.h"
-#include "Timer.h"
+#include "../libs/Utilities/Timer.h"
 
 #define NUMBER_OF_GENERATORS 5
 Mutex * m_locks[NUMBER_OF_GENERATORS];

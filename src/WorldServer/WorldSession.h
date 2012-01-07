@@ -129,9 +129,9 @@ enum AccountDataTypes
 	PER_CHARACTER_CHAT_CACHE		= 7,	// 0x80 
 	NUM_ACCOUNT_DATA_TYPES			= 8
 };
+
 #define GLOBAL_CACHE_MASK           0x15
 #define PER_CHARACTER_CACHE_MASK    0xEA
-
 
 typedef struct Cords {
 	float x,y,z;
@@ -172,7 +172,6 @@ public:
 
 #define NOTIFICATION_MESSAGE_NO_PERMISSION "You do not have permission to perform that function."
 #define NOTIFICATION_MESSAGE_FAILURE "The requested action could not be performed."
-// #define CHECK_PACKET_SIZE(x, y) if(y > 0 && x.size() < y) { _socket->Disconnect(); return; }
 
 void EncodeHex(const char* source, char* dest, uint32 size);
 void DecodeHex(const char* source, char* dest, uint32 size);

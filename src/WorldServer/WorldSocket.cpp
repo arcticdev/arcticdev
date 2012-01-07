@@ -230,7 +230,9 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 		*recvPacket >> account;
 		*recvPacket >> unk2;
 		*recvPacket >> mClientSeed;
+		// 3.2.2
 		*recvPacket >> unk3;
+		// 3.3.5
 		*recvPacket >> unk4;
 		*recvPacket >> unk5;
 		*recvPacket >> unk6;
@@ -243,7 +245,6 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 
 	// Send out a request for this account.
 	mRequestID = sLogonCommHandler.ClientConnected(account, this);
-	
 	if(mRequestID == 0xFFFFFFFF)
 	{
 		Disconnect();
@@ -253,8 +254,8 @@ void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 	// shitty hash !
 	m_fullAccountName = new string( account );
 
-	// Set the authentication packet 
-    pAuthenticationPacket = recvPacket;
+	// Set the authentication packet
+	pAuthenticationPacket = recvPacket;
 }
 
 void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid)
