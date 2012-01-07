@@ -42,12 +42,14 @@ ObjectMgr::~ObjectMgr()
 	for ( GuildMap::iterator i = mGuild.begin(); i != mGuild.end(); ++i ) {
 		delete i->second;
 	}
+	mGuild.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Vendors...");
 	for( VendorMap::iterator i = mVendors.begin( ); i != mVendors.end( ); ++ i ) 
 	{
 		delete i->second;
 	}
+	mVendors.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Trainers...");
 	for( TrainerMap::iterator i = mTrainers.begin( ); i != mTrainers.end( ); ++ i) {
@@ -56,6 +58,7 @@ ObjectMgr::~ObjectMgr()
 			delete [] t->UIMessage;
 		delete t;
 	}
+	mTrainers.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Level Information...");
 	for( LevelInfoMap::iterator i = mLevelInfo.begin(); i != mLevelInfo.end(); ++i)
@@ -68,6 +71,7 @@ ObjectMgr::~ObjectMgr()
 		l->clear();
 		delete l;
 	}
+	mLevelInfo.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Waypoint Cache...");
 	for(HM_NAMESPACE::hash_map<uint32, WayPointMap*>::iterator i = m_waypoints.begin(); i != m_waypoints.end(); ++i)
@@ -78,6 +82,7 @@ ObjectMgr::~ObjectMgr()
 
 		delete i->second;
 	}
+	m_waypoints.clear();
 
 	Log.Notice("ObjectMgr", "Deleting NPC Say Texts...");
 	for(uint32 i = 0 ; i < NUM_MONSTER_SAY_EVENTS ; ++i)
@@ -145,27 +150,32 @@ ObjectMgr::~ObjectMgr()
 			delete pGroup;
 		}
 	}
+	m_groups.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
 	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); itr++)
 	{
-		itr->second->m_Group=NULL;
+		itr->second->m_Group = NULL;
 		free(itr->second->name);
 		delete itr->second;
 	}
+	m_playersinfo.clear();
 
 	Log.Notice("ObjectMgr", "Deleting GM Tickets...");
 	for(GmTicketList::iterator itr = GM_TicketList.begin(); itr != GM_TicketList.end(); itr++)
 		delete (*itr);
+	GM_TicketList.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Arena Teams..."); 
 	for(HM_NAMESPACE::hash_map<uint32, ArenaTeam*>::iterator itr = m_arenaTeams.begin(); itr != m_arenaTeams.end(); itr++) 
 		delete itr->second;
+	m_achievementCriteriaMap.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
 	std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin();
 	for ( ; itr != ProfessionDiscoveryTable.end(); itr++ )
 		delete (*itr);	
+	ZoneToQuestMap.clear();
 
 	Log.Notice("ObjectMgr", "Deleting Achievement Cache...");
 	for(AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.begin(); itr != m_achievementCriteriaMap.end(); itr++)
@@ -642,7 +652,6 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 
 	return pCorpse;
 }
-
 
 //------------------------------------------------------
 // Live corpse retreival.
@@ -1479,6 +1488,7 @@ void ObjectMgr::LoadTrainers()
 		if(result2->GetFieldCount() != 10)
 		{
 			Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Trainers table format is invalid. Please update your database.");
+			delete result;
 			return;
 		}
 		else
@@ -1868,7 +1878,10 @@ void ObjectMgr::LoadCreatureWaypoints()
 		return;
 	QueryResult *result2 = WorldDatabase.Query("SELECT spawnid,COUNT(waypointid) FROM creature_waypoints GROUP BY spawnid ORDER BY spawnid,waypointid");
 	if(!result2)
+	{
+		delete result;
 		return;
+	}
 	uint32 lastspawnid = 0;
 
 	Field * fields;
@@ -1876,7 +1889,6 @@ void ObjectMgr::LoadCreatureWaypoints()
 	uint16 count = 0;
 	uint32 skipid = 0;
 	uint32 wpid = 0;
-
 
 	do
 	{
@@ -1941,7 +1953,6 @@ void ObjectMgr::LoadCreatureWaypoints()
 				m->resize(wp->count);
 
 			(*m)[wp->id-1]=wp;
-			//m->push_back(wp);
 			m_waypoints[spawnid]=m;		
 		}else
 		{
@@ -1954,7 +1965,6 @@ void ObjectMgr::LoadCreatureWaypoints()
 				continue;
 			}
 			(*(i->second))[wp->id-1]=wp;
-			//i->second->push_back(wp);
 		}
 	}while( result->NextRow() );
 
@@ -1970,10 +1980,6 @@ WayPointMap*ObjectMgr::GetWayPointMap(uint32 spawnid)
 	if(i!=m_waypoints.end())
 	{
 		WayPointMap * m=i->second;
-		// we don't wanna erase from the map, because some are used more
-		// than once (for instances)
-
-		//m_waypoints.erase(i);
 		return m;
 	}
 	else return NULL;
@@ -2016,7 +2022,6 @@ void ObjectMgr::RemovePlayer(Player* p)
 	_playerslock.AcquireWriteLock();
 	_players.erase(p->GetLowGUID());
 	_playerslock.ReleaseWriteLock();
-
 }
 
 Corpse* ObjectMgr::CreateCorpse()
