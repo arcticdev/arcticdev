@@ -3,7 +3,6 @@
  * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
 #include "StdAfx.h"
 
 #define SPELL_CHANNEL_UPDATE_INTERVAL 1000
@@ -1205,9 +1204,7 @@ void Spell::AddStartCooldown()
 
 void Spell::cast(bool check)
 {
-	if( duelSpell && (
-		( p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED ) ||
-		( u_caster != NULL && u_caster->IsPet() && TO_PET( u_caster )->GetPetOwner() && TO_PET( u_caster )->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED ) ) )
+	if(DuelSpellNoMoreValid())
 	{
 		// Can't cast that!
 		SendInterrupted( SPELL_FAILED_TARGET_FRIENDLY );
@@ -1259,7 +1256,6 @@ void Spell::cast(bool check)
 		{
 			if(!TakePower() && !m_triggeredSpell) //not enough mana
 			{
-				//OUT_DEBUG("Spell::Not Enough Mana");
 				SendInterrupted(SPELL_FAILED_NO_POWER);
 				SendCastResult(SPELL_FAILED_NO_POWER);
 				finish();
@@ -1279,7 +1275,9 @@ void Spell::cast(bool check)
 				return;
 			}
 
-			if(m_magnetTarget){ // Spell was redirected
+			if(m_magnetTarget)
+			{ 
+				// Spell was redirected
 				// Grounding Totem gets destroyed after redirecting 1 spell
 				if ( m_magnetTarget && m_magnetTarget->IsCreature()){
 					Creature* MagnetCreature = TO_CREATURE(m_magnetTarget);
@@ -1298,7 +1296,6 @@ void Spell::cast(bool check)
 
 			m_isCasting = true;
 
-			//sLog.outString( "CanCastResult: %u" , cancastresult );
 			if(!m_triggeredSpell)
 				AddCooldown();
 
@@ -1338,8 +1335,8 @@ void Spell::cast(bool check)
 
 			if (m_spellInfo->Flags4 & 0x8000 && m_caster->IsPlayer() && m_caster->IsInWorld())
 			{
-                /// Part of this function contains a hack fix
-                /// hack fix for shoot spells, should be some other resource for it
+                // Part of this function contains a hack fix
+                // hack fix for shoot spells, should be some other resource for it
                 //p_caster->SendSpellCoolDown(m_spellInfo->Id, m_spellInfo->RecoveryTime ? m_spellInfo->RecoveryTime : 2300);
 				WorldPacket data(SMSG_SPELL_COOLDOWN, 14);
 				data << m_spellInfo->Id;
@@ -1463,7 +1460,7 @@ void Spell::cast(bool check)
 			_SetTargets(itr->Guid);
 
 			// call effect handlers
-			for( x = 0; x < 3; ++x )
+			for( x = 0; x < 3; x++ )
 			{
 				switch (m_spellInfo->Effect[x])
 				{
@@ -1508,8 +1505,8 @@ void Spell::cast(bool check)
 			}
 		}
 
-		//Handle remaining effects for which we did not find targets.
-		for( x = 0; x < 3; ++x )
+		// Handle remaining effects for which we did not find targets.
+		for( x = 0; x < 3; x++ )
 		{
 			if(!effects_done[x])
 			{
@@ -1683,7 +1680,7 @@ void Spell::cast(bool check)
 				uint32 chance = p_caster->GetDummyAura(SPELL_HASH_DEADLY_BREW)->RankNumber == 1 ? 50 : 100;
 				if( Rand( chance ) )
 				{
-					//apply Crippling poison
+					// apply Crippling poison
 					SpellEntry * tmpsp = NULL;
 					tmpsp = dbcSpell.LookupEntry(25809);
 					if(tmpsp != NULL)
@@ -1716,12 +1713,12 @@ void Spell::AddTime(uint32 type)
 		}
 		if( m_spellInfo->SpellGroupType && u_caster)
 		{
-			float ch=0;
+			float ch = 0;
 			SM_FFValue(u_caster->SM[SMT_NONINTERRUPT][1],&ch,m_spellInfo->SpellGroupType);
 #ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-			float spell_pct_modifers=0;
+			float spell_pct_modifers = 0;
 			SM_FFValue(u_caster->SM[SMT_NONINTERRUPT][1],&spell_pct_modifers,m_spellInfo->SpellGroupType);
-			if(spell_pct_modifers!=0)
+			if(spell_pct_modifers != 0)
 				printf("!!!!!spell interrupt chance mod pct %f , uninterrupt chance %f, spell group %u\n",spell_pct_modifers,ch,m_spellInfo->SpellGroupType);
 #endif
 			if(Rand(ch))
@@ -1760,8 +1757,6 @@ void Spell::AddTime(uint32 type)
 			//in case cast is delayed, make sure we do not exit combat 
 			else
 			{
-//				sEventMgr.ModifyEventTimeLeft(p_caster,EVENT_ATTACK_TIMEOUT,PLAYER_ATTACK_TIMEOUT_INTERVAL,true);
-				// also add a new delay to offhand and main hand attacks to avoid cutting the cast short
 				p_caster->delayAttackTimer(delay);
 			}
 		}
@@ -1792,7 +1787,6 @@ void Spell::update(uint32 difftime)
 	// skip cast if we're more than 2/3 of the way through
 	if(
 		(((float)m_castTime / 1.5f) > (float)m_timer ) && 
-//		float(m_castTime)/float(m_timer) >= 2.0f		&&
 		(
 		m_castPositionX != m_caster->GetPositionX() ||
 		m_castPositionY != m_caster->GetPositionY() ||
@@ -1820,7 +1814,6 @@ void Spell::update(uint32 difftime)
 	{
 	case SPELL_STATE_PREPARING:
 		{
-			//printf("spell::update m_timer %u, difftime %d, newtime %d\n", m_timer, difftime, m_timer-difftime);
 			if((int32)difftime >= m_timer)
 			{
 				if( u_caster != NULL && u_caster->GetCurrentSpell() == this )
@@ -2003,10 +1996,8 @@ void Spell::SendCastResult(uint8 result)
 		Extra = m_spellInfo->Totem[1] ? m_spellInfo->Totem[1] : m_spellInfo->Totem[0];
 		break;
 
-	//case SPELL_FAILED_TOTEM_CATEGORY: seems to be fully client sided.
 	}
 
-	//plr->SendCastResult(m_spellInfo->Id, result, extra_cast_number, Extra);
 	if( Extra )
 	{
 		packetSMSG_CASTRESULT_EXTRA pe;
@@ -3233,17 +3224,6 @@ uint8 Spell::CanCast(bool tolerate)
 					break;
 				}
 
-				//case FORM_CAT: 
-				//case FORM_TRAVEL:
-				//case FORM_AQUA:
-				//case FORM_BEAR:
-				//case FORM_AMBIENT:
-				//case FORM_GHOUL:
-				//case FORM_DIREBEAR:
-				//case FORM_CREATUREBEAR:
-				//case FORM_GHOSTWOLF:
-				//case FORM_SPIRITOFREDEMPTION:
-
 				default:
 				{
 					// check if item is allowed (only special & equipped items allowed in other forms)
@@ -4365,9 +4345,6 @@ exit:*/
 			ScriptOverrideList::iterator itrSO;
 			for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
 			{
-				//DK:FIXME->yeni bir map oluï¿½tur
-                // Capt: WHAT THE FUCK DOES THIS MEAN....
-				// Supa: WHAT THE FUCK DOES THIS MEAN?
 				value += RandomUInt((*itrSO)->damage);
 			}
 		}
@@ -4609,7 +4586,7 @@ void Spell::Heal(int32 amount)
 	if( u_caster != NULL )
 	{		
 		// All calculations are done in getspellbonusdamage
-		amount = u_caster->GetSpellBonusDamage(unitTarget, m_spellInfo, amount, false, true); // 3.0.2 Spellpower change: In order to keep the effective amount healed for a given spell the same, weâ€™d expect the original coefficients to be multiplied by 1/0.532 or 1.88.
+		amount = u_caster->GetSpellBonusDamage(unitTarget, m_spellInfo, amount, false, true); // 3.0.2 Spellpower change: In order to keep the effective amount healed for a given spell the same, we’d expect the original coefficients to be multiplied by 1/0.532 or 1.88.
 
 		// Healing Way fix
  		if(m_spellInfo->NameHash == SPELL_HASH_HEALING_WAVE)
@@ -5158,36 +5135,6 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 
 	return ret;
 }
-
-/*void Spell::SendCastSuccess(Object* target)
-{
-	Player* plr = p_caster;
-	if(!plr && u_caster)
-		plr = u_caster->m_redirectSpellPackets;
-	if(!plr||!plr->IsPlayer())
-		return;
-
-	WorldPacket data(SMSG_CLEAR_EXTRA_AURA_INFO, 13);
-	data << ((target != 0) ? target->GetNewGUID() : uint8(0));
-	data << m_spellInfo->Id;
-	
-	plr->GetSession()->SendPacket(&data);
-}*/
-
-/*void Spell::SendCastSuccess(const uint64& guid)
-{
-	Player* plr = p_caster;
-	if(!plr && u_caster)
-		plr = u_caster->m_redirectSpellPackets;
-	if(!plr || !plr->IsPlayer())
-		return;
-    
-	// fuck bytebuffers
-	unsigned char buffer[13];
-	uint32 c = FastGUIDPack(guid, buffer, 0);
-	*(uint32*)&buffer[c] = m_spellInfo->Id;                 c += 4;
-	plr->GetSession()->OutPacket(SMSG_CLEAR_EXTRA_AURA_INFO, c, buffer);
-}*/
 
 void Spell::_AddTarget(const Unit* target, const uint32 effectid)
 {

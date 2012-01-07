@@ -1157,10 +1157,6 @@ void WorldSession::HandleSetActionButtonOpcode(WorldPacket& recv_data)
 			GetPlayer()->setAction(button,action,type,misc);
 		} 
 	}
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Actions();
-#endif
 }
 
 void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket &recvPacket)
@@ -1168,10 +1164,6 @@ void WorldSession::HandleSetWatchedFactionIndexOpcode(WorldPacket &recvPacket)
 	uint32 factionid;
 	recvPacket >> factionid;
 	GetPlayer()->SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, factionid);
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Misc();
-#endif
 }
 
 void WorldSession::HandleTogglePVPOpcode(WorldPacket& recv_data)
@@ -1231,10 +1223,6 @@ void WorldSession::HandleAmmoSetOpcode(WorldPacket & recv_data)
 	}
 	_player->SetUInt32Value(PLAYER_AMMO_ID, ammoId);
 	_player->CalcDamage();
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_Misc();
-#endif
 }
 
 #define OPEN_CHEST 11437
@@ -1718,64 +1706,6 @@ void WorldSession::HandleAcknowledgementOpcodes( WorldPacket & recv_data )
 		}
 		break;
 	}
-
-   /* uint16 opcode = recv_data.GetOpcode();
-	std::stringstream ss;
-	ss << "Received ";
-	switch( opcode )
-	{
-	case CMSG_MOVE_FEATHER_FALL_ACK:			ss << "Move_Feather_Fall"; break;
-	case CMSG_MOVE_WATER_WALK_ACK:			  ss << "Move_Water_Walk"; break;
-	case CMSG_MOVE_KNOCK_BACK_ACK:			  ss << "Move_Knock_Back"; break;
-	case CMSG_MOVE_HOVER_ACK:				   ss << "Move_Hover"; break;
-	case CMSG_FORCE_WALK_SPEED_CHANGE_ACK:	  ss << "Force_Walk_Speed_Change"; break;
-	case CMSG_FORCE_SWIM_SPEED_CHANGE_ACK:	  ss << "Force_Swim_Speed_Change"; break;
-	case CMSG_FORCE_SWIM_BACK_SPEED_CHANGE_ACK: ss << "Force_Swim_Back_Speed_Change"; break;
-	case CMSG_FORCE_TURN_RATE_CHANGE_ACK:	   ss << "Force_Turn_Rate_Change"; break;
-	case CMSG_FORCE_RUN_SPEED_CHANGE_ACK:	   ss << "Force_Run_Speed_Change"; break;
-	case CMSG_FORCE_RUN_BACK_SPEED_CHANGE_ACK:  ss << "Force_Run_Back_Speed_Change"; break;
-	case CMSG_FORCE_MOVE_ROOT_ACK:			  ss << "Force_Move_Root"; break;
-	case CMSG_FORCE_MOVE_UNROOT_ACK:			ss << "Force_Move_Unroot"; break;
-	default:									ss << "Unknown"; break;
-	}
-	ss << " Acknowledgement. PktSize: " << recv_data.size();
-	OUT_DEBUG( ss.str().c_str() );*/
-
-	/*uint16 opcode = recv_data.GetOpcode();
-	if (opcode == CMSG_FORCE_RUN_SPEED_CHANGE_ACK)
-	{
- 
-		uint64 GUID;
-		uint32 Flags, unk0, unk1, d_time;
-		float X, Y, Z, O, speed;
-		
-		recv_data >> GUID;
-		recv_data >> unk0 >> Flags;
-		if (Flags & (0x2000 | 0x6000))			 //0x2000 == jumping  0x6000 == Falling
-		{
-			uint32 unk2, unk3, unk4, unk5;
-			float OldSpeed;
-
-			recv_data >> d_time;
-			recv_data >> X >> Y >> Z >> O;
-			recv_data >> unk2 >> unk3;						  //no idea, maybe unk2 = flags2
-			recv_data >> unk4 >> unk5;						  //no idea
-			recv_data >> OldSpeed >> speed;
-		}
-		else													//single check
-		{
-			recv_data >> d_time;
-			recv_data >> X >> Y >> Z >> O;
-			recv_data >> unk1 >> speed;
-		}
-		
-		// if its not good kick player???
-		if (_player->GetPlayerSpeed() != speed)
-		{
-			sLog.outError("SpeedChange player:%s is NOT correct, its set to: %f he seems to be cheating",_player->GetName(), speed);
-		}
-	}*/
-
 }
 
 void WorldSession::HandleSelfResurrectOpcode(WorldPacket& recv_data)
@@ -1823,7 +1753,6 @@ void WorldSession::HandleRandomRollOpcode(WorldPacket &recv_data)
 void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 {
 	CHECK_INWORLD_RETURN;
-//	uint8 slot = 0;
 	uint32 itemid = 0;
 	uint32 amt = 1;
 	uint8 error = 0;
@@ -1908,10 +1837,6 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		return;
 	}
 
-	/*if(pCreature)
-		CALL_SCRIPT_EVENT(pCreature, OnLootTaken)(player, it);*/
-	
-	
 	slotresult = player->GetItemInterface()->FindFreeInventorySlot(it);
 	if(!slotresult.Result)
 	{
@@ -1943,12 +1868,12 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 		item->Destructor();
 	}
 
-	pLoot->items.at(slotid).iItemsCount=0;
+	pLoot->items.at(slotid).iItemsCount = 0;
 
 	// this gets sent to all looters
 	if (!pLoot->items.at(slotid).ffa_loot)
 	{
-		pLoot->items.at(slotid).iItemsCount=0;
+		pLoot->items.at(slotid).iItemsCount = 0;
 
 		// this gets sent to all looters
 		WorldPacket data(1);
@@ -1965,22 +1890,6 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	{
 		pLoot->items.at(slotid).has_looted.insert(player->GetLowGUID());
 	}
-
-	/*WorldPacket idata(45);
-    if(it->Class == ITEM_CLASS_QUEST)
-    {
-        uint32 pcount = player->GetItemInterface()->GetItemCount(it->ItemId, true);
-		BuildItemPushResult(&idata, GetPlayer()->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(slotid).iRandomProperty ? pLoot->items.at(slotid).iRandomProperty->ID : 0,0xFF,0,0xFFFFFFFF,pcount);
-    }
-    else
-    {
-		BuildItemPushResult(&idata, player->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(slotid).iRandomProperty ? pLoot->items.at(slotid).iRandomProperty->ID : 0);
-    }
-
-	if(_player->InGroup())
-		_player->GetGroup()->SendPacketToAll(&idata);
-	else
-		SendPacket(&idata);*/
 }
 
 void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
@@ -2105,7 +2014,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 				return;
 			}
 		}
-		for(int i=0;i<5;i++)
+		for(int i = 0; i < 5; i++)
 			if(removeLockItems[i])
 				_player->GetItemInterface()->RemoveItemAmt(removeLockItems[i],1);
 	}
@@ -2159,12 +2068,6 @@ void DecodeHex(const char* source, char* dest, uint32 size)
 void WorldSession::HandleToggleCloakOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN;
-	//////////////////////////
-	//	PLAYER_FLAGS									   = 3104 / 0x00C20 / 0000000000000000000110000100000
-	//																							 ^ 
-	// This bit, on = toggled OFF, off = toggled ON.. :S
-
-	//uint32 SetBit = 0 | (1 << 11);
 
 	if(_player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_NOCLOAK))
 		_player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_NOCLOAK);
@@ -2175,12 +2078,6 @@ void WorldSession::HandleToggleCloakOpcode(WorldPacket &recv_data)
 void WorldSession::HandleToggleHelmOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN;
-	//////////////////////////
-	//	PLAYER_FLAGS									   = 3104 / 0x00C20 / 0000000000000000000110000100000
-	//																							  ^ 
-	// This bit, on = toggled OFF, off = toggled ON.. :S
-
-	//uint32 SetBit = 0 | (1 << 10);
 
 	if(_player->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_NOHELM))
 		_player->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_NOHELM);
@@ -2223,10 +2120,6 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
         _player->iInstanceType = data;
         sInstanceMgr.ResetSavedInstances(_player);
     }
-
-#ifdef OPTIMIZED_PLAYER_SAVING
-	_player->save_InstanceType();
-#endif
 }
 
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)

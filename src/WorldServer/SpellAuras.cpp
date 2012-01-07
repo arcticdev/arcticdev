@@ -5409,7 +5409,7 @@ void Aura::SpellAuraTransform(bool apply)
 						else 
 							m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, 10134);
 					}break;
-					case RACE_UNDEAD:
+					case RACE_UNDEAD_PLAYER:
 					{
 						if( m_target->getGender() == 0 ) 
 							m_target->SetUInt32Value(UNIT_FIELD_DISPLAYID, 10146);

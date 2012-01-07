@@ -366,6 +366,7 @@
     <ClCompile Include="..\..\src\WorldServer\SpellHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\SpellTarget.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Stats.cpp" />
+    <ClInclude Include="..\..\src\libs\Arctic.cpp" />	
     <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -465,6 +466,7 @@
     <ClInclude Include="..\..\src\WorldServer\SpellNameHashes.h" />
     <ClInclude Include="..\..\src\WorldServer\Stats.h" />
     <ClInclude Include="..\..\src\WorldServer\StdAfx.h" />
+    <ClInclude Include="..\..\src\libs\Arctic.h" />
     <ClInclude Include="..\..\src\WorldServer\StrandOfTheAncients.h" />
     <ClInclude Include="..\..\src\WorldServer\TaxiMgr.h" />
     <ClInclude Include="..\..\src\WorldServer\TerrainMgr.h" />

@@ -280,7 +280,7 @@
     <ClCompile Include="..\..\src\libs\MemoryLeaks.cpp" />
     <ClCompile Include="..\..\src\libs\MersenneTwister.cpp" />
     <ClCompile Include="..\..\src\libs\StackWalker.cpp" />
-    <ClCompile Include="..\..\src\libs\Util.cpp" />
+    <ClCompile Include="..\..\src\libs\Utilities/Utility.cpp" />
     <ClCompile Include="..\..\src\libs\Log.cpp" />
     <ClCompile Include="..\..\src\libs\Console\CConsole.cpp" />
     <ClCompile Include="..\..\src\libs\Console\ConsoleListener.cpp" />
@@ -376,7 +376,7 @@
     <ClInclude Include="..\..\src\libs\StackBuffer.h" />
     <ClInclude Include="..\..\src\libs\StackWalker.h" />
     <ClInclude Include="..\..\src\libs\Timer.h" />
-    <ClInclude Include="..\..\src\libs\Util.h" />
+    <ClInclude Include="..\..\src\libs\Utilities\Utility.h" />
     <ClInclude Include="..\..\src\libs\WoWGuid.h" />
     <ClInclude Include="..\..\src\libs\Log.h" />
     <ClInclude Include="..\..\src\libs\NGLog.h" />

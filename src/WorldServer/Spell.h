@@ -3,7 +3,6 @@
  * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
-
 #ifndef __SPELL_H
 #define __SPELL_H
 
@@ -2060,6 +2059,26 @@ public:
 	uint32 m_pushbackCount;
 
     bool duelSpell;
+
+    ////////////////////////////////////////////////////////////////////////////////
+	// bool DuelSpellNoMoreValid()
+	//  Tells if the Spell was being casted while dueling but now the duel is over
+	//
+	// Return Value
+	//  Returns true if Spell is now invalid because the duel is over.
+	//  Returns false if Spell is valid.
+	//
+	///////////////////////////////////////////////////////////////////////////////
+
+	bool DuelSpellNoMoreValid()
+	{
+		if(duelSpell && (
+				(p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||  
+				(u_caster != NULL && u_caster->IsPet() && TO_PET(u_caster)->GetPetOwner() && TO_PET(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))  
+			return true;
+		else
+			return false;
+	}
 
 	ARCTIC_INLINE void safe_cancel()
 	{
