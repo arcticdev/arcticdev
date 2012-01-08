@@ -27,6 +27,7 @@ CREATE TABLE `accounts` (
   `gm` varchar(10) NOT NULL DEFAULT '0',
   `flags` int(11) NOT NULL DEFAULT '24',
   `banned` tinyint(1) NOT NULL DEFAULT '0',
+  `banreason` varchar(512) DEFAULT '0',
   `lastlogin` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastip` varchar(15) NOT NULL DEFAULT '',
   `forceLanguage` varchar(5) NOT NULL DEFAULT 'enUS',
@@ -34,7 +35,7 @@ CREATE TABLE `accounts` (
   `muted` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`acct`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8630 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of accounts

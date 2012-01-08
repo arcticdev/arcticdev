@@ -874,10 +874,11 @@ public:
 	void AddToWorld();
 	void AddToWorld(MapMgr* pMapMgr);
 	void RemoveFromWorld();
+
 	bool Create ( WorldPacket &data );
-	
+
 	void Update( uint32 time );
-	
+
     void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
 	std::string m_afk_reason;
 	void SetAFKReason(std::string reason) { m_afk_reason = reason; };

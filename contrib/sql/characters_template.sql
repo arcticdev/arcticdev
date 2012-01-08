@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50509
 File Encoding         : 65001
 
-Date: 2012-01-08 02:44:06
+Date: 2012-01-08 20:17:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -43,10 +43,10 @@ CREATE TABLE `account_data` (
 -- ----------------------------
 DROP TABLE IF EXISTS `account_forced_permissions`;
 CREATE TABLE `account_forced_permissions` (
-  `login` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `permissions` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `login` varchar(50) NOT NULL,
+  `permissions` varchar(100) NOT NULL,
   PRIMARY KEY (`login`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of account_forced_permissions
@@ -59,12 +59,10 @@ DROP TABLE IF EXISTS `achievements`;
 CREATE TABLE `achievements` (
   `player` int(11) NOT NULL,
   `achievementid` int(11) NOT NULL DEFAULT '0',
-  `progress` text COLLATE utf8_unicode_ci NOT NULL,
+  `progress` varchar(256) DEFAULT NULL,
   `completed` int(11) NOT NULL DEFAULT '0',
-  `groupid` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`player`,`achievementid`),
-  UNIQUE KEY `Unique` (`player`,`achievementid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  PRIMARY KEY (`player`,`achievementid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of achievements
@@ -121,7 +119,7 @@ CREATE TABLE `auctions` (
   `deposit` int(32) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`auctionId`),
   KEY `auctionHouse` (`auctionHouse`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of auctions
@@ -147,22 +145,19 @@ DROP TABLE IF EXISTS `characters`;
 CREATE TABLE `characters` (
   `guid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `acct` int(10) unsigned NOT NULL,
-  `name` varchar(120) NOT NULL DEFAULT '',
+  `name` varchar(21) NOT NULL DEFAULT '',
   `race` tinyint(3) unsigned NOT NULL,
   `class` tinyint(3) unsigned NOT NULL,
   `gender` tinyint(3) unsigned NOT NULL,
-  `customizable` int(3) NOT NULL DEFAULT '0',
   `custom_faction` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(3) unsigned NOT NULL,
-  `xp_off` int(3) NOT NULL DEFAULT '0',
   `xp` int(10) unsigned NOT NULL,
   `exploration_data` longtext NOT NULL,
   `skills` longtext NOT NULL,
   `watched_faction_index` bigint(30) NOT NULL DEFAULT '0',
   `selected_pvp_title` int(10) unsigned NOT NULL DEFAULT '0',
   `available_pvp_titles1` bigint(30) unsigned NOT NULL DEFAULT '0',
-  `available_pvp_titles2` bigint(30) unsigned NOT NULL DEFAULT '0',
-  `available_pvp_titles3` bigint(30) unsigned NOT NULL DEFAULT '0',
+  `available_pvp_titles2` bigint(30) unsigned NOT NULL,
   `gold` int(10) unsigned NOT NULL DEFAULT '0',
   `ammo_id` int(10) unsigned NOT NULL DEFAULT '0',
   `available_prof_points` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -214,6 +209,7 @@ CREATE TABLE `characters` (
   `transporter_xdiff` float NOT NULL DEFAULT '0',
   `transporter_ydiff` float NOT NULL DEFAULT '0',
   `transporter_zdiff` float NOT NULL DEFAULT '0',
+  `deleted_spells` longtext NOT NULL,
   `reputation` longtext NOT NULL,
   `actions` longtext NOT NULL,
   `auras` longtext NOT NULL,
@@ -227,13 +223,12 @@ CREATE TABLE `characters` (
   `honorYesterday` int(10) unsigned NOT NULL DEFAULT '0',
   `honorPoints` int(10) unsigned NOT NULL DEFAULT '0',
   `difficulty` int(10) unsigned NOT NULL DEFAULT '0',
-  `raiddifficulty` int(10) unsigned NOT NULL DEFAULT '0',
   `active_spec` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `specs_count` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `need_talent_reset` int(3) NOT NULL DEFAULT '0',
-  `need_position_reset` int(3) NOT NULL DEFAULT '0',
+  `recustomize` int(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2651 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of characters
@@ -244,9 +239,9 @@ CREATE TABLE `characters` (
 -- ----------------------------
 DROP TABLE IF EXISTS `characters_insert_queue`;
 CREATE TABLE `characters_insert_queue` (
-  `guid` int(10) unsigned NOT NULL,
+  `guid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `acct` int(10) unsigned NOT NULL,
-  `name` varchar(21) NOT NULL,
+  `name` varchar(21) NOT NULL DEFAULT '',
   `race` tinyint(3) unsigned NOT NULL,
   `class` tinyint(3) unsigned NOT NULL,
   `gender` tinyint(3) unsigned NOT NULL,
@@ -255,13 +250,14 @@ CREATE TABLE `characters_insert_queue` (
   `xp` int(10) unsigned NOT NULL,
   `exploration_data` longtext NOT NULL,
   `skills` longtext NOT NULL,
-  `watched_faction_index` int(10) unsigned NOT NULL DEFAULT '0',
+  `watched_faction_index` bigint(30) NOT NULL DEFAULT '0',
   `selected_pvp_title` int(10) unsigned NOT NULL DEFAULT '0',
-  `available_pvp_titles` int(10) unsigned NOT NULL DEFAULT '0',
+  `available_pvp_titles1` bigint(30) unsigned NOT NULL DEFAULT '0',
+  `available_pvp_titles2` bigint(30) unsigned NOT NULL,
   `gold` int(10) unsigned NOT NULL DEFAULT '0',
   `ammo_id` int(10) unsigned NOT NULL DEFAULT '0',
   `available_prof_points` tinyint(3) unsigned NOT NULL DEFAULT '0',
-  `available_talent_points` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `available_talent_points` int(3) unsigned NOT NULL DEFAULT '0',
   `current_hp` int(10) unsigned NOT NULL DEFAULT '0',
   `current_power` int(10) unsigned NOT NULL DEFAULT '0',
   `pvprank` int(10) unsigned NOT NULL DEFAULT '0',
@@ -315,7 +311,8 @@ CREATE TABLE `characters_insert_queue` (
   `actions` longtext NOT NULL,
   `auras` longtext NOT NULL,
   `finished_quests` longtext NOT NULL,
-  `honorPointsToAdd` int(11) NOT NULL,
+  `finished_daily_quests` longtext NOT NULL,
+  `honorRolloverTime` int(30) NOT NULL DEFAULT '0',
   `killsToday` int(10) unsigned NOT NULL DEFAULT '0',
   `killsYesterday` int(10) unsigned NOT NULL DEFAULT '0',
   `killsLifeTime` int(10) unsigned NOT NULL DEFAULT '0',
@@ -323,10 +320,10 @@ CREATE TABLE `characters_insert_queue` (
   `honorYesterday` int(10) unsigned NOT NULL DEFAULT '0',
   `honorPoints` int(10) unsigned NOT NULL DEFAULT '0',
   `difficulty` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`guid`),
-  UNIQUE KEY `name` (`name`),
-  KEY `acct` (`acct`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `Glyphs` longtext NOT NULL,
+  `need_talent_reset` int(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of characters_insert_queue
@@ -409,7 +406,7 @@ CREATE TABLE `clientaddons` (
   `showinlist` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `index` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=153 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of clientaddons
@@ -453,69 +450,17 @@ CREATE TABLE `corpses` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `equipmentsets`
+-- Table structure for `events_settings`
 -- ----------------------------
-DROP TABLE IF EXISTS `equipmentsets`;
-CREATE TABLE `equipmentsets` (
-  `guid` int(11) NOT NULL DEFAULT '0',
-  `setguid` bigint(20) NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `iconname` varchar(100) NOT NULL,
-  `item0` int(11) NOT NULL DEFAULT '0',
-  `item1` int(11) NOT NULL DEFAULT '0',
-  `item2` int(11) NOT NULL DEFAULT '0',
-  `item3` int(11) NOT NULL DEFAULT '0',
-  `item4` int(11) NOT NULL DEFAULT '0',
-  `item5` int(11) NOT NULL DEFAULT '0',
-  `item6` int(11) NOT NULL DEFAULT '0',
-  `item7` int(11) NOT NULL DEFAULT '0',
-  `item8` int(11) NOT NULL DEFAULT '0',
-  `item9` int(11) NOT NULL DEFAULT '0',
-  `item10` int(11) NOT NULL DEFAULT '0',
-  `item11` int(11) NOT NULL DEFAULT '0',
-  `item12` int(11) NOT NULL DEFAULT '0',
-  `item13` int(11) NOT NULL DEFAULT '0',
-  `item14` int(11) NOT NULL DEFAULT '0',
-  `item15` int(11) NOT NULL DEFAULT '0',
-  `item16` int(11) NOT NULL DEFAULT '0',
-  `item17` int(11) NOT NULL DEFAULT '0',
-  `item18` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`setguid`),
-  UNIQUE KEY `idx_set` (`guid`,`setguid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `events_settings`;
+CREATE TABLE `events_settings` (
+  `eventid` tinyint(2) unsigned NOT NULL,
+  `lastactivated` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`eventid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of equipmentsets
--- ----------------------------
-
--- ----------------------------
--- Table structure for `gm_surveys`
--- ----------------------------
-DROP TABLE IF EXISTS `gm_surveys`;
-CREATE TABLE `gm_surveys` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `playerguid` int(11) unsigned NOT NULL,
-  `question1` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer1` int(11) unsigned NOT NULL DEFAULT '0',
-  `question2` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer2` int(11) unsigned NOT NULL DEFAULT '0',
-  `question3` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer3` int(11) unsigned NOT NULL DEFAULT '0',
-  `question4` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer4` int(11) unsigned NOT NULL DEFAULT '0',
-  `question5` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer5` int(11) unsigned NOT NULL DEFAULT '0',
-  `question6` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer6` int(11) unsigned NOT NULL DEFAULT '0',
-  `question7` int(11) unsigned NOT NULL DEFAULT '0',
-  `answer7` int(11) unsigned NOT NULL DEFAULT '0',
-  `comment` text COLLATE utf8_unicode_ci NOT NULL,
-  `timestamp` int(11) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
--- Records of gm_surveys
+-- Records of events_settings
 -- ----------------------------
 
 -- ----------------------------
@@ -523,21 +468,17 @@ CREATE TABLE `gm_surveys` (
 -- ----------------------------
 DROP TABLE IF EXISTS `gm_tickets`;
 CREATE TABLE `gm_tickets` (
-  `guid` int(11) unsigned NOT NULL DEFAULT '0',
-  `playerGuid` int(11) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  `level` int(6) unsigned NOT NULL DEFAULT '0',
-  `map` int(11) unsigned NOT NULL DEFAULT '0',
+  `guid` int(6) NOT NULL DEFAULT '0',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `level` int(6) NOT NULL DEFAULT '0',
+  `type` int(2) NOT NULL DEFAULT '0',
   `posX` float NOT NULL DEFAULT '0',
   `posY` float NOT NULL DEFAULT '0',
   `posZ` float NOT NULL DEFAULT '0',
-  `message` text COLLATE utf8_unicode_ci NOT NULL,
-  `timestamp` int(11) unsigned NOT NULL,
-  `deleted` int(1) unsigned NOT NULL DEFAULT '0',
-  `assignedto` int(11) unsigned NOT NULL DEFAULT '0',
-  `comment` text COLLATE utf8_unicode_ci NOT NULL,
+  `message` text NOT NULL,
+  `timestamp` text,
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of gm_tickets
@@ -558,46 +499,46 @@ CREATE TABLE `groups` (
   `assistant_leader` int(30) NOT NULL DEFAULT '0',
   `main_tank` int(30) NOT NULL DEFAULT '0',
   `main_assist` int(30) NOT NULL DEFAULT '0',
-  `group1member1` int(30) NOT NULL,
-  `group1member2` int(30) NOT NULL,
-  `group1member3` int(30) NOT NULL,
-  `group1member4` int(30) NOT NULL,
-  `group1member5` int(30) NOT NULL,
-  `group2member1` int(30) NOT NULL,
-  `group2member2` int(30) NOT NULL,
-  `group2member3` int(30) NOT NULL,
-  `group2member4` int(30) NOT NULL,
-  `group2member5` int(30) NOT NULL,
-  `group3member1` int(30) NOT NULL,
-  `group3member2` int(30) NOT NULL,
-  `group3member3` int(30) NOT NULL,
-  `group3member4` int(30) NOT NULL,
-  `group3member5` int(30) NOT NULL,
-  `group4member1` int(30) NOT NULL,
-  `group4member2` int(30) NOT NULL,
-  `group4member3` int(30) NOT NULL,
-  `group4member4` int(30) NOT NULL,
-  `group4member5` int(30) NOT NULL,
-  `group5member1` int(30) NOT NULL,
-  `group5member2` int(30) NOT NULL,
-  `group5member3` int(30) NOT NULL,
-  `group5member4` int(30) NOT NULL,
-  `group5member5` int(30) NOT NULL,
-  `group6member1` int(30) NOT NULL,
-  `group6member2` int(30) NOT NULL,
-  `group6member3` int(30) NOT NULL,
-  `group6member4` int(30) NOT NULL,
-  `group6member5` int(30) NOT NULL,
-  `group7member1` int(30) NOT NULL,
-  `group7member2` int(30) NOT NULL,
-  `group7member3` int(30) NOT NULL,
-  `group7member4` int(30) NOT NULL,
-  `group7member5` int(30) NOT NULL,
-  `group8member1` int(30) NOT NULL,
-  `group8member2` int(30) NOT NULL,
-  `group8member3` int(30) NOT NULL,
-  `group8member4` int(30) NOT NULL,
-  `group8member5` int(30) NOT NULL,
+  `group1member1` int(50) NOT NULL,
+  `group1member2` int(50) NOT NULL,
+  `group1member3` int(50) NOT NULL,
+  `group1member4` int(50) NOT NULL,
+  `group1member5` int(50) NOT NULL,
+  `group2member1` int(50) NOT NULL,
+  `group2member2` int(50) NOT NULL,
+  `group2member3` int(50) NOT NULL,
+  `group2member4` int(50) NOT NULL,
+  `group2member5` int(50) NOT NULL,
+  `group3member1` int(50) NOT NULL,
+  `group3member2` int(50) NOT NULL,
+  `group3member3` int(50) NOT NULL,
+  `group3member4` int(50) NOT NULL,
+  `group3member5` int(50) NOT NULL,
+  `group4member1` int(50) NOT NULL,
+  `group4member2` int(50) NOT NULL,
+  `group4member3` int(50) NOT NULL,
+  `group4member4` int(50) NOT NULL,
+  `group4member5` int(50) NOT NULL,
+  `group5member1` int(50) NOT NULL,
+  `group5member2` int(50) NOT NULL,
+  `group5member3` int(50) NOT NULL,
+  `group5member4` int(50) NOT NULL,
+  `group5member5` int(50) NOT NULL,
+  `group6member1` int(50) NOT NULL,
+  `group6member2` int(50) NOT NULL,
+  `group6member3` int(50) NOT NULL,
+  `group6member4` int(50) NOT NULL,
+  `group6member5` int(50) NOT NULL,
+  `group7member1` int(50) NOT NULL,
+  `group7member2` int(50) NOT NULL,
+  `group7member3` int(50) NOT NULL,
+  `group7member4` int(50) NOT NULL,
+  `group7member5` int(50) NOT NULL,
+  `group8member1` int(50) NOT NULL,
+  `group8member2` int(50) NOT NULL,
+  `group8member3` int(50) NOT NULL,
+  `group8member4` int(50) NOT NULL,
+  `group8member5` int(50) NOT NULL,
   `timestamp` int(30) NOT NULL,
   PRIMARY KEY (`group_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -612,21 +553,22 @@ CREATE TABLE `groups` (
 DROP TABLE IF EXISTS `guilds`;
 CREATE TABLE `guilds` (
   `guildId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `guildName` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `guildName` varchar(32) NOT NULL DEFAULT '',
   `leaderGuid` bigint(20) NOT NULL DEFAULT '0',
   `emblemStyle` int(10) NOT NULL DEFAULT '0',
   `emblemColor` int(10) NOT NULL DEFAULT '0',
   `borderStyle` int(10) NOT NULL DEFAULT '0',
   `borderColor` int(10) NOT NULL DEFAULT '0',
   `backgroundColor` int(10) NOT NULL DEFAULT '0',
-  `guildInfo` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
-  `motd` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `guildInfo` varchar(1024) NOT NULL,
+  `motd` varchar(1024) NOT NULL,
   `createdate` int(30) NOT NULL DEFAULT '0',
+  `bankTabCount` int(30) NOT NULL DEFAULT '0',
   `bankBalance` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`),
   UNIQUE KEY `guildName` (`guildName`),
   UNIQUE KEY `leaderGuid` (`leaderGuid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of guilds
@@ -680,13 +622,12 @@ DROP TABLE IF EXISTS `guild_banktabs`;
 CREATE TABLE `guild_banktabs` (
   `guildId` int(30) NOT NULL,
   `tabId` int(30) NOT NULL,
-  `tabName` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `tabIcon` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
-  `tabInfo` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `tabName` varchar(200) NOT NULL,
+  `tabIcon` varchar(200) NOT NULL,
   PRIMARY KEY (`guildId`,`tabId`),
   KEY `a` (`guildId`),
   KEY `b` (`tabId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of guild_banktabs
@@ -752,7 +693,7 @@ DROP TABLE IF EXISTS `guild_ranks`;
 CREATE TABLE `guild_ranks` (
   `guildId` int(6) unsigned NOT NULL,
   `rankId` int(1) NOT NULL DEFAULT '0',
-  `rankName` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `rankName` varchar(255) NOT NULL DEFAULT '',
   `rankRights` int(3) unsigned NOT NULL DEFAULT '0',
   `goldLimitPerDay` int(30) NOT NULL DEFAULT '0',
   `bankTabFlags0` int(30) NOT NULL DEFAULT '0',
@@ -768,7 +709,7 @@ CREATE TABLE `guild_ranks` (
   `bankTabFlags5` int(30) NOT NULL DEFAULT '0',
   `itemStacksPerDay5` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`,`rankId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of guild_ranks
@@ -789,7 +730,7 @@ CREATE TABLE `instances` (
   `creator_guid` int(30) NOT NULL,
   `active_members` text NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `a` (`mapid`,`difficulty`,`creator_group`)
+  KEY `a` (`mapid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- ----------------------------
@@ -819,7 +760,7 @@ CREATE TABLE `mailbox` (
   `returned_flag` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`message_id`),
   KEY `b` (`player_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=723 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of mailbox
@@ -842,20 +783,6 @@ CREATE TABLE `mailbox_insert_queue` (
 
 -- ----------------------------
 -- Records of mailbox_insert_queue
--- ----------------------------
-
--- ----------------------------
--- Table structure for `news_timers`
--- ----------------------------
-DROP TABLE IF EXISTS `news_timers`;
-CREATE TABLE `news_timers` (
-  `id` int(10) unsigned NOT NULL,
-  `time` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of news_timers
 -- ----------------------------
 
 -- ----------------------------
@@ -907,7 +834,7 @@ CREATE TABLE `playeritems` (
   `wrapped_creator` int(30) NOT NULL DEFAULT '0',
   `creator` int(10) unsigned NOT NULL DEFAULT '0',
   `count` int(10) unsigned NOT NULL DEFAULT '0',
-  `charges` int(11) NOT NULL DEFAULT '0',
+  `charges` int(10) unsigned NOT NULL DEFAULT '0',
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   `randomprop` int(10) unsigned NOT NULL DEFAULT '0',
   `randomsuffix` int(30) DEFAULT '0',
@@ -916,11 +843,10 @@ CREATE TABLE `playeritems` (
   `containerslot` int(11) DEFAULT '-1',
   `slot` int(10) NOT NULL DEFAULT '0',
   `enchantments` longtext NOT NULL,
-  `gems` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)
-) ENGINE=MyISAM AUTO_INCREMENT=78667 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=99837 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of playeritems
@@ -932,7 +858,7 @@ CREATE TABLE `playeritems` (
 DROP TABLE IF EXISTS `playeritems_insert_queue`;
 CREATE TABLE `playeritems_insert_queue` (
   `ownerguid` int(10) unsigned NOT NULL DEFAULT '0',
-  `guid` int(10) NOT NULL AUTO_INCREMENT,
+  `guid` bigint(10) NOT NULL DEFAULT '0',
   `entry` int(10) unsigned NOT NULL DEFAULT '0',
   `wrapped_item_id` int(30) NOT NULL DEFAULT '0',
   `wrapped_creator` int(30) NOT NULL DEFAULT '0',
@@ -941,15 +867,14 @@ CREATE TABLE `playeritems_insert_queue` (
   `charges` int(10) unsigned NOT NULL DEFAULT '0',
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   `randomprop` int(10) unsigned NOT NULL DEFAULT '0',
-  `randomsuffix` int(30) NOT NULL,
+  `randomsuffix` int(30) DEFAULT '0',
   `itemtext` int(10) unsigned NOT NULL DEFAULT '0',
   `durability` int(10) unsigned NOT NULL DEFAULT '0',
-  `containerslot` int(11) NOT NULL DEFAULT '-1',
-  `slot` tinyint(4) NOT NULL DEFAULT '0',
-  `enchantments` longtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`guid`),
+  `containerslot` int(11) DEFAULT '-1',
+  `slot` int(10) NOT NULL DEFAULT '0',
+  `enchantments` longtext CHARACTER SET latin1 NOT NULL,
   KEY `ownerguid` (`ownerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of playeritems_insert_queue
@@ -983,7 +908,7 @@ CREATE TABLE `playerpetactionbar` (
   `spellstate_9` int(11) unsigned NOT NULL DEFAULT '0',
   `spellstate_10` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`ownerguid`,`petnumber`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of playerpetactionbar
@@ -1047,21 +972,6 @@ CREATE TABLE `playerpettalents` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `playerphaseinfo`
--- ----------------------------
-DROP TABLE IF EXISTS `playerphaseinfo`;
-CREATE TABLE `playerphaseinfo` (
-  `guid` int(10) unsigned NOT NULL DEFAULT '0',
-  `areaid` int(10) unsigned NOT NULL DEFAULT '0',
-  `phase` int(11) NOT NULL DEFAULT '1',
-  UNIQUE KEY `Index` (`guid`,`areaid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of playerphaseinfo
--- ----------------------------
-
--- ----------------------------
 -- Table structure for `playerskills`
 -- ----------------------------
 DROP TABLE IF EXISTS `playerskills`;
@@ -1083,13 +993,13 @@ CREATE TABLE `playerskills` (
 -- ----------------------------
 DROP TABLE IF EXISTS `playerskills_insert_queue`;
 CREATE TABLE `playerskills_insert_queue` (
-  `player_guid` int(11) NOT NULL DEFAULT '0',
-  `skill_id` int(11) NOT NULL DEFAULT '0',
-  `type` int(11) NOT NULL,
-  `currentlvl` int(11) NOT NULL DEFAULT '1',
-  `maxlvl` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`player_guid`,`skill_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `player_guid` int(11) unsigned NOT NULL DEFAULT '0',
+  `skill_id` int(11) unsigned NOT NULL DEFAULT '0',
+  `type` int(11) unsigned NOT NULL,
+  `currentlvl` int(11) unsigned NOT NULL DEFAULT '1',
+  `maxlvl` int(11) unsigned NOT NULL DEFAULT '1',
+  KEY `player_guid` (`player_guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of playerskills_insert_queue
@@ -1133,9 +1043,8 @@ CREATE TABLE `playertalents` (
   `spec` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `tid` smallint(5) unsigned NOT NULL,
   `rank` tinyint(3) unsigned NOT NULL,
-  PRIMARY KEY (`guid`,`spec`,`tid`,`rank`),
-  UNIQUE KEY `Unique` (`guid`,`tid`,`spec`,`rank`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+  PRIMARY KEY (`guid`,`spec`,`tid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of playertalents
@@ -1146,11 +1055,11 @@ CREATE TABLE `playertalents` (
 -- ----------------------------
 DROP TABLE IF EXISTS `prestartqueries`;
 CREATE TABLE `prestartqueries` (
-  `Query` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `Query` varchar(1024) NOT NULL,
   `SingleShot` int(1) unsigned NOT NULL DEFAULT '1',
   `Seq` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`Seq`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of prestartqueries
@@ -1194,13 +1103,13 @@ CREATE TABLE `questlog_insert_queue` (
   `explored_area2` int(20) NOT NULL DEFAULT '0',
   `explored_area3` int(20) unsigned NOT NULL DEFAULT '0',
   `explored_area4` int(20) unsigned NOT NULL DEFAULT '0',
-  `mob_kill1` int(20) NOT NULL DEFAULT '0',
-  `mob_kill2` int(20) NOT NULL DEFAULT '0',
-  `mob_kill3` int(20) NOT NULL DEFAULT '0',
+  `mob_kill1` int(20) unsigned NOT NULL DEFAULT '0',
+  `mob_kill2` int(20) unsigned NOT NULL DEFAULT '0',
+  `mob_kill3` int(20) unsigned NOT NULL DEFAULT '0',
   `mob_kill4` int(20) unsigned NOT NULL DEFAULT '0',
-  `slain` int(20) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`player_guid`,`quest_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `slain` int(20) unsigned NOT NULL DEFAULT '0',
+  KEY `player_guid` (`player_guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of questlog_insert_queue
@@ -1219,8 +1128,10 @@ CREATE TABLE `server_settings` (
 -- ----------------------------
 -- Records of server_settings
 -- ----------------------------
-INSERT INTO `server_settings` VALUES ('last_arena_update_time', '0');
-INSERT INTO `server_settings` VALUES ('last_dailies_reset_time', '1325666855');
+INSERT INTO `server_settings` VALUES ('expansionupdate', '4872394');
+INSERT INTO `server_settings` VALUES ('last_arena_update_time', '1325880094');
+INSERT INTO `server_settings` VALUES ('last_dailies_reset_time', '1325966432');
+INSERT INTO `server_settings` VALUES ('last_eventid_time', '1326038437');
 
 -- ----------------------------
 -- Table structure for `social_friends`
@@ -1252,40 +1163,6 @@ CREATE TABLE `social_ignores` (
 
 -- ----------------------------
 -- Records of social_ignores
--- ----------------------------
-
--- ----------------------------
--- Table structure for `static_realms`
--- ----------------------------
-DROP TABLE IF EXISTS `static_realms`;
-CREATE TABLE `static_realms` (
-  `name` varchar(32) NOT NULL,
-  `adress` varchar(32) NOT NULL DEFAULT 'localhost',
-  `Port` int(11) NOT NULL DEFAULT '8127',
-  `Icon` int(11) NOT NULL DEFAULT '0',
-  `WorldRegion` int(11) NOT NULL DEFAULT '0',
-  `Population` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`name`,`Port`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of static_realms
--- ----------------------------
-
--- ----------------------------
--- Table structure for `tracker`
--- ----------------------------
-DROP TABLE IF EXISTS `tracker`;
-CREATE TABLE `tracker` (
-  `Id` int(10) unsigned NOT NULL,
-  `AcctId` int(20) unsigned NOT NULL,
-  `Name` varchar(21) NOT NULL,
-  `IP_Address` varchar(15) NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tracker
 -- ----------------------------
 
 -- ----------------------------

@@ -367,14 +367,14 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	}
 	// loading characters
 
-	//checking number of chars is useless since client will not allow to create more than 10 chars
-	//as the 'create' button will not appear (unless we want to decrease maximum number of characters)
+	// checking number of chars is useless since client will not allow to create more than 10 chars
+	// as the 'create' button will not appear (unless we want to decrease maximum number of characters)
 
 	Player* pNewChar = objmgr.CreatePlayer();
 	pNewChar->SetSession(this);
 	if(!pNewChar->Create( recv_data ))
 	{
-		// failed.
+		// Player not create (race/class problem?)
 		pNewChar->ok_to_remove = true;
 		pNewChar->Destructor();
 		return;
@@ -391,6 +391,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		pNewChar->AddSummonSpell(1863, 7814);
 	}
 
+	// Player created, save it now
 	pNewChar->SaveToDB(true);
 
 	PlayerInfo *pn=new PlayerInfo;
@@ -482,9 +483,6 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 			}
 		}
 
-		/*if( _socket != NULL )
-			sPlrLog.write("Account: %s | IP: %s >> Deleted player %s", GetAccountName().c_str(), GetSocket()->GetRemoteIP().c_str(), name.c_str());*/
-
 		sPlrLog.writefromsession(this, "deleted character %s (GUID: %u)", name.c_str(), (uint32)guid);
 
 		CharacterDatabase.WaitExecute("DELETE FROM characters WHERE guid = %u", (uint32)guid);
@@ -513,7 +511,6 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 		CharacterDatabase.Execute("DELETE FROM social_friends WHERE character_guid = %u OR friend_guid = %u", (uint32)guid, (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM social_ignores WHERE character_guid = %u OR ignore_guid = %u", (uint32)guid, (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM tutorials WHERE playerId = %u", (uint32)guid);
-
 
 		/* remove player info */
 		objmgr.DeletePlayerInfo((uint32)guid);

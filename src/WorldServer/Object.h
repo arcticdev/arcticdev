@@ -37,34 +37,37 @@ enum HIGHGUID_TYPE
 
 // TODO: fix that type mess
 
-enum TYPE {
-	TYPE_OBJECT		 = 1,
-	TYPE_ITEM		   = 2,
-	TYPE_CONTAINER	  = 4,
-	TYPE_UNIT		   = 8,
-	TYPE_PLAYER		 = 16,
-	TYPE_GAMEOBJECT	 = 32,
-	TYPE_DYNAMICOBJECT  = 64,
-	TYPE_CORPSE		 = 128,
-	TYPE_AIGROUP		= 256,
-	TYPE_AREATRIGGER	= 512,
+enum TYPE
+{
+	TYPE_OBJECT           = 1,
+	TYPE_ITEM             = 2,
+	TYPE_CONTAINER        = 4,
+	TYPE_UNIT             = 8,
+	TYPE_PLAYER           = 16,
+	TYPE_GAMEOBJECT       = 32,
+	TYPE_DYNAMICOBJECT    = 64,
+	TYPE_CORPSE           = 128,
+	TYPE_AIGROUP          = 256,
+	TYPE_AREATRIGGER      = 512,
 };
 
-enum TYPEID {
-	TYPEID_OBJECT		= 0,
-	TYPEID_ITEM		  = 1,
-	TYPEID_CONTAINER	 = 2,
-	TYPEID_UNIT		  = 3,
-	TYPEID_PLAYER		= 4,
-	TYPEID_GAMEOBJECT	= 5,
-	TYPEID_DYNAMICOBJECT = 6,
-	TYPEID_CORPSE		= 7,
-	TYPEID_AIGROUP	   = 8,
-	TYPEID_AREATRIGGER   = 9,
-	TYPEID_UNUSED			= 10,//used to signal invalid reference (object dealocated but someone is still using it)
+enum TYPEID
+{
+	TYPEID_OBJECT         = 0,
+	TYPEID_ITEM           = 1,
+	TYPEID_CONTAINER      = 2,
+	TYPEID_UNIT           = 3,
+	TYPEID_PLAYER         = 4,
+	TYPEID_GAMEOBJECT     = 5,
+	TYPEID_DYNAMICOBJECT  = 6,
+	TYPEID_CORPSE         = 7,
+	TYPEID_AIGROUP        = 8,
+	TYPEID_AREATRIGGER    = 9,
+	TYPEID_UNUSED         = 10, // used to signal invalid reference (object dealocated but someone is still using it)
 };
 
-enum OBJECT_UPDATE_TYPE {
+enum OBJECT_UPDATE_TYPE
+{
 	UPDATETYPE_VALUES = 0,
 	//  8 bytes - GUID
 	//  Goto Update Block
