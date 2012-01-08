@@ -25,7 +25,7 @@ CREATE TABLE `achievement_rewards` (
   `title_horde` int(10) unsigned NOT NULL,
   `itemid` int(10) unsigned NOT NULL,
   PRIMARY KEY (`achievementid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for achievement_rewards';
 
 -- ----------------------------
 -- Records of achievement_rewards
@@ -48,7 +48,7 @@ CREATE TABLE `ai_agents` (
   `Misc2` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`,`type`,`spell`),
   UNIQUE KEY `a` (`entry`,`spell`,`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='AI System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='AI System';
 
 -- ----------------------------
 -- Records of ai_agents
@@ -63,7 +63,7 @@ CREATE TABLE `ai_threattospellid` (
   `mod` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`spell`),
   UNIQUE KEY `a` (`spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='AI System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='AI System';
 
 -- ----------------------------
 -- Records of ai_threattospellid
@@ -86,7 +86,7 @@ CREATE TABLE `areatriggers` (
   `required_honor_rank` int(11) unsigned NOT NULL DEFAULT '0',
   `required_level` tinyint(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Trigger System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=FIXED COMMENT='Trigger System';
 
 -- ----------------------------
 -- Records of areatriggers
@@ -102,7 +102,7 @@ CREATE TABLE `auctionhouse` (
   `group` int(32) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `a` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=latin1 COMMENT='Auction House';
+) ENGINE=MyISAM AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Auction House';
 
 -- ----------------------------
 -- Records of auctionhouse
@@ -134,7 +134,7 @@ CREATE TABLE `clientaddons` (
   `showinlist` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `a` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=153 DEFAULT CHARSET=latin1 COMMENT='Client Addons';
+) ENGINE=MyISAM AUTO_INCREMENT=153 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Client Addons';
 
 -- ----------------------------
 -- Records of clientaddons
@@ -149,7 +149,7 @@ CREATE TABLE `command_overrides` (
   `access_level` varchar(10) NOT NULL,
   PRIMARY KEY (`command_name`),
   UNIQUE KEY `a` (`command_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Commands System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Commands System';
 
 -- ----------------------------
 -- Records of command_overrides
@@ -169,7 +169,7 @@ CREATE TABLE `creatureloot` (
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`),
   UNIQUE KEY `UNIQUE` (`entryid`,`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for creatureloot';
 
 -- ----------------------------
 -- Records of creatureloot
@@ -188,7 +188,7 @@ CREATE TABLE `creatureloot_gathering` (
   `maxcount` int(30) DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Loot System';
 
 -- ----------------------------
 -- Records of creatureloot_gathering
@@ -205,7 +205,7 @@ CREATE TABLE `creature_formations` (
   `follow_dist` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`spawn_id`),
   UNIQUE KEY `a` (`spawn_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_formations
@@ -236,7 +236,7 @@ CREATE TABLE `creature_names` (
   `civilian` tinyint(30) NOT NULL DEFAULT '0',
   `leader` tinyint(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_names
@@ -290,7 +290,7 @@ CREATE TABLE `creature_proto` (
   `vehicle_entry` int(11) NOT NULL DEFAULT '-1',
   `CanMove` int(11) NOT NULL DEFAULT '7',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_proto
@@ -319,7 +319,7 @@ CREATE TABLE `creature_proto_heroic` (
   `auras` longtext NOT NULL,
   `auraimmune_flag` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for creature_proto_heroic';
 
 -- ----------------------------
 -- Records of creature_proto_heroic
@@ -333,7 +333,7 @@ CREATE TABLE `creature_quest_finisher` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=FIXED COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_quest_finisher
@@ -347,7 +347,7 @@ CREATE TABLE `creature_quest_starter` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=FIXED COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_quest_starter
@@ -383,7 +383,7 @@ CREATE TABLE `creature_spawns` (
   `eventid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Relates to events table',
   PRIMARY KEY (`id`),
   KEY `b` (`map`)
-) ENGINE=MyISAM AUTO_INCREMENT=6203829 DEFAULT CHARSET=latin1 COMMENT='Spawn System';
+) ENGINE=MyISAM AUTO_INCREMENT=6203829 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Spawn System';
 
 -- ----------------------------
 -- Records of creature_spawns
@@ -419,7 +419,7 @@ CREATE TABLE `creature_staticspawns` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `a` (`Map`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Spawn System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Spawn System';
 
 -- ----------------------------
 -- Records of creature_staticspawns
@@ -452,7 +452,7 @@ CREATE TABLE `creature_waypoints` (
   `backwardSayText` varchar(256) NOT NULL,
   PRIMARY KEY (`spawnid`,`waypointid`),
   UNIQUE KEY `a` (`spawnid`,`waypointid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_waypoints
@@ -471,7 +471,7 @@ CREATE TABLE `disenchantingloot` (
   `maxcount` int(30) DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for disenchantingloot';
 
 -- ----------------------------
 -- Records of disenchantingloot
@@ -491,7 +491,7 @@ CREATE TABLE `events` (
   `starthour` tinyint(3) unsigned DEFAULT NULL COMMENT '0 - 23 the hour that the event begins',
   `endhour` tinyint(3) unsigned DEFAULT NULL COMMENT '0 - 23 the hour that the event ends, if this is smaller that the starthour, it will end on the next day',
   PRIMARY KEY (`eventid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for events';
 
 -- ----------------------------
 -- Records of events
@@ -511,7 +511,7 @@ CREATE TABLE `events_creature` (
   `item2` int(10) unsigned DEFAULT NULL COMMENT 'This is the id of equip slot 2 to change while the event is active',
   `item3` int(10) unsigned DEFAULT NULL COMMENT 'This is the id of equip slot 3 to change while the event is active',
   PRIMARY KEY (`eventid`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for events_creature';
 
 -- ----------------------------
 -- Records of events_creature
@@ -528,7 +528,7 @@ CREATE TABLE `events_gameobject` (
   `phase` tinyint(3) DEFAULT NULL COMMENT 'Phase the go is in when the event is active',
   `displayid` int(10) unsigned DEFAULT NULL COMMENT 'This is the displayid to change to while the event is active',
   PRIMARY KEY (`eventid`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for events_gameobject';
 
 -- ----------------------------
 -- Records of events_gameobject
@@ -543,7 +543,7 @@ CREATE TABLE `fishing` (
   `MinSkill` int(11) unsigned DEFAULT NULL,
   `MaxSkill` int(11) unsigned DEFAULT NULL,
   UNIQUE KEY `Zone` (`Zone`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Fishing System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Fishing System';
 
 -- ----------------------------
 -- Records of fishing
@@ -561,7 +561,7 @@ CREATE TABLE `fishingloot` (
   `mincount` int(11) unsigned NOT NULL DEFAULT '1',
   `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Loot System';
 
 -- ----------------------------
 -- Records of fishingloot
@@ -601,7 +601,7 @@ CREATE TABLE `gameobject_names` (
   `unknown13` int(30) NOT NULL DEFAULT '0',
   `unknown14` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Gameobject System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Gameobject System';
 
 -- ----------------------------
 -- Records of gameobject_names
@@ -655,7 +655,7 @@ CREATE TABLE `creature_proto` (
   `vehicle_entry` int(11) NOT NULL DEFAULT '-1',
   `CanMove` int(11) NOT NULL DEFAULT '7',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_proto
@@ -684,7 +684,7 @@ CREATE TABLE `creature_proto_heroic` (
   `auras` longtext NOT NULL,
   `auraimmune_flag` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for creature_proto_heroic';
 
 -- ----------------------------
 -- Records of creature_proto_heroic
@@ -698,7 +698,7 @@ CREATE TABLE `creature_quest_finisher` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=FIXED COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of creature_quest_finisher
@@ -713,7 +713,7 @@ CREATE TABLE `gameobject_quest_item_binding` (
   `quest` int(11) NOT NULL DEFAULT '0',
   `item` int(11) NOT NULL DEFAULT '0',
   `item_count` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Quest System';
 
 -- ----------------------------
 -- Records of gameobject_quest_item_binding
@@ -727,7 +727,7 @@ CREATE TABLE `gameobject_quest_pickup_binding` (
   `entry` int(11) NOT NULL DEFAULT '0',
   `quest` int(11) NOT NULL DEFAULT '0',
   `required_count` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Quest System';
 
 -- ----------------------------
 -- Records of gameobject_quest_pickup_binding
@@ -741,7 +741,7 @@ CREATE TABLE `gameobject_quest_starter` (
   `id` int(11) unsigned NOT NULL DEFAULT '0',
   `quest` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Quest System';
 
 -- ----------------------------
 -- Records of gameobject_quest_starter
@@ -771,7 +771,7 @@ CREATE TABLE `gameobject_spawns` (
   `eventid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'relates to events table',
   PRIMARY KEY (`id`),
   KEY `Map` (`map`)
-) ENGINE=MyISAM AUTO_INCREMENT=2132059 DEFAULT CHARSET=cp1251 COLLATE=cp1251_general_cs PACK_KEYS=0 ROW_FORMAT=FIXED COMMENT='Spawn System';
+) ENGINE=MyISAM AUTO_INCREMENT=2132059 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci PACK_KEYS=0 ROW_FORMAT=FIXED COMMENT='Spawn System';
 
 -- ----------------------------
 -- Records of gameobject_spawns
@@ -802,7 +802,7 @@ CREATE TABLE `gameobject_staticspawns` (
   `vehicle` int(10) NOT NULL DEFAULT '0',
   `eventid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Relates to events table',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Spawn System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Spawn System';
 
 -- ----------------------------
 -- Records of gameobject_staticspawns
@@ -825,7 +825,7 @@ CREATE TABLE `graveyards` (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index` (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1409 DEFAULT CHARSET=latin1 COMMENT='Graveyard System';
+) ENGINE=MyISAM AUTO_INCREMENT=1409 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Graveyard System';
 
 -- ----------------------------
 -- Records of graveyards
@@ -844,7 +844,7 @@ CREATE TABLE `itemloot` (
   `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   KEY `i_gameobj_loot_entry` (`entryid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Loot System';
 
 -- ----------------------------
 -- Records of itemloot
@@ -859,7 +859,7 @@ CREATE TABLE `itempages` (
   `text` longtext CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `next_page` int(10) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `entry` (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Item System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Item System';
 
 -- ----------------------------
 -- Records of itempages
@@ -873,7 +873,7 @@ CREATE TABLE `itempetfood` (
   `entry` int(11) NOT NULL,
   `food_type` int(11) NOT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='structure for itempetfood';
 
 -- ----------------------------
 -- Records of itempetfood
@@ -1008,7 +1008,7 @@ CREATE TABLE `items` (
   `ReqDisenchantSkill` int(30) NOT NULL DEFAULT '-1',
   `ArmorDamageModifier` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Item System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Item System';
 
 -- ----------------------------
 -- Records of items
@@ -1023,7 +1023,7 @@ CREATE TABLE `item_quest_association` (
   `quest` int(11) NOT NULL DEFAULT '0',
   `item_count` int(11) NOT NULL DEFAULT '0',
   UNIQUE KEY `item` (`item`,`quest`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quest System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Quest System';
 
 -- ----------------------------
 -- Records of item_quest_association
@@ -1038,7 +1038,7 @@ CREATE TABLE `item_randomprop_groups` (
   `randomprops_entryid` int(30) NOT NULL,
   `chance` float NOT NULL,
   PRIMARY KEY (`entry_id`,`randomprops_entryid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Item System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=FIXED COMMENT='Item System';
 
 -- ----------------------------
 -- Records of item_randomprop_groups
@@ -1053,7 +1053,7 @@ CREATE TABLE `item_randomsuffix_groups` (
   `randomsuffix_entryid` int(30) NOT NULL,
   `chance` float NOT NULL,
   PRIMARY KEY (`entry_id`,`randomsuffix_entryid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Item System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Item System';
 
 -- ----------------------------
 -- Records of item_randomsuffix_groups
@@ -1069,7 +1069,7 @@ CREATE TABLE `map_checkpoint` (
   `creature_id` int(30) NOT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Map System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Map System';
 
 -- ----------------------------
 -- Records of map_checkpoint
@@ -1088,7 +1088,7 @@ CREATE TABLE `millingloot` (
   `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `entryid` (`entryid`,`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for millingloot';
 
 -- ----------------------------
 -- Records of millingloot
@@ -1102,7 +1102,7 @@ CREATE TABLE `npc_gossip_textid` (
   `creatureid` int(10) unsigned NOT NULL DEFAULT '0',
   `textid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`creatureid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='NPC System';
 
 -- ----------------------------
 -- Records of npc_gossip_textid
@@ -1195,7 +1195,7 @@ CREATE TABLE `npc_text` (
   `em7_4` int(10) unsigned NOT NULL DEFAULT '0',
   `em7_5` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='NPC System';
 
 -- ----------------------------
 -- Records of npc_text
@@ -1214,7 +1214,7 @@ CREATE TABLE `objectloot` (
   `maxcount` int(11) unsigned NOT NULL DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entryid`,`itemid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Loot System';
 
 -- ----------------------------
 -- Records of objectloot
@@ -1227,7 +1227,7 @@ DROP TABLE IF EXISTS `petdefaultspells`;
 CREATE TABLE `petdefaultspells` (
   `entry` int(11) NOT NULL DEFAULT '0',
   `spell` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Pet System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Pet System';
 
 -- ----------------------------
 -- Records of petdefaultspells
@@ -1245,7 +1245,7 @@ CREATE TABLE `pickpocketingloot` (
   `mincount` int(30) DEFAULT '1',
   `maxcount` int(30) DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Loot System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Loot System';
 
 -- ----------------------------
 -- Records of pickpocketingloot
@@ -1281,7 +1281,7 @@ CREATE TABLE `playercreateinfo` (
   `mindmg` float NOT NULL DEFAULT '0',
   `maxdmg` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`Index`)
-) ENGINE=MyISAM AUTO_INCREMENT=66 DEFAULT CHARSET=latin1 COMMENT='Player System';
+) ENGINE=MyISAM AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player System';
 
 -- ----------------------------
 -- Records of playercreateinfo
@@ -1298,7 +1298,7 @@ CREATE TABLE `playercreateinfo_bars` (
   `action` int(10) unsigned DEFAULT NULL,
   `type` int(10) unsigned DEFAULT NULL,
   `misc` int(10) unsigned DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player System';
 
 -- ----------------------------
 -- Records of playercreateinfo_bars
@@ -1313,7 +1313,7 @@ CREATE TABLE `playercreateinfo_items` (
   `protoid` int(4) NOT NULL,
   `slotid` int(10) NOT NULL,
   `amount` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player System';
 
 -- ----------------------------
 -- Records of playercreateinfo_items
@@ -1328,7 +1328,7 @@ CREATE TABLE `playercreateinfo_skills` (
   `skillid` int(10) unsigned NOT NULL DEFAULT '0',
   `level` int(10) unsigned NOT NULL DEFAULT '0',
   `maxlevel` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player System';
 
 -- ----------------------------
 -- Records of playercreateinfo_skills
@@ -1341,7 +1341,7 @@ DROP TABLE IF EXISTS `playercreateinfo_spells`;
 CREATE TABLE `playercreateinfo_spells` (
   `indexid` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `spellid` smallint(5) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Player System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Player System';
 
 -- ----------------------------
 -- Records of playercreateinfo_spells
@@ -1356,7 +1356,7 @@ CREATE TABLE `prestartqueries` (
   `SingleShot` int(1) unsigned NOT NULL DEFAULT '1',
   `Seq` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`Seq`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for prestartqueries';
 
 -- ----------------------------
 -- Records of prestartqueries
@@ -1372,7 +1372,7 @@ CREATE TABLE `professiondiscoveries` (
   `SkillValue` int(10) unsigned NOT NULL DEFAULT '0',
   `Chance` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`SpellId`,`SpellToDiscover`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for professiondiscoveries';
 
 -- ----------------------------
 -- Records of professiondiscoveries
@@ -1390,7 +1390,7 @@ CREATE TABLE `prospectingloot` (
   `mincount` int(30) DEFAULT '1',
   `maxcount` int(30) DEFAULT '1',
   `ffa_loot` int(10) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for prospectingloot';
 
 -- ----------------------------
 -- Records of prospectingloot
@@ -1518,7 +1518,7 @@ CREATE TABLE `quests` (
   `ReceiveItemCount4` int(10) unsigned NOT NULL DEFAULT '0',
   `IsRepeatable` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Quests System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Quests System';
 
 -- ----------------------------
 -- Records of quests
@@ -1540,7 +1540,7 @@ CREATE TABLE `quest_poi` (
   PRIMARY KEY (`questId`,`id`),
   KEY `questId` (`questId`,`id`),
   KEY `id` (`id`,`questId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for quest_poi';
 
 -- ----------------------------
 -- Records of quest_poi
@@ -1557,7 +1557,7 @@ CREATE TABLE `quest_poi_points` (
   `y` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`questId`,`id`,`x`,`y`),
   KEY `questId_id` (`questId`,`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for quest_poi_points';
 
 -- ----------------------------
 -- Records of quest_poi_points
@@ -1603,7 +1603,7 @@ CREATE TABLE `randomcardcreation` (
   `ItemId31` int(10) unsigned NOT NULL DEFAULT '0',
   `ItemCount` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`SpellId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for randomcardcreation';
 
 -- ----------------------------
 -- Records of randomcardcreation
@@ -1621,7 +1621,7 @@ CREATE TABLE `recall` (
   `positionY` float NOT NULL DEFAULT '0',
   `positionZ` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=987 DEFAULT CHARSET=utf8 COMMENT='Tele Command';
+) ENGINE=MyISAM AUTO_INCREMENT=987 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Tele Command';
 
 -- ----------------------------
 -- Records of recall
@@ -1638,7 +1638,7 @@ CREATE TABLE `reputation_creature_onkill` (
   `change_value` int(30) NOT NULL,
   `rep_limit` int(30) NOT NULL,
   KEY `index` (`creature_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of reputation_creature_onkill
@@ -1657,7 +1657,7 @@ CREATE TABLE `reputation_faction_onkill` (
   `change_deltamin_horde` int(30) NOT NULL,
   `change_deltamax_horde` int(30) NOT NULL,
   KEY `factindex` (`faction_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of reputation_faction_onkill
@@ -1679,7 +1679,7 @@ CREATE TABLE `reputation_instance_onkill` (
   `boss_rep_limit_heroic` int(30) NOT NULL,
   `faction_change_alliance` int(30) NOT NULL,
   `faction_change_horde` int(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Creature System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Creature System';
 
 -- ----------------------------
 -- Records of reputation_instance_onkill
@@ -1693,7 +1693,7 @@ CREATE TABLE `scrollcreation` (
   `SpellId` int(10) unsigned NOT NULL DEFAULT '0',
   `ItemId` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`SpellId`,`ItemId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for scrollcreation';
 
 -- ----------------------------
 -- Records of scrollcreation
@@ -1707,7 +1707,7 @@ CREATE TABLE `spelloverride` (
   `overrideId` int(30) unsigned NOT NULL DEFAULT '0',
   `spellId` int(30) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `overrideId` (`overrideId`,`spellId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Spell System';
 
 -- ----------------------------
 -- Records of spelloverride
@@ -1723,7 +1723,7 @@ CREATE TABLE `spell_coef_override` (
   `OTspell_coef_override` float DEFAULT '0',
   `AP_coef_override` float DEFAULT '0',
   `RAP_coef_override` float DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for spell_coef_override';
 
 -- ----------------------------
 -- Records of spell_coef_override
@@ -1736,7 +1736,7 @@ DROP TABLE IF EXISTS `spell_disable`;
 CREATE TABLE `spell_disable` (
   `spellid` int(30) NOT NULL,
   `replacement_spellid` int(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Spell System';
 
 -- ----------------------------
 -- Records of spell_disable
@@ -1751,7 +1751,7 @@ DROP TABLE IF EXISTS `spell_disable_trainers`;
 CREATE TABLE `spell_disable_trainers` (
   `spellid` int(30) NOT NULL,
   `replacement_spellid` int(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Trainer System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Trainer System';
 
 -- ----------------------------
 -- Records of spell_disable_trainers
@@ -1767,7 +1767,7 @@ CREATE TABLE `totemspells` (
   `castspell2` int(10) unsigned NOT NULL DEFAULT '0',
   `castspell3` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Spell System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Spell System';
 
 -- ----------------------------
 -- Records of totemspells
@@ -1787,7 +1787,7 @@ CREATE TABLE `trainerspelloverride` (
   `reqlevel` int(10) unsigned NOT NULL DEFAULT '0',
   `requiredclass` int(10) unsigned NOT NULL DEFAULT '0',
   UNIQUE KEY `spellid` (`spellid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='Trainer System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Trainer System';
 
 -- ----------------------------
 -- Records of trainerspelloverride
@@ -1807,7 +1807,7 @@ CREATE TABLE `trainer_defs` (
   `can_train_gossip_textid` int(11) NOT NULL,
   `cannot_train_gossip_textid` int(11) NOT NULL,
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Trainer System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Trainer System';
 
 -- ----------------------------
 -- Records of trainer_defs
@@ -1829,7 +1829,7 @@ CREATE TABLE `trainer_spells` (
   `deletespell` int(11) unsigned NOT NULL DEFAULT '0',
   `is_prof` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`entry`,`cast_spell`,`learn_spell`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Trainer System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Trainer System';
 
 -- ----------------------------
 -- Records of trainer_spells
@@ -1846,7 +1846,7 @@ CREATE TABLE `transport_creatures` (
   `position_y` float NOT NULL,
   `position_z` float NOT NULL,
   `orientation` float NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for transport_creatures';
 
 -- ----------------------------
 -- Records of transport_creatures
@@ -1864,7 +1864,7 @@ CREATE TABLE `vendors` (
   `inctime` bigint(20) NOT NULL DEFAULT '0',
   `extendedcost` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`entry`,`item`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='NPC System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='NPC System';
 
 -- ----------------------------
 -- Records of vendors
@@ -1883,7 +1883,7 @@ CREATE TABLE `weather` (
   `low_chance` int(11) unsigned NOT NULL DEFAULT '0',
   `low_type` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`zoneId`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Weather System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=FIXED COMMENT='Weather System';
 
 -- ----------------------------
 -- Records of weather
@@ -1896,7 +1896,7 @@ DROP TABLE IF EXISTS `wordfilter_character_names`;
 CREATE TABLE `wordfilter_character_names` (
   `regex_match` varchar(255) NOT NULL,
   `regex_ignore_if_matched` varchar(255) DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for wordfilter_character_names';
 
 -- ----------------------------
 -- Records of wordfilter_character_names
@@ -1909,7 +1909,7 @@ DROP TABLE IF EXISTS `wordfilter_chat`;
 CREATE TABLE `wordfilter_chat` (
   `regex_match` varchar(500) NOT NULL,
   `regex_ignore_if_matched` varchar(500) NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for wordfilter_chat';
 
 -- ----------------------------
 -- Records of wordfilter_chat
@@ -1940,7 +1940,7 @@ CREATE TABLE `worldmap_info` (
   `required_checkpoint` int(30) NOT NULL DEFAULT '0',
   `collision` tinyint(3) unsigned NOT NULL DEFAULT '1',
   PRIMARY KEY (`entry`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='World System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='World System';
 
 -- ----------------------------
 -- Records of worldmap_info
@@ -1958,7 +1958,7 @@ CREATE TABLE `worldstate_template` (
   `initial_value` int(30) NOT NULL,
   `comment` varchar(200) NOT NULL,
   PRIMARY KEY (`field_number`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Table structure for worldstate_template';
 
 -- ----------------------------
 -- Records of worldstate_template
@@ -1972,7 +1972,7 @@ CREATE TABLE `zoneguards` (
   `zone` int(10) unsigned NOT NULL,
   `horde_entry` int(10) unsigned DEFAULT NULL,
   `alliance_entry` int(10) unsigned DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='World System';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='World System';
 
 -- ----------------------------
 -- Records of zoneguards

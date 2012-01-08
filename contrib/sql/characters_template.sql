@@ -32,7 +32,7 @@ CREATE TABLE `account_data` (
   `uiconfig8` blob,
   PRIMARY KEY (`acct`),
   UNIQUE KEY `a` (`acct`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of account_data
@@ -46,7 +46,7 @@ CREATE TABLE `account_forced_permissions` (
   `login` varchar(50) NOT NULL,
   `permissions` varchar(100) NOT NULL,
   PRIMARY KEY (`login`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of account_forced_permissions
@@ -62,7 +62,7 @@ CREATE TABLE `achievements` (
   `progress` varchar(256) DEFAULT NULL,
   `completed` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`player`,`achievementid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of achievements
@@ -97,7 +97,7 @@ CREATE TABLE `arenateams` (
   `player_data10` varchar(32) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of arenateams
@@ -119,7 +119,7 @@ CREATE TABLE `auctions` (
   `deposit` int(32) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`auctionId`),
   KEY `auctionHouse` (`auctionHouse`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of auctions
@@ -132,7 +132,7 @@ DROP TABLE IF EXISTS `banned_names`;
 CREATE TABLE `banned_names` (
   `name` varchar(30) NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of banned_names
@@ -228,7 +228,7 @@ CREATE TABLE `characters` (
   `need_talent_reset` int(3) NOT NULL DEFAULT '0',
   `recustomize` int(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2651 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2651 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of characters
@@ -323,7 +323,7 @@ CREATE TABLE `characters_insert_queue` (
   `Glyphs` longtext NOT NULL,
   `need_talent_reset` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of characters_insert_queue
@@ -341,7 +341,7 @@ CREATE TABLE `character_declinedname` (
   `instrumental` varchar(12) NOT NULL DEFAULT '',
   `prepositional` varchar(12) NOT NULL DEFAULT '',
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of character_declinedname
@@ -360,7 +360,7 @@ CREATE TABLE `character_pet_declinedname` (
   `instrumental` varchar(12) NOT NULL DEFAULT '',
   `prepositional` varchar(12) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of character_pet_declinedname
@@ -388,7 +388,7 @@ CREATE TABLE `charters` (
   PRIMARY KEY (`charterId`),
   UNIQUE KEY `leaderGuid` (`leaderGuid`),
   UNIQUE KEY `guildName` (`guildName`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 11264 kB; InnoDB free: 18432 kB';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of charters
@@ -406,7 +406,7 @@ CREATE TABLE `clientaddons` (
   `showinlist` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `index` (`name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of clientaddons
@@ -420,7 +420,7 @@ CREATE TABLE `command_overrides` (
   `command_name` varchar(100) NOT NULL,
   `access_level` varchar(10) NOT NULL,
   PRIMARY KEY (`command_name`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of command_overrides
@@ -443,7 +443,7 @@ CREATE TABLE `corpses` (
   PRIMARY KEY (`guid`),
   KEY `b` (`mapId`),
   KEY `c` (`instanceId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of corpses
@@ -457,7 +457,7 @@ CREATE TABLE `events_settings` (
   `eventid` tinyint(2) unsigned NOT NULL,
   `lastactivated` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`eventid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of events_settings
@@ -478,7 +478,7 @@ CREATE TABLE `gm_tickets` (
   `message` text NOT NULL,
   `timestamp` text,
   PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of gm_tickets
@@ -541,7 +541,7 @@ CREATE TABLE `groups` (
   `group8member5` int(50) NOT NULL,
   `timestamp` int(30) NOT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of groups
@@ -568,7 +568,7 @@ CREATE TABLE `guilds` (
   PRIMARY KEY (`guildId`),
   UNIQUE KEY `guildName` (`guildName`),
   UNIQUE KEY `leaderGuid` (`leaderGuid`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guilds
@@ -587,7 +587,7 @@ CREATE TABLE `guild_bankitems` (
   KEY `a` (`guildId`),
   KEY `b` (`tabId`),
   KEY `c` (`slotId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guild_bankitems
@@ -609,7 +609,7 @@ CREATE TABLE `guild_banklogs` (
   PRIMARY KEY (`log_id`,`guildid`),
   KEY `a` (`log_id`),
   KEY `b` (`guildid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guild_banklogs
@@ -627,7 +627,7 @@ CREATE TABLE `guild_banktabs` (
   PRIMARY KEY (`guildId`,`tabId`),
   KEY `a` (`guildId`),
   KEY `b` (`tabId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guild_banktabs
@@ -661,7 +661,7 @@ CREATE TABLE `guild_data` (
   UNIQUE KEY `guildid` (`guildid`,`playerid`),
   KEY `a` (`guildid`),
   KEY `b` (`playerid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guild_data
@@ -680,7 +680,7 @@ CREATE TABLE `guild_logs` (
   `misc2` int(30) NOT NULL,
   `misc3` int(30) NOT NULL,
   PRIMARY KEY (`log_id`,`guildid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guild_logs
@@ -709,7 +709,7 @@ CREATE TABLE `guild_ranks` (
   `bankTabFlags5` int(30) NOT NULL DEFAULT '0',
   `itemStacksPerDay5` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`,`rankId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of guild_ranks
@@ -731,7 +731,7 @@ CREATE TABLE `instances` (
   `active_members` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `a` (`mapid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of instances
@@ -760,7 +760,7 @@ CREATE TABLE `mailbox` (
   `returned_flag` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`message_id`),
   KEY `b` (`player_guid`)
-) ENGINE=MyISAM AUTO_INCREMENT=723 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=723 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of mailbox
@@ -779,7 +779,7 @@ CREATE TABLE `mailbox_insert_queue` (
   `money` int(30) NOT NULL,
   `item_id` int(30) NOT NULL,
   `item_stack` int(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of mailbox_insert_queue
@@ -796,7 +796,7 @@ CREATE TABLE `playercooldowns` (
   `cooldown_expire_time` int(30) NOT NULL,
   `cooldown_spellid` int(30) NOT NULL,
   `cooldown_itemid` int(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playercooldowns
@@ -816,7 +816,7 @@ CREATE TABLE `playerglyphs` (
   `glyph5` smallint(5) unsigned DEFAULT NULL,
   `glyph6` smallint(5) unsigned DEFAULT NULL,
   PRIMARY KEY (`guid`,`spec`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of playerglyphs
@@ -846,7 +846,7 @@ CREATE TABLE `playeritems` (
   PRIMARY KEY (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)
-) ENGINE=MyISAM AUTO_INCREMENT=99837 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=99837 CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playeritems
@@ -874,7 +874,7 @@ CREATE TABLE `playeritems_insert_queue` (
   `slot` int(10) NOT NULL DEFAULT '0',
   `enchantments` longtext CHARACTER SET latin1 NOT NULL,
   KEY `ownerguid` (`ownerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playeritems_insert_queue
@@ -908,7 +908,7 @@ CREATE TABLE `playerpetactionbar` (
   `spellstate_9` int(11) unsigned NOT NULL DEFAULT '0',
   `spellstate_10` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`ownerguid`,`petnumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerpetactionbar
@@ -931,7 +931,7 @@ CREATE TABLE `playerpets` (
   `happinessupdate` int(11) NOT NULL DEFAULT '0',
   `summon` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ownerguid`,`petnumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerpets
@@ -948,7 +948,7 @@ CREATE TABLE `playerpetspells` (
   `flags` int(4) NOT NULL DEFAULT '0',
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerpetspells
@@ -965,7 +965,7 @@ CREATE TABLE `playerpettalents` (
   `rank` tinyint(4) NOT NULL DEFAULT '0',
   KEY `a` (`ownerguid`),
   KEY `b` (`petnumber`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerpettalents
@@ -982,7 +982,7 @@ CREATE TABLE `playerskills` (
   `currentlvl` int(11) NOT NULL DEFAULT '1',
   `maxlvl` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`player_guid`,`skill_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerskills
@@ -999,7 +999,7 @@ CREATE TABLE `playerskills_insert_queue` (
   `currentlvl` int(11) unsigned NOT NULL DEFAULT '1',
   `maxlvl` int(11) unsigned NOT NULL DEFAULT '1',
   KEY `player_guid` (`player_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerskills_insert_queue
@@ -1013,7 +1013,7 @@ CREATE TABLE `playerspells` (
   `guid` int(10) unsigned NOT NULL,
   `spellid` int(10) unsigned NOT NULL,
   PRIMARY KEY (`guid`,`spellid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playerspells
@@ -1028,7 +1028,7 @@ CREATE TABLE `playersummonspells` (
   `entryid` bigint(4) NOT NULL DEFAULT '0',
   `spellid` int(4) NOT NULL DEFAULT '0',
   KEY `a` (`ownerguid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of playersummonspells
@@ -1044,7 +1044,7 @@ CREATE TABLE `playertalents` (
   `tid` smallint(5) unsigned NOT NULL,
   `rank` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`guid`,`spec`,`tid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of playertalents
@@ -1059,7 +1059,7 @@ CREATE TABLE `prestartqueries` (
   `SingleShot` int(1) unsigned NOT NULL DEFAULT '1',
   `Seq` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`Seq`)
-) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of prestartqueries
@@ -1084,7 +1084,7 @@ CREATE TABLE `questlog` (
   `mob_kill4` int(20) NOT NULL DEFAULT '0',
   `slain` int(20) NOT NULL DEFAULT '0',
   PRIMARY KEY (`player_guid`,`quest_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of questlog
@@ -1109,7 +1109,7 @@ CREATE TABLE `questlog_insert_queue` (
   `mob_kill4` int(20) unsigned NOT NULL DEFAULT '0',
   `slain` int(20) unsigned NOT NULL DEFAULT '0',
   KEY `player_guid` (`player_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of questlog_insert_queue
@@ -1123,7 +1123,7 @@ CREATE TABLE `server_settings` (
   `setting_id` varchar(200) NOT NULL,
   `setting_value` bigint(50) NOT NULL,
   PRIMARY KEY (`setting_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of server_settings
@@ -1144,7 +1144,7 @@ CREATE TABLE `social_friends` (
   PRIMARY KEY (`character_guid`,`friend_guid`),
   KEY `a` (`character_guid`),
   KEY `b` (`friend_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of social_friends
@@ -1159,7 +1159,7 @@ CREATE TABLE `social_ignores` (
   `ignore_guid` int(30) NOT NULL,
   PRIMARY KEY (`character_guid`,`ignore_guid`),
   KEY `a` (`character_guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of social_ignores
@@ -1180,7 +1180,7 @@ CREATE TABLE `tutorials` (
   `tut6` bigint(20) unsigned NOT NULL DEFAULT '0',
   `tut7` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`playerId`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of tutorials
@@ -1194,7 +1194,7 @@ CREATE TABLE `worldstate_save_data` (
   `setting_id` varchar(50) NOT NULL,
   `setting_value` varchar(200) NOT NULL,
   PRIMARY KEY (`setting_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of worldstate_save_data

@@ -35,7 +35,7 @@ CREATE TABLE `accounts` (
   `muted` int(30) NOT NULL DEFAULT '0',
   PRIMARY KEY (`acct`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=MyISAM AUTO_INCREMENT=8630 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8630 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of accounts
@@ -49,7 +49,7 @@ CREATE TABLE `ipbans`(
   `time` int(30) NOT NULL DEFAULT 0 ,
   `expire` int(30) NOT NULL DEFAULT 0 ,
   PRIMARY KEY  (`ip`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
 -- Records of accounts
