@@ -49,3 +49,5 @@ build
 *.idb
 *.svn
 *.lib
+/contrib/doc/latex
+/contrib/doc/html
