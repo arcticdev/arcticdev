@@ -2954,3 +2954,14 @@ PetLevelupSpellSet const* ObjectMgr::GetPetLevelupSpellList(uint32 petFamily)	co
 		return &itr->second;
 	return NULL;
 }
+
+bool ObjectMgr::CheckDeclinedNames( std::wstring mainpart, DeclinedName const& names )
+{
+    for(int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
+    {
+        std::wstring wname;	
+        if(mainpart!=GetMainPartOfName(wname))
+            return false;
+    }
+    return true;
+}

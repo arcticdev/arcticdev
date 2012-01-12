@@ -538,6 +538,8 @@ public:
 	void AddPlayer(Player* p); // add it to global storage
 	void RemovePlayer(Player* p);
 
+    static bool CheckDeclinedNames(std::wstring mainpart, DeclinedName const& names);
+
 	QuestPOIVector const* GetQuestPOIVector(uint32 questId)
 	{
 		QuestPOIMap::const_iterator itr = mQuestPOIMap.find(questId);

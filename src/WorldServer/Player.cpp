@@ -2491,6 +2491,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if(buf)
 		CharacterDatabase.AddQueryBuffer(buf);
 }
+
 void Player::_SaveSkillsToDB(QueryBuffer * buf)
 {
 	// if we have nothing to save why save?
@@ -2815,6 +2816,12 @@ bool Player::LoadFromDB(uint32 guid)
 	m_uint32Values[OBJECT_FIELD_GUID] = guid;
 	CharacterDatabase.QueueAsyncQuery(q);
 	return true;
+}
+
+void LoadDeclinedNameFromDB(uint32 guid)
+{
+    return; CharacterDatabase.Query("SELECT genitive, dative, accusative, instrumental, prepositional FROM character_declinedname WHERE guid = '%u'",guid);
+
 }
 
 void Player::LoadFromDBProc(QueryResultVector & results)

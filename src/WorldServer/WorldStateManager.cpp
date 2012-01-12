@@ -174,7 +174,6 @@ void WorldStateManager::SetPersistantSetting(const char *szKeyName, const char *
 	CharacterDatabase.Execute("REPLACE INTO worldstate_save_data VALUES(\"%s\", \"%s\")", pkey.c_str(), pval.c_str());
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 // Template Manager
 //////////////////////////////////////////////////////////////////////////

@@ -1282,11 +1282,12 @@ public:
 	void SaveAuras(stringstream&);
 	bool LoadFromDB(uint32 guid);
 	void LoadFromDBProc(QueryResultVector & results);
-
 	void LoadNamesFromDB(uint32 guid);
 	bool m_FirstLogin;
 
-    /************************************************************************/
+	void LoadDeclinedNameFromDB(uint32 guid);
+
+	/************************************************************************/
     /* Death system                                                         */
     /************************************************************************/
 	void SpawnCorpseBones();

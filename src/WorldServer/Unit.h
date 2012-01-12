@@ -34,6 +34,12 @@ struct CreatureInfo;
 struct FactionTemplateDBC;
 struct FactionDBC;
 
+#define MAX_DECLINED_NAME_CASES 5
+
+struct DeclinedName
+{
+    std::string name[MAX_DECLINED_NAME_CASES];
+};
 
 struct ReflectSpellSchool
 {

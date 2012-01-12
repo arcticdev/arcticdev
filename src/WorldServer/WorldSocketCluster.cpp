@@ -10,17 +10,14 @@
 
 WorldSocket::WorldSocket(uint32 sessionid) : m_sessionId(sessionid)
 {
-
 }
 
 WorldSocket::~WorldSocket()
 {
-
 }
 
 void WorldSocket::Disconnect()
 {
-
 }
 
 bool WorldSocket::IsConnected()

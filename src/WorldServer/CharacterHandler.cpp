@@ -487,6 +487,8 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 
 		CharacterDatabase.WaitExecute("DELETE FROM characters WHERE guid = %u", (uint32)guid);
 
+		CharacterDatabase.Execute("DELETE FROM character_declinedname WHERE guid = '%u'", (uint32)guid);
+
 		Corpse* c=objmgr.GetCorpseByOwner((uint32)guid);
 		if(c)
 			CharacterDatabase.Execute("DELETE FROM corpses WHERE guid = %u", c->GetLowGUID());
@@ -500,8 +502,11 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 		CharacterDatabase.Execute("DELETE FROM mailbox WHERE player_guid = %u", (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM playercooldowns WHERE player_guid = %u", (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM playerglyphs WHERE guid = %u", (uint32)guid);
-		CharacterDatabase.Execute("DELETE FROM playeritems WHERE ownerguid=%u",(uint32)guid);
+		CharacterDatabase.Execute("DELETE FROM playeritems WHERE ownerguid=%u", (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM playerpets WHERE ownerguid = %u", (uint32)guid);
+
+		CharacterDatabase.Execute("DELETE FROM character_pet_declinedname WHERE owner = '%u'", (uint32)guid);
+
 		CharacterDatabase.Execute("DELETE FROM playerpetspells WHERE ownerguid = %u", (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM playerskills WHERE player_guid = %u", (uint32)guid);
 		CharacterDatabase.Execute("DELETE FROM playerspells WHERE guid = %u", (uint32)guid);
@@ -970,39 +975,51 @@ void WorldSession::HandleAlterAppearance(WorldPacket & recv_data)
 	_player->SetStandState(0);
 }
 
-void WorldSession::HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data) 
+void WorldSession::HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data)
 {
-	uint64 guid;
-	uint32 error = 0;
+    uint64 guid;
 
-	std::string declinedname[6];
+    CHECK_PACKET_SIZE(recv_data, 8+6);
+    recv_data >> guid;
 
-	CHECK_PACKET_SIZE(recv_data, 8+6);
+    // not accept declined names for unsupported languages
+    std::string name;
+    std::wstring wname;
 
-	recv_data >> guid;
-	for(int i = 0; i < 6; ++i)
-	{
-		recv_data >> declinedname[i];
+    std::string name2;
+    DeclinedName declinedname;
 
-		if(declinedname[i].empty())
-			error = 1;
+    recv_data >> name2;
 
-		CharacterDatabase.EscapeString(declinedname[i]);
-	}
+    if(name2!=name)                                         // character have different name
+    {
+        WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT,4+8);
+        data << (uint32)1;
+        data << guid;
+        SendPacket(&data);    
+        return;
+    }
 
-	for(int i = 1; i < 6; ++i)
-	{
-		if( declinedname[i].size() < declinedname[0].size() )
-			error = 1;
-	}
+    if(!ObjectMgr::CheckDeclinedNames(GetMainPartOfName(wname),declinedname))
+    {
+        WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT,4+8);
+        data << (uint32)1;
+        data << guid;
+        SendPacket(&data);    
+        return;
+    }
 
-	if(!error)
-		CharacterDatabase.Query("REPLACE INTO character_declinedname (guid, genitive, dative, accusative, instrumental, prepositional) VALUES ('%u','%s','%s','%s','%s','%s')", GUID_LOPART(guid), declinedname[1].c_str(),declinedname[2].c_str(),declinedname[3].c_str(),declinedname[4].c_str(),declinedname[5].c_str());
+    for(int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
+        CharacterDatabase.EscapeString(declinedname.name[i]);
 
-	WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT,4+8);
-	data << (uint32)error;
-	data << guid;
-	SendPacket(&data);
+    CharacterDatabase.Execute("DELETE FROM character_declinedname WHERE guid = '%u'", GUID_LOPART(guid));
+    CharacterDatabase.Execute("INSERT INTO character_declinedname (guid, genitive, dative, accusative, instrumental, prepositional) VALUES ('%u','%s','%s','%s','%s','%s')", 
+        GUID_LOPART(guid), declinedname.name[0].c_str(),declinedname.name[1].c_str(),declinedname.name[2].c_str(),declinedname.name[3].c_str(),declinedname.name[4].c_str());
+
+    WorldPacket data(SMSG_SET_PLAYER_DECLINED_NAMES_RESULT,4+8);
+    data << (uint32)0;                                      // OK
+    data << guid;
+    SendPacket(&data);    
 }
 
 void WorldSession::HandleCharacterCustomization( WorldPacket & recv_data )
