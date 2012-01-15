@@ -1,6 +1,4 @@
-#ignore for windows
 Thumbs.db
-#Ignore for vs
 *.obj
 *.ncb
 *.suo
@@ -19,8 +17,7 @@ Thumbs.db
 *.log
 *.manifest
 *.pch
-*.res
-#ignore for by linux 
+*.res 
 configure
 depcomp
 config.guess
@@ -39,15 +36,13 @@ Makefile.in
 .deps
 .libs
 *.a
-#ignore for by mac os
 .DS_Store
-# Top-level generic files
 bin
 build
 !.gitignore
-/src/libs/revision.h
 *.idb
 *.svn
 *.lib
 /contrib/doc/latex
 /contrib/doc/html
+/src/libs/revision.h
