@@ -1285,7 +1285,8 @@ public:
 	void LoadNamesFromDB(uint32 guid);
 	bool m_FirstLogin;
 
-	void LoadDeclinedNameFromDB(uint32 guid);
+	DeclinedName *m_declinedname;
+	DeclinedName const* GetDeclinedNames() const { return m_declinedname; }
 
 	/************************************************************************/
     /* Death system                                                         */
@@ -1321,14 +1322,14 @@ public:
 	void JoinedChannel(uint32 channelId);
 	void LeftChannel(uint32 channelId);
 	void CleanupChannels();
-	//Attack stuff
+
+	// Attack stuff
 	void EventAttackStart();
 	void EventAttackStop();
 	void EventAttackUpdateSpeed() { }
 	void EventDeath();
-	//Note:ModSkillLine -> value+=amt;ModSkillMax -->value=amt; --wierd
+
 	float GetSkillUpChance(uint32 id);
-	//ARCTIC_INLINE std::list<struct skilllines>getSkillLines() { return m_skilllines; }
 	float SpellCrtiticalStrikeRatingBonus;
 	float SpellHasteRatingBonus;
 	void UpdateAttackSpeed();
@@ -1371,7 +1372,6 @@ public:
 		return GetByte(UNIT_FIELD_BYTES_2,3);
 	}
 
-	
 	void delayAttackTimer(int32 delay)
 	{
 		if(!delay)
@@ -1540,12 +1540,7 @@ public:
 	int32 DetectedRange;
 	float PctIgnoreRegenModifier;
 	uint32 m_retainedrage;
-/*	
-	union {
-		float mRatingToPct[37];
-		uint32 mRatingToPoint[37]; //block, skill.. cant be decimal values
-	};
-*/
+
 	ARCTIC_INLINE uint32* GetPlayedtime() { return m_playedtime; };
 	void CalcStat(uint32 t);
 	ARCTIC_INLINE float CalcRating(uint32 index) { return CalcPercentForRating(index, m_uint32Values[index]); };
@@ -1820,9 +1815,6 @@ public:
 	uint32 m_cheatDeathRank;
 
 	void SendAreaTriggerMessage(const char * message, ...);
-        
-	// Trade Target
-	//Player* getTradeTarget() {return mTradeTarget;};
 
 	ARCTIC_INLINE Player* GetTradeTarget()
 	{

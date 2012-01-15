@@ -461,6 +461,7 @@ void Player::Init()
 		m_WeaponSubClassDamagePct[i] = 1.0f;
 
 	Unit::Init();
+
 }
 
 void Player::OnLogin()
@@ -596,6 +597,7 @@ Player::~Player ( )
 	m_channels.clear();
 	mSpells.clear();
 
+	delete m_declinedname;
 }
 
 void Player::Destructor()
@@ -2815,13 +2817,10 @@ bool Player::LoadFromDB(uint32 guid)
 	// queue it!
 	m_uint32Values[OBJECT_FIELD_GUID] = guid;
 	CharacterDatabase.QueueAsyncQuery(q);
+
+	// declined name
+	q->AddQuery("SELECT genitive, dative, accusative, instrumental, prepositional FROM character_declinedname WHERE guid = %u", guid);
 	return true;
-}
-
-void LoadDeclinedNameFromDB(uint32 guid)
-{
-    return; CharacterDatabase.Query("SELECT genitive, dative, accusative, instrumental, prepositional FROM character_declinedname WHERE guid = '%u'",guid);
-
 }
 
 void Player::LoadFromDBProc(QueryResultVector & results)

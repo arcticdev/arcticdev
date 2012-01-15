@@ -51,7 +51,7 @@ void WorldSession::HandleQueryTimeOpcode( WorldPacket & recv_data )
 void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 12);
-	//WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 150);
+
 	uint8 databuffer[10000];
 	StackPacket data(SMSG_CREATURE_QUERY_RESPONSE, databuffer, 10000);
 	uint32 entry;

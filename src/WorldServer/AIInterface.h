@@ -31,7 +31,6 @@ class Player;
 class WorldSession;
 class SpellCastTargets;
 
-
 enum AIType
 {
 	AITYPE_LONER,
@@ -61,13 +60,6 @@ enum LimitedMovementFlag
 	LIMIT_AIR		= 0x4,
 	LIMIT_ANYWHERE= LIMIT_GROUND | LIMIT_WATER | LIMIT_AIR
 };
-
-/*struct AI_Target
-{
-	Unit target;
-	int32 threat;
-};*/
-
 
 enum AI_Agent
 {
@@ -185,7 +177,6 @@ struct AI_Spell
 bool isGuard(uint32 id);
 uint32 getGuardId(uint32 id);
 bool isTargetDummy(uint32 id);
-
 
 typedef std::tr1::unordered_map< Unit*, int32> TargetMap;
 			template <>
@@ -355,16 +346,6 @@ public:
 		else m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
 	}
 
-	/*ARCTIC_INLINE void ResetProcCounts()
-	{
-		AI_Spell*sp;
-		for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
-				{
-					sp = *itr;
-					sp->procCount =sp->procCountDB;
-				}
-	}*/
-
 	Creature* m_formationLinkTarget;
 	float m_formationFollowDistance;
 	float m_formationFollowAngle;
@@ -434,7 +415,6 @@ protected:
 	float FollowDistance_backup;
 	float m_fallowAngle;
 
-	//std::set<AI_Target> m_aiTargets;
 	TargetMap m_aiTargets;
 	AssistTargetSet m_assistTargets;
 	AIType m_AIType;
@@ -445,7 +425,6 @@ protected:
 	bool isTaunted;
 	Unit* soullinkedWith; //This mob can be hitten only by soullinked unit
 	bool isSoulLinked;
-
 
 	// Movement
 	float m_walkSpeed;
