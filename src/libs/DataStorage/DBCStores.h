@@ -1289,9 +1289,9 @@ struct VehicleEntry
 
 struct CurrencyTypesEntry
 {
-	//uint32    ID;
+	// uint32 ID;
 	uint32    ItemId;	// used as index
-	//uint32    Category;
+	// uint32 Category;
 	uint32    BitIndex;
 };
  
@@ -1346,6 +1346,12 @@ struct VehicleSeatEntry
 															// 46-57 added in 3.1, floats mostly
 
 	bool IsUsable() const { return (m_flags & 0x2000000) != 0; }
+};
+struct QuestXP
+{
+    uint32 questLevel;                                      // 0
+    uint32 xpIndex[8];                                      // 1-9
+    // unk                                                  // 10
 };
 
 struct WMOAreaTableEntry
