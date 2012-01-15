@@ -43,6 +43,11 @@ build
 *.idb
 *.svn
 *.lib
+*.dll
+*.o
+*.bin
+*.so
+*.pidb
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h

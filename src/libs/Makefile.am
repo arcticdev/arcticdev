@@ -4,7 +4,6 @@ noinst_LIBRARIES = libshared.a
 
 libshared_a_SOURCES = \
     Log.cpp \
-    MemoryLeaks.cpp \
     MersenneTwister.cpp \
     MersenneTwister.h \
     PreallocatedQueue.h \
@@ -14,7 +13,6 @@ libshared_a_SOURCES = \
     Common.h \
     Errors.h \
     Log.h \
-    MemoryLeaks.h \
     Singleton.h \
     Threading.h \
     Utilities/Timer.h \

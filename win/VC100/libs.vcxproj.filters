@@ -168,9 +168,6 @@
     <ClCompile Include="..\..\src\libs\CrashHandler.cpp">
       <Filter>Util</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\libs\MemoryLeaks.cpp">
-      <Filter>Util</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\libs\MersenneTwister.cpp">
       <Filter>Util</Filter>
     </ClCompile>
@@ -433,9 +430,6 @@
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\LocationVector.h">
-      <Filter>Util</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\MemoryLeaks.h">
       <Filter>Util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\MersenneTwister.h">

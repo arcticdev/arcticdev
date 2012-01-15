@@ -277,7 +277,6 @@
     <ClCompile Include="..\..\src\libs\Getopt.cpp" />
     <ClCompile Include="..\..\src\libs\CallBack.cpp" />
     <ClCompile Include="..\..\src\libs\CrashHandler.cpp" />
-    <ClCompile Include="..\..\src\libs\MemoryLeaks.cpp" />
     <ClCompile Include="..\..\src\libs\MersenneTwister.cpp" />
     <ClCompile Include="..\..\src\libs\StackWalker.cpp" />
     <ClCompile Include="..\..\src\libs\Utilities/Utility.cpp" />
@@ -368,7 +367,6 @@
     <ClInclude Include="..\..\src\libs\CrashHandler.h" />
     <ClInclude Include="..\..\src\libs\Errors.h" />
     <ClInclude Include="..\..\src\libs\LocationVector.h" />
-    <ClInclude Include="..\..\src\libs\MemoryLeaks.h" />
     <ClInclude Include="..\..\src\libs\MersenneTwister.h" />
     <ClInclude Include="..\..\src\AuthServer\PeriodicFunctionCall_Thread.h" />
     <ClInclude Include="..\..\src\libs\PreallocatedQueue.h" />
