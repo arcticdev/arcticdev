@@ -1348,6 +1348,23 @@ struct VehicleSeatEntry
 	bool IsUsable() const { return (m_flags & 0x2000000) != 0; }
 };
 
+struct WMOAreaTableEntry
+{
+	uint32 id;         // 0
+	uint32 rootId;     // 1
+	int32 adtId;       // 2
+	int32 groupId;     // 3
+	// uint32 field4;
+	// uint32 field5;
+	// uint32 field6;
+	// uint32 field7;
+	// uint32 field8;
+	uint32 flags;      // 9
+	uint32 areaId;     // 10  ref -> AreaTableEntry
+	// char Name[16];
+	// uint32 nameflags;
+};
+
 #pragma pack(pop)
 
 ARCTIC_INLINE float GetScale(CreatureDisplayInfo *Scale)
@@ -1399,7 +1416,7 @@ public:
 		m_firstEntry = NULL;
 		m_max = 0;
 		m_numrows = 0;
-		m_stringlength=0;
+		m_stringlength = 0;
 		m_stringData = NULL;
 	}
 
@@ -1725,6 +1742,7 @@ extern SERVER_DECL DBCStorage<WorldMapOverlayEntry> dbcWorldMapOverlay;
 extern SERVER_DECL DBCStorage<SummonPropertiesEntry> dbcSummonProps;
 extern SERVER_DECL DBCStorage<AreaPOIEntry> dbcAreaPOI;
 extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
+extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 
 bool LoadDBCs();
 bool LoadRSDBCs();

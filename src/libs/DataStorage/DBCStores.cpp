@@ -68,6 +68,8 @@ SERVER_DECL DBCStorage<WorldMapOverlayEntry> dbcWorldMapOverlay;
 SERVER_DECL DBCStorage<SummonPropertiesEntry> dbcSummonProps;
 SERVER_DECL DBCStorage<AreaPOIEntry> dbcAreaPOI;
 SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
+SERVER_DECL DBCStorage<QuestXP> dbcQuestXP;
+SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 
 const char* SummonPropertiesfmt = "uuuuuu";
 const char* AreaTriggerFormat = "uuffffffff";
@@ -151,6 +153,7 @@ const char* achievementfmt="niixsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixixxxxxxxxxx
 const char* achievementCriteriafmt="niiiiiiiisxxxxxxxxxxxxxxxxiixix";
 const char* AreaPOIFormat = "nuuuuuuuuuuufffuxuxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxux";
 const char* currencyTypesFormat = "xuxu";
+const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxu";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -244,6 +247,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/VehicleSeat.dbc", vehicleseatentryFormat, true, dbcVehicleSeat, true);
 
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayfmt, true, dbcWorldMapOverlay, true);
+	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false );
 
 	return true;
 }
@@ -317,6 +321,8 @@ void FreeDBCs()
 	dbcVehicle.Cleanup();
 	dbcVehicleSeat.Cleanup();
 	dbcWorldMapOverlay.Cleanup();
+	dbcQuestXP.Cleanup();
+	dbcWMOAreaTable.Cleanup();
 	// dbcDestructibleModelData.Cleanup();
 	// dbcPvPDifficulty.Cleanup();
 	// dbcBattlemasterList.Cleanup();
