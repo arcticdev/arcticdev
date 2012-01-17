@@ -366,9 +366,6 @@ void ClusterInterface::HandlePlayerChangedServers(WorldPacket & pck)
 	WorldPacket data(ICMSG_PLAYER_CHANGE_SERVER_INFO, 1000);
 	data << sessionid << GUID_LOPART(plr->GetGUID());
 
-	/* pack */
-	//data << plr->
-	/* remove the player from our world. */
 	sEventMgr.AddEvent(plr, &Player::EventRemoveAndDelete, EVENT_PLAYER_DELETE, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT | EVENT_FLAG_DELETES_OBJECT);
 
 	/* dereference the session */

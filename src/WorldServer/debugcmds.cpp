@@ -113,16 +113,6 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	uint32 aiagent = TO_CREATURE(obj)->GetAIInterface()->getCurrentAgent();
 	uint32 lowfollow = 0;
 	uint32 highfollow = 0;
-	/*if(unitToFollow == NULL)
-	{
-		lowfollow = 0;
-		highfollow = 0;
-	}
-	else
-	{
-		lowfollow = unitToFollow->GetGUIDLow();
-		highfollow = unitToFollow->GetGUIDHigh();;
-	}*/
 
 	std::stringstream sstext;
 	sstext << "Following Unit: Low: " << lowfollow << " High: " << highfollow << "\n";
@@ -134,8 +124,6 @@ bool ChatHandler::HandleMoveInfoCommand(const char* args, WorldSession *m_sessio
 	sstext << "MoveType: " << movetype << " Current Waypoint: " << curwp << "\n";
 
 	SendMultilineMessage(m_session, sstext.str().c_str());
-	//FillSystemMessageData(&data, sstext.str().c_str());
-	//m_session->SendPacket( &data );
 
 	return true;
 }
@@ -267,11 +255,6 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 		uint32 moveTime = 0;
 		if(!Time)
 		{
-			//float dx = x - TO_CREATURE(obj)->GetPositionX();
-			//float dy = y - TO_CREATURE(obj)->GetPositionY();
-			//float dz = z - TO_CREATURE(obj)->GetPositionZ();
-
-			//float distance = sqrt((dx*dx) + (dy*dy) + (dz*dz));
 			if(!distance)
 			{
 				SystemMessage(m_session, "The Creature is already there.");
@@ -294,7 +277,6 @@ bool ChatHandler::HandleAIMoveCommand(const char* args, WorldSession *m_session)
 		{
 			moveTime = Time;
 		}
-		//TO_CREATURE(obj)->setMovementState(MOVING);
 		TO_CREATURE(obj)->GetAIInterface()->SendMoveToPacket(x,y,z,o,moveTime,Run);
 	}
 	return true;
@@ -327,142 +309,10 @@ bool ChatHandler::HandleFaceCommand(const char* args, WorldSession *m_session)
 
 	obj->SetPosition(obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), theOrientation, false);
 
-	/*
-	data.Initialize( SMSG_MONSTER_MOVE );
-	data << obj->GetGUID();
-	data << obj->GetPositionX() << obj->GetPositionY() << obj->GetPositionZ() << obj->GetOrientation();
-	data << uint8(1);
-	
-	data << uint32(0x100); //run
-	data << uint32(0); //time
-	data << uint32(2);
-	data << obj->GetPositionX() << obj->GetPositionY() << obj->GetPositionZ() << theOrientation;
-	*/
-	//UpdateData upd;
-
-	// update movment for others
-	//obj->BuildMovementUpdateBlock(&upd,0);
-	//upd.BuildPacket( &data );
-	//GetSession()->SendPacket( &packet );
-	//obj->BuildMovementUpdateBlock(data,0)
-	//obj->SendMessageToSet(&data,false);
 	OUT_DEBUG("facing sent");
 	return true;
-	//TO_CREATURE(obj)->AI_MoveTo(obj->GetPositionX()+0.1,obj->GetPositionY()+0.1,obj->GetPositionZ()+0.1,theOrientation);
-}
-/*
-
-bool ChatHandler::HandleAIMoveCommand(const char* args)
-{
-WorldPacket data;
-Object* obj = NULL;
-
-uint64 guid = m_session->GetPlayer()->GetSelection();
-if (guid != 0)
-{
-obj = TO_OBJECT(objmgr.GetCreature(guid));
 }
 
-if(obj == NULL)
-{
-FillSystemMessageData(&data, "You should select a creature.");
-m_session->SendPacket( &data );
-return true;
-}
-
-uint8 Value1  = 0;
-bool Run  = 0;
-uint32 Value2 = 1;
-uint32 Value3 = 0;
-bool ToFrom = 0;
-
-char* pValue1 = strtok((char*)args, " ");
-if (pValue1)
-Value1  = static_cast<uint8>(atol(pValue1));
-
-char* pRun = strtok(NULL, " ");
-if (pRun)
-Run  = atoi(pRun);
-
-char* pValue2 = strtok(NULL, " ");
-if (pValue2)
-Value2  = atoi(pValue2);
-
-char* pValue3 = strtok(NULL, " ");
-if (pValue3)
-Value3  = atoi(pValue3);
-
-char* pToFrom = strtok(NULL, " ");
-if (pToFrom)
-ToFrom  = atoi(pToFrom);
-
-float fromX = TO_CREATURE(obj)->GetPositionX();
-float fromY = TO_CREATURE(obj)->GetPositionY();
-float fromZ = TO_CREATURE(obj)->GetPositionZ();
-float fromO = TO_CREATURE(obj)->GetOrientation();
-float toX = m_session->GetPlayer()->GetPositionX();
-float toY = m_session->GetPlayer()->GetPositionY();
-float toZ = m_session->GetPlayer()->GetPositionZ();
-float toO = m_session->GetPlayer()->GetOrientation();
-
-float distance = TO_CREATURE(obj)->CalcDistance(TO_OBJECT(m_session->GetPlayer()));
-uint32 moveSpeed = 0;
-if(!Run)
-{
-moveSpeed = 2.5f*0.001f;
-}
-else
-{
-moveSpeed = 7.0f*0.001f;
-}
-uint32 moveTime = (uint32) (distance / moveSpeed);
-
-data.Initialize( SMSG_MONSTER_MOVE );
-data << guid;
-if(ToFrom)
-{
-data << toX << toY << toZ << toO;
-}
-else
-{
-data << fromX << fromY << fromZ << fromO;
-}
-data << uint8(Value1);
-if(Value1 != 1)
-{
-data << uint32(Run ? 0x00000100 : 0x00000000);
-data << moveTime;
-data << Value2;
-if(ToFrom)
-{
-data << fromX << fromY << fromZ;
-if(Value2 > 1)
-{
-data << fromO;
-}
-}
-else
-{
-data << toX << toY << toZ;
-if(Value2 > 1)
-{
-data << toO;
-}
-
-}
-if(Value2 > 2)
-{
-data << Value3;
-}
-}
-//TO_CREATURE(obj)->m_m_timeToMove = moveTime;
-//m_moveTimer =  UNIT_MOVEMENT_INTERPOLATE_INTERVAL; // update every few msecs
-
-//	m_creatureState = MOVING;
-TO_CREATURE(obj)->SendMessageToSet( &data, false );
-return true;
-}
-*/
 bool ChatHandler::HandleSetBytesCommand(const char* args, WorldSession *m_session)
 {
 	Object* obj;
@@ -538,20 +388,7 @@ bool ChatHandler::HandleGetBytesCommand(const char* args, WorldSession *m_sessio
 
 	uint32 BytesIndex  = atoi(pBytesIndex);
 	uint32 theBytes = obj->GetUInt32Value(BytesIndex);
-	/*
-	switch (Bytes)
-	{
-	case 0:
-	theBytes = obj->GetUInt32Value(UNIT_FIELD_BYTES_0);
-	break;
-	case 1:
-	theBytes = obj->GetUInt32Value(UNIT_FIELD_BYTES_1);
-	break;
-	case 2:
-	theBytes = obj->GetUInt32Value(UNIT_FIELD_BYTES_2);
-	break;
-	}
-	*/
+
 	std::stringstream sstext;
 	sstext << "bytes for Field " << BytesIndex << " are " << uint16((uint8)theBytes & 0xFF) << " " << uint16((uint8)(theBytes >> 8) & 0xFF) << " ";
 	sstext << uint16((uint8)(theBytes >> 16) & 0xFF) << " " << uint16((uint8)(theBytes >> 24) & 0xFF) << '\0';
@@ -796,9 +633,6 @@ bool ChatHandler::HandleSendItemPushResult(const char* args, WorldSession* m_ses
 	unk3 = atol(strtok(NULL, " "));
 	unk4 = atol(strtok(NULL, " "));
 
-	// lookup item
-//	ItemPrototype *proto = ItemPrototypeStorage.LookupEntry(itemid);
-
 	WorldPacket data;
 	data.SetOpcode(SMSG_ITEM_PUSH_RESULT);
 
@@ -905,14 +739,7 @@ bool ChatHandler::HandleModifyValueCommand(const char* args,  WorldSession* m_se
 		SystemMessage(m_session, "Incorrect Field.");
 		return true;
 	}
-/*
-	if (value > sizeof(uint32))
-	{
-		FillSystemMessageData(&data, m_session, "Incorrect Value.");
-		m_session->SendPacket( &data );
-		return true;
-	}
-*/
+
 	char buf[256];
 	uint32 oldValue = obj->GetUInt32Value(field);
 	obj->SetUInt32Value(field,value);
@@ -940,8 +767,8 @@ bool ChatHandler::HandleDebugDumpCoordsCommmand(const char * args, WorldSession 
 	return true;
 }
 
-//As requested by WaRxHeAd for database development.
-//This should really only be available in special cases and NEVER on real servers... -DGM
+// As requested by WaRxHeAd for database development.
+// This should really only be available in special cases and NEVER on real servers... -DGM
 bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_session)
 {
 	#ifdef _ONLY_FOOLS_TRY_THIS_

@@ -48,6 +48,7 @@ build
 *.bin
 *.so
 *.pidb
+*.res
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h
