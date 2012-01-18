@@ -550,7 +550,18 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	{
 		if((int)szName[x] < 65 || ((int)szName[x] > 90 && (int)szName[x] < 97) || (int)szName[x] > 122)
 		{
-			data << uint8(0x32);
+			if((int)szName[x] < 65)
+			{
+				data << uint8(CHAR_NAME_TOO_SHORT); // Name is too short.
+			}
+			else if((int)szName[x] > 122)           // Name is too long.
+			{
+				data << uint8(CHAR_NAME_TOO_LONG);
+			}
+			else
+			{
+				data << uint8(CHAR_NAME_FAILURE);   // No clue.
+			}
 			data << guid << name;
 			SendPacket(&data);
 			return;
@@ -563,7 +574,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 		if(result2->Fetch()[0].GetUInt32() > 0)
 		{
 			// That name is banned!
-			data << uint8(0x31);
+			data << uint8(CHAR_NAME_PROFANE);
 			data << guid << name;
 			SendPacket(&data);
 		}
