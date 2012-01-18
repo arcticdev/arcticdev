@@ -11,14 +11,14 @@
 OpcodeHandler WorldPacketHandlers[NUM_MSG_TYPES];
 
 WorldSession::WorldSession(uint32 id, string Name, WorldSocket *sock) : _socket(sock), _accountId(id), _accountName(Name),
-_logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), instanceId(0)
+_logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), instanceId(0), _recentlogout(false)
 {
 	_player = NULL;
 	m_hasDeathKnight = false;
 	m_highestLevel = 0;
 	m_asyncQuery = false;
 	memset(movement_packet, 0, sizeof(movement_packet));
-	memset(&movement_info, 0, sizeof(MovementInfo));		//New movement packet
+	memset(&movement_info, 0, sizeof(MovementInfo)); // New movement packet
 	m_currMsTime = getMSTime();
 	bDeleted = false;
 	m_bIsWLevelSet = false;
@@ -106,8 +106,8 @@ int WorldSession::Update(uint32 InstanceID)
 		// if we are.
 		if(_player && _player->m_beingPushed) // check timeout
 		{
-			//Timeout client after 2 minutes, in case AddToWorld failed (f.e. client crash)
-			if(  (uint32)UNIXTIME - m_lastPing > 120000 )
+			// Timeout client after 2 minutes, in case AddToWorld failed (f.e. client crash)
+			if(  (uint32)UNIXTIME - m_lastPing > 120 )
 			{
 				DEBUG_LOG("WorldSession","Removing InQueue player due to socket timeout.");
 				LogoutPlayer(true);
@@ -134,6 +134,11 @@ int WorldSession::Update(uint32 InstanceID)
 				Log.Warning("WorldSession","Received unexpected/wrong state packet with opcode %s (0x%.4X)",
 					LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
 			}
+			else if(Handler->status == STATUS_IN_OR_LOGGINGOUT && !_player && !_recentlogout && Handler->handler != 0)
+			{
+				Log.Warning("WorldSession", "Received unexpected/wrong state packet(In or Out) with opcode %s (0x%.4X)",
+				LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
+			}
 			else
 			{
 				// Valid Packet :>
@@ -149,19 +154,13 @@ int WorldSession::Update(uint32 InstanceID)
 			}
 		}
 
-		//delete packet;
-		g_bufferPool.Deallocate(packet);
-
+		delete packet;
+		packet = NULL;
 		if(InstanceID != instanceId)
-		{
-			// If we hit this -> means a packet has changed our map.
-			return 2;
-		}
-
+			return 2; // If we hit this it means that an opcode has changed our map.
 		if( bDeleted )
-		{
 			return 1;
-		}
+
 	}
 
 	if(InstanceID != instanceId)
