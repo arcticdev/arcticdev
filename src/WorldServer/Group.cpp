@@ -277,7 +277,7 @@ void Group::Update()
 				data << uint8(0);	// unk2
 				//data << uint64(0);	// unk3
 				data << uint64(0x500000000004BC0CULL);
-				data << uint32(0); //Added in 3.3
+				data << uint32(0); // Added in 3.3
 				data << uint32(m_MemberCount-1); // we don't include self
 
 				for( j = 0; j < m_SubGroupCount; j++ )

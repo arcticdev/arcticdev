@@ -133,7 +133,8 @@ enum AccountDataTypes
 #define GLOBAL_CACHE_MASK           0x15
 #define PER_CHARACTER_CACHE_MASK    0xEA
 
-typedef struct Cords {
+typedef struct Cords
+{
 	float x,y,z;
 }Cords;
 
@@ -715,7 +716,7 @@ protected:
 	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
 
 	void HandleSetFriendNote(WorldPacket & recv_data);
-	void Handle38C(WorldPacket & recv_data);
+	void HandleRealmSplit(WorldPacket & recv_data);
 	void HandleInrangeQuestgiverQuery(WorldPacket & recv_data);
 
 	// Misc Opcodes

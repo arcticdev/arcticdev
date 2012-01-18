@@ -546,9 +546,9 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 
 	// Check name for rule violation.
 	const char * szName=name.c_str();
-	for(uint32 x=0;x<strlen(szName);x++)
+	for(uint32 x = 0; x < strlen(szName); x++)
 	{
-		if((int)szName[x]<65||((int)szName[x]>90&&(int)szName[x]<97)||(int)szName[x]>122)
+		if((int)szName[x] < 65 || ((int)szName[x] > 90 && (int)szName[x] < 97) || (int)szName[x] > 122)
 		{
 			data << uint8(0x32);
 			data << guid << name;

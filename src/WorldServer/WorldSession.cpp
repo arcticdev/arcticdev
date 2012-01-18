@@ -897,7 +897,7 @@ void WorldSession::InitPacketHandlerTable()
 
 	WorldPacketHandlers[CMSG_OPT_OUT_OF_LOOT].handler = &WorldSession::HandleSetAutoLootPassOpcode;
 
-	WorldPacketHandlers[CMSG_REALM_SPLIT].handler = &WorldSession::Handle38C;
+	WorldPacketHandlers[CMSG_REALM_SPLIT].handler = &WorldSession::HandleRealmSplit;
 	WorldPacketHandlers[CMSG_REALM_SPLIT].status = STATUS_AUTHED;
 
 	WorldPacketHandlers[CMSG_QUESTGIVER_STATUS_MULTIPLE_QUERY].handler = &WorldSession::HandleInrangeQuestgiverQuery;
@@ -1013,7 +1013,7 @@ void WorldSession::Delete()
 	delete this;
 }
 
-void WorldSession::Handle38C(WorldPacket & recv_data)
+void WorldSession::HandleRealmSplit(WorldPacket & recv_data)
 {
 	uint32 v;
 	recv_data >> v;
