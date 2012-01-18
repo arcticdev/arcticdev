@@ -6,8 +6,9 @@
 
 #include "StdAfx.h"
 
-//Packet Building
-/////////////////
+//////////////////////////////////////////////////////////////////////////
+// Packet Building                                                      //
+//////////////////////////////////////////////////////////////////////////
 
 WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 {
@@ -18,51 +19,51 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 
 	WorldPacket* data = new WorldPacket(SMSG_QUEST_QUERY_RESPONSE, 248);
 
-	*data << uint32(qst->id);						// Quest ID
-	*data << uint32(2);								// Unknown, always seems to be 2
-	*data << int32(qst->max_level);					// Quest level
-	*data << uint32(qst->min_level);				// minlevel !!!
+	*data << uint32(qst->id);                                        // Quest ID
+	*data << uint32(2);                                              // Unknown, always seems to be 2
+	*data << int32(qst->max_level);                                  // Quest level
+	*data << uint32(qst->min_level);                                 // minlevel !!!
 
 	if(qst->quest_sort > 0)
-		*data << int32(-(int32)qst->quest_sort);	// Negative if pointing to a sort.
+		*data << int32(-(int32)qst->quest_sort);                     // Negative if pointing to a sort.
 	else
-		*data << uint32(qst->zone_id);				// Positive if pointing to a zone.
+		*data << uint32(qst->zone_id);                               // Positive if pointing to a zone.
 
-	*data << uint32(qst->type);						// Info ID / Type
-	*data << uint32(qst->suggested_players);			// suggested players
-	*data << uint32(qst->required_rep_faction);		// Faction ID
-	*data << uint32(qst->required_rep_value);		// Faction Amount
-	*data << uint32(0);								// 3.3.3 // Opposite Faction ID
-	*data << uint32(0);								// 3.3.3 // Opposite Faction Amount
-	*data << uint32(qst->next_quest_id);			// Next Quest ID
-	*data << uint32(0);								// 3.3.0
+	*data << uint32(qst->type);                                      // Info ID / Type
+	*data << uint32(qst->suggested_players);                         // suggested players
+	*data << uint32(qst->required_rep_faction);                      // Faction ID
+	*data << uint32(qst->required_rep_value);                        // Faction Amount
+	*data << uint32(0);                                              // 3.3.3 Opposite Faction ID
+	*data << uint32(0);                                              // 3.3.3 Opposite Faction Amount
+	*data << uint32(qst->next_quest_id);                             // Next Quest ID
+	*data << uint32(0);                                              // 3.3.0
 
-	*data << uint32(sQuestMgr.GenerateRewardMoney(_player, qst));	// Copper reward
-	*data << uint32(qst->required_money);			// Required Money
-	*data << uint32(qst->reward_spell);				// Spell added to spellbook upon completion
-	*data << uint32(qst->effect_on_player);			// Spell casted on player upon completion
-	*data << uint32(qst->reward_honor);				// 2.3.0 - bonus honor
-	*data << float(0);								// Reward Honor Multiplier
-	*data << uint32(qst->srcitem);					// Item given at the start of a quest (srcitem)
-	*data << uint32(qst->quest_flags);				// Quest Flags
-	*data << uint32(qst->reward_title);				// Reward Title Id - Player is givn this title upon completion
-	*data << uint32(qst->required_kill_player);		// Required Kill Player
-	*data << uint32(qst->reward_talents);			// Reward Talents
-	*data << uint32(0);								// Arena Points
-	*data << uint32(0);								// unk
+	*data << uint32(sQuestMgr.GenerateRewardMoney(_player, qst));    // Copper reward
+	*data << uint32(qst->required_money);                            // Required Money
+	*data << uint32(qst->reward_spell);                              // Spell added to spellbook upon completion
+	*data << uint32(qst->effect_on_player);                          // Spell casted on player upon completion
+	*data << uint32(qst->reward_honor);                              // 2.3.0 - bonus honor
+	*data << float(0);                                               // Reward Honor Multiplier
+	*data << uint32(qst->srcitem);                                   // Item given at the start of a quest (srcitem)
+	*data << uint32(qst->quest_flags);                               // Quest Flags
+	*data << uint32(qst->reward_title);                              // Reward Title Id - Player is givn this title upon completion
+	*data << uint32(qst->required_kill_player);                      // Required Kill Player
+	*data << uint32(qst->reward_talents);                            // Reward Talents
+	*data << uint32(0);                                              // Arena Points
+	*data << uint32(0);                                              // unk
 
 	// (loop 4 times)
 	for(uint32 i = 0; i < 4; ++i)
 	{
-		*data << qst->reward_item[i];				// Forced Reward Item [i]
-		*data << qst->reward_itemcount[i];			// Forced Reward Item Count [i]
+		*data << qst->reward_item[i];                                // Forced Reward Item [i]
+		*data << qst->reward_itemcount[i];                           // Forced Reward Item Count [i]
 	}
 
 	// (loop 6 times)
 	for(uint32 i = 0; i < 6; ++i)
 	{
-		*data << qst->reward_choiceitem[i];			// Choice Reward Item [i]
-		*data << qst->reward_choiceitemcount[i];	// Choice Reward Item Count [i]
+		*data << qst->reward_choiceitem[i];                          // Choice Reward Item [i]
+		*data << qst->reward_choiceitemcount[i];                     // Choice Reward Item Count [i]
 	}
 
 	// 3.3 Faction Reward Stuff.
@@ -76,51 +77,51 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 		*data << int32(qst->reward_replimit);
 	//end
 
-	*data << qst->point_mapid;						// Unknown
-	*data << qst->point_x;							// Unknown
-	*data << qst->point_y;							// Unknown
-	*data << qst->point_opt;						// Unknown
-	*data << qst->title;							// Title / name of quest
-	*data << qst->objectives;						// Objectives / description
-	*data << qst->details;							// Details
-	*data << qst->endtext;							// Subdescription
+	*data << qst->point_mapid;                                       // Unknown
+	*data << qst->point_x;                                           // Unknown
+	*data << qst->point_y;                                           // Unknown
+	*data << qst->point_opt;                                         // Unknown
+	*data << qst->title;                                             // Title / name of quest
+	*data << qst->objectives;                                        // Objectives / description
+	*data << qst->details;                                           // Details
+	*data << qst->endtext;                                           // Subdescription
 
-	*data << uint8(0); // Displayed after finishing quest.
+	*data << uint8(0);                                               // Displayed after finishing quest.
 
 	// (loop 4 times)
 	for(uint32 i = 0; i < 4; ++i)
 	{
-		*data << qst->required_mob[i];				// Kill mob entry ID [i]
-		*data << uint64(qst->required_mobcount[i]);	// Kill mob count [i]
-		*data << uint32(0);							// 3.0.2
+		*data << qst->required_mob[i];                               // Kill mob entry ID [i]
+		*data << uint64(qst->required_mobcount[i]);                  // Kill mob count [i]
+		*data << uint32(0);                                          // 3.0.2
 	}
 
 	for(uint32 i = 0; i < 6; ++i)
 	{
-		*data << qst->required_item[i];				// Collect item [i]
-		*data << qst->required_itemcount[i];		// Collect item count [i]
+		*data << qst->required_item[i];                              // Collect item [i]
+		*data << qst->required_itemcount[i];                         // Collect item count [i]
 	}
 
-		*data << qst->objectivetexts[0];			// Objective 1 - Used as text if mob not set
-		*data << qst->objectivetexts[1];			// Objective 2 - Used as text if mob not set
-		*data << qst->objectivetexts[2];			// Objective 3 - Used as text if mob not set
-		*data << qst->objectivetexts[3];			// Objective 4 - Used as text if mob not set
+		*data << qst->objectivetexts[0];                             // Objective 1 - Used as text if mob not set
+		*data << qst->objectivetexts[1];                             // Objective 2 - Used as text if mob not set
+		*data << qst->objectivetexts[2];                             // Objective 3 - Used as text if mob not set
+		*data << qst->objectivetexts[3];                             // Objective 4 - Used as text if mob not set
 
 
 	return data;
 }
 
+//////////////////////////////////////////////////////////////////////////
+// QuestLogEntry                                                        //
+//////////////////////////////////////////////////////////////////////////
 
-/*****************
-* QuestLogEntry *
-*****************/
 QuestLogEntry::QuestLogEntry()
 {
 	mInitialized = false;
 	m_quest = NULL;
 	mDirty = false;
 	m_slot = -1;
-	completed=0;
+	completed = 0;
 	m_player_slain = 0;
 }
 
@@ -140,7 +141,7 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 	m_slot = slot;
 
 	iscastquest = false;
-	for (uint32 i=0;i<4;++i)
+	for (uint32 i = 0; i < 4; ++i)
 	{
 		if (quest->required_spell[i]!=0)
 		{
@@ -154,7 +155,6 @@ void QuestLogEntry::Init(Quest* quest, Player* plr, uint32 slot)
 				plr->quest_mobs.insert(quest->required_mob[i]);
 		}
 	}
-
 
 	// update slot
 	plr->SetQuestLogSlot(this, slot);
@@ -175,6 +175,7 @@ void QuestLogEntry::ClearAffectedUnits()
 	if (m_affected_units.size()>0)
 		m_affected_units.clear();
 }
+
 void QuestLogEntry::AddAffectedUnit(Unit* target)
 {
 	if (!target)
@@ -182,6 +183,7 @@ void QuestLogEntry::AddAffectedUnit(Unit* target)
 	if (!IsUnitAffected(target))
 		m_affected_units.insert(target->GetGUID());
 }
+
 bool QuestLogEntry::IsUnitAffected(Unit* target)
 {
 	if (!target)
@@ -197,8 +199,6 @@ void QuestLogEntry::SaveToDB(QueryBuffer * buf)
 	if(!mDirty)
 		return;
 
-	//Made this into a replace not an insert
-	//CharacterDatabase.Execute("DELETE FROM questlog WHERE player_guid=%u AND quest_id=%u", m_plr->GetGUIDLow(), m_quest->id);
 	std::stringstream ss;
 	ss << "REPLACE INTO questlog VALUES(";
 	ss << m_plr->GetLowGUID() << "," << m_quest->id << "," << m_slot << "," << m_time_left;
@@ -271,7 +271,7 @@ bool QuestLogEntry::CanBeFinished()
 		}
 	}
 
-	//Check for Gold & AreaTrigger Requirement s
+	// Check for Gold & AreaTrigger Requirement s
 	for(i = 0; i < 4; ++i)
 	{
 		if(m_quest->required_money && (m_plr->GetUInt32Value(PLAYER_FIELD_COINAGE) < m_quest->required_money)) 
@@ -410,4 +410,3 @@ void QuestLogEntry::SendUpdateAddKill(uint32 i)
 {
 	sQuestMgr.SendQuestUpdateAddKill(m_plr, m_quest->id, m_quest->required_mob[i], m_mobcount[i], m_quest->required_mobcount[i], 0);
 }
-
