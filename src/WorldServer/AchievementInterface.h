@@ -127,9 +127,17 @@ enum AchievementCriteriaTypes
 	ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LINE= 112,
 	ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL = 113,
 	ACHIEVEMENT_CRITERIA_TYPE_ACCEPTED_SUMMONINGS = 114,
-	ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 115,
+	ACHIEVEMENT_CRITERIA_TYPE_EARN_ACHIEVEMENT_POINTS = 115,
+	ACHIEVEMENT_CRITERIA_TYPE_116 = 116,
+	ACHIEVEMENT_CRITERIA_TYPE_117 = 117,
+	ACHIEVEMENT_CRITERIA_TYPE_118 = 118,
+	ACHIEVEMENT_CRITERIA_TYPE_FINISH_RANDOM_DUNGEON = 119,
+	ACHIEVEMENT_CRITERIA_TYPE_120 = 120,
+	ACHIEVEMENT_CRITERIA_TYPE_121 = 121,
+	ACHIEVEMENT_CRITERIA_TYPE_122 = 122,
+	ACHIEVEMENT_CRITERIA_TYPE_123 = 123,
+	ACHIEVEMENT_CRITERIA_TYPE_TOTAL = 124,
 };
-
 
 // Making this an enum since they're reversed teamids.
 enum AchievementFactionReq
@@ -188,17 +196,14 @@ public:
 	void LoadFromDB( QueryResult * pResult );
 	void SaveToDB(QueryBuffer * buffer);
 
-	
 	WorldPacket* BuildAchievementEarned(AchievementData * pData);
 	WorldPacket* BuildAchievementData(bool forInspect = false);
 
 	bool HasAchievements() { return m_achivementDataMap.size() > 0; }
 
-	//----------------------------------------------------------------
 	void HandleAchievementCriteriaConditionDeath();
 
 	// Handlers for misc events
-	//-----------------------------------------------------------------
 	void HandleAchievementCriteriaKillCreature(uint32 killedMonster);
 	void HandleAchievementCriteriaWinBattleground(uint32 bgMapId, uint32 scoreMargin, uint32 time, CBattleground* bg);
 	void HandleAchievementCriteriaRequiresAchievement(uint32 achievementId);
@@ -224,6 +229,5 @@ public:
 	void HandleAchievementCriteriaDeath();
 	void HandleAchievementCriteriaDeathAtMap(uint32 mapId);
 
-	//-----------------------------------------------------------------
 };
 #endif
