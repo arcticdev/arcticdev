@@ -47,7 +47,7 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	*data << uint32(qst->srcitem);                                   // Item given at the start of a quest (srcitem)
 	*data << uint32(qst->quest_flags);                               // Quest Flags
 	*data << uint32(qst->reward_title);                              // Reward Title Id - Player is givn this title upon completion
-	*data << uint32(qst->required_kill_player);                      // Required Kill Player
+	*data << uint64(qst->required_kill_player);                      // Required Kill Player
 	*data << uint32(qst->reward_talents);                            // Reward Talents
 	*data << uint32(0);                                              // Arena Points
 	*data << uint32(0);                                              // unk

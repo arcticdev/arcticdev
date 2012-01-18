@@ -3471,10 +3471,10 @@ void Player::_LoadQuestLogEntry(QueryResult * result)
 	// clear all fields
 	for(int i = 0; i < 25; ++i)
 	{
-		baseindex = PLAYER_QUEST_LOG_1_1 + (i * 4);
+		baseindex = PLAYER_QUEST_LOG_1_1 + (i * 5);
 		SetUInt32Value(baseindex + 0, 0);
 		SetUInt32Value(baseindex + 1, 0);
-		SetUInt32Value(baseindex + 2, 0);
+		SetUInt64Value(baseindex + 2, 0);
 		SetUInt32Value(baseindex + 3, 0);
 	}
 
