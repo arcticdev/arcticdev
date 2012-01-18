@@ -597,7 +597,6 @@ Player::~Player ( )
 	m_channels.clear();
 	mSpells.clear();
 
-	delete m_declinedname;
 }
 
 void Player::Destructor()
