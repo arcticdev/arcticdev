@@ -236,11 +236,11 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	WorldPacket data(SMSG_BATTLEFIELD_LIST, 200);
 	data << m_session->GetPlayer()->GetGUID();
 	data << uint8(!battlemaster);	// from where are we joining
-	data << BattlegroundType;		//BG ID
-	data << uint8(0);				//unk 3.3
-	data << uint8(0);				//unk 3.3
+	data << BattlegroundType;		// BG ID
+	data << uint8(0);				// unk 3.3
+	data << uint8(0);				// unk 3.3
 	size_t CountPos = data.wpos();
-	data << uint32(0);				//count
+	data << uint32(0);				// count
 
 	if(!IS_ARENA(BattlegroundType))
  	{
