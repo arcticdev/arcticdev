@@ -501,25 +501,26 @@ void WorldSession::HandleSaveGuildEmblem(WorldPacket & recv_data)
 // Charter part
 void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 {
+	/* would be better, if we could skip the crap fields - will work on it in the future*/
 	uint8 error;
 	uint64 creature_guid;
-	uint64 unk;
-	uint32 unk2;
+	uint64 crap;
+	uint32 crap2;
 	string name;
-	uint64 unk3, unk4, unk5, unk6, unk7, unk8;
-	uint32 unk9;
-	uint8 unk10;
+	uint64 crap3, crap4, crap5, crap6, crap7, crap8;
+	uint32 crap9;
+	uint8 crap10;
 	uint32 arena_index;
-	uint32 unk11;
+	uint32 crap11;
 
 	recv_data >> creature_guid;
-	recv_data >> unk >> unk2;
+	recv_data >> crap >> crap2;
 	recv_data >> name;
-	recv_data >> unk3 >> unk4 >> unk5 >> unk6 >> unk7 >> unk8;
-	recv_data >> unk9;
-	recv_data >> unk10;
+	recv_data >> crap3 >> crap4 >> crap5 >> crap6 >> crap7 >> crap8;
+	recv_data >> crap9;
+	recv_data >> crap10;
 	recv_data >> arena_index;
-	recv_data >> unk11;
+	recv_data >> crap11;
   
 	Creature* crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creature_guid));
 	if(!crt)
@@ -1040,7 +1041,7 @@ void WorldSession::HandleGuildBankBuyTab(WorldPacket & recv_data)
 
 void WorldSession::HandleGuildBankGetAvailableAmount(WorldPacket & recv_data)
 {
-	// calculate using the last withdrawl blablabla
+	// calculate using the last withdrawal blablabla
 	if(_player->m_playerInfo->guildMember == NULL)
 		return;
 

@@ -507,8 +507,7 @@ Player::~Player ( )
 
 	if(m_Summon)
 	{
-		m_Summon->Dismiss(true);
-		m_Summon->ClearPetOwner();
+		m_Summon->Remove(true, true, false);
 	}
 
 	if (m_GM_SelectedGO)
@@ -5682,10 +5681,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 	if( pObj->IsCreature() && pObj->m_faction->FactionFlags & 0x1000 )
 		m_hasInRangeGuards--;
 
-	//if (/*!CanSee(pObj) && */IsVisible(pObj))
-	//{
-		//RemoveVisibleObject(pObj);
-	//}
 	if(m_tempSummon == pObj)
 	{
 		m_tempSummon->RemoveFromWorld(false, true);

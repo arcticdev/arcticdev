@@ -15,8 +15,6 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	// 2048 bytes should be more than enough. The fields cost ~200 bytes.
 	// better to allocate more at startup than have to realloc the buffer later on.
 
-	uint32 i = 0;
-
 	WorldPacket* data = new WorldPacket(SMSG_QUEST_QUERY_RESPONSE, 248);
 
 	*data << uint32(qst->id);                                        // Quest ID
@@ -67,15 +65,15 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 	}
 
 	// 3.3 Faction Reward Stuff.
-	for(i = 0; i < 5; ++i)
+	for(uint32 i = 0; i < 5; ++i)
 		*data << uint32(qst->reward_repfaction[i]);
 
-	for(i = 0; i < 5; ++i)
+	for(uint32 i = 0; i < 5; ++i)
 		*data << int32(qst->reward_repvalue[i]);
 
-	for(i = 0; i < 5; ++i)
+	for(uint32 i = 0; i < 5; ++i)
 		*data << int32(qst->reward_replimit);
-	//end
+	// end
 
 	*data << qst->point_mapid;                                       // Unknown
 	*data << qst->point_x;                                           // Unknown
@@ -106,7 +104,6 @@ WorldPacket* WorldSession::BuildQuestQueryResponse(Quest *qst)
 		*data << qst->objectivetexts[1];                             // Objective 2 - Used as text if mob not set
 		*data << qst->objectivetexts[2];                             // Objective 3 - Used as text if mob not set
 		*data << qst->objectivetexts[3];                             // Objective 4 - Used as text if mob not set
-
 
 	return data;
 }
