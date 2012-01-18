@@ -1275,8 +1275,7 @@ public:
 	std::set<uint32> OnMeleeAuras;
 
 	/************************************************************************/
-	/* Player loading and savings                                           */
-	/* Serialize character to db                                            */
+	/* Player loading and saving - Serialized character to db               */
 	/************************************************************************/
 	void SaveToDB(bool bNewCharacter);
 	void SaveAuras(stringstream&);
@@ -1285,8 +1284,8 @@ public:
 	void LoadNamesFromDB(uint32 guid);
 	bool m_FirstLogin;
 
-	DeclinedName *m_declinedname;
-	DeclinedName const* GetDeclinedNames() const { return m_declinedname; }
+	/*DeclinedName *m_declinedname;
+	DeclinedName const* GetDeclinedNames() const { return m_declinedname; }*/
 
 	/************************************************************************/
     /* Death system                                                         */

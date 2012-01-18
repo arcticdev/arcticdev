@@ -2173,7 +2173,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDRANK);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_2);
 
-	for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i+=4)
+	for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i += 4)
 		Player::m_visibleUpdateMask.SetBit(i);
 
     for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
@@ -2187,19 +2187,7 @@ void Player::InitVisibleUpdateBits()
     }
 
 	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
-
-	/*for(uint16 i = PLAYER_FIELD_ARENA_TEAM_INFO_1_1; i <= PLAYER_FIELD_ARENA_TEAM_INFO_1_17; ++i)
-		Player::m_visibleUpdateMask.SetBit(i);*/
-
-	/* fuck i hate const - burlex */
-	/*if(target && target->GetGroup() == const_cast<Player* >(TO_PLAYER(this))->GetGroup() && const_cast<Player*  >(TO_PLAYER(this))->GetSubGroup() == target->GetSubGroup())
-	{
-	// quest fields are the same for party members
-	for(uint32 i = PLAYER_QUEST_LOG_1_01; i < PLAYER_QUEST_LOG_25_2; ++i)
-	Player::m_visibleUpdateMask.SetBit(i);
-	}*/
 }
-
 
 void Player::DestroyForPlayer( Player* target ) const
 {

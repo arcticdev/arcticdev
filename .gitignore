@@ -49,6 +49,8 @@ build
 *.so
 *.pidb
 *.res
+*.codeanalysis
+*.aps
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h
