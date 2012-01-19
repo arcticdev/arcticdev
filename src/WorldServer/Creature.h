@@ -312,7 +312,7 @@ public:
 	bool canFly()  const { return ( proto->CanMove & LIMIT_AIR)!= 0; }
 
 	// Arena organizers 
-	ARCTIC_INLINE bool ArenaOrganizersFlags() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDCHANGER ); } 
+	ARCTIC_INLINE bool ArenaOrganizersFlags() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDDESIGNER ); } 
 
 	// Updates
 	virtual void Update( uint32 time );
