@@ -10385,8 +10385,8 @@ void Player::RecalculateHonor()
 	HonorHandler::RecalculateHonorFields(TO_PLAYER(this));
 }
 
-//wooot, crapy code rulez.....NOT
-void Player::EventTalentHearthOfWildChange(bool apply)
+// wooot, crapy code rulez.....NOT
+void Player::EventTalentHeartOfWildChange(bool apply)
 {
 	if(!hearth_of_wild_pct)
 		return;

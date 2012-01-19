@@ -1268,7 +1268,7 @@ public:
 	uint32 ARCTIC_FASTCALL BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
 	void DestroyForPlayer( Player* target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
-	void EventTalentHearthOfWildChange(bool apply);
+	void EventTalentHeartOfWildChange(bool apply);
 	
 	std::list<LoginAura> loginauras;
 
