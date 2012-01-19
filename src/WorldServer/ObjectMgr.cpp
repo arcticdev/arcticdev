@@ -173,7 +173,7 @@ ObjectMgr::~ObjectMgr()
 
 	Log.Notice("ObjectMgr", "Deleting Profession Discoveries...");
 	std::set<ProfessionDiscovery*>::iterator itr = ProfessionDiscoveryTable.begin();
-	for ( ; itr != ProfessionDiscoveryTable.end(); itr++ )
+	for ( ; itr != ProfessionDiscoveryTable.end(); ++itr )
 		delete (*itr);	
 	ZoneToQuestMap.clear();
 
@@ -1787,7 +1787,7 @@ LevelInfo* ObjectMgr::GetLevelInfo(uint32 Race, uint32 Class, uint32 Level)
 {
 	// Iterate levelinfo map until we find the right class+race.
 	LevelInfoMap::iterator itr = mLevelInfo.begin();
-	for(; itr != mLevelInfo.end(); itr++ )
+	for(; itr != mLevelInfo.end(); ++itr )
 	{
 		if( itr->first.first == Race && itr->first.second == Class)
 		{

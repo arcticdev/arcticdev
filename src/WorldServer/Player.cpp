@@ -2299,7 +2299,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	ss << m_zoneId << ", '";
 		
-	for(uint32 i = 0; i < 12; i++ )
+	for(uint32 i = 0; i < 12; ++i )
 		ss << m_taximask[i] << " ";
 	ss << "', "
 	
@@ -4000,7 +4000,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		ASSERT( set );
 		ItemSet* Set = NULL;
 		std::list<ItemSet>::iterator i;
-		for( i = m_itemsets.begin(); i != m_itemsets.end(); i++ )
+		for( i = m_itemsets.begin(); i != m_itemsets.end(); ++i )
 		{
 			if( i->setid == setid )
 			{   
@@ -4121,7 +4121,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 	}
 	
 	// Stats
-	for( int i = 0; i < 10; i++ )
+	for( int i = 0; i < 10; ++i )
 	{
 		int32 val = proto->Stats[i].Value;
 		if( val == 0 )
@@ -4222,7 +4222,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				// so it just set last one to deleted looks like unintended behaviour
 				// because you can just use end()-1 to remove last so i put the if
 				// into the for
-				for( i = m_procSpells.begin(); i != m_procSpells.end(); i++ )
+				for( i = m_procSpells.begin(); i != m_procSpells.end(); ++i )
 				{
 					if( (*i).spellId == item->GetProto()->Spells[k].Id && !(*i).deleted )
 					{
@@ -5045,7 +5045,7 @@ void Player::UpdateChances()
 
 	//-1 = any weapon
 
-	for(; itr != tocritchance.end(); itr++ )
+	for(; itr != tocritchance.end(); ++itr )
 	{
 		if( itr->second.wclass == ( uint32 )-1 || ( tItemMelee != NULL && ( 1 << tItemMelee->GetProto()->SubClass & itr->second.subclass ) ) )
 		{
@@ -9375,7 +9375,7 @@ void Player::SetShapeShift(uint8 ss)
 	Spell* spe = NULL;
 	SpellCastTargets t(GetGUID());
 
-	for( itr = mSpells.begin(); itr != mSpells.end(); itr++ )
+	for( itr = mSpells.begin(); itr != mSpells.end(); ++itr )
 	{
 		sp = dbcSpell.LookupEntry( *itr );
 		if( sp->apply_on_shapeshift_change || sp->Attributes & 64 )		// passive/talent
@@ -11349,7 +11349,7 @@ void Player::Social_TellFriendsOnline()
 	data << GetAreaID() << getLevel() << uint32(getClass());
 
 	m_socialLock.Acquire();
-	for( itr = m_hasFriendList.begin(); itr != m_hasFriendList.end(); itr++ )
+	for( itr = m_hasFriendList.begin(); itr != m_hasFriendList.end(); ++itr )
 	{
 		pl = objmgr.GetPlayer(*itr);
 		if( pl != NULL )
@@ -11369,7 +11369,7 @@ void Player::Social_TellFriendsOffline()
 	data << uint8( FRIEND_OFFLINE ) << GetGUID() << uint8( 0 );
 
 	m_socialLock.Acquire();
-	for( itr = m_hasFriendList.begin(); itr != m_hasFriendList.end(); itr++ )
+	for( itr = m_hasFriendList.begin(); itr != m_hasFriendList.end(); ++itr )
 	{
 		pl = objmgr.GetPlayer(*itr);
 		if( pl != NULL )
@@ -11389,7 +11389,7 @@ void Player::Social_SendFriendList(uint32 flag)
 
 	data << flag;
 	data << uint32( m_friends.size() + m_ignores.size() );
-	for( itr = m_friends.begin(); itr != m_friends.end(); itr++ )
+	for( itr = m_friends.begin(); itr != m_friends.end(); ++itr )
 	{
 		// guid
 		data << uint64( itr->first );
@@ -11455,7 +11455,7 @@ void Player::VampiricSpell(uint32 dmg, Unit* pTarget, SpellEntry *spellinfo)
 			// loop party
 			if( pSubGroup != NULL )
 			{
-				for( itr = pSubGroup->GetGroupMembersBegin(); itr != pSubGroup->GetGroupMembersEnd(); itr++ )
+				for( itr = pSubGroup->GetGroupMembersBegin(); itr != pSubGroup->GetGroupMembersEnd(); ++itr )
 				{
 					if( (*itr)->m_loggedInPlayer != NULL && (*itr) != m_playerInfo )
 						Heal( (*itr)->m_loggedInPlayer, 15286, bonus / 5 );

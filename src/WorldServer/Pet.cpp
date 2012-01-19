@@ -163,7 +163,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 
 		// These need to be checked.
 		SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED | UNIT_FLAG_COMBAT); // why combat ??
-		SetUInt32Value(UNIT_FIELD_POWER5, PET_HAPPINESS_UPDATE_VALUE >> 1);//happiness
+		SetHappiness(PET_HAPPINESS_UPDATE_VALUE >> 1); // happiness
 		SetUInt32Value(UNIT_FIELD_MAXPOWER5, 1000000);
 		SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
 		SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, GetNextLevelXP(getLevel()));
@@ -291,20 +291,20 @@ void Pet::Update(uint32 time)
 
 	if(!bExpires)
 	{
-		//Happiness
+		// Happiness
 		if(m_HappinessTimer == 0)
 		{	
-			int32 val = GetUInt32Value(UNIT_FIELD_POWER5);
-			//amount of burned happiness is loyalty_lvl depended
+			int32 val = GetHappiness();
+			// amount of burned happiness is loyalty_lvl depended
 			int32 burn = 1042;
 			if( CombatStatus.IsInCombat() )
-				burn = burn >> 1; //in combat reduce burn by half (guessed) 
+				burn = burn >> 1; // in combat reduce burn by half (guessed) 
 			if((val - burn)<0)
 				val = 0;
 			else
 				val -= burn;
-			SetUInt32Value(UNIT_FIELD_POWER5, val);// Set the value
-			m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER;// reset timer
+			SetHappiness(val); // Set the value
+			m_HappinessTimer = PET_HAPPINESS_UPDATE_TIMER; // reset timer
 		} 
 		else 
 		{
@@ -689,7 +689,7 @@ void Pet::UpdatePetInfo(bool bSetToOffline)
 	pi->number = m_PetNumber;
 	pi->xp = m_PetXP;
 	pi->level = GetUInt32Value(UNIT_FIELD_LEVEL);
-	pi->happiness = GetUInt32Value( UNIT_FIELD_POWER5 );
+	pi->happiness = GetHappiness();
 	pi->happinessupdate = m_HappinessTimer;
 
 	// save action bar
@@ -1403,8 +1403,8 @@ void Pet::ApplyStatsForLevel()
 
 HappinessState Pet::GetHappinessState() 
 {
-	//gets happiness state from happiness points
-	uint32 pts = GetUInt32Value( UNIT_FIELD_POWER5 );
+	// gets happiness state from happiness points
+	uint32 pts = GetHappiness()
 	if( pts < PET_HAPPINESS_UPDATE_VALUE )
 		return UNHAPPY;
 	else if( pts >= PET_HAPPINESS_UPDATE_VALUE << 1 )
@@ -1415,10 +1415,10 @@ HappinessState Pet::GetHappinessState()
 
 void Pet::AddPetSpellToOwner(uint32 spellId)
 {
-	//exit if owner hasn't Beast training ability (id 5149)
+	// exit if owner hasn't Beast training ability (id 5149)
 	if(!m_Owner || !m_Owner->HasSpell(5149))
 		return;
-	//find appropriate teaching spell...
+	// find appropriate teaching spell...
 	uint32 TeachingSpellID = 0;
 	TeachingSpellID = sWorld.GetTeachingSpell(spellId);
     if(TeachingSpellID)

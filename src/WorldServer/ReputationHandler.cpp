@@ -392,7 +392,7 @@ void Player::UpdateInrangeSetsBasedOnReputation()
 	Unit* pUnit;
 	bool rep_value;
 	bool enemy_current;
-	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++ )
+	for( itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); ++itr )
 	{
 		if( (*itr)->GetTypeId() != TYPEID_UNIT )
 			continue;

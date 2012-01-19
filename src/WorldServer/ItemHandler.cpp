@@ -1669,7 +1669,7 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 
 	if( !itemguid ) 
 	{
-		for( i = 0; i < MAX_INVENTORY_SLOT; i++ )
+		for( i = 0; i < MAX_INVENTORY_SLOT; ++i )
 		{
 			pItem = _player->GetItemInterface()->GetInventoryItem( i );
 			if( pItem != NULL )

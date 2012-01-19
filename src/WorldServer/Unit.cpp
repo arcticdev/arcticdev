@@ -3711,7 +3711,7 @@ else
 
 			// Loop on hit spells, and strike with those.
 			for( map< SpellEntry*, pair< uint32, uint32 > >::iterator itr = TO_PLAYER(this)->m_onStrikeSpells.begin();
-				itr != TO_PLAYER(this)->m_onStrikeSpells.end(); itr++ )
+				itr != TO_PLAYER(this)->m_onStrikeSpells.end(); ++itr )
 			{
 				if( itr->second.first )
 				{
@@ -6824,7 +6824,7 @@ bool Unit::RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel = -1
 					}
 					else if( MechanicType == MECHANIC_ENSNARED ) // if got immunity for slow, remove some that are not in the mechanics
 					{
-						for( int i=0 ; i<3 ; i++ )
+						for( int i=0 ; i<3 ; ++i )
 						{
 							// SNARE + ROOT
 							if( m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )

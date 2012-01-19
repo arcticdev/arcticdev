@@ -2865,7 +2865,7 @@ void Aura::SpellAuraDummy(bool apply)
 
 				float range = GetMaxRange( dbcSpellRange.LookupEntry( m_spellProto->rangeIndex ) );
 				float r = range*range;
-				for( unordered_set<Object*>::iterator itr = m_target->GetInRangeSetBegin(); itr != m_target->GetInRangeSetEnd(); itr++ )
+				for( unordered_set<Object*>::iterator itr = m_target->GetInRangeSetBegin(); itr != m_target->GetInRangeSetEnd(); ++itr )
 				{
 					if( !(*itr)->IsPlayer() )
 						continue;
@@ -4778,7 +4778,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 					}
 					else // if got immunity for slow, remove some that are not in the mechanics
 					{
-						for( int i = 0; i < 3; i++ )
+						for( int i = 0; i < 3; ++i )
 						{
 							if( m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || m_target->m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )
 							{
@@ -7711,7 +7711,7 @@ void Aura::SpellAuraForceReaction( bool apply )
 
 	WorldPacket data( SMSG_SET_FORCED_REACTIONS, ( 8 * p_target->m_forcedReactions.size() ) + 4 );
 	data << uint32(p_target->m_forcedReactions.size());
-	for( itr = p_target->m_forcedReactions.begin(); itr != p_target->m_forcedReactions.end(); itr++ )
+	for( itr = p_target->m_forcedReactions.begin(); itr != p_target->m_forcedReactions.end(); ++itr )
 	{
 		data << itr->first;
 		data << itr->second;

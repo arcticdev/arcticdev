@@ -1570,7 +1570,7 @@ bool AIInterface::FindFriends(float dist)
 	unordered_set<Object* >::iterator itr;
 	Unit* pUnit;
 
-	for( itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); itr++ )
+	for( itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr )
 	{
 		if((*itr) == NULL || !(*itr)->IsInWorld() || (*itr)->GetTypeId() != TYPEID_UNIT)
 			continue;

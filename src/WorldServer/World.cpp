@@ -194,7 +194,7 @@ void World::Destructor()
 	delete g_chatFilter;
 	g_chatFilter = NULL;
 
-	for( AreaTriggerMap::iterator i = m_AreaTrigger.begin( ); i != m_AreaTrigger.end( ); i++ )
+	for( AreaTriggerMap::iterator i = m_AreaTrigger.begin( ); i != m_AreaTrigger.end( ); ++i )
 		delete i->second;
 	m_AreaTrigger.clear();
 
@@ -669,7 +669,7 @@ bool World::SetInitialWorldSettings()
 
 		InspectTalentTabPages[talent_class + 1][tab_info->TabPage] = tab_info->TalentTabID;
 
-		for( std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); itr++ )
+		for( std::map< uint32, uint32 >::iterator itr = InspectTalentTabBit.begin(); itr != InspectTalentTabBit.end(); ++itr )
 		{
 			uint32 talent_id = itr->first & 0xFFFF;
 			TalentEntry const* talent_info = dbcTalent.LookupEntry( talent_id );

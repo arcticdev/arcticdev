@@ -2199,9 +2199,9 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 					// dying pet looses 1 happiness level
 					if( !TO_PET( pVictim )->IsSummonedPet() )
 					{
-						uint32 hap = TO_PET( pVictim )->GetUInt32Value( UNIT_FIELD_POWER5 );
+						uint32 hap = TO_PET( pVictim )->GetHappiness();
 						hap = hap - PET_HAPPINESS_UPDATE_VALUE > 0 ? hap - PET_HAPPINESS_UPDATE_VALUE : 0;
-						TO_PET( pVictim )->SetUInt32Value( UNIT_FIELD_POWER5, hap );
+						TO_PET( pVictim )->SetHappiness(hap);
 					}
 					
 					TO_PET( pVictim )->DelayedRemove( false, true );

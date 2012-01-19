@@ -293,7 +293,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
     //InStealth()
     float r = range * range;
 	//uint8 did_hit_result;
-    for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+    for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
     {
         // don't add objects that are not units and that are dead
         if( !( (*itr)->IsUnit() ) || ! TO_UNIT( *itr )->isAlive())
@@ -354,7 +354,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 	//TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range*range;
 	//uint8 did_hit_result;
-	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || ! TO_UNIT(*itr)->isAlive() || ( (*itr)->GetTypeId()==TYPEID_UNIT && TO_CREATURE(*itr)->IsTotem() ) || !(*itr)->PhasedCanInteract(m_caster))
 			continue;
@@ -400,7 +400,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 	//TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range * range;
 	//uint8 did_hit_result;
-	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !((*itr)->IsUnit()) || !TO_UNIT(*itr)->isAlive() || !(*itr)->PhasedCanInteract(m_caster))
 			continue;
@@ -456,7 +456,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 		}
 	}
 	float srcx = m_caster->GetPositionX(), srcy = m_caster->GetPositionY(), srcz = m_caster->GetPositionZ();
-	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || !TO_UNIT(*itr)->isAlive() || !(*itr)->PhasedCanInteract(m_caster))
 			continue;
@@ -505,7 +505,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 		}
 	}
 	float srcx=m_caster->GetPositionX(),srcy=m_caster->GetPositionY(),srcz=m_caster->GetPositionZ();
-	for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || !TO_UNIT(*itr)->isAlive() )
 			continue;
@@ -1983,7 +1983,7 @@ void Spell::SendCastResult(uint8 result)
 			uint16 area_id = plr->GetMapMgr()->GetAreaID( plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ());
 			AreaGroup *GroupEntry = dbcAreaGroup.LookupEntry( m_spellInfo->AreaGroupId );
 
-			for( uint8 i = 0; i < 7; i++ )
+			for( uint8 i = 0; i < 7; ++i )
 				if( GroupEntry->AreaId[i] != 0 && GroupEntry->AreaId[i] != area_id )
 				{
 					Extra = GroupEntry->AreaId[i];
@@ -2250,7 +2250,7 @@ void Spell::SendSpellGo()
 	if( m_hitTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
 		{
 			if( itr->HitResult == SPELL_DID_HIT_SUCCESS )
 			{
@@ -2264,7 +2264,7 @@ void Spell::SendSpellGo()
 	if( m_missTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
 		{
 			if( itr->HitResult != SPELL_DID_HIT_SUCCESS )
 			{
@@ -2304,7 +2304,7 @@ void Spell::writeSpellGoTargets( WorldPacket * data )
 	if( m_hitTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
 		{
 			if( itr->HitResult == SPELL_DID_HIT_SUCCESS )
 			{
@@ -2318,7 +2318,7 @@ void Spell::writeSpellGoTargets( WorldPacket * data )
 	if( m_missTargetCount > 0 )
 	{
 		counter = 0;
-		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; itr++ )
+		for( itr = m_targetList.begin(); itr != m_targetList.end() && counter < 100; ++itr )
 		{
 			if( itr->HitResult != SPELL_DID_HIT_SUCCESS )
 			{
@@ -3384,7 +3384,7 @@ uint8 Spell::CanCast(bool tolerate)
 			float focusRange;
 			bool found = false;
 
-			for( unordered_set<Object*>::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); itr++ )
+			for( unordered_set<Object*>::iterator itr = p_caster->GetInRangeSetBegin(); itr != p_caster->GetInRangeSetEnd(); ++itr )
 			{
 				if((*itr)->GetTypeId() != TYPEID_GAMEOBJECT)
 					continue;
@@ -3429,7 +3429,7 @@ uint8 Spell::CanCast(bool tolerate)
 			AreaGroup const* groupEntry = dbcAreaGroup.LookupEntry( m_spellInfo->AreaGroupId );
 			if( groupEntry )
 			{
-				for ( uint8 i=0; i<7; i++ )
+				for ( uint8 i=0; i<7; ++i )
 				{
 					if( groupEntry->AreaId[i] == zone_id || groupEntry->AreaId[i] == area_id )
 					{
@@ -4010,7 +4010,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 		if(target != NULL) /* -Supalosa- Shouldn't this be handled on Spell Apply? */
 		{
-			for( int i = 0; i < 3; i++ ) // if is going to cast a spell that breaks stun remove stun auras, looks a bit hacky but is the best way i can find
+			for( int i = 0; i < 3; ++i ) // if is going to cast a spell that breaks stun remove stun auras, looks a bit hacky but is the best way i can find
 			{
 				if( m_spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MECHANIC_IMMUNITY )
 				{
@@ -4601,7 +4601,7 @@ void Spell::Heal(int32 amount)
 				uint32 GHL = float2int32(amount * 0.1f);
 				uint32 targetcnt = 0;
 				unordered_set<Object* >::iterator itr;
-				for( itr = unitTarget->GetInRangeSetBegin(); itr != unitTarget->GetInRangeSetEnd(); itr++ )
+				for( itr = unitTarget->GetInRangeSetBegin(); itr != unitTarget->GetInRangeSetEnd(); ++itr )
 				{
 					if( !(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive() || isAttackable(u_caster, (*itr), true) )
 						continue;
@@ -5142,7 +5142,7 @@ void Spell::_AddTarget(const Unit* target, const uint32 effectid)
 	SpellTarget tgt;
 
 	// look for the target in the list already
-	for( itr = m_targetList.begin(); itr != m_targetList.end(); itr++ )
+	for( itr = m_targetList.begin(); itr != m_targetList.end(); ++itr )
 	{
 		if( itr->Guid == target->GetGUID() )
 		{
@@ -5175,7 +5175,7 @@ void Spell::_AddTargetForced(const uint64& guid, const uint32 effectid)
 	SpellTarget tgt;
 
 	// look for the target in the list already
-	for( itr = m_targetList.begin(); itr != m_targetList.end(); itr++ )
+	for( itr = m_targetList.begin(); itr != m_targetList.end(); ++itr )
 	{
 		if( itr->Guid == guid )
 		{

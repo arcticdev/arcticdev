@@ -98,7 +98,7 @@ bool SubGroup::AddPlayer(PlayerInfo * info)
 
 bool SubGroup::HasMember(uint32 guid)
 {
-	for( GroupMembersSet::iterator itr = m_GroupMembers.begin(); itr != m_GroupMembers.end(); itr++ )
+	for( GroupMembersSet::iterator itr = m_GroupMembers.begin(); itr != m_GroupMembers.end(); ++itr )
 		if( (*itr) != NULL )
 			if( (*itr)->guid == guid )
 				return true;
@@ -210,7 +210,7 @@ void Group::Update()
 
 	if( m_groupFlags & GROUP_FLAG_REMOVE_OFFLINE_PLAYERS )
 	{
-		for( i = 0; i < m_SubGroupCount; i++ )
+		for( i = 0; i < m_SubGroupCount; ++i )
 		{
 			sg1 = m_SubGroups[i];
 
@@ -252,7 +252,7 @@ void Group::Update()
 			m_Looter = pNewLeader->m_playerInfo;
 	}
 
-	for( i = 0; i < m_SubGroupCount; i++ )
+	for( i = 0; i < m_SubGroupCount; ++i )
 	{
 		sg1 = m_SubGroups[i];
 
@@ -429,7 +429,7 @@ Player* Group::FindFirstPlayer()
 	GroupMembersSet::iterator itr;
 	m_groupLock.Acquire();
 
-	for( uint32 i = 0; i < m_SubGroupCount; i++ )
+	for( uint32 i = 0; i < m_SubGroupCount; ++i )
 	{
 		if( m_SubGroups[i] != NULL )
 		{
@@ -647,7 +647,7 @@ bool Group::HasMember(Player* pPlayer)
 	GroupMembersSet::iterator itr;
 	m_groupLock.Acquire();
 
-	for( uint32 i = 0; i < m_SubGroupCount; i++ )
+	for( uint32 i = 0; i < m_SubGroupCount; ++i )
 	{
 		if( m_SubGroups[i] != NULL )
 		{

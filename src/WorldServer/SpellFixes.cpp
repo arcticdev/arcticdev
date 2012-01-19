@@ -6872,7 +6872,7 @@ void ApplyNormalFixes()
 		bool spcheck = false;
 		SpellEntry *spz;
 
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( uint8 i = 0 ; i < 3 ; ++i )
 		{
 			if (sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_DAMAGE ||
 				sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_HEAL ||
@@ -6884,7 +6884,7 @@ void ApplyNormalFixes()
 		}
 
 		//Flag for DD or DH
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( uint8 i = 0 ; i < 3 ; ++i )
 		{
 			if ( sp->EffectApplyAuraName[i] == SPELL_AURA_PERIODIC_TRIGGER_SPELL && sp->EffectTriggerSpell[i] )
 			{
@@ -6999,7 +6999,7 @@ void ApplyNormalFixes()
 			sp->spell_coef_flags = SPELL_FLAG_IS_DD_OR_DH_SPELL;
 
 		//Additional Effect (not healing or damaging)
-		for( uint8 i = 0 ; i < 3 ; i++ )
+		for( uint8 i = 0 ; i < 3 ; ++i )
 		{
 			if(sp->Effect[i] == 0)
 				continue;

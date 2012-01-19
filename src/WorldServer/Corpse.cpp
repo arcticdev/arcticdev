@@ -67,7 +67,7 @@ void Corpse::SaveToDB()
 	ss << "INSERT INTO corpses (guid, positionX, positionY, positionZ, orientation, zoneId, mapId, data, instanceId) VALUES ("
 		<< GetLowGUID() << ", '" << GetPositionX() << "', '" << GetPositionY() << "', '" << GetPositionZ() << "', '" << GetOrientation() << "', '" << GetZoneId() << "', '" << GetMapId() << "', '";
 
-	for(uint16 i = 0; i < m_valuesCount; i++ )
+	for(uint16 i = 0; i < m_valuesCount; ++i )
 		ss << GetUInt32Value(i) << " ";
 
 	ss << "', " << GetInstanceID() << " )";

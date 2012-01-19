@@ -49,7 +49,7 @@ Item::~Item()
 	sEventMgr.RemoveEvents( this );
 
 	EnchantmentMap::iterator itr;
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); itr++ )
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
 	{
 		if( itr->second.Enchantment->type == 0 && itr->second.Slot == 0 && itr->second.ApplyTime == 0 && itr->second.Duration == 0 )
 		{
@@ -159,7 +159,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	uint32 time_left;
 	uint32 enchslot;
 
-	for( vector<string>::iterator itr = enchants.begin(); itr != enchants.end(); itr++ )
+	for( vector<string>::iterator itr = enchants.begin(); itr != enchants.end(); ++itr )
 	{
 		if( sscanf( (*itr).c_str(), "%u,%u,%u", (unsigned int*)&enchant_id, (unsigned int*)&time_left, (unsigned int*)&enchslot) == 3 )
 		{
@@ -1001,7 +1001,7 @@ void Item::RemoveRelatedEnchants( EnchantEntry* newEnchant )
 void Item::RemoveProfessionEnchant()
 {
 	EnchantmentMap::iterator itr;
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); itr++ )
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
 	{
 		if( itr->second.Duration != 0 )// not perm
 			continue;
@@ -1017,7 +1017,7 @@ void Item::RemoveSocketBonusEnchant()
 {
 	EnchantmentMap::iterator itr;
 	
-	for( itr = Enchantments.begin(); itr != Enchantments.end(); itr++ )
+	for( itr = Enchantments.begin(); itr != Enchantments.end(); ++itr )
 	{
 		if( itr->second.Enchantment->Id == GetProto()->SocketBonus )
 		{

@@ -1531,7 +1531,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item* item)
 	{
 		if( item->GetProto()->BagFamily & ITEM_TYPE_KEYRING )
 		{
-			for(i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; i++ )
+			for(i=INVENTORY_KEYRING_START; i<INVENTORY_KEYRING_END; ++i )
 			{
 				if(m_pItems[i] == NULL)
 				{
@@ -1548,7 +1548,7 @@ AddItemResult ItemInterface::AddItemToFreeSlot(Item* item)
 		}
 		else if( item->GetProto()->BagFamily & ITEM_TYPE_CURRENCY )
 		{
-			for( i = INVENTORY_CURRENCY_START; i < INVENTORY_CURRENCY_END; i++ )
+			for( i = INVENTORY_CURRENCY_START; i < INVENTORY_CURRENCY_END; ++i )
 			{
 				if(m_pItems[i] == NULL)
 				{
@@ -3079,7 +3079,7 @@ void ItemInterface::mSaveItemsToDatabase(bool first, QueryBuffer * buf)
 AddItemResult ItemInterface::AddItemToFreeBankSlot(Item* item)
 {
 	//special items first
-	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
+	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; ++i )
 	{
 		if( m_pItems[i] != NULL )
 		{
@@ -3095,7 +3095,7 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item* item)
 		}
 	}
 
-	for( uint32 i= BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++ )
+	for( uint32 i= BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; ++i )
 	{
 		if( m_pItems[i] == NULL )
 		{
@@ -3103,7 +3103,7 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item* item)
 		}
 	}
 
-	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
+	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; ++i )
 	{
 		if( m_pItems[i] != NULL && m_pItems[i]->GetProto()->BagFamily == 0 && m_pItems[i]->IsContainer() ) //special bags ignored
 		{
@@ -3122,7 +3122,7 @@ AddItemResult ItemInterface::AddItemToFreeBankSlot(Item* item)
 
 uint8 ItemInterface::FindSpecialBag(Item* item)
 {
-	for( uint32 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
+	for( uint32 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i )
 	{
 		if( m_pItems[i] != NULL )
 		{
@@ -3137,7 +3137,7 @@ uint8 ItemInterface::FindSpecialBag(Item* item)
 
 uint8 ItemInterface::FindFreeKeyringSlot()
 {
-	for( uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
+	for( uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; ++i )
 	{
 		if( m_pItems[i] == NULL )
 		{
@@ -3158,7 +3158,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 		{
 			if( proto->BagFamily & ITEM_TYPE_KEYRING )
 			{
-				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; i++ )
+				for(uint32 i = INVENTORY_KEYRING_START; i < INVENTORY_KEYRING_END; ++i )
 				{
 					if( m_pItems[i] == NULL )
 					{
@@ -3171,7 +3171,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 			}
 			else if( proto->BagFamily & ITEM_TYPE_CURRENCY )
 			{
-				for(uint8 i = INVENTORY_CURRENCY_START; i < INVENTORY_CURRENCY_END; i++ )
+				for(uint8 i = INVENTORY_CURRENCY_START; i < INVENTORY_CURRENCY_END; ++i )
 				{
 					if( m_pItems[i] == NULL )
 					{
@@ -3184,7 +3184,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 			}
 			else
 			{
-				for( uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
+				for( uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i )
 				{
 					if( m_pItems[i] != NULL && m_pItems[i]->IsContainer() )
 					{
@@ -3206,7 +3206,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 	}
 
 	//backpack
-	for( uint8 i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; i++ )
+	for( uint8 i = INVENTORY_SLOT_ITEM_START; i < INVENTORY_SLOT_ITEM_END; ++i )
 	{
 		Item* item = GetInventoryItem( i );
 		if( item == NULL ) 
@@ -3219,7 +3219,7 @@ SlotResult ItemInterface::FindFreeInventorySlot(ItemPrototype *proto)
 	}
 
 	//bags
-	for( uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
+	for( uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i )
 	{
 		Item* item = GetInventoryItem(i);
 		if( item != NULL )
@@ -3253,7 +3253,7 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 	{
 		if( proto->BagFamily )
 		{
-			for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
+			for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; ++i )
 			{
 				if( m_pItems[i] != NULL && m_pItems[i]->IsContainer() )
 				{
@@ -3274,7 +3274,7 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 	}
 
 	//backpack
-	for( uint32 i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; i++ )
+	for( uint32 i = BANK_SLOT_ITEM_START; i < BANK_SLOT_ITEM_END; ++i )
 	{
 		Item* item = GetInventoryItem( i );
 		if( item == NULL ) 
@@ -3287,7 +3287,7 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 	}
 
 	//bags
-	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; i++ )
+	for( uint32 i = BANK_SLOT_BAG_START; i < BANK_SLOT_BAG_END; ++i )
 	{
 		Item* item = GetInventoryItem(i);
 		if( item != NULL )
@@ -3315,7 +3315,7 @@ SlotResult ItemInterface::FindFreeBankSlot(ItemPrototype *proto)
 
 SlotResult ItemInterface::FindAmmoBag()
 {
-	for( uint32 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; i++ )
+	for( uint32 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i )
 		if( m_pItems[i] != NULL && m_pItems[i]->IsAmmoBag())
 		{
 			result.ContainerSlot = ITEM_NO_SLOT_AVAILABLE;
@@ -3375,7 +3375,7 @@ void ItemInterface::CheckAreaItems()
 			{
 				Container* bag = TO_CONTAINER(m_pItems[x]);
  
-				for( uint32 i = 0; i < bag->GetProto()->ContainerSlots; i++ )
+				for( uint32 i = 0; i < bag->GetProto()->ContainerSlots; ++i )
 				{
 					if( bag->GetItem(i) != NULL && bag->GetItem(i)->GetProto() && bag->GetItem(i)->GetProto()->MapID && bag->GetItem(i)->GetProto()->MapID != GetOwner()->GetMapId() )
 						bag->SafeFullRemoveItemFromSlot( i );

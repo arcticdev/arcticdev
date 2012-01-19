@@ -1085,7 +1085,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	return true;
 }
 
-
 void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 {
 	proto = proto_;

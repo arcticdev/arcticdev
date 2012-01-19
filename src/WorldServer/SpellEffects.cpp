@@ -937,6 +937,15 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					gameObjTarget->_Expire();
 			}
 		}break;
+	case 51284: // Feed pet dummy for Happiness incrementation.
+		{
+			if(p_caster != NULL && p_caster->GetSummon() != NULL)
+			{
+				Pet* pet = p_caster->GetSummon();
+				float amount = ((float(damage)) * pet->GetHappinessDmgMod());
+				pet->IncreaseHappiness(amount);
+			}
+		}break;
 	/*
 		Preparation
 		When activated, this ability immediately finishes the cooldown on your Evasion, Sprint, Vanish, Cold Blood and Shadowstep abilities.
@@ -2712,7 +2721,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		// Profession Discoveries
 		uint32 discovered_recipe = 0;
 		std::set<ProfessionDiscovery*>::iterator itr = objmgr.ProfessionDiscoveryTable.begin();
-		for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); itr++ )
+		for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); ++itr )
 		{
 			ProfessionDiscovery * pf = ( *itr );
 			if ( pf != NULL && m_spellInfo->Id == pf->SpellId && p_caster->_GetSkillLineCurrent( skill->skilline ) >= pf->SkillValue && !p_caster->HasSpell( pf->SpellToDiscover ) && Rand( pf->Chance ) )
@@ -3473,7 +3482,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 
 	float spellRadius = GetRadius(i);
 
-	/*for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++ )
+	/*for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if(!((*itr)->IsUnit()) || !(TO_UNIT(*itr))->isAlive())
 			continue;
@@ -5112,7 +5121,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			{
 				pAura = p_caster->m_auras[i];
 				if( pAura != NULL )
-					for( int i=0 ; i<3 ; i++ )
+					for( int i=0 ; i<3 ; ++i )
 						if( pAura->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || pAura->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )
 						{
 							p_caster->RemoveAuraBySlot(i);
@@ -6594,16 +6603,16 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	damage *= 1000;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(m_spellInfo->EffectTriggerSpell[i]);
-	Spell* sp=new Spell(p_caster,spellInfo,true,NULL);
+	Spell* sp = new Spell(p_caster, spellInfo, true, NULL);
 	sp->forced_basepoints[0] = damage - 1;
 	SpellCastTargets tgt;
-	tgt.m_unitTarget=pPet->GetGUID();
+	tgt.m_unitTarget = pPet->GetGUID();
 	sp->prepare(&tgt);
 
 	if(itemTarget->GetUInt32Value(ITEM_FIELD_STACK_COUNT)>1)
 	{
 		itemTarget->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, -1);
-		itemTarget->m_isDirty=true;
+		itemTarget->m_isDirty = true;
 	}
 	else
 	{
@@ -6617,7 +6626,6 @@ void Spell::SpellEffectReputation(uint32 i)
 	if( playerTarget == NULL)
 		return;
 
-	//playerTarget->modReputation(m_spellInfo->EffectMiscValue[i], damage, true);
 	playerTarget->ModStanding(m_spellInfo->EffectMiscValue[i], damage);
 }
 
@@ -6669,7 +6677,6 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 
 	GoSummon->SetRotation( m_caster->GetOrientation() );
 	GoSummon->SetUInt32Value(GAMEOBJECT_LEVEL, u_caster->getLevel());
-
 
 	if(GoSummon->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) == GAMEOBJECT_TYPE_TRAP)
 	{
@@ -7608,7 +7615,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 	// Profession Discoveries used in Northrend Alchemy and Inscription Research plus Minor research
 	uint32 discovered_recipe = 0;
 	std::set<ProfessionDiscovery*>::iterator itr = objmgr.ProfessionDiscoveryTable.begin();
-	for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); itr++ )
+	for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); ++itr )
 	{
 		ProfessionDiscovery * pf = NULL;
 		pf = ( *itr );

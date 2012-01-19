@@ -80,7 +80,7 @@ void MailMessage::SaveToDB()
 		<< CharacterDatabase.EscapeString(body) << "\","
 		<< money << ",'";
 
-	for( itr = items.begin( ); itr != items.end( ); itr++ )
+	for( itr = items.begin( ); itr != items.end( ); ++itr )
 		ss << (*itr) << ",";
 
 	ss << "'," 
@@ -223,7 +223,7 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 
 	if( !msg->items.empty( ) )
 	{
-		for( itr = msg->items.begin( ); itr != msg->items.end( ); itr++ )
+		for( itr = msg->items.begin( ); itr != msg->items.end( ); ++itr )
 		{
 			pItem = objmgr.LoadItem( *itr );
 			if( pItem == NULL )
@@ -600,7 +600,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	// Check for the item, and required item.
 	if( !items.empty( ) )
 	{
-		for( itr = items.begin(); itr != items.end(); itr++ )
+		for( itr = items.begin(); itr != items.end(); ++itr )
 		{
 			pItem = *itr;
 			if( _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(pItem->GetGUID(), false) != pItem )
@@ -692,7 +692,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		return;
 	}
 
-	for( itr = message->items.begin( ); itr != message->items.end( ); itr++ )
+	for( itr = message->items.begin( ); itr != message->items.end( ); ++itr )
 	{
 		if ( (*itr) == lowguid )
 			break;

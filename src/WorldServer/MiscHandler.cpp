@@ -334,7 +334,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
                 Lock* pLock = dbcLock.LookupEntry( pGO->GetInfo()->SpellFocus );
                 if( pLock )
                 {
-                    for( uint32 i=0; i < 5; i++ )
+                    for( uint32 i=0; i < 5; ++i )
                     {
                         if( pLock->locktype[i] )
                         {
