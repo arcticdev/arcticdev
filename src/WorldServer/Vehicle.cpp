@@ -387,81 +387,141 @@ bool Vehicle::HasPassenger(Unit* pPassenger)
 	//is not in this vehicle
 	return false;
 }
-
 void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 {
-	if(slot >= 8 || slot > m_maxPassengers)
-		return;
-	if(!m_vehicleSeats[slot] || !GetAIInterface())
-		return;
-
-	if(m_passengers[slot] != NULL)
-	{
-		RemovePassenger(m_passengers[slot]);
-	}
-
-	if(pPassenger->m_CurrentVehicle != NULL)
-		pPassenger->m_CurrentVehicle->RemovePassenger(pPassenger);
-
+	assert( slot < m_maxPassengers );
 	m_passengers[ slot ] = pPassenger;
-
 	pPassenger->m_inVehicleSeatId = slot;
+	/* pPassenger->m_transportGuid = GetGUID(); */
+	LocationVector v;
+	v.x = /* pPassenger->m_TransporterX =*/ m_vehicleSeats[slot]->m_attachmentOffsetX;
+	v.y = /* pPassenger->m_TransporterY = */ m_vehicleSeats[slot]->m_attachmentOffsetY;
+	v.z = /* pPassenger->m_TransporterZ = */ m_vehicleSeats[slot]->m_attachmentOffsetZ;
+	v.o = /* pPassenger->m_TransporterO = */ 0;
 
 	if( m_mountSpell )
 		pPassenger->CastSpell( pPassenger, m_mountSpell, true );
 
-	pPassenger->m_CurrentVehicle = this;
-
-	if(slot == 0)
-	{
-		SetControllingUnit(pPassenger);
-		CombatStatus.Vanished();
-	}
-
-	pPassenger->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-
+	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SELF_RES);
+	// This is where the real magic happens
 	if( pPassenger->IsPlayer() )
 	{
-		Player* pPlayer = static_cast<Player*>(pPassenger);
+		Player* pPlayer = TO_PLAYER(pPassenger);
+		//pPlayer->Root();
+
+		if(pPlayer->m_CurrentCharm)
+			return;
+
+		//Dismount
 		if(pPlayer->m_MountSpellId)
 			pPlayer->RemoveAura(pPlayer->m_MountSpellId);
+	
+		//Remove morph spells
+		if(pPlayer->GetUInt32Value(UNIT_FIELD_DISPLAYID)!= pPlayer->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID))
+		{
+			pPlayer->RemoveAllAurasOfType(SPELL_AURA_TRANSFORM);
+			pPlayer->RemoveAllAurasOfType(SPELL_AURA_MOD_SHAPESHIFT);
+		}
 
+		//Dismiss any pets
 		if(pPlayer->GetSummon())
 		{
-			if(pPlayer->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-				pPlayer->GetSummon()->Dismiss(false);
-			else
-				pPlayer->GetSummon()->Remove(false, true, true);
+		if(pPlayer->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
+			pPlayer->GetSummon()->Dismiss(false);				// warlock summon -> dismiss
+		else
+			pPlayer->GetSummon()->Remove(false, true, true);	// hunter pet -> just remove for later re-call
 		}
+
+		pPlayer->m_CurrentVehicle = TO_VEHICLE(this);
+
+		pPlayer->SetFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION));
+
+		//pPlayer->ResetHeartbeatCoords();
+		pPlayer->SetUInt64Value(PLAYER_FARSIGHT, GetGUID());
+
+		//WorldPacket data3(SMSG_CONTROL_VEHICLE, 0);
+		//pPlayer->GetSession()->SendPacket(&data3);
+
+		pPlayer->SetPlayerStatus(TRANSFER_PENDING);
+		pPlayer->m_sentTeleportPosition.ChangeCoords(GetPositionX(), GetPositionY(), GetPositionZ());
+
+		WorldPacket data(MSG_MOVE_TELEPORT, 68);
+		data << pPlayer->GetNewGUID();
+		data << pPlayer->m_teleportAckCounter;					// counter
+		data << uint32(MOVEFLAG_TAXI);							// transport
+		data << uint16(0);										// special flags
+		data << uint32(getMSTime());							// time
+		data << GetPositionX();									// position vector 
+		data << GetPositionY();									// position vector 
+		data << GetPositionZ();									// position vector 
+		data << GetOrientation();								// orientaion
+		// transport part
+		data << GetNewGUID();									// transport guid
+		data << v.x;											// transport offsetX
+		data << v.y;											// transport offsetY
+		data << v.z;											// transport offsetZ
+		data << uint32(0);										// transport time
+		data << uint8(slot);									// seat
+		// end of transport part
+		data << uint32(0);
+		pPlayer->SendMessageToSet(&data, false);
+
+		data.Initialize(MSG_MOVE_TELEPORT_ACK);
+		data << pPlayer->GetNewGUID();
+		data << pPlayer->m_teleportAckCounter;					// ack counter
+		pPlayer->m_teleportAckCounter++;
+		data << uint32(MOVEFLAG_TAXI);							// transport
+		data << uint16(0);										// special flags
+		data << uint32(getMSTime());							// time
+		data << GetPositionX();									// position vector 
+		data << GetPositionY();									// position vector 
+		data << GetPositionZ();									// position vector 
+		data << GetOrientation();								// orientaion
+		// transport part
+		data << GetNewGUID();									// transport guid
+		data << v.x;											// transport offsetX
+		data << v.y;											// transport offsetY
+		data << v.z;											// transport offsetZ
+		data << uint32(0);										// transport time
+		data << uint8(slot);									// seat
+		// end of transport part
+		data << uint32(0);										// fall time
+		pPlayer->GetSession()->SendPacket(&data);
+
+		DisableAI();
+
 		if(slot == 0)
 		{
-			DisableAI();
+			SetControllingUnit(pPlayer);
 			m_redirectSpellPackets = pPlayer;
-			pPlayer->SetUInt64Value(PLAYER_FARSIGHT, GetGUID());
 
 			SetSpeed(RUN, m_runSpeed);
 			SetSpeed(FLY, m_flySpeed);
 
-			WorldPacket data2(SMSG_CLIENT_CONTROL_UPDATE, 10);
-			data2 << GetNewGUID() << uint8(1);
-			pPlayer->GetSession()->SendPacket(&data2);
+			// send "switch mover" packet 
+			data.Initialize(SMSG_CLIENT_CONTROL_UPDATE);
+			data << GetNewGUID() << uint8(1);
+			pPlayer->GetSession()->SendPacket(&data);
 
-			pPlayer->m_CurrentCharm = this;
+			pPlayer->m_CurrentCharm = TO_VEHICLE(this);
 			pPlayer->SetUInt64Value(UNIT_FIELD_CHARM, GetGUID());
-
 			SetCharmTempVal(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			SetUInt64Value(UNIT_FIELD_CHARMEDBY, pPlayer->GetGUID());
-
 			SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 
+			/* update target faction set */
 			_setFaction();
 			UpdateOppFactionSet();
 
 			SendSpells(GetEntry(), pPlayer);
 		}
+
+		data.Initialize(SMSG_PET_DISMISS_SOUND);
+		data << uint32(m_vehicleSeats[slot]->m_enterUISoundID);
+		data << pPlayer->GetPosition();
+		pPlayer->GetSession()->SendPacket(&data);
 	}
-	SendMonsterMoveTransport(pPassenger, slot);
 }
 
 void Vehicle::MoveVehicle(float x, float y, float z, float o) 
