@@ -530,7 +530,11 @@ public:
 
 	bool display_free_items;
 
-	//Enable/Disable specific battlegrounds/arenas
+	// Arena Season's
+	int arena_season;
+	int arena_progress;
+
+	// Enable/Disable specific battlegrounds/arenas
 	bool av_disabled;
 	bool wsg_disabled;
 	bool eots_disabled;
@@ -563,9 +567,9 @@ protected:
 	{
 		// Update Server time
 		time_t thisTime = UNIXTIME;
-		m_gameTime += thisTime - m_lastTick; //in seconds
+		m_gameTime += thisTime - m_lastTick; // in seconds
 
-		if(m_gameTime >= 86400)			// One day has passed
+		if(m_gameTime >= 86400) // One day has passed
 			m_gameTime -= 86400;
 
 		m_lastTick = thisTime;
@@ -585,7 +589,7 @@ private:
 	AreaTriggerMap m_AreaTrigger;
 
 protected:
-	Mutex SessionsMutex;//FOR GLOBAL !
+	Mutex SessionsMutex; // For global !
 	SessionSet GlobalSessions;
 
 	float regen_values[MAX_RATES];

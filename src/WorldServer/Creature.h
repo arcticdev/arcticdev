@@ -304,20 +304,22 @@ public:
 	void AddToWorld(MapMgr* pMapMgr);
 	void RemoveFromWorld(bool addrespawnevent, bool free_guid);
 
-	/// Creation
+	// Creation
 	void Create ( const char* creature_name, uint32 mapid, float x, float y, float z, float ang);	
 	void CreateWayPoint ( uint32 WayPointID, uint32 mapid, float x, float y, float z, float ang);
 	bool canWalk() const { return ( proto->CanMove & LIMIT_GROUND)!= 0; }
 	bool canSwim() const { return ( proto->CanMove & LIMIT_WATER)!= 0; }
 	bool canFly()  const { return ( proto->CanMove & LIMIT_AIR)!= 0; }
-	
 
-	/// Updates
+	// Arena organizers 
+	ARCTIC_INLINE bool ArenaOrganizersFlags() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDCHANGER ); } 
+
+	// Updates
 	virtual void Update( uint32 time );
 
 	ARCTIC_INLINE uint32 GetSQL_id() { return spawnid; };
 
-	/// Creature inventory
+	// Creature inventory
 	ARCTIC_INLINE uint32 GetItemIdBySlot(uint32 slot) { return m_SellItems->at(slot).itemid; }
 	ARCTIC_INLINE uint32 GetItemAmountBySlot(uint32 slot) { return m_SellItems->at(slot).amount; }
 
@@ -362,9 +364,9 @@ public:
 			}
 		}
 		ci.amount = 0;
-		ci.max_amount=0;
-		ci.available_amount =0;
-		ci.incrtime=0;
+		ci.max_amount = 0;
+		ci.available_amount = 0;
+		ci.incrtime = 0;
 		ci.itemid = 0;
 	}
 
@@ -385,7 +387,7 @@ public:
 	void AddVendorItem(uint32 itemid, uint32 amount);
 	void ModAvItemAmount(uint32 itemid, uint32 value);
 	void UpdateItemAmount(uint32 itemid);
-	/// Quests
+	// Quests
 	void _LoadQuests();
 	bool HasQuests() { return m_quests != NULL; };
 	bool HasQuest(uint32 id, uint32 type)
@@ -471,7 +473,7 @@ public:
 
 	bool Skinned;
 
-	/// Misc
+	// Misc
 	ARCTIC_INLINE void setEmoteState(uint8 emote) { m_emoteState = emote; };
 
 	virtual void setDeathState(DeathState s);
@@ -591,16 +593,16 @@ protected:
 	void _LoadGoods(std::list<CreatureItem*>* lst);
 	void _LoadMovement();
 
-	/// Vendor data
+	// Vendor data
 	std::vector<CreatureItem>* m_SellItems;
 
-	/// Taxi data
+	// Taxi data
 	uint32 mTaxiNode;
 
-	/// Quest data
+	// Quest data
 	std::list<QuestRelation *>* m_quests;
    
-	/// Pet
+	// Pet
 	uint32 m_enslaveCount;
 	uint32 m_enslaveSpell;
 

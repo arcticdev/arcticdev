@@ -1230,7 +1230,9 @@ void World::Rehash(bool load)
 	SendStatsOnJoin = Config.MainConfig.GetBoolDefault("Server", "SendStatsOnJoin", true);
 	compression_threshold = Config.MainConfig.GetIntDefault("Server", "CompressionThreshold", 1000);
 	display_free_items = Config.MainConfig.GetBoolDefault("Server", "DisplayFreeItems", false);
-	
+	arena_season = Config.MainConfig.GetIntDefault("Arena", "Season", 1); 
+	arena_progress = Config.MainConfig.GetIntDefault("Arena", "Progress", 1);
+
 	// load regeneration rates.
 	setRate(RATE_HEALTH,Config.MainConfig.GetFloatDefault("Rates", "Health",1));
 	setRate(RATE_POWER1,Config.MainConfig.GetFloatDefault("Rates", "Power1",1));
