@@ -666,7 +666,8 @@ void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
 	if(GetPlayer() == NULL || GetPlayer()->m_CurrentVehicle == NULL)
 		return;
 
-	GetPlayer()->m_CurrentVehicle->RemovePassenger(GetPlayer());
+	HandleMovementOpcodes(recv_data);
+	GetPlayer()->m_CurrentVehicle->RemovePassenger(GetPlayer()); 
 }
 
 void WorldSession::HandleSpellClick( WorldPacket & recv_data )
