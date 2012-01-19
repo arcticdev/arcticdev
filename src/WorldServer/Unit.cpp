@@ -347,7 +347,7 @@ void Unit::Update( uint32 p_time )
 		if( p_time >= m_P_regenTimer )
 		{
 			RegeneratePower( false );
-			m_interruptedRegenTime=0;
+			m_interruptedRegenTime = 0;
 		}
 		else
 		{
@@ -390,10 +390,6 @@ void Unit::Update( uint32 p_time )
 			if(!count)
 				m_diminishActive = false;
 		}
-
-/*		//if health changed since last time. Would be perfect if it would work for creatures too :)
-		if(m_updateMask.GetBit(UNIT_FIELD_HEALTH))
-			EventHealthChangeSinceLastUpdate();*/
 	}
 }
 

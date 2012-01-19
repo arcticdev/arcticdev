@@ -1580,14 +1580,18 @@ ARCTIC_INLINE bool IsTargetingStealthed(SpellEntry *sp)
 typedef void(Spell::*pSpellEffect)(uint32 i);
 typedef void(Spell::*pSpellTarget)(uint32 i, uint32 j);
 
-#define POWER_TYPE_HEALTH -2
-#define POWER_TYPE_MANA 0
-#define POWER_TYPE_RAGE 1
-#define POWER_TYPE_FOCUS 2
-#define POWER_TYPE_ENERGY 3
-#define POWER_TYPE_RUNE 5
-#define POWER_TYPE_RUNIC 6
-// we have power type 15 and 31 :S
+enum PowerType
+{
+	POWER_TYPE_HEALTH	 = -2,
+	POWER_TYPE_MANA		 = 0,
+	POWER_TYPE_RAGE		 = 1,
+	POWER_TYPE_FOCUS	 = 2,
+	POWER_TYPE_ENERGY	 = 3,
+	POWER_TYPE_HAPPINESS = 4, // Not used in creature powertypes.
+	POWER_TYPE_RUNE		 = 5,
+	POWER_TYPE_RUNIC	 = 6,
+	MAX_POWER_TYPE		 = 7
+};
 
 #define GO_FISHING_BOBBER 35591
 
@@ -1688,7 +1692,6 @@ public:
     void SendResurrectRequest(Player* target);
 	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
     static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
-    
 
     void HandleAddAura(uint64 guid);
     void writeSpellGoTargets( WorldPacket * data );
