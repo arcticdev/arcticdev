@@ -99,7 +99,7 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	OUTPACKET_RESULT res;
 	if( (len + 10) > WORLDSOCKET_SENDBUF_SIZE )
 	{
-		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", uint(len), uint(opcode), uint(opcode));
+		printf("WARNING: Tried to send a packet of %u bytes (which is too large) to a socket. Opcode was: %u (0x%03X)\n", (unsigned int)len, (unsigned int)opcode, (unsigned int)opcode);
 		return;
 	}
 
@@ -111,7 +111,6 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 	{
 		/* queue the packet */
 		queueLock.Acquire();
-		//WorldPacket * pck = new WorldPacket(opcode, len);
 		WorldPacket * pck = g_bufferPool.Allocate(len);
 		pck->SetOpcode(opcode);
 		if(len) pck->append((const uint8*)data, len);

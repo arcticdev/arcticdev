@@ -216,6 +216,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	gameObjTarget = NULL;
 	playerTarget = NULL;
 	corpseTarget = NULL;
+	damage = 0;
 	add_damage = 0;
 	m_Delayed = false;
 	m_ForceConsumption = false;
@@ -2754,7 +2755,7 @@ void Spell::HandleEffects(uint32 i)
 		return;
 	}
 
-	damage = CalculateEffect(i,unitTarget);  
+	damage = CalculateEffect(i, unitTarget);  
 	DEBUG_LOG( "Spell","Handling Effect id = %u, damage = %d", m_spellInfo->Effect[i], damage); 
 	
 	if( m_spellInfo->Effect[i]<TOTAL_SPELL_EFFECTS)
@@ -2836,7 +2837,6 @@ void Spell::HandleAddAura(uint64 guid)
 		if(!spellInfo) 
 			return;
 
-
 		Spell* spell = NULL;
 		spell = (new Spell(p_caster, spellInfo ,true, NULL));
 		spell->forced_basepoints[0] = p_caster->GetDummyAura(SPELL_HASH_KING_OF_THE_JUNGLE)->RankNumber * 5;
@@ -2904,7 +2904,7 @@ void Spell::HandleAddAura(uint64 guid)
 				return;
 			}
 
-			//make sure bg/arena preparation aura's are positive.
+			// make sure bg/arena preparation aura's are positive.
 			if(m_spellInfo->Id == 32727 || m_spellInfo->Id == 44521)
 				aura->SetPositive(100);
 
@@ -3072,13 +3072,6 @@ uint8 Spell::CanCast(bool tolerate)
 		{
 			if( ( m_spellInfo->RecoveryTime >= 900000 || m_spellInfo->CategoryRecoveryTime >= 900000 ) )
 				return SPELL_FAILED_NOT_IN_ARENA;
-
-			// block resurrect spells
-			/*if( m_spellInfo->Effect[0] == SPELL_EFFECT_RESURRECT || m_spellInfo->Effect[1] == SPELL_EFFECT_RESURRECT || m_spellInfo->Effect[2] == SPELL_EFFECT_RESURRECT ||
-				m_spellInfo->Effect[0] == SPELL_EFFECT_RESURRECT_FLAT || m_spellInfo->Effect[1] == SPELL_EFFECT_RESURRECT_FLAT || m_spellInfo->Effect[2] == SPELL_EFFECT_RESURRECT_FLAT )
-			{
-				return SPELL_FAILED_NOT_IN_ARENA;
-			}*/
 
 			if( !p_caster->m_bg->HasStarted() )
 			{
@@ -4171,70 +4164,27 @@ void Spell::RemoveItems()
 
 int32 Spell::CalculateEffect(uint32 i,Unit* target)
 {
-	// TODO: Add ARMOR CHECKS; Add npc that have ranged weapons use them;
-
-	// Range checks
- /*   if (m_spellInfo->Id == SPELL_RANGED_GUN) // this includes bow and gun
-	{
-		if(!u_caster || !unitTarget)
-			return 0;
-
-		return ::CalculateDamage( u_caster, unitTarget, RANGED, m_spellInfo->SpellGroupType );
-	}
-*/
 	if( m_spellInfo->Id == 3018 )
 		m_spellInfo = dbcSpell.LookupEntry(75);
 
 	int32 value = 0;
 
-	float basePointsPerLevel    = m_spellInfo->EffectRealPointsPerLevel[i];
+	float basePointsPerLevel = m_spellInfo->EffectRealPointsPerLevel[i];
 	int32 basePoints = m_spellInfo->EffectBasePoints[i] + 1;
 	int32 randomPoints = m_spellInfo->EffectDieSides[i];
 
-	//added by Zack : some talents inherit their basepoints from the previously casted spell: see mage - Master of Elements
+	// added by Zack : some talents inherit their basepoints from the previously casted spell: see mage - Master of Elements
 	if(forced_basepoints[i])
 		basePoints = forced_basepoints[i];
-
-	/* Random suffix value calculation */
-	/*if(i_caster && (int32(i_caster->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID)) < 0))
-	{
-        ItemRandomSuffixEntry * si = dbcItemRandomSuffix.LookupEntry(abs(int32(i_caster->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID))));
-		EnchantEntry * ent;
-		uint32 j,k;
-
-		for(j = 0; j < 3; ++j)
-		{
-			if(si->enchantments[j] != 0)
-			{
-				ent = dbcEnchant.LookupEntry(si->enchantments[j]);
-				for(k = 0; k < 3; ++k)
-				{
-					if(ent->spell[k] == m_spellInfo->Id)
-					{
-						if(si->prefixes[k] == 0)
-							goto exit;
-						
-						value = RANDOM_SUFFIX_MAGIC_CALCULATION(si->prefixes[j], i_caster->GetItemRandomSuffixFactor());
-						
-						if(value == 0)
-							goto exit;
-
-						return value;
-					}
-				}
-			}
-		}
-	}
-exit:*/
 
 	if( u_caster != NULL )
 	{
 		int32 diff = -(int32)m_spellInfo->baseLevel;
 		if (m_spellInfo->maxLevel && u_caster->getLevel()>m_spellInfo->maxLevel)
-			diff +=m_spellInfo->maxLevel;
+			diff += m_spellInfo->maxLevel;
 		else
-			diff +=u_caster->getLevel();
-		basePoints += float2int32(diff * basePointsPerLevel );
+			diff += u_caster->getLevel();
+		basePoints += float2int32(diff * basePointsPerLevel);
 	}
 
 	if(randomPoints <= 1)
@@ -4265,9 +4215,9 @@ exit:*/
 		if( u_caster != NULL ) 
 		{
 			float ap = (float)u_caster->GetAP();
-			if(i==0)
+			if(i == 0)
 				value+=(uint32)ceilf((ap*0.01f));	// / 100
-			else if(i==1)
+			else if(i == 1)
 				value=(int32)ceilf((float(value * 3) + ceilf((ap*0.06f))) / 3.0f);
 		}
 	}
@@ -4334,7 +4284,7 @@ exit:*/
 		{
 			value += ( comboDamage * p_caster->m_comboPoints );
 			m_requiresCP = true;
-			//this is ugly so i will explain the case maybe someone ha a better idea :
+			// this is ugly so i will explain the case maybe someone ha a better idea :
 			// while casting a spell talent will trigger uppon the spell prepare faze
 			// the effect of the talent is to add 1 combo point but when triggering spell finishes it will clear the extra combo point
 			p_caster->m_spellcomboPoints = 0;	
@@ -4353,7 +4303,7 @@ exit:*/
 	Unit* caster = u_caster;
 	if( i_caster != NULL && target && target->GetMapMgr() && i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) )
 	{	
-		//we should inherit the modifiers from the conjured food caster
+		// we should inherit the modifiers from the conjured food caster
 		Unit* item_creator = target->GetMapMgr()->GetUnit( i_caster->GetUInt64Value( ITEM_FIELD_CREATOR ) );
 		if( item_creator != NULL )
 			caster = item_creator;
@@ -4361,8 +4311,8 @@ exit:*/
 
 	if( caster != NULL )
 	{
-		int32 spell_flat_modifers=0;
-		int32 spell_pct_modifers=0;
+		int32 spell_flat_modifers = 0;
+		int32 spell_pct_modifers = 0;
 		
 		SM_FIValue(caster->SM[SMT_MISC_EFFECT][0],&spell_flat_modifers,m_spellInfo->SpellGroupType);
 		SM_FIValue(caster->SM[SMT_MISC_EFFECT][1],&spell_pct_modifers,m_spellInfo->SpellGroupType);
@@ -4436,7 +4386,7 @@ void Spell::CreateItem(uint32 itemId)
     if( !itemId )
         return;
 
-	Player* 			pUnit = TO_PLAYER( m_caster );
+	Player* 		pUnit = TO_PLAYER( m_caster );
 	Item* 			newItem = NULL;
 	Item* 			add = NULL;
 	SlotResult		slotresult;
@@ -4473,9 +4423,6 @@ void Spell::CreateItem(uint32 itemId)
 		newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
 		newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, damage);
 
-		/*WorldPacket data(45);
-		p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, 1, itemId ,0,0xFF,1,0xFFFFFFFF);
-		p_caster->SendMessageToSet(&data, true);*/
 		p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
 		newItem->m_isDirty = true;
 
@@ -4483,50 +4430,11 @@ void Spell::CreateItem(uint32 itemId)
 	else 
 	{
 		add->SetUInt32Value(ITEM_FIELD_STACK_COUNT,add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + damage);
-		/*WorldPacket data(45);
-		p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, 1, itemId ,0,0xFF,1,0xFFFFFFFF);
-		p_caster->SendMessageToSet(&data, true);*/
+
 		p_caster->GetSession()->SendItemPushResult(add,true,false,true,false,p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,1);
 		add->m_isDirty = true;
 	}
 }
-
-/*void Spell::_DamageRangeUpdate()
-{
-	if(unitTarget)
-	{
-		if(unitTarget->isAlive())
-		{
-			m_caster->SpellNonMeleeDamageLog(unitTarget,m_spellInfo->Id, damageToHit);
-		}
-		else
-		{	if( u_caster != NULL )
-			if(u_caster->GetCurrentSpell() != this)
-			{
-					if(u_caster->GetCurrentSpell() != NULL)
-					{
-						u_caster->GetCurrentSpell()->SendChannelUpdate(0);
-						u_caster->GetCurrentSpell()->cancel();
-					}
-			}
-			SendChannelUpdate(0);
-			cancel();
-		}
-		sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-		delete this;
-	}
-	else if(gameObjTarget)
-	{
-		sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-		delete this;
-		//Go Support
-	}
-	else
-	{
-		sEventMgr.RemoveEvents(this, EVENT_SPELL_DAMAGE_HIT);
-		delete this;
-	}
-}*/
 
 void Spell::SendHealSpellOnPlayer( Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid )
 {
@@ -4539,9 +4447,9 @@ void Spell::SendHealSpellOnPlayer( Object* caster, Object* target, uint32 dmg, b
 	data << target->GetNewGUID();
 	data << caster->GetNewGUID();
 	data << spellid;
-	data << uint32(dmg);	// amt healed
+	data << uint32(dmg);         // amt healed
 	data << uint32(overheal);
-	data << uint8(critical);	 //this is critical message
+	data << uint8(critical);     // this is critical message
 
 	caster->SendMessageToSet(&data, true);
 }

@@ -6646,54 +6646,66 @@ uint16 Player::GetMaxTalentPoints()
 
 void Player::ApplySpec(uint8 spec, bool init)
 {
-	if(spec > m_talentSpecsCount || spec > MAX_SPEC_COUNT)
+	if(spec > m_talentSpecsCount || spec > 1/*MAX_SPEC_COUNT*/) // we use 0 and 1.
 		return;
 	std::map<uint32, uint8> *talents;
 	std::map<uint32, uint8>::iterator itr;
 
-	if(!init)	// unapply old spec
+	if(!init) // unapply old spec
 	{
 		talents = &m_specs[m_talentActiveSpec].talents;
-		for(itr = talents->begin(); itr != talents->end(); itr++)
+		if(talents->size())
 		{
-			TalentEntry * talentInfo = dbcTalent.LookupEntryForced(itr->first);
-			if(!talentInfo || itr->second > 4)
-				continue;
-			RemoveTalent(talentInfo->RankID[itr->second]);
-		}
-		if( getClass() == WARRIOR )
-		{	
-			titanGrip = false;
-			ResetTitansGrip();
-		}
+			for(itr = talents->begin(); itr != talents->end(); ++itr)
+			{
+				TalentEntry * talentInfo = dbcTalent.LookupEntryForced(itr->first);
+				if(!talentInfo || itr->second > 4)
+					continue;
+				RemoveTalent(talentInfo->RankID[itr->second]);
+			}
+			if( getClass() == WARRIOR )
+			{	
+				titanGrip = false;
+				ResetTitansGrip();
+			}
+			if( getClass() == DRUID )
+			{
+				SetShapeShift(0);
+			}
 
-		//Dismiss any pets
-		if(GetSummon())
-		{
-			if(GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-				GetSummon()->Dismiss(false);				// warlock summon -> dismiss
-			else
-				GetSummon()->Remove(false, true, true);	// hunter pet -> just remove for later re-call
+			// dismiss any pets
+			if(GetSummon())
+			{
+				if(GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
+					GetSummon()->Dismiss(false); // warlock summon -> dismiss
+				else
+					GetSummon()->Remove(false, true, true);	// hunter pet -> just remove for later re-call
+			}
 		}
 	}
 	
 	// apply new spec
 	talents = &m_specs[spec].talents;
 	uint32 spentPoints = 0;
-	for(itr = talents->begin(); itr != talents->end(); itr++)
+
+	if(talents->size())
 	{
-		TalentEntry * talentInfo = dbcTalent.LookupEntryForced(itr->first);
-		if(!talentInfo || itr->second > 4)
-			continue;
-		ApplyTalent(talentInfo->RankID[itr->second]);
-		spentPoints += itr->second + 1;
+		for(itr = talents->begin(); itr != talents->end(); ++itr)
+		{
+			TalentEntry * talentInfo = dbcTalent.LookupEntryForced(itr->first);
+			if(!talentInfo || itr->second > 4)
+				continue;
+			ApplyTalent(talentInfo->RankID[itr->second]);
+			spentPoints += itr->second + 1;
+		}
 	}
 	m_talentActiveSpec = spec;
+
 	// update available Talent Points
 	uint32 maxTalentPoints = GetMaxTalentPoints();
 	uint32 newTalentPoints;
 	if(spentPoints >= maxTalentPoints)
-		newTalentPoints = 0;	// just in case
+		newTalentPoints = 0; // just in case
 	else
 		newTalentPoints = maxTalentPoints - spentPoints;
 	SetUInt32Value(PLAYER_CHARACTER_POINTS1, newTalentPoints);

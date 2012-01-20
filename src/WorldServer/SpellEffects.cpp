@@ -937,15 +937,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					gameObjTarget->_Expire();
 			}
 		}break;
-	case 51284: // Feed pet dummy for Happiness incrementation.
-		{
-			if(p_caster != NULL && p_caster->GetSummon() != NULL)
-			{
-				Pet* pet = p_caster->GetSummon();
-				float amount = ((float(damage)) * pet->GetHappinessDmgMod());
-				pet->IncreaseHappiness(amount);
-			}
-		}break;
 	/*
 		Preparation
 		When activated, this ability immediately finishes the cooldown on your Evasion, Sprint, Vanish, Cold Blood and Shadowstep abilities.
@@ -7730,13 +7721,12 @@ void Spell::SpellEffectSetTalentSpecsCount(uint32 i)
 	if(!p_caster)
 		return;
 
-	if(p_caster->m_talentActiveSpec >= damage)
+	if(p_caster->m_talentActiveSpec >= damage) // activate primary spec
 	{
-		// activate primary spec
 		p_caster->ApplySpec(0, false);
 	}
+
 	p_caster->m_talentSpecsCount = damage;
-	
 
 	// Send update
 	p_caster->smsg_TalentsInfo(false);
@@ -7749,5 +7739,4 @@ void Spell::SpellEffectActivateTalentSpec(uint32 i)
 
 	// 1 = primary, 2 = secondary
 	p_caster->ApplySpec(uint8(damage - 1), false);
-
 }

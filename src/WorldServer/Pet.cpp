@@ -1404,7 +1404,7 @@ void Pet::ApplyStatsForLevel()
 HappinessState Pet::GetHappinessState() 
 {
 	// gets happiness state from happiness points
-	uint32 pts = GetHappiness()
+	uint32 pts = GetHappiness();
 	if( pts < PET_HAPPINESS_UPDATE_VALUE )
 		return UNHAPPY;
 	else if( pts >= PET_HAPPINESS_UPDATE_VALUE << 1 )
