@@ -56,6 +56,7 @@ enum Classes
 	MAGE = 8,
 	WARLOCK = 9,
 	DRUID = 11,
+	MAX_PLAYER_CLASSES
 };
 
 enum Races
@@ -367,7 +368,8 @@ struct CreateInfo_ActionBarStruct
 	uint32  misc;
 };
 
-struct PlayerCreateInfo{
+struct PlayerCreateInfo
+{
 	uint8   index;
 	uint8   race;
 	uint32  factiontemplate;
@@ -396,9 +398,9 @@ struct PlayerCreateInfo{
 	std::list<CreateInfo_SkillStruct> skills;
 	std::list<CreateInfo_ActionBarStruct> actionbars;
 	std::set<uint32> spell_list;
-	//uint32 item[10];
-	//uint8 item_slot[10];
-	//uint16 spell[10];
+	// uint32 item[10];
+	// uint8 item_slot[10];
+	// uint16 spell[10];
 };
 
 struct DamageSplit
@@ -419,7 +421,8 @@ struct LoginAura
     uint32 dur;
 };
 
-static const uint32 TalentTreesPerClass[DRUID+1][3] =  {
+static const uint32 TalentTreesPerClass[DRUID+1][3] =
+{
 	{ 0, 0, 0 },		// NONE
 	{ 161, 163, 164 },	// WARRIOR
 	{ 382, 383, 381 },	// PALADIN

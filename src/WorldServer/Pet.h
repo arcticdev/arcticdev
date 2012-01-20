@@ -114,7 +114,7 @@ public:
 
 	virtual void Update(uint32 time);
 
-	ARCTIC_INLINE uint32 GetXP(void) { return m_PetXP; }
+	ARCTIC_INLINE uint32 GetXP(void) { return GetUInt32Value(UNIT_FIELD_PETEXPERIENCE); }
 
 	void InitializeSpells();
 	void ReInitializeSpells();
@@ -227,7 +227,6 @@ public:
 
 protected:
 	Player* m_Owner;
-	uint32 m_PetXP;
 	PetSpellMap mSpells;
 	PlayerPet * m_PlayerPetInfo;
 	uint32 ActionBar[10];   // 10 slots

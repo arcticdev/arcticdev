@@ -37,7 +37,7 @@ uint32 getConColor(uint16 AttackerLvl, uint16 VictimLvl)
 			// More adv formula for grey/green lvls:
 			if(AttackerLvl <= 6)
 			{
-				return 1; //All others are green.
+				return 1; // All others are green.
 			}
 			else
 			{
