@@ -13,7 +13,10 @@ typedef struct
 }logonpacket;
 #pragma pack(pop)
 
-ARCTIC_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24); }
+ARCTIC_INLINE static void swap32(uint32* p)
+{
+	*p = ((*p >> 24 & 0xff)) | ((*p >> 8) & 0xff00) | ((*p << 8) & 0xff0000) | (*p << 24);
+}
 
 LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 524288)
 {
@@ -29,12 +32,11 @@ LogonCommServerSocket::LogonCommServerSocket(SOCKET fd) : Socket(fd, 65536, 5242
 
 LogonCommServerSocket::~LogonCommServerSocket()
 {
-
 }
 
 void LogonCommServerSocket::OnConnect()
 {
-	if( !IsServerAllowed(GetRemoteAddress().s_addr) )
+	if(!IsServerAllowed(GetRemoteAddress().s_addr))
 	{
 		printf("Server connection from %s:%u DENIED, not an allowed IP.\n", GetRemoteIP().c_str(), GetRemotePort());
 		Disconnect();
@@ -51,7 +53,7 @@ void LogonCommServerSocket::OnDisconnect()
 	if(!removed)
 	{
 		set<uint32>::iterator itr = server_ids.begin();
-		for(; itr != server_ids.end(); itr++)
+		for(; itr != server_ids.end(); ++itr)
 			sInfoCore.SetRealmOffline((*itr), this);
 
 		sInfoCore.RemoveServerSocket(this);
@@ -168,7 +170,7 @@ void LogonCommServerSocket::HandleRegister(WorldPacket & recvData)
 	{
 		sInfoCore.RemoveRealm(tmp_RealmID);
 		int new_tmp_RealmID = sInfoCore.GenerateRealmID(); //socket timout will DC old id after a while, make sure it's not the one we restarted
-		Log.Notice("LogonCommServer","Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), tmp_RealmID, new_tmp_RealmID );
+		Log.Notice("LogonCommServer","Updating realm `%s` with ID %u to new ID %u.", Name.c_str(), tmp_RealmID, new_tmp_RealmID);
 		tmp_RealmID = new_tmp_RealmID;
 	}
 
@@ -208,7 +210,7 @@ void LogonCommServerSocket::HandleSessionRequest(WorldPacket & recvData)
 	uint32 error = 0;
 	Account * acct = sAccountMgr.GetAccount(account_name);
 	if(acct == NULL || acct->SessionKey == NULL || acct == NULL )
-		error = 1;		  // Unauthorized user.
+		error = 1; // Unauthorized user.
 
 	// build response packet
 	WorldPacket data(RSMSG_SESSION_RESULT, 150);
@@ -248,7 +250,6 @@ void LogonCommServerSocket::SendPacket(WorldPacket * data)
 	logonpacket header;
 #ifndef USING_BIG_ENDIAN
 	header.opcode = data->GetOpcode();
-	//header.size   = ntohl((u_long)data->size());
 	header.size = (uint32)data->size();
 	swap32(&header.size);
 #else
@@ -266,25 +267,24 @@ void LogonCommServerSocket::SendPacket(WorldPacket * data)
 		if(use_crypto)
 			sendCrypto.Process((unsigned char*)data->contents(), (unsigned char*)data->contents(), (uint32)data->size());
 
-		rv=BurstSend(data->contents(), (uint32)data->size());
+		rv = BurstSend(data->contents(), (uint32)data->size());
 	}
 
-	if(rv) BurstPush();
+	if(rv)
+	{
+		BurstPush();
+	}
 	BurstEnd();
 }
 
 void LogonCommServerSocket::HandleSQLExecute(WorldPacket & recvData)
 {
-	/*string Query;
-	recvData >> Query;
-	sLogonSQL->Execute(Query.c_str());*/
 	printf("!! WORLD SERVER IS REQUESTING US TO EXECUTE SQL. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.\n", GetRemoteIP().c_str());
 }
 
 void LogonCommServerSocket::HandleReloadAccounts(WorldPacket & recvData)
 {
 	printf("!! WORLD SERVER IS REQUESTING US TO RELOAD ACCOUNTS. THIS IS DEPRECATED AND IS BEING IGNORED. THE SERVER WAS: %s, PLEASE UPDATE IT.\n", GetRemoteIP().c_str());
-	//sAccountMgr.ReloadAccounts(true);
 }
 
 void LogonCommServerSocket::HandleAuthChallenge(WorldPacket & recvData)
@@ -356,7 +356,7 @@ void LogonCommServerSocket::HandleMappingReply(WorldPacket & recvData)
 		if(itr != realm->CharacterMap.end())
 			itr->second = number_of_characters;
 		else
-			realm->CharacterMap.insert( make_pair( account_id, number_of_characters ) );
+			realm->CharacterMap.insert(make_pair(account_id, number_of_characters));
 	}
 
 	sInfoCore.getRealmLock().Release();
@@ -371,7 +371,9 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 
 	Realm * realm = sInfoCore.GetRealm(realm_id);
 	if(!realm)
+	{
 		return;
+	}
 	
 	sInfoCore.getRealmLock().Acquire();
 	recvData >> account_id >> chars_to_add;
@@ -380,7 +382,7 @@ void LogonCommServerSocket::HandleUpdateMapping(WorldPacket & recvData)
 	if(itr != realm->CharacterMap.end())
 		itr->second += chars_to_add;
 	else
-		realm->CharacterMap.insert( make_pair( account_id, chars_to_add ) );
+		realm->CharacterMap.insert(make_pair(account_id, chars_to_add));
 
 	sInfoCore.getRealmLock().Release();
 }
@@ -395,7 +397,7 @@ void LogonCommServerSocket::HandleTestConsoleLogin(WorldPacket & recvData)
 	recvData >> request;
 	recvData >> accountname;
 	recvData.read(key, 20);
-	DEBUG_LOG("LogonCommServerSocket","Testing console login: %s\n", accountname.c_str());
+	DEBUG_LOG("LogonCommServerSocket", "Testing console login: %s\n", accountname.c_str());
 
 	data << request;
 
@@ -438,7 +440,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 
 	switch(method)
 	{
-	case 1:			// set account ban
+	case 1: // set account ban
 		{
 			string account;
 			uint32 duration;
@@ -449,18 +451,17 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 			ARCTIC_TOUPPER(account);
 
 			Account * pAccount = sAccountMgr.GetAccount(account);
-			if( pAccount == NULL )
+			if(pAccount == NULL)
 				return;
 
 			pAccount->Banned = duration;
 
 			// update it in the sql (duh)
-			sLogonSQL->Execute("UPDATE accounts SET banned = %u, banReason = \"%s\" WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(reason).c_str(), 
-				sLogonSQL->EscapeString(account).c_str());
+			sLogonSQL->Execute("UPDATE accounts SET banned = %u, banReason = \"%s\" WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(reason).c_str(), sLogonSQL->EscapeString(account).c_str());
 
 		}break;
 
-	case 2:		// set gm
+	case 2: // set gm
 		{
 			string account;
 			string gm;
@@ -470,17 +471,17 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 			ARCTIC_TOUPPER(account);
 
 			Account * pAccount = sAccountMgr.GetAccount(account);
-			if( pAccount == NULL )
+			if(pAccount == NULL)
 				return;
 
-			pAccount->SetGMFlags( account.c_str() );
+			pAccount->SetGMFlags(account.c_str());
 
 			// update it in the sql (duh)
 			sLogonSQL->Execute("UPDATE accounts SET gm = \"%s\" WHERE login = \"%s\"", sLogonSQL->EscapeString(gm).c_str(), sLogonSQL->EscapeString(account).c_str());
 
 		}break;
 
-	case 3:		// set mute
+	case 3: // set mute
 		{
 			string account;
 			uint32 duration;
@@ -490,7 +491,7 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 			ARCTIC_TOUPPER(account);
 
 			Account * pAccount = sAccountMgr.GetAccount(account);
-			if( pAccount == NULL )
+			if(pAccount == NULL)
 				return;
 
 			pAccount->Muted = duration;
@@ -499,24 +500,24 @@ void LogonCommServerSocket::HandleDatabaseModify(WorldPacket& recvData)
 			sLogonSQL->Execute("UPDATE accounts SET muted = %u WHERE login = \"%s\"", duration, sLogonSQL->EscapeString(account).c_str());
 		}break;
 
-	case 4:		// ip ban add
+	case 4: // ip ban add
 		{
 			string ip;
 			uint32 duration;
 
 			recvData >> ip >> duration;
 
-			if( sIPBanner.Add( ip.c_str(), duration ) )
+			if(sIPBanner.Add(ip.c_str(), duration))
 				sLogonSQL->Execute("INSERT INTO ipbans VALUES(\"%s\", %u)", sLogonSQL->EscapeString(ip).c_str(), duration);
 
 		}break;
 
-	case 5:		// ip ban reomve
+	case 5: // ip ban reomve
 		{
 			string ip;
 			recvData >> ip;
 
-			if( sIPBanner.Remove( ip.c_str() ) )
+			if(sIPBanner.Remove(ip.c_str()))
 				sLogonSQL->Execute("DELETE FROM ipbans WHERE ip = \"%s\"", sLogonSQL->EscapeString(ip).c_str());
 
 		}break;
@@ -534,5 +535,4 @@ void LogonCommServerSocket::SendPing()
 
 void LogonCommServerSocket::HandleServerPong(WorldPacket &recvData)
 {
-	// nothing
 }

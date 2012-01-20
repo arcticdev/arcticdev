@@ -70,7 +70,6 @@ struct Account
 
 	char Locale[4];
 	bool forcedLocale;
-
 };
 
 typedef struct IPBan
@@ -132,8 +131,10 @@ public:
 		map<string, Account*>::iterator itr = AccountDatabase.find(Name);
 #endif
 
-		if(itr == AccountDatabase.end())	pAccount = NULL;
-		else								pAccount = itr->second;
+		if(itr == AccountDatabase.end())
+			pAccount = NULL;
+		else
+			pAccount = itr->second;
 
 		setBusy.Release();
 		return pAccount;
@@ -155,8 +156,10 @@ private:
 		map<string, Account*>::iterator itr = AccountDatabase.find(Name);
 #endif
 
-		if(itr == AccountDatabase.end())	return NULL;
-		else								return itr->second;
+		if(itr == AccountDatabase.end())
+			return NULL;
+		else
+			return itr->second;
 	}
 
 #ifdef WIN32
@@ -203,17 +206,14 @@ public:
 	InformationCore()
 	{ 
 		realmhigh = 0;
-		usepings  = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
+		usepings = !Config.MainConfig.GetBoolDefault("LogonServer", "DisablePings", false);
 	}
 
 	// Packets
 	void		  SendRealms(AuthSocket * Socket);
 	
 	// Realm management
-	uint32 GenerateRealmID()
-	{
-		return ++realmhigh;
-	}
+	uint32 GenerateRealmID() { return ++realmhigh; }
 
 	Realm*		  AddRealm(uint32 realm_id, Realm * rlm);
 	Realm*        GetRealm(uint32 realm_id);

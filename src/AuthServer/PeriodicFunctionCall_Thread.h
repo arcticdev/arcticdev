@@ -4,14 +4,16 @@
  * See COPYING for license details.
  */
 
+#ifndef PERIODICFUNCTIONCALL_THREAD_H
+#define PERIODICFUNCTIONCALL_THREAD_H
+
 #include "../libs/CallBack.h"
 
 template<class Type>
 class PeriodicFunctionCaller : public ThreadContext
 {
 public:
-	template<class T>
-		PeriodicFunctionCaller(T * callback, void (T::*method)(), uint32 Interval)
+	template<class T> PeriodicFunctionCaller(T * callback, void (T::*method)(), uint32 Interval)
 	{
 		cb = new CallbackP0<T>(callback, method);
 		interval = Interval;
@@ -52,13 +54,13 @@ public:
 			WaitForSingleObject(hEvent, interval);
 
 			if(!running)
-				break;	/* we got killed */
+				break; /* we got killed */
 
 			/* times up */
 			ResetEvent(hEvent);
 			cb->execute();
 		}
-		thread_active=false;
+		thread_active = false;
 #endif
 		return false;
 	}
@@ -91,3 +93,5 @@ private:
 
 #define SpawnPeriodicCallThread(otype, ptr, method, interval) \
 	launch_thread(new PeriodicFunctionCaller<otype>(ptr, method, interval));
+
+#endif

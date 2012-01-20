@@ -10,6 +10,7 @@
 enum RealmListOpcodes
 {
 	// Initialization of server/client connection...
+
 	RCMSG_REGISTER_REALM						= 1,
 	RSMSG_REALM_REGISTERED						= 2,
 

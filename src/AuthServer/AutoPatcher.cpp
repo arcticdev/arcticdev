@@ -19,9 +19,9 @@ PatchMgr::PatchMgr()
 	// load patches
 #ifdef WIN32
 	Log.Notice("PatchMgr", "Loading Patches...");
-	char Buffer[MAX_PATH*10];
-	char Buffer2[MAX_PATH*10];
-	char Buffer3[MAX_PATH*10];
+	char Buffer[MAX_PATH * 10];
+	char Buffer2[MAX_PATH * 10];
+	char Buffer3[MAX_PATH * 10];
 
 	WIN32_FIND_DATA fd;
 	HANDLE fHandle;
@@ -33,7 +33,7 @@ PatchMgr::PatchMgr()
 	char locality[5];
 	uint32 i;
 
-	if(!GetCurrentDirectory(MAX_PATH*10, Buffer))
+	if(!GetCurrentDirectory(MAX_PATH * 10, Buffer))
 		return;
 
 	strcpy(Buffer2,Buffer);
@@ -44,8 +44,8 @@ PatchMgr::PatchMgr()
 
 	do 
 	{
-		snprintf(Buffer3,MAX_PATH*10,"%s\\ClientPatches\\%s",Buffer2,fd.cFileName);
-		if(sscanf(fd.cFileName,"%4s%u.", locality, &srcversion) != 2)
+		snprintf(Buffer3, MAX_PATH * 10, "%s\\ClientPatches\\%s", Buffer2, fd.cFileName);
+		if(sscanf(fd.cFileName, "%4s%u.", locality, &srcversion) != 2)
 			continue;
 
 		hFile = CreateFile(Buffer3, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_ARCHIVE, NULL);
@@ -63,7 +63,7 @@ PatchMgr::PatchMgr()
 		pPatch->Locality[4] = 0;
 		pPatch->uLocality = *(uint32*)pPatch->Locality;
 
-		if(pPatch->Data==NULL)
+		if(pPatch->Data == NULL)
 		{
 			// shouldn't really happen
 			delete pPatch;
@@ -87,20 +87,19 @@ PatchMgr::PatchMgr()
 		// add the patch to the patchlist
 		m_patches.push_back(pPatch);
 
-	} while(FindNextFile(fHandle,&fd));
+	}
+	while(FindNextFile(fHandle,&fd));
 	FindClose(fHandle);
 #else
-	/* 
-	 *nix patch loader
-	 */
+	/* nix patch loader */
 	Log.Notice("PatchMgr", "Loading Patches...");
-	char Buffer[MAX_PATH*10];
-	char Buffer2[MAX_PATH*10];
-	char Buffer3[MAX_PATH*10];
+	char Buffer[MAX_PATH * 10];
+	char Buffer2[MAX_PATH * 10];
+	char Buffer3[MAX_PATH * 10];
 
 	struct dirent ** list;
 	int filecount;
-	//uint32 count = 0;
+	// uint32 count = 0;
 	int read_fd;
 	MD5Hash md5;
 	Patch * pPatch;
@@ -114,16 +113,15 @@ PatchMgr::PatchMgr()
 	strcpy(Buffer2,Buffer);
 
 	filecount = scandir("./ClientPatches", &list, 0, 0);
-	if(filecount <= 0 || list==NULL)
+	if(filecount <= 0 || list == NULL)
 	{
 		Log.Error("PatchMgr", "No patches found.");
 		return;
 	}
-
 	while(filecount--)
 	{
-		snprintf(Buffer3,MAX_PATH*10,"./ClientPatches/%s",list[filecount]->d_name);
-		if(sscanf(list[filecount]->d_name,"%4s%u.", locality, &srcversion) != 2)
+		snprintf(Buffer3, MAX_PATH * 10, "./ClientPatches/%s", list[filecount]->d_name);
+		if(sscanf(list[filecount]->d_name, "%4s%u.", locality, &srcversion) != 2)
 			continue;
 
 		read_fd = open(Buffer3, O_RDONLY);
@@ -150,7 +148,7 @@ PatchMgr::PatchMgr()
 		pPatch->Locality[4] = 0;
 		pPatch->uLocality = *(uint32*)pPatch->Locality;
 
-		if(pPatch->Data==NULL)
+		if(pPatch->Data == NULL)
 		{
 			// shouldn't really happen
 			delete pPatch;
@@ -180,7 +178,6 @@ PatchMgr::PatchMgr()
 
 PatchMgr::~PatchMgr()
 {
-
 }
 
 Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
@@ -195,13 +192,13 @@ Patch * PatchMgr::FindPatchForClient(uint32 Version, const char * Locality)
 	tmplocality[4]=0;
 	ulocality = *(uint32*)tmplocality;
 
-	for(itr = m_patches.begin(); itr != m_patches.end(); itr++)
+	for(itr = m_patches.begin(); itr != m_patches.end(); ++itr)
 	{
 		// since localities are always 4 bytes we can do a simple int compare,
 		// saving a string compare ;)
-		if((*itr)->uLocality==ulocality)
+		if((*itr)->uLocality == ulocality)
 		{
-			if(fallbackPatch==NULL && (*itr)->Version==0)
+			if(fallbackPatch == NULL && (*itr)->Version == 0)
 				fallbackPatch = (*itr);
 			
 			if((*itr)->Version == Version)
@@ -216,8 +213,8 @@ void PatchMgr::BeginPatchJob(Patch * pPatch, AuthSocket * pClient, uint32 Skip)
 {
 	PatchJob * pJob;
 
-	pJob = new PatchJob(pPatch,pClient,Skip);
-	pClient->m_patchJob=pJob;
+	pJob = new PatchJob(pPatch, pClient, Skip);
+	pClient->m_patchJob = pJob;
 	m_patchJobLock.Acquire();
 	m_patchJobs.push_back(pJob);
 	m_patchJobLock.Release();
@@ -230,16 +227,16 @@ void PatchMgr::UpdateJobs()
 	for(itr = m_patchJobs.begin(); itr != m_patchJobs.end();)
 	{
 		itr2 = itr;
-		itr++;
+		++itr;
 
 		if(!(*itr2)->Update())
 		{
-			(*itr2)->GetClient()->m_patchJob=NULL;
+			(*itr2)->GetClient()->m_patchJob = NULL;
 			delete (*itr2);
 			m_patchJobs.erase(itr2);
 		}
 		else
-			itr++;
+			++itr;
 	}
 	m_patchJobLock.Release();
 }
@@ -248,9 +245,9 @@ void PatchMgr::AbortPatchJob(PatchJob * pJob)
 {
 	list<PatchJob*>::iterator itr;
 	m_patchJobLock.Acquire();
-	for(itr = m_patchJobs.begin(); itr != m_patchJobs.end(); itr++)
+	for(itr = m_patchJobs.begin(); itr != m_patchJobs.end(); ++itr)
 	{
-		if((*itr)==pJob)
+		if((*itr) == pJob)
 		{
 			m_patchJobs.erase(itr);
 			break;
@@ -290,7 +287,7 @@ bool PatchJob::Update()
 {
 	// don't update unless the write buffer is empty
 	m_client->BurstBegin();
-	if( m_client->GetWriteBuffer().GetSize() != 0 )
+	if(m_client->GetWriteBuffer().GetSize() != 0)
 	{
 		m_client->BurstEnd();
 		return true;
@@ -300,8 +297,7 @@ bool PatchJob::Update()
 	TransferDataPacket header;
 	bool result;
 	header.cmd = 0x31;
-	header.chunk_size = (m_bytesLeft>1500)?1500:m_bytesLeft;
-	//DEBUG_LOG("PatchJob", "Sending %u byte chunk", header.chunk_size);
+	header.chunk_size = (m_bytesLeft > 1500) ? 1500 : m_bytesLeft;
 
 	result = m_client->BurstSend((const uint8*)&header,sizeof(TransferDataPacket));
 	if(result)
@@ -321,7 +317,7 @@ bool PatchJob::Update()
 	m_client->BurstEnd();
 
 	// no need to check the result here, could just be a full buffer and not necessarily a fatal error.
-	return (m_bytesLeft>0)?true:false;
+	return (m_bytesLeft > 0);
 }
 
 bool PatchMgr::InitiatePatch(Patch * pPatch, AuthSocket * pClient)
@@ -331,7 +327,7 @@ bool PatchMgr::InitiatePatch(Patch * pPatch, AuthSocket * pClient)
 	bool result;
 
 	init.cmd = 0x30;
-	init.strsize=5;
+	init.strsize = 5;
 	init.name[0] = 'P'; init.name[1] = 'a'; init.name[2] = 't'; init.name[3] = 'c'; init.name[4] = 'h'; init.name[5] = 0;
 	init.filesize = pPatch->FileSize;
 	memcpy(init.md5hash, pPatch->MD5, MD5_DIGEST_LENGTH);

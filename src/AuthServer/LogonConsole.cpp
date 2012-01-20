@@ -61,7 +61,7 @@ bool LogonConsoleThread::run()
 	{
 		
 		// Make sure our buffer is clean to avoid Array bounds overflow
-		memset(cmd,0,sizeof(cmd)); 
+		memset(cmd, 0, sizeof(cmd)); 
 		// Read in single line from "stdin"
 		fgets(cmd, 80, stdin);
 
@@ -72,7 +72,7 @@ bool LogonConsoleThread::run()
 		{
 			if( cmd[i] =='\n' )
 			{
-				cmd[i]='\0';
+				cmd[i] = '\0';
 				sLogonConsole.ProcessCmd(cmd);
 				fflush(stdin);
 				break;
@@ -84,9 +84,10 @@ bool LogonConsoleThread::run()
 	return true;
 }
 
-//------------------------------------------------------------------------------
+///////////////////////////////////////////////////
 // Protected methods:
-//------------------------------------------------------------------------------
+///////////////////////////////////////////////////
+
 // Process one command
 void LogonConsole::ProcessCmd(char *cmd)
 {
@@ -99,11 +100,13 @@ void LogonConsole::ProcessCmd(char *cmd)
 
 	SCmd cmds[] =
 	{
-
-		{"?", &LogonConsole::TranslateHelp}, {"help", &LogonConsole::TranslateHelp},
-		{ "reload", &LogonConsole::ReloadAccts},
-		{ "rehash", &LogonConsole::TranslateRehash},
-		{"shutdown", &LogonConsole::TranslateQuit}, {"quit", &LogonConsole::TranslateQuit}, {"exit", &LogonConsole::TranslateQuit},
+		{"?", &LogonConsole::TranslateHelp},
+		{"help", &LogonConsole::TranslateHelp},
+		{"reload", &LogonConsole::ReloadAccts},
+		{"rehash", &LogonConsole::TranslateRehash},
+		{"shutdown", &LogonConsole::TranslateQuit},
+		{"quit", &LogonConsole::TranslateQuit},
+		{"exit", &LogonConsole::TranslateQuit},
 	};
 
 	char cmd2[80];
@@ -111,20 +114,21 @@ void LogonConsole::ProcessCmd(char *cmd)
 	for(size_t i = 0; i < strlen(cmd); ++i)
 		cmd2[i] = tolower(cmd[i]);
 
-	for (size_t i = 0; i < sizeof(cmds)/sizeof(SCmd); i++)
+	for (size_t i = 0; i < sizeof(cmds) / sizeof(SCmd); i++)
+	{
 		if (strncmp(cmd2, cmds[i].name, strlen(cmds[i].name)) == 0)
 		{
-			(this->*(cmds[i].tr)) (cmd + strlen(cmds[i].name));
+			(this->*(cmds[i].tr))(cmd + strlen(cmds[i].name));
 			return;
 		}
-
-		printf("Console:Unknown console command (use \"help\" for help).\n");
+	}
+	printf("Console:Unknown console command (use \"help\" for help).\n");
 }
 
 void LogonConsole::ReloadAccts(char *str)
 {
-AccountMgr::getSingleton().ReloadAccounts(false);
-IPBanner::getSingleton().Reload();
+	AccountMgr::getSingleton().ReloadAccounts(false);
+	IPBanner::getSingleton().Reload();
 }
 
 // quit | exit
@@ -142,7 +146,7 @@ void LogonConsole::ProcessQuit(int delay)
 {
 	mrunning = false;
 }
-//------------------------------------------------------------------------------
+
 // help | ?
 void LogonConsole::TranslateHelp(char *str)
 {
@@ -152,21 +156,21 @@ void LogonConsole::ProcessHelp(char *command)
 {
 	if (command == NULL)
 	{
-		sLog.outString("Console:--------help--------");
-		sLog.outString("   help, ?: print this text");
-		sLog.outString("   reload, reloads accounts");
-		sLog.outString("   rehash, rehashes config file");
-		sLog.outString("   quit, shutdown, exit: close program");
+		sLog.outString("===============================================================================");	
+		sLog.outString("Console::Help");
+		sLog.outString("===============================================================================");	
+		sLog.outString("  - help, ?: print this text");
+		sLog.outString("  - reload, reloads accounts");
+		sLog.outString("  - rehash, rehashes config file");
+		sLog.outString("  - quit, shutdown, exit: close program");
 	}
 }
-//------------------------------------------------------------------------------
 
 LogonConsoleThread::LogonConsoleThread()
 {
-	kill=false;
+	kill = false;
 }
 
 LogonConsoleThread::~LogonConsoleThread()
 {
-
 }

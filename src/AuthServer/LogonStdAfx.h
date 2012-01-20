@@ -4,6 +4,9 @@
  * See COPYING for license details.
  */
 
+#ifndef LOGONSTDAFX_H
+#define LOGONSTDAFX_H
+
 #pragma once
 
 #include <list>
@@ -11,7 +14,7 @@
 #include <map>
 #include <sstream>
 #include <string>
-//#include <fstream>
+// #include <fstream>
 
 #include "Common.h"
 #include <Network/Network.h>
@@ -47,3 +50,5 @@
 
 // database decl
 extern Database* sLogonSQL;
+
+#endif

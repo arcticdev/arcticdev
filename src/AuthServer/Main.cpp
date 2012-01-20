@@ -29,7 +29,7 @@ set<AuthSocket*> _authSockets;
 CircularQueue<uint32,30> last_spells;
 #endif
 
-/*** Signal Handler ***/
+/* Signal Handler */
 void _OnSignal(int s)
 {
 	switch (s)
@@ -57,7 +57,7 @@ void _OnSignal(int s)
 void RunLS(int argc, char** argv)
 {
 	new LogonServer;
-	LogonServer::getSingleton( ).Run(argc, argv);
+	LogonServer::getSingleton().Run(argc, argv);
 	delete LogonServer::getSingletonPtr();
 }
 
@@ -110,9 +110,7 @@ bool startdb()
 	sLogonSQL = Database::Create();
 
 	// Initialize it
-	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(),
-		lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5),
-		16384))
+	if(!sLogonSQL->Initialize(lhostname.c_str(), (unsigned int)lport, lusername.c_str(), lpassword.c_str(), ldatabase.c_str(), Config.MainConfig.GetIntDefault("LogonDatabase", "ConnectionCount", 5), 16384))
 	{
 		sLog.outError("sql: Logon database initialization failed. Exiting.");
 		return false;
@@ -123,7 +121,6 @@ bool startdb()
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
 
-
 Mutex m_allowedIpLock;
 vector<AllowedIP> m_allowedIps;
 vector<AllowedIP> m_allowedModIps;
@@ -131,9 +128,9 @@ vector<AllowedIP> m_allowedModIps;
 bool IsServerAllowed(unsigned int IP)
 {
 	m_allowedIpLock.Acquire();
-	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); itr++)
+	for(vector<AllowedIP>::iterator itr = m_allowedIps.begin(); itr != m_allowedIps.end(); ++itr)
 	{
-		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
+		if(ParseCIDRBan(IP, itr->IP, itr->Bytes))
 		{
 			m_allowedIpLock.Release();
 			return true;
@@ -146,9 +143,9 @@ bool IsServerAllowed(unsigned int IP)
 bool IsServerAllowedMod(unsigned int IP)
 {
 	m_allowedIpLock.Acquire();
-	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); itr++)
+	for(vector<AllowedIP>::iterator itr = m_allowedModIps.begin(); itr != m_allowedModIps.end(); ++itr)
 	{
-		if( ParseCIDRBan(IP, itr->IP, itr->Bytes) )
+		if(ParseCIDRBan(IP, itr->IP, itr->Bytes))
 		{
 			m_allowedIpLock.Release();
 			return true;
@@ -160,11 +157,8 @@ bool IsServerAllowedMod(unsigned int IP)
 
 bool Rehash()
 {
-#ifdef WIN32
 	char * config_file = "conf/AuthServer.conf";
-#else
-	char * config_file = (char*)CONFDIR "/conf/AuthServer.conf";
-#endif
+
 	if(!Config.MainConfig.SetSource(config_file))
 	{
 		printf("Config file could not be rehashed.\n");
@@ -184,10 +178,10 @@ bool Rehash()
 	m_allowedIps.clear();
 	m_allowedModIps.clear();
 	vector<string>::iterator itr;
-	for(itr = vips.begin(); itr != vips.end(); itr++)
+	for(itr = vips.begin(); itr != vips.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
-		if( i == string::npos )
+		if(i == string::npos)
 		{
 			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
 			continue;
@@ -198,7 +192,7 @@ bool Rehash()
 
 		unsigned int ipraw = MakeIP(stmp.c_str());
 		unsigned int ipmask = atoi(smask.c_str());
-		if( ipraw == 0 || ipmask == 0 )
+		if(ipraw == 0 || ipmask == 0)
 		{
 			printf("IP: %s could not be parsed. Ignoring\n", itr->c_str());
 			continue;
@@ -210,7 +204,7 @@ bool Rehash()
 		m_allowedIps.push_back(tmp);
 	}
 
-	for(itr = vipsmod.begin(); itr != vipsmod.end(); itr++)
+	for(itr = vipsmod.begin(); itr != vipsmod.end(); ++itr)
 	{
 		string::size_type i = itr->find("/");
 		if( i == string::npos )
@@ -236,14 +230,13 @@ bool Rehash()
 		m_allowedModIps.push_back(tmp);
 	}
 
-	if( InformationCore::getSingletonPtr() != NULL )
+	if(InformationCore::getSingletonPtr() != NULL)
 		sInfoCore.CheckServers();
 
 	m_allowedIpLock.Release();
 
 	return true;
 }
-
 
 void LogonServer::Run(int argc, char ** argv)
 {
@@ -414,16 +407,16 @@ void LogonServer::Run(int argc, char ** argv)
 	Log.Notice("LogonServer","Success! Ready for connections");
 	while(mrunning && authsockcreated && intersockcreated)
 	{
-		if(!(++loop_counter%10000))	// 2mins
+		if(!(++loop_counter % 10000)) // 2mins
 		{
-			ThreadPool.IntegrityCheck(2); //Logonserver don't need as many threads as world-server, 2 will do
+			ThreadPool.IntegrityCheck(2); // Logonserver don't need as many threads as world-server, 2 will do
 		}
 
-		if(!(loop_counter%100))  //100 loop ~ 1seconds
+		if(!(loop_counter % 100)) // 100 loop ~ 1seconds
 		{
 			sInfoCore.TimeoutSockets();
 			sSocketGarbageCollector.Update();
-			CheckForDeadSockets();			  // Flood Protection
+			CheckForDeadSockets(); // Flood Protection
 			UNIXTIME = time(NULL);
 			g_localTime = *localtime(&UNIXTIME);
 		}
@@ -476,7 +469,6 @@ void LogonServer::Run(int argc, char ** argv)
 
 void OnCrash(bool Terminate)
 {
-
 }
 
 void LogonServer::CheckForDeadSockets()
@@ -492,10 +484,10 @@ void LogonServer::CheckForDeadSockets()
 	{
 		it2 = itr;
 		s = (*it2);
-		itr++;
+		++itr;
 
 		diff = t - s->GetLastRecv();
-		if(diff > 240)		   // More than 4mins -> kill the socket.
+		if(diff > 240) // More than 4mins -> kill the socket.
 		{
 			_authSockets.erase(it2);
 			s->removedFromSet = true;

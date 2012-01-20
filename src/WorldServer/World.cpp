@@ -1195,7 +1195,7 @@ void World::DeleteObject(Object* obj)
 
 void World::Rehash(bool load)
 {
-	if(load) { Config.MainConfig.SetSource(default_config_file, true); }
+	if(load) { Config.MainConfig.SetSource("conf/WorldServer.conf", true); }
 
 #ifndef CLUSTERING
 	if(!ChannelMgr::getSingletonPtr())

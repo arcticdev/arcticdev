@@ -8,7 +8,11 @@
 #include <svn_revision.h>
 #include <Console/CConsole.h>
 
-#define BANNER "ArcTic :: Realm Server  r%u/%s-%s-%s\n"
+// #define BANNER "ArcTic :: Realm Server  r%u/%s-%s-%s\n"
+// static const char* BANNER = "ArcTic :: Realm Server  r%u/%s-%s-%s\n";
+
+static const char* default_config_file = "conf/ClusterServer.conf";
+static const char* default_realm_config_file = "conf/Realms.conf";
 
 #ifndef WIN32
 #include <sched.h>
@@ -49,7 +53,6 @@ void Master::_OnSignal(int s)
 
 Master::Master()
 {
-
 }
 
 Master::~Master()
@@ -67,14 +70,6 @@ struct Addr
 };
 
 #define DEF_VALUE_NOT_SET 0xDEADBEEF
-
-#ifdef WIN32
-static const char* default_config_file = "conf/ClusterServer.conf";
-static const char* default_realm_config_file = "Realms.conf";
-#else
-static const char* default_config_file = CONFDIR "conf/ClusterServer.conf";
-static const char* default_realm_config_file = CONFDIR "/conf/Realms.conf";
-#endif
 
 volatile bool bServerShutdown = false;
 
