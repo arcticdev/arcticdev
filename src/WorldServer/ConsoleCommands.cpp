@@ -32,7 +32,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("ArcTic Information: \r\n");
 	pConsole->Write("======================================================================\r\n");
-	pConsole->Write("ArcTic Revision Information %s/%s-%s-%s\r\n", BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
+	// pConsole->Write("ArcTic Revision Information %s/%s-%s-%s\r\n", BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	pConsole->Write("Server Uptime: %s\r\n", sWorld.GetUptimeString().c_str());
 	pConsole->Write("Current Players: %u (%d GMs, %d queued)\r\n", clientsNum, gm,  0);
 	pConsole->Write("Alliance Online: %u\r\n",sWorld.AlliancePlayers);
@@ -74,7 +74,6 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	return true;
 }
 
-
 void ConcatArgs(string & outstr, int argc, int startoffset, const char * argv[])
 {
 	for(int i = startoffset + 1; i < argc; ++i)
@@ -84,6 +83,7 @@ void ConcatArgs(string & outstr, int argc, int startoffset, const char * argv[])
 			outstr += " ";
 	}
 }
+
 bool HandleAnnounceCommand(BaseConsole * pConsole, int argc, const char * argv[])
 {
 	char pAnnounce[1024];
@@ -172,7 +172,7 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 
 	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
 
-	/// apply instantly in db
+	// apply instantly in db
 	sLogonCommHandler.Account_SetBanned(argv[1], banned, argv[3]);
 
 	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective with the next reload cycle.\r\n", argv[1], 

@@ -5,11 +5,11 @@
  */
 
 #include "StdAfx.h"
+#include <svn_revision.h>
 
 #include <Common.h>
 #include <Network/Network.h>
 #include <Config/ConfigEnv.h>
-#include <svn_revision.h>
 #include <Console/BaseConsole.h>
 
 #include "BaseConsole.h"
@@ -168,7 +168,7 @@ ConsoleSocket::~ConsoleSocket( )
 	if(m_requestNo)
 	{
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-		m_requestNo=0;
+		m_requestNo = 0;
 	}
 }
 
@@ -261,14 +261,14 @@ void ConsoleSocket::OnDisconnect()
 	if(m_requestNo)
 	{
 		ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-		m_requestNo=0;
+		m_requestNo = 0;
 	}
 }
 
 void ConsoleSocket::AuthCallback(bool result)
 {
 	ConsoleAuthMgr::getSingleton().SetRequest(m_requestNo, NULL);
-	m_requestNo=0;
+	m_requestNo = 0;
 
 	if( !result )
 	{
@@ -314,7 +314,6 @@ void RemoteConsole::WriteNA(const char * Format)
 	m_pSocket->Send((const uint8*)Format, (uint32)strlen(Format));
 }
 
-
 struct ConsoleCommand
 {
 	bool(*CommandPointer)(BaseConsole*, int, const char*[]);
@@ -325,7 +324,8 @@ struct ConsoleCommand
 };
 void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 {
-	static ConsoleCommand Commands[] = {
+	static ConsoleCommand Commands[] =
+	{
 		{ &HandleAnnounceCommand, "a", "<announce string>", "Shows the message in all client chat boxes." },
 		{ &HandleAnnounceCommand, "announce", "<announce string>", "Shows the message in all client chat boxes." },
 		{ &HandleBanAccountCommand, "ban", "<account> <timeperiod>", "Bans account x for time y." },
@@ -342,16 +342,15 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 		{ &HandleNameHashCommand, "getnamehash" , "<spell_id>" , "Returns the crc32 hash of <spell_id>" } ,
 		{ &HandleOnlinePlayersCommand, "online", "none", "Shows online players." },
 		{ &HandlePlayerInfoCommand, "playerinfo", "<plrname>", "Shows information about a player." },
-		{ &HandleQuitCommand, "exit", "[delay]", "Shuts down server with optional delay in seconds." },
-		{ &HandleQuitCommand, "quit", "[delay]", "Shuts down server with optional delay in seconds." },
-		{ &HandleQuitCommand, "shutdown", "[delay]", "Shuts down server with optional delay in seconds." },
+		{ &HandleQuitCommand, "exit", "[delay]", "Shuts down server with optional delay in sec." },
+		{ &HandleQuitCommand, "quit", "[delay]", "Shuts down server with optional delay in sec." },
+		{ &HandleQuitCommand, "shutdown", "[delay]", "Shuts down server with optional delay in sec." },
 		{ &HandleRehashCommand, "rehash", "none", "Reloads the config file" },
 		{ &HandleUnbanAccountCommand, "unban", "<account>", "Unbans account x." },
 		{ &HandleUnbanAccountCommand, "unbanaccount", "<account>", "Unbans account x." },
 		{ &HandleWAnnounceCommand, "w", "<wannounce string>", "Shows the message in all client title areas." },
 		{ &HandleWAnnounceCommand, "wannounce", "<wannounce string>", "Shows the message in all client title areas." },
 		{ &HandleWhisperCommand, "whisper","<player> <message>", "Whispers a message to someone from the console." },
-
 		{ NULL, NULL, NULL, NULL },
 	};
 
@@ -380,16 +379,16 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 
 	if( !stricmp(tokens[0], "help") || tokens[0][0] == '?' )
 	{
-		pConsole->Write("=========================================================================================================\r\n");
-		pConsole->Write("| %15s | %30s | %50s |\r\n", "Name", "Arguments", "Description");
-		pConsole->Write("=========================================================================================================\r\n");		
+		pConsole->Write("===============================================================================\r\n");
+		pConsole->Write("| %7s | %20s | %30s ", "Name", "Arguments", "Description                      |\r\n");
+		pConsole->Write("===============================================================================\r\n");
 		for(i = 0; Commands[i].Name != NULL; ++i)
 		{
-			pConsole->Write("| %15s | %30s | %50s |\r\n", Commands[i].Name, Commands[i].ArgumentFormat, Commands[i].Description);
+			pConsole->Write(" %10s | %17s | %30s \r\n", Commands[i].Name, Commands[i].ArgumentFormat, Commands[i].Description);
 		}
-		pConsole->Write("=========================================================================================================\r\n");		
-		pConsole->Write("| type 'quit' to terminate a Remote Console Session                                                     |\r\n");
-		pConsole->Write("=========================================================================================================\r\n");		
+		pConsole->Write("===============================================================================\r\n");
+		pConsole->Write("| type 'quit' to terminate a Remote Console Session                           |\r\n");
+		pConsole->Write("===============================================================================\r\n");
 	}
 	else
 	{
@@ -410,16 +409,3 @@ void HandleConsoleInput(BaseConsole * pConsole, const char * szInput)
 		pConsole->Write("[!]Error, Command '%s' doesn't exist. Type '?' or 'help'to get a command overview.\r\n\r\n", tokens[0]);
 	}
 }
-/*
-void LocalConsole::Write(const char * Format, ...)
-{
-	va_list ap;
-	va_start(ap, Format);
-	vprintf(Format, ap);
-}
-
-void LocalConsole::WriteNA(const char * Format)
-{
-	printf(Format);
-}
-*/
