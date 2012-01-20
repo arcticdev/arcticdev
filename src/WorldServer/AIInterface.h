@@ -221,9 +221,12 @@ public:
 	uint32	getThreatByPtr(Unit* obj);
 	Unit* GetMostHated();
 	Unit* GetSecondHated();
-	bool	modThreatByGUID(uint64 guid, int32 mod);
-	bool	modThreatByPtr(Unit* obj, int32 mod);
-	void	RemoveThreatByPtr(Unit* obj);
+
+	bool modThreatByGUID(uint64 guid, int32 mod);
+	bool modThreatByPtr(Unit* obj, int32 mod);
+	void RemoveThreatByGUID(uint64 guid);
+	void RemoveThreatByPtr(Unit* obj);
+
 	ARCTIC_INLINE AssistTargetSet GetAssistTargets() { return m_assistTargets; }
 	ARCTIC_INLINE TargetMap *GetAITargets() { return &m_aiTargets; }
 	void addAssistTargets(Unit* Friends);
