@@ -211,7 +211,7 @@ public:
 
 	/* Pet properties */
 	uint32 GetHappiness() { return GetUInt32Value(UNIT_FIELD_POWER5); };
-	void SetHappiness(float amount) { SetPower(POWER_TYPE_HAPPINESS, amount); }; 
+	void SetHappiness(float amount) { SetUInt32Value(UNIT_FIELD_POWER5, amount); };
 
 	float GetHappinessDmgMod() { return 0.25f * GetHappinessState() + 0.5f; };
 	const char* GetPetName() { return m_name.c_str(); }
