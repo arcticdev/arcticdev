@@ -58,7 +58,6 @@ World::World()
 	m_speedHackLatencyMultiplier = 0.0f;
 	m_speedHackResetInterval = 5000;
 	m_CEThreshold = 10000;
-
 }
 
 uint32 World::GetMaxLevel(Player* plr)
@@ -480,13 +479,6 @@ bool World::SetInitialWorldSettings()
 
 	ThreadPool.ExecuteTask( new DayWatcherThread() );
 
-	// grep: this only has to be done once between version updates
-	// to re-fill the table.
-
-	/*sLog.outString("Filling spell replacements table...");
-	FillSpellReplacementsTable();
-	sLog.outString("");*/
-
 #define MAKE_TASK(sp, ptr) tl.AddTask(new Task(new CallbackP0<sp>(sp::getSingletonPtr(), &sp::ptr)))
 	// Fill the task list with jobs to do.
 	TaskList tl;
@@ -518,27 +510,27 @@ bool World::SetInitialWorldSettings()
 	{
 		MAKE_TASK(ObjectMgr, LoadCreatureWaypoints);
 	}
-	MAKE_TASK(ObjectMgr, LoadTrainers);
-	MAKE_TASK(ObjectMgr, LoadTotemSpells);
-	MAKE_TASK(ObjectMgr, LoadSpellOverride);
-	MAKE_TASK(ObjectMgr, LoadVendors);
-	MAKE_TASK(ObjectMgr, LoadAIThreatToSpellId);
-	MAKE_TASK(ObjectMgr, LoadGuildCharters);
-	MAKE_TASK(ObjectMgr, LoadGMTickets);
-	MAKE_TASK(ObjectMgr, LoadPetLevelupSpellMap);
-	MAKE_TASK(AddonMgr, LoadFromDB);
-	MAKE_TASK(ObjectMgr, SetHighestGuids);
-	MAKE_TASK(ObjectMgr, LoadReputationModifiers);
-	MAKE_TASK(ObjectMgr, LoadMonsterSay);
+	MAKE_TASK(ObjectMgr,  LoadTrainers);
+	MAKE_TASK(ObjectMgr,  LoadTotemSpells);
+	MAKE_TASK(ObjectMgr,  LoadSpellOverride);
+	MAKE_TASK(ObjectMgr,  LoadVendors);
+	MAKE_TASK(ObjectMgr,  LoadAIThreatToSpellId);
+	MAKE_TASK(ObjectMgr,  LoadGuildCharters);
+	MAKE_TASK(ObjectMgr,  LoadGMTickets);
+	MAKE_TASK(ObjectMgr,  LoadPetLevelupSpellMap);
+	MAKE_TASK(AddonMgr,   LoadFromDB);
+	MAKE_TASK(ObjectMgr,  SetHighestGuids);
+	MAKE_TASK(ObjectMgr,  LoadReputationModifiers);
+	MAKE_TASK(ObjectMgr,  LoadMonsterSay);
 	MAKE_TASK(WeatherMgr, LoadFromDB);
-	MAKE_TASK(ObjectMgr, LoadGroups);
+	MAKE_TASK(ObjectMgr,  LoadGroups);
 
-	MAKE_TASK(ObjectMgr, LoadExtraCreatureProtoStuff);
-	MAKE_TASK(ObjectMgr, LoadExtraItemStuff);
-	MAKE_TASK(QuestMgr, LoadExtraQuestStuff);
-	MAKE_TASK(ObjectMgr, LoadArenaTeams);
-	MAKE_TASK(ObjectMgr, LoadProfessionDiscoveries);
-	MAKE_TASK(ObjectMgr, LoadQuestPOI);
+	MAKE_TASK(ObjectMgr,  LoadExtraCreatureProtoStuff);
+	MAKE_TASK(ObjectMgr,  LoadExtraItemStuff);
+	MAKE_TASK(QuestMgr,   LoadExtraQuestStuff);
+	MAKE_TASK(ObjectMgr,  LoadArenaTeams);
+	MAKE_TASK(ObjectMgr,  LoadProfessionDiscoveries);
+	MAKE_TASK(ObjectMgr,  LoadQuestPOI);
 
 #undef MAKE_TASK
 
@@ -803,9 +795,9 @@ void World::SendWorldText(const char* text, WorldSession *self)
 	data << uint8(CHAT_MSG_SYSTEM);
 	data << uint32(LANG_UNIVERSAL);
 	
-	data << (uint64)0; // Who cares about guid when there's no nickname displayed heh ?
-	data << (uint32)0;
-	data << (uint64)0;
+	data << uint64(0); // Who cares about guid when there's no nickname displayed heh ?
+	data << uint32(0);
+	data << uint64(0);
 
 	data << textLen;
 	data << text;
@@ -820,7 +812,7 @@ void World::SendWorldWideScreenText(const char *text, WorldSession *self)
 {
 	WorldPacket data(256);
 	data.Initialize(SMSG_AREA_TRIGGER_MESSAGE);
-	data << (uint32)0 << text << (uint8)0x00;
+	data << uint32(0) << text << uint8(0x00);
 	SendGlobalMessage(&data, self);
 }
 
@@ -835,7 +827,7 @@ void World::UpdateSessions(uint32 diff)
 		GlobalSession = (*itr);
 		it2 = itr;
 		itr++;
-		//We have been moved to mapmgr, remove us here.
+		// We have been moved to mapmgr, remove us here.
 		if( GlobalSession->GetInstance() != 0 )
 		{
 			GlobalSessions.erase(it2);
@@ -844,10 +836,10 @@ void World::UpdateSessions(uint32 diff)
 		result = GlobalSession->Update(0);
 		if(result)
 		{
-			if(result == 1)//socket don't exist anymore, delete from worldsessions.
+			if(result == 1) // socket don't exist anymore, delete from worldsessions.
 				DeleteGlobalSession(GlobalSession);
 
-			//We have been (re-)moved to mapmgr, remove us here.
+			// We have been (re-)moved to mapmgr, remove us here.
 			GlobalSessions.erase(it2);
 		}
 	}
@@ -1203,14 +1195,7 @@ void World::DeleteObject(Object* obj)
 
 void World::Rehash(bool load)
 {
-	if(load)
-	{
-		#ifdef WIN32
-		Config.MainConfig.SetSource("conf/WorldServer.conf", true);
-		#else
-		Config.MainConfig.SetSource((char*)CONFDIR "/conf/WorldServer.conf", true);
-		#endif
-	}
+	if(load) { Config.MainConfig.SetSource(default_config_file, true); }
 
 #ifndef CLUSTERING
 	if(!ChannelMgr::getSingletonPtr())

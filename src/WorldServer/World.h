@@ -402,7 +402,6 @@ public:
 	void Update(time_t diff);
 	void CheckForExpiredInstances();
 
-   
 	void UpdateSessions(uint32 diff);
 
 	ARCTIC_INLINE void setRate(int index,float value)
@@ -649,5 +648,4 @@ public:
 };
 
 #define sWorld World::getSingleton()
-
 #endif
