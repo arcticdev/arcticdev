@@ -1492,8 +1492,8 @@ void Player::EventDeath()
 	if (m_onTaxi)
 		sEventMgr.RemoveEvents(TO_PLAYER(this), EVENT_PLAYER_TAXI_DISMOUNT);
 
-	if(!IS_INSTANCE(GetMapId()) && !sEventMgr.HasEvent(TO_PLAYER(this),EVENT_PLAYER_FORECED_RESURECT)) //Should never be true 
-		sEventMgr.AddEvent(TO_PLAYER(this),&Player::EventRepopRequestedPlayer,EVENT_PLAYER_FORECED_RESURECT,PLAYER_FORCED_RESURECT_INTERVAL,1,0); //in case he forgets to release spirit (afk or something)
+	if(!IS_INSTANCE(GetMapId()) && !sEventMgr.HasEvent(TO_PLAYER(this),EVENT_PLAYER_FORCED_RESURRECT)) //Should never be true 
+		sEventMgr.AddEvent(TO_PLAYER(this),&Player::EventRepopRequestedPlayer,EVENT_PLAYER_FORCED_RESURRECT,PLAYER_FORCED_RESURRECT_INTERVAL,1,0); //in case he forgets to release spirit (afk or something)
 	
 	//remove any summoned totems/summons/go's created by this player
 	SummonExpireAll(false);
@@ -3325,27 +3325,32 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	HonorHandler::RecalculateHonorFields(TO_PLAYER(this));
 	
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x = 0; x < 5; x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
   
 	_setFaction();
 	InitGlyphSlots();
 	InitGlyphsForLevel();
+
+	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
+	{
+		SetGlyph(i, m_specs[m_talentActiveSpec].glyphs[i]);
+	}
    
-	//class fixes
+	// class fixes
 	switch(getClass())
 	{
 	case PALADIN:
-		armor_proficiency|=(1<<7);//LIBRAM
+		armor_proficiency|=(1<<7); // Libram
 		break;
 	case DRUID:
-		armor_proficiency|=(1<<8);//IDOL
+		armor_proficiency|=(1<<8); // Idol
 		break;
 	case SHAMAN:
-		armor_proficiency|=(1<<9);//TOTEM
+		armor_proficiency|=(1<<9); // Totem
 		break;
 	case DEATHKNIGHT: 
-		armor_proficiency|=(1<<10);//SIGILS
+		armor_proficiency|=(1<<10); // Sigils
 		break;
 	case WARLOCK:
 	case HUNTER:
@@ -4423,7 +4428,7 @@ Corpse* Player::RepopRequestedPlayer()
 		return NULL;
 	}
 
-	sEventMgr.RemoveEvents(TO_PLAYER(this), EVENT_PLAYER_FORECED_RESURECT ); //in case somebody resurrected us before this event happened
+	sEventMgr.RemoveEvents(TO_PLAYER(this), EVENT_PLAYER_FORCED_RESURRECT ); //in case somebody resurrected us before this event happened
 
 	// Set death state to corpse, that way players will lose visibility
 	setDeathState( CORPSE );
@@ -4481,7 +4486,7 @@ Corpse* Player::RepopRequestedPlayer()
 
 void Player::ResurrectPlayer(Player* pResurrector)
 {
-	sEventMgr.RemoveEvents(TO_PLAYER(this),EVENT_PLAYER_FORECED_RESURECT); //in case somebody resurected us before this event happened
+	sEventMgr.RemoveEvents(TO_PLAYER(this),EVENT_PLAYER_FORCED_RESURRECT); //in case somebody resurected us before this event happened
 	if( m_resurrectHealth )
 		SetUInt32Value(UNIT_FIELD_HEALTH, (uint32)min( m_resurrectHealth, m_uint32Values[UNIT_FIELD_MAXHEALTH] ) );
 	if( m_resurrectMana )
