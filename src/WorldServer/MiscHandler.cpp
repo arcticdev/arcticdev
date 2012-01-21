@@ -1255,14 +1255,14 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 	{
 		case GAMEOBJECT_TYPE_CHAIR:
 		{
-            /// if players are mounted they are not able to sit on a chair
+            // if players are mounted they are not able to sit on a chair
             if( plyr->IsMounted() )
 				plyr->RemoveAura( plyr->m_MountSpellId );
 
 			plyr->SafeTeleport( plyr->GetMapId(), plyr->GetInstanceID(), obj->GetPositionX(), obj->GetPositionY(), obj->GetPositionZ(), obj->GetOrientation() );
 			plyr->SetStandState(STANDSTATE_SIT_MEDIUM_CHAIR);
 		}break;
-		case GAMEOBJECT_TYPE_CHEST://cast da spell
+		case GAMEOBJECT_TYPE_CHEST: // cast da spell
 		{
 			spellInfo = dbcSpell.LookupEntry( OPEN_CHEST );
 			spell = (new Spell(plyr, spellInfo, true, NULL));
@@ -1339,7 +1339,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if(!info)
 				break;
 			Spell* spell(new Spell(plyr, info, false, NULL));
-			//spell->SpellByOther = true;
+			// spell->SpellByOther = true;
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
 			spell->prepare(&targets);
@@ -1353,7 +1353,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			if(!obj->m_ritualmembers || !obj->m_ritualspell || !obj->m_ritualcaster /*|| !obj->m_ritualtarget*/)
 				return;
 
-			for(i=0;i<goinfo->SpellFocus;i++)
+			for(i = 0; i < goinfo->SpellFocus; i++)
 			{
 				if(!obj->m_ritualmembers[i])
 				{
@@ -1375,7 +1375,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			{
 				obj->m_ritualspell = 0;
 				Player* plr;
-				for(i=0;i<goinfo->SpellFocus;i++)
+				for(i = 0; i < goinfo->SpellFocus; i++)
 				{
 					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
 					if(plr!=NULL)
@@ -1592,9 +1592,29 @@ void WorldSession::HandleSetSheathedOpcode( WorldPacket & recv_data )
 	_player->SetByte(UNIT_FIELD_BYTES_2,0,(uint8)active); 
 }
 
-void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
+void WorldSession::HandlePlayedTimeOpcode(WorldPacket & recv_data)
 {
+	CHECK_INWORLD_RETURN
+
 	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
+	uint8 displayinui = 0;
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// As of 3.2.0a this is what the client sends to poll the /played time
+	//
+	// {CLIENT} Packet: (0x01CC) CMSG_PLAYED_TIME PacketSize = 1 TimeStamp = 691943484
+	// 01
+	//
+	// Structure:
+	// uint8 displayonui   -  1 when it should be printed on the screen, 0 when it shouldn't
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	recv_data >> displayinui;
+
+	DEBUG_LOG("Recieved CMSG_PLAYED_TIME.");
+	DEBUG_LOG("displayinui: %lu", displayinui);
+
 	if(playedt)
 	{
 		_player->m_playedtime[0] += playedt;
@@ -1602,11 +1622,30 @@ void WorldSession::HandlePlayedTimeOpcode( WorldPacket & recv_data )
 		_player->m_playedtime[2] += playedt;
 	}
 
-	WorldPacket data(SMSG_PLAYED_TIME, 9);
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// As of 3.2.0a the server sends this as a response to the client /played time packet
+	//
+	//  {SERVER} Packet: (0x01CD) SMSG_PLAYED_TIME PacketSize = 9 TimeStamp = 691944000
+	//  FE 0C 00 00 FE 0C 00 00 01
+	//
+	//
+	// Structure:
+	//
+	// uint32 playedtotal      -   total time played in seconds
+	// uint32 playedlevel      -   time played on this level in seconds
+	// uint32 displayinui      -   1 when it should be printed on the screen, 0 when it shouldn't
+	//
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	WorldPacket data(SMSG_PLAYED_TIME, 9); // again, an Aspire trick, with an uint8(0) -- I hate packet structure changes...
 	data << (uint32)_player->m_playedtime[1];
 	data << (uint32)_player->m_playedtime[0];
-	data << uint8(0);
+	data << uint8(displayinui);
 	SendPacket(&data);
+
+	DEBUG_LOG("Sent SMSG_PLAYED_TIME.");
+	DEBUG_LOG(" total: %lu level: %lu", _player->m_playedtime[1], _player->m_playedtime[0]);
 }
 
 void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
