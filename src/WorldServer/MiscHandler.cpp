@@ -1612,8 +1612,8 @@ void WorldSession::HandlePlayedTimeOpcode(WorldPacket & recv_data)
 
 	recv_data >> displayinui;
 
-	DEBUG_LOG("Recieved CMSG_PLAYED_TIME.");
-	DEBUG_LOG("displayinui: %lu", displayinui);
+	DEBUG_LOG("WorldSession","Recieved CMSG_PLAYED_TIME.");
+	DEBUG_LOG("WorldSession","displayinui: %lu", displayinui);
 
 	if(playedt)
 	{
@@ -1644,8 +1644,8 @@ void WorldSession::HandlePlayedTimeOpcode(WorldPacket & recv_data)
 	data << uint8(displayinui);
 	SendPacket(&data);
 
-	DEBUG_LOG("Sent SMSG_PLAYED_TIME.");
-	DEBUG_LOG(" total: %lu level: %lu", _player->m_playedtime[1], _player->m_playedtime[0]);
+	DEBUG_LOG("WorldSession","Sent SMSG_PLAYED_TIME.");
+	DEBUG_LOG("WorldSession","Total: %lu level: %lu", _player->m_playedtime[1], _player->m_playedtime[0]);
 }
 
 void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
