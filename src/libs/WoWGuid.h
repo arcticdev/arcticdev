@@ -14,7 +14,8 @@
 #define BitCount4(x) ( BitCount2(x) + BitCount2((x)>>2) )
 #define BitCount8(x) ( BitCount4(x) + BitCount4((x)>>4) )
 
-class SERVER_DECL WoWGuid {
+class SERVER_DECL WoWGuid
+{
 public:
 	
 	WoWGuid() 
@@ -25,19 +26,25 @@ public:
 	WoWGuid(uint64 guid) 
 	{
 		Clear();
-		Init((uint64)guid);
+		Init(uint64(guid));
 	}
 
-   WoWGuid(uint8 mask) 
+	WoWGuid(uint32 guid) 
 	{
 		Clear();
-		Init((uint8)mask);
+		Init(uint64(guid));
+	}
+
+	WoWGuid(uint8 mask) 
+	{
+		Clear();
+		Init(uint8(mask));
 	}
 
 	WoWGuid(uint8 mask, uint8 *fields) 
 	{
 		Clear();
-		Init(mask, fields);
+		Init(uint8(mask), fields);
 	}
 
 	~WoWGuid() 
@@ -50,8 +57,8 @@ public:
 		oldguid = 0;
 		guidmask = 0;
 
-		*((uint32*)guidfields)=0;
-		*((uint32*)&guidfields[4])=0;
+		*((uint32*)guidfields) = 0;
+		*((uint32*)&guidfields[4]) = 0;
 		compiled = false;
 		fieldcount = 0;
 	}
@@ -71,7 +78,7 @@ public:
 
 		guidmask = mask;
 
-		if (!guidmask)
+		if(!guidmask)
 			_CompileByNew();
 	}
 
@@ -97,8 +104,29 @@ public:
 	const uint8 GetNewGuidLen() const { return BitCount8(guidmask); }
 	const uint8 GetNewGuidMask() const { return guidmask; }
 	const bool operator !() const { return (!oldguid); }
+	// WoWGuid == someval bool
+	const bool operator ==(int someval) const { return (oldguid == someval); }
+	const bool operator ==(uint8 someval) const { return (oldguid == someval); }
+	const bool operator ==(uint32 someval) const { return (oldguid == someval); }
 	const bool operator ==(uint64 someval) const { return (oldguid == someval); }
+	// WoWGuid != someval bool
+	const bool operator !=(int someval) const { return (oldguid != someval); }
+	const bool operator !=(uint8 someval) const { return (oldguid != someval); }
+	const bool operator !=(uint32 someval) const { return (oldguid != someval); }
 	const bool operator !=(uint64 someval) const { return (oldguid != someval); }
+	// WoWGuid & someval contains
+	const uint64 operator &(int someval) const { return (oldguid & someval); }
+	const uint64 operator &(uint8 someval) const { return (oldguid & someval); }
+	const uint64 operator &(uint32 someval) const { return (oldguid & someval); }
+	const uint64 operator &(uint64 someval) const { return (oldguid & someval); }
+	// WoWGuid = someval
+	void operator =(int someval) { if(someval < 0) someval = 0; Clear(); Init(uint64(someval)); }
+	void operator =(uint8 someval) { Clear(); Init(uint64(someval)); }
+	void operator =(uint32 someval) { Clear(); Init(uint64(someval)); }
+	void operator =(uint64 someval) { Clear(); Init(uint64(someval)); }
+	// WoWGuid check
+	operator bool() { return (oldguid > 0); }
+	operator uint64() { return oldguid; }
 
 	void AppendField(uint8 field)
 	{
@@ -106,7 +134,7 @@ public:
 		ASSERT(fieldcount < BitCount8(guidmask));
 
 		guidfields[fieldcount++] = field;
-   
+
 		if (fieldcount == BitCount8(guidmask))
 			_CompileByNew();
 	}
@@ -127,13 +155,13 @@ private:
 
 		fieldcount = 0;
 
-		for(uint32 x=0;x<8;x++)
+		for(uint32 x = 0; x < 8; ++x)
 		{
 			uint8 p =((uint8*)&oldguid)[x];
 			if(p)
 			{
-				guidfields[fieldcount++]=p;
-				guidmask|=1<<x;
+				guidfields[fieldcount++] = p;
+				guidmask |= 1 << x;
 			}
 		}
 		compiled = true;
@@ -145,45 +173,45 @@ private:
 		int j = 0;
 
 		if (guidmask & 0x01) //1
-			{
-				oldguid |= ((uint64)guidfields[j]);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j]);
+			++j;
+		}
 		if (guidmask & 0x02) //2
-			{
-				oldguid |= ((uint64)guidfields[j] << 8);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 8);
+			++j;
+		}
 		if (guidmask & 0x04)//4
-			{
-				oldguid |= ((uint64)guidfields[j] << 16);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 16);
+			++j;
+		}
 		if (guidmask & 0x08) //8
-			{
-				oldguid |= ((uint64)guidfields[j] << 24);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 24);
+			++j;
+		}
 		if (guidmask & 0x10)//16
-			{
-				oldguid |= ((uint64)guidfields[j] << 32);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 32);
+			++j;
+		}
 		if (guidmask & 0x20)//32
-			{
-				oldguid |= ((uint64)guidfields[j] << 40);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 40);
+			++j;
+		}
 		if (guidmask & 0x40)//64
-			{
-				oldguid |= ((uint64)guidfields[j] << 48);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 48);
+			++j;
+		}
 		if (guidmask & 0x80) //128
-			{
-				oldguid |= ((uint64)guidfields[j] << 56);
-				j++;
-			}
+		{
+			oldguid |= ((uint64)guidfields[j] << 56);
+			++j;
+		}
 		compiled = true;
 	}
 };
