@@ -17,7 +17,6 @@ libGossipScripts_la_SOURCES = \
     Gossip_Stormwind.cpp \
     Gossip_Moonglade.cpp \
     Gossip_Theramore.cpp \
-    Gossip_Teldrassil.cpp \
     Gossip_BoreanTundra.cpp \
     Gossip_WyrmrestTemple.cpp \
     Setup.cpp

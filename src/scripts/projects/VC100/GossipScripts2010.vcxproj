@@ -227,7 +227,6 @@
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Shattrath.cpp" />
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Stormwind.cpp" />
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Tanaris.cpp" />
-    <ClCompile Include="..\..\src\GossipScripts\Gossip_Teldrassil.cpp" />
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Theramore.cpp" />
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Trainer.cpp" />
     <ClCompile Include="..\..\src\GossipScripts\Gossip_WyrmrestTemple.cpp" />
