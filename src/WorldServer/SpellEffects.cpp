@@ -1100,7 +1100,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				break;
 			Unit* targets[3];
 			int targets_got=0;
-			for(unordered_set<Object* >::iterator itr = unitTarget->GetInRangeSetBegin(), i2; itr != unitTarget->GetInRangeSetEnd(); )
+			for(unordered_set<Object*>::iterator itr = unitTarget->GetInRangeSetBegin(), i2; itr != unitTarget->GetInRangeSetEnd(); )
 			{
 				i2 = itr++;
 				// don't add objects that are not units and that are dead
@@ -3457,8 +3457,8 @@ void Spell::SpellEffectWeaponDmgPerc(uint32 i) // Weapon Percent damage
 
 void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 {
-	//Used by mortar team
-	//Triggers area affect spell at destinatiom
+	// Used by mortar team
+	// Triggers area affect spell at destinatiom
 	if(m_caster == NULL )
 		return;
 
@@ -3473,34 +3473,15 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 
 	float spellRadius = GetRadius(i);
 
-	/*for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
-	{
-		if(!((*itr)->IsUnit()) || !(TO_UNIT(*itr))->isAlive())
-			continue;
-		Unit t=TO_UNIT(*itr);
-	
-		float r;
-		float d=m_targets.m_destX-t->GetPositionX();
-		r=d*d;
-		d=m_targets.m_destY-t->GetPositionY();
-		r+=d*d;
-		d=m_targets.m_destZ-t->GetPositionZ();
-		r+=d*d;
-		if(sqrt(r)> spellRadius)
-			continue;
-		
-		if(!isAttackable(m_caster, TO_UNIT(*itr)))//Fixme only enemy targets?
-			continue;*/
+	// Just send this spell where he wants :S
+	Spell* sp = new Spell(m_caster, spInfo, true, NULL);
 
-		// Just send this spell where he wants :S
-		Spell* sp= new Spell(m_caster, spInfo, true, NULL);
-
-		SpellCastTargets tgt;
-		tgt.m_destX = m_targets.m_destX;
-		tgt.m_destY = m_targets.m_destY;
-		tgt.m_destZ = m_targets.m_destZ;
-		tgt.m_unitTarget = m_caster->GetGUID();
-		sp->prepare(&tgt);
+	SpellCastTargets tgt;
+	tgt.m_destX = m_targets.m_destX;
+	tgt.m_destY = m_targets.m_destY;
+	tgt.m_destZ = m_targets.m_destZ;
+	tgt.m_unitTarget = m_caster->GetGUID();
+	sp->prepare(&tgt);
 }
 
 void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
@@ -5805,7 +5786,7 @@ void Spell::SpellEffectSanctuary(uint32 i) // Stop all attacks made to you
 	if( unitTarget == NULL )
 		return;
 
-	unordered_set< Object* >::iterator itr, it2;
+	unordered_set<Object*>::iterator itr, it2;
 	Unit* pUnit;
 
 	for( itr = unitTarget->GetInRangeOppFactsSetBegin(); itr != unitTarget->GetInRangeOppFactsSetEnd(); )

@@ -156,7 +156,7 @@ MapMgr::~MapMgr()
 	_mapWideStaticObjects.clear();
 
 	Corpse* pCorpse;
-	for(unordered_set<Corpse* >::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
+	for(unordered_set<Corpse*>::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
 	{
 		pCorpse = *itr;
 		if(!pCorpse)
@@ -1021,7 +1021,7 @@ void MapMgr::_UpdateObjects()
 	Object* pObj;
 	Player* pOwner;
 	//std::set<Object* >::iterator it_start, it_end, itr;
-	unordered_set<Player*  >::iterator it_start, it_end, itr;
+	unordered_set<Player*>::iterator it_start, it_end, itr;
 	Player* lplr;
 	uint32 count = 0;
 	

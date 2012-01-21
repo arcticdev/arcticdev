@@ -51,6 +51,7 @@ build
 *.res
 *.codeanalysis
 *.aps
+*.ipch
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h

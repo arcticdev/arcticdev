@@ -3,6 +3,7 @@
  * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
+
 #ifndef __MAPMGR_H
 #define __MAPMGR_H
 
@@ -22,7 +23,6 @@ class CBattleground;
 class Instance;
 class InstanceScript;
 
-
 enum MapMgrTimers
 {
 	MMUPDATE_OBJECTS = 0,
@@ -35,23 +35,23 @@ enum MapMgrTimers
 
 enum ObjectActiveState
 {
-	OBJECT_STATE_NONE	 = 0,
+	OBJECT_STATE_NONE     = 0,
 	OBJECT_STATE_INACTIVE = 1,
 	OBJECT_STATE_ACTIVE   = 2,
 };
 
-typedef unordered_set<Object* > ObjectSet;
-typedef unordered_set<Object* > UpdateQueue;
-typedef unordered_set<Player*  > PUpdateQueue;
-typedef unordered_set<Player*  > PlayerSet;
-typedef HM_NAMESPACE::hash_map<uint32, Object* > StorageMap;
+typedef unordered_set<Object*> ObjectSet;
+typedef unordered_set<Object*> UpdateQueue;
+typedef unordered_set<Player*> PUpdateQueue;
+typedef unordered_set<Player*> PlayerSet;
+typedef HM_NAMESPACE::hash_map<uint32, Object*> StorageMap;
 typedef unordered_set<uint64> CombatProgressMap;
 typedef unordered_set<Vehicle*> VehicleSet;
 typedef unordered_set<Creature*> CreatureSet;
-typedef unordered_set<GameObject* > GameObjectSet;
+typedef unordered_set<GameObject*> GameObjectSet;
 typedef HM_NAMESPACE::hash_map<uint32, Vehicle*> VehicleSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, GameObject* > GameObjectSqlIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, GameObject*> GameObjectSqlIdMap;
 
 #define MAX_TRANSPORTERS_PER_MAP 25
 

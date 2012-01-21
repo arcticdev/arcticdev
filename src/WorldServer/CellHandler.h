@@ -67,24 +67,13 @@ CellHandler<Class>::CellHandler(Map* map)
 template <class Class>
 void CellHandler<Class>::_Init()
 {
-
 	_cells = new Class**[_sizeX];
 
 	ASSERT(_cells);
 	for (uint32 i = 0; i < _sizeX; i++)
 	{
-		//_cells[i] = new Class*[_sizeY];
-		_cells[i]=NULL;
-		//ASSERT(_cells[i]);
+		_cells[i] = NULL;
 	}
-
-	/*for (uint32 posX = 0; posX < _sizeX; posX++ )
-	{
-		for (uint32 posY = 0; posY < _sizeY; posY++ )
-		{
-			_cells[posX][posY] = NULL;
-		}
-	}*/
 }
 
 template <class Class>

@@ -1207,7 +1207,7 @@ bool ChatHandler::HandleNpcSelectCommand(const char * args, WorldSession * m_ses
 	float dist = 999999.0f;
 	float dist2;
 	Player* plr = m_session->GetPlayer();
-	unordered_set<Object* >::iterator itr;
+	unordered_set<Object*>::iterator itr;
 	for(itr = plr->GetInRangeSetBegin(); itr != plr->GetInRangeSetEnd(); itr++)
 	{
 		if( (dist2 = plr->GetDistance2dSq(*itr)) < dist && (*itr)->GetTypeId() == TYPEID_UNIT )

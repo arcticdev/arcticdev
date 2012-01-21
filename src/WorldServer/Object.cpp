@@ -798,8 +798,8 @@ void Object::OutPacketToSet(uint16 Opcode, uint16 Len, const void * Data, bool s
 	if(!IsInWorld())
 		return;
 
-	unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin();
-	unordered_set<Player*  >::iterator it_end = m_inRangePlayers.end();
+	unordered_set<Player*>::iterator itr = m_inRangePlayers.begin();
+	unordered_set<Player*>::iterator it_end = m_inRangePlayers.end();
 	int gm = ( m_objectTypeId == TYPEID_PLAYER ? TO_PLAYER(this)->m_isGmInvisible : 0 );
 	for(; itr != it_end; itr++)
 	{
@@ -826,8 +826,8 @@ void Object::SendMessageToSet(WorldPacket *data, bool bToSelf,bool myteam_only)
 	if(!IsInWorld())
 		return;
 
-	unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin();
-	unordered_set<Player*  >::iterator it_end = m_inRangePlayers.end();
+	unordered_set<Player*>::iterator itr = m_inRangePlayers.begin();
+	unordered_set<Player*>::iterator it_end = m_inRangePlayers.end();
 	bool gminvis = (m_objectTypeId == TYPEID_PLAYER ? TO_PLAYER(this)->m_isGmInvisible : false);
 	//Zehamster: Splitting into if/else allows us to avoid testing "gminvis==true" at each loop...
 	//		   saving cpu cycles. Chat messages will be sent to everybody even if player is invisible.

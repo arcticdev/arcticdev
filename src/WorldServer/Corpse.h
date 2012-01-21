@@ -27,7 +27,7 @@ struct CorpseData
 
 enum CORPSE_DYNAMIC_FLAGS
 {
-	CORPSE_DYN_FLAG_LOOTABLE			= 1,
+	CORPSE_DYN_FLAG_LOOTABLE = 1,
 };
 
 #define CORPSE_RECLAIM_TIME 30
@@ -43,7 +43,7 @@ public:
 	virtual void Init();
 	virtual void Destructor();
 
-   // void Create();
+	// void Create();
 	void Create (Player* owner, uint32 mapid, float x, float y, float z, float ang );
 
 	void SaveToDB();

@@ -4,8 +4,10 @@
  * See COPYING for license details.
  */
 
+// Class WorldSocket - Main network code functions, handles
+// reading/writing of all packets.
+
 #include "StdAfx.h"
-#include "AuthCodes.h"
 
 #ifndef CLUSTERING
 #pragma pack(push, 1)
@@ -42,7 +44,7 @@ WorldSocket::~WorldSocket()
 	queueLock.Acquire();
 	while((pck = _queue.Pop()))
 	{
-		//delete pck;
+		// delete pck;
 		g_bufferPool.Deallocate(pck);
 	}
 	queueLock.Release();
@@ -50,13 +52,13 @@ WorldSocket::~WorldSocket()
 	if(pAuthenticationPacket)
 	{
 		g_bufferPool.Deallocate(pAuthenticationPacket);
-		//delete pAuthenticationPacket;
+		// delete pAuthenticationPacket;
 	}
 
 	if(mSession)
 	{
 		mSession->SetSocket(NULL);
-		mSession=NULL;
+		mSession = NULL;
 	}
 
 	if( m_fullAccountName != NULL )
@@ -71,7 +73,7 @@ void WorldSocket::OnDisconnect()
 	if(mSession)
 	{
 		mSession->SetSocket(0);
-		mSession=NULL;
+		mSession = NULL;
 	}
 
 	if(mRequestID != 0)
@@ -83,7 +85,7 @@ void WorldSocket::OnDisconnect()
 	if(mQueued)
 	{
 		sWorld.RemoveQueuedSocket(this);	// Remove from queued sockets.
-		mQueued=false;
+		mQueued = false;
 	}
 
 	// clear buffer
@@ -185,7 +187,7 @@ OUTPACKET_RESULT WorldSocket::_OutPacket(uint16 opcode, size_t len, const void* 
 	ServerPktHeader Header;
 	Header.cmd = opcode;
 	Header.size = ntohs((uint16)len + 2);
-    _crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
+	_crypt.EncryptSend((uint8*)&Header, sizeof (ServerPktHeader));
 
 	// Pass the header to our send buffer
 	rv = BurstSend((const uint8*)&Header, 4);
@@ -298,19 +300,9 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	
 	BigNumber BNK;
 	BNK.SetBinary(K, 40);
-	
-	/*
-	uint8 key[20];
-	const uint8 SeedKeyLen = 16;
-	uint8 SeedKey[SeedKeyLen] = { 0x38, 0xA7, 0x83, 0x15, 0xF8, 0x92, 0x25, 0x30, 0x71, 0x98, 0x67, 0xB1, 0x8C, 0x4, 0xE2, 0xAA };
-	AutheticationPacketKey::GenerateKey(SeedKeyLen, (uint8*)SeedKey, key, K);
-	
-	// Initialize crypto.
-	_crypt.SetKey(key, 20);
-	*/
 
-	//checking if player is already connected
-	//disconnect current player and login this one(blizzlike)
+	// checking if player is already connected
+	// disconnect current player and login this one(blizzlike)
 
 	if(recvData.rpos() != recvData.wpos())
 		recvData.read((uint8*)lang.data(), 4);
@@ -375,7 +367,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	ASSERT(mSession);
 	pSession->deleteMutex.Acquire();
 
-	
 	// Set session properties
 	pSession->permissioncount = 0;//just to make sure it's 0
 	pSession->SetClientBuild(mClientBuild);
@@ -389,10 +380,6 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	for(uint32 i = 0; i < 8; ++i)
 		pSession->SetAccountData(i, NULL, true, 0);
 
-	// queue the account loading
-	/*AsyncQuery * aq = new AsyncQuery( new SQLClassCallbackP1<World, uint32>(World::getSingletonPtr(), &World::LoadAccountDataProc, AccountID) );
-	aq->AddQuery("SELECT * FROM account_data WHERE acct = %u", AccountID);
-	CharacterDatabase.QueueAsyncQuery(aq);*/
 	if(sWorld.m_useAccountData)
 	{
 		QueryResult * pResult = CharacterDatabase.Query("SELECT * FROM account_data WHERE acct = %u", AccountID);
@@ -539,7 +526,7 @@ void WorldSocket::OnRead()
 			readBuffer.Read(&Header, 6);
 
 			// Decrypt the header
-             _crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
+			_crypt.DecryptRecv((uint8*)&Header, sizeof (ClientPktHeader));
 			mRemaining = mSize = ntohs(Header.size) - 4;
 			mOpcode = Header.cmd;
 		}
@@ -643,7 +630,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 				fprintf(m_file, "%02X ",data[count]);
 
-				//FIX TO PARSE PACKETS WITH LENGHT < OR = TO 16 BYTES.
+				// Fix to parse packets with lenght < or = to 16 bytes.
 				if (count+1 == lenght && lenght <= 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)
@@ -665,7 +652,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 					fprintf(m_file, "|\n");
 				}
 
-				//FIX TO PARSE THE LAST LINE OF THE PACKETS WHEN THE LENGHT IS > 16 AND ITS IN THE LAST LINE.
+				//Fix to parse the last line of the packets when the lenght is > 16 and its in the last line.
 				if (count+1 == lenght && lenght > 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)

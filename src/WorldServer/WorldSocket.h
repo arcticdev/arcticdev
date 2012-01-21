@@ -4,18 +4,24 @@
  * See COPYING for license details.
  */
 
+// Class WorldSocket - Main network code functions, handles
+// reading/writing of all packets.
+
 #ifndef __WORLDSOCKET_H
 #define __WORLDSOCKET_H
 
 /* Normal WorldSocket when not using clustering */
 #ifndef CLUSTERING
 
-#define WORLDSOCKET_SENDBUF_SIZE 131078
-#define WORLDSOCKET_RECVBUF_SIZE 16384
-
 class WorldPacket;
 class SocketHandler;
 class WorldSession;
+
+enum WORLDSOCKET_SIZE
+{
+	WORLDSOCKET_SENDBUF_SIZE = 131078,
+	WORLDSOCKET_RECVBUF_SIZE = 16384,
+};
 
 enum OUTPACKET_RESULT
 {
@@ -37,7 +43,7 @@ public:
 
 	void ARCTIC_FASTCALL OutPacket(uint16 opcode, size_t len, const void* data);
 	OUTPACKET_RESULT ARCTIC_FASTCALL _OutPacket(uint16 opcode, size_t len, const void* data);
-   
+  
 	ARCTIC_INLINE uint32 GetLatency() { return _latency; }
 
 	void Authenticate();
@@ -88,8 +94,8 @@ private:
 void FastGUIDPack(ByteBuffer & buf, const uint64 & oldguid);
 void FastGUIDPack(StackBuffer & buf, const uint64 & oldguid);
 
-//!!! warning. This presumes that all guids can be compressed at least 1 byte
-//make sure you choose highguids acordingly
+// warning. This presumes that all guids can be compressed at least 1 byte
+// make sure you choose highguids acordingly
 unsigned int FastGUIDPack(const uint64 & oldguid, unsigned char * buffer, uint32 pos);
 
 

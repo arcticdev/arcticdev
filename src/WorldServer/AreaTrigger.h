@@ -7,7 +7,6 @@
 #ifndef __AREATRIGGERHANDLER_H
 #define __AREATRIGGERHANDLER_H
 
-
 enum AreaTriggerType
 {
 	ATTYPE_NULL		 = 0,
@@ -35,7 +34,5 @@ typedef struct AreaTrigger
 	uint32 required_level;
 }AreaTrigger;
 #pragma pack(pop)
-
-
 
 #endif

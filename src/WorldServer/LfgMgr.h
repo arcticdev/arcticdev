@@ -20,7 +20,7 @@ enum LFGTypes
 
 #define MAX_DUNGEONS 294+1 // check max entries +1 on lfgdungeons.dbc
 #define MAX_LFG_QUEUE_ID 3
-#define LFG_MATCH_TIMEOUT 30		// in seconds
+#define LFG_MATCH_TIMEOUT 30 // in seconds
 
 class LfgMatch;
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
@@ -49,8 +49,6 @@ protected:
 	LfgPlayerList m_lookingForGroup[MAX_DUNGEONS];
 	LfgPlayerList m_lookingForMore[MAX_DUNGEONS];
 	Mutex m_lock;
-	
-	
 };
 
 class LfgMatch

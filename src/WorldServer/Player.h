@@ -1675,7 +1675,7 @@ public:
 	uint32 m_arenaPoints;
 	bool m_honorless;
 	uint32 m_lastSeenWeather;
-	unordered_set<Object* > m_visibleFarsightObjects;
+	unordered_set<Object*> m_visibleFarsightObjects;
 	void EventTeleport(uint32 mapid, float x, float y, float z, float o);
 	void EventTeleport(uint32 mapid, float x, float y, float z)
 	{
@@ -2047,7 +2047,7 @@ protected:
 	// Channels
 	std::set<uint32> m_channels;
 	// Visible objects
-	unordered_set<Object* > m_visibleObjects;
+	unordered_set<Object*> m_visibleObjects;
 	// Groups/Raids
 	uint32 m_GroupInviter;
 	uint8 m_StableSlotCount;
@@ -2056,20 +2056,20 @@ protected:
 	Object* m_SummonedObject;
 
     // other system
-	Corpse*    myCorpse;
+	Corpse* myCorpse;
 
-	uint32      m_lastHonorResetTime;
-	uint32      _fields[PLAYER_END];
-	uint32	    trigger_on_stun;        //bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
-	uint32	    trigger_on_stun_chance; //also using this for mage "Frostbite" talent
-	int			hearth_of_wild_pct;		//druid hearth of wild talent used on shapeshifting. We eighter know what is last talent level or memo on learn
+	uint32  m_lastHonorResetTime;
+	uint32  _fields[PLAYER_END];
+	uint32  trigger_on_stun;        // bah, warrior talent but this will not get triggered on triggered spells if used on proc so i'm forced to used a special variable
+	uint32  trigger_on_stun_chance; // also using this for mage "Frostbite" talent
+	int     hearth_of_wild_pct;     // druid hearth of wild talent used on shapeshifting. We eighter know what is last talent level or memo on learn
 
-	uint32 m_team;
-	float       m_lastRunSpeed;
-	float       m_lastRunBackSpeed;
-	float       m_lastSwimSpeed;
-	float       m_lastBackSwimSpeed;
-	float       m_lastFlySpeed;
+	uint32  m_team;
+	float   m_lastRunSpeed;
+	float   m_lastRunBackSpeed;
+	float   m_lastSwimSpeed;
+	float   m_lastBackSwimSpeed;
+	float   m_lastFlySpeed;
 
 	uint32 m_mountCheckTimer;
 	void RemovePendingPlayer();

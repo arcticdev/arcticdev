@@ -361,7 +361,7 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 		uint32 jumps=m_spellInfo->EffectChainTarget[i]-1;
 		float range=GetMaxRange(dbcSpellRange.LookupEntry(m_spellInfo->rangeIndex));//this is probably wrong
 		range*=range;
-		unordered_set<Object* >::iterator itr;
+		unordered_set<Object*>::iterator itr;
 		for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 		{
 			if((*itr)->GetGUID()==m_targets.m_unitTarget)
@@ -482,7 +482,7 @@ void Spell::SpellTargetSingleGameobjectTarget(uint32 i, uint32 j)
 /// Spell Target Handling for type 24: Targets in Front of the Caster
 void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 {
-	unordered_set< Object* >::iterator itr,itr2;
+	unordered_set<Object*>::iterator itr,itr2;
 
 	if( m_spellInfo->cone_width == 0.0f )
 	{
@@ -845,7 +845,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 	}//find nearby friendly target
 	else
 	{
-		unordered_set<Object* >::iterator itr;
+		unordered_set<Object*>::iterator itr;
 		for( itr = firstTarget->GetInRangeSetBegin(); itr != firstTarget->GetInRangeSetEnd(); ++itr )
 		{
 			if( !(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive())
@@ -901,7 +901,7 @@ void Spell::SpellTargetTargetAreaSelectedUnit(uint32 i, uint32 j)
 /// Spell Target Handling for type 54: Targets in Front of the Caster
 void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 {
-	unordered_set<Object* >::iterator itr;
+	unordered_set<Object*>::iterator itr;
 
 	for( itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{

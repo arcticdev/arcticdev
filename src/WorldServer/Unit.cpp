@@ -3956,7 +3956,7 @@ else
 
 			if (ex->deleted) continue;
 
-			for(unordered_set<Object* >::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++)
+			for(unordered_set<Object*>::iterator itr = m_objectsInRange.begin(); itr != m_objectsInRange.end(); itr++)
 			{
 				if (!(*itr) || (*itr) == pVictim || !(*itr)->IsUnit())
 					continue;
@@ -6136,7 +6136,7 @@ void Unit::UpdateVisibility()
 	}
 	else			// For units we can save a lot of work
 	{
-		for(unordered_set<Player*  >::iterator it2 = GetInRangePlayerSetBegin(); it2 != GetInRangePlayerSetEnd(); ++it2)
+		for(unordered_set<Player*>::iterator it2 = GetInRangePlayerSetBegin(); it2 != GetInRangePlayerSetEnd(); ++it2)
 		{
 			can_see = (*it2)->CanSee(TO_OBJECT(this));
 			is_visible = (*it2)->GetVisibility(TO_OBJECT(this), &itr);
@@ -6894,7 +6894,7 @@ void Creature::UpdateLootAnimation(Player* Looter)
 	if( m_loot.HasLoot(Looter) )
 	{
 		// update players with lootable flags
-		for(unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); itr++)
+		for(unordered_set<Player*>::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); itr++)
 		{
 			Player* plr = *itr;
 			if( ( plr->GetLowGUID() == m_taggingPlayer ) ||
@@ -6910,7 +6910,7 @@ void Creature::UpdateLootAnimation(Player* Looter)
 	else
 	{
 		// we are still alive, probably updating tapped state
-		for(unordered_set<Player*  >::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); itr++)
+		for(unordered_set<Player*>::iterator itr = m_inRangePlayers.begin(); itr != m_inRangePlayers.end(); itr++)
 		{
 			if( !m_taggingPlayer )
 			{

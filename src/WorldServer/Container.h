@@ -33,8 +33,8 @@ public:
 	bool HasItems();
 	
 	void SwapItems(int8 SrcSlot,int8 DstSlot);
-	Item* SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy); //doesnt destroy item from memory
-	bool SafeFullRemoveItemFromSlot(int8 slot); //destroys item fully
+	Item* SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy); // doesnt destroy item from memory
+	bool SafeFullRemoveItemFromSlot(int8 slot); // destroys item fully
    
 	void SaveBagToDB(int8 slot, bool first, QueryBuffer * buf);
 

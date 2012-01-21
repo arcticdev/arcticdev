@@ -73,7 +73,8 @@ public:
 	void update_arena();
 	void update_daily();
 	void Reset_Heroic_Instances();
-	//ING Events
+
+	// Games Events
 	CreatureEventSpawnMaps m_creatureEventSpawnMaps;
 	GameobjectEventSpawnMaps m_gameobjectEventSpawnMaps;
 	EventsList m_eventIdList;

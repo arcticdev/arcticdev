@@ -44,7 +44,7 @@ public:
 	
 	RPlayerInfo * GetPlayer(uint32 guid)
 	{
-		//RPlayerInfo * inf;
+		// RPlayerInfo * inf;
 		OnlinePlayerStorageMap::iterator itr;
 		m_onlinePlayerMapMutex.Acquire();
 		itr = _onlinePlayers.find(guid);

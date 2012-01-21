@@ -453,8 +453,7 @@ protected:
 	GuildLogList m_log;
 	list<GuildBankEvent*> m_moneyLog;
 
-	/** Guild lock.
-	 */
+	/* Guild lock. */
 	Mutex m_lock;
 
 	/* finds the lowest rank */

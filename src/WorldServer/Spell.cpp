@@ -294,7 +294,7 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
     //InStealth()
     float r = range * range;
 	//uint8 did_hit_result;
-    for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
+    for(unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
     {
         // don't add objects that are not units and that are dead
         if( !( (*itr)->IsUnit() ) || ! TO_UNIT( *itr )->isAlive())
@@ -355,7 +355,7 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 	//TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range*range;
 	//uint8 did_hit_result;
-	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
+	for( unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || ! TO_UNIT(*itr)->isAlive() || ( (*itr)->GetTypeId()==TYPEID_UNIT && TO_CREATURE(*itr)->IsTotem() ) || !(*itr)->PhasedCanInteract(m_caster))
 			continue;
@@ -401,7 +401,7 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 	//TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range * range;
 	//uint8 did_hit_result;
-	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
+	for( unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !((*itr)->IsUnit()) || !TO_UNIT(*itr)->isAlive() || !(*itr)->PhasedCanInteract(m_caster))
 			continue;
@@ -457,7 +457,7 @@ uint64 Spell::GetSinglePossibleEnemy(uint32 i,float prange)
 		}
 	}
 	float srcx = m_caster->GetPositionX(), srcy = m_caster->GetPositionY(), srcz = m_caster->GetPositionZ();
-	for( unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
+	for( unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || !TO_UNIT(*itr)->isAlive() || !(*itr)->PhasedCanInteract(m_caster))
 			continue;
@@ -506,7 +506,7 @@ uint64 Spell::GetSinglePossibleFriend(uint32 i,float prange)
 		}
 	}
 	float srcx=m_caster->GetPositionX(),srcy=m_caster->GetPositionY(),srcz=m_caster->GetPositionZ();
-	for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
+	for(unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || !TO_UNIT(*itr)->isAlive() )
 			continue;
@@ -4508,7 +4508,7 @@ void Spell::Heal(int32 amount)
 			{
 				uint32 GHL = float2int32(amount * 0.1f);
 				uint32 targetcnt = 0;
-				unordered_set<Object* >::iterator itr;
+				unordered_set<Object*>::iterator itr;
 				for( itr = unitTarget->GetInRangeSetBegin(); itr != unitTarget->GetInRangeSetEnd(); ++itr )
 				{
 					if( !(*itr)->IsUnit() || !TO_UNIT(*itr)->isAlive() || isAttackable(u_caster, (*itr), true) )
@@ -4701,7 +4701,7 @@ void Spell::Heal(int32 amount)
 		{
 			target_threat.reserve(u_caster->GetInRangeCount()); // this helps speed
 
-			for(unordered_set<Object* >::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); itr++)
+			for(unordered_set<Object*>::iterator itr = u_caster->GetInRangeSetBegin(); itr != u_caster->GetInRangeSetEnd(); itr++)
 			{
 				if((*itr)->GetTypeId() != TYPEID_UNIT)
 					continue;

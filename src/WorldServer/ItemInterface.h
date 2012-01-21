@@ -7,7 +7,7 @@
 #ifndef _ITEMINTERFACE_H
 #define _ITEMINTERFACE_H
 
-#define INVALID_BACKPACK_SLOT ((uint8)(0xFF)) //In 1.8 client marked wrong slot like this
+#define INVALID_BACKPACK_SLOT ((uint8)(0xFF)) // In 1.8 client marked wrong slot like this
 
 struct SlotResult
 {
@@ -63,20 +63,21 @@ public:
 
 	Item* SafeAddItem(uint32 ItemId, uint8 ContainerSlot, uint8 slot);
 	AddItemResult SafeAddItem(Item* pItem, uint8 ContainerSlot, uint8 slot);
-	Item* SafeRemoveAndRetreiveItemFromSlot(uint8 ContainerSlot, uint8 slot, bool destroy); //doesnt destroy item from memory
+	Item* SafeRemoveAndRetreiveItemFromSlot(uint8 ContainerSlot, uint8 slot, bool destroy); // doesnt destroy item from memory
 	Item* SafeRemoveAndRetreiveItemByGuid(uint64 guid, bool destroy);
 	Item* SafeRemoveAndRetreiveItemByGuidRemoveStats(uint64 guid, bool destroy);
 	bool SafeFullRemoveItemFromSlot(uint8 ContainerSlot, uint8 slot); //destroys item fully
-	bool SafeFullRemoveItemByGuid(uint64 guid); //destroys item fully
+	bool SafeFullRemoveItemByGuid(uint64 guid); // destroys item fully
 	AddItemResult AddItemToFreeSlot(Item* item);
 	AddItemResult AddItemToFreeBankSlot(Item* item);
 	
-	/** Finds a stack that didn't reach max capacity
-	\param itemid The entry of the item to search for
-	\param cnt The item count you wish to add to the stack
-	\param IncBank Should this search the player's bank as well?
-	\return An Item* to a stack of itemid which can contain cnt more items
-	*/
+	/* Finds a stack that didn't reach max capacity
+	 * itemid The entry of the item to search for
+	 * cnt The item count you wish to add to the stack
+	 * IncBank Should this search the player's bank as well?
+	 * An Item* to a stack of itemid which can contain cnt more items
+	 */
+
 	Item* FindItemLessMax(uint32 itemid, uint32 cnt, bool IncBank);
 	uint32 GetItemCount(uint32 itemid, bool IncBank = false);
 	uint32 RemoveItemAmt(uint32 id, uint32 amt);
@@ -91,7 +92,7 @@ public:
 	uint8 LastSearchItemSlot(){return result.Slot;}
 	SlotResult *LastSearchResult(){return &result;}
 
-	//Searching functions
+	// Searching functions
 	SlotResult FindFreeInventorySlot(ItemPrototype *proto);
 	SlotResult FindFreeBankSlot(ItemPrototype *proto);
 	SlotResult FindAmmoBag();
@@ -110,9 +111,9 @@ public:
 	void BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint8 Error);
 	void SwapItemSlots(uint8 srcslot, uint8 dstslot);
 
-	uint8 GetInternalBankSlotFromPlayer(uint8 islot); //converts inventory slots into 0-x numbers
+	uint8 GetInternalBankSlotFromPlayer(uint8 islot); // converts inventory slots into 0-x numbers
 
-	//buyback stuff
+	// buyback stuff
 	ARCTIC_INLINE Item* GetBuyBack(int32 slot) 
 	{ 
 		if(slot >= 0 && slot <= 12)

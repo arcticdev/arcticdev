@@ -154,7 +154,7 @@ class Vehicle;
 class SERVER_DECL Object : public EventableObject
 {
 public:
-	typedef unordered_set< Object* > InRangeSet;
+	typedef unordered_set<Object*> InRangeSet;
 	typedef std::map<string, void*> ExtensionSet;
 
 	virtual ~Object ( );
@@ -458,11 +458,11 @@ public:
 
 	bool IsInRangeOppFactSet(Object* pObj) { return (m_oppFactsInRange.count(pObj) > 0); }
 	void UpdateOppFactionSet();
-	ARCTIC_INLINE unordered_set<Object* >::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
-	ARCTIC_INLINE unordered_set<Object* >::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
-	ARCTIC_INLINE unordered_set<Player*  >::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
-	ARCTIC_INLINE unordered_set<Player*  >::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
-	ARCTIC_INLINE unordered_set<Player*  > * GetInRangePlayerSet() { return &m_inRangePlayers; };
+	ARCTIC_INLINE unordered_set<Object*>::iterator GetInRangeOppFactsSetBegin() { return m_oppFactsInRange.begin(); }
+	ARCTIC_INLINE unordered_set<Object*>::iterator GetInRangeOppFactsSetEnd() { return m_oppFactsInRange.end(); }
+	ARCTIC_INLINE unordered_set<Player*>::iterator GetInRangePlayerSetBegin() { return m_inRangePlayers.begin(); }
+	ARCTIC_INLINE unordered_set<Player*>::iterator GetInRangePlayerSetEnd() { return m_inRangePlayers.end(); }
+	ARCTIC_INLINE unordered_set<Player*> * GetInRangePlayerSet() { return &m_inRangePlayers; };
 
 	void ARCTIC_FASTCALL SendMessageToSet(WorldPacket *data, bool self,bool myteam_only=false);
 	ARCTIC_INLINE void SendMessageToSet(StackPacket * data, bool self) { OutPacketToSet(data->GetOpcode(), (uint16)data->GetSize(), data->GetBufferPointer(), self); }
@@ -599,9 +599,9 @@ protected:
 
 	// Set of Objects in range.
 	// TODO: that functionality should be moved into WorldServer.
-	unordered_set<Object* > m_objectsInRange;
-	unordered_set<Player* > m_inRangePlayers;
-	unordered_set<Object* > m_oppFactsInRange;
+	unordered_set<Object*> m_objectsInRange;
+	unordered_set<Player*> m_inRangePlayers;
+	unordered_set<Object*> m_oppFactsInRange;
    
 	int32 m_instanceId;
 

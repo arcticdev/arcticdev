@@ -1224,7 +1224,7 @@ void Aura::EventRelocateRandomTarget()
 	// Ok, let's do it. :D
 	set<Unit* > enemies;
 
-	unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin();
+	unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin();
 	for(; itr != m_caster->GetInRangeSetEnd(); itr++)
 	{
 		if( !(*itr)->IsUnit() )
@@ -3246,7 +3246,7 @@ void Aura::EventPeriodicHeal( uint32 amount )
 		{
 			target_threat.reserve(m_caster->GetInRangeCount()); // this helps speed
 
-			for(unordered_set<Object* >::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++)
+			for(unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); itr++)
 			{
 				if((*itr)->GetTypeId() != TYPEID_UNIT)
 					continue;
@@ -5855,8 +5855,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 
 			data.Initialize(0x03BE);
 			data << pTarget->GetGUID();
-//			pTarget->setDeathState(DEAD);
-			unordered_set< Object* >::iterator itr,itr2;
+			unordered_set<Object*>::iterator itr,itr2;
 			Object* pObject = NULL;
 
 			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs

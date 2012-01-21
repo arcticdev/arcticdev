@@ -10,11 +10,11 @@
 class EventableObjectHolder;
 
 /*
-  * @class EventableObject
-  * EventableObject means that the class inheriting this is able to take
-  * events. This 'base' class will store and update these events upon
-  * receiving the call from the instance thread / WorldRunnable thread.
-  */
+ * @class EventableObject
+ * EventableObject means that the class inheriting this is able to take
+ * events. This 'base' class will store and update these events upon
+ * receiving the call from the instance thread / WorldRunnable thread.
+ */
 
 typedef list<TimedEvent*> EventList;
 typedef multimap<uint32, TimedEvent*> EventMap;

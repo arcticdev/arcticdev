@@ -23,16 +23,16 @@ class SERVER_DECL ArenaTeam
 	{
 		uint32 Slots = 0;
 		if(Type == ARENA_TEAM_TYPE_2V2)
-			Slots=4;
+			Slots = 4;
 		else if(Type == ARENA_TEAM_TYPE_3V3)
-			Slots=6;
+			Slots = 6;
 		else if(Type == ARENA_TEAM_TYPE_5V5)
-			Slots=10;
+			Slots = 10;
 		ASSERT(Slots);
 		m_members = new ArenaTeamMember[Slots];
 		memset(m_members,0,sizeof(ArenaTeamMember)*Slots);
 		m_slots = Slots;
-		m_memberCount=0;
+		m_memberCount = 0;
 	}
 
 public:
