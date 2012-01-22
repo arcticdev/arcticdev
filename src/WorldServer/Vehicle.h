@@ -7,6 +7,12 @@
 #ifndef _VEHICLE_H
 #define _VEHICLE_H
 
+enum VehiclePowerType
+{
+   POWER_STEAM  = 61,
+   POWER_PYRITE = 41,
+};
+
 class SERVER_DECL Vehicle : public Creature
 {
 public:
@@ -25,7 +31,7 @@ public:
 	void RemovePassenger(Unit* pPassenger);
 	void RemoveAllPassengers();
 	bool HasPassenger(Unit* pPassenger);
-	void SendSpells(uint32 entry, Player* plr);
+	void SendSpells(uint32 entry,uint8 slot, Player* plr);
 	void setDeathState(DeathState s);
 	void SetSpeed(PlayerSpeedType SpeedType, float value);
 

@@ -86,7 +86,7 @@ bool Vehicle::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 //This function builds and send the packets required to add spells
 //to a vehicle that can be cast by its controlling unit
 //-----------------------------------------------------------------
-void Vehicle::SendSpells(uint32 entry, Player* plr)
+void Vehicle::SendSpells(uint32 entry, uint8 slot, Player* plr)
 {
 
 	//Vehicles spells are set in the AI_Agents table
@@ -115,8 +115,10 @@ void Vehicle::SendSpells(uint32 entry, Player* plr)
 	data << uint32(0x00000000);//unk
 	data << uint16(0x0101);	//unk2
 
-	//iterate over the temporary list
-	//and add the spells to the packet
+ 	// Send the actionbar
+	CreatureProto* cp = CreatureProtoStorage.LookupEntry(entry);
+	uint16 spell = cp->spell1;
+
 	for(uint8 i = 1; i < 10; ++i)
 	{
 		if(itr != avail_spells.end())
@@ -125,7 +127,36 @@ void Vehicle::SendSpells(uint32 entry, Player* plr)
 			itr++;
 		}
 		else
-			data << uint16(0) << uint8(0) << uint8(i+8);
+		{
+			switch(i)
+			{
+			case 1:
+				spell = cp->spell1;
+			break;
+			case 2:
+				spell = cp->spell2;
+			break;
+			case 3:
+				spell = cp->spell3;
+			break;
+			case 4:
+				spell = cp->spell4;
+			break;
+			case 5:
+				spell = cp->spell5;
+			break;
+			case 6:
+				spell = cp->spell6;
+			break;
+			case 7:
+				spell = cp->spell7;
+			break;
+			case 8:
+				spell = cp->spell8;
+			break;
+			default: spell = 0;
+			}
+		}
 	}
 
 	//count of spells to follow, these are spells
@@ -514,7 +545,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 			_setFaction();
 			UpdateOppFactionSet();
 
-			SendSpells(GetEntry(), pPlayer);
+			SendSpells(GetEntry(), slot, pPlayer);
 		}
 
 		data.Initialize(SMSG_PET_DISMISS_SOUND);
