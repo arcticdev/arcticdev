@@ -19,7 +19,7 @@ class GossipScript;
 struct CreatureItem
 {
 	uint32 itemid;
-	uint32 amount; //!!!!! stack amount.
+	uint32 amount; // stack amount.
 	uint32 available_amount;
 	uint32 max_amount;
 	uint32 incrtime;
@@ -111,44 +111,44 @@ struct CreatureProto
 	uint32 MaxHealth;
 	uint32 Mana;
 	float  Scale;
-	uint32	NPCFLags;
+	uint32 NPCFLags;
 	uint32 AttackTime;
 	uint32 AttackType;
-	float MinDamage;
-	float MaxDamage;
+	float  MinDamage;
+	float  MaxDamage;
 	uint32 RangedAttackTime;
-	float RangedMinDamage;
-	float RangedMaxDamage;
+	float  RangedMinDamage;
+	float  RangedMaxDamage;
 	uint32 Item1;
 	uint32 Item2;
 	uint32 Item3;
 	uint32 RespawnTime;
 	uint32 Resistances[7];
-	float CombatReach;
-	float BoundingRadius;
+	float  CombatReach;
+	float  BoundingRadius;
 	char * aura_string;
 	uint32 boss;
-	int32 money;
-	bool no_xp;
+	int32  money;
+	bool   no_xp;
 	uint32 invisibility_type;
 	uint32 death_state;
-	float	walk_speed;//base movement
-	float	run_speed;//most of the time mobs use this
-	float fly_speed;
+	float  walk_speed; // base movement
+	float  run_speed; // most of the time mobs use this
+	float  fly_speed;
 	uint32 extra_a9_flags;
-	uint32	auraimmune_flag;
-	int32 vehicle_entry;
-	uint8 CanMove;
+	uint32 auraimmune_flag;
+	int32  vehicle_entry;
+	uint8  CanMove;
 
 	/* AI Stuff */
-	bool m_canRangedAttack;
+	bool   m_canRangedAttack;
 	uint32 m_RangedAttackSpell;
 	uint32 m_SpellSoundid;
-	bool m_canFlee;
-	float m_fleeHealth;
+	bool   m_canFlee;
+	float  m_fleeHealth;
 	uint32 m_fleeDuration;
-	bool m_canCallForHelp;
-	float m_callForHelpHealth;
+	bool   m_canCallForHelp;
+	float  m_callForHelpHealth;
 
 	set<uint32> start_auras;
 	list<AI_Spell*> spells;
@@ -161,8 +161,8 @@ struct CreatureProtoHeroic
 	uint32 Maxlevel;
 	uint32 Minhealth;
 	uint32 Maxhealth;
-	float Mindmg;
-	float Maxdmg;
+	float  Mindmg;
+	float  Maxdmg;
 	uint32 mana;
 	uint32 Resistances[7];
 	char * aura_string;
@@ -173,10 +173,11 @@ struct CreatureProtoHeroic
 
 #pragma pack(pop)
 
-struct Formation{
+struct Formation
+{
 	uint32 fol;
-	float ang;
-	float dist;
+	float  ang;
+	float  dist;
 };
  
    

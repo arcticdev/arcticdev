@@ -331,7 +331,6 @@ void Object::DestroyForPlayer(Player* target) const
 	target->GetSession()->SendPacket( &data );
 }
 
-
 ///////////////////////////////////////////////////////////////
 /// Build the Movement Data portion of the update packet
 /// Fills the data with this object's movement/speed info
@@ -379,9 +378,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 
 		if(GetTypeId() == TYPEID_UNIT)
 		{
-			//		 Don't know what this is, but I've only seen it applied to spirit healers.
-			//		 maybe some sort of invisibility flag? :/
-
 			switch(GetEntry())
 			{
 			case 6491:  // Spirit Healer
@@ -393,18 +389,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 		
 			if( TO_UNIT(this)->GetAIInterface()->IsFlying())
-//				flags2 |= 0x800; //in 2.3 this is some state that i was not able to decode yet
-				flags2 |= 0x400; //Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
+				flags2 |= 0x400; // Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if( TO_CREATURE(this)->proto && TO_CREATURE(this)->proto->extra_a9_flags)
 			{
 				if(!(flags2 & 0x0200))
 					flags2 |= TO_CREATURE(this)->proto->extra_a9_flags;
 			}
-/*			if(GetGUIDHigh() == HIGHGUID_WAYPOINT)
-			{
-				if(GetUInt32Value(UNIT_FIELD_STAT0) == 768)		// flying waypoint
-					flags2 |= 0x800;
-			}*/
 		}
 
 		*data << (uint32)flags2;
@@ -484,7 +474,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			*data << moveinfo->unklast;
 		}
 		else
-		*data << (uint32)0; //last fall time
+			*data << uint32(0); //last fall time
 
 		if(flags2 & 0x1000) // BYTE1(flags2) & 0x10
 		{
@@ -500,20 +490,20 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			*data << (float)0;	 //cosAngle
 			*data << (float)0;	 //xySpeed
 		}
-		if( flags2 & 0x4000000 )
+		if(flags2 & MOVEFLAG_SPLINE_MOVER)
 		{
 			*data << (float)0; //unknown float
 		}
 
-		*data << m_walkSpeed;	 // walk speed
-		*data << m_runSpeed;	  // run speed
-		*data << m_backWalkSpeed; // backwards run speed
-		*data << m_swimSpeed;	 // swim speed
-		*data << m_backSwimSpeed; // backwards swim speed
-		*data << m_flySpeed;		// fly speed
-		*data << m_backFlySpeed;	// back fly speed
-		*data << m_turnRate;	  // turn rate
-		*data << float(7);			//pitch rate
+		*data << m_walkSpeed;             // walk speed
+		*data << m_runSpeed;              // run speed
+		*data << m_backWalkSpeed;         // backwards run speed
+		*data << m_swimSpeed;             // swim speed
+		*data << m_backSwimSpeed;         // backwards swim speed
+		*data << m_flySpeed;              // fly speed
+		*data << m_backFlySpeed;          // back fly speed
+		*data << m_turnRate;              // turn rate
+		*data << float(7);                // pitch rate
 
 		if(splinebuf)	// client expects that flags2 & 0x8000000 != 0 in this case
 		{
@@ -522,16 +512,16 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		}
 	}
 	else if(flags & 0x100)
-    {
-			*data << uint8(0);                              // unk PGUID!
-			*data << (float)m_position.x;
-			*data << (float)m_position.y;
-			*data << (float)m_position.z;
-			*data << (float)m_position.x;
-			*data << (float)m_position.y;
-			*data << (float)m_position.z;
-			*data << (float)m_position.o;
-			*data << float(0);
+	{
+		*data << uint8(0);                // unk PGUID!
+		*data << (float)m_position.x;
+		*data << (float)m_position.y;
+		*data << (float)m_position.z;
+		*data << (float)m_position.x;
+		*data << (float)m_position.y;
+		*data << (float)m_position.z;
+		*data << (float)m_position.o;
+		*data << float(0);
 	}
 	else if(flags & 0x40)
 	{
@@ -547,40 +537,31 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			*data << (float)m_position.y;
 			*data << (float)m_position.z;
 		}
-			*data << (float)m_position.o;
+		*data << (float)m_position.o;
 	}
 
 	if(flags & 8)
-	{
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
-	}
-	
 	if(flags & 0x0010)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID+1);
 
 	if(flags & 0x0004)
-	{
 		*data << uint8(0);// unknown NewGUID
-	}
 
 	if(flags & 2)
-	{
         *data << (uint32)getMSTime();
-	}
 
 	if (flags & 0x80) //if ((_BYTE)flags_ < 0)
-	{
-			*data << TO_VEHICLE(this)->GetVehicleEntry() << float(0.0f);
-	}
+		*data << TO_VEHICLE(this)->GetVehicleEntry() << float(0.0f);
 
 	// 0x200
-    if(flags & 0x0200)
-    {
+	if(flags & 0x0200)
+	{
 		uint64 rotation = 0;
 		if(IsGameObject())
 			rotation = TO_GAMEOBJECT(this)->m_rotation;
-        *data << uint64(rotation); //blizz 64bit rotation
-    }
+		*data << uint64(rotation); //blizz 64bit rotation
+	}
 }
 
 //=======================================================================================

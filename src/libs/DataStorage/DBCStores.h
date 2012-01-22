@@ -1343,10 +1343,11 @@ struct VehicleSeatEntry
 	uint32  m_exitUISoundID;                                // 43
 	int32   m_uiSkin;                                       // 44
 	uint32  m_flagsB;                                       // 45
-															// 46-57 added in 3.1, floats mostly
+	// 46-57
 
 	bool IsUsable() const { return (m_flags & 0x2000000) != 0; }
 };
+
 struct QuestXP
 {
     uint32 questLevel;                                      // 0

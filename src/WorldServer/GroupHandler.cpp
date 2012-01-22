@@ -194,7 +194,8 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleGroupUninviteGUIDOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
+	CHECK_INWORLD_RETURN;
+
 	CHECK_PACKET_SIZE(recv_data, 1);
 	std::string membername;
 	Player* player;

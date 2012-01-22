@@ -10,8 +10,7 @@
 
 void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
-	DEBUG_LOG("WORLD:","Received CMSG_TAXINODE_STATUS_QUERY");
+	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_TAXINODE_STATUS_QUERY");
 
 	uint64 guid;
 	uint32 curloc;
@@ -45,8 +44,8 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleTaxiQueryAvaibleNodesOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
-	DEBUG_LOG("WORLD:","Received CMSG_TAXIQUERYAVAILABLENODES" );
+	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_TAXIQUERYAVAILABLENODES");
+
 	uint64 guid;
 	recv_data >> guid;
 	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
@@ -112,8 +111,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 
 void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 {
-	if(!_player->IsInWorld()) return;
-	DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
+	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
 
 	uint64 guid;
 	uint32 sourcenode, destinationnode;
@@ -232,8 +230,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 {
-	if(!_player->IsInWorld()) return;
-	DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
+	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
 
 	uint64 guid;
 	uint32 moocost;
