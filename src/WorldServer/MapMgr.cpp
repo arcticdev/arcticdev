@@ -24,14 +24,10 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_CreatureArraySize = map->CreatureSpawnCount;
 	m_VehicleArraySize = 0;
 
-	//m_CreatureStorage = new Creature*[m_CreatureArraySize];
-	//m_CreatureStorage = (Creature**)malloc(sizeof(Creature*) * m_CreatureArraySize);
-	//memset(m_CreatureStorage,0,sizeof(Creature*)*m_CreatureArraySize);
-
 	m_GOHighGuid = 0;
 	m_CreatureHighGuid = 0;
 	m_VehicleHighGuid = 0;
-	m_DynamicObjectHighGuid=0; 
+	m_DynamicObjectHighGuid = 0; 
 	lastUnitUpdate = getMSTime();
 	lastGameobjectUpdate = getMSTime();
 	m_battleground = NULL;

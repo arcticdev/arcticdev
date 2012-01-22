@@ -6,12 +6,6 @@
 
 #include "StdAfx.h"
 
-#ifdef M_PI
-#undef M_PI
-#endif
-
-#define M_PI	   3.14159265358979323846f
-
 Creature::Creature(uint64 guid)
 {
 	m_valuesCount = UNIT_END;

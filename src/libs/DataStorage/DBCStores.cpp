@@ -70,6 +70,7 @@ SERVER_DECL DBCStorage<AreaPOIEntry> dbcAreaPOI;
 SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 SERVER_DECL DBCStorage<QuestXP> dbcQuestXP;
 SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
+SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
 
 const char* SummonPropertiesfmt = "uuuuuu";
 const char* AreaTriggerFormat = "uuffffffff";
@@ -155,6 +156,7 @@ const char* AreaPOIFormat = "nuuuuuuuuuuufffuxuxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 const char* currencyTypesFormat = "xuxu";
 const char* questxpformat = "uxuuuuuuuux";
 const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxu";
+const char* DestructibleModelDataFormat = "uxxuxxxuxxxuxxxuxxx";
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -250,6 +252,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayfmt, true, dbcWorldMapOverlay, true);
 	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false );
+	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
 
 	return true;
 }

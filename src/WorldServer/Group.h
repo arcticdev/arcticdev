@@ -128,6 +128,7 @@ public:
 
 	ARCTIC_INLINE void OutPacketToAll(uint16 op, uint16 len, const void* data) { OutPacketToAllButOne(op, len, data, NULL); }
 	void OutPacketToAllButOne(uint16 op, uint16 len, const void* data, Player* pSkipTarget);
+	void SendPacketToAllInRange(Player* plr, WorldPacket *packet);
 
 	void SendNullUpdate(Player* pPlayer);
 

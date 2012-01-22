@@ -5,6 +5,7 @@
  */
 
 #include "StdAfx.h"
+
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_MOUNT_CHECK_INTERVAL 1000
 static const uint8 baseRunes[6] = {0,0,1,1,2,2};
@@ -2103,7 +2104,6 @@ void Player::_SetUpdateBits(UpdateMask *updateMask, Player* target) const
 	}
 }
 
-
 void Player::InitVisibleUpdateBits()
 {
 	Player::m_visibleUpdateMask.SetCount(PLAYER_END);
@@ -2141,6 +2141,7 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_0);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FLAGS);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_FLAGS_2);
+	Player::m_visibleUpdateMask.SetBit(UNIT_NPC_FLAGS);	
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_AURASTATE);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BASEATTACKTIME+1);

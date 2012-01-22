@@ -1294,7 +1294,30 @@ struct CurrencyTypesEntry
 	// uint32 Category;
 	uint32    BitIndex;
 };
- 
+
+struct DestructibleModelDataEntry
+{
+	uint32 entry; // Unknown9 from gameobject_names
+	uint32 displayId[4];
+
+	uint32 GetDisplayId(uint8 state)
+	{
+		if(state > 3)
+			return 0;
+
+		if(!displayId[state])
+		{
+			for(int32 i = state-1; i > -1; --i)
+			{
+				if(displayId[i])
+					return displayId[i];
+			}
+		}
+
+		return displayId[state];
+	}
+};
+
 struct VehicleSeatEntry
 {
 	uint32  m_ID;                                           // 0
@@ -1750,6 +1773,7 @@ extern SERVER_DECL DBCStorage<SummonPropertiesEntry> dbcSummonProps;
 extern SERVER_DECL DBCStorage<AreaPOIEntry> dbcAreaPOI;
 extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
+extern SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
 
 bool LoadDBCs();
 bool LoadRSDBCs();

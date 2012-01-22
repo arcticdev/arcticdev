@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 
-/// Function pointer holder
+// Function pointer holder
 pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET] = 
 {
 	&Spell::SpellTargetDefault,				 // 0

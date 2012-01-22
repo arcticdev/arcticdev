@@ -302,46 +302,44 @@ void CommandTableStorage::Init()
 
 	static ChatCommand TitleCommandTable[] =
 	{
-		{ "add",		 'm', &ChatHandler::HandleAddTitleCommand,  "<TitleNumber> - Adds known title to the selected player",			   NULL, 0, 0, 0},
-		{ "remove",	   'm', &ChatHandler::HandleRemoveTitleCommand, "<TitleNumber> - Removes known title from the selected player",		 NULL, 0, 0, 0},
-		{ "known",	   'm', &ChatHandler::HandleGetKnownTitlesCommand, "Shows all titles known by the player",	  NULL, 0, 0, 0},
-		{ "setchosen",	   'm', &ChatHandler::HandleSetChosenTitleCommand, "<TitleNumber> - Sets chosen title for the selected player",		 NULL, 0, 0, 0},
-		{ NULL,			0, NULL,									   "",							 NULL, 0, 0  }
+		{ "add",       'm', &ChatHandler::HandleAddTitleCommand,       "<TitleNumber> - Adds known title to the selected player",        NULL, 0, 0, 0 },
+		{ "remove",	   'm', &ChatHandler::HandleRemoveTitleCommand,    "<TitleNumber> - Removes known title from the selected player",   NULL, 0, 0, 0 },
+		{ "known",     'm', &ChatHandler::HandleGetKnownTitlesCommand, "Shows all titles known by the player",                           NULL, 0, 0, 0 },
+		{ "setchosen", 'm', &ChatHandler::HandleSetChosenTitleCommand, "<TitleNumber> - Sets chosen title for the selected player",		 NULL, 0, 0, 0 },
+		{ NULL, 0, NULL, "", NULL, 0, 0 }
 	};
 	dupe_command_table(TitleCommandTable, _TitleCommandTable);
 
 	static ChatCommand GameObjectCommandTable[] =
 	{
-		{ "select",	  'o', &ChatHandler::HandleGOSelect,   "Selects the nearest GameObject to you",	NULL, 0, 0, 0},
-		{ "delete",	  'o', &ChatHandler::HandleGODelete,   "Deletes selected GameObject",			  NULL, 0, 0, 0},
-		{ "spawn",	   'o', &ChatHandler::HandleGOSpawn,	"Spawns a GameObject by ID",				NULL, 0, 0, 0},
-		{ "info",		'o', &ChatHandler::HandleGOInfo,	 "Gives you informations about selected GO", NULL, 0, 0, 0},
-		/*{ "activate",	'o', &ChatHandler::HandleGOActivate, "Activates/Opens the selected GO.",		 NULL, 0, 0, 0},
-		{ "enable",	  'o', &ChatHandler::HandleGOEnable,   "Enables the selected GO for use.",		 NULL, 0, 0, 0},
-		{ "scale",	   'o', &ChatHandler::HandleGOScale,	"Sets scale of selected GO",				NULL, 0, 0, 0},
-		{ "animprogress",'o', &ChatHandler::HandleGOAnimProgress, "Sets anim progress",				   NULL, 0, 0, 0 },
-		{ "export",	  'o', &ChatHandler::HandleGOExport,   "Exports the current GO selected",		  NULL, 0, 0, 0 },*/
-		{ "move", 'g', &ChatHandler::HandleGOMove, "Moves gameobject to player xyz", NULL, 0, 0, 0 },
-		{ "rotate", 'g', &ChatHandler::HandleGORotate, "Rotates gameobject x degrees", NULL, 0, 0, 0 },
-		{ "f_flags", 'g', NULL, "Flags", NULL, GAMEOBJECT_FLAGS, 0, 3 },
-		{ "f_dynflags", 'g', NULL, "Dynflags", NULL, GAMEOBJECT_DYNAMIC, 0, 3 },
-		{ NULL,			0, NULL,						   "",										 NULL, 0, 0  }
+		{ "select",     'o', &ChatHandler::HandleGOSelect,  "Selects the nearest GameObject to you",          NULL, 0, 0, 0 },
+		{ "delete",     'o', &ChatHandler::HandleGODelete,  "Deletes selected GameObject",                    NULL, 0, 0, 0 },
+		{ "spawn",      'o', &ChatHandler::HandleGOSpawn,	"Spawns a GameObject by ID",                      NULL, 0, 0, 0 },
+		{ "info",       'o', &ChatHandler::HandleGOInfo,	"Gives you informations about selected GO",       NULL, 0, 0, 0 },
+		{ "move",       'g', &ChatHandler::HandleGOMove,    "Moves gameobject to player xyz",                 NULL, 0, 0, 0 },
+		{ "rebuild",    'g', &ChatHandler::HandleGORebuild,	"Rebuild the selected Destructible GameObject",   NULL, 0, 0, 0 },
+		{ "destroy",    'g', &ChatHandler::HandleGODestroy,	"Destroy the selected Destructible GameObject",   NULL, 0, 0, 0 },
+		{ "damage",     'g', &ChatHandler::HandleGODamage,  "Damage the selected Destructible GameObject",    NULL, 0, 0, 0 },
+		{ "rotate",     'g', &ChatHandler::HandleGORotate,  "Rotates gameobject x degrees",                   NULL, 0, 0, 0 },
+		{ "f_flags",    'g', NULL,                          "Flags",                                          NULL, GAMEOBJECT_FLAGS,   0, 3 },
+		{ "f_dynflags", 'g', NULL,                          "Dynflags",                                       NULL, GAMEOBJECT_DYNAMIC, 0, 3 },
+		{ NULL, 0, NULL, "", NULL, 0, 0 }
 	};
 	dupe_command_table(GameObjectCommandTable, _GameObjectCommandTable);
 
 	static ChatCommand BattlegroundCommandTable[] = 
 	{
-		{ "setbgscore",		'e', &ChatHandler::HandleSetBGScoreCommand,	"<Teamid> <Score> - Sets battleground score. 2 Arguments. ", NULL, 0, 0, 0},
-		{ "startbg",		'e', &ChatHandler::HandleStartBGCommand,	   "Starts current battleground match.",  NULL, 0, 0, 0},
-		{ "pausebg",		'e', &ChatHandler::HandlePauseBGCommand,	   "Pauses current battleground match.",  NULL, 0, 0, 0},
-		{ "bginfo",			'e', &ChatHandler::HandleBGInfoCommnad,		"Displays information about current battleground.", NULL, 0, 0, 0},
-		{ "battleground",	'e', &ChatHandler::HandleBattlegroundCommand,  "Shows BG Menu",					   NULL, 0, 0, 0 },
-		{ "setworldstate",	'e', &ChatHandler::HandleSetWorldStateCommand, "<var> <val> - Var can be in hex. WS Value.", NULL, 0, 0, 0 },
-		{ "playsound",		'e', &ChatHandler::HandlePlaySoundCommand,	 "<val>. Val can be in hex.",		   NULL, 0, 0, 0 },
-		{ "setbfstatus",	'e', &ChatHandler::HandleSetBattlefieldStatusCommand,".setbfstatus - NYI.",		   NULL, 0, 0, 0 },
-		{ "leave",			'e', &ChatHandler::HandleBattlegroundExitCommand, "Leaves the current battleground.", NULL, 0, 0, 0 },
-		{ "forcestart",		'e', &ChatHandler::HandleBattlegroundForcestartCommand, "Forcestart current battlegrounds.", NULL, 0, 0, 0 },
-		{ NULL,			0, NULL,									 "",									NULL, 0, 0  }
+		{ "setbgscore",		'e', &ChatHandler::HandleSetBGScoreCommand,             "<Teamid> <Score> - Sets battleground score. 2 Arguments. ", NULL, 0, 0, 0 },
+		{ "startbg",		'e', &ChatHandler::HandleStartBGCommand,                "Starts current battleground match.",                        NULL, 0, 0, 0 },
+		{ "pausebg",		'e', &ChatHandler::HandlePauseBGCommand,                "Pauses current battleground match.",                        NULL, 0, 0, 0 },
+		{ "bginfo",			'e', &ChatHandler::HandleBGInfoCommnad,                 "Displays information about current battleground.",          NULL, 0, 0, 0 },
+		{ "battleground",	'e', &ChatHandler::HandleBattlegroundCommand,           "Shows BG Menu",                                             NULL, 0, 0, 0 },
+		{ "setworldstate",	'e', &ChatHandler::HandleSetWorldStateCommand,          "<var> <val> - Var can be in hex. WS Value.",                NULL, 0, 0, 0 },
+		{ "playsound",		'e', &ChatHandler::HandlePlaySoundCommand,              "<val>. Val can be in hex.",                                 NULL, 0, 0, 0 },
+		{ "setbfstatus",	'e', &ChatHandler::HandleSetBattlefieldStatusCommand,   ".setbfstatus - NYI.",                                       NULL, 0, 0, 0 },
+		{ "leave",			'e', &ChatHandler::HandleBattlegroundExitCommand,       "Leaves the current battleground.",                          NULL, 0, 0, 0 },
+		{ "forcestart",		'e', &ChatHandler::HandleBattlegroundForcestartCommand, "Forcestart current battlegrounds.",                         NULL, 0, 0, 0 },
+		{ NULL, 0, NULL, "", NULL, 0, 0 }
 	};
 	dupe_command_table(BattlegroundCommandTable, _BattlegroundCommandTable);
 
@@ -394,7 +392,7 @@ void CommandTableStorage::Init()
 		{ "level",	'z', &ChatHandler::HandleAccountLevelCommand,	"Sets gm level on account. <username><gm_lvl>.",	NULL, 0, 0, 0 },
 		{ "mute",	'a', &ChatHandler::HandleAccountMuteCommand,	"Mutes account for <timeperiod>.",					NULL, 0, 0, 0 },
 		{ "unmute",	'a', &ChatHandler::HandleAccountUnmuteCommand,	"Unmutes account <x>",								NULL, 0, 0, 0 },
-		{ NULL,		  0, NULL,										"",													NULL, 0, 0, 0},
+		{ NULL, 0, NULL, "", NULL, 0, 0, 0 },
 	};
 	dupe_command_table(accountCommandTable, _accountCommandTable);
 

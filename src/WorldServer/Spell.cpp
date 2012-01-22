@@ -7,7 +7,7 @@
 
 #define SPELL_CHANNEL_UPDATE_INTERVAL 1000
 
-/// externals for spell system
+// externals for spell system
 extern pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS];
 extern pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET];
 

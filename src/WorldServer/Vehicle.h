@@ -43,9 +43,11 @@ public:
 
 	uint32 GetVehicleEntry() { return m_vehicleEntry; }
 	void SetVehicleEntry(uint32 entry) { m_vehicleEntry = entry; }
+	void SetVehiclePassenger(uint8 i, Unit* value) { m_passengers[i] = value; }	
 	VehicleSeatEntry* GetVehicleSeatEntry(uint8 slot) { return m_vehicleSeats[slot]; } 
 
 	Unit* GetControllingUnit() { return m_passengers[0]; }
+	Unit* GetPassengerUnit(uint8 i) { return m_passengers[i]; }
 	void SetControllingUnit(Unit* pUnit) { m_controllingUnit = pUnit; }
 
 	uint8 GetPassengerSlot(Unit* pPassenger);

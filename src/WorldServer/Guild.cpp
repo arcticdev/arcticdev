@@ -10,7 +10,7 @@ Guild::Guild()
 {
 	m_commandLogging=true;
 	m_guildId=0;
-	m_guildLeader=0;
+	m_guildLeader = 0;
 	m_guildName=(char*)"Goose";
 	m_guildInfo=NULL;
 	m_motd=NULL;

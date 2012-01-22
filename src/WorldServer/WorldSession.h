@@ -732,10 +732,10 @@ protected:
 	// Vehicles
 	void HandleVehicleDismiss(WorldPacket & recv_data);
 	void HandleSpellClick( WorldPacket & recv_data );
-	// void HandleRequestSeatChange( WorldPacket & recv_data );
-	// void HandleBoardPlayerVehicleOpcode(WorldPacket & recv_data);
+	void HandleBoardPlayerVehicleOpcode(WorldPacket & recv_data);
+	void HandleEjectPassengerOpcode(WorldPacket & recv_data);	
+	// void HandleRequestSeatChange( WorldPacket & recv_data );	
 	// void HandleRequestVehicleExitOpcode(WorldPacket & recv_data);
-	// void HandleEjectPassengerOpcode(WorldPacket & recv_data);
 
 public:
 	void SendTradeStatus(uint32 TradeStatus);
