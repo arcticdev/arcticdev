@@ -1175,37 +1175,6 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 
 void AIInterface::DismissPet()
 {
-	/*
-	if(m_AIType != AITYPE_PET)
-		return;
-
-	if(!m_PetOwner)
-		return;
-	
-	if(m_PetOwner->GetTypeId() != TYPEID_PLAYER)
-		return;
-
-	if(m_Unit->GetUInt32Value(UNIT_CREATED_BY_SPELL) == 0)
-		TO_PLAYER( m_PetOwner )->SetFreePetNo(false, (int)m_Unit->GetUInt32Value(UNIT_FIELD_PETNUMBER));
-	TO_PLAYER( m_PetOwner )->SetPet(NULL);
-	TO_PLAYER( m_PetOwner )->SetPetName("");
-	
-	//FIXME:Check hunter pet or not
-	//FIXME:Check enslaved creature
-	m_PetOwner->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-	
-	WorldPacket data;
-	data.Initialize(SMSG_PET_SPELLS);
-	data << (uint64)0;
-	TO_PLAYER( m_PetOwner )->GetSession()->SendPacket(&data);
-	
-	sEventMgr.RemoveEvents(TO_CREATURE(m_Unit));
-	if(m_Unit->IsInWorld())
-	{
-		m_Unit->RemoveFromWorld();
-	}
-	//setup an event to delete the Creature
-	sEventMgr.AddEvent(TO_CREATURE(this->m_Unit), &Creature::DeleteMe, EVENT_DELETE_TIMER, 1, EVENT_FLAG_DELETES_OBJECT);*/
 }
 
 void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellId)
@@ -1233,10 +1202,7 @@ void AIInterface::AttackReaction(Unit* pUnit, uint32 damage_dealt, uint32 spellI
 bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellEntry * sp)
 {
 	if(!caster || !victim)
-	{
-		//printf("!!!BAD POINTER IN AIInterface::HealReaction!!!\n");
 		return false;
-	}
 
 	// apply spell modifiers
 	if (sp != NULL && sp->SpellGroupType)
@@ -1254,21 +1220,6 @@ bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellE
 	if(m_aiTargets.find(victim) != m_aiTargets.end())
 		victimInList = 1;
 
-	/*for(i = m_aiTargets.begin(); i != m_aiTargets.end(); i++)
-	{
-		if(casterInList && victimInList)
-		{ // no need to check the rest, just break that
-			break;
-		}
-		if(i->target == victim)
-		{
-			victimInList = true;
-		}
-		if(i->target == caster)
-		{
-			casterInList = true;
-		}
-	}*/
 	if(!victimInList && !casterInList) // none of the Casters is in the Creatures Threat list
 	{
 		return false;
@@ -1278,10 +1229,6 @@ bool AIInterface::HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellE
 		// get caster into combat if he's hostile
 		if(isHostile(m_Unit, caster))
 		{
-			//AI_Target trgt;
-			//trgt.target = caster;
-			//trgt.threat = amount;
-			//m_aiTargets.push_back(trgt);
 			if( caster->IsPlayer() )
 			{
 				if( caster->mThreatRTarget )
@@ -1334,7 +1281,8 @@ void AIInterface::OnDeath(Object* pKiller)
 }
 
 Unit* AIInterface::FindTarget()
-{// find nearest hostile Target to attack
+{
+	// find nearest hostile Target to attack
 	if( !m_AllowedToEnterCombat ) 
 		return NULL;
 
@@ -1449,12 +1397,6 @@ Unit* AIInterface::FindTarget()
 
 	if( target )
 	{
-/*		if(m_isGuard)
-		{
-			m_Unit->m_runSpeed = m_Unit->m_base_runSpeed * 2.0f;
-			m_fastMove = true;
-		}*/
-
 		AttackReaction(target, 1, 0);
 		WorldPacket data(SMSG_AI_REACTION, 12);
 		data << m_Unit->GetGUID() << uint32(2);		// Aggro sound
@@ -1474,14 +1416,6 @@ Unit* AIInterface::FindTarget()
 
 Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 {
-	/*if(!m_Unit) return NULL;*/
-
-	/*if(!sp)
-	{
-		m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-		return NULL;
-	}*/
-
 	TargetMap::iterator itr, itr2;
 
 	if(sp)
@@ -1967,64 +1901,6 @@ void AIInterface::UpdateMove()
 				angle = atan2(dy, dx);
 				m_Unit->SetOrientation(angle);
 			}
-/*	Not to be used before we have some proper maps extracted with acurate water/landheights
-	Need some more work too I guess, lowzy water/landheigts mess it up for now.
-			// Check water/air levels when we have restricted movement.
-			if(creature->proto->CanMove != LIMIT_ANYWHERE )
-			{
-				// Use combat reach as lookahead distance
-				float c_reach_X = m_Unit->GetPositionX() + ( sin(angle) * c_reach ) ;
-				float c_reach_Y = m_Unit->GetPositionY() + ( sin(angle) * c_reach ) ;
-
-				// get the landheigt at look ahead distance
-				float lh = m_Unit->GetMapMgr()->GetLandHeight(c_reach_X, c_reach_Y);
-
-				// Only check flying when creature can't fly 
-				if( !creature->canFly() )
-				{
-					if( m_destinationZ > lh + 5.0f )
-					{
-						//Destination is not on ground anymore
-						HandleEvent(EVENT_LEAVECOMBAT, m_Unit, 0); //follow
-						DEBUG_LOG("MOVEMENT","Can't fly, leaving combat");
-						return;
-					}
-				}
-				else
-				{
-					//EnableFlight
-					if( m_destinationZ > lh + 5.0f )
-					{
-						m_moveFly = true;
-						m_Unit->EnableFlight();
-					}
-					else
-					{
-						m_moveFly = false;
-						m_Unit->DisableFlight();
-					}
-				}
-				// Only check swimming when creature can't swim
-				if( !creature->canSwim() )
-				{
-					// get the waterlevel at look ahead distance
-					float wl = m_Unit->GetMapMgr()->GetWaterHeight(c_reach_X, c_reach_Y);
-					if(	lh < wl - (0.75f * c_reach)) //75% is nose deep?
-					{
-						if(m_moveFly)
-						{
-							m_destinationZ = wl + 2.5f;
-							DEBUG_LOG("MOVEMENT","flying 2.5f above water");
-						}
-						else
-						{
-							DEBUG_LOG("MOVEMENT","Can't swim, leaving combat");
-							HandleEvent(EVENT_LEAVECOMBAT, m_Unit, 0); //follow
-							return;
-						}
-					}
-				}
-			}*/
 		}
 	}
 	SendMoveToPacket(m_destinationX, m_destinationY, m_destinationZ, m_Unit->GetOrientation(), moveTime + UNIT_MOVEMENT_INTERPOLATE_INTERVAL, getMoveFlags());
@@ -2055,13 +1931,6 @@ void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 	ByteBuffer *splineBuf = new ByteBuffer(34*4);
 	uint32 flags = 0;
 	*splineBuf << uint32(flags); // spline flags
-	/*
-	else if(flags & 0x8000)
-		; // 3 unk floats
-	if(flags & 0x10000)
-		; // unknown int64
-	if(flags & 0x20000)
-		; // unknown float*/
 	*splineBuf << uint32(0); //dont know if this is an uint32 but client seems to be trying to read 4 - 24 + 8 + 4
 	*splineBuf << uint32((m_totalMoveTime - m_timeToMove)+m_moveTimer); //Time Passed (start Position) //should be generated/save 
 	*splineBuf << uint32(m_totalMoveTime); //Total Time //should be generated/save
@@ -2076,42 +1945,12 @@ void AIInterface::SendCurrentMove(Player* plyr/*uint64 guid*/)
 		*splineBuf << m_sourceY + (pointDiffY * i);
 		*splineBuf << m_sourceZ + (pointDiffZ * i);
 	}
-	/*
-	*splineBuf << m_sourceX << m_sourceY << m_sourceZ;
-	*splineBuf << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;
-	*/
+
 	*splineBuf << uint8(0); // Pguid?
 	
 	*splineBuf << m_destinationX << m_destinationY << m_destinationZ;	// 3 floats after all the spline points
 
 	plyr->AddSplinePacket(m_Unit->GetGUID(), splineBuf);
-
-	//This should only be called by Players AddInRangeObject() ONLY
-	//using guid cuz when i atempted to use pointer the player was deleted when this event was called some times
-	//Player* plyr = World::GetPlayer(guid);
-	//if(!plyr) return;
-
-	/*if(m_destinationX == 0.0f && m_destinationY == 0.0f && m_destinationZ == 0.0f) return; //invalid move 
-	uint32 moveTime = m_timeToMove-m_timeMoved;
-	//uint32 moveTime = (m_timeToMove-m_timeMoved)+m_moveTimer;
-	WorldPacket data(50);
-	data.SetOpcode( SMSG_MONSTER_MOVE );
-	data << m_Unit->GetNewGUID();
-	data << m_Unit->GetPositionX() << m_Unit->GetPositionY() << m_Unit->GetPositionZ();
-	data << getMSTime();
-	data << uint8(0);
-	data << getMoveFlags();
-
-	//float distance = m_Unit->CalcDistance(m_destinationX, m_destinationY, m_destinationZ);
-	//uint32 moveTime = (uint32) (distance / m_runSpeed);
-
-	data << moveTime;
-	data << uint32(1); //Number of Waypoints
-	data << m_destinationX << m_destinationY << m_destinationZ;
-	plyr->GetSession()->SendPacket(&data);*/
-
 }
 
 bool AIInterface::setInFront(Unit* target) // not the best way to do it, though
@@ -2254,7 +2093,6 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			}
 			pWayPoint->SetUInt32Value(UNIT_FIELD_LEVEL, wp->id);
 			pWayPoint->SetUInt32Value(UNIT_NPC_FLAGS, 0);
-//			pWayPoint->SetUInt32Value(UNIT_FIELD_AURA+32, 8326); //invisable & deathworld look
 			pWayPoint->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE , pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			pWayPoint->SetUInt32Value(UNIT_FIELD_HEALTH, 1);
 			pWayPoint->SetUInt32Value(UNIT_FIELD_MAXHEALTH, 1);
@@ -2493,16 +2331,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 				float x = m_Unit->GetPositionX() + (m_destinationX - m_Unit->GetPositionX()) * q;
 				float y = m_Unit->GetPositionY() + (m_destinationY - m_Unit->GetPositionY()) * q;
 				float z = m_Unit->GetPositionZ() + (m_destinationZ - m_Unit->GetPositionZ()) * q;
-				
-				/*if(m_moveFly != true)
-				{
-					if(m_Unit->GetMapMgr())
-					{
-						float adt_Z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
-						if(fabsf(adt_Z - z) < 1.5)
-							z = adt_Z;
-					}
-				}*/
+
 
 				m_Unit->SetPosition(x, y, z, m_Unit->GetOrientation());
 				
@@ -2556,30 +2385,7 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 
 			// If creature has no waypoints just wander aimlessly around spawnpoint
 			if(GetWayPointsCount()==0) //no waypoints
-			{
-				/*	if(m_moveRandom)
-				{
-				if((rand()%10)==0)																																	
-				{																																								  
-				float wanderDistance = rand()%4 + 2;
-				float wanderX = ((wanderDistance*rand()) / RAND_MAX) - wanderDistance / 2;																											   
-				float wanderY = ((wanderDistance*rand()) / RAND_MAX) - wanderDistance / 2;																											   
-				float wanderZ = 0; // FIX ME ( i dont know how to get apropriate Z coord, maybe use client height map data)																											 
-
-				if(m_Unit->CalcDistance(m_Unit->GetPositionX(), m_Unit->GetPositionY(), m_Unit->GetPositionZ(), TO_CREATURE(m_Unit)->respawn_cord[0], TO_CREATURE(m_Unit)->respawn_cord[1], TO_CREATURE(m_Unit)->respawn_cord[2])>15)																		   
-				{   
-				//return home																																				 
-				MoveTo(TO_CREATURE(m_Unit)->respawn_cord[0],TO_CREATURE(m_Unit)->respawn_cord[1],TO_CREATURE(m_Unit)->respawn_cord[2],false);
-				}   
-				else
-				{
-				MoveTo(m_Unit->GetPositionX() + wanderX, m_Unit->GetPositionY() + wanderY, m_Unit->GetPositionZ() + wanderZ,false);
-				}	
-				}	
-				}
-				*/	
-				return;																																				   
-			}																																						  
+				return;																																				   																																					  
 			else //we do have waypoints
 			{
 				uint32 wpcount = uint32(GetWayPointsCount());
@@ -2689,7 +2495,6 @@ void AIInterface::_UpdateMovement(uint32 p_time)
 			}
 			// Check if this point is in water.
 			float wl = m_Unit->GetMapMgr()->GetWaterHeight(Fx, Fy);
-//			uint8 wt = m_Unit->GetMapMgr()->GetWaterType(Fx, Fy);
 
 			if (m_Unit->GetMapMgr() && m_Unit->GetMapMgr()->IsCollisionEnabled())
 			{

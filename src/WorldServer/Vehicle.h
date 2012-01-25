@@ -24,7 +24,7 @@ public:
 	bool Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info);
 	void Load(CreatureProto * proto_, float x, float y, float z, float o = 0.0f);
 	void Despawn(uint32 delay, uint32 respawntime);
-	void DeleteMe();
+	void Remove();
 	void SafeDelete();
 	void MoveVehicle(float x, float y, float z, float o);
 	void AddPassenger(Unit* pPassenger);
@@ -38,6 +38,7 @@ public:
 	//---------------------------------------
 	// Accessors
 	//---------------------------------------
+
 	uint32 GetMaxPassengerCount() { return m_maxPassengers; }
 	uint32 GetPassengerCount() { return m_passengerCount; }
 
@@ -51,6 +52,7 @@ public:
 	void SetControllingUnit(Unit* pUnit) { m_controllingUnit = pUnit; }
 
 	uint8 GetPassengerSlot(Unit* pPassenger);
+
 	//---------------------------------------
 	// End accessors
 	//---------------------------------------

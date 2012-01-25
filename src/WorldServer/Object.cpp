@@ -8,15 +8,6 @@
 #include "Unit.h"
 using namespace std;
 
-//#define DEG2RAD (M_PI/180.0)
-#ifdef M_PI
-#undef M_PI
-#endif
-
-#define M_PI		3.14159265358979323846f
-#define M_H_PI		1.57079632679489661923f
-#define M_Q_PI		0.785398163397448309615f
-
 Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 {
 	m_phaseAura = NULL;

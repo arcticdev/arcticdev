@@ -225,10 +225,10 @@ void Vehicle::Update(uint32 time)
 void Vehicle::SafeDelete()
 {
 	sEventMgr.RemoveEvents(this);
-	sEventMgr.AddEvent(this, &Vehicle::DeleteMe, EVENT_VEHICLE_SAFE_DELETE, 1000, 1, EVENT_FLAG_DELETES_OBJECT);
+	sEventMgr.AddEvent(this, &Vehicle::Remove, EVENT_VEHICLE_SAFE_DELETE, 1000, 1, EVENT_FLAG_DELETES_OBJECT);
 }
 
-void Vehicle::DeleteMe()
+void Vehicle::Remove()
 {
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
@@ -425,10 +425,10 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 	pPassenger->m_inVehicleSeatId = slot;
 	/* pPassenger->m_transportGuid = GetGUID(); */
 	LocationVector v;
-	v.x = /* pPassenger->m_TransporterX =*/ m_vehicleSeats[slot]->m_attachmentOffsetX;
+	v.x = /* pPassenger->m_TransporterX = */ m_vehicleSeats[slot]->m_attachmentOffsetX;
 	v.y = /* pPassenger->m_TransporterY = */ m_vehicleSeats[slot]->m_attachmentOffsetY;
 	v.z = /* pPassenger->m_TransporterZ = */ m_vehicleSeats[slot]->m_attachmentOffsetZ;
-	v.o = /* pPassenger->m_TransporterO = */ 0;
+	v.o = 0;
 
 	if( m_mountSpell )
 		pPassenger->CastSpell( pPassenger, m_mountSpell, true );
@@ -467,11 +467,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 
 		pPlayer->SetFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION));
 
-		//pPlayer->ResetHeartbeatCoords();
 		pPlayer->SetUInt64Value(PLAYER_FARSIGHT, GetGUID());
-
-		//WorldPacket data3(SMSG_CONTROL_VEHICLE, 0);
-		//pPlayer->GetSession()->SendPacket(&data3);
 
 		pPlayer->SetPlayerStatus(TRANSFER_PENDING);
 		pPlayer->m_sentTeleportPosition.ChangeCoords(GetPositionX(), GetPositionY(), GetPositionZ());
@@ -722,21 +718,7 @@ void WorldSession::HandleSpellClick( WorldPacket & recv_data )
 }
 
 void WorldSession::HandleBoardPlayerVehicleOpcode(WorldPacket &recv_data)
-{/*
-	CHECK_PACKET_SIZE(recv_data, 1);
-	CHECK_INWORLD_RETURN;
-
-	uint64 guid;
-
-	recv_data >> guid;
-
-	Unit* pVehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
-	if(!pVehicle) return;
-
-	if( pVehicle->IsPlayer() && (!TO_PLAYER(pVehicle)->GetGroup() || TO_PLAYER(pVehicle)->GetGroup() != GetPlayer()->GetGroup()) )
-		return;
-
-	TO_VEHICLE(pVehicle)->AddPassenger(GetPlayer());*/
+{
 }
 
 void WorldSession::HandleEjectPassengerOpcode(WorldPacket &recv_data)
@@ -751,7 +733,6 @@ void WorldSession::HandleEjectPassengerOpcode(WorldPacket &recv_data)
 	Unit* pPlayer = TO_UNIT(GetPlayer());
 	Unit* pUnit = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
 
-	//if( pUnit && TO_VEHICLE(pUnit)->m_vehicleEntry && pUnit->m_CurrentVehicle == pPlayer->GetGUID() )
 	pPlayer->m_CurrentVehicle->RemovePassenger(pPlayer);
 }
 

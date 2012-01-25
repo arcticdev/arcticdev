@@ -95,7 +95,6 @@ struct SpellReplacement
 };
 
 class Group;
-
 struct GossipMenuItem
 {
 	uint32 Id;
@@ -106,6 +105,7 @@ struct GossipMenuItem
 	string Text;
 	string BoxMessage;
 };
+
 struct SpellEntry;
 struct TrainerSpell
 {

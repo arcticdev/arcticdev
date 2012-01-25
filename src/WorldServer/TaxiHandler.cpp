@@ -10,7 +10,8 @@
 
 void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 {
-	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_TAXINODE_STATUS_QUERY");
+	CHECK_INWORLD_RETURN;
+	DEBUG_LOG("WORLD:","Received CMSG_TAXINODE_STATUS_QUERY");
 
 	uint64 guid;
 	uint32 curloc;
@@ -42,13 +43,14 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 	DEBUG_LOG("WORLD:","Sent SMSG_TAXINODE_STATUS");
 }
 
+
 void WorldSession::HandleTaxiQueryAvaibleNodesOpcode( WorldPacket & recv_data )
 {
-	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_TAXIQUERYAVAILABLENODES");
-
+	CHECK_INWORLD_RETURN;
+	DEBUG_LOG("WORLD:","Received CMSG_TAXIQUERYAVAILABLENODES");
 	uint64 guid;
 	recv_data >> guid;
-	Creature *pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
+	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature) return;
 
 	SendTaxiList(pCreature);
@@ -80,6 +82,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 		WorldPacket update(SMSG_TAXINODE_STATUS, 9);
 		update << guid << uint8( 1 );
 		SendPacket( &update );
+		return;
 	}
 
 	//Set Mask
@@ -111,7 +114,8 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 
 void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 {
-	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
+	CHECK_INWORLD_RETURN;
+	DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
 
 	uint64 guid;
 	uint32 sourcenode, destinationnode;
@@ -230,10 +234,10 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 {
-	CHECK_INWORLD_RETURN; DEBUG_LOG("WORLD:","Received CMSG_ACTIVATETAXI");
+	CHECK_INWORLD_RETURN;
+	DEBUG_LOG("WORLD:","Received CMSG_ACTIVATE_TAXI");
 
 	uint64 guid;
-	uint32 moocost;
 	uint32 nodecount;
 	vector<uint32> pathes;
 	int32 newmoney;
@@ -242,12 +246,13 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	uint32 submask;
 	WorldPacket data(SMSG_ACTIVATETAXIREPLY, 4);
 
-	recvPacket >> guid >> moocost >> nodecount;
+	recvPacket >> guid >> nodecount;
 	if(nodecount < 2)
 		return;
 
-	if(nodecount>NUM_TAXI_NODES)
+	if(nodecount > NUM_TAXI_NODES)
 	{
+		DEBUG_LOG("WorldSession:","CMSG_ACTIVATE_TAXI: Client disconnected, nodecount: %u", nodecount);
 		Disconnect();
 		return;
 	}
@@ -268,7 +273,7 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
+	{
 		data << uint32( 1 );
 		SendPacket( &data );
 		return;
@@ -319,20 +324,20 @@ void WorldSession::HandleMultipleActivateTaxiOpcode(WorldPacket & recvPacket)
 	// wyvern: 295
 	// hippogryph: 479
 
-	uint32 modelid =0;
+	uint32 modelid = 0;
 	if( _player->GetTeam() )
 	{
 		if( taxinode->horde_mount == 2224 )
-			modelid =295; // In case it's a wyvern
+			modelid = 295; // In case it's a wyvern
 		else
-			modelid =1566; // In case it's a bat or a bad id
+			modelid = 1566; // In case it's a bat or a bad id
 	}
 	else
 	{
 		if( taxinode->alliance_mount == 3837 )
-			modelid =479; // In case it's an hippogryph
+			modelid = 479; // In case it's an hippogryph
 		else
-			modelid =1147; // In case it's a gryphon or a bad id
+			modelid = 1147; // In case it's a gryphon or a bad id
 	}
 
 	//GetPlayer( )->setDismountCost( newmoney );

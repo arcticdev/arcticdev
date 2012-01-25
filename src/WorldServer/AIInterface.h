@@ -7,12 +7,6 @@
 #ifndef WOWSERVER_AIINTERFACE_H
 #define WOWSERVER_AIINTERFACE_H
 
-/* platforms that already define M_PI in math.h */
-#ifdef M_PI
-#undef M_PI
-#endif
-
-#define M_PI 3.14159265358979323846f
 #define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL 600 // ms
 #define oocr 50.0f // out of combat range

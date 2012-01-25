@@ -32,11 +32,15 @@ enum MsTimeVariables
 	MSTIME_DAY	= MSTIME_HOUR * 24,
 };
 
+/* platforms that already define M_PI in math.h */
 #ifdef M_PI
 #undef M_PI
 #endif
 
-#define M_PI 3.14159265358979323846f
+#define M_PI     3.14159265358979323846f
+#define M_H_PI   1.57079632679489661923f
+#define M_Q_PI   0.785398163397448309615f
+/* end platforms that already define M_PI in math.h */
 
 #ifdef WIN32
 #define ARCTIC_INLINE __forceinline
@@ -330,7 +334,6 @@ namespace __gnu_cxx
 using std::hash_map;
 #endif
 #if COMPILER == COMPILER_GNU && __GNUC__ >=4 && __GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ == 2
-//GCC I HATE YOU!
 namespace std
 {
 	namespace tr1
@@ -384,9 +387,7 @@ typedef uint32_t DWORD;
 
 #endif
 
-/* 
-Scripting system exports/imports
-*/
+/* Scripting system exports/imports */
 
 #ifdef WIN32
 	#ifndef SCRIPTLIB
@@ -464,7 +465,7 @@ static inline uint32 int32abs2uint32( const int value )
 	return (uint32)(value ^ (value >> 31)) - (value >> 31);
 }
 
-/// Fastest Method of float2int32
+// Fastest Method of float2int32
 static inline int float2int32(const float value)
 {
 #if !defined(X64) && COMPILER == COMPILER_MICROSOFT 
@@ -483,7 +484,7 @@ static inline int float2int32(const float value)
 #endif
 }
 
-/// Fastest Method of long2int32
+// Fastest Method of long2int32
 static inline int long2int32(const double value)
 {
 #if !defined(X64) && COMPILER == COMPILER_MICROSOFT
@@ -541,7 +542,7 @@ struct WayPoint
 	float y;
 	float z;
 	float o;
-	uint32 waittime; //ms
+	uint32 waittime; // ms
 	uint32 flags;
 	bool forwardemoteoneshot;
 	uint32 forwardemoteid;

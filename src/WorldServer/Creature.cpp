@@ -147,10 +147,10 @@ void Creature::Update( uint32 p_time )
 void Creature::SafeDelete()
 {
 	sEventMgr.RemoveEvents(this);
-	sEventMgr.AddEvent(TO_CREATURE(this), &Creature::DeleteMe, EVENT_CREATURE_SAFE_DELETE, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO_CREATURE(this), &Creature::Remove, EVENT_CREATURE_SAFE_DELETE, 1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 }
 
-void Creature::DeleteMe()
+void Creature::Remove()
 {
 	if(IsInWorld())
 		RemoveFromWorld(false, true);

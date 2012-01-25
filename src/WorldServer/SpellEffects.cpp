@@ -6772,8 +6772,8 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 				p_caster->SummonExpireSlot(spe->slot);
 			else
 			{
-				p_caster->m_SummonSlots[spe->slot]->DeleteMe();
-				p_caster->m_SummonSlots[spe->slot]=NULL;
+				p_caster->m_SummonSlots[spe->slot]->Remove();
+				p_caster->m_SummonSlots[spe->slot] = NULL;
 			}
 		}
 	}

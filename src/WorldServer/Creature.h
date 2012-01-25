@@ -577,7 +577,7 @@ public:
 	bool has_waypoint_text;
 	bool has_combat_text;
 
-	void DeleteMe();
+	void Remove();
 	bool CanAddToWorld();
 
 	WayPointMap * m_custom_waypoint_map;

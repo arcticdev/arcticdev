@@ -84,7 +84,6 @@ void Player::SendEnvironmentalDamageLog(const uint64 & guid, uint8 type, uint32 
     GetSession()->OutPacket(SMSG_ENVIRONMENTALDAMAGELOG, sizeof(packetSMSG_ENVIRONMENTAL_DAMAGE),(const char*)&packet);
 }
 
-
 void Player::SendCastResult(uint32 SpellId, uint8 ErrorMessage, uint8 MultiCast, uint32 Extra)
 {
 	if( Extra )

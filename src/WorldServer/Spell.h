@@ -74,7 +74,6 @@ enum SPELL_MODIFIER_TYPE
 	// 29 Mod Crowd Damage Test 45365 - Increases the critical strike damage bonus of your Frost spells by 100%
 };
 
-
 static void SM_FFValue( int32* m, float* v, uint32* group )
 {
     if( m == 0 )
@@ -473,24 +472,32 @@ enum SpellTargetType
 };
 
 /****************SpellExtraFlags*****************/
-/* SpellExtraFlags defines                      */
-/*                                              */
-/* Used for infront check and other checks      */
-/* when they are not in spell.dbc               */
-/*                                              */
+/* SpellExtraFlags defines						*/
+/*												*/
+/* Used for infront check and other checks		*/
+/* when they are not in spell.dbc				*/
+/*												*/
 /************************************************/
-#define SPELL_EXTRA_INFRONT 1
-#define SPELL_EXTRA_BEHIND  2
-#define SPELL_EXTRA_UNDEF0  4 // not used yet
-#define SPELL_EXTRA_UNDEF1  8 // not used yet
 
+enum ARCTICDEV_SPELL_EXTRA
+{
+    SPELL_EXTRA_INFRONT     = 1,
+    SPELL_EXTRA_BEHIND      = 2,
+    SPELL_EXTRA_UNDEF0      = 4, // not used yet
+    SPELL_EXTRA_UNDEF1      = 8, // not used yet
+};
 
 /***************Ranged spellid*******************/
-/* Note: These spell id's are checked for 2.0.x */
+/* Note: These spell id's are checked for 3.0.x */
 /************************************************/
-#define SPELL_RANGED_GENERAL    3018
-#define SPELL_RANGED_THROW      2764
-#define SPELL_RANGED_WAND       5019
+
+enum ARCTICDEV_SPELL_RANGED
+{
+    SPELL_ATTACK            = 6603,
+    SPELL_RANGED_GENERAL    = 3018,
+    SPELL_RANGED_THROW      = 2764,
+    SPELL_RANGED_WAND       = 5019,
+};
 
 #pragma pack(push,1)
 struct TeleportCoords
