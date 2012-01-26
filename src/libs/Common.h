@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_COMMON_H
-#define WOWSERVER_COMMON_H
+#pragma once
 
 #ifdef WIN32
 #pragma warning(disable:4996)
@@ -591,5 +590,3 @@ ARCTIC_INLINE void ARCTIC_TOUPPER(std::string& str)
 // returns true if the ip hits the mask, otherwise false
 bool ParseCIDRBan(unsigned int IP, unsigned int Mask, unsigned int MaskBits);
 unsigned int MakeIP(const char * str);
-
-#endif

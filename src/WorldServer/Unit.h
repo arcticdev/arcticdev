@@ -846,7 +846,7 @@ public:
 	
 	void GiveGroupXP(Unit* pVictim, Player* PlayerInGroup);
 
-	/// Combat / Death Status
+	// Combat / Death Status
 	ARCTIC_INLINE bool isAlive() { return m_deathState == ALIVE; };
 	ARCTIC_INLINE bool isDead() { return  m_deathState != ALIVE; };
 	virtual void setDeathState(DeathState s) { m_deathState = s; };
@@ -943,7 +943,7 @@ public:
 	// Spell Crit
 	float spellcritperc;
 
-	//dummy auras, spell stuff
+	// dummy auras, spell stuff
 	void AddDummyAura( SpellEntry* sp )
 	{
 		m_DummyAuras[sp->NameHash] = sp;
@@ -1018,7 +1018,7 @@ public:
 	float ModDamageTakenByMechPCT[NUM_MECHANIC];
 	// int32 RangedDamageTakenPct; 
 
-	//SM
+	// SM
 	int32 * SM[SPELL_MODIFIERS][2]; // 0 = flat, 1 = percent
 	void InheritSMMods(Unit* inherit_from);
 	// Multimap used to handle aura 271
@@ -1026,7 +1026,7 @@ public:
 	typedef unordered_multimap<uint64, pair<uint32*, int32> > DamageTakenPctModPerCasterType;
 	DamageTakenPctModPerCasterType DamageTakenPctModPerCaster;
 
-	//Events
+	// Events
 	void Emote (EmoteType emote);
 	void EventAddEmote(EmoteType emote, uint32 time);
 	void EventAllowCombat(bool allow);

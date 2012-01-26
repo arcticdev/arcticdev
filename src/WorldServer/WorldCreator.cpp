@@ -22,11 +22,12 @@ void InstanceMgr::Load(TaskList * l)
 {
 	new FormationMgr;
 	new WorldStateTemplateManager;
+	QueryResult *result;
 
 	sWorldStateTemplateManager.LoadFromDB();
 
 	// Create all non-instance type maps.
-	QueryResult *result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
+	result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
 	if( result )
 	{
 		m_InstanceHigh = result->Fetch()[0].GetUInt32()+1;
@@ -50,7 +51,7 @@ void InstanceMgr::Load(TaskList * l)
 				continue;
 			}
 
-			//_CreateMap(result->Fetch()[0].GetUInt32());
+			// _CreateMap(result->Fetch()[0].GetUInt32());
 			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, result->Fetch()[0].GetUInt32())));
 		} while(result->NextRow());
 		delete result;
@@ -121,7 +122,7 @@ void InstanceMgr::Shutdown()
 			}
 
 			delete m_instances[i];
-			m_instances[i]=NULL;
+			m_instances[i] = NULL;
 		}
 
 		if(m_singleMaps[i] != NULL)
@@ -129,13 +130,13 @@ void InstanceMgr::Shutdown()
 			MapMgr* ptr = m_singleMaps[i];
 			ptr->KillThread();
 			ptr->Destructor();
-			m_singleMaps[i]=NULL;// and it dies :)
+			m_singleMaps[i] = NULL; // and it dies :)
 		}
 
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i]=NULL;
+			m_maps[i] = NULL;
 		}
 	}
 
