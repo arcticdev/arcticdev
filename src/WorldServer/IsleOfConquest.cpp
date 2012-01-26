@@ -7,161 +7,177 @@
 #include "StdAfx.h"
 
 // gameobject faction
-	static uint32 g_gameObjectFactions[IOC_NUM_CONTROL_POINTS] = {
-	35,				// neutral
-	2,				// alliance assault
-	2,				// alliance	controlled
-	1,				// horde assault
-	1,				// horde controlled
-	};
+static uint32 g_gameObjectFactions[IOC_NUM_CONTROL_POINTS] =
+{
+	35,																		// neutral
+	2,																		// alliance assault
+	2,																		// alliance	controlled
+	1,																		// horde assault
+	1,																		// horde controlled
+};
 
 // Graveyard locations
-	static float GraveyardLocations[IOC_NUM_CONTROL_POINTS][4] = {
-		{ 0.0f, 0.0f, 0.0f },													// The Oil Derrick 
-		{ 0.0f, 0.0f, 0.0f },													// The Cobalt Mine
-		{ 0.0f, 0.0f, 0.0f },													// The Docks
-		{ 0.0f, 0.0f, 0.0f },													// The Airship Hangar
-		{ 0.0f, 0.0f, 0.0f },													// The Siege Workshop
-	};
+static float GraveyardLocations[IOC_NUM_CONTROL_POINTS][4] =
+{
+	{ 0.0f, 0.0f, 0.0f },													// The Oil Derrick 
+	{ 0.0f, 0.0f, 0.0f },													// The Cobalt Mine
+	{ 0.0f, 0.0f, 0.0f },													// The Docks
+	{ 0.0f, 0.0f, 0.0f },													// The Airship Hangar
+	{ 0.0f, 0.0f, 0.0f },													// The Siege Workshop
+};
 
 	
-	static float NoBaseGYLocations[2][4] = {
-		{ 278.28f, -883.65f, 49.92f, 1.57f },												// ALLIANCE
-		{ 1301.30f, -839.38f, 48.91f, 1.48f },												// HORDE
-	};
+static float NoBaseGYLocations[2][4] =
+{
+	{ 278.28f, -883.65f, 49.92f, 1.57f },									// ALLIANCE
+	{ 1301.30f, -839.38f, 48.91f, 1.48f },									// HORDE
+};
 
-	static const char * ControlPointNames[IOC_NUM_CONTROL_POINTS] = {
-		"Oil Derrick",																			// The Oil Derrick
-		"Cobalt Mine",																			// The Cobalt Mine
-		"Docks",																				// The Docks
-		"Airship Hangar",																		// The Airship Hangar
-		"Siege Workshop",																		// The Siege Workshop
-		"Allaince Keep",
-		"Horde Keep",
-	};
+static const char * ControlPointNames[IOC_NUM_CONTROL_POINTS] =
+{
+	"Oil Derrick",															// The Oil Derrick
+	"Cobalt Mine",															// The Cobalt Mine
+	"Docks",																// The Docks
+	"Airship Hangar",														// The Airship Hangar
+	"Siege Workshop",														// The Siege Workshop
+	"Allaince Keep",
+	"Horde Keep",
+};
 	
-	static uint32 ControlPointGoIds[IOC_NUM_CONTROL_POINTS][5] = {
-		  // NEUTRAL    ALLIANCE-ATTACK    HORDE-ATTACK    ALLIANCE-CONTROLLED    HORDE_CONTROLLED
-		{ 195343,       180085,            180086,         180076,                180078 },			// The Oil Derrick	
-		{ 195338,       180085,            180086,         180076,                180078 },			// The Cobalt Mine
-		{ 195157,       180085,            180086,         180076,                180078 },			// The Docks
-		{ 195158,       180085,            180086,         180076,                180078 },			// The Airship Hangar
-		{ 195133,       180085,            180086,         180076,                180078 },			// The Siege Workshop
-		{ 195132,       180085,            180086,         180076,                180078 },			// Alliance Keep
-		{ 195130,       180085,            180086,         180076,                180078 },			// Horde Keep
-	};
+static uint32 ControlPointGoIds[IOC_NUM_CONTROL_POINTS][5] =
+{
+	// NEUTRAL    ALLIANCE-ATTACK    HORDE-ATTACK    ALLIANCE-CONTROLLED    HORDE_CONTROLLED
+	{ 195343,       180085,            180086,         180076,                180078 },			// The Oil Derrick	
+	{ 195338,       180085,            180086,         180076,                180078 },			// The Cobalt Mine
+	{ 195157,       180085,            180086,         180076,                180078 },			// The Docks
+	{ 195158,       180085,            180086,         180076,                180078 },			// The Airship Hangar
+	{ 195133,       180085,            180086,         180076,                180078 },			// The Siege Workshop
+	{ 195132,       180085,            180086,         180076,                180078 },			// Alliance Keep
+	{ 195130,       180085,            180086,         180076,                180078 },			// Horde Keep
+};
 
-	static float ControlPointFlagpole[IOC_NUM_CONTROL_POINTS][4] = {
-		{ 1266.01f, -400.78f, 37.62f, 0.16f },						// The Oil Derrick
-		{ 225.29f, -1189.01f, 8.05f, 0.86f },						// The Cobalt Mine
-		{ 782.88f, -371.84f, 12.37f, 5.45f },						// The Docks
-		{ 691.70f, -1121.04f, 133.70f, 2.147f },					// The Airship Hangar
-		{ 751.29f, -818.18f, 7.40f, 0.75f },						// The Siege Workshop
-		{ 301.04f, -780.49f, 48.91f, 6.03f},						// Alliance Keep
-		{ 1278.59f, -704.18f, 48.91f, 3.19f},						// Horde Keep
-	};
+static float ControlPointFlagpole[IOC_NUM_CONTROL_POINTS][4] =
+{
+	{ 1266.01f, -400.78f, 37.62f, 0.16f },						// The Oil Derrick
+	{ 225.29f, -1189.01f, 8.05f, 0.86f },						// The Cobalt Mine
+	{ 782.88f, -371.84f, 12.37f, 5.45f },						// The Docks
+	{ 691.70f, -1121.04f, 133.70f, 2.147f },					// The Airship Hangar
+	{ 751.29f, -818.18f, 7.40f, 0.75f },						// The Siege Workshop
+	{ 301.04f, -780.49f, 48.91f, 6.03f},						// Alliance Keep
+	{ 1278.59f, -704.18f, 48.91f, 3.19f},						// Horde Keep
+};
 
-	static float ControlPointCoordinates[IOC_NUM_CONTROL_POINTS][4] = {
-		{ 1266.01f, -400.78f, 37.62f, 0.16f },						// The Oil Derrick
-		{ 225.29f, -1189.01f, 8.05f, 0.86f },						// The Cobalt Mine
-		{ 782.88f, -371.84f, 12.37f, 5.45f },						// The Docks
-		{ 691.70f, -1121.04f, 133.70f, 2.147f },					// The Airship Hangar
-		{ 751.29f, -818.18f, 7.40f, 0.75f },						// The Siege Workshop
-		{ 301.04f, -780.49f, 48.91f, 6.03f},						// Alliance Keep
-		{ 1278.59f, -704.18f, 48.91f, 3.19f},						// Horde Keep
-	};
+static float ControlPointCoordinates[IOC_NUM_CONTROL_POINTS][4] =
+{
+	{ 1266.01f, -400.78f, 37.62f, 0.16f },						// The Oil Derrick
+	{ 225.29f, -1189.01f, 8.05f, 0.86f },						// The Cobalt Mine
+	{ 782.88f, -371.84f, 12.37f, 5.45f },						// The Docks
+	{ 691.70f, -1121.04f, 133.70f, 2.147f },					// The Airship Hangar
+	{ 751.29f, -818.18f, 7.40f, 0.75f },						// The Siege Workshop
+	{ 301.04f, -780.49f, 48.91f, 6.03f},						// Alliance Keep
+	{ 1278.59f, -704.18f, 48.91f, 3.19f},						// Horde Keep
+};
 	
-	static float demolisherSalesmen[2][5] = {
-		{35345, 763.660f, -880.25f , 18.55f, 3.14f},				// Gnomish Mechanic (A)
-		{35346, 763.660f, -880.25f , 18.55f, 3.14f},				// Goblin Mechanic	(H)
-	};
+static float demolisherSalesmen[2][5] = 
+{
+	{35345, 763.660f, -880.25f , 18.55f, 3.14f},				// Gnomish Mechanic (A)
+	{35346, 763.660f, -880.25f , 18.55f, 3.14f},				// Goblin Mechanic	(H)
+};
 	
-	static float iocTransporterDestination[12][4] = {
-		{429.79f, -800.825f, 49.03f, 3.23f},		// Alliance front gate out
-		{399.66f, -798.63f, 49.06f, 4.01f},			// Alliance front gate in
-		{313.64f, -775.43f, 49.04f, 4.93f},			// Alliance west gate in
-		{324.68f, -748.73f, 49.38f, 1.76f},			// Alliance west gate out
-		{323.01f, -888.61f, 48.91f, 4.66f},			// Allaince east gate in
-		{316.22f, -914.65f, 48.87f, 1.69f},			// Allaince east gate out
-		{1234.51f, -684.55f, 49.32f, 5.01f},		// Horde west gate in
-		{1196.72f, -664.84f, 48.57f, 1.71f},		// Horde west gate out
-		{1161.82f, -748.87f, 48.62f, 0.34f},		// Horde front gate in
-		{1140.19f, -780.74f, 48.69f, 2.93f},		// Horde front gate out
-		{1196.47f, -861.29f, 49.17f, 4.04f},		// Horde east gate out
-		{1196.06f, -842.70f, 49.13f, 0.30f},		// Horde east gate in
-	};
+static float iocTransporterDestination[12][4] = 
+{
+	{429.79f, -800.825f, 49.03f, 3.23f},						// Alliance front gate out
+	{399.66f, -798.63f, 49.06f, 4.01f},							// Alliance front gate in
+	{313.64f, -775.43f, 49.04f, 4.93f},							// Alliance west gate in
+	{324.68f, -748.73f, 49.38f, 1.76f},							// Alliance west gate out
+	{323.01f, -888.61f, 48.91f, 4.66f},							// Allaince east gate in
+	{316.22f, -914.65f, 48.87f, 1.69f},							// Allaince east gate out
+	{1234.51f, -684.55f, 49.32f, 5.01f},						// Horde west gate in
+	{1196.72f, -664.84f, 48.57f, 1.71f},						// Horde west gate out
+	{1161.82f, -748.87f, 48.62f, 0.34f},						// Horde front gate in
+	{1140.19f, -780.74f, 48.69f, 2.93f},						// Horde front gate out
+	{1196.47f, -861.29f, 49.17f, 4.04f},						// Horde east gate out
+	{1196.06f, -842.70f, 49.13f, 0.30f},						// Horde east gate in
+};
 	
-	static float iocTransporterLocation[12][4] = {
-		{429.79f, -800.825f, 49.03f, 3.23f},		// Alliance front gate out
-		{399.66f, -798.63f, 49.06f, 4.01f},			// Alliance front gate in
-		{313.64f, -775.43f, 49.04f, 4.93f},			// Alliance west gate in
-		{324.68f, -748.73f, 49.38f, 1.76f},			// Alliance west gate out
-		{323.01f, -888.61f, 48.91f, 4.66f},			// Allaince east gate in
-		{316.22f, -914.65f, 48.87f, 1.69f},			// Allaince east gate out
-		{1234.51f, -684.55f, 49.32f, 5.01f},		// Horde west gate in
-		{1196.72f, -664.84f, 48.57f, 1.71f},		// Horde west gate out
-		{1161.82f, -748.87f, 48.62f, 0.34f},		// Horde front gate in
-		{1140.19f, -780.74f, 48.69f, 2.93f},		// Horde front gate out
-		{1196.47f, -861.29f, 49.17f, 4.04f},		// Horde east gate out
-		{1196.06f, -842.70f, 49.13f, 0.30f},		// Horde east gate in
-	};
+static float iocTransporterLocation[12][4] =
+{
+	{429.79f, -800.825f, 49.03f, 3.23f},						// Alliance front gate out
+	{399.66f, -798.63f, 49.06f, 4.01f},							// Alliance front gate in
+	{313.64f, -775.43f, 49.04f, 4.93f},							// Alliance west gate in
+	{324.68f, -748.73f, 49.38f, 1.76f},							// Alliance west gate out
+	{323.01f, -888.61f, 48.91f, 4.66f},							// Allaince east gate in
+	{316.22f, -914.65f, 48.87f, 1.69f},							// Allaince east gate out
+	{1234.51f, -684.55f, 49.32f, 5.01f},						// Horde west gate in
+	{1196.72f, -664.84f, 48.57f, 1.71f},						// Horde west gate out
+	{1161.82f, -748.87f, 48.62f, 0.34f},						// Horde front gate in
+	{1140.19f, -780.74f, 48.69f, 2.93f},						// Horde front gate out
+	{1196.47f, -861.29f, 49.17f, 4.04f},						// Horde east gate out
+	{1196.06f, -842.70f, 49.13f, 0.30f},						// Horde east gate in
+};
 	
-	static float iocGatesLocation[6][4] = {
-		{352.70269f, -762.66369f, 48.91628f, 4.6866f},		// Alliance West gate
-		{412.41436f, - 833.83011f, 48.5479f, 3.11868f},		// Alliance Front gate
-		{352.54592f, -904.92181f, 48.92093f, 1.57336f},		// Alliance East gate
-		{1151.51562f, -763.4730f, 48.62429f, 3.17145f},		// Horde Front gate
-		{1218.54126f, -676.44390f, 48.68709f, 1.53727f},	// Horde West gate
-		{1218.35607f, -850.55456f, 48.91478f, 4.77781f},	// Horde East gate
-	};
+static float iocGatesLocation[6][4] =
+{
+	{352.70269f, -762.66369f, 48.91628f, 4.6866f},				// Alliance West gate
+	{412.41436f, - 833.83011f, 48.5479f, 3.11868f},				// Alliance Front gate
+	{352.54592f, -904.92181f, 48.92093f, 1.57336f},				// Alliance East gate
+	{1151.51562f, -763.4730f, 48.62429f, 3.17145f},				// Horde Front gate
+	{1218.54126f, -676.44390f, 48.68709f, 1.53727f},			// Horde West gate
+	{1218.35607f, -850.55456f, 48.91478f, 4.77781f},			// Horde East gate
+};
 	
-	static uint32 gatesIds[6] = {
-		{195698},
-		{195699},
-		{195700},
-		{195494},
-		{195495},
-		{195496},
-	};
+static uint32 gatesIds[6] =
+{
+	{195698},
+	{195699},
+	{195700},
+	{195494},
+	{195495},
+	{195496},
+};
 
-	static uint32 AssaultFields[IOC_NUM_CONTROL_POINTS][2] = {
-		{ WORLDSTATE_IOC_REFINERY_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_REFINERY_HORDE_ASSAULTED },
-		{ WORLDSTATE_IOC_QUARRY_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_QUARRY_HORDE_ASSAULTED },
-		{ WORLDSTATE_IOC_DOCKS_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_DOCKS_HORDE_ASSAULTED },					// The Docks
-		{ WORLDSTATE_IOC_HANGAR_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_HANGAR_HORDE_ASSAULTED },
-		{ WORLDSTATE_IOC_WORKSHOP_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_WORKSHOP_HORDE_ASSAULTED },			// The Siege Workshop
-		{ WORLDSTATE_IOC_ALLIANCE_KEEP_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_ALLIANCE_KEEP_HORDE_ASSAULTED },	// Alliance Keep
-		{ WORLDSTATE_IOC_HORDE_KEEP_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_HORDE_KEEP_HORDE_ASSAULTED },		// Horde Keep
-	};
+static uint32 AssaultFields[IOC_NUM_CONTROL_POINTS][2] =
+{
+	{ WORLDSTATE_IOC_REFINERY_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_REFINERY_HORDE_ASSAULTED },
+	{ WORLDSTATE_IOC_QUARRY_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_QUARRY_HORDE_ASSAULTED },
+	{ WORLDSTATE_IOC_DOCKS_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_DOCKS_HORDE_ASSAULTED },						// The Docks
+	{ WORLDSTATE_IOC_HANGAR_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_HANGAR_HORDE_ASSAULTED },
+	{ WORLDSTATE_IOC_WORKSHOP_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_WORKSHOP_HORDE_ASSAULTED },				// The Siege Workshop
+	{ WORLDSTATE_IOC_ALLIANCE_KEEP_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_ALLIANCE_KEEP_HORDE_ASSAULTED },		// Alliance Keep
+	{ WORLDSTATE_IOC_HORDE_KEEP_ALLIANCE_ASSAULTED, WORLDSTATE_IOC_HORDE_KEEP_HORDE_ASSAULTED },			// Horde Keep
+};
 
-	static uint32 OwnedFields[IOC_NUM_CONTROL_POINTS][2] = {
-		{ WORLDSTATE_IOC_REFINERY_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_REFINERY_HORDE_CONTROLLED },
-		{ WORLDSTATE_IOC_QUARRY_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_QUARRY_HORDE_CONTROLLED },
-		{ WORLDSTATE_IOC_DOCKS_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_DOCKS_HORDE_CONTROLLED },					// The Docks
-		{ WORLDSTATE_IOC_HANGAR_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_HANGAR_HORDE_CONTROLLED },
-		{ WORLDSTATE_IOC_WORKSHOP_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_WORKSHOP_HORDE_CONTROLLED },			// The Siege Workshop
-		{ WORLDSTATE_IOC_ALLIANCE_KEEP_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_ALLIANCE_KEEP_HORDE_CONTROLLED },	// Alliance Keep
-		{ WORLDSTATE_IOC_HORDE_KEEP_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_HORDE_KEEP_HORDE_CONTROLLED },		// Horde Keep
-	};
+static uint32 OwnedFields[IOC_NUM_CONTROL_POINTS][2] =
+{
+	{ WORLDSTATE_IOC_REFINERY_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_REFINERY_HORDE_CONTROLLED },
+	{ WORLDSTATE_IOC_QUARRY_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_QUARRY_HORDE_CONTROLLED },
+	{ WORLDSTATE_IOC_DOCKS_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_DOCKS_HORDE_CONTROLLED },					// The Docks
+	{ WORLDSTATE_IOC_HANGAR_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_HANGAR_HORDE_CONTROLLED },
+	{ WORLDSTATE_IOC_WORKSHOP_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_WORKSHOP_HORDE_CONTROLLED },				// The Siege Workshop
+	{ WORLDSTATE_IOC_ALLIANCE_KEEP_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_ALLIANCE_KEEP_HORDE_CONTROLLED },	// Alliance Keep
+	{ WORLDSTATE_IOC_HORDE_KEEP_ALLIANCE_CONTROLLED, WORLDSTATE_IOC_HORDE_KEEP_HORDE_CONTROLLED },			// Horde Keep
+};
 
-	static uint32 NeutralFields[IOC_NUM_CONTROL_POINTS] = {
-		WORLDSTATE_IOC_REFINERY_NETURAL,
-		WORLDSTATE_IOC_QUARRY_NETURAL,
-		WORLDSTATE_IOC_DOCKS_NETURAL,
-		WORLDSTATE_IOC_HANGAR_NETURAL,
-		WORLDSTATE_IOC_WORKSHOP_NETURAL,
-		WORLDSTATE_IOC_ALLIANCE_KEEP_NETURAL,
-		WORLDSTATE_IOC_HORDE_KEEP_NETURAL,
-	};
+static uint32 NeutralFields[IOC_NUM_CONTROL_POINTS] =
+{
+	WORLDSTATE_IOC_REFINERY_NETURAL,
+	WORLDSTATE_IOC_QUARRY_NETURAL,
+	WORLDSTATE_IOC_DOCKS_NETURAL,
+	WORLDSTATE_IOC_HANGAR_NETURAL,
+	WORLDSTATE_IOC_WORKSHOP_NETURAL,
+	WORLDSTATE_IOC_ALLIANCE_KEEP_NETURAL,
+	WORLDSTATE_IOC_HORDE_KEEP_NETURAL,
+};
 
-	static uint32 ResourceUpdateIntervals[6] = {
-		0,
-		12000,
-		9000,
-		6000,
-		3000,
-		1000,
-	};
+static uint32 ResourceUpdateIntervals[6] =
+{
+	0,
+	12000,
+	9000,
+	6000,
+	3000,
+	1000,
+};
 
 float CalcDistance(float x1, float y1, float z1, float x2, float y2, float z2)
 {
@@ -195,9 +211,6 @@ IsleOfConquest::IsleOfConquest(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t) 
 	m_LiveCaptain[0] = true;
 	m_LiveCaptain[1] = true;
 	m_bonusHonor = HonorHandler::CalculateHonorPointsFormula(lgroup*10,lgroup*10);
-
-	/*memset(m_nodes, 0, sizeof(m_nodes));*/
-
 }
 
 IsleOfConquest::~IsleOfConquest()
@@ -239,30 +252,6 @@ bool IsleOfConquest::HookHandleRepop(Player* plr)
 		dest_pos.ChangeCoords(NoBaseGYLocations[1][0], NoBaseGYLocations[1][1], NoBaseGYLocations[1][2], NoBaseGYLocations[1][3]);
 	else
 		dest_pos.ChangeCoords(NoBaseGYLocations[0][0], NoBaseGYLocations[0][1], NoBaseGYLocations[0][2], NoBaseGYLocations[0][3]);
-
-	/*if(m_started)
-	{
-		for(x = 0; x < IOC_NUM_CONTROL_POINTS; ++x)
-		{
-			// skip non-graveyards
-			if( !m_nodes[x]->m_template->m_isGraveyard )
-				continue;
-
-			// make sure they're owned by us
-			if( ( plr->GetTeam() == 0 && m_nodes[x]->m_state == IOC_NODE_STATE_ALLIANCE_CONTROLLED ) ||
-				( plr->GetTeam() == 1 && m_nodes[x]->m_state == IOC_NODE_STATE_HORDE_CONTROLLED ) )
-			{
-				dt = plr->GetPositionNC().Distance2DSq(m_nodes[x]->m_template->m_graveyardLocation.x, m_nodes[x]->m_template->m_graveyardLocation.y);
-				if( dt < dist )
-				{
-					// new one
-					dest_pos.ChangeCoords(m_nodes[x]->m_template->m_graveyardLocation.x, m_nodes[x]->m_template->m_graveyardLocation.y, m_nodes[x]->m_template->m_graveyardLocation.z);
-					dist = dt;
-				}
-			}
-		}
-	}*/
-
 	// port to it
 	plr->SafeTeleport(plr->GetMapId(), plr->GetInstanceID(), dest_pos);
 	return false;
@@ -293,7 +282,7 @@ void IsleOfConquest::OnPlatformTeleport(Player* plr)
 			iocTransporterDestination[closest_platform][2],
 			iocTransporterDestination[closest_platform][3]);
 	}
-	else		// HORDE
+	else // HORDE
 	{
 		for (uint32 i = 6; i < 12; i++)
 		{
@@ -721,14 +710,13 @@ void IsleOfConquest::OnCreate()
 	sm.CreateWorldState(WORLDSTATE_IOC_HORDE_FRONT_GATE, 1);
 	
 	// generals/leaders!
-	SpawnCreature(34924, 214.77f, -830.73f, 60.81f, 0.07f);	// High Commander Halford Wyrmbane (ALLIANCE)
-	SpawnCreature(34922, 1296.57f, -765.78f, 69.98f, 6.22f);	// Overlord Agmar (not sure this is the good general) (HORDE)
+	SpawnCreature(34924, 214.77f, -830.73f, 60.81f, 0.07f);  // High Commander Halford Wyrmbane (ALLIANCE)
+	SpawnCreature(34922, 1296.57f, -765.78f, 69.98f, 6.22f); // Overlord Agmar (not sure this is the good general) (HORDE)
 	
 	// Spawn const spiritguides
 	AddSpiritGuide(SpawnSpiritGuide(NoBaseGYLocations[0][0], NoBaseGYLocations[0][1], NoBaseGYLocations[0][2], NoBaseGYLocations[0][3], 0));
 	AddSpiritGuide(SpawnSpiritGuide(NoBaseGYLocations[1][0], NoBaseGYLocations[1][1], NoBaseGYLocations[1][2], NoBaseGYLocations[1][3], 1));
-	
-	
+
 	// Spawn Teleporters
 	for(uint32 i = 0; i < 6; i++)	// Alliance
 	{
@@ -737,6 +725,7 @@ void IsleOfConquest::OnCreate()
 		m_teleeffect[i] = SpawnGameObject(TELEPORTER_EFFECT_A, iocTransporterLocation[i][0], iocTransporterLocation[i][1], iocTransporterLocation[i][2], iocTransporterLocation[i][3], 0, 1, 1.0f);
 		m_teleeffect[i]->PushToWorld(m_mapMgr);
 	}
+
 	for(uint32 i = 6; i < 12; i++)	// Horde
 	{
 		m_teleporters[i] = SpawnGameObject(IOC_TRANSPORTER, iocTransporterLocation[i][0], iocTransporterLocation[i][1], iocTransporterLocation[i][2], iocTransporterLocation[i][3], 0, 2, 1.0f);

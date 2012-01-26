@@ -9,14 +9,14 @@
 
 enum IOCControlPoints
 {
-	IOC_CONTROL_POINT_OILDERRICK				= 0,
-	IOC_CONTROL_POINT_COBALTMINE				= 1,
-	IOC_CONTROL_POINT_DOCKS						= 2,
-	IOC_CONTROL_POINT_AIRSHIPHANGAR				= 3,
-	IOC_CONTROL_POINT_SIEGEWORKSHOP				= 4,
-	IOC_CONTROL_POINT_ALLIANCE_KEEP				= 5,
-	IOC_CONTROL_POINT_HORDE_KEEP				= 6,
-	IOC_NUM_CONTROL_POINTS						= 7,
+	IOC_CONTROL_POINT_OILDERRICK		= 0,
+	IOC_CONTROL_POINT_COBALTMINE		= 1,
+	IOC_CONTROL_POINT_DOCKS				= 2,
+	IOC_CONTROL_POINT_AIRSHIPHANGAR		= 3,
+	IOC_CONTROL_POINT_SIEGEWORKSHOP		= 4,
+	IOC_CONTROL_POINT_ALLIANCE_KEEP		= 5,
+	IOC_CONTROL_POINT_HORDE_KEEP		= 6,
+	IOC_NUM_CONTROL_POINTS				= 7,
 };
 
 enum IOCSpawnTypes
@@ -31,31 +31,32 @@ enum IOCSpawnTypes
 
 enum IOCvehicles
 {
-	KEEP_CANNON					= 34944,
-	CATAPULT					= 34793,
-	DEMOLISHER					= 34775,
-	FLAME_TURRET_A				= 34778,
-	FLAME_TURRET_H				= 36356,
-	GLAIVE_THROWER_A			= 34802,
-	GLAIVE_THROWER_H			= 35273,
-	ALLIANCE_GUNSHIP_CANNON		= 34929,
-	HORDE_GUNSHIP_CANNON		= 34935,
-	SIEGE_ENGINE_A				= 34776,
-	SIEGE_ENGINE_H				= 35069,
-	SIEGE_TURRET_A				= 34777,
-	SIEGE_TURRET_H				= 36355,
+	KEEP_CANNON							= 34944,
+	CATAPULT							= 34793,
+	DEMOLISHER							= 34775,
+	FLAME_TURRET_A						= 34778,
+	FLAME_TURRET_H						= 36356,
+	GLAIVE_THROWER_A					= 34802,
+	GLAIVE_THROWER_H					= 35273,
+	ALLIANCE_GUNSHIP_CANNON				= 34929,
+	HORDE_GUNSHIP_CANNON				= 34935,
+	SIEGE_ENGINE_A						= 34776,
+	SIEGE_ENGINE_H						= 35069,
+	SIEGE_TURRET_A						= 34777,
+	SIEGE_TURRET_H						= 36355,
 };
 
-#define IOC_TRANSPORTER		195313
+#define IOC_TRANSPORTER         195313
 #define TELEPORTER_EFFECT_A		195701
 #define TELEPORTER_EFFECT_H		195702
-#define IOC_FLAGPOLE 	191311
+#define IOC_FLAGPOLE            191311
 #define IOC_DYNAMIC_DOOR_A		195703
 #define IOC_DYNAMIC_DOOR_H		195491
 
 struct IOCLocation { float x; float y; float z; };
 struct IOCSpawnLocation { float x; float y; float z; float o; };
 struct IOCGameObject { uint32 id[IOC_NODE_STATE_COUNT]; float x; float y; float z; float o; float rot1; float rot2; };
+
 struct IOCNodeTemplate
 {
 	const char *m_name;										// Stormpike Aid Station
@@ -78,76 +79,76 @@ struct IOCNodeTemplate
 
 class IsleOfConquest : public CBattleground
 {
-public:
-	GameObject* m_ioccontrolPoints[IOC_NUM_CONTROL_POINTS];
-	GameObject* m_ioccontrolPointAuras[IOC_NUM_CONTROL_POINTS];
+	public:
+		GameObject* m_ioccontrolPoints[IOC_NUM_CONTROL_POINTS];
+		GameObject* m_ioccontrolPointAuras[IOC_NUM_CONTROL_POINTS];
 
-protected:
-	list< GameObject* > m_gates;
-	uint32 m_reinforcements[2];
-	bool m_nearingVictory[2];
-	bool m_LiveCaptain[2];
-	int m_bonusHonor;
-	Creature* cannons[8];
-	GameObject* m_flagpole[IOC_NUM_CONTROL_POINTS];
-	GameObject* m_teleporters[12];
-	GameObject* m_teleeffect[12];
-	GameObject* m_desgates[6];
-	GameObject* m_ogates[6];
-	Creature* m_spiritGuides[IOC_NUM_CONTROL_POINTS];
-	Creature* m_salesman;
-	uint32 m_resources[2];
-	uint32 m_capturedBases[2];
-	uint32 m_lastHonorGainResources[2];
-	int32 m_basesLastOwnedBy[IOC_NUM_CONTROL_POINTS];
-	int32 m_basesOwnedBy[IOC_NUM_CONTROL_POINTS];
-	int32 m_basesAssaultedBy[IOC_NUM_CONTROL_POINTS];
-	bool m_flagIsVirgin[IOC_NUM_CONTROL_POINTS];
+	protected:
+		list< GameObject* > m_gates;
+		uint32 m_reinforcements[2];
+		bool m_nearingVictory[2];
+		bool m_LiveCaptain[2];
+		int m_bonusHonor;
+		Creature* cannons[8];
+		GameObject* m_flagpole[IOC_NUM_CONTROL_POINTS];
+		GameObject* m_teleporters[12];
+		GameObject* m_teleeffect[12];
+		GameObject* m_desgates[6];
+		GameObject* m_ogates[6];
+		Creature* m_spiritGuides[IOC_NUM_CONTROL_POINTS];
+		Creature* m_salesman;
+		uint32 m_resources[2];
+		uint32 m_capturedBases[2];
+		uint32 m_lastHonorGainResources[2];
+		int32 m_basesLastOwnedBy[IOC_NUM_CONTROL_POINTS];
+		int32 m_basesOwnedBy[IOC_NUM_CONTROL_POINTS];
+		int32 m_basesAssaultedBy[IOC_NUM_CONTROL_POINTS];
+		bool m_flagIsVirgin[IOC_NUM_CONTROL_POINTS];
 
-public:
-	IsleOfConquest(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
-	~IsleOfConquest();
-	virtual void Init();
+	public:
+		IsleOfConquest(MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t);
+		~IsleOfConquest();
+		virtual void Init();
 
-	void HookOnPlayerDeath(Player* plr);
-	void HookFlagDrop(Player* plr, GameObject* obj);
-	void HookFlagStand(Player* plr, GameObject* obj);
-	void HookOnMount(Player* plr);
-	void SpawnControlPoint(uint32 Id, uint32 Type);
-	void CaptureControlPoint(uint32 Id, uint32 Team);
-	void Updateworkshop(uint32 Team);
-	void AssaultControlPoint(Player* pPlayer, uint32 Id);
-	void HookOnAreaTrigger(Player* plr, uint32 id);
-	bool HookHandleRepop(Player* plr);
-	void OnPlatformTeleport(Player* plr);
-	void OnAddPlayer(Player* plr);
-	void OnRemovePlayer(Player* plr);
-	void OnCreate();
-	void HookOnPlayerKill(Player* plr, Unit* pVictim);
-	void HookOnHK(Player* plr);
-	void HookOnShadowSight();
-	void Respawn();
-	void AddReinforcements(uint32 teamId, uint32 amt);
-	void RemoveReinforcements(uint32 teamId, uint32 amt);
-	LocationVector GetStartingCoords(uint32 Team);
+		void HookOnPlayerDeath(Player* plr);
+		void HookFlagDrop(Player* plr, GameObject* obj);
+		void HookFlagStand(Player* plr, GameObject* obj);
+		void HookOnMount(Player* plr);
+		void SpawnControlPoint(uint32 Id, uint32 Type);
+		void CaptureControlPoint(uint32 Id, uint32 Team);
+		void Updateworkshop(uint32 Team);
+		void AssaultControlPoint(Player* pPlayer, uint32 Id);
+		void HookOnAreaTrigger(Player* plr, uint32 id);
+		bool HookHandleRepop(Player* plr);
+		void OnPlatformTeleport(Player* plr);
+		void OnAddPlayer(Player* plr);
+		void OnRemovePlayer(Player* plr);
+		void OnCreate();
+		void HookOnPlayerKill(Player* plr, Unit* pVictim);
+		void HookOnHK(Player* plr);
+		void HookOnShadowSight();
+		void Respawn();
+		void AddReinforcements(uint32 teamId, uint32 amt);
+		void RemoveReinforcements(uint32 teamId, uint32 amt);
+		LocationVector GetStartingCoords(uint32 Team);
 
-	static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new IsleOfConquest(m, i, l, t); }
+		static CBattleground* Create(MapMgr* m, uint32 i, uint32 l, uint32 t) { return new IsleOfConquest(m, i, l, t); }
 
-	const char * GetName() { return "Isle of Conquest"; }
+		const char * GetName() { return "Isle of Conquest"; }
 
-	void OnStart();
+		void OnStart();
 
-	bool SupportsPlayerLoot() { return true; }
-	bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell);
+		bool SupportsPlayerLoot() { return true; }
+		bool HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell);
 
-	void HookGenerateLoot(Player* plr, Corpse* pCorpse);
+		void HookGenerateLoot(Player* plr, Corpse* pCorpse);
 
-	void SetIsWeekend(bool isweekend);
-	void HookOnUnitKill(Player* plr, Unit* pVictim);
-	void Herald(const char *format, ...);
-	void Finish(uint32 losingTeam);
+		void SetIsWeekend(bool isweekend);
+		void HookOnUnitKill(Player* plr, Unit* pVictim);
+		void Herald(const char *format, ...);
+		void Finish(uint32 losingTeam);
 
-private:
+	private:
 
 };
 

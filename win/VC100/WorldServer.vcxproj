@@ -377,7 +377,7 @@
     <ClCompile Include="..\..\src\WorldServer\TaxiHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TaxiMgr.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TerrainMgr.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\TheIsleOfConquest.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\IsleOfConquest.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TradeHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TransporterHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Unit.cpp" />
@@ -470,7 +470,7 @@
     <ClInclude Include="..\..\src\WorldServer\StrandOfTheAncients.h" />
     <ClInclude Include="..\..\src\WorldServer\TaxiMgr.h" />
     <ClInclude Include="..\..\src\WorldServer\TerrainMgr.h" />
-    <ClInclude Include="..\..\src\WorldServer\TheIsleOfConquest.h" />
+    <ClInclude Include="..\..\src\WorldServer\IsleOfConquest.h" />
     <ClInclude Include="..\..\src\WorldServer\TransporterHandler.h" />
     <ClInclude Include="..\..\src\WorldServer\Unit.h" />
     <ClInclude Include="..\..\src\WorldServer\UpdateFields.h" />

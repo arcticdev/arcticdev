@@ -73,6 +73,8 @@ WorldServer_SOURCES = \
     GuildHandler.cpp \
     HonorHandler.cpp \
     HonorHandler.h \
+    IsleOfConquest.cpp \
+    IsleOfConquest.h \
     Item.cpp \
     Item.h \
     ItemHandler.cpp \
