@@ -63,34 +63,22 @@ void InstanceMgr::Load(TaskList * l)
 	StorageContainerIterator<MapInfo> * itr = WorldMapInfoStorage.MakeIterator();
 	while(!itr->AtEnd())
 	{
-		if( itr->Get()->mapid >= NUM_MAPS )
+		MapInfo* mapinfo = itr->Get();
+		if( mapinfo->mapid >= NUM_MAPS )
 		{
-			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", itr->Get()->mapid );
+			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", mapinfo->mapid );
 			itr->Inc();
 			continue;
 		}
 
-#ifdef EXCLUDE_TEST_MAPS
-		MapEntry *me = dbcMap.LookupEntry(itr->Get()->mapid);
-		if (me != NULL && !me->multimap_id)
-		{
-			Log.Notice("InstanceMgr", "Skipped test map: %u (Config.h)", itr->Get()->mapid );
-			itr->Inc();
-			continue;
-		}
-#endif
-		if(m_maps[itr->Get()->mapid] == NULL)
-		{
-			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, itr->Get()->mapid)));
-		}
+		if(m_maps[mapinfo->mapid] == NULL)
+			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, mapinfo->mapid)));
 
-		if( itr->Get()->flags != 1 && itr->Get()->cooldown == 0 )
+		if( mapinfo->flags != 1 && mapinfo->cooldown == 0) // Transport maps have 0 update_distance since you don't load into them ;)
 		{
 			Log.Warning("InstanceMgr", "Your worldmap_info has no cooldown for map %u.", itr->Get()->mapid);
 			itr->Get()->cooldown = TIME_MINUTE * 30;
 		}
-		//_CreateMap(itr->Get()->mapid);
-
 		itr->Inc();
 	}
 	itr->Destruct();

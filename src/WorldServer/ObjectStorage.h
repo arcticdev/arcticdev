@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef OBJECT_STORAGE_H
-#define OBJECT_STORAGE_H
+#pragma once
 
 extern SERVER_DECL SQLStorage<ItemPrototype, ArrayStorageContainer<ItemPrototype> >				ItemPrototypeStorage;
 extern SERVER_DECL SQLStorage<CreatureInfo, HashMapStorageContainer<CreatureInfo> >				CreatureNameStorage;
@@ -33,7 +32,3 @@ void Storage_LoadAdditionalTables();
 
 extern SERVER_DECL set<string> ExtraMapCreatureTables;
 extern SERVER_DECL set<string> ExtraMapGameObjectTables;
-
-#endif
-
-
