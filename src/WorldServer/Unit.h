@@ -789,6 +789,7 @@ public:
 	double GetResistanceReducion(Unit* pVictim, uint32 type, float armorReducePct);
     void CalculateResistanceReduction(Unit* pVictim,dealdamage *dmg,SpellEntry* ability, float armorreducepct) ;
 	void RegenerateHealth();
+	void RegenerateEnergy();	
 	void RegeneratePower(bool isinterrupted);
 	void SendPowerUpdate();
 	ARCTIC_INLINE void setHRegenTimer(uint32 time) {m_H_regenTimer = time; }

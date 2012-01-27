@@ -165,7 +165,6 @@ bool DayWatcherThread::run()
 	pthread_cond_init(&abortcond,NULL);
 #endif
 	uint32 interv = 120000; // Daywatcher check interval (in ms), must be >> 30secs !
-	uint32 counter = 0;
 
 	while(m_threadRunning)
 	{
@@ -251,18 +250,7 @@ bool DayWatcherThread::run()
 			{
 				runEvents = false;
 				bool monthexpired = false;
-				counter++;
-
-				if(counter <= 2) // First ticks
-				{
-					Log.Notice("DayWatcherThread", "Running In Game Events checks...");
-				}
-				if(counter == 17/*15 + 2*/) // Tick every 30 minutes and reset.
-				{
-					Log.Notice("DayWatcherThread", "Running In Game Events checks...");
-					counter = 2;
-				}
-
+				Log.Notice("DayWatcherThread", "Running Daily In Game Events checks...");
 				for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
 				{
 					if((*itr)->eventbyhour)

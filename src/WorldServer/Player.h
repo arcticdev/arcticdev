@@ -1550,7 +1550,6 @@ public:
 	void RecalcAllRatings();
 	void RegenerateMana(bool is_interrupted);
 	void RegenerateHealth(bool inCombat);
-	void RegenerateEnergy();
 	void LoseRage(int32 value);
 	void LooseRunic(int32 value);
 	void LoosePower(uint32 powerField, int32 value);

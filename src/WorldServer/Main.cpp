@@ -45,11 +45,8 @@ int win32_main(int argc, char ** argv)
 	SetThreadName("Main Thread");
 	StartCrashHandler();
 
-	THREAD_TRY_EXECUTION
-	{
-		sMaster.Run(argc, argv);
-	}
-	THREAD_HANDLE_CRASH;
+	THREAD_TRY_EXECUTION{ sMaster.Run(argc, argv); }THREAD_HANDLE_CRASH;
+
 	exit( 0 );
 	return 0;
 }
@@ -63,4 +60,4 @@ int main(int argc, char ** argv)
 #else
 	unix_main(argc, argv);
 #endif
-}
+};

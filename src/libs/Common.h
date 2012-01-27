@@ -311,7 +311,29 @@ using std::tr1::shared_ptr;
 #define shared_ptr std::tr1::shared_ptr
 #define hash_map unordered_map
 #define TRHAX 1
+namespace std
+{
+	namespace tr1
+	{
+		template<> struct hash<const long long unsigned int> : public std::unary_function<const long long unsigned int, std::size_t>
+		{
+			std::size_t operator()(const long long unsigned int val) const
+			{
+				return static_cast<std::size_t>(val);
+			}
+		};
+		template<> struct hash<const unsigned int> : public std::unary_function<const unsigned int, std::size_t>
+		{
+			std::size_t operator()(const unsigned int val) const
+			{
+				return static_cast<std::size_t>(val);
+			}
+		};
+	}
+}
+
 #elif COMPILER == COMPILER_GNU && __GNUC__ >= 3
+
 #define HM_NAMESPACE __gnu_cxx
 using __gnu_cxx::hash_map;
 using __gnu_cxx::hash_set;

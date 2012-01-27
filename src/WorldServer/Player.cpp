@@ -3333,11 +3333,6 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	InitGlyphSlots();
 	InitGlyphsForLevel();
 
-	for (uint8 i = 0; i < GLYPHS_COUNT; ++i)
-	{
-		SetGlyph(i, m_specs[m_talentActiveSpec].glyphs[i]);
-	}
-   
 	// class fixes
 	switch(getClass())
 	{
@@ -7308,26 +7303,6 @@ void Player::LoseRage(int32 decayValue)
 void Player::LooseRunic(int32 decayValue)
 {
 	LoosePower(UNIT_FIELD_POWER7, decayValue);
-}
-
-void Player::RegenerateEnergy()
-{
-	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER4);
-	uint32 mh = GetUInt32Value(UNIT_FIELD_MAXPOWER4);
-	if( cur >= mh )
-		return;
-
-	float amt = 2.0f * PctPowerRegenModifier[POWER_TYPE_ENERGY];
-
-	cur += float2int32(amt);
-	m_toRegen += (amt - cur);
-	if( m_toRegen > 1 )
-	{
-		cur++;
-		m_toRegen--;
-	}
-
-	SetUInt32Value(UNIT_FIELD_POWER4,(cur>=mh) ? mh : cur);
 }
 
 uint32 Player::GeneratePetNumber()

@@ -100,11 +100,11 @@ bool Master::Run(int argc, char ** argv)
 	struct arctic_option longopts[] =
 	{
 		{ "checkconf",			arctic_no_argument,			&do_check_conf,			1		},
-		{ "screenloglevel",		arctic_required_argument,		&screen_log_level,		1		},
-		{ "fileloglevel",		arctic_required_argument,		&file_log_level,		-1		},
+		{ "screenloglevel",		arctic_required_argument,		&screen_log_level,	1		},
+		{ "fileloglevel",		arctic_required_argument,		&file_log_level,	-1		},
 		{ "version",			arctic_no_argument,			&do_version,			1		},
-		{ "conf",				arctic_required_argument,		NULL,					'c'		},
-		{ "realmconf",			arctic_required_argument,		NULL,					'r'		},
+		{ "conf",				arctic_required_argument,		NULL,				'c'		},
+		{ "realmconf",			arctic_required_argument,		NULL,				'r'		},
 		{ 0, 0, 0, 0 }
 	};
 
@@ -353,7 +353,7 @@ bool Master::Run(int argc, char ** argv)
 			Sleep(50 - etime);
 #endif
 		}
-	}
+	};
 
 	// begin server shutdown
 	Log.Notice("Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( (uint32)UNIXTIME).c_str());

@@ -367,7 +367,7 @@ struct QuestPOI
 };
 
 typedef std::vector<QuestPOI> QuestPOIVector;
-typedef std::tr1::unordered_map<uint32, QuestPOIVector> QuestPOIMap;
+typedef unordered_map<uint32, QuestPOIVector> QuestPOIMap;
 
 class SERVER_DECL ObjectMgr : public Singleton < ObjectMgr >
 {

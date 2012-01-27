@@ -2556,13 +2556,27 @@ void Unit::RegenerateHealth()
 	}
 }
 
+void Unit::RegenerateEnergy()
+{
+	if( m_interruptRegen > 0 )
+		return;
+
+	uint32 cur = GetUInt32Value(UNIT_FIELD_POWER4);
+	uint32 mp = GetUInt32Value(UNIT_FIELD_MAXPOWER4);
+	if( cur >= mp )
+		return;
+
+	cur += float2int32(floor(float(2.0f * PctPowerRegenModifier[POWER_TYPE_ENERGY] * sWorld.getRate(RATE_POWER3))));
+	SetUInt32Value(UNIT_FIELD_POWER4, (cur >= mp) ? mp : cur);
+}
+
 void Unit::RegeneratePower(bool isinterrupted)
 {
     // This is only 200 IF the power is not rage
 	if (isinterrupted)
-		m_interruptedRegenTime =200;
+		m_interruptedRegenTime = 200;
 	else
-		m_P_regenTimer = 200;//set next regen time 
+		m_P_regenTimer = 200;//set next regen time
 
 	if(!isAlive())
 		return;
@@ -2614,6 +2628,20 @@ void Unit::RegeneratePower(bool isinterrupted)
 			}break;
 		}
 
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
+		//There is a problem here for druids.
+		// Druids when shapeshifted into bear have 2 power with different regen timers
+		// a) Mana (which regenerates while shapeshifted
+		// b) Rage
+		//
+		// Mana has a regen timer of 2 seconds
+		// Rage has a regen timer of 3 seconds
+		//
+		// I think the only viable way of fixing this is to have 2 different timers
+		// to check each individual power.
+		//
+		// Atm, mana is being regen at 3 seconds while shapeshifted...
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// druids regen mana when shapeshifted
 		if(getClass() == DRUID && powertype != POWER_TYPE_MANA)
@@ -3668,7 +3696,7 @@ else
     {
 		uint32 resisted_dmg;
 
-		HandleProc(aproc,pVictim, ability,realdamage,abs,weapon_damage_type + 1); //maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
+		HandleProc(aproc,pVictim, ability,realdamage,abs,weapon_damage_type + 1); // maybe using dmg.resisted_damage is better sometimes but then if using godmode dmg is resisted instead of absorbed....bad
 		m_procCounter = 0;
 
 		resisted_dmg = pVictim->HandleProc(vproc,TO_UNIT(this), ability,realdamage,abs,weapon_damage_type + 1);

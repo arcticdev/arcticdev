@@ -150,7 +150,7 @@
 #include "AchievementInterface.h"
 #include "ChainAggroEntity.h"
 #include "StrandOfTheAncients.h"
-#include "TheIsleOfConquest.h"
+#include "IsleOfConquest.h"
 #include "Wintergrasp.h"
 
 #ifdef CLUSTERING

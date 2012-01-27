@@ -83,20 +83,20 @@ struct BossData
 
 class ArcTicInstanceScript;
 
-typedef std::map< uint32, BossData >							EncounterMap;
-typedef std::map< uint32, GameObjectState >						GameObjectEntryMap;
-typedef std::vector< uint32 >									IdVector;
-typedef std::set< uint32 >										IdSet;
-typedef std::map< uint32, IdVector >							EntryIdMap;
-typedef std::pair< int32, int32 >								TimerPair;
-typedef std::vector< TimerPair >								TimerArray;
-typedef std::tr1::hash_map< uint32, GameObject* >			GameObjectMap;
-typedef std::tr1::unordered_set< Unit* >					UnitSet;
-typedef std::tr1::unordered_set< Player* >				PlayerSet;
-typedef std::tr1::unordered_set< Creature* >				CreatureSet;
-typedef std::tr1::unordered_set< GameObject* >			GameObjectSet;
+typedef std::map< uint32, BossData >			EncounterMap;
+typedef std::map< uint32, GameObjectState >		GameObjectEntryMap;
+typedef std::vector< uint32 >					IdVector;
+typedef std::set< uint32 >						IdSet;
+typedef std::map< uint32, IdVector >			EntryIdMap;
+typedef std::pair< int32, int32 >				TimerPair;
+typedef std::vector< TimerPair >				TimerArray;
+typedef hash_map< uint32, GameObject* >			GameObjectMap;
+typedef unordered_set< Unit* >					UnitSet;
+typedef unordered_set< Player* >				PlayerSet;
+typedef unordered_set< Creature* >				CreatureSet;
+typedef unordered_set< GameObject* >			GameObjectSet;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Class ArcTicInstanceScript
 class ArcTicInstanceScript : public InstanceScript
 {
@@ -105,18 +105,18 @@ public:
 	virtual ~ArcTicInstanceScript();
 
 	// Creature
-	Creature*				GetCreatureBySqlId( uint32 pSqlId );
-	Creature*				GetCreatureByGuid( uint32 pGuid );
-	Creature*				FindClosestCreatureOnMap( uint32 pEntry, float pX, float pY, float pZ );
-	Creature*				SpawnCreature( uint32 pEntry, float pX, float pY, float pZ, float pO );
-	Creature*				SpawnCreature( uint32 pEntry, float pX, float pY, float pZ, float pO, uint32 pFactionId );
+	Creature*					GetCreatureBySqlId( uint32 pSqlId );
+	Creature*					GetCreatureByGuid( uint32 pGuid );
+	Creature*					FindClosestCreatureOnMap( uint32 pEntry, float pX, float pY, float pZ );
+	Creature*					SpawnCreature( uint32 pEntry, float pX, float pY, float pZ, float pO );
+	Creature*					SpawnCreature( uint32 pEntry, float pX, float pY, float pZ, float pO, uint32 pFactionId );
 	CreatureSet					FindCreaturesOnMap( uint32 pEntry );
 
 	// GameObject
-	GameObject*			GetGameObjectBySqlId( uint32 pSqlId );
-	GameObject*			GetGameObjectByGuid( uint32 pGuid );
-	GameObject*			FindClosestGameObjectOnMap( uint32 pEntry, float pX, float pY, float pZ );
-	GameObject*			SpawnGameObject( uint32 pEntry, float pX, float pY, float pZ, float pO );
+	GameObject*					GetGameObjectBySqlId( uint32 pSqlId );
+	GameObject*					GetGameObjectByGuid( uint32 pGuid );
+	GameObject*					FindClosestGameObjectOnMap( uint32 pEntry, float pX, float pY, float pZ );
+	GameObject*					SpawnGameObject( uint32 pEntry, float pX, float pY, float pZ, float pO );
 	GameObjectSet				FindGameObjectsOnMap( uint32 pEntry );
 	void						AddGameObjectStateByEntry( uint32 pEntry, GameObjectState pState, bool pUseQuery = false );
 	void						AddGameObjectStateById( uint32 pId, GameObjectState pState );
@@ -129,7 +129,7 @@ public:
 	// Player and instance - reimplementation for easier calling
 	bool						HasPlayers();
 	size_t						GetPlayerCount();
-	Player*				GetPlayerByGuid( uint32 pGuid );
+	Player*						GetPlayerByGuid( uint32 pGuid );
 	bool						IsCombatInProgress();
 
 	// Timers - reimplementation from ArcTicScriptCreatureAI
@@ -167,7 +167,7 @@ public:
 	virtual void				OnGameObjectPushToWorld( GameObject* pGameObject );
 
 	// Reimplemented events
-	virtual GameObject*	GetObjectForOpenLock( Player* pCaster, Spell* pSpell, SpellEntry* pSpellEntry );
+	virtual GameObject*			GetObjectForOpenLock( Player* pCaster, Spell* pSpell, SpellEntry* pSpellEntry );
 	virtual void				SetLockOptions( uint32 pEntryId, GameObject* pGameObject );
 	virtual uint32				GetRespawnTimeForCreature( uint32 pEntryId, Creature* pCreature);
 	virtual void				OnLoad();

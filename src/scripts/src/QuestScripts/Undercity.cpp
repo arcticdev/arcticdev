@@ -8,7 +8,7 @@
 #include "Setup.h"
 #include "../Common/EasyFunctions.h"
 
-class Quest_JourneytoUndercity : public QuestScript // never extend std::tr1::enable_shared_from_this. EVER. :)
+class Quest_JourneytoUndercity : public QuestScript
 { 
 public:
 

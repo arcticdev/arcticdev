@@ -169,15 +169,40 @@ struct AI_Spell
 bool isGuard(uint32 id);
 uint32 getGuardId(uint32 id);
 bool isTargetDummy(uint32 id);
-
 typedef unordered_map< Unit*, int32> TargetMap;
+#ifdef USE_PACKED_MOVEMENT
+typedef map<uint32, LocationVector> LocationVectorMap;
+#endif
+#ifdef WIN32
 template <>
 class hash < Unit* > : public unary_function< Unit*, size_t>
 {
-	public:
-		size_t operator()(Unit* __x) const
-			return (size_t)__x;
+public:
+	size_t operator()(Unit* __x) const
+	{
+		return (size_t)__x;
+	}
 };
+#else
+#ifdef TRHAX
+namespace std
+{
+	namespace tr1
+	{
+		template <>
+		class hash < Unit* > : public unary_function< Unit*, size_t>
+		{
+		public:
+			size_t operator()(Unit* __x) const
+			{
+				return (size_t)__x;
+			}
+		};
+	};
+};
+
+#endif // TRHAX
+#endif // WIN32
 
 typedef unordered_set< Unit* > AssistTargetSet;
 typedef std::map<uint32, AI_Spell*> SpellMap;
@@ -213,7 +238,6 @@ class SERVER_DECL AIInterface
 
 		bool modThreatByGUID(uint64 guid, int32 mod);
 		bool modThreatByPtr(Unit* obj, int32 mod);
-		void RemoveThreatByGUID(uint64 guid);
 		void RemoveThreatByPtr(Unit* obj);
 
 		ARCTIC_INLINE AssistTargetSet GetAssistTargets() { return m_assistTargets; }

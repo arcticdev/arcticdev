@@ -78,7 +78,7 @@ bool TerrainMgr::LoadTerrainHeader()
 
 	if(FileDescriptor == 0)
 	{
-		Log.Error("TerrainMgr", "Map load failed for %s. Missing file?", File);
+		//Log.Error("TerrainMgr", "Map load failed for %s. Missing file?", File);
 		return false;
 	}
 
@@ -117,7 +117,6 @@ bool TerrainMgr::LoadTerrainHeader()
 	return true;
 
 #else
-
 #ifdef WIN32
 	
 	DWORD sizehigh;
