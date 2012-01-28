@@ -22,7 +22,13 @@
     <Filter Include="Storage">
       <UniqueIdentifier>{45d1ecc5-70a2-4693-9532-37fc74dac4ec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Console">
+    <Filter Include="PreCompiled">
+      <UniqueIdentifier>{59afd513-096d-49dd-ad2c-e8780c88c08a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Launcher">
+      <UniqueIdentifier>{eac46017-13cb-4ab7-b134-bfd9417fd6f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Launcher\Console">
       <UniqueIdentifier>{e2aabe05-8767-4d1d-bc24-73be2cfc5ab6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -73,14 +79,18 @@
       <Filter>Storage</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\ConsoleCommands.cpp">
-      <Filter>Console</Filter>
+      <Filter>Launcher\Console</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\ConsoleListener.cpp">
-      <Filter>Console</Filter>
+      <Filter>Launcher\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\RStdAfx.cpp">
+      <Filter>PreCompiled</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\Master.cpp">
+      <Filter>Launcher</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\Main.cpp" />
-    <ClCompile Include="..\..\src\ClusterServer\Master.cpp" />
-    <ClCompile Include="..\..\src\ClusterServer\RStdAfx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\ClusterServer\LogonCommClient.h">
@@ -126,12 +136,18 @@
       <Filter>Storage</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\ConsoleCommands.h">
-      <Filter>Console</Filter>
+      <Filter>Launcher\Console</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\Master.h" />
-    <ClInclude Include="..\..\src\ClusterServer\RStdAfx.h" />
+    <ClInclude Include="..\..\src\ClusterServer\RStdAfx.h">
+      <Filter>PreCompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\Master.h">
+      <Filter>Launcher</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\libs\icon.rc" />
+    <ResourceCompile Include="..\..\src\libs\icon.rc">
+      <Filter>PreCompiled</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -109,9 +109,11 @@
     <Filter Include="DataStorage">
       <UniqueIdentifier>{916430ef-5b98-4f7d-88c8-1e548111b38a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PreCompiled">
+      <UniqueIdentifier>{b34d8c44-21d7-49af-b0a8-342f3e80e673}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp" />
     <ClCompile Include="..\..\src\WorldServer\BattlegroundCommands.cpp">
       <Filter>GM Commands</Filter>
     </ClCompile>
@@ -237,9 +239,6 @@
     </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\TransporterHandler.cpp">
       <Filter>EventableObject\Object\GameObject, Transporter</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\WorldServer\TheIsleOfConquest.cpp">
-      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\Container.cpp">
       <Filter>EventableObject\Object\Item</Filter>
@@ -451,11 +450,15 @@
     <ClCompile Include="..\..\src\WorldServer\WorkerServerClient.cpp">
       <Filter>EventableObject\World</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\IsleOfConquest.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp">
+      <Filter>PreCompiled</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\WorldServer\Const.h" />
     <ClInclude Include="..\..\src\WorldServer\Packets.h" />
-    <ClInclude Include="..\..\src\WorldServer\StdAfx.h" />
     <ClInclude Include="..\..\src\WorldServer\Master.h">
       <Filter>Launcher</Filter>
     </ClInclude>
@@ -554,9 +557,6 @@
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\TransporterHandler.h">
       <Filter>EventableObject\Object\GameObject, Transporter</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\WorldServer\TheIsleOfConquest.h">
-      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\Container.h">
       <Filter>EventableObject\Object\Item</Filter>
@@ -681,9 +681,6 @@
     <ClInclude Include="..\..\src\WorldServer\Spell.h">
       <Filter>Spells</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\WorldServer\SpellFailure.h">
-      <Filter>Spells</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\DayWatcherThread.h">
       <Filter>Threading</Filter>
     </ClInclude>
@@ -714,9 +711,33 @@
     <ClInclude Include="..\..\src\WorldServer\MainServerDefines.h">
       <Filter>DataStorage</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\WorldServer\WorldStates.h" />
+    <ClInclude Include="..\..\src\libs\Utilities\Arctic.cpp" />
+    <ClInclude Include="..\..\src\libs\Utilities\Arctic.h" />
+    <ClInclude Include="..\..\src\WorldServer\AchievementDefines.h">
+      <Filter>Manager Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\IsleOfConquest.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\StdAfx.h">
+      <Filter>PreCompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\SpellDefines.h">
+      <Filter>Spells</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WorldStates.h">
+      <Filter>EventableObject\World</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\GuildDefines.h">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Const.h">
+      <Filter>PreCompiled</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\libs\icon.rc" />
+    <ResourceCompile Include="..\..\src\libs\icon.rc">
+      <Filter>PreCompiled</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

@@ -13,6 +13,9 @@
     <Filter Include="Console">
       <UniqueIdentifier>{51888b0d-a6eb-4ca4-a74e-e0ee06112831}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PreCompiled">
+      <UniqueIdentifier>{ec9ba530-ad94-4107-9019-f498ea8b934a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\AuthServer\LogonCommServer.cpp">
@@ -33,8 +36,10 @@
     <ClCompile Include="..\..\src\AuthServer\LogonConsole.cpp">
       <Filter>Console</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\AuthServer\LogonStdAfx.cpp" />
     <ClCompile Include="..\..\src\AuthServer\Main.cpp" />
+    <ClCompile Include="..\..\src\AuthServer\LogonStdAfx.cpp">
+      <Filter>PreCompiled</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\AuthServer\LogonCommServer.h">
@@ -58,10 +63,14 @@
     <ClInclude Include="..\..\src\AuthServer\LogonConsole.h">
       <Filter>Console</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\AuthServer\LogonStdAfx.h" />
     <ClInclude Include="..\..\src\AuthServer\Main.h" />
+    <ClInclude Include="..\..\src\AuthServer\LogonStdAfx.h">
+      <Filter>PreCompiled</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\libs\icon.rc" />
+    <ResourceCompile Include="..\..\src\libs\icon.rc">
+      <Filter>PreCompiled</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
