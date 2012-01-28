@@ -399,6 +399,7 @@
     <ClInclude Include="..\..\src\WorldServer\Master.h" />
     <ClInclude Include="..\..\src\WorldServer\BaseConsole.h" />
     <ClInclude Include="..\..\src\WorldServer\ConsoleCommands.h" />
+    <ClInclude Include="..\..\src\WorldServer\AchievementDefines.h" />	
     <ClInclude Include="..\..\src\WorldServer\AchievementInterface.h" />
     <ClInclude Include="..\..\src\WorldServer\AddonMgr.h" />
     <ClInclude Include="..\..\src\WorldServer\AIInterface.h" />
@@ -462,14 +463,15 @@
     <ClInclude Include="..\..\src\WorldServer\SkillNameMgr.h" />
     <ClInclude Include="..\..\src\WorldServer\Spell.h" />
     <ClInclude Include="..\..\src\WorldServer\SpellAuras.h" />
-    <ClInclude Include="..\..\src\WorldServer\SpellFailure.h" />
     <ClInclude Include="..\..\src\WorldServer\SpellNameHashes.h" />
     <ClInclude Include="..\..\src\WorldServer\Stats.h" />
     <ClInclude Include="..\..\src\WorldServer\StdAfx.h" />
     <ClInclude Include="..\..\src\libs\Utilities\Arctic.h" />
+    <ClInclude Include="..\..\src\WorldServer\SpellDefines.h" />
     <ClInclude Include="..\..\src\WorldServer\StrandOfTheAncients.h" />
     <ClInclude Include="..\..\src\WorldServer\TaxiMgr.h" />
     <ClInclude Include="..\..\src\WorldServer\TerrainMgr.h" />
+    <ClInclude Include="..\..\src\WorldServer\GuildDefines.h" />	
     <ClInclude Include="..\..\src\WorldServer\IsleOfConquest.h" />
     <ClInclude Include="..\..\src\WorldServer\TransporterHandler.h" />
     <ClInclude Include="..\..\src\WorldServer\Unit.h" />
