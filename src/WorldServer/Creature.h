@@ -320,8 +320,8 @@ public:
 	bool canSwim() const { return ( proto->CanMove & LIMIT_WATER)!= 0; }
 	bool canFly()  const { return ( proto->CanMove & LIMIT_AIR)!= 0; }
 
-	// Arena organizers 
-	ARCTIC_INLINE bool ArenaOrganizersFlags() const { return HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDDESIGNER ); } 
+	// Arena organizers
+	ARCTIC_INLINE bool IsArenaOrganizer() { return ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PETITIONER ) && !HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TABARDDESIGNER ) ); }
 
 	// Updates
 	virtual void Update( uint32 time );

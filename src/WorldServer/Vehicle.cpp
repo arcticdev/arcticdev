@@ -98,7 +98,7 @@ void Vehicle::SendSpells(uint32 entry, uint8 slot, Player* plr)
 	//to our temporary list. These are spells of
 	//type 4 from enum AI_Agent::AGENT_SPELL
 	list<uint32> avail_spells;
-	for(list<AI_Spell*>::iterator itr = GetAIInterface()->m_spells.begin(); itr != GetAIInterface()->m_spells.end(); itr++)
+	for(list<AI_Spell*>::iterator itr = GetAIInterface()->m_spells.begin(); itr != GetAIInterface()->m_spells.end(); ++itr)
 	{
 		if((*itr)->agent == AGENT_SPELL)
 			avail_spells.push_back((*itr)->spell->Id);
@@ -124,7 +124,7 @@ void Vehicle::SendSpells(uint32 entry, uint8 slot, Player* plr)
 		if(itr != avail_spells.end())
 		{
 			data << uint16((*itr)) << uint8(0) << uint8(i+8);
-			itr++;
+			++itr;
 		}
 		else
 		{
@@ -530,7 +530,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 			data << GetNewGUID() << uint8(1);
 			pPlayer->GetSession()->SendPacket(&data);
 
-			pPlayer->m_CurrentCharm = TO_VEHICLE(this);
+			pPlayer->m_CurrentCharm = this;
 			pPlayer->SetUInt64Value(UNIT_FIELD_CHARM, GetGUID());
 			SetCharmTempVal(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
