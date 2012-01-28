@@ -658,6 +658,7 @@ void WorldSession::FullLogin(Player* plr)
 	datab << uint32(0x00);
 	SendPacket(&datab);
 
+	// Send first line of MOTD 
 	WorldPacket datat(SMSG_MOTD, 50);
 	datat << uint32(0x04);
 	datat << sWorld.GetMotd();
@@ -672,7 +673,7 @@ void WorldSession::FullLogin(Player* plr)
 	vwpck.Z = plr->GetPositionZ();
 	OutPacket( SMSG_LOGIN_VERIFY_WORLD, sizeof(packetSMSG_LOGIN_VERIFY_WORLD), &vwpck );
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	// send voicechat state - active/inactive
 	//
 	// {SERVER} Packet: (0x03C7) UNKNOWN PacketSize = 2

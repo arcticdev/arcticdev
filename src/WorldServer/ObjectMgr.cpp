@@ -204,9 +204,9 @@ void ObjectMgr::LoadAchievements()
 		}
 	}
 
-	for(uint32 i = 0; i < dbcAchivementCriteria.GetNumRows(); ++i)
+	for(uint32 i = 0; i < dbcAchievementCriteria.GetNumRows(); ++i)
 	{
-		AchievementCriteriaEntry * ace = dbcAchivementCriteria.LookupRow( i );
+		AchievementCriteriaEntry * ace = dbcAchievementCriteria.LookupRow( i );
 		if( ace )
 		{
 			AchievementCriteriaMap::iterator itr = m_achievementCriteriaMap.find( ace->requiredType );

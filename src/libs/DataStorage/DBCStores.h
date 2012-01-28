@@ -1769,7 +1769,7 @@ extern SERVER_DECL DBCStorage<gtFloat> dbcManaRegenBase;
 extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegen;
 extern SERVER_DECL DBCStorage<gtFloat> dbcHPRegenBase;
 extern SERVER_DECL DBCStorage<AchievementEntry> dbcAchievement;
-extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchivementCriteria;
+extern SERVER_DECL DBCStorage<AchievementCriteriaEntry> dbcAchievementCriteria;
 extern SERVER_DECL DBCStorage<VehicleEntry> dbcVehicle;
 extern SERVER_DECL DBCStorage<VehicleSeatEntry> dbcVehicleSeat;
 extern SERVER_DECL DBCStorage<WorldMapOverlayEntry> dbcWorldMapOverlay;
