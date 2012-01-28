@@ -81,34 +81,43 @@ void WorldSocket::OnConnect()
 void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
 	std::string account;
-	uint32 unk2, unk3;
+	uint32 unk1, unk2, unk4, unk5, unk6;
+	uint64 unk3;
 	_latency = getMSTime() - _latency;
 
 	try
 	{
 		*recvPacket >> mClientBuild;
-		*recvPacket >> unk2;
+		*recvPacket >> unk1;
 		*recvPacket >> account;
-		*recvPacket >> unk3;
+		*recvPacket >> unk2;
 		*recvPacket >> mClientSeed;
+		// 3.2.2
+		*recvPacket >> unk3;
+		// 3.3.5
+		*recvPacket >> unk4;
+		*recvPacket >> unk5;
+		*recvPacket >> unk6;
 	}
 	catch(ByteBuffer::error &)
 	{
-		printf("Incomplete copy of AUTH_SESSION Received.");
+		OUT_DEBUG("Incomplete copy of AUTH_SESSION Received.");
 		return;
 	}
+
 	// Send out a request for this account.
 	mRequestID = sLogonCommHandler.ClientConnected(account, this);
-
 	if(mRequestID == 0xFFFFFFFF)
 	{
 		Disconnect();
 		return;
 	}
 
-	// Set the authentication packet 
+	// shitty hash !
+	m_fullAccountName = new string( account );
+
+	// Set the authentication packet
 	pAuthenticationPacket = recvPacket;
-	m_fullAccountName = new string(account);
 }
 
 void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 requestid)
