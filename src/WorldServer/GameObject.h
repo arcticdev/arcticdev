@@ -235,7 +235,7 @@ public:
 	// loooot
 	void GenerateLoot();
 
-//	custom functions for scripting
+	// custom functions for scripting
 	void SetState(uint8 state);
 	uint8 GetState();
 

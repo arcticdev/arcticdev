@@ -452,28 +452,11 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 	//Get Highest Level Player, Calc Xp and give it to each group member
 	Player* pHighLvlPlayer = NULL;
 	Player* pGroupGuy = NULL;
-	  int active_player_count=0;
+	  int active_player_count = 0;
 	Player* active_player_list[MAX_GROUP_SIZE_RAID];//since group is small we can afford to do this ratehr then recheck again the whole active player set
-	int total_level=0;
+	int total_level = 0;
 	float xp_mod = 1.0f;
 
-/*	if(pGroup->GetGroupType() == GROUP_TYPE_RAID)
-	{   //needs to change
-		//Calc XP
-		xp = CalculateXpToGive(pVictim, PlayerInGroup);
-		xp /= pGroup->MemberCount();
-
-		GroupMembersSet::iterator itr;
-		for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++)
-		{
-			for(itr = pGroup->GetSubGroup(i)->GetGroupMembersBegin(); itr != pGroup->GetSubGroup(i)->GetGroupMembersEnd(); itr++)
-			{
-				if((*itr)->getLevel() < sWorld.LevelCap)
-					(*itr)->GiveXP(xp, pVictim->GetGUID(), true);
-			}
-		}
-	}
-	else if(pGroup->GetGroupType() == GROUP_TYPE_PARTY) */
 	//change on 2007 04 22 by Zack
 	//we only take into count players that are near us, on same map
 	GroupMembersSet::iterator itr;
@@ -484,7 +467,6 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 			pGroupGuy = (*itr)->m_loggedInPlayer;
 			if( pGroupGuy && 
 				pGroupGuy->isAlive() && 
-//				PlayerInGroup->GetInstanceID()==pGroupGuy->GetInstanceID() &&
 				pVictim->GetMapMgr() == pGroupGuy->GetMapMgr() && 
 				pGroupGuy->GetDistanceSq(pVictim)<100*100
 				)

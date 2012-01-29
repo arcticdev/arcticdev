@@ -166,12 +166,12 @@ CBattlegroundManager::CBattlegroundManager() : EventableObject()
 
 	m_maxBattlegroundId = 0;
 
-	for (i=0; i<BATTLEGROUND_NUM_TYPES; i++)
+	for (i = 0; i < BATTLEGROUND_NUM_TYPES; i++)
 	{
 		m_instances[i].clear();
 		m_queuedGroups[i].clear();
 
-		for (j=0; j<MAX_LEVEL_GROUP; j++)
+		for (j = 0; j < MAX_LEVEL_GROUP; j++)
 		{
 			m_queuedPlayers[i][j].clear();
 		}

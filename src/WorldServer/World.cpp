@@ -6,6 +6,8 @@
 
 #include "StdAfx.h"
 
+#define LEVEL_CAP 80
+
 initialiseSingleton( World );
 
 CharacterLoaderThread* ctl = NULL;
@@ -50,8 +52,8 @@ World::World()
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
 #endif
 	StartLevel = 1;
-	LevelCap = 60;
-	m_limitedNames=false;
+	LevelCap = LEVEL_CAP;
+	m_limitedNames = false;
 	m_banTable = NULL;
 	m_lfgForNonLfg = false;
 	m_speedHackThreshold = -500.0f;

@@ -1453,39 +1453,6 @@ uint32 QuestMgr::GenerateQuestXP(Player* plr, Quest *qst)
 	  return 0;
    }   
 }
-/*
-#define XP_INC 50
-#define XP_DEC 10
-#define XP_INC100 15
-#define XP_DEC100 5
-	double xp, pxp, mxp, mmx;
-
-	// hack fix
-	xp  = qst->max_level * XP_INC;
-	if(xp <= 0)
-		xp = 1;
-
-	pxp  = xp + (xp / 100) * XP_INC100;
-
-	xp   = XP_DEC;
-
-	mxp  = xp + (xp / 100) * XP_DEC100;
-
-	mmx = (pxp - mxp);
-
-	if(qst->quest_flags & QUEST_FLAG_SPEAKTO)
-		mmx *= 0.6;
-	if(qst->quest_flags & QUEST_FLAG_TIMED)
-		mmx *= 1.1;
-	if(qst->quest_flags & QUEST_FLAG_EXPLORATION)
-		mmx *= 1.2;
-
-	if(mmx < 0)
-		return 1;
-
-	mmx *= sWorld.getRate(RATE_QUESTXP);
-	return (int)mmx;*/
-
 
 void QuestMgr::SendQuestInvalid(INVALID_REASON reason, Player* plyr)
 {
