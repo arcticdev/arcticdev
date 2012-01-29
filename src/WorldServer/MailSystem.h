@@ -18,19 +18,19 @@ enum MailCMD
 
 enum MailFlags
 {
-	MAIL_FLAG_NO_COST_FOR_GM					= 1,
-	MAIL_FLAG_CAN_SEND_TO_OPPOSITE_FACTION	  = 2,
-	MAIL_FLAG_CAN_SEND_TO_OPPOSITE_FACTION_GM   = 4,
-	MAIL_FLAG_DISABLE_POSTAGE_COSTS			 = 8,
-	MAIL_FLAG_DISABLE_HOUR_DELAY_FOR_ITEMS	  = 16,
-	MAIL_FLAG_NO_EXPIRY						 = 32,
+	MAIL_FLAG_NO_COST_FOR_GM = 1,
+	MAIL_FLAG_CAN_SEND_TO_OPPOSITE_FACTION = 2,
+	MAIL_FLAG_CAN_SEND_TO_OPPOSITE_FACTION_GM = 4,
+	MAIL_FLAG_DISABLE_POSTAGE_COSTS = 8,
+	MAIL_FLAG_DISABLE_HOUR_DELAY_FOR_ITEMS = 16,
+	MAIL_FLAG_NO_EXPIRY = 32,
 };
 
 enum MailTypes
 {
-	NORMAL,
-	COD,
-	AUCTION,
+	MAILTYPE_NORMAL,
+	MAILTYPE_COD,
+	MAILTYPE_AUCTION,
 };
 
 enum MailError
@@ -114,14 +114,11 @@ public:
 	void StartMailSystem();
 	void DeliverMessage(MailMessage* message);
 	void DeliverMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body,
-						uint32 money, uint32 cod, uint64 item_guid, uint32 stationary, bool returned);
+                        uint32 money, uint32 cod, uint64 item_guid, uint32 stationary, bool returned);
 	void ReturnToSender(MailMessage* message);
 	void SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body, uint32 money,
-							uint32 cod, uint64 item_guid, uint32 stationary);
-	ARCTIC_INLINE bool MailOption(uint32 flag)
-	{
-		return (config_flags & flag) ? true : false;
-	}
+							  uint32 cod, uint64 item_guid, uint32 stationary);
+	ARCTIC_INLINE bool MailOption(uint32 flag) { return (config_flags & flag) ? true : false; }
 	void UpdateMessages();
 };
 

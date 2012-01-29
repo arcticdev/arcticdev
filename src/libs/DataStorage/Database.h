@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _DATABASE_H
-#define _DATABASE_H
+#pragma once
 
 #include <string>
 #include "../Threading/Queue.h"
@@ -94,7 +93,7 @@ public:
 	string EscapeString(string Escape);
 	void EscapeLongString(const char * str, uint32 len, stringstream& out);
 	string EscapeString(const char * esc, DatabaseConnection *con);
-	
+
 	void QueueAsyncQuery(AsyncQuery * query);
 	void EndThreads();
 	
@@ -171,5 +170,3 @@ public:
 	~QueryThread();
 	bool run();
 };
-
-#endif

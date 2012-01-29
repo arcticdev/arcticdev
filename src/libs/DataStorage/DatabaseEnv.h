@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#if !defined(DATABASEENV_H)
-#define DATABASEENV_H
+#pragma once
 
 // Other libs we depend on.
 #include "Common.h"
@@ -17,4 +16,3 @@
 #include "DataStorage/Field.h"
 #include "DataStorage/Database.h"
 
-#endif

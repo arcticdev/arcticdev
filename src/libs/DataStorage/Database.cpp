@@ -15,7 +15,7 @@ SQLCallbackBase::~SQLCallbackBase()
 
 Database::Database() : ThreadContext()
 {
-	_counter=0;
+	_counter = 0;
 	m_connections = NULL;
 	mConnectionCount = -1;   // Not connected.
 	ThreadRunning = true;
@@ -35,7 +35,7 @@ Database::~Database()
 bool Database::Initialize(const char* Hostname, unsigned int port, const char* Username, const char* Password, const char* DatabaseName, uint32 ConnectionCount, uint32 BufferSize)
 {
 	uint32 i;
-	MYSQL * temp, * temp2;
+	MYSQL *temp = NULL, *temp2 = NULL;
 	my_bool my_true = true;
 
 	mHostname = string(Hostname);
@@ -310,7 +310,7 @@ void AsyncQuery::AddQuery(const char * format, ...)
 void AsyncQuery::Perform()
 {
 	DatabaseConnection * conn = db->GetFreeConnection();
-	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); itr++)
+	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
 		itr->result = db->FQuery(itr->query, conn);
 
 	conn->Busy.Release();
@@ -322,7 +322,7 @@ void AsyncQuery::Perform()
 AsyncQuery::~AsyncQuery()
 {
 	delete func;
-	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); itr++)
+	for(vector<AsyncQueryResult>::iterator itr = queries.begin(); itr != queries.end(); ++itr)
 	{
 		if(itr->result)
 			delete itr->result;
@@ -560,7 +560,7 @@ bool Database::_Reconnect(DatabaseConnection * conn)
 
 void Database::CleanupLibs()
 {
-		mysql_library_end();
+	mysql_library_end();
 }
 
 Database *Database::Create()

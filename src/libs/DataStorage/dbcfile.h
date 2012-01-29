@@ -4,8 +4,8 @@
  * See COPYING for license details.
  */
 
-#ifndef DBCFILE_H
-#define DBCFILE_H
+#pragma once
+
 #include <cassert>
 #include <string>
 #ifndef WIN32
@@ -163,5 +163,3 @@ private:
 	unsigned char *stringTable;
 	char header[4];
 };
-
-#endif

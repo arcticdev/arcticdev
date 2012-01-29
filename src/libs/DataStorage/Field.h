@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#if !defined(FIELD_H)
-#define FIELD_H
+#pragma once
 
 class Field
 {
@@ -40,5 +39,3 @@ class Field
         private:
             char *mValue;
 };
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __DBC_H
-#define __DBC_H
+#pragma once
 
 #include "../Common.h"
 
@@ -41,5 +40,3 @@ public:
 	int GetDBSize() { return dblength; }
 	~DBC();
 };
-			
-#endif

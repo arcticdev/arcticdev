@@ -4,11 +4,9 @@
  * See COPYING for license details.
  */
 
-#ifndef __DATASTORE_H
-#define __DATASTORE_H
+#pragma once
 
 #include "Common.h"
 #include "Singleton.h"
 #include "DBC.h"
 
-#endif

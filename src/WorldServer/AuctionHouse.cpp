@@ -35,7 +35,7 @@ AuctionHouse::AuctionHouse(uint32 ID)
 
 AuctionHouse::~AuctionHouse()
 {
-	for(HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin(); itr != auctions.end(); itr++)
+	for(HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin(); itr != auctions.end(); ++itr)
 	{
 		itr->second->pItem->Delete();
 		delete itr->second;
@@ -82,7 +82,7 @@ void AuctionHouse::UpdateAuctions()
 	for(; itr != auctions.end();)
 	{
 		auct = itr->second;
-		itr++;
+		++itr;
 
 		if(t >= auct->ExpiryTime)
 		{
@@ -140,7 +140,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 			snprintf(subject, 100, "%u:0:3", (unsigned int)auct->pItem->GetEntry());
 
 			// Auction expired, resend item, no money to owner.
-			sMailSystem.DeliverMessage(AUCTION, dbc->id, auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), 62,true);
+			sMailSystem.DeliverMessage(MAILTYPE_AUCTION, dbc->id, auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), 62,true);
 		}break;
 
 	case AUCTION_REMOVE_WON:
@@ -152,7 +152,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 			snprintf(body, 200, "%X:%u:%u", (unsigned int)auct->Owner, (unsigned int)auct->HighestBid, (unsigned int)auct->BuyoutPrice);
 
 			// Auction won by highest bidder. He gets the item.
-			sMailSystem.DeliverMessage(AUCTION, dbc->id, auct->HighestBidder, subject, body, 0, 0, auct->pItem->GetGUID(), 62,true);
+			sMailSystem.DeliverMessage(MAILTYPE_AUCTION, dbc->id, auct->HighestBidder, subject, body, 0, 0, auct->pItem->GetGUID(), 62,true);
 
 			// Send a mail to the owner with his cut of the price.
 			uint32 auction_cut = FL2UINT(float(cut_percent * float(auct->HighestBid)));
@@ -170,7 +170,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 				snprintf(body, 200, "%X:%u:0:%u:%u", (unsigned int)auct->HighestBidder, (unsigned int)auct->HighestBid, (unsigned int)auct->DepositAmount, (unsigned int)auction_cut);
 
 			// send message away.
-			sMailSystem.DeliverMessage(AUCTION, dbc->id, auct->Owner, subject, body, amount, 0, 0, 62,true);
+			sMailSystem.DeliverMessage(MAILTYPE_AUCTION, dbc->id, auct->Owner, subject, body, amount, 0, 0, 62,true);
 		}break;
 	case AUCTION_REMOVE_CANCELLED:
 		{
@@ -180,12 +180,12 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 			if(cut && plr && plr->GetUInt32Value(PLAYER_FIELD_COINAGE) >= cut)
 				plr->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -((int32)cut));
 			
-			sMailSystem.DeliverMessage(AUCTION, GetID(), auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), 62,true);
+			sMailSystem.DeliverMessage(MAILTYPE_AUCTION, GetID(), auct->Owner, subject, "", 0, 0, auct->pItem->GetGUID(), 62,true);
 			
 			// return bidders money
 			if(auct->HighestBidder)
 			{
-				sMailSystem.DeliverMessage(AUCTION, GetID(), auct->HighestBidder, subject, "", auct->HighestBid, 
+				sMailSystem.DeliverMessage(MAILTYPE_AUCTION, GetID(), auct->HighestBidder, subject, "", auct->HighestBid, 
 					0, 0, 62,true);
 			}
 			
@@ -215,7 +215,8 @@ void WorldSession::HandleAuctionListBidderItems( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
-	recv_data >> guid;
+	uint32 unk1, unk2;
+	recv_data >> guid >> unk1 >> unk2;
 
 	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse)
@@ -229,47 +230,49 @@ void Auction::AddToPacket(WorldPacket & data)
 	data << Id;
 	data << pItem->GetEntry();
 
-	for (uint32 i = 0; i < 6; i++)
+	for (uint32 i = 0; i < 6; ++i)
 	{
-		data << pItem->GetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1 + (3 * i));   // Enchantment ID
-		data << uint32(pItem->GetEnchantmentApplytime(i));						 // Unknown / maybe ApplyTime
-		data << pItem->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES + i);	   // Charges
+		data << pItem->GetUInt32Value(ITEM_FIELD_ENCHANTMENT_1_1 + (3 * i)); // Enchantment ID
+		data << uint32(pItem->GetEnchantmentApplytime(i)); // Unknown / maybe ApplyTime
+		data << pItem->GetUInt32Value(ITEM_FIELD_SPELL_CHARGES + i); // Charges
 	}
 
-	data << pItem->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID);		 // -ItemRandomSuffix / random property	 : If the value is negative its ItemRandomSuffix if its possitive its RandomItemProperty
-	data << pItem->GetUInt32Value(ITEM_FIELD_PROPERTY_SEED);			  // when ItemRandomSuffix is used this is the modifier
+	data << pItem->GetUInt32Value(ITEM_FIELD_RANDOM_PROPERTIES_ID); // -ItemRandomSuffix / random property	 : If the value is negative its ItemRandomSuffix if its possitive its RandomItemProperty
+	data << pItem->GetUInt32Value(ITEM_FIELD_PROPERTY_SEED); // when ItemRandomSuffix is used this is the modifier
 
-	/******************** ItemRandomSuffix***************************
-	* For what I have seen ItemRandomSuffix is like RandomItemProperty
-	* The only difference is has is that it has a modifier.
-	* That is the result of jewelcrafting, the effect is that the
-	* enchantment is variable. That means that a enchantment can be +1 and 
-	* with more Jem's +12 or so.
-	* Decription for lookup: You get the enchantmentSuffixID and search the
-	* DBC for the last 1 - 3 value's(depending on the enchantment).
-	* That value is what I call EnchantmentValue. You guys might find a 
-	* better name but for now its good enough. The formula to calculate
-	* The ingame "GAIN" is:
-	* (Modifier / 10000) * enchantmentvalue = EnchantmentGain;	
-	*/
-	
-	data << uint32(0);				  // Unknown
-	data << uint32(0);				  // Unknown
-	data << uint32(0);				  // Unknown
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	//ItemRandomSuffix
+	// For what I have seen ItemRandomSuffix is like RandomItemProperty
+	// The only difference is has is that it has a modifier.
+	// That is the result of jewelcrafting, the effect is that the
+	// enchantment is variable. That means that a enchantment can be +1 and 
+	// with more Jem's +12 or so.
+	// Decription for lookup: You get the enchantmentSuffixID and search the
+	// DBC for the last 1 - 3 value's(depending on the enchantment).
+	// That value is what I call EnchantmentValue. You guys might find a 
+	// better name but for now its good enough. The formula to calculate
+	// The ingame "GAIN" is:
+	// (Modifier / 10000) * enchantmentvalue = EnchantmentGain;	
+	//
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	data << uint32(0);                                                          // Unknown
+	data << uint32(0);                                                          // Unknown
+	data << uint32(0);                                                          // Unknown
 	data << pItem->GetUInt32Value(ITEM_FIELD_STACK_COUNT); // Amount
-	data << uint32(0);				  // Unknown
-	data << uint32(0);				  // Unknown
-	data << uint64(Owner);			  // Owner guid
-	data << HighestBid;				 // Current prize
+	data << uint32(0);                                                          // Unknown
+	data << uint32(0);                                                          // Unknown
+	data << uint64(Owner);                                                      // Owner guid
+	data << HighestBid;                                                         // Current prize
 	// hehe I know its evil, this creates a nice trough put of money
-	data << uint32(50);				 // Next bid value modifier, like current bid + this value
-	data << BuyoutPrice;				// Buyout
+	data << uint32(50);                                                         // Next bid value modifier, like current bid + this value
+	data << BuyoutPrice;                                                        // Buyout
 	data << uint32((ExpiryTime - UNIXTIME) * 1000); // Time left
-	data << uint64(HighestBidder);	  // Last bidder
+	data << uint64(HighestBidder);                                              // Last bidder
 	if(HighestBidder != 0)
-		data << HighestBid;				 // The bid of the last bidder
+		data << HighestBid;                                                     // The bid of the last bidder
 	else
-	  	data << uint32(0);				 // The bid of the last bidder
+	  	data << uint32(0);                                                      // The bid of the last bidder
 }
 
 void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket * packet)
@@ -277,12 +280,12 @@ void AuctionHouse::SendBidListPacket(Player* plr, WorldPacket * packet)
 	uint32 count = 0;
 
 	WorldPacket data(SMSG_AUCTION_BIDDER_LIST_RESULT, 1024);
-	data << uint32(0);										  // Placeholder
+	data << uint32(0); // Placeholder
 
 	Auction * auct;
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		auct = itr->second;
 		if(auct->HighestBidder == plr->GetGUID())
@@ -305,7 +308,7 @@ void AuctionHouse::UpdateItemOwnerships(uint32 oldGuid, uint32 newGuid)
 	Auction * auct;
 	auctionLock.AcquireWriteLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		auct = itr->second;
 		if(auct->Owner == oldGuid)
@@ -333,7 +336,7 @@ void AuctionHouse::SendOwnerListPacket(Player* plr, WorldPacket * packet)
 	Auction * auct;
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		auct = itr->second;
 		if(auct->Owner == plr->GetGUID())
@@ -396,7 +399,7 @@ void WorldSession::HandleAuctionPlaceBid( WorldPacket & recv_data )
 		// Return the money to the last highest bidder.
 		char subject[100];
 		snprintf(subject, 100, "%u:0:0", (int)auct->pItem->GetEntry());
-		sMailSystem.DeliverMessage(AUCTION, ah->GetID(), auct->HighestBidder, subject, "", auct->HighestBid,
+		sMailSystem.DeliverMessage(MAILTYPE_AUCTION, ah->GetID(), auct->HighestBidder, subject, "", auct->HighestBid,
 			0, 0, 62,true);
 
 	}
@@ -461,11 +464,10 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
 
-	uint64 guid,item;
-	uint32 bid, buyout, etime, unk1, unk2;	// etime is in minutes
+	uint64 guid, item;
+	uint32 unk, unk2, bid, buyout, etime;	// etime is in minutes
 
-	recv_data >> guid >> unk1 >> item;
-	recv_data >> unk2;
+	recv_data >> guid >> unk >> item >> unk2;
 	recv_data >> bid >> buyout >> etime;
 
 	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
@@ -542,6 +544,9 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	data << uint32(AUCTION_CREATE);
 	data << uint32(AUCTION_ERROR_NONE);
 	SendPacket(&data);
+
+	// Re-send the owner list.
+	pCreature->auctionHouse->SendOwnerListPacket(_player, 0);
 }
 
 void WorldSession::HandleAuctionListOwnerItems( WorldPacket & recv_data )
@@ -549,7 +554,8 @@ void WorldSession::HandleAuctionListOwnerItems( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid;
-	recv_data >> guid;
+	uint32 unk;
+	recv_data >> guid >> unk;
 
 	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!pCreature || !pCreature->auctionHouse)
@@ -585,7 +591,7 @@ void AuctionHouse::SendAuctionList(Player* plr, WorldPacket * packet)
 	auctionLock.AcquireReadLock();
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	ItemPrototype * proto;
-	for(; itr != auctions.end(); itr++)
+	for(; itr != auctions.end(); ++itr)
 	{
 		if(itr->second->Deleted) continue;
 		proto = itr->second->pItem->GetProto();

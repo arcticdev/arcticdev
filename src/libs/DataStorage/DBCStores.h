@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __SPELLSTORE_H
-#define __SPELLSTORE_H
+#pragma once
 
 #include "Common.h"
 #include "DataStore.h"
@@ -1784,4 +1783,3 @@ bool LoadRSDBCs();
 void FreeRSDBCs();
 void FreeDBCs();
 
-#endif

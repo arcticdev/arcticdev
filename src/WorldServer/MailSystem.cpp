@@ -775,7 +775,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 		_player->ModUnsigned32Value(PLAYER_FIELD_COINAGE, -int32(message->cod));
 		string subject = "COD Payment: ";
 		subject += message->subject;
-		sMailSystem.DeliverMessage(NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, 1, true);
+		sMailSystem.DeliverMessage(MAILTYPE_NORMAL, message->player_guid, message->sender_guid, subject, "", message->cod, 0, 0, 1, true);
 
 		message->cod = 0;
 	}
