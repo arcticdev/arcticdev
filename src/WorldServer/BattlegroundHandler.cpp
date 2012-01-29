@@ -19,7 +19,6 @@ void WorldSession::HandleBattlefieldPortOpcode(WorldPacket &recv_data)
 	{
 		uint32 BGQueueSlot = _player->GetBGQueueSlotByBGType(bgtype);
 		_player->RemoveFromBattlegroundQueue(BGQueueSlot);
-		//BattlegroundManager.RemovePlayerFromQueues(_player);
 	}
 	else
 	{
@@ -56,9 +55,6 @@ void WorldSession::HandleBattlefieldListOpcode(WorldPacket &recv_data)
 
 	recv_data >> battlegroundType >> requestType >> unk1;
 
-	//if( GetPlayer()->HasBGQueueSlotOfType(type) == 4)
-	//	return;
-	
 	BattlegroundManager.HandleBattlegroundListPacket(this, battlegroundType, false);
 }
 
@@ -387,12 +383,9 @@ void WorldSession::HandleInspectArenaStatsOpcode( WorldPacket & recv_data )
 	}
 }
 
-
 void WorldSession::HandlePVPLogDataOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN
 	if(_player->m_bg)
 		_player->m_bg->SendPVPData(_player);
 }
-
-

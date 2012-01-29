@@ -52,11 +52,8 @@ bool ChatHandler::HandleSetWorldStateCommand(const char* args, WorldSession *m_s
 	if(sscanf(args,"%u %u", &id,&val)!=2)
 		return false;
 
-	//if(m_session->GetPlayer()->m_bg)
-	//{
-		m_session->GetPlayer()->GetMapMgr()->GetStateManager().CreateWorldState(id, val);
-		m_session->GetPlayer()->GetMapMgr()->GetStateManager().UpdateWorldState(id, val);
-	//}
+	m_session->GetPlayer()->GetMapMgr()->GetStateManager().CreateWorldState(id, val);
+	m_session->GetPlayer()->GetMapMgr()->GetStateManager().UpdateWorldState(id, val);
 
 	return true;
 }

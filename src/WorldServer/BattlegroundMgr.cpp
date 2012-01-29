@@ -1561,68 +1561,6 @@ void CBattlegroundManager::SendBattlegroundQueueStatus(Player* plr, uint32 queue
 	
 }
 
-/*void CBattlegroundManager::SendBattlefieldStatus(Player* plr, uint32 Status, uint32 Type, uint32 InstanceID, uint32 Time, uint32 MapId, uint8 RatedMatch)
-{
-	WorldPacket data(SMSG_BATTLEFIELD_STATUS, 30);
-	if(Status == 0)
-		data << uint64(0) << uint32(0);
-	else
-	{
-		if(Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
-		{
-			data << uint32(plr->m_bgTeam);
-			switch(Type)
-			{
-			case BATTLEGROUND_ARENA_2V2:
-				data << uint8(2);
-				break;
-
-			case BATTLEGROUND_ARENA_3V3:
-				data << uint8(3);
-				break;
-
-			case BATTLEGROUND_ARENA_5V5:
-				data << uint8(5);
-				break;
-			}
-			data << uint8(0xC);
-			data << uint32(6);
-			data << uint16(0x1F90);
-			data << uint32(11);
-			data << uint8(RatedMatch);		// 1 = rated match
-		}
-		else
-		{
-			data << uint32(0);
-			data << uint8(0) << uint8(2);
-			data << Type;
-			data << uint16(0x1F90);
-			data << InstanceID;
-			data << uint8(plr->m_bgTeam);
-		}
-		
-		data << Status;
-
-		switch(Status)
-		{
-		case 1:					// Waiting in queue
-			data << uint32(60) << uint32(0);				// Time / Elapsed time
-			break;
-		case 2:					// Ready to join!
-			data << MapId << Time;
-			break;
-		case 3:
-			if(Type >= BATTLEGROUND_ARENA_2V2 && Type <= BATTLEGROUND_ARENA_5V5)
-				data << MapId << uint32(0) << Time << uint8(0);
-			else
-				data << MapId << uint32(0) << Time << uint8(1);
-			break;
-		}
-	}
-
-	plr->GetSession()->SendPacket(&data);
-}*/
-
 void CBattleground::RemovePlayer(Player* plr, bool logout)
 {
 	if(!plr->IsPlayer())
@@ -1718,18 +1656,11 @@ void CBattleground::SendPVPData(Player* plr)
 		m_mainLock.Release();
 		return;
 	}
-	/*if(m_type >= BATTLEGROUND_ARENA_2V2 && m_type <= BATTLEGROUND_ARENA_5V5)
-	{
-		m_mainLock.Release();
-		return;
-	}
-	else
-	{*/
-		WorldPacket data(10*(m_players[0].size()+m_players[1].size())+50);
-		BuildPvPUpdateDataPacket(&data);
-		plr->GetSession()->SendPacket(&data);
-	/*}*/
-	
+
+	WorldPacket data(10*(m_players[0].size()+m_players[1].size())+50);
+	BuildPvPUpdateDataPacket(&data);
+	plr->GetSession()->SendPacket(&data);
+
 	m_mainLock.Release();
 }
 
@@ -2017,18 +1948,18 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 				break;
 
 			case BATTLEGROUND_ARENA_3V3:
-				maxplayers=3;
+				maxplayers = 3;
 				teamType = ARENA_TEAM_TYPE_3V3;
 				break;
 
 			case BATTLEGROUND_ARENA_5V5:
-				maxplayers=5;
+				maxplayers = 5;
 				teamType = ARENA_TEAM_TYPE_5V5;
 				break;
 
 			case BATTLEGROUND_ARENA_2V2:
 			default:
-				maxplayers=2;
+				maxplayers = 2;
 				teamType = ARENA_TEAM_TYPE_2V2;
 				break;
 			}
@@ -2196,7 +2127,6 @@ void CBattleground::GiveHonorToTeam(uint32 team, uint32 amt)
 		HonorHandler::AddHonorPointsToPlayer( plr, amt);
 	}
 }
-
 
 bool CBattleground::HookSlowLockOpen(GameObject* pGo, Player* pPlayer, Spell* pSpell)
 {

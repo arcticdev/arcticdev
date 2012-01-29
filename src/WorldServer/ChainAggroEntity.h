@@ -4,7 +4,8 @@
  * See COPYING for license details.
  */
 
-#pragma once
+#ifndef _CHAIN_AGRO_ENTITY_H
+#define _CHAIN_AGRO_ENTITY_H
 
 // Class used to link multiple monsters together for agro.
 class SERVER_DECL ChainAggroEntity
@@ -26,3 +27,6 @@ public:
 
 	void EventEnterCombat(Unit* pTarget);
 };
+
+
+#endif

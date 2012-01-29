@@ -177,9 +177,6 @@ public:
 	/* Deletes a battleground (called from MapMgr) */
 	void DeleteBattleground(CBattleground* bg);
 
-	/* Build SMSG_BATTLEFIELD_STATUS */
-	//void SendBattlefieldStatus(Player* plr, uint32 Status, uint32 Type, uint32 InstanceID, uint32 Time, uint32 MapId, uint8 RatedMatch);
-
 	/* Gets ArenaTeam info from group */
 	uint32 GetArenaGroupQInfo(Group * group, int type, uint32 *avgRating);
 
