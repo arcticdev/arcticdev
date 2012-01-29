@@ -461,17 +461,6 @@ void WorldSession::HandlePetUnlearn(WorldPacket & recv_data)
 
 void WorldSession::HandleTotemDestroyed(WorldPacket & recv_data)
 {
-	// This code can handle destroying totem when it was right clicked in client. 
-	// But now this packet for some reason is also sent when server destroys the totem which leads to a bug.
-	// So leave it commented for now
-	/*if( !_player->IsInWorld() )
-		return;
-	uint8 slot;
-	recv_data >> slot;
-	slot++;
-	if(slot == 0 || slot > 4 || _player->m_SummonSlots[slot] == NULL)
-		return;
-	_player->SummonExpireSlot(slot);*/
 }
 
 void WorldSession::HandlePetLearnTalent( WorldPacket & recvPacket )  

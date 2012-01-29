@@ -614,17 +614,7 @@ Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 	m_target = target;
 
 	DurationPctMod(GetMechanic());
-	/*if( caster->GetTypeId() == TYPEID_PLAYER && target->GetTypeId() == TYPEID_PLAYER )
-	{
-		if( ( ( Player* )caster )->DuelingWith == ( ( Player* )target ) )
-		{
-			m_castInDuel = true;
-		}
-	}*/
 
-	//SetCasterFaction(caster->_getFaction());
-
-	//m_auraSlot = 0;
 	m_modcount = 0;
 	m_dynamicValue = 0;
 	m_areaAura = false;
@@ -4628,10 +4618,6 @@ void Aura::SpellAuraModShapeshift(bool apply)
 		{
 			if(apply)
 			{
-				/*WorldPacket data(12);
-				data.SetOpcode(SMSG_COOLDOWN_EVENT);
-				data << (uint32)GetSpellProto()->Id << m_target->GetGUID();
-				TO_PLAYER( m_target )->GetSession()->SendPacket(&data);*/
 				packetSMSG_COOLDOWN_EVENT cd;
 				cd.spellid = m_spellProto->Id;
 				cd.guid = m_target->GetGUID();
@@ -6321,39 +6307,6 @@ void Aura::SpellAuraMounted(bool apply)
 			TO_PLAYER(m_target)->hasqueuedpet = false;
 		}
 
-		// Vehicle stuff
-		/*CreatureProto* cp = CreatureProtoStorage.LookupEntry(mod->m_miscValue);
-		if( cp && cp->vehicle_entry )
-		{
-			if( TO_PLAYER(m_target) && TO_PLAYER(m_target)->GetGroup() )
-			{
-				WorldPacket * data = TO_PLAYER(m_target)->BuildFieldUpdatePacket(UNIT_NPC_FLAGS, TO_PLAYER(m_target)->GetUInt32Value(UNIT_NPC_FLAGS) & ~UNIT_NPC_FLAG_PLAYER_VEHICLE);
-				TO_PLAYER(m_target)->GetGroup()->SendPacketToAllInRange(TO_PLAYER(m_target), data);
-			}
-			m_target->RemoveFlag(PLAYER_BYTES_3, 0x01000000);
-			TO_VEHICLE(m_target)->SetVehicleEntry(-1);
-
-			WorldPacket data(SMSG_PLAYER_VEHICLE_DATA, 12);
-			data << m_target->GetNewGUID();
-			data << uint32(0);
-			m_target->SendMessageToSet(&data, true);
-
-			TO_VEHICLE(m_target)->SetVehiclePassenger(0, NULL);
-			for(uint8 i = 1; i < 8; ++i)
-			{
-				Unit* pPassenger = TO_VEHICLE(m_target)->GetPassengerUnit(i);
-				if( pPassenger )
-				{
-					if( pPassenger->IsPlayer() )
-					{
-						pPassenger->m_CurrentVehicle->RemovePassenger(pPassenger);
-					}
-					else
-						TO_CREATURE(pPassenger)->SafeDelete();
-				}
-				TO_VEHICLE(m_target)->SetVehiclePassenger(i, NULL);
-			}
-		}*/
 	}
 }
 
@@ -6747,32 +6700,14 @@ void Aura::SpellAuraPeriodicDamagePercent(bool apply)
 {
 	if( apply )
 	{
-		//uint32 gr = GetSpellProto()->SpellGroupType;
-		//if(gr&& m_caster!=NULL)
-		//{
-		//	SM_FIValue(m_caster->SM[SMT_SPELL_VALUE_PCT][0],(int32*)&dmg,gr);
-		//	SM_PIValue(m_caster->SM[SMT_SPELL_VALUE_PCT][1],(int32*)&dmg,gr);
-		//}		
-
-		/*if(m_spellProto->Id == 28347) //Dimensional Siphon
-		{
-			uint32 dmg = (m_target->GetUInt32Value(UNIT_FIELD_MAXHEALTH)*5)/100;
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicDamagePercent, dmg, 
-				EVENT_AURA_PERIODIC_DAMAGE_PERCENT, 1000, 0,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}
-		else*/
-		{
-			uint32 dmg = mod->m_amount;
-			uint32 time = 3000;
-
-			if( GetSpellProto()->EffectAmplitude[mod->i] > 0 )
-				time = GetSpellProto()->EffectAmplitude[mod->i];
-
-			sEventMgr.AddEvent(this, &Aura::EventPeriodicDamagePercent, dmg, 
-				EVENT_AURA_PERIODIC_DAMAGE_PERCENT, time, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-		}
-		SetNegative();
-	}
+		uint32 dmg = mod->m_amount;
+		uint32 time = 3000;
+		if( GetSpellProto()->EffectAmplitude[mod->i] > 0 )
+			time = GetSpellProto()->EffectAmplitude[mod->i];
+		sEventMgr.AddEvent(this, &Aura::EventPeriodicDamagePercent, dmg, 
+			EVENT_AURA_PERIODIC_DAMAGE_PERCENT, time, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	}	
+	SetNegative();
 }
 
 void Aura::EventPeriodicDamagePercent(uint32 amount)
@@ -8712,7 +8647,6 @@ void Aura::SpellAuraIncreaseAllWeaponSkill(bool apply)
 		}
 		else
 		{
-//			TO_PLAYER( m_target )->ModSkillBonusType(SKILL_TYPE_WEAPON, -mod->m_amount); 
 			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_SWORDS, -mod->m_amount); 
 			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_AXES, -mod->m_amount); 
 			TO_PLAYER( m_target )->_ModifySkillBonus(SKILL_BOWS, -mod->m_amount); 

@@ -1735,7 +1735,10 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 	}
 
-	/*------------------------------------ DUEL HANDLERS --------------------------*/
+	/************************************************************************/
+	/* DUEL HANDLERS                                                        */
+	/************************************************************************/
+
 	if((pVictim->IsPlayer()) && (IsPlayer()) && TO_PLAYER(pVictim)->DuelingWith == TO_PLAYER(this) ) //Both Players
 	{
 		if((health <= damage) && TO_PLAYER(this)->DuelingWith != NULL)
@@ -1779,7 +1782,10 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 		}
 	}
-	/*------------------------------------ DUEL HANDLERS END--------------------------*/
+
+	/************************************************************************/
+	/* DUEL HANDLERS END                                                    */
+	/************************************************************************/
 
 	bool isCritter = false;
 	if(pVictim->GetTypeId() == TYPEID_UNIT && TO_CREATURE(pVictim)->GetCreatureInfo())
@@ -1798,7 +1804,10 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			}
 	}
 
-	/* -------------------------- HIT THAT CAUSES VICTIM TO DIE ---------------------------*/
+	/************************************************************************/
+	/* HIT THAT CAUSES VICTIM TO DIE                                        */
+	/************************************************************************/
+
 	if ((isCritter || health <= damage) )
 	{
 
@@ -1993,7 +2002,11 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 				}
 			}
 		}
-		/* -------------------------------- HONOR + BATTLEGROUND CHECKS ------------------------ */
+
+		/************************************************************************/
+		/* HONOR + BATTLEGROUND CHECKS                                          */
+		/************************************************************************/
+
 		plr = NULL;
 		if( IsPlayer() )
 			plr = TO_PLAYER( this );
@@ -2026,7 +2039,10 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 					sEventMgr.ModifyEventTimeLeft( TO_UNIT(plr), EVENT_VICTORIOUS_FLAG_EXPIRE, 20000 , false );
 			}
 		}
-		/* -------------------------------- HONOR + BATTLEGROUND CHECKS END------------------------ */
+
+		/************************************************************************/
+		/* HONOR + BATTLEGROUND CHECKS END                                      */
+		/************************************************************************/
 
 		uint64 victimGuid = pVictim->GetGUID();
 
@@ -2131,8 +2147,11 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 					sQuestMgr.OnPlayerKill( TO_PLAYER(this), TO_CREATURE( pVictim ) );
 			}
 			else /* is Creature or GameObject* */
-			{
-				/* ----------------------------- PET XP HANDLING -------------- */
+			{			
+				/************************************************************************/
+				/* PET XP HANDLING                                                      */
+				/************************************************************************/
+
 				if( owner_participe && IsPet() && !pVictim->IsPet() )
 				{
 					Player* petOwner = TO_PET(this)->GetPetOwner();
@@ -2163,9 +2182,15 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 						pVictim->GetTypeId() == TYPEID_UNIT )
 						sQuestMgr.OnPlayerKill( petOwner, TO_CREATURE( pVictim ) );
 				}
-				/* ----------------------------- PET XP HANDLING END-------------- */
 
-				/* ----------------------------- PET DEATH HANDLING -------------- */
+				/************************************************************************/
+				/* PET XP HANDLING END                                                  */
+				/************************************************************************/
+
+				/************************************************************************/
+				/* PET DEATH HANDLING                                                   */
+				/************************************************************************/
+
 				if( pVictim->IsPet() )
 				{
 					// dying pet looses 1 happiness level
@@ -2183,7 +2208,11 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 					if( owner != NULL )
 						owner->EventDismissPet();
 				}
-				/* ----------------------------- PET DEATH HANDLING END -------------- */
+
+				/************************************************************************/
+				/* PET DEATH HANDLING END                                               */
+				/************************************************************************/
+
 				else if( pVictim->GetUInt64Value( UNIT_FIELD_CHARMEDBY ) )
 				{
 					//remove owner warlock soul link from caster
@@ -2195,14 +2224,19 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 		}
 		else if( pVictim->GetTypeId() == TYPEID_PLAYER )
 		{
-			
-			/* -------------------- RESET BREATH STATE ON DEATH -------------- */
+			/************************************************************************/
+			/* RESET BREATH STATE ON DEATH                                          */
+			/************************************************************************/
+
 			TO_PLAYER( pVictim )->m_UnderwaterTime = 0;
 			TO_PLAYER( pVictim )->m_UnderwaterState = 0;
 			TO_PLAYER( pVictim )->m_BreathDamageTimer = 0;
 			TO_PLAYER( pVictim )->m_SwimmingTime = 0;
 
-			/* -------------------- REMOVE PET WHEN PLAYER DIES ---------------*/
+			/************************************************************************/
+			/* REMOVE PET WHEN PLAYER DIES                                          */
+			/************************************************************************/
+
 			if( TO_PLAYER( pVictim )->GetSummon() != NULL )
 			{
 				if( pVictim->GetUInt32Value( UNIT_CREATED_BY_SPELL ) > 0 )

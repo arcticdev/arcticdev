@@ -381,12 +381,6 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		Spell* sp(new Spell(m_session->GetPlayer(), se, true, NULL));
 		sp->prepare(&targets);
 
-/*		SpellEntry * se = dbcSpell.LookupEntry(20479);
-		if(se == 0) return false;
-		
-		SpellCastTargets targets(target->GetGUID());
-		Spell* sp(new Spell(target, se, true, NULL));
-		sp->prepare(&targets);*/
 	}
 
 	return true;

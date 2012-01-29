@@ -966,17 +966,6 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							else continue; //no weapon no joy
 						}break;
 
-						/*
-						//Death Knight - Endless winter
-						case 49137:
-						case 49567:
-							{
-								if( CastingSpell == NULL)
-									continue;
-								if( CastingSpell->NameHash != SPELL_HASH_CHAINS_OF_ICE)
-									continue;
-							}break;*/
-
 						//Death knight - Chilblains
 						case 50040:
 						case 50041:

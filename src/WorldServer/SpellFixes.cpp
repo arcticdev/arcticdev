@@ -5765,7 +5765,7 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 					sp->procFlags = PROC_ON_SPELL_HIT_VICTIM;
 				}break;
 
-//***************Siege Vehicles SpellFixes********************//
+			//***************Siege Vehicles SpellFixes********************//
 
 			// Scarlet Cannon
 			case 52436:

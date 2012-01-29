@@ -858,7 +858,6 @@ void Group::SaveToDB()
 		ss << "0,0,0,0,0,";
 
 	ss << (uint32)UNIXTIME << ")";
-	/*printf("==%s==\n", ss.str().c_str());*/
 	CharacterDatabase.Execute(ss.str().c_str());
 }
 

@@ -720,13 +720,7 @@ void Pet::Remove(bool bSafeDelete, bool bUpdate, bool bSetOffline)
 		SendNullSpellsToOwner();
 	}
 	ClearPetOwner();
-/*	if(bSafeDelete)
-		
-	else*/
-/*		PetSafeDelete();*/
 
-	// has to be next loop - reason because of RemoveFromWorld, iterator gets broke.
-	/*if(IsInWorld() && Active) Deactivate(m_mapMgr);*/
 	sEventMgr.RemoveEvents(this);
 	sEventMgr.AddEvent(TO_PET(this), &Pet::PetSafeDelete, EVENT_CREATURE_SAFE_DELETE, 1, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	m_dismissed = true;
@@ -740,7 +734,6 @@ void Pet::PetSafeDelete()
 		RemoveFromWorld(false, false);
 	}
 
-	//sEventMgr.AddEvent(World::getSingletonPtr(), &World::DeleteObject, TO_OBJECT(this), EVENT_CREATURE_SAFE_DELETE, 1000, 1);
 	Creature::SafeDelete();
 }
 
@@ -830,7 +823,6 @@ void Pet::LevelUpTo(uint32 level)
 		currentlevel++;
 	}
 	GiveXP(XPtoGive);
-
 }
 
 void Pet::SetDefaultSpells()
@@ -1065,8 +1057,6 @@ void Pet::RemoveSpell(SpellEntry * sp)
 		{
 			if((*it) == itr->second)
 			{
-				/*if((*it)->autocast_type > 0)
-					m_autoCastSpells[(*it)->autocast_type].remove((*it));*/
 				if((*it)->autocast_type > 0)
 				{
 					for(list<AI_Spell*>::iterator i3 = m_autoCastSpells[(*it)->autocast_type].begin();

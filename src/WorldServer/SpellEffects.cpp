@@ -782,9 +782,10 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			p_caster->DealDamage(unitTarget,1,0,0,49576);
 		}break;
 
-	/*************************
-	 * WARRIOR SPELLS
-	 *************************/
+	/************************************************************************/
+	/* WARRIOR SPELLS                                                       */
+	/************************************************************************/
+
 	case 60970: // Heroic Fury
 		{
 			if( p_caster == NULL)

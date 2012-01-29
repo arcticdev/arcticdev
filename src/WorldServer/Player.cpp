@@ -1306,19 +1306,6 @@ void Player::_EventCharmAttack()
 		}
 		else
 		{
-			//if(pVictim->GetTypeId() == TYPEID_UNIT)
-			//	pVictim->GetAIInterface()->StopMovement(5000);
-
-			//pvp timeout reset
-			/*if(pVictim->IsPlayer())
-			{
-				if( TO_PLAYER( pVictim )->DuelingWith == NULL)//Dueling doesn't trigger PVP
-					TO_PLAYER( pVictim )->PvPTimeoutUpdate(false); //update targets timer
-
-				if(DuelingWith == NULL)//Dueling doesn't trigger PVP
-					PvPTimeoutUpdate(false); //update casters timer
-			}*/
-
 			if (!m_CurrentCharm->GetOnMeleeSpell())
 			{
 				m_CurrentCharm->Strike( pVictim, MELEE, NULL, 0, 0, 0, false, false, true );
@@ -1378,17 +1365,6 @@ void Player::_EventExploration()
 	AreaTable * at = dbcArea.LookupEntry(AreaId);
 	if(at == 0)
 		return;
-
-	/*char areaname[200];
-	if(at)
-	{
-		strcpy(areaname, sAreaStore.LookupString((uint32)at->name));
-	}
-	else
-	{
-		strcpy(areaname, "UNKNOWN");
-	}
-    sChatHandler.BlueSystemMessageToPlr(TO_PLAYER(this),areaname);*/
 
 	uint32 offset = at->explorationFlag / 32;
 	offset += PLAYER_EXPLORED_ZONES_1;
@@ -5746,7 +5722,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 
 	if( pObj == DuelingWith )
 	{
-		//EndDuel(DUEL_WINNER_RETREAT);
 		sEventMgr.AddEvent(TO_PLAYER(this), &Player::EndDuel, (uint8)DUEL_WINNER_RETREAT, EVENT_PLAYER_DUEL_COUNTDOWN, 1, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 }
@@ -5756,7 +5731,6 @@ void Player::ClearInRangeSet()
 	m_visibleObjects.clear();
 	Unit::ClearInRangeSet();
 }
-
 
 void Player::EventReduceDrunk(bool full)
 {

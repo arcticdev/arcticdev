@@ -78,10 +78,6 @@ void SpellCastTargets::read( WorldPacket & data,uint64 caster )
 		}
 	}
 
-	/*if( m_targetMask & TARGET_FLAG_STRING )
-	{
-		data >> m_strTarget;
-	}*/
 }
 
 void SpellCastTargets::write( WorldPacket& data )
@@ -103,8 +99,6 @@ void SpellCastTargets::write( WorldPacket& data )
 		else
 			data << uint8(0) << m_destX << m_destY << m_destZ;
 
-	/*if( m_targetMask & TARGET_FLAG_STRING )
-		data << m_strTarget;*/
 }
 
 void SpellCastTargets::write( StackPacket& data )
@@ -129,8 +123,6 @@ void SpellCastTargets::write( StackPacket& data )
 		data << m_destX << m_destY << m_destZ;
 	}
 
-	/*if( m_targetMask & TARGET_FLAG_STRING )
-		data << m_strTarget;*/
 }
 
 Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
@@ -770,7 +762,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 								TargetMap::iterator itr;
 								for(itr = m_aiTargets->begin(); itr != m_aiTargets->end();itr++)
 								{
-									if( /*m_caster->GetMapMgr()->GetUnit(itr->first->GetGUID()) &&*/ itr->first->GetMapMgr() == m_caster->GetMapMgr() && 
+									if( itr->first->GetMapMgr() == m_caster->GetMapMgr() && 
 										itr->first->isAlive() &&
 										m_caster->GetDistanceSq(itr->first) <= r &&
 										isAttackable(u_caster,itr->first,!(m_spellInfo->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED))
@@ -787,10 +779,6 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 						{
 							store_buff->m_unitTarget=GetSinglePossibleEnemy(i);
 						}
-						//if we still couldn't get a target, check maybe we could use 
-//						if(!store_buff->m_unitTarget)
-//						{
-//						}
 					}break;
 					// spells like 17278:Cannon Fire and 21117:Summon Son of Flame A
 				case 17: // A single target at a xyz location or the target is a possition xyz
@@ -1336,9 +1324,6 @@ void Spell::cast(bool check)
 
 			if (m_spellInfo->Flags4 & 0x8000 && m_caster->IsPlayer() && m_caster->IsInWorld())
 			{
-                // Part of this function contains a hack fix
-                // hack fix for shoot spells, should be some other resource for it
-                //p_caster->SendSpellCoolDown(m_spellInfo->Id, m_spellInfo->RecoveryTime ? m_spellInfo->RecoveryTime : 2300);
 				WorldPacket data(SMSG_SPELL_COOLDOWN, 14);
 				data << m_spellInfo->Id;
 				data << p_caster->GetNewGUID();
@@ -3980,15 +3965,6 @@ uint8 Spell::CanCast(bool tolerate)
 					// Remove all debuffs of that mechanic type.
 					// This is also done in SpellAuras.cpp - wtf?
 				}
-				/*
-				if( m_spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MECHANIC_IMMUNITY && (m_spellInfo->EffectMiscValue[i] == 12 || m_spellInfo->EffectMiscValue[i] == 17))
-				{
-					for(uint32 x=MAX_POSITIVE_AURAS;x<MAX_AURAS;x++)
-						if(target->m_auras[x])
-							if(target->m_auras[x]->GetSpellProto()->MechanicsType == m_spellInfo->EffectMiscValue[i])
-								target->m_auras[x]->Remove();
-				}
-				*/
 			}
 		}
 

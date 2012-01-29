@@ -993,13 +993,13 @@ enum SpellTargetType
     TARGET_TYPE_MECHANICAL = 0x100,
 };
 
-/****************SpellExtraFlags*****************/
-/* SpellExtraFlags defines						*/
-/*												*/
-/* Used for infront check and other checks		*/
-/* when they are not in spell.dbc				*/
-/*												*/
-/************************************************/
+/************************************************************************/
+/* SpellExtraFlags defines                                              */
+/*												                        */
+/* Used for infront check and other checks		                        */
+/* when they are not in spell.dbc				                        */
+/*												                        */
+/************************************************************************/
 
 enum ARCTICDEV_SPELL_EXTRA
 {
@@ -1009,9 +1009,10 @@ enum ARCTICDEV_SPELL_EXTRA
     SPELL_EXTRA_UNDEF1      = 8, // not used yet
 };
 
-/***************Ranged spellid*******************/
-/* Note: These spell id's are checked for 3.0.x */
-/************************************************/
+/************************************************************************/
+/* Ranged spellid                                                       */
+/* Note: These spell id's are checked for 3.0.x                         */
+/************************************************************************/
 
 enum ARCTICDEV_SPELL_RANGED
 {

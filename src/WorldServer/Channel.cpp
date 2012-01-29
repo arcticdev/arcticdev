@@ -181,10 +181,6 @@ void Channel::Part(Player* plr, bool silent)
 		data.clear();
 		data << uint8(CHANNEL_NOTIFY_FLAG_LEFT) << m_name << plr->GetGUID();
 		SendToAll(&data);
-	
-/*		data.Initialize(SMSG_PLAYER_LEFT_CHANNEL);
-		data << plr->GetGUID() << m_flags << m_id << m_name;
-		SendToAll(&data);*/
 	}
 
 #ifndef WIN32

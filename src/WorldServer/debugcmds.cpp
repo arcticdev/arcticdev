@@ -492,25 +492,6 @@ bool ChatHandler::HandleAggroRangeCommand(const char* args, WorldSession *m_sess
 
 bool ChatHandler::HandleKnockBackCommand(const char* args, WorldSession *m_session)
 {
-	/*char* X = strtok((char*)args, " ");
-	if (!X)
-		return false;
-	char* Y = strtok(NULL, " ");
-	if (!Y)
-		return false;
-	char* Z = strtok(NULL, " ");
-	if (!Z)
-		return false;
-	char* O = strtok(NULL, " ");
-	if (!O)
-		return false;
-
-	WorldPacket data(SMSG_MOVE_KNOCK_BACK, 25);
-	data << m_session->GetPlayer()->GetNewGUID();
-	data << float(atof(X)) << float(atof(Y)) << float(atof(Z)) << float(atof(O));
-
-	m_session->GetPlayer()->SendMessageToSet(&data, true);*/
-
 	float hspeed, vspeed;
 	Unit* target = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
 	if(!target || !target->IsPlayer())

@@ -266,10 +266,10 @@ public:
 	virtual void OnPlayerItemPickup(uint32 itemId, uint32 totalCount, Player* mTarget, QuestLogEntry *qLogEntry) {}
 };
 
-/* * Class InstanceScript
-   * Instanced class created for each instance of the map, holds all 
-   * scriptable exports
-*/
+/* Class InstanceScript
+ * Instanced class created for each instance of the map, holds all 
+ * scriptable exports
+ */
 
 class SERVER_DECL InstanceScript
 {

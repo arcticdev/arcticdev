@@ -460,9 +460,6 @@ void EventableObjectHolder::AddObject(EventableObject* obj)
 			// ignore deleted events (shouldn't be any in here, actually)
 			if(itr->second->deleted)
 			{
-				/*it2 = itr++;
-				itr->second->DecRef();
-				obj->m_events.erase(it2);*/
 				continue;
 			}
 

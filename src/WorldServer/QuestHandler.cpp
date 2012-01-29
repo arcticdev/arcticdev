@@ -167,24 +167,12 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	/*if (!qst_giver->FindQuest(quest_id, QUESTGIVER_QUEST_START | QUESTGIVER_QUEST_END))
-	{
-		OUT_DEBUG("WORLD: QuestGiver doesn't have that quest.");
-		return;
-	}*/	// bleh.. not needed.. maybe for antihack later on would be a good idea though
-	
 	if ((status == QMGR_QUEST_AVAILABLE) || (status == QMGR_QUEST_REPEATABLE) || (status == QMGR_QUEST_CHAT))
 	{
 		sQuestMgr.BuildQuestDetails(&data, qst, qst_giver, 1, language, _player);	 // 0 because we want goodbye to function
 		SendPacket(&data);
 		OUT_DEBUG( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
 	}
-	/*else if (status == QMGR_QUEST_FINISHED)
-	{
-		sQuestMgr.BuildOfferReward(&data, qst, qst_giver, 1);
-		SendPacket(&data);
-		DEBUG_LOG( "WORLD"," Sent SMSG_QUESTGIVER_OFFER_REWARD." );
-	}*/
 	else if (status == QMGR_QUEST_NOT_FINISHED || status == QMGR_QUEST_FINISHED)
 	{
 		sQuestMgr.BuildRequestItems(&data, qst, qst_giver, status, language);
@@ -199,7 +187,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 
 	CHECK_INWORLD_RETURN;
 
-	//WorldPacket data;
+	// WorldPacket data;
 
 	uint64 guid;
 	uint32 quest_id;
@@ -235,8 +223,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			qst_giver = TO_OBJECT(quest_giver);
 		else
 			return;
-		//bValid = quest_giver->isQuestGiver();
-		//if(bValid)
+
 		bValid = true;
 			qst = QuestStorage.LookupEntry(quest_id);
 	} 
@@ -306,10 +293,6 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	//FIXME
-	/*if(Player Has Timed quest && qst->HasFlag(QUEST_FLAG_TIMED))
-		sQuestMgr.SendQuestInvalid(INVALID_REASON_HAVE_TIMED_QUEST);*/
-
 	if(qst->count_receiveitems || qst->srcitem)
 	{
 		uint32 slots_required = qst->count_receiveitems;
@@ -321,9 +304,6 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			return;
 		}
 	}	
-	
-/*	if(qst_giver->GetTypeId() == TYPEID_UNIT && !ScriptSystem->OnQuestRequireEvent(qst, TO_CREATURE( qst_giver ), _player, QUEST_EVENT_CAN_ACCEPT))
-		return;*/
 
 	QuestLogEntry *qle = new QuestLogEntry();
 	qle->Init(qst, _player, log_slot);
@@ -377,7 +357,6 @@ void WorldSession::HandleQuestgiverCancelOpcode(WorldPacket& recvPacket)
 {
 	WorldPacket data(SMSG_GOSSIP_COMPLETE, 0);
 	SendPacket(&data);
-	//OutPacket(SMSG_GOSSIP_COMPLETE, 0, NULL);
 
 	OUT_DEBUG("WORLD: Sent SMSG_GOSSIP_COMPLETE");
 }
@@ -493,8 +472,6 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data 
 			if(!qst)
 				qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_START);
 
-			/*if(!qst) 
-				qst = QuestStorage.LookupEntry(quest_id);*/
 			if(!qst)
 			{
 				OUT_DEBUG("WARNING: Cannot complete quest, as it doesnt exist.");
@@ -514,7 +491,7 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode( WorldPacket & recv_data 
 		if(bValid)
 		{
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
-			/*if(!qst) sQuestMgr.FindQuest(quest_id);*/
+
 			if(!qst)
 			{
 				OUT_DEBUG("WARNING: Cannot complete quest, as it doesnt exist.");
@@ -576,8 +553,7 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 		if(bValid)
 		{
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
-			/*if(!qst) 
-				sQuestMgr.FindQuest(quest_id);*/
+
 			if(!qst)
 			{
 				OUT_DEBUG("WARNING: Cannot complete quest, as it doesnt exist.");
@@ -597,7 +573,7 @@ void WorldSession::HandleQuestgiverCompleteQuestOpcode( WorldPacket & recvPacket
 		if(bValid)
 		{
 			qst = quest_giver->FindQuest(quest_id, QUESTGIVER_QUEST_END);
-			/*if(!qst) sQuestMgr.FindQuest(quest_id);*/
+
 			if(!qst)
 			{
 				OUT_DEBUG("WARNING: Cannot complete quest, as it doesnt exist.");
@@ -718,7 +694,6 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvPacket)
 
 	
 	sQuestMgr.OnQuestFinished(_player, qst, qst_giver, reward_slot);
-	//if(qst_giver->GetTypeId() == TYPEID_UNIT) qst->LUA_SendEvent(TO_CREATURE( qst_giver ),GetPlayer(),ON_QUEST_COMPLETEQUEST);
 
 	if(qst->next_quest_id)
 	{
