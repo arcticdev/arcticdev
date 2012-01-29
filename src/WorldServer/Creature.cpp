@@ -537,15 +537,15 @@ void Creature::EnslaveExpire()
 	Player* caster = objmgr.GetPlayer(GetUInt32Value(UNIT_FIELD_CHARMEDBY));
 	if(caster)
 	{
-		caster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
-		caster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+		caster->SetCharmedUnitGUID(0);
+		caster->SetSummonedUnitGUID(0);
 		WorldPacket data(8);
 		data.Initialize(SMSG_PET_SPELLS);
 		data << uint64(0);
 		caster->GetSession()->SendPacket(&data);
 	}
-	SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
-	SetUInt64Value(UNIT_FIELD_SUMMONEDBY, 0);
+	SetCharmedByGUID(0);
+	SetSummonedByGUID(0);
 	SetIsPet(false);
 
 	m_walkSpeed = m_base_walkSpeed;
@@ -773,7 +773,7 @@ void Creature::ChannelLinkUpGO(uint32 SqlId)
 	if(go != 0)
 	{
 		event_RemoveEvents(EVENT_CREATURE_CHANNEL_LINKUP);
-		SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, go->GetGUID());
+		SetChannelSpellTargetGUID(go->GetGUID());
 		SetUInt32Value(UNIT_CHANNEL_SPELL, m_spawn->channel_spell);
 	}
 }
@@ -787,7 +787,7 @@ void Creature::ChannelLinkUpCreature(uint32 SqlId)
 	if(go != 0)
 	{
 		event_RemoveEvents(EVENT_CREATURE_CHANNEL_LINKUP);
-		SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, go->GetGUID());
+		SetChannelSpellTargetGUID(go->GetGUID());
 		SetUInt32Value(UNIT_CHANNEL_SPELL, m_spawn->channel_spell);
 	}
 }

@@ -2374,25 +2374,6 @@ void Aura::SpellAuraDummy(bool apply)
 	}break;
 	case 126: //Eye of Killrog     
 		{
-			/*if(m_target->IsInWorld() == false)
-				return;
-
-			if(!apply)
-			{
-				m_target->SetUInt64Value(PLAYER_FARSIGHT,0);
-				Creature *summon = m_target->GetMapMgr()->GetCreature(m_target->GetUInt32Value(UNIT_FIELD_SUMMON));
-				m_target->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-				m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-
-				if(summon)
-				{
-					summon->RemoveFromWorld(false,true);
-					delete summon;
-				}
-				m_target->m_noInterrupt--;
-				if(m_target->m_noInterrupt < 0)
-					m_target->m_noInterrupt = 0;
-			}*/
 		}break;
 	case 12295:
 	case 12676:
@@ -2553,10 +2534,10 @@ void Aura::SpellAuraDummy(bool apply)
 			if(apply)
 			{
 				m_target->DisableAI();
-				m_caster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-				m_target->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, 0);
-				m_caster->SetUInt64Value(UNIT_FIELD_CHARM, m_target->GetGUID());
-				m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, m_caster->GetGUID());
+				m_caster->SetSummonedUnitGUID(0);
+				m_target->SetSummonedByGUID(0);
+				m_caster->SetCharmedUnitGUID(m_target->GetGUID());
+				m_target->SetCharmedByGUID(m_caster->GetGUID());
 				m_caster->SetUInt64Value(PLAYER_FARSIGHT, m_target->GetGUID());
 				m_caster->GetMapMgr()->ChangeFarsightLocation(TO_PLAYER(m_caster), m_target, true);
 				TO_PLAYER(m_caster)->m_CurrentCharm = TO_CREATURE(m_target);
@@ -2571,10 +2552,10 @@ void Aura::SpellAuraDummy(bool apply)
 			else
 			{
 				m_caster->EnableAI();
-				m_caster->SetUInt64Value(UNIT_FIELD_SUMMON, m_target->GetGUID());
-				m_target->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID());
-				m_caster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
-				m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+				m_caster->SetSummonedUnitGUID(m_target->GetGUID());
+				m_target->SetSummonedByGUID(m_caster->GetGUID());
+				m_caster->SetCharmedUnitGUID(0);
+				m_target->SetCharmedByGUID(0);
 				m_caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
 				m_caster->GetMapMgr()->ChangeFarsightLocation(TO_PLAYER(m_caster), m_target, false);
 				TO_PLAYER(m_caster)->m_CurrentCharm = NULL;
@@ -3039,8 +3020,8 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->_setFaction();
 		m_target->UpdateOppFactionSet();
 		m_target->GetAIInterface()->Init(m_target, AITYPE_PET, MOVEMENTTYPE_NONE, m_caster);
-		m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, m_caster->GetGUID());
-		m_caster->SetUInt64Value(UNIT_FIELD_CHARM, target->GetGUID());
+		m_target->SetCharmedByGUID(m_caster->GetGUID());
+		m_caster->SetCharmedUnitGUID(target->GetGUID());
 		//damn it, the other effects of enslaive demon will agro him on us anyway :S
 		m_target->GetAIInterface()->WipeHateList();
 		m_target->GetAIInterface()->WipeTargetList();
@@ -3074,11 +3055,11 @@ void Aura::SpellAuraModCharm(bool apply)
 		m_target->GetAIInterface()->WipeTargetList();
 		m_target->UpdateOppFactionSet();
 		m_target->GetAIInterface()->Init(m_target, AITYPE_AGRO, MOVEMENTTYPE_NONE);
-		m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+		m_target->SetCharmedByGUID(0);
 
 		if( TO_PLAYER(m_caster)->GetSession() != NULL ) // crashfix
 		{
-			m_caster->SetUInt64Value(UNIT_FIELD_CHARM, 0);
+			m_caster->SetCharmedUnitGUID(0);
 			WorldPacket data(SMSG_PET_SPELLS, 8);
 			data << uint64(0);
 			TO_PLAYER(m_caster)->GetSession()->SendPacket(&data);
@@ -5860,12 +5841,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 					if( ( pObject )->IsPlayer() )
 					{
 						//if player has selection on us
-						if( TO_PLAYER( pObject )->GetSelection()==pTarget->GetGUID())							
-						{
-							//it seems that all these do not work in 2.3
-							//TO_PLAYER( (*itr) )->SetSelection(0);//loose selection
-							//TO_PLAYER( (*itr) )->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-						}
+						if( TO_PLAYER( pObject )->GetSelection()==pTarget->GetGUID()) { }
 						if( TO_PLAYER( pObject )->isCasting() && TO_PLAYER( pObject )->GetCurrentSpell()->GetSpellProto() != m_spellProto )
 							TO_PLAYER( pObject )->CancelSpell( NULL ); //cancel current casting spell
 

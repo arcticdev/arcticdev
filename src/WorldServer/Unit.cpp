@@ -6323,8 +6323,8 @@ Unit* Unit::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float 
 		p->SetUInt32Value(UNIT_FIELD_LEVEL, lvl);
 	}
 
-	p->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, GetGUID());
-    p->SetUInt64Value(UNIT_FIELD_CREATEDBY, GetGUID());
+	p->SetSummonedByGUID(GetGUID());
+    p->SetCreatedByGUID(GetGUID());
     p->SetZoneId(GetZoneId());
 	p->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE,GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	p->_setFaction();

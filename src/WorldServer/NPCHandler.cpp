@@ -602,7 +602,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	DEBUG_LOG("WORLD","CMSG_NPC_TEXT_QUERY ID '%u'", textID );
 
 	recv_data >> targetGuid;
-	GetPlayer()->SetUInt64Value(UNIT_FIELD_TARGET, targetGuid);
+	GetPlayer()->SetTargetGUID(targetGuid);
 
 	pGossip = NpcTextStorage.LookupEntry(textID);
 
@@ -610,7 +610,7 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	
 	if(pGossip)
 	{
-		for(uint32 i=0;i<8;i++)
+		for(uint32 i = 0; i < 8; i++)
 		{
 			data << pGossip->Texts[i].Prob;		// prob
 			data << pGossip->Texts[i].Text[0];

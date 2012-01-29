@@ -239,12 +239,12 @@ class SERVER_DECL AIInterface
 			m_nextTarget = nextTarget; 
 			if(nextTarget)
 			{
-				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, m_nextTarget->GetGUID());
+				m_Unit->SetTargetGUID(m_nextTarget->GetGUID());
 #ifdef ENABLE_GRACEFULL_HIT
 				have_graceful_hit=false;
 #endif
 			}
-			else m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+			else m_Unit->SetTargetGUID(0);
 		}
 
 		Creature* m_formationLinkTarget;

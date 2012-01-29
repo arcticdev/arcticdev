@@ -3052,7 +3052,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 	{
 		if(m_spellInfo->ChannelInterruptFlags > 0)
 		{
-			u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT,dynObj->GetGUID());
+			u_caster->SetChannelSpellTargetGUID(dynObj->GetGUID());
 			u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,m_spellInfo->Id);
 		}
 	}
@@ -3208,9 +3208,9 @@ void Spell::SummonCreature(uint32 i) // Summon
 			pCreature->GetAIInterface()->SetFollowDistance(3.0f);
 			pCreature->SetUInt32Value(UNIT_FIELD_LEVEL, p_caster->getLevel());
 			pCreature->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, p_caster->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-			pCreature->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, p_caster->GetGUID());
+			pCreature->SetSummonedByGUID(p_caster->GetGUID());
 			pCreature->_setFaction();
-			p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, pCreature->GetGUID());
+			p_caster->SetSummonedUnitGUID(pCreature->GetGUID());
 
 			if( m_summonProperties->slot < 7 )
 			{
@@ -4943,60 +4943,6 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 
 void Spell::SummonPossessed(uint32 i) // eye of kilrog
 {
-	/*
-	m_target->DisableAI();
-	pCaster->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
-	m_target->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, 0);
-	pCaster->SetUInt64Value(UNIT_FIELD_CHARM, m_target->GetGUID());
-	m_target->SetUInt64Value(UNIT_FIELD_CHARMEDBY, pCaster->GetGUID());
-	pCaster->SetUInt64Value(PLAYER_FARSIGHT, m_target->GetGUID());
-	pCaster->m_CurrentCharm = TO_CREATURE(m_target);
-	m_target->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
-	pCaster->m_noInterrupt = 1;
-	pCaster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-
-	WorldPacket data(SMSG_DEATH_NOTIFY_OBSOLETE);
-	data << m_target->GetNewGUID() << uint8(1);
-	pCaster->GetSession()->SendPacket(&data);
-	*/
-
-	/*
-	CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_spellInfo->EffectMiscValue[i]);
-	if( ci)
-	{
-		Creature* NewSummon = m_caster->GetMapMgr()->CreateCreature();
-		// Create
-		NewSummon->SetInstanceID(m_caster->GetInstanceID());
-		NewSummon->Create( ci->Name, m_caster->GetMapId(), 
-			m_caster->GetPositionX()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionY()+(3*(cos((float(M_PI)/2)+m_caster->GetOrientation()))), m_caster->GetPositionZ(), m_caster->GetOrientation());
-
-		// Fields
-		NewSummon->SetUInt32Value(UNIT_FIELD_LEVEL,m_caster->GetUInt32Value(UNIT_FIELD_LEVEL));
-		NewSummon->SetUInt32Value(UNIT_FIELD_DISPLAYID,  ci->Male_DisplayID);
-		NewSummon->SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID);
-		NewSummon->SetUInt64Value(UNIT_FIELD_SUMMONEDBY, m_caster->GetGUID());
-		NewSummon->SetUInt64Value(UNIT_FIELD_CREATEDBY, m_caster->GetGUID());
-		NewSummon->SetUInt32Value(UNIT_FIELD_HEALTH , 100);
-		NewSummon->SetUInt32Value(UNIT_FIELD_MAXHEALTH , 100);
-		NewSummon->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, 35);
-		NewSummon->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0f);
-		NewSummon->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_9 | UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
-
-		//Setting faction
-		NewSummon->_setFaction();
-		NewSummon->m_temp_summon=true;
-
-		// Add To World
-		NewSummon->PushToWorld(m_caster->GetMapMgr());
-		
-		// Force an update on the player to create this guid.
-		p_caster->ProcessPendingUpdates();
-
-		//p_caster->SetUInt64Value(UNIT_FIELD_SUMMON, NewSummon->GetGUID());
-		//p_caster->SetUInt64Value(PLAYER_FARSIGHT, NewSummon->GetGUID());
-		//p_caster->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
-		p_caster->Possess(NewSummon);
-	}*/
 }
 
 void Spell::SpellEffectUseGlyph(uint32 i)
@@ -6039,7 +5985,7 @@ void Spell::SummonTotem(uint32 i) // Summon Totem
 	// Set up the creature.
 	pTotem->SetUInt32Value(OBJECT_FIELD_ENTRY, entry);
 	pTotem->SetFloatValue(OBJECT_FIELD_SCALE_X, 1.0f);
-	pTotem->SetUInt64Value(UNIT_FIELD_CREATEDBY, p_caster->GetGUID());
+	pTotem->SetCreatedByGUID(p_caster->GetGUID());
 	pTotem->SetUInt32Value(UNIT_FIELD_HEALTH, damage > 1 ? damage: 5 );
 	pTotem->SetUInt32Value(UNIT_FIELD_MAXHEALTH, damage > 1 ? damage: 5);
 	pTotem->SetUInt32Value(UNIT_FIELD_POWER3, p_caster->getLevel() * 30);

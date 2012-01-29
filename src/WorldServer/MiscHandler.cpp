@@ -871,7 +871,7 @@ void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 	uint64 guid;
 	recv_data >> guid;
 
-	_player->SetUInt64Value(UNIT_FIELD_TARGET, guid);
+	_player->SetTargetGUID(guid);
 	_player->SetSelection(guid);
 
 	if(_player->m_comboPoints)
@@ -1358,7 +1358,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				if(!obj->m_ritualmembers[i])
 				{
 					obj->m_ritualmembers[i] = plyr->GetLowGUID();
-					plyr->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, obj->GetGUID());
+					plyr->SetChannelSpellTargetGUID(obj->GetGUID());
 					plyr->SetUInt32Value(UNIT_CHANNEL_SPELL, obj->m_ritualspell);
 					break;
 				}else if(obj->m_ritualmembers[i] == plyr->GetLowGUID()) 
@@ -1366,7 +1366,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					// we're deselecting :(
 					obj->m_ritualmembers[i] = 0;
 					plyr->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);
-					plyr->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
+					plyr->SetChannelSpellTargetGUID(0);
 					return;
 				}
 			}
@@ -1380,7 +1380,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
 					if(plr!=NULL)
 					{
-						plr->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
+						plr->SetChannelSpellTargetGUID(0);
 						plr->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);
 					}
 				}
@@ -1534,7 +1534,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 
 			/* member one: the (w00t) caster */
 			pGo->m_ritualmembers[0] = _player->GetLowGUID();
-			_player->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, pGo->GetGUID());
+			_player->SetChannelSpellTargetGUID(pGo->GetGUID());
 			_player->SetUInt32Value(UNIT_CHANNEL_SPELL, pGo->m_ritualspell);
 			
 			/* expire after 2mins*/

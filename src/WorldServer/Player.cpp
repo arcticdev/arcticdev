@@ -5666,7 +5666,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			m_tempSummon->SafeDelete();
 
 		m_tempSummon = NULL;
-		SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+		SetSummonedUnitGUID(0);
 	}
 
 	m_visibleObjects.erase(pObj);
@@ -9741,11 +9741,11 @@ void Player::Possess(Unit* pTarget)
 	}
 
 	m_noInterrupt++;
-	SetUInt64Value(UNIT_FIELD_CHARM, pTarget->GetGUID());
+	SetCharmedUnitGUID(pTarget->GetGUID());
 	SetUInt64Value(PLAYER_FARSIGHT, pTarget->GetGUID());
 	pTarget->GetMapMgr()->ChangeFarsightLocation(TO_PLAYER(this), pTarget, true);
 
-	pTarget->SetUInt64Value(UNIT_FIELD_CHARMEDBY, GetGUID());
+	pTarget->SetCharmedByGUID(GetGUID());
 	pTarget->SetCharmTempVal(pTarget->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	pTarget->SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 	pTarget->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
@@ -9826,8 +9826,8 @@ void Player::UnPossess()
 	m_noInterrupt--;
 	SetUInt64Value(PLAYER_FARSIGHT, 0);
 	pTarget->GetMapMgr()->ChangeFarsightLocation(TO_PLAYER(this), pTarget, false);
-	SetUInt64Value(UNIT_FIELD_CHARM, 0);
-	pTarget->SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+	SetCharmedUnitGUID(0);
+	pTarget->SetCharmedByGUID(0);
 
 	RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER);
 	pTarget->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);

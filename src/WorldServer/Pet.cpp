@@ -119,8 +119,8 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,  ci->Male_DisplayID);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID);
-	SetUInt64Value(UNIT_FIELD_SUMMONEDBY, owner->GetGUID());
-	SetUInt64Value(UNIT_FIELD_CREATEDBY, owner->GetGUID());
+	SetSummonedByGUID(owner->GetGUID());
+	SetCreatedByGUID(owner->GetGUID());
 	
 	if(type & 0x1 && created_by_spell != NULL)
 		SetUInt64Value(UNIT_CREATED_BY_SPELL, created_by_spell->Id);
@@ -539,7 +539,7 @@ void Pet::InitializeMe(bool first)
 
 	SetCreatureName(CreatureNameStorage.LookupEntry(GetEntry()));
 	proto=CreatureProtoStorage.LookupEntry(GetEntry());
-	m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, GetGUID());
+	m_Owner->SetSummonedUnitGUID(GetGUID());
 	SetUInt32Value(UNIT_FIELD_PETNUMBER, GetUIdFromGUID());
 	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
@@ -707,7 +707,7 @@ void Pet::Remove(bool bSafeDelete, bool bUpdate, bool bSetOffline)
 	if(m_Owner)
 	{
 		// remove association with player
-		m_Owner->SetUInt64Value(UNIT_FIELD_SUMMON, 0);
+		m_Owner->SetSummonedUnitGUID(0);
 
 		if(bUpdate) 
 		{

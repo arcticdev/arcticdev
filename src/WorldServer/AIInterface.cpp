@@ -191,10 +191,10 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					if( cr->m_spawn && ( cr->m_spawn->channel_target_go || cr->m_spawn->channel_target_creature))
 					{
 						m_Unit->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);
-						m_Unit->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, 0);
+						m_Unit->SetChannelSpellTargetGUID(0);
 					}
 				}
-				
+
 				// Stop the emote
 				m_Unit->SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
 				m_returnX = m_Unit->GetPositionX();
@@ -213,7 +213,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				firstLeaveCombat = true;
 
 				if(pUnit->GetInstanceID() == m_Unit->GetInstanceID())
-					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, pUnit->GetGUID());
+					m_Unit->SetTargetGUID(pUnit->GetGUID());
 
 				CALL_SCRIPT_EVENT(m_Unit, OnCombatStart)(pUnit);
 
@@ -1427,7 +1427,7 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 			float healthPercent = float(cur) / float(max);
 			if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 			{
-				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+				m_Unit->SetTargetGUID(0);
 				return m_Unit;
 			}
 			for(AssistTargetSet::iterator i = m_assistTargets.begin(); i != m_assistTargets.end(); i++)
@@ -1441,14 +1441,14 @@ Unit* AIInterface::FindTargetForSpell(AI_Spell *sp)
 				healthPercent = float(cur) / float(max);
 				if(healthPercent <= sp->floatMisc1) // Heal ourselves cause we got too low HP
 				{
-					m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, (*i)->GetGUID());
+					m_Unit->SetTargetGUID((*i)->GetGUID());
 					return (*i); // heal Assist Target which has low HP
 				}
 			}
 		}
 		if(sp->spellType == STYPE_BUFF)
 		{
-			m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+			m_Unit->SetTargetGUID(0);
 			return m_Unit;
 		}
 	}
@@ -1469,7 +1469,7 @@ Unit* AIInterface::FindHealTargetForSpell(AI_Spell *sp)
 		if(healthPercent <= sp->floatMisc1 && !m_Unit->HasActiveAura(sp->spell->Id,m_Unit->GetGUID())) // Heal ourselves cause we got too low HP
 		{
 			sp->spelltargetType = TTYPE_CASTER;
-			m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+			m_Unit->SetTargetGUID(0);
 			return m_Unit;
 		}
 		for(AssistTargetSet::iterator i = m_assistTargets.begin(); i != m_assistTargets.end(); ++i)
@@ -1483,7 +1483,7 @@ Unit* AIInterface::FindHealTargetForSpell(AI_Spell *sp)
 			if(healthPercent <= sp->floatMisc1 && !(*i)->HasActiveAura(sp->spell->Id,m_Unit->GetGUID()))
 			{
 				sp->spelltargetType = TTYPE_SINGLETARGET;
-				m_Unit->SetUInt64Value(UNIT_FIELD_TARGET, (*i)->GetGUID());
+				m_Unit->SetTargetGUID((*i)->GetGUID());
 				return (*i); // heal Assist Target which has low HP
 			}
 		}

@@ -1348,29 +1348,29 @@ void Spell::cast(bool check)
 				{
 					//Use channel interrupt flags here
 					if(m_targets.m_targetMask == TARGET_FLAG_DEST_LOCATION || m_targets.m_targetMask == TARGET_FLAG_SOURCE_LOCATION)
-						u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSelection());					
+						u_caster->SetChannelSpellTargetGUID(p_caster->GetSelection());					
 					else if(p_caster->GetSelection() == m_caster->GetGUID())
 					{
 						if(p_caster->GetSummon())
-							u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSummon()->GetGUID());
+							u_caster->SetChannelSpellTargetGUID(p_caster->GetSummon()->GetGUID());
 						else if(m_targets.m_unitTarget)
-							u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, m_targets.m_unitTarget);
+							u_caster->SetChannelSpellTargetGUID(m_targets.m_unitTarget);
 						else
-							u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSelection());
+							u_caster->SetChannelSpellTargetGUID(p_caster->GetSelection());
 					}
 					else
 					{
 						if(p_caster->GetSelection())
 						{
 							if( m_spellInfo->Id == 60931 )
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetGUID());
+								u_caster->SetChannelSpellTargetGUID(p_caster->GetGUID());
 							else
-								u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSelection());
+								u_caster->SetChannelSpellTargetGUID(p_caster->GetSelection());
 						}
 						else if(p_caster->GetSummon())
-							u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, p_caster->GetSummon()->GetGUID());
+							u_caster->SetChannelSpellTargetGUID(p_caster->GetSummon()->GetGUID());
 						else if(m_targets.m_unitTarget)
-							u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, m_targets.m_unitTarget);
+							u_caster->SetChannelSpellTargetGUID(m_targets.m_unitTarget);
 						else
 						{
 							m_isCasting = false;
@@ -2359,7 +2359,7 @@ void Spell::SendChannelUpdate(uint32 time)
 			p_caster->GetMapMgr()->ChangeFarsightLocation(p_caster, p_caster->GetPositionX(), p_caster->GetPositionY(), false);
 		}
 
-		u_caster->SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT,0);
+		u_caster->SetChannelSpellTargetGUID(0);
 		u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,0);
 	}
 
