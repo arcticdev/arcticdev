@@ -163,6 +163,7 @@ WorldServer_SOURCES = \
     Unit.h \
     UpdateFields.h \
     UpdateMask.h \
+	VehicleHandler.cpp \
     Vehicle.h \
     Vehicle.cpp \
     WarsongGulch.cpp \

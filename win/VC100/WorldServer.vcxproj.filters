@@ -456,6 +456,9 @@
     <ClCompile Include="..\..\src\WorldServer\StdAfx.cpp">
       <Filter>PreCompiled</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\VehicleHandler.cpp">
+      <Filter>EventableObject\Object\Unit\Creature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\WorldServer\Packets.h" />

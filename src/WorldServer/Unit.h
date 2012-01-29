@@ -1281,6 +1281,8 @@ public:
 	void SetChannelSpellTargetGUID(uint64 GUID) { SetUInt64Value(UNIT_FIELD_CHANNEL_OBJECT, GUID); }
 	void SetTargetGUID(uint64 GUID) { SetUInt64Value(UNIT_FIELD_TARGET, GUID); }
 
+	uint64 GetCharmedUnitGUID() { return GetUInt64Value(UNIT_FIELD_CHARM); }
+
 	/************************************************************************/
 	/* Unit properties end                                                  */
 	/************************************************************************/

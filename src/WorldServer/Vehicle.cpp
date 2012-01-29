@@ -371,7 +371,7 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 
 		//Reset the current charm field
 		pPassenger->SetUInt64Value( UNIT_FIELD_CHARM, 0 );
-		SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
+		SetCharmedByGUID(0);
 
 		//Set the faction back to the vehicles
 		//original faction
@@ -531,10 +531,10 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 			pPlayer->GetSession()->SendPacket(&data);
 
 			pPlayer->m_CurrentCharm = this;
-			pPlayer->SetUInt64Value(UNIT_FIELD_CHARM, GetGUID());
+			pPlayer->SetCharmedUnitGUID(GetGUID());
 			SetCharmTempVal(GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
 			SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, pPlayer->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE));
-			SetUInt64Value(UNIT_FIELD_CHARMEDBY, pPlayer->GetGUID());
+			SetCharmedByGUID(pPlayer->GetGUID());
 			SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED_CREATURE);
 
 			/* update target faction set */
@@ -687,52 +687,3 @@ void Vehicle::SendMsgMoveTeleportAck( WorldPacket &data, Player* plr )
 	data << uint32(0);
 	plr->GetSession()->SendPacket(&data);
 }
-
-void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
-{
-	if(GetPlayer() == NULL || GetPlayer()->m_CurrentVehicle == NULL)
-		return;
-
-	HandleMovementOpcodes(recv_data);
-	GetPlayer()->m_CurrentVehicle->RemovePassenger(GetPlayer()); 
-}
-
-void WorldSession::HandleSpellClick( WorldPacket & recv_data )
-{
-
-	if(GetPlayer() == NULL || GetPlayer()->m_CurrentVehicle || GetPlayer()->GetMapMgr() == NULL)
-		return;
-
-	CHECK_PACKET_SIZE(recv_data, 8);
-
-	uint64 guid = 0;
-	recv_data >> guid;
-
-	Vehicle* pVehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
-	if(!pVehicle)
-		return;
-
-	if(pVehicle->HasPassenger(_player))
-		pVehicle->RemovePassenger(_player);
-	pVehicle->AddPassenger(_player);
-}
-
-void WorldSession::HandleBoardPlayerVehicleOpcode(WorldPacket &recv_data)
-{
-}
-
-void WorldSession::HandleEjectPassengerOpcode(WorldPacket &recv_data)
-{
-	CHECK_INWORLD_RETURN;
-	CHECK_PACKET_SIZE(recv_data, 2);
-
-	uint64 guid;
-	
-	recv_data >> guid;
-
-	Unit* pPlayer = TO_UNIT(GetPlayer());
-	Unit* pUnit = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
-
-	pPlayer->m_CurrentVehicle->RemovePassenger(pPlayer);
-}
-

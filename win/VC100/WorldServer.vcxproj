@@ -381,6 +381,7 @@
     <ClCompile Include="..\..\src\WorldServer\TradeHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TransporterHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Unit.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\VehicleHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Vehicle.cpp" />
     <ClCompile Include="..\..\src\WorldServer\WarsongGulch.cpp" />
     <ClCompile Include="..\..\src\WorldServer\WayPoints.cpp" />

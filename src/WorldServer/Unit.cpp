@@ -5024,7 +5024,7 @@ void Unit::OnRemoveInRangeObject(Object* pObj)
 		Unit* pUnit = TO_UNIT(pObj);
 		GetAIInterface()->CheckTarget(pUnit);
 
-		if(GetUInt64Value(UNIT_FIELD_CHARM) == pObj->GetGUID())
+		if(GetCharmedUnitGUID() == pObj->GetGUID())
 			if(m_currentSpell)
 				m_currentSpell->cancel();
 
