@@ -5,8 +5,8 @@
  */
 
 #ifdef CLUSTERING
-#ifndef _WORKERSERVER_CLIENT_H
-#define _WORKERSERVER_CLIENT_H
+
+#pragma once
 
 class WSClient : public Socket
 {
@@ -23,5 +23,4 @@ public:
 	void OnDisconnect();
 };
 
-#endif
 #endif

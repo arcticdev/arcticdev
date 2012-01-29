@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __UPDATEMASK_H
-#define __UPDATEMASK_H
+#pragma once
 
 class UpdateMask
 {
@@ -123,6 +122,3 @@ public:
 		return newmask;
 	}
 };
-
-#endif
-

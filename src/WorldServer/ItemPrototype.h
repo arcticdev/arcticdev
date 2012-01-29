@@ -4,8 +4,8 @@
  * See COPYING for license details.
  */
 
-#ifndef _ITEMPROTOTYPE_H
-#define _ITEMPROTOTYPE_H
+#pragma once
+
 class Spell;
 
 #define GEM_META_SOCKET 1
@@ -713,5 +713,3 @@ typedef struct {
 	//Spell* spell[8];
 }ItemSet;
 #pragma pack(pop)
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _DAYWATCHERTHREAD_
-#define _DAYWATCHERTHREAD_
+#pragma once
 
 enum DAYWATCHERSETTINGS
 {
@@ -88,5 +87,3 @@ public:
 	uint8 eventToDespawn;
 };
 #define sDayWatcher DayWatcherThread::getSingleton()
-
-#endif

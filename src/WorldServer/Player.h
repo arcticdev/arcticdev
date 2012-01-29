@@ -4,8 +4,8 @@
  * See COPYING for license details.
  */
 
-#ifndef _PLAYER_H
-#define _PLAYER_H
+#pragma once
+
 struct BGScore;
 class Channel;
 class Creature;
@@ -2289,7 +2289,5 @@ public:
 };
 
 extern CMovementCompressorThread * MovementCompressor;
-
-#endif
 
 #endif

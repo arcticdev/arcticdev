@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_CORPSE_H
-#define WOWSERVER_CORPSE_H
+#pragma once
 
 enum CORPSE_STATE
 {
@@ -67,6 +66,3 @@ private:
 	uint32 _fields[CORPSE_END];
 	bool _loadedfromdb;
 };
-
-#endif
-

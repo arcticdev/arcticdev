@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_CREATURE_H
-#define WOWSERVER_CREATURE_H
+#pragma once
 
 class CreatureTemplate;
 class GossipScript;
@@ -645,5 +644,3 @@ public:
 	// used by bgs
 	bool m_noDeleteAfterDespawn;
 };
-
-#endif

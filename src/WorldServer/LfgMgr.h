@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 enum LFGTypes 
 {
 	LFG_NONE                 = 0,

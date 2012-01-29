@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __ARENATEAMS_H
-#define __ARENATEAMS_H
+#pragma once
 
 struct ArenaTeamMember
 {
@@ -98,5 +97,3 @@ public:
 		return 2;
 	}
 };
-
-#endif		// __ARENATEAMS_H

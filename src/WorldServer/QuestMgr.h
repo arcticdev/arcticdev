@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __QUESTMGR_H
-#define __QUESTMGR_H
+#pragma once
 
 enum RepeatableTypes
 {
@@ -154,5 +153,3 @@ template<> ARCTIC_INLINE HM_NAMESPACE::hash_map<uint32, list<QuestRelation *>* >
 
 
 #define sQuestMgr QuestMgr::getSingleton()
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _CONTAINER_H
-#define _CONTAINER_H
+#pragma once
 
 class SERVER_DECL Container : public Item
 {
@@ -42,5 +41,3 @@ protected:
 	Item* m_Slot[72];
 	uint32 __fields[CONTAINER_END];
 };
-
-#endif

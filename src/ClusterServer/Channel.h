@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __CHANNEL_H
-#define __CHANNEL_H
+#pragma once
 
 using namespace std;
 
@@ -173,5 +172,3 @@ public:
 	ARCTIC_INLINE RPlayerInfo* Grab() { return m_itr->first; }
 	ARCTIC_INLINE bool End() { return (m_itr==m_endItr)?true:false; }
 };
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __AUCTIONMGR_H
-#define __AUCTIONMGR_H
+#pragma once
 
 class AuctionHouse;
 class AuctionMgr : public Singleton <AuctionMgr>
@@ -49,5 +48,3 @@ private:
 };
 
 #define sAuctionMgr AuctionMgr::getSingleton()
-
-#endif

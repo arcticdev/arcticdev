@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __MISCHANDLER_H
-#define __MISCHANDLER_H
+#pragma once
 
 #pragma pack(push,1)
 struct GraveyardTeleport
@@ -21,6 +20,3 @@ struct GraveyardTeleport
     uint32 FactionID;
 };
 #pragma pack(pop)
-
-#endif
-

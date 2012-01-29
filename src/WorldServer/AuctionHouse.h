@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef AUCTIONHOUSE_H
-#define AUCTIONHOUSE_H
+#pragma once
 
 enum AuctionRemoveType
 {
@@ -100,5 +99,3 @@ public:
 	float cut_percent;
 	float deposit_percent;
 };
-#endif
-

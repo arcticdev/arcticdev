@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef LOGONSERVER_MAIN
-#define LOGONSERVER_MAIN
+#pragma once
 
 #include "../libs/Singleton.h"
 
@@ -37,5 +36,3 @@ public:
 private:
 	bool m_stopEvent;
 };
-
-#endif	// LOGONSERVER_MAIN

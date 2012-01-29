@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _TIOC_H
-#define _TIOC_H
+#pragma once
 
 enum IOCControlPoints
 {
@@ -173,5 +172,3 @@ enum GENERAL_IOC_DEFINES
 	IOC_DESTROYABLE_AREAS_END			= 16,		// ID at which contested points finish (for loops/ifs)
 	IOC_PER_KILL_HONOR					= 21,
 };
-
-#endif		// _TIOC_H

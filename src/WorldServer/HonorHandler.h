@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef HONORHANDLER_H
-#define HONORHANDLER_H
+#pragma once
 
 class HonorHandler
 {
@@ -17,6 +16,3 @@ public:
 	static int32 CalculateHonorPointsFormula(uint32 AttackerLevel,uint32 VictimLevel);
 	static void UpdateCurrencyItem(Player* pPlayer, uint32 itemid, uint32 amount);
 };
-
-
-#endif

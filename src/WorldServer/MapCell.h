@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __MAP_CELL_H
-#define __MAP_CELL_H
+#pragma once
 
 class Map;
 
@@ -73,5 +72,3 @@ private:
 	uint16 _playerCount;
 	MapMgr* _mapmgr;
 };
-
-#endif

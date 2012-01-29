@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _AUTOPATCHER_H
-#define _AUTOPATCHER_H
+#pragma once
 
 struct Patch
 {
@@ -49,5 +48,3 @@ protected:
 	Mutex m_patchJobLock;
 	list<PatchJob*> m_patchJobs;
 };
-
-#endif

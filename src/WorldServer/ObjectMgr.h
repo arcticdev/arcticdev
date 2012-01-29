@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _OBJECTMGR_H
-#define _OBJECTMGR_H
+#pragma once
 
 ARCTIC_INLINE bool FindXinYString(std::string& x, std::string& y)
 {
@@ -731,5 +730,3 @@ protected:
 };
 
 #define objmgr ObjectMgr::getSingleton()
-
-#endif // _OBJECTMGR_H

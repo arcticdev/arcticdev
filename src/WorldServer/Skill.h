@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef SKILL_H
-#define SKILL_H
+#pragma once
 
 #define SKILL_FROST                     6
 #define SKILL_FIRE                      8
@@ -187,5 +186,3 @@ typedef struct
 } ItemProf;
 
 const ItemProf* GetProficiencyBySkill(uint32 skill);
-
-#endif

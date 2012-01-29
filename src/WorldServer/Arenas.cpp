@@ -14,7 +14,8 @@ Arena::Arena( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 {
 	int i;
 
-	for (i=0; i<2; i++) {
+	for (i = 0; i < 2; i++)
+	{
 		m_players[i].clear();
 		m_pendPlayers[i].clear();
 	}
@@ -27,19 +28,19 @@ Arena::Arena( MapMgr* mgr, uint32 id, uint32 lgroup, uint32 t, uint32 players_pe
 	switch(t)
 	{
 	case BATTLEGROUND_ARENA_5V5:
-		m_arenateamtype=2;
+		m_arenateamtype = 2;
 		break;
 
 	case BATTLEGROUND_ARENA_3V3:
-		m_arenateamtype=1;
+		m_arenateamtype = 1;
 		break;
 		
 	case BATTLEGROUND_ARENA_2V2:
-		m_arenateamtype=0;
+		m_arenateamtype = 0;
 		break;
 
 	default:
-		m_arenateamtype=0;
+		m_arenateamtype = 0;
 		break;
 	}
 	rated_match=false;
@@ -88,7 +89,7 @@ void Arena::OnAddPlayer(Player* plr)
 		return;
 
 	// remove all buffs (exclude talents, include flasks)
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(plr->m_auras[x])
 		{
@@ -181,13 +182,17 @@ void Arena::OnCreate()
 	case 572:
 		{
 			obj = SpawnGameObject(185917, 1278.647705f, 1730.556641f, 31.605574f, 1.68f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
+			obj->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+			obj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 4294901760);
+			obj->SetUInt32Value(GAMEOBJECT_FACTION, 1375);
+			obj->SetUInt32Value(GAMEOBJECT_BYTES_1, 4278190081);
 			m_gates.insert(obj);
 
 			obj = SpawnGameObject(185918, 1293.560791f, 1601.937988f, 31.605574f, 4.86f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
+			obj->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+			obj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 4294901760);
+			obj->SetUInt32Value(GAMEOBJECT_FACTION, 1375);
+			obj->SetUInt32Value(GAMEOBJECT_BYTES_1, 4278190081);
 			m_gates.insert(obj);
 
 			m_pcWorldStates[GREEN_TEAM] = WORLDSTATE_ARENA_LORDAERON_GREEN_PLAYER_COUNT;
@@ -199,23 +204,23 @@ void Arena::OnCreate()
 	case 562:
 		{
 			obj = SpawnGameObject(183972, 6177.707520f, 227.348145f, 3.604374f, -2.260201f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 			obj->PushToWorld(m_mapMgr);
 
 			obj = SpawnGameObject(183973, 6189.546387f, 241.709854f, 3.101481f, 0.881392f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
+			obj->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+			obj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 4294901760);
+			obj->SetUInt32Value(GAMEOBJECT_FACTION, 1375);
+			obj->SetUInt32Value(GAMEOBJECT_BYTES_1, 4278190081);
 			m_gates.insert(obj);
 
 			obj = SpawnGameObject(183970, 6299.115723f, 296.549438f, 3.308032f, 0.881392f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 			obj->PushToWorld(m_mapMgr);
 
 			obj = SpawnGameObject(183971, 6287.276855f, 282.187714f, 3.810925f, -2.260201f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
+			obj->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+			obj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 4294901760);
+			obj->SetUInt32Value(GAMEOBJECT_FACTION, 1375);
+			obj->SetUInt32Value(GAMEOBJECT_BYTES_1, 4278190081);
 			m_gates.insert(obj);
 
 			m_pcWorldStates[GREEN_TEAM] = WORLDSTATE_ARENA_BLADESEDGE_GREEN_PLAYER_COUNT;
@@ -227,23 +232,23 @@ void Arena::OnCreate()
 	case 559:
 		{
 			obj = SpawnGameObject(183979, 4090.064453f, 2858.437744f, 10.236313f, 0.492805f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
+			obj->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+			obj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 4294901760);
+			obj->SetUInt32Value(GAMEOBJECT_FACTION, 1375);
+			obj->SetUInt32Value(GAMEOBJECT_BYTES_1, 4278190081);
 			obj->PushToWorld(m_mapMgr);
 
 			obj = SpawnGameObject(183980, 4081.178955f, 2874.970459f, 12.391714f, 0.492805f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
+			obj->SetUInt32Value(GAMEOBJECT_FLAGS, 32);
+			obj->SetUInt32Value(GAMEOBJECT_DYNAMIC, 4294901760);
+			obj->SetUInt32Value(GAMEOBJECT_FACTION, 1375);
+			obj->SetUInt32Value(GAMEOBJECT_BYTES_1, 4278190081);
 			m_gates.insert(obj);
 
 			obj = SpawnGameObject(183977, 4023.709473f, 2981.776611f, 10.701169f, -2.648788f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 			obj->PushToWorld(m_mapMgr);
 
 			obj = SpawnGameObject(183978, 4031.854248f, 2966.833496f, 12.646200f, -2.648788f, 32, 1375, 1.0f);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
-			obj->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 			m_gates.insert(obj);
 
 			m_pcWorldStates[GREEN_TEAM] = WORLDSTATE_ARENA_NAGRAND_GREEN_PLAYER_COUNT;
@@ -343,7 +348,7 @@ void Arena::OnCreate()
 	}
 
 	/* push gates into world */
-	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 		(*itr)->PushToWorld(m_mapMgr);
 
 	
@@ -365,14 +370,14 @@ void Arena::OnStart()
 {
 	/* remove arena readyness buff */
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			Player* plr = *itr;
 			plr->RemoveAura(ARENA_PREPARATION);
 		}
 	}
 
 	/* open gates */
-	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(set< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -387,7 +392,7 @@ void Arena::OnStart()
 	PlaySoundToAll(SOUND_BATTLEGROUND_BEGIN);
 
 	sEventMgr.RemoveEvents(this, EVENT_ARENA_SHADOW_SIGHT);
-	sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::HookOnShadowSight, EVENT_ARENA_SHADOW_SIGHT, 90000, 1,0);
+	sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::HookOnShadowSight, EVENT_ARENA_SHADOW_SIGHT, 90000, 1, 0);
 }
 
 void Arena::UpdatePlayerCounts()
@@ -459,7 +464,7 @@ void Arena::Finish()
 			teams[i]->m_stat_rating += m_deltaRating[i];
 			if ((int32)teams[i]->m_stat_rating < 0) teams[i]->m_stat_rating = 0;
 
-			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); itr++)
+			for(set<uint32>::iterator itr = m_players2[i].begin(); itr != m_players2[i].end(); ++itr)
 			{
 				PlayerInfo * info = objmgr.GetPlayerInfo(*itr);
 				if (info)
@@ -581,34 +586,39 @@ LocationVector Arena::GetStartingCoords(uint32 Team)
 		}break;
 	}
 
-	return LocationVector(0,0,0,0);
+	return LocationVector(0, 0, 0, 0);
 }
 
 bool Arena::HookHandleRepop(Player* plr)
 {
-	LocationVector dest(0,0,0,0);
+	LocationVector dest(0, 0, 0, 0);
 	switch(m_mapMgr->GetMapId())
 	{
 		/* loraedeon */
-	case 572: {
+	case 572:
+		{
 			dest.ChangeCoords(1286.112061f, 1668.334961f, 39.289127f);
 		}break;
 
 		/* blades edge arena */
-	case 562: {
+	case 562:
+		{
 			dest.ChangeCoords(6241.171875f, 261.067322f, 0.891833f);
 		}break;
 
 		/* nagrand arena */
-	case 559: {
+	case 559:
+		{
 			dest.ChangeCoords(4057.042725f, 2918.686523f, 13.051933f);
 		}break;
 		/* Dalaran Sewers */
-	case 617: {
+	case 617:
+		{
 			dest.ChangeCoords(1292.51f, 792.05f, 9.34f);
 		}break;
 		/* The Ring of Valor */
-	case 618: {
+	case 618:
+		{
 			dest.ChangeCoords(762.91f, -284.28f, 28.28f);
 		}break;
 	}

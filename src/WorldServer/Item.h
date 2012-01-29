@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_ITEM_H
-#define WOWSERVER_ITEM_H
+#pragma once
 
 #include "Skill.h"
 
@@ -267,5 +266,3 @@ uint32 GetBuyPriceForItem( ItemPrototype* proto, uint32 count, Player* plr, Crea
 
 uint32 GetSellPriceForItem( uint32 itemid, uint32 count);
 uint32 GetBuyPriceForItem( uint32 itemid, uint32 count, Player* plr, Creature* vendor );
-
-#endif

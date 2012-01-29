@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WORLDSESSION_H
-#define __WORLDSESSION_H
+#pragma once
 
 #ifdef CLUSTERING
 #include "../ClusterServer/Structures.h"
@@ -813,5 +812,3 @@ protected:
 };
 
 typedef std::set<WorldSession*> SessionSet;
-
-#endif

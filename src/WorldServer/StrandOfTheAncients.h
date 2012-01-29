@@ -4,10 +4,10 @@
  * See COPYING for license details.
  */
 
-#ifndef _SOTA_H
-#define _SOTA_H
+#pragma once
 
-static const float SOTAStartLocations[2][3] = {
+static const float SOTAStartLocations[2][3] =
+{
 	{ 1601.004395f, -105.182663f, 8.873691f }, //attackers
 	{ 922.102234f, -111.102646f, 97.178421f }, //defenders
 };
@@ -54,5 +54,3 @@ protected:
 	uint32 BattleRound;
 	uint32 RoundTime;
 };
-
-#endif		// _SOTA_H

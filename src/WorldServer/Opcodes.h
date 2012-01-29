@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _OPCODES_H
-#define _OPCODES_H
+#pragma once
 
 // Updated for 3.3.5a
 
@@ -1354,7 +1353,8 @@ enum FriendsResult {
 	FRIEND_IGNORE_REMOVED		= 0x10
 };
 
-enum NPCFlags {
+enum NPCFlags
+{
 	//										Hex				Decimal			Bit		Comments
 	UNIT_NPC_FLAG_NONE                  = 0x00000000,		//0				01		100% The NPC nothink to do anythink
 	UNIT_NPC_FLAG_GOSSIP                = 0x00000001,		//1				02		100%
@@ -1387,7 +1387,8 @@ enum NPCFlags {
 	UNIT_NPC_FLAG_OUTDOORPVP            = 0x20000000,       //536870912		29		custom flag for outdoor pvp creatures
 };
 
-enum GossipIcons {
+enum GossipIcons
+{
 	GOSSIP_ICON_GOSSIP_NORMAL		= 0,
 	GOSSIP_ICON_GOSSIP_VENDOR		= 1,
 	GOSSIP_ICON_GOSSIP_FLIGHT		= 2,
@@ -1400,10 +1401,3 @@ enum GossipIcons {
 	GOSSIP_ICON_GOSSIP_ARENA		= 9,
 	GOSSIP_ICON_GOSSIP_COIN			= 9,
 };
-
-//enum FieldFlags {
-//	0x00000008	== can't climb slopes too steep
-//	0x40000000	== sheathed
-//};
-
-#endif

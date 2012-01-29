@@ -1329,7 +1329,6 @@ void ObjectMgr::CorpseCollectorUnload()
 
 GossipMenu::GossipMenu(uint64 Creature_Guid, uint32 Text_Id) : TextId(Text_Id), CreatureGuid(Creature_Guid)
 {
-
 }
 
 void GossipMenu::AddItem(uint8 Icon, const char* Text, int32 Id, bool Coded, uint32 BoxMoney, const char* BoxMessage)

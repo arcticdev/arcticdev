@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _GROUP_H_
-#define _GROUP_H_
+#pragma once
 
 enum PartyErrors
 {
@@ -225,5 +224,3 @@ public:
 	uint8 m_prayerOfMendingCount;
 	uint32 m_prayerOfMendingTarget;
 };
-
-#endif  // _GROUP_H_

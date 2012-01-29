@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __STATS_H
-#define __STATS_H
+#pragma once
 
 #include "Unit.h"
 #include "UpdateMask.h"
@@ -37,5 +36,3 @@ SERVER_DECL uint32 CalculateStat(uint16 level,double a3, double a2, double a1, d
 SERVER_DECL uint32 CalculateDamage( Unit* pAttacker, Unit* pVictim, uint32 weapon_damage_type, SpellEntry* ability);
 SERVER_DECL uint32 CalcStatForLevel(uint16 level, uint8 playerclass,uint8 Stat);
 SERVER_DECL bool isEven (int num);
-
-#endif

@@ -942,7 +942,6 @@ AVNode::AVNode( AlteracValley* parent, AVNodeTemplate *tmpl, uint32 nodeid) : m_
 
 AVNode::~AVNode()
 {
-
 }
 
 void AVNode::Assault(Player* plr)

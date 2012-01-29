@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WORLD_STATE_MANAGER_H
-#define __WORLD_STATE_MANAGER_H
+#pragma once
 
 /*
  * World State Manager Class
@@ -99,5 +98,3 @@ public:
 };
 
 #define sWorldStateTemplateManager WorldStateTemplateManager::getSingleton()
-
-#endif			// __WORLD_STATE_MANAGER_H

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WORLDCREATOR_H
-#define __WORLDCREATOR_H
+#pragma once
 
 #ifdef CLUSTERING
 #include "../ClusterServer/Structures.h"
@@ -250,5 +249,3 @@ private:
 };
 
 extern SERVER_DECL InstanceMgr sInstanceMgr;
-
-#endif

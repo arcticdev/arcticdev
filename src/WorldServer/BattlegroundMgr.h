@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __BATTLEGROUNDMGR_H
-#define __BATTLEGROUNDMGR_H
+#pragma once
 
 class CBattleground;
 class MapMgr;
@@ -25,12 +24,12 @@ enum BattleGroundTypes
 	BATTLEGROUND_EYE_OF_THE_STORM = 7,
 	BATTLEGROUND_ARENA = 8,
 	BATTLEGROUND_STRAND_OF_THE_ANCIENTS = 9,
-	BATTLEGROUND_UNK1				= 10,
-	BATTLEGROUND_UNK2				= 11,
+	BATTLEGROUND_UNK1 = 10,
+	BATTLEGROUND_UNK2 = 11,
 	// 12-29 Non Existant
 	BATTLEGROUND_ISLE_OF_CONQUEST = 30,
 	// 31 Non Existant
-	BATTLEGROUND_ALL_BATTLEGROUND				= 32,
+	BATTLEGROUND_ALL_BATTLEGROUND = 32,
 	BATTLEGROUND_NUM_TYPES		= 33,
 };
 
@@ -402,6 +401,3 @@ public:
 };
 
 #define BattlegroundManager CBattlegroundManager::getSingleton( )
-
-	
-#endif

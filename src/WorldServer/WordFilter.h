@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _WORDFILTER_H
-#define _WORDFILTER_H
+#pragma once
 
 struct WordFilterMatch
 {
@@ -35,5 +34,3 @@ public:
 
 extern WordFilter * g_characterNameFilter;
 extern WordFilter * g_chatFilter;
-
-#endif		// _WORDFILTER_H

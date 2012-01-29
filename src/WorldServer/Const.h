@@ -4,10 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __CONST_H__
-#define __CONST_H__
+#pragma once
 
 #define NUM_MAPS 800
 // const unsigned NUM_MAPS = 800;
-
-#endif

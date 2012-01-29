@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _LOOTMGR_H
-#define _LOOTMGR_H
+#pragma once
 
 struct ItemPrototype;
 class MapMgr;
@@ -169,5 +168,3 @@ private:
 };
 
 #define lootmgr LootMgr::getSingleton()
-
-#endif

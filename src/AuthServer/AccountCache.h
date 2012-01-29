@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __ACCOUNTCACHE_H
-#define __ACCOUNTCACHE_H
+#pragma once
 
 #include "Common.h"
 #include "../libs/DataStorage/DatabaseEnv.h"
@@ -232,5 +231,3 @@ public:
 #define sIPBanner IPBanner::getSingleton()
 #define sAccountMgr AccountMgr::getSingleton()
 #define sInfoCore InformationCore::getSingleton()
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _TERRAINMGR_H
-#define _TERRAINMGR_H
+#pragma once
 
 typedef struct
 {
@@ -230,5 +229,3 @@ protected:
 		return true;
 	}
 };
-
-#endif

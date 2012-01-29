@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _MASTER_H
-#define _MASTER_H
+#pragma once
 
 #include "Common.h"
 #include "Config/ConfigEnv.h"
@@ -61,5 +60,3 @@ private:
 };
 
 #define sMaster Master::getSingleton()
-
-#endif

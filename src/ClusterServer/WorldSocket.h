@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef REALMSERVER_WORLDSOCKET_H
-#define REALMSERVER_WORLDSOCKET_H
+#pragma once
 
 #define WORLDSOCKET_SENDBUF_SIZE 131078
 #define WORLDSOCKET_RECVBUF_SIZE 16384
@@ -60,5 +59,3 @@ private:
 
 	Session * m_session;
 };
-
-#endif

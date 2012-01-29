@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _R_MASTER_H
-#define _R_MASTER_H
+#pragma once
 
 #include "Common.h"
 #include "Config/ConfigEnv.h"
@@ -68,5 +67,3 @@ private:
 };
 
 #define sRMaster Master::getSingleton()
-
-#endif

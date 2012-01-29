@@ -4,13 +4,12 @@
  * See COPYING for license details.
  */
 
-#ifndef _MAP_SCRIPT_INTERFACE_H
-#define _MAP_SCRIPT_INTERFACE_H
+#pragma once
 
-/* * Class MapScriptInterface
-   * Provides an interface to mapmgr for scripts, to obtain objects,
-   * get players, etc.
-*/
+/* Class MapScriptInterface
+ * Provides an interface to mapmgr for scripts, to obtain objects,
+ * get players, etc.
+ */
 
 class GameObject;
 class Object;
@@ -89,6 +88,3 @@ public:
 };
 
 #define sStructFactory StructFactory::getSingleton()
-
-#endif
-

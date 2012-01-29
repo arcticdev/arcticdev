@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _ITEMINTERFACE_H
-#define _ITEMINTERFACE_H
+#pragma once
 
 #define INVALID_BACKPACK_SLOT ((uint8)(0xFF)) // In 1.8 client marked wrong slot like this
 
@@ -284,5 +283,3 @@ public:
 	ARCTIC_INLINE Item* Grab() { return m_currentItem; }
 	ARCTIC_INLINE bool End() { return m_atEnd; }
 };
-
-#endif

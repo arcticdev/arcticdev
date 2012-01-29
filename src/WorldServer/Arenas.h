@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 class ArenaTeam;
 struct PlayerInfo;
 

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WEATHERMGR_H
-#define __WEATHERMGR_H
+#pragma once
 
 #define WEATHER_DENSITY_UPDATE 0.05f
 
@@ -57,5 +56,3 @@ protected:
 };
 
 #define sWeatherMgr WeatherMgr::getSingleton()
-
-#endif

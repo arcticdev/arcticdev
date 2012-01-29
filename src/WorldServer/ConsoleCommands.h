@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _CONSOLECOMMANDS_H
-#define _CONSOLECOMMANDS_H
+#pragma once
 
 bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[]);
@@ -27,5 +26,3 @@ bool HandleBackupDBCommand(BaseConsole * pConsole, int argc, const char * argv[]
 bool HandleSaveAllCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleWhisperCommand(BaseConsole * pConsole, int argc, const char * argv[]);
 bool HandleNameHashCommand(BaseConsole * pConsole, int argc, const char * argv[]);
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _MAINSERVER_DEFINES_H
-#define _MAINSERVER_DEFINES_H
+#pragma once
 
 class Database;
 
@@ -14,5 +13,3 @@ SERVER_DECL extern Database* Database_World;
 
 #define WorldDatabase (*Database_World)
 #define CharacterDatabase (*Database_Character)
-
-#endif

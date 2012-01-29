@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __UNIT_H
-#define __UNIT_H
+#pragma once
 
 class AIInterface;
 
@@ -1342,5 +1341,3 @@ protected:
 
 	HM_NAMESPACE::hash_map<uint32, SpellEntry*> m_DummyAuras;
 };
-
-#endif

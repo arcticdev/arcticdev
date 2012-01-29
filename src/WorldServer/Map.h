@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __MAP_H
-#define __MAP_H
+#pragma once
 
 class MapMgr;
 class TemplateMgr;
@@ -212,5 +211,3 @@ private:
 public:
 	CellSpawns staticSpawns;
 };
-
-#endif

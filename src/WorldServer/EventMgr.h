@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __EVENTMGR_H
-#define __EVENTMGR_H
+#pragma once
 
 enum EventTypes
 {
@@ -421,5 +420,3 @@ protected:
 };
 
 #define sEventMgr EventMgr::getSingleton()
-
-#endif

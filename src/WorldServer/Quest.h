@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_QUEST_H
-#define WOWSERVER_QUEST_H
+#pragma once
 
 using namespace std;
 
@@ -18,7 +17,7 @@ enum QUEST_STATUS
 	QMGR_QUEST_REPEATABLE_FINISHED	= 0x06,
 	QMGR_QUEST_REPEATABLE			= 0x07,	// Quest repeatable								| "Blue Question ? Mark" 
 	QMGR_QUEST_AVAILABLE			= 0x08,	// Quest avaiable, and your level is enough		| "Yellow Quotation ! Mark" 
-	QMGR_QUEST_FINISHED_2			= 0x09,  // Quest has been finished                      | "No icon on the minimap"
+	QMGR_QUEST_FINISHED_2			= 0x09,  // Quest has been finished                     | "No icon on the minimap"
 	QMGR_QUEST_FINISHED				= 0x0A,	// Quest has been finished.						| "Yellow Question  ? Mark" (7 has no minimap icon)
 	//QUEST_ITEM_UPDATE				= 0x06	 // Yellow Question "?" Mark. //Unknown
 };
@@ -259,5 +258,3 @@ private:
 	uint32 m_time_left;
 	int32 m_slot;
 };
-
-#endif

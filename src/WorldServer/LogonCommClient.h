@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __LOGON_COMM_CLIENT_H
-#define __LOGON_COMM_CLIENT_H
+#pragma once
 
 #include "../AuthServer/LogonOpcodes.h"
 #include <RC4Engine.h>
@@ -50,6 +49,3 @@ public:
 };
 
 typedef void (LogonCommClientSocket::*logonpacket_handler)(WorldPacket&);
-
-#endif
-

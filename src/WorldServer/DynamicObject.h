@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_DYNAMICOBJECT_H
-#define WOWSERVER_DYNAMICOBJECT_H
+#pragma once
 
 struct SpellEntry;
 
@@ -44,6 +43,3 @@ protected:
 	uint32 _fields[DYNAMICOBJECT_END];
 	FactionRangeList  m_inRangeOppFactions;
 };
-
-#endif
-

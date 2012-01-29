@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __FACTION_H
-#define __FACTION_H
+#pragma once
 
 #include "Unit.h"
 #define NUM_SANCTUARIES 2
@@ -29,5 +28,4 @@ ARCTIC_INLINE bool isSameFaction(Object* objA, Object* objB)
 
 	return (objB->m_faction->Faction == objA->m_faction->Faction);
 }
-ARCTIC_INLINE  Player* GetPlayerFromObject(Object* obj); 
-#endif
+ARCTIC_INLINE  Player* GetPlayerFromObject(Object* obj);

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __CELLHANDLER_H
-#define __CELLHANDLER_H
+#pragma once
 
 #define TilesCount 64
 #define TileSize 533.33333f
@@ -165,5 +164,3 @@ uint32 CellHandler<Class>::GetPosY(float y)
 	return (uint32)((_maxY-y)/_cellSize);
 
 }
-
-#endif

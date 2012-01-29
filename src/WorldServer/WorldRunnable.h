@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WORLDRUNNABLE_H
-#define __WORLDRUNNABLE_H
+#pragma once
 
 class WorldRunnable : public ThreadContext
 {
@@ -13,5 +12,3 @@ public:
 	WorldRunnable();
 	bool run();
 };
-
-#endif

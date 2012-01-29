@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __AREATRIGGERHANDLER_H
-#define __AREATRIGGERHANDLER_H
+#pragma once
 
 enum AreaTriggerType
 {
@@ -34,5 +33,3 @@ typedef struct AreaTrigger
 	uint32 required_level;
 }AreaTrigger;
 #pragma pack(pop)
-
-#endif

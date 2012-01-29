@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __CHANNELMGR_H
-#define __CHANNELMGR_H
+#pragma once
 
 class Channel;
 
@@ -35,5 +34,3 @@ class ChannelMgr :  public Singleton < ChannelMgr >
 };
 
 #define channelmgr ChannelMgr::getSingleton()
-
-#endif

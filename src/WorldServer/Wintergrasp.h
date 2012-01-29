@@ -4,7 +4,4 @@
  * See COPYING for license details.
  */
 
-#ifndef _WINTERGRASP_H
-#define _WINTERGRASP_H
-
-#endif		// _WINTERGRASP_H
+#pragma once

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_GAMEOBJECT_H
-#define WOWSERVER_GAMEOBJECT_H
+#pragma once
 
 class Player;
 class GameObjectAIScript;
@@ -256,5 +255,4 @@ protected:
 
 };
 
-#endif
-
+#pragma once

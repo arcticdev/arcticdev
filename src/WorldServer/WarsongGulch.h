@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #define BUFF_RESPAWN_TIME 90000
 
 class WarsongGulch : public CBattleground

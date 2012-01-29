@@ -4,10 +4,9 @@
  * See COPYING for license details.
  */
 
-#ifndef __LOGONCONSOLE_H
-#define __LOGONCONSOLE_H
+#pragma once
 
-#include "Common.h"
+#include "../libs/Common.h"
 
 class LogonConsoleThread : public ThreadContext
 {
@@ -45,5 +44,3 @@ protected:					// Protected methods:
 };
 
 #define sLogonConsole LogonConsole::getSingleton()
-
-#endif

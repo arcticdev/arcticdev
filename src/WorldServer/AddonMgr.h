@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __ADDONMGR_H
-#define __ADDONMGR_H
+#pragma once
 
 struct AddonEntry
 {
@@ -38,5 +37,3 @@ private:
 };
 
 #define sAddonMgr AddonMgr::getSingleton()
-
-#endif

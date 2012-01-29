@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __STRUCTURES_H
-#define __STRUCTURES_H
+#pragma once
 
 #define CHECK_PACKET_SIZE(pckp, ssize) if(ssize && pckp.size() < ssize) { Disconnect(); return; }
 
@@ -341,5 +340,3 @@ struct MapInfo
 };
 
 #endif //_GAME
-
-#endif //__STRUCTURES_H

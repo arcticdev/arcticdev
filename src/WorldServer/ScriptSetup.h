@@ -5,8 +5,7 @@
  * See COPYING for license details.
  */
 
-#ifndef SCRIPTSETUP_H
-#define SCRIPTSETUP_H
+#pragma once
 
 #ifdef SCRIPTLIB
 
@@ -23,6 +22,3 @@ extern "C" SCRIPT_DECL uint32 _exp_get_version()
 }
 
 #endif
-
-#endif
-

@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #define MAX_SESSIONS_PER_SERVER 1000
 
 struct Instance;

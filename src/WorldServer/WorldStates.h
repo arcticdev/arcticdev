@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WORLD_STATES_H
-#define __WORLD_STATES_H
+#pragma once
 
 //////////////////////////////////////////////////////////////////////////
 // EOTS (Eye Of The Storm) World States                                 //
@@ -460,5 +459,3 @@ enum WINTERGRASP_WORLD_STATES
 	WORLDSTATE_WG_FORTESS_WALL_22								= 3771,
 	WORLDSTATE_WG_FORTESS_WALL_23								= 3772,
 };
-
-#endif		// __WORLD_STATES_H

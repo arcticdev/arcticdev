@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _PET_H
-#define _PET_H
+#pragma once
 
 #define PET_SPELL_SPAM_COOLDOWN 2000 //applied only to spells that have no cooldown
 
@@ -267,4 +266,3 @@ protected:
 #define PET_ACTION_SPELL_1  0x8100
 #define PET_ACTION_SPELL_2  0x0100
 #define PET_SPELL_AUTOCAST_CHANCE 50
-#endif

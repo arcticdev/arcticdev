@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _COLLIDEINTERFACE_H
-#define _COLLIDEINTERFACE_H
+#pragma once
 
 /* imports */
 #define NO_WMO_HEIGHT -100000.0f
@@ -31,5 +30,3 @@ public:
 };
 
 extern SERVER_DECL CCollideInterface CollideInterface;
-
-#endif

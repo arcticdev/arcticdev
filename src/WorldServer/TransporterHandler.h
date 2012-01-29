@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __TRANSPORTERHANDLER_H
-#define __TRANSPORTERHANDLER_H
+#pragma once
 
 class TransportPath
 {
@@ -129,5 +128,3 @@ private:
 
 	WaypointIterator GetNextWaypoint();
 };
-
-#endif

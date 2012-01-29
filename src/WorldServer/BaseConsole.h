@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _BASECONSOLE_H
-#define _BASECONSOLE_H
+#pragma once
 
 #include <Console/BaseConsole.h>
 
@@ -21,6 +20,3 @@ public:
 };
 
 void HandleConsoleInput(BaseConsole * pConsole, const char * szInput);
-
-#endif
-

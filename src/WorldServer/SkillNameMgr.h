@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef SKILL_NAME_MGR_H
-#define SKILL_NAME_MGR_H
+#pragma once
 
 #include "StdAfx.h"
 
@@ -52,5 +51,3 @@ public:
 		delete[] SkillNames;
 	}
 };
-#endif
-

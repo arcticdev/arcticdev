@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __PACKETS_H
-#define __PACKETS_H
+#pragma once
 
 #pragma pack(push, 1)
 
@@ -165,5 +164,3 @@ struct packetSMSG_PLAY_SPELL_VISUAL
 };
 
 #pragma pack(pop)
-
-#endif		// __PACKETS_H

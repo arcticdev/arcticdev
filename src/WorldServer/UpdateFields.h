@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _UPDATEFIELDS_AUTO_H
-#define _UPDATEFIELDS_AUTO_H
+#pragma once
 
 // Auto generated for version 3, 3, 5, 12340
 
@@ -434,5 +433,3 @@ enum ECorpseFields
 #define GAMEOBJECT_ROTATION_03                    GAMEOBJECT_PARENTROTATION + 3
 
 #define PLAYER_VISIBLE_ITEM_LENGTH                (PLAYER_VISIBLE_ITEM_2_ENTRYID - PLAYER_VISIBLE_ITEM_1_ENTRYID)
-
-#endif // __UPDATEFIELDS_H

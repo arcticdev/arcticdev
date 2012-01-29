@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef REALMSERVER_CHAT_H
-#define REALMSERVER_CHAT_H
+#pragma once
 
 class ChatHandler;
 class Session;
@@ -131,4 +130,3 @@ protected:
 
 
 #define sChatHandler ChatHandler::getSingleton()
-#endif

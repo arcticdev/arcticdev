@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _VEHICLE_H
-#define _VEHICLE_H
+#pragma once
 
 enum VehiclePowerType
 {
@@ -79,5 +78,3 @@ protected:
 	uint32 m_vehicleEntry;
 	VehicleSeatEntry * m_vehicleSeats[8];
 };
-
-#endif

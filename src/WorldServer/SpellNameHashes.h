@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _SPELLHASHES_H
-#define _SPELLHASHES_H
+#pragma once
 
 enum SpellNameHashes
 {
@@ -26637,5 +26636,3 @@ enum SpellNameHashes
 	SPELL_HASH__WITHER                                                           = 0x4e0c364e,	//26626
 	SPELL_HASH__WIZARDRY__COLOGNE                                                = 0x96cbab4f,	//26627
 };
-
-#endif		// _SPELLHASHES_H

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef PERIODICFUNCTIONCALL_THREAD_H
-#define PERIODICFUNCTIONCALL_THREAD_H
+#pragma once
 
 #include "../libs/CallBack.h"
 
@@ -93,5 +92,3 @@ private:
 
 #define SpawnPeriodicCallThread(otype, ptr, method, interval) \
 	launch_thread(new PeriodicFunctionCaller<otype>(ptr, method, interval));
-
-#endif

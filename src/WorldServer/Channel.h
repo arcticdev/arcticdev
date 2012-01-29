@@ -5,8 +5,8 @@
  */
 
 #ifndef CLUSTERING
-#ifndef __CHANNEL_H
-#define __CHANNEL_H
+
+#pragma once
 
 using namespace std;
 
@@ -175,5 +175,4 @@ public:
 	ARCTIC_INLINE bool End() { return (m_itr==m_endItr)?true:false; }
 };
 
-#endif //__CHANNEL_H
 #endif //CLUSTERING

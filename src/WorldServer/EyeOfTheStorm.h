@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _EOTS_H
-#define _EOTS_H
+#pragma once
 
 #define EOTS_TOWER_COUNT 4
 #define EOTS_BUFF_RESPAWN_TIME 90000
@@ -79,5 +78,3 @@ protected:
 	uint32 m_points[2];
 	Creature* m_spiritGuides[EOTS_TOWER_COUNT];
 };
-
-#endif		// _EOTS_H

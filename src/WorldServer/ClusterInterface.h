@@ -5,8 +5,8 @@
  */
 
 #ifdef CLUSTERING
-#ifndef _CLUSTERINTERFACE_H
-#define _CLUSTERINTERFACE_H
+
+#pragma once
 
 #define MAX_SESSIONS 3000
 #include "../ClusterServer/Structures.h"
@@ -88,5 +88,4 @@ public:
 
 #define sClusterInterface ClusterInterface::getSingleton()
 
-#endif
 #endif

@@ -4,11 +4,10 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 // Class WorldSocket - Main network code functions, handles
 // reading/writing of all packets.
-
-#ifndef __WORLDSOCKET_H
-#define __WORLDSOCKET_H
 
 /* Normal WorldSocket when not using clustering */
 #ifndef CLUSTERING
@@ -122,5 +121,4 @@ protected:
 	sockaddr_in m_address;
 };
 
-#endif
 #endif

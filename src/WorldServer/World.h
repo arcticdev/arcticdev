@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __WORLD_H
-#define __WORLD_H
+#pragma once
 
 #define IS_INSTANCE(a) (a>1 && a!=530 && a != 571)
 
@@ -648,4 +647,3 @@ public:
 };
 
 #define sWorld World::getSingleton()
-#endif

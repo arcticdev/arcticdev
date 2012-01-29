@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __MAIL_H
-#define __MAIL_H
+#pragma once
 
 enum MailCMD
 {
@@ -127,5 +126,3 @@ public:
 };
 
 #define sMailSystem MailSystem::getSingleton()
-
-#endif

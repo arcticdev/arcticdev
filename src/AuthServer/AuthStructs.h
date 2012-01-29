@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef AUTHSTRUCTS_H
-#define AUTHSTRUCTS_H
+#pragma once
 
 #if __GNUC__ && (GCC_MAJOR < 4 || GCC_MAJOR == 4 && GCC_MINOR < 1)
 #pragma pack(1)
@@ -80,6 +79,4 @@ typedef struct
 #pragma pack()
 #else
 #pragma pack(pop)
-#endif
-
 #endif

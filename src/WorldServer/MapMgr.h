@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __MAPMGR_H
-#define __MAPMGR_H
+#pragma once
 
 class MapCell;
 class Map;
@@ -379,5 +378,3 @@ protected:
 
 	InstanceScript* mInstanceScript;
 };
-
-#endif

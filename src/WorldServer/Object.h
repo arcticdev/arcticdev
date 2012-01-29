@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _OBJECT_H
-#define _OBJECT_H
+#pragma once
 
 #include "LootMgr.h"
 
@@ -665,7 +664,3 @@ public:
 	// empties loot vector
 	void ClearLoot();
 };
-
-#endif
-
-

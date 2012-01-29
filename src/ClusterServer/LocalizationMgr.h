@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __LOCALIZATIONMGR_H
-#define __LOCALIZATIONMGR_H
+#pragma once
 
 struct LocalizedCreatureName
 {
@@ -88,5 +87,3 @@ private:
 };
 
 extern LocalizationMgr sLocalizationMgr;
-
-#endif

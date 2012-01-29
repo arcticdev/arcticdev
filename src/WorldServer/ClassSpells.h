@@ -4,6 +4,8 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 static uint32 spellarray[DRUID+1][9999] =
 {
 	{ 0 }, 

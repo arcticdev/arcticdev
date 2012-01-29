@@ -283,13 +283,16 @@
     <ClInclude Include="..\..\src\AuthServer\Main.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\src\libs\icon.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="libs.vcxproj">
       <Project>{90297c34-f231-4df4-848e-a74bcc0e40ed}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\libs\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\src\libs\icon.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

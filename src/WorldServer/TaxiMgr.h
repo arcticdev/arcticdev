@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __TAXIMGR_H
-#define __TAXIMGR_H
+#pragma once
 
 #define TAXI_TRAVEL_SPEED 32
 
@@ -108,5 +107,3 @@ private:
 };
 
 #define sTaxiMgr TaxiMgr::getSingleton()
-
-#endif

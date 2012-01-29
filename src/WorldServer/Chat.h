@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_CHAT_H
-#define WOWSERVER_CHAT_H
+#pragma once
 
 #include "SkillNameMgr.h"
 
@@ -549,4 +548,3 @@ protected:
 };
 
 #define sChatHandler ChatHandler::getSingleton()
-#endif

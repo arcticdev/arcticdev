@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef SCRIPTMGR_H
-#define SCRIPTMGR_H
+#pragma once
 
 #define SCRIPT_MODULE void*
 #define ADD_CREATURE_FACTORY_FUNCTION(cl) static CreatureAIScript * Create(Creature* c) { return new cl(c); }
@@ -360,5 +359,3 @@ public:
 
 #define sScriptMgr ScriptMgr::getSingleton()
 #define sHookInterface HookInterface::getSingleton()
-
-#endif

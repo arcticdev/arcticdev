@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _EVENTABLE_OBJECT_H
-#define _EVENTABLE_OBJECT_H
+#pragma once
 
 class EventableObjectHolder;
 
@@ -97,5 +96,3 @@ protected:
 	typedef list<TimedEvent*> InsertableQueue;
 	InsertableQueue m_insertPool;
 };
-
-#endif

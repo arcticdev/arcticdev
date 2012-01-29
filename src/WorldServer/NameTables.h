@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __NAMETABLES_H
-#define __NAMETABLES_H
+#pragma once
 
 struct NameTableEntry
 {
@@ -27,5 +26,3 @@ static inline const char* LookupName(uint32 id, NameTableEntry *table)
 //extern NameTableEntry g_worldOpcodeNames[];
 extern NameTableEntry g_logonOpcodeNames[];
 extern NameTableEntry g_pluginOpcodeNames[];
-
-#endif
