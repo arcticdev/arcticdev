@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef RWLOCK_H
-#define RWLOCK_H
+#pragma once
 
 #include "Condition.h"
 #include "Mutex.h"
@@ -59,5 +58,3 @@ public:
 		volatile unsigned int _writers;
    
 }; 
-
-#endif

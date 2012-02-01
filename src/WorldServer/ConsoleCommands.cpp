@@ -25,7 +25,7 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 			avg += itr->second->GetSession()->GetLatency();
 			if(itr->second->GetSession()->GetPermissionCount())
 				gm++;
-		}			
+		}
 	}
 	objmgr._playerslock.ReleaseReadLock();
 
@@ -55,9 +55,9 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	//bool first = true;
 
 	pConsole->Write("There are the following GM's online on this server: \r\n");
-	pConsole->Write("======================================================\r\n");
+	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("| %21s | %15s | %04s  |\r\n" , "Name", "Permissions", "Latency");
-	pConsole->Write("======================================================\r\n");
+	pConsole->Write("======================================================================\r\n");
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
@@ -70,7 +70,7 @@ bool HandleGMsCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	}
 	objmgr._playerslock.ReleaseReadLock();
 
-	pConsole->Write("======================================================\r\n\r\n");
+	pConsole->Write("======================================================================\r\n\r\n");
 	return true;
 }
 
@@ -175,9 +175,9 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 	// apply instantly in db
 	sLogonCommHandler.Account_SetBanned(argv[1], banned, argv[3]);
 
-	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective with the next reload cycle.\r\n", argv[1], 
+	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective with the next reload cycle.\r\n", argv[1],
 		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
-	
+
 	return true;
 }
 
@@ -340,9 +340,9 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 	//bool first = true;
 
 	pConsole->Write("There following players online on this server: \r\n");
-	pConsole->Write("======================================================\r\n");
+	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("| %21s | %15s | % 04s  |\r\n" , "Name", "Level", "Latency");
-	pConsole->Write("======================================================\r\n");
+	pConsole->Write("======================================================================\r\n");
 
 	PlayerStorageMap::const_iterator itr;
 	objmgr._playerslock.AcquireReadLock();
@@ -352,6 +352,6 @@ bool HandleOnlinePlayersCommand(BaseConsole * pConsole, int argc, const char * a
 	}
 	objmgr._playerslock.ReleaseReadLock();
 
-	pConsole->Write("======================================================\r\n\r\n");
+	pConsole->Write("======================================================================\r\n\r\n");
 	return true;
 }

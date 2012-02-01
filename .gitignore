@@ -17,7 +17,7 @@ Thumbs.db
 *.log
 *.manifest
 *.pch
-*.res 
+*.res
 configure
 depcomp
 config.guess

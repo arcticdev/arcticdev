@@ -97,7 +97,7 @@ if test -z "$GIT"; then AC_MSG_ERROR(git not found); fi
 
 # Checks for libraries.
 
-# Reset 
+# Reset
 CFLAGS="$INCLUDES -Wall -D_BACKWARD_BACKWARD_WARNING_H"
 CXXFLAGS="$INCLUDES -Wall -D_BACKWARD_BACKWARD_WARNING_H"
 
@@ -243,13 +243,13 @@ fi
 MYSQL_FOUND=AX_LIB_MYSQL([5.0])
 if test "$MYSQL_VERSION" = ""; then
 	AC_MSG_ERROR([*** mysql client library not found. Please install it.])
-else 
+else
 	LDFLAGS="$LDFLAGS $MYSQL_LDFLAGS"
 	CFLAGS="$CFLAGS $MYSQL_CFLAGS"
 	CXXFLAGS="$CXXFLAGS $MYSQL_CFLAGS"
 fi
 
-# pcre 
+# pcre
 AX_PATH_LIB_PCRE([
 	LDFLAGS="$LDFLAGS $PCRE_LIBS"
 	CFLAGS="$CFLAGS $PCRE_CFLAGS"
@@ -290,11 +290,11 @@ echo
 echo "===================================="
 echo "ArcTic configure report:"
 echo
-echo " Core:" 
+echo " Core:"
 echo "             os: ${OSNAME}"
 echo "         prefix: ${prefix}"
 echo "   architecture: ${ARCH}"
-echo 
+echo
 echo " Database modules:"
 echo "        mysql: ${MYSQL_VERSION}"
 if test "x$enable_postgres" = "xyes" ; then
@@ -305,10 +305,10 @@ if test "x$enable_sqlite" = "xyes" ; then
 fi
 
 echo
-echo " Networking:" 
+echo " Networking:"
 echo "   ${NETWORKING}"
 echo
-echo " Features: " 
+echo " Features: "
 
 echo -n "    collision: "
 if test "x$enable_collision" = "xyes" ; then

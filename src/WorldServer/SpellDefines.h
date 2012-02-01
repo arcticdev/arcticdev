@@ -106,7 +106,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_SHAPESHIFT = 36,                     // Shapeshift
     SPELL_AURA_EFFECT_IMMUNITY = 37,                    // Immune Effect
     SPELL_AURA_STATE_IMMUNITY = 38,                     // Immune State
-    SPELL_AURA_SCHOOL_IMMUNITY = 39,                    // Immune School    
+    SPELL_AURA_SCHOOL_IMMUNITY = 39,                    // Immune School
     SPELL_AURA_DAMAGE_IMMUNITY = 40,                    // Immune Damage
     SPELL_AURA_DISPEL_IMMUNITY = 41,                    // Immune Dispel Type
     SPELL_AURA_PROC_TRIGGER_SPELL = 42,                 // Proc Trigger Spell
@@ -116,7 +116,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_PARRY_SKILL = 46,                    // Mod Parry Skill
     SPELL_AURA_MOD_PARRY_PERCENT = 47,                  // Mod Parry Percent
     SPELL_AURA_MOD_DODGE_SKILL = 48,                    // Mod Dodge Skill
-    SPELL_AURA_MOD_DODGE_PERCENT = 49,                  // Mod Dodge Percent  
+    SPELL_AURA_MOD_DODGE_PERCENT = 49,                  // Mod Dodge Percent
     SPELL_AURA_MOD_BLOCK_SKILL = 50,                    // Mod Block Skill
     SPELL_AURA_MOD_BLOCK_PERCENT = 51,                  // Mod Block Percent
     SPELL_AURA_MOD_CRIT_PERCENT = 52,                   // Mod Crit Percent
@@ -126,7 +126,7 @@ enum MOD_TYPES
     SPELL_AURA_TRANSFORM = 56,                          // Transform
     SPELL_AURA_MOD_SPELL_CRIT_CHANCE = 57,              // Mod Spell Crit Chance
     SPELL_AURA_MOD_INCREASE_SWIM_SPEED = 58,            // Mod Speed Swim
-    SPELL_AURA_MOD_DAMAGE_DONE_CREATURE = 59,           // Mod Creature Dmg Done   
+    SPELL_AURA_MOD_DAMAGE_DONE_CREATURE = 59,           // Mod Creature Dmg Done
     SPELL_AURA_MOD_PACIFY_SILENCE = 60,                 // Pacify & Silence
     SPELL_AURA_MOD_SCALE = 61,                          // Mod Scale
     SPELL_AURA_PERIODIC_HEALTH_FUNNEL = 62,             // Periodic Health Funnel
@@ -136,7 +136,7 @@ enum MOD_TYPES
     SPELL_AURA_FEIGN_DEATH = 66,                        // Feign Death
     SPELL_AURA_MOD_DISARM = 67,                         // Disarm
     SPELL_AURA_MOD_STALKED = 68,                        // Mod Stalked
-    SPELL_AURA_SCHOOL_ABSORB = 69,                      // School Absorb    
+    SPELL_AURA_SCHOOL_ABSORB = 69,                      // School Absorb
     SPELL_AURA_EXTRA_ATTACKS = 70,                      // Extra Attacks
     SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL = 71,       // Mod School Spell Crit Chance
     SPELL_AURA_MOD_POWER_COST = 72,                     // Mod Power Cost
@@ -146,7 +146,7 @@ enum MOD_TYPES
     SPELL_AURA_FAR_SIGHT = 76,                          // Far Sight
     SPELL_AURA_MECHANIC_IMMUNITY = 77,                  // Immune Mechanic
     SPELL_AURA_MOUNTED = 78,                            // Mounted
-    SPELL_AURA_MOD_DAMAGE_PERCENT_DONE = 79,            // Mod Dmg %   
+    SPELL_AURA_MOD_DAMAGE_PERCENT_DONE = 79,            // Mod Dmg %
     SPELL_AURA_MOD_PERCENT_STAT = 80,                   // Mod Stat %
     SPELL_AURA_SPLIT_DAMAGE = 81,                       // Split Damage
     SPELL_AURA_WATER_BREATHING = 82,                    // Water Breathing
@@ -156,7 +156,7 @@ enum MOD_TYPES
     SPELL_AURA_CHANNEL_DEATH_ITEM = 86,                 // Create Death Item
     SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN = 87,           // Mod Dmg % Taken
     SPELL_AURA_MOD_PERCENT_REGEN = 88,                  // Mod Health Regen Percent
-    SPELL_AURA_PERIODIC_DAMAGE_PERCENT = 89,            // Periodic Damage Percent   
+    SPELL_AURA_PERIODIC_DAMAGE_PERCENT = 89,            // Periodic Damage Percent
     SPELL_AURA_MOD_RESIST_CHANCE = 90,                  // Mod Resist Chance
     SPELL_AURA_MOD_DETECT_RANGE = 91,                   // Mod Detect Range
     SPELL_AURA_PREVENTS_FLEEING = 92,                   // Prevent Fleeing
@@ -176,7 +176,7 @@ enum MOD_TYPES
     SPELL_AURA_HOVER = 106,                             // Hover
     SPELL_AURA_ADD_FLAT_MODIFIER = 107,                 // Add Flat Modifier
     SPELL_AURA_ADD_PCT_MODIFIER = 108,                  // Add % Modifier
-    SPELL_AURA_ADD_TARGET_TRIGGER = 109,                // Add Class Target Trigger    
+    SPELL_AURA_ADD_TARGET_TRIGGER = 109,                // Add Class Target Trigger
     SPELL_AURA_MOD_POWER_REGEN_PERCENT = 110,           // Mod Power Regen %
     SPELL_AURA_ADD_CASTER_HIT_TRIGGER = 111,            // Add Class Caster Hit Trigger
     SPELL_AURA_OVERRIDE_CLASS_SCRIPTS = 112,            // Override Class Scripts
@@ -186,7 +186,7 @@ enum MOD_TYPES
     SPELL_AURA_IGNORE_REGEN_INTERRUPT = 116,            // Regen During Combat
     SPELL_AURA_MOD_MECHANIC_RESISTANCE = 117,           // Mod Mechanic Resistance
     SPELL_AURA_MOD_HEALING_PCT = 118,                   // Mod Healing %
-    SPELL_AURA_SHARE_PET_TRACKING = 119,                // Share Pet Tracking    
+    SPELL_AURA_SHARE_PET_TRACKING = 119,                // Share Pet Tracking
     SPELL_AURA_UNTRACKABLE = 120,                       // Untrackable
     SPELL_AURA_EMPATHY = 121,                           // Empathy (Lore, whatever)
     SPELL_AURA_MOD_OFFHAND_DAMAGE_PCT = 122,            // Mod Offhand Dmg %
@@ -196,7 +196,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_MELEE_DAMAGE_TAKEN_PCT = 126,        // Mod Melee % Dmg Taken
     SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS = 127,// Rngd Atk Pwr Attckr Bonus
     SPELL_AURA_MOD_POSSESS_PET = 128,                   // Mod Possess Pet
-    SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS = 129,         // Mod Speed Always   
+    SPELL_AURA_MOD_INCREASE_SPEED_ALWAYS = 129,         // Mod Speed Always
     SPELL_AURA_MOD_MOUNTED_SPEED_ALWAYS = 130,          // Mod Mounted Speed Always
     SPELL_AURA_MOD_CREATURE_RANGED_ATTACK_POWER = 131,  // Mod Creature Ranged Attack Power
     SPELL_AURA_MOD_INCREASE_ENERGY_PERCENT = 132,       // Mod Increase Energy %
@@ -206,7 +206,7 @@ enum MOD_TYPES
     SPELL_AURA_MOD_HEALING_DONE_PERCENT = 136,          // Mod Healing Done %
     SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE = 137,         // Mod Total Stat %
     SPELL_AURA_MOD_HASTE = 138,                         // Haste - Melee
-    SPELL_AURA_FORCE_REACTION = 139,                    // Force Reaction    
+    SPELL_AURA_FORCE_REACTION = 139,                    // Force Reaction
     SPELL_AURA_MOD_RANGED_HASTE = 140,                  // Haste - Ranged
     SPELL_AURA_MOD_RANGED_AMMO_HASTE = 141,             // Haste - Ranged (Ammo Only)
     SPELL_AURA_MOD_BASE_RESISTANCE_PCT = 142,           // Mod Base Resistance %
@@ -226,10 +226,10 @@ enum MOD_TYPES
     SPELL_AURA_MOD_REPUTATION_ADJUST = 156,             // Mod Reputation Gain
     SPELL_AURA_PET_DAMAGE_MULTI = 157,                  // Mod Pet Damage
     SPELL_AURA_MOD_SHIELD_BLOCK = 158,                  // Mod Shield Block
-    SPELL_AURA_NO_PVP_CREDIT = 159,                     // No PVP Credit 
-    SPELL_AURA_MOD_SIDE_REAR_PDAE_DAMAGE_TAKEN = 160,   // Mod Side/Rear PBAE Damage Taken 
+    SPELL_AURA_NO_PVP_CREDIT = 159,                     // No PVP Credit
+    SPELL_AURA_MOD_SIDE_REAR_PDAE_DAMAGE_TAKEN = 160,   // Mod Side/Rear PBAE Damage Taken
     SPELL_AURA_MOD_HEALTH_REGEN_IN_COMBAT = 161,        // Mod Health Regen In Combat
-    SPELL_AURA_POWER_BURN = 162,                        // Power Burn 
+    SPELL_AURA_POWER_BURN = 162,                        // Power Burn
     SPELL_AURA_MOD_CRIT_DAMAGE_BONUS_MELEE = 163,       // Mod Critical Damage Bonus (Physical)
     SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS = 165, // Melee AP Attacker Bonus
     SPELL_AURA_MOD_ATTACK_POWER_PCT = 166,              // Mod Attack Power
@@ -241,13 +241,13 @@ enum MOD_TYPES
     SPELL_AURA_INCREASE_SPELL_DAMAGE_PCT = 174,         // Increase Spell Damage by % status
     SPELL_AURA_INCREASE_SPELL_HEALING_PCT = 175,        // Increase Spell Healing by % status
     SPELL_AURA_SPIRIT_OF_REDEMPTION = 176,              // Spirit of Redemption Auras
-    SPELL_AURA_AREA_CHARM = 177,                        // Area Charm 
+    SPELL_AURA_AREA_CHARM = 177,                        // Area Charm
     SPELL_AURA_INCREASE_ATTACKER_SPELL_CRIT = 179,      // Increase Attacker Spell Crit Type
     SPELL_AURA_INCREASE_SPELL_DAMAGE_VS_TYPE = 180,     // Increase Spell Damage Type
     SPELL_AURA_INCREASE_ARMOR_BASED_ON_INTELLECT_PCT = 182, // Increase Armor based on Intellect
     SPELL_AURA_DECREASE_CRIT_THREAT = 183,              // Decrease Critical Threat by
     SPELL_AURA_DECREASE_ATTACKER_CHANCE_TO_HIT_MELEE = 184,//Reduces Attacker Chance to Hit with Melee
-    SPELL_AURA_DECREASE_ATTACKER_CHANGE_TO_HIT_RANGED = 185,// Reduces Attacker Chance to Hit with Ranged 
+    SPELL_AURA_DECREASE_ATTACKER_CHANGE_TO_HIT_RANGED = 185,// Reduces Attacker Chance to Hit with Ranged
     SPELL_AURA_DECREASE_ATTACKER_CHANGE_TO_HIT_SPELLS = 186,// Reduces Attacker Chance to Hit with Spells
     SPELL_AURA_DECREASE_ATTACKER_CHANGE_TO_CRIT_MELEE = 187,// Reduces Attacker Chance to Crit with Melee (Ranged?)
     SPELL_AURA_DECREASE_ATTACKER_CHANGE_TO_CRIT_RANGED = 188,// Reduces Attacker Chance to Crit with Ranged (Melee?)
@@ -317,7 +317,7 @@ enum AURAIMMUNE_FLAG
 	AURAIMMUNE_FEAR				= 0X4,			//SPELL_AURA_MOD_FEAR = 7
 	AURAIMMUNE_STUN				= 0x8,			//SPELL_AURA_MOD_STUN = 12
 	AURAIMMUNE_PACIFY			= 0x10,			//SPELL_AURA_MOD_PACIFY = 25
-	AURAIMMUNE_ROOT				= 0x20,			//SPELL_AURA_MOD_ROOT = 26	
+	AURAIMMUNE_ROOT				= 0x20,			//SPELL_AURA_MOD_ROOT = 26
 	AURAIMMUNE_SILENCE			= 0x40,			//SPELL_AURA_MOD_SILENCE = 27
 	AURAIMMUNE_INCSPEED			= 0x80,         //SPELL_AURA_MOD_INCREASE_SPEED = 31
 	AURAIMMUNE_DECSPEED			= 0x100,		//SPELL_AURA_MOD_DECREASE_SPEED = 33
@@ -623,7 +623,7 @@ static void SM_PFValue( int32* m, float* v, uint32* group )
 {
     if( m == 0 )
 		return;
-    
+
 	uint32 intbit = 0, groupnum = 0;
 	for(uint32 bit = 0; bit < SPELL_GROUPS; ++bit, ++intbit)
 	{
@@ -957,11 +957,15 @@ enum School
     SCHOOL_NATURE = 3,
     SCHOOL_FROST  = 4,
     SCHOOL_SHADOW = 5,
-    SCHOOL_ARCANE = 6
+    SCHOOL_ARCANE = 6,
+    SCHOOL_SPELL  = 7,
+    SCHOOL_MAGIC  = 8,
+    SCHOOL_ALL    = 9,
 };
 
 // converting schools for 2.4.0 client
-static const uint32 g_spellSchoolConversionTable[SCHOOL_ARCANE+1] = {
+static const uint32 spellMaskArray[SCHOOL_ALL+1] =
+{
 	1,				// SCHOOL_NORMAL
 	2,				// SCHOOL_HOLY
 	4,				// SCHOOL_FIRE
@@ -969,7 +973,17 @@ static const uint32 g_spellSchoolConversionTable[SCHOOL_ARCANE+1] = {
 	16,				// SCHOOL_FROST
 	32,				// SCHOOL_SHADOW
 	64,				// SCHOOL_ARCANE
+ 	124,            // SCHOOL_SPELL
+ 	126,            // SCHOOL_MAGIC
+ 	127,            // SCHOOL_ALL
 };
+
+ARCTIC_INLINE uint8 SchoolMask(uint8 school)
+{
+	if(school > SCHOOL_ALL)
+		return uint8(0);
+	return spellMaskArray[school];
+}
 
 enum ReplenishType
 {
@@ -994,11 +1008,9 @@ enum SpellTargetType
 };
 
 /************************************************************************/
-/* SpellExtraFlags defines                                              */
-/*												                        */
-/* Used for infront check and other checks		                        */
-/* when they are not in spell.dbc				                        */
-/*												                        */
+/*SpellExtraFlags defines                                               */
+/* Used for infront check and other checks                              */
+/* when they are not in spell.dbc                                       */
 /************************************************************************/
 
 enum ARCTICDEV_SPELL_EXTRA
@@ -1128,8 +1140,8 @@ enum SPELL_ENTRY
     SPELL_ENTRY_EffectImplicitTargetB_2,
     SPELL_ENTRY_EffectImplicitTargetB_3,
     SPELL_ENTRY_EffectRadiusIndex_1,
-    SPELL_ENTRY_EffectRadiusIndex_2, 
-    SPELL_ENTRY_EffectRadiusIndex_3, 
+    SPELL_ENTRY_EffectRadiusIndex_2,
+    SPELL_ENTRY_EffectRadiusIndex_3,
     SPELL_ENTRY_EffectApplyAuraName_1,
     SPELL_ENTRY_EffectApplyAuraName_2,
     SPELL_ENTRY_EffectApplyAuraName_3,
@@ -1293,106 +1305,106 @@ enum SpellEffects
 {
     SPELL_EFFECT_NULL = 0,
     SPELL_EFFECT_INSTANT_KILL,              //    1
-    SPELL_EFFECT_SCHOOL_DAMAGE,             //    2    
-    SPELL_EFFECT_DUMMY,                     //    3    
-    SPELL_EFFECT_PORTAL_TELEPORT,           //    4    
-    SPELL_EFFECT_TELEPORT_UNITS,            //    5    
-    SPELL_EFFECT_APPLY_AURA,                //    6    
-    SPELL_EFFECT_ENVIRONMENTAL_DAMAGE,      //    7    
-    SPELL_EFFECT_POWER_DRAIN,               //    8    
-    SPELL_EFFECT_HEALTH_LEECH,              //    9    
-    SPELL_EFFECT_HEAL,                      //    10    
-    SPELL_EFFECT_BIND,                      //    11    
+    SPELL_EFFECT_SCHOOL_DAMAGE,             //    2
+    SPELL_EFFECT_DUMMY,                     //    3
+    SPELL_EFFECT_PORTAL_TELEPORT,           //    4
+    SPELL_EFFECT_TELEPORT_UNITS,            //    5
+    SPELL_EFFECT_APPLY_AURA,                //    6
+    SPELL_EFFECT_ENVIRONMENTAL_DAMAGE,      //    7
+    SPELL_EFFECT_POWER_DRAIN,               //    8
+    SPELL_EFFECT_HEALTH_LEECH,              //    9
+    SPELL_EFFECT_HEAL,                      //    10
+    SPELL_EFFECT_BIND,                      //    11
     SPELL_EFFECT_PORTAL,                    //    12
     SPELL_EFFECT_RITUAL_BASE,               //    13
     SPELL_EFFECT_RITUAL_SPECIALIZE,         //    14
     SPELL_EFFECT_RITUAL_ACTIVATE_PORTAL,    //    15
-    SPELL_EFFECT_QUEST_COMPLETE,            //    16    
-    SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL,    //    17    
-    SPELL_EFFECT_RESURRECT,                 //    18    
-    SPELL_EFFECT_ADD_EXTRA_ATTACKS,         //    19    
-    SPELL_EFFECT_DODGE,                     //    20    
-    SPELL_EFFECT_EVADE,                     //    21    
-    SPELL_EFFECT_PARRY,                     //    22    
-    SPELL_EFFECT_BLOCK,                     //    23    
-    SPELL_EFFECT_CREATE_ITEM,               //    24    
+    SPELL_EFFECT_QUEST_COMPLETE,            //    16
+    SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL,    //    17
+    SPELL_EFFECT_RESURRECT,                 //    18
+    SPELL_EFFECT_ADD_EXTRA_ATTACKS,         //    19
+    SPELL_EFFECT_DODGE,                     //    20
+    SPELL_EFFECT_EVADE,                     //    21
+    SPELL_EFFECT_PARRY,                     //    22
+    SPELL_EFFECT_BLOCK,                     //    23
+    SPELL_EFFECT_CREATE_ITEM,               //    24
     SPELL_EFFECT_WEAPON,                    //    25
     SPELL_EFFECT_DEFENSE,                   //    26
-    SPELL_EFFECT_PERSISTENT_AREA_AURA,      //    27    
-    SPELL_EFFECT_SUMMON,                    //    28    
-    SPELL_EFFECT_LEAP,                      //    29    
-    SPELL_EFFECT_ENERGIZE,                  //    30    
-    SPELL_EFFECT_WEAPON_PERCENT_DAMAGE,     //    31    
-    SPELL_EFFECT_TRIGGER_MISSILE,           //    32    
-    SPELL_EFFECT_OPEN_LOCK,                 //    33    
-    SPELL_EFFECT_TRANSFORM_ITEM,            //    34    
-    SPELL_EFFECT_APPLY_AREA_AURA,           //    35    
-    SPELL_EFFECT_LEARN_SPELL,               //    36    
-    SPELL_EFFECT_SPELL_DEFENSE,             //    37    
-    SPELL_EFFECT_DISPEL,                    //    38    
+    SPELL_EFFECT_PERSISTENT_AREA_AURA,      //    27
+    SPELL_EFFECT_SUMMON,                    //    28
+    SPELL_EFFECT_LEAP,                      //    29
+    SPELL_EFFECT_ENERGIZE,                  //    30
+    SPELL_EFFECT_WEAPON_PERCENT_DAMAGE,     //    31
+    SPELL_EFFECT_TRIGGER_MISSILE,           //    32
+    SPELL_EFFECT_OPEN_LOCK,                 //    33
+    SPELL_EFFECT_TRANSFORM_ITEM,            //    34
+    SPELL_EFFECT_APPLY_AREA_AURA,           //    35
+    SPELL_EFFECT_LEARN_SPELL,               //    36
+    SPELL_EFFECT_SPELL_DEFENSE,             //    37
+    SPELL_EFFECT_DISPEL,                    //    38
     SPELL_EFFECT_LANGUAGE,                  //    39
-    SPELL_EFFECT_DUAL_WIELD,                //    40    
-    SPELL_EFFECT_SUMMON_WILD,               //    41    
-    SPELL_EFFECT_MEGA_JUMP,					//    42    
+    SPELL_EFFECT_DUAL_WIELD,                //    40
+    SPELL_EFFECT_SUMMON_WILD,               //    41
+    SPELL_EFFECT_MEGA_JUMP,					//    42
     SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER,//    43
-    SPELL_EFFECT_SKILL_STEP,                //    44    
-    SPELL_EFFECT_UNDEFINED_45,              //    45    
+    SPELL_EFFECT_SKILL_STEP,                //    44
+    SPELL_EFFECT_UNDEFINED_45,              //    45
     SPELL_EFFECT_SPAWN,                     //    46
     SPELL_EFFECT_TRADE_SKILL,               //    47
     SPELL_EFFECT_STEALTH,                   //    48
     SPELL_EFFECT_DETECT,                    //    49
-    SPELL_EFFECT_SUMMON_OBJECT,             //    50    
-    //SPELL_EFFECT_TRANS_DOOR,              //    50    
+    SPELL_EFFECT_SUMMON_OBJECT,             //    50
+    //SPELL_EFFECT_TRANS_DOOR,              //    50
     SPELL_EFFECT_FORCE_CRITICAL_HIT,        //    51
     SPELL_EFFECT_GUARANTEE_HIT,             //    52
-    SPELL_EFFECT_ENCHANT_ITEM,              //    53    
-    SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY,    //    54    
-    SPELL_EFFECT_TAMECREATURE,              //    55    
-    SPELL_EFFECT_SUMMON_PET,                //    56    
-    SPELL_EFFECT_LEARN_PET_SPELL,           //    57    
-    SPELL_EFFECT_WEAPON_DAMAGE,             //    58    
-    SPELL_EFFECT_OPEN_LOCK_ITEM,            //    59    
+    SPELL_EFFECT_ENCHANT_ITEM,              //    53
+    SPELL_EFFECT_ENCHANT_ITEM_TEMPORARY,    //    54
+    SPELL_EFFECT_TAMECREATURE,              //    55
+    SPELL_EFFECT_SUMMON_PET,                //    56
+    SPELL_EFFECT_LEARN_PET_SPELL,           //    57
+    SPELL_EFFECT_WEAPON_DAMAGE,             //    58
+    SPELL_EFFECT_OPEN_LOCK_ITEM,            //    59
     SPELL_EFFECT_PROFICIENCY,               //    60
-    SPELL_EFFECT_SEND_EVENT,                //    61    
+    SPELL_EFFECT_SEND_EVENT,                //    61
     SPELL_EFFECT_POWER_BURN,                //    62
     SPELL_EFFECT_THREAT,                    //    63
-    SPELL_EFFECT_TRIGGER_SPELL,             //    64    
+    SPELL_EFFECT_TRIGGER_SPELL,             //    64
     SPELL_EFFECT_HEALTH_FUNNEL,             //    65
     SPELL_EFFECT_POWER_FUNNEL,              //    66
-    SPELL_EFFECT_HEAL_MAX_HEALTH,           //    67    
+    SPELL_EFFECT_HEAL_MAX_HEALTH,           //    67
     SPELL_EFFECT_INTERRUPT_CAST,            //    68
     SPELL_EFFECT_DISTRACT,                  //    69
     SPELL_EFFECT_PULL,                      //    70
     SPELL_EFFECT_PICKPOCKET,                //    71
     SPELL_EFFECT_ADD_FARSIGHT,              //    72
-    SPELL_EFFECT_SUMMON_POSSESSED,          //    73    
-    SPELL_EFFECT_USE_GLYPH,                 //    74    
+    SPELL_EFFECT_SUMMON_POSSESSED,          //    73
+    SPELL_EFFECT_USE_GLYPH,                 //    74
     SPELL_EFFECT_HEAL_MECHANICAL,           //    75
     SPELL_EFFECT_SUMMON_OBJECT_WILD,        //    76
-    SPELL_EFFECT_SCRIPT_EFFECT,             //    77    
+    SPELL_EFFECT_SCRIPT_EFFECT,             //    77
     SPELL_EFFECT_ATTACK,                    //    78
     SPELL_EFFECT_SANCTUARY,                 //    79
-    SPELL_EFFECT_ADD_COMBO_POINTS,          //    80    
+    SPELL_EFFECT_ADD_COMBO_POINTS,          //    80
     SPELL_EFFECT_CREATE_HOUSE,              //    81
     SPELL_EFFECT_BIND_SIGHT,                //    82
     SPELL_EFFECT_DUEL,                      //    83
     SPELL_EFFECT_STUCK,                     //    84
     SPELL_EFFECT_SUMMON_PLAYER,             //    85
     SPELL_EFFECT_ACTIVATE_OBJECT,           //    86
-	SPELL_EFFECT_WMO_DAMAGE,				//    87    
-	SPELL_EFFECT_WMO_REPAIR,				//    88     
-    SPELL_EFFECT_SUMMON_TOTEM_SLOT3,        //    89    
-    SPELL_EFFECT_SUMMON_TOTEM_SLOT4,        //    90    
+	SPELL_EFFECT_WMO_DAMAGE,				//    87
+	SPELL_EFFECT_WMO_REPAIR,				//    88
+    SPELL_EFFECT_SUMMON_TOTEM_SLOT3,        //    89
+    SPELL_EFFECT_SUMMON_TOTEM_SLOT4,        //    90
     SPELL_EFFECT_THREAT_ALL,                //    91
     SPELL_EFFECT_ENCHANT_HELD_ITEM,         //    92
     SPELL_EFFECT_SUMMON_PHANTASM,           //    93
-    SPELL_EFFECT_SELF_RESURRECT,            //    94    
-    SPELL_EFFECT_SKINNING,                  //    95    
-    SPELL_EFFECT_CHARGE,                    //    96    
-    SPELL_EFFECT_SUMMON_CRITTER,            //    97    
-    SPELL_EFFECT_KNOCK_BACK,                //    98    
-    SPELL_EFFECT_DISENCHANT,                //    99    
-    SPELL_EFFECT_INEBRIATE,                 //    100    
+    SPELL_EFFECT_SELF_RESURRECT,            //    94
+    SPELL_EFFECT_SKINNING,                  //    95
+    SPELL_EFFECT_CHARGE,                    //    96
+    SPELL_EFFECT_SUMMON_CRITTER,            //    97
+    SPELL_EFFECT_KNOCK_BACK,                //    98
+    SPELL_EFFECT_DISENCHANT,                //    99
+    SPELL_EFFECT_INEBRIATE,                 //    100
     SPELL_EFFECT_FEED_PET,                  //    101
     SPELL_EFFECT_DISMISS_PET,               //    102
     SPELL_EFFECT_REPUTATION,                //    103
@@ -1400,18 +1412,18 @@ enum SpellEffects
     SPELL_EFFECT_SUMMON_OBJECT_SLOT2,       //    105
     SPELL_EFFECT_SUMMON_OBJECT_SLOT3,       //    106
     SPELL_EFFECT_SUMMON_OBJECT_SLOT4,       //    107
-    SPELL_EFFECT_DISPEL_MECHANIC,           //    108    
+    SPELL_EFFECT_DISPEL_MECHANIC,           //    108
     SPELL_EFFECT_SUMMON_DEAD_PET,           //    109
     SPELL_EFFECT_DESTROY_ALL_TOTEMS,        //    110
     SPELL_EFFECT_DURABILITY_DAMAGE,         //    111
-    SPELL_EFFECT_SUMMON_DEMON,              //    112    
-    SPELL_EFFECT_RESURRECT_FLAT,            //    113    
+    SPELL_EFFECT_SUMMON_DEMON,              //    112
+    SPELL_EFFECT_RESURRECT_FLAT,            //    113
     SPELL_EFFECT_ATTACK_ME,                 //    114
     SPELL_EFFECT_DURABILITY_DAMAGE_PCT,     //    115
     SPELL_EFFECT_SKIN_PLAYER_CORPSE,        //    116
     SPELL_EFFECT_SPIRIT_HEAL,               //    117
     SPELL_EFFECT_SKILL,                     //    118
-    SPELL_EFFECT_APPLY_PET_AURA,            //    119    
+    SPELL_EFFECT_APPLY_PET_AURA,            //    119
     SPELL_EFFECT_TELEPORT_GRAVEYARD,        //    120
     SPELL_EFFECT_DUMMYMELEE,                //    121
     SPELL_EFFECT_UNKNOWN1,                  //    122
@@ -1597,7 +1609,7 @@ ARCTIC_INLINE bool IsCastedOnFriends(SpellEntry *sp)
 		switch (sp->EffectImplicitTargetA[frloop])
 		{
 			case 1:		//EFF_TARGET_SELF
-			case 4:		
+			case 4:
 			case 5:		//EFF_TARGET_PET
 			case 20:	//EFF_TARGET_ALL_PARTY_AROUND_CASTER
 			case 21:	//EFF_TARGET_SINGLE_FRIEND
@@ -1622,10 +1634,10 @@ ARCTIC_INLINE bool IsCastedOnFriends(SpellEntry *sp)
 		switch (sp->EffectImplicitTargetB[frloop])
 		{
 			case 1:		//EFF_TARGET_SELF
-			case 4:		
+			case 4:
 			case 5:		//EFF_TARGET_PET
 			case 20:	//EFF_TARGET_ALL_PARTY_AROUND_CASTER
-			case 21:	//EFF_TARGET_SINGLE_FRIEND	
+			case 21:	//EFF_TARGET_SINGLE_FRIEND
 			case 27:	//EFF_TARGET_PET_MASTER
 			case 30:	//EFF_TARGET_ALL_FRIENDLY_IN_AREA
 			case 31:	//EFF_TARGET_ALL_TARGETABLE_AROUND_LOCATION_IN_RADIUS_OVER_TIME
@@ -1786,7 +1798,7 @@ ARCTIC_INLINE bool IsInrange(float x1,float y1, float z1,float x2,float y2, floa
     r+=t*t;
     return ( r<=square_r);
 }
-   
+
 ARCTIC_INLINE bool IsInrange(Object* o1,Object* o2,float square_r)
 {
     return IsInrange(o1->GetPositionX(),o1->GetPositionY(),o1->GetPositionZ(),

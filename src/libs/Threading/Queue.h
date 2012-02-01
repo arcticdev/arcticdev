@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef FQUEUE_H
-#define FQUEUE_H
+#pragma once
 
 #include "Condition.h"
 #include "Mutex.h"
@@ -131,7 +130,3 @@ private:
 	Condition cond;
 
 };
-
-#endif 
-
-

@@ -294,7 +294,7 @@ void WorldSession::LoadAccountDataProc(QueryResult * result)
 		return;
 	}
 
-	for(uint32 i = 0; i < 7; ++i)
+	for(uint32 i = 0; i < 7; i++)
 	{
 		data = result->Fetch()[1+i].GetString();
 		len = data ? strlen(data) : 0;
@@ -460,7 +460,7 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 		string name = result->Fetch()[0].GetString();
 		delete result;
 
-		for(int i = 0; i < NUM_CHARTER_TYPES; ++i)
+		for(int i = 0; i < NUM_CHARTER_TYPES; i++)
 		{
 			if( inf->charterId[i] != 0 )
 			{
@@ -472,7 +472,7 @@ uint8 WorldSession::DeleteCharacter(uint32 guid)
 			}
 		}
 
-		for(int i = 0; i < NUM_ARENA_TEAM_TYPES; ++i)
+		for(int i = 0; i < NUM_ARENA_TEAM_TYPES; i++)
 		{
 			if( inf->arenaTeam[i] != NULL )
 			{
@@ -534,14 +534,11 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	recv_data >> guid >> name;
 
 	PlayerInfo * pi = objmgr.GetPlayerInfo((uint32)guid);
-	if(pi == 0) return;
-
-	QueryResult * result = CharacterDatabase.Query("SELECT forced_rename_pending FROM characters WHERE guid = %u AND acct = %u", (uint32)guid, _accountId);
-	if(result == 0)
-	{
-		delete result;
+	if(pi == NULL)
 		return;
-	}
+	QueryResult * result = CharacterDatabase.Query("SELECT forced_rename_pending FROM characters WHERE guid = %u AND acct = %u", (uint32)guid, _accountId);
+	if(result == NULL)
+		return;
 	delete result;
 
 	// Check name for rule violation.
@@ -577,6 +574,8 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 			data << uint8(CHAR_NAME_PROFANE);
 			data << guid << name;
 			SendPacket(&data);
+			delete result2;
+			return;
 		}
 		delete result2;
 	}
@@ -584,7 +583,7 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 	// Check if name is in use.
 	if(objmgr.GetPlayerInfoByName(name.c_str()) != 0)
 	{
-		data << uint8(0x32);
+		data << uint8(CHAR_NAME_FAILURE);
 		data << guid << name;
 		SendPacket(&data);
 		return;
@@ -620,7 +619,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	uint8 response = CHAR_LOGIN_NO_CHARACTER;
 
 	//already active?
-	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player) 
+	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player)
 		response = CHAR_LOGIN_DUPLICATE_CHARACTER;
 	else //Do we exist in DB yet?
 	{
@@ -735,8 +734,7 @@ void WorldSession::FullLogin(Player* plr)
 	_player->ResetTitansGrip();
 
 	// Set TIME OF LOGIN
-	CharacterDatabase.Execute (
-		"UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
+	CharacterDatabase.Execute ("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
 
 	bool enter_world = true;
 #ifndef CLUSTERING
@@ -923,9 +921,9 @@ bool ChatHandler::HandleRenameCommand(const char * args, WorldSession * m_sessio
 		CharacterDatabase.WaitExecute("UPDATE characters SET name = '%s' WHERE guid = %u", CharacterDatabase.EscapeString(new_name).c_str(), (uint32)pi->guid);
 	}
 
-	GreenSystemMessage(m_session, "Changed name of '%s' to '%s'.", name1, name2);
-	sGMLog.writefromsession(m_session, "renamed character %s (GUID: %u) to %s", name1, pi->guid, name2);
-	sPlrLog.writefromsession(m_session, "GM renamed character %s (GUID: %u) to %s", name1, pi->guid, name2);
+	GreenSystemMessage(m_session, "Changed name of '%s' to '%s'.", (char*)name1, (char*)name2);
+	sGMLog.writefromsession(m_session, "renamed character %s (GUID: %u) to %s", (char*)name1, pi->guid, (char*)name2);
+	sPlrLog.writefromsession(m_session, "GM renamed character %s (GUID: %u) to %s", (char*)name1, pi->guid, ((char*)name2));
 	return true;
 }
 

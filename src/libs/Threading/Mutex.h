@@ -4,14 +4,14 @@
  * See COPYING for license details.
  */
 
-#ifndef _THREADING_MUTEX_H
-#define _THREADING_MUTEX_H
+#pragma once
+
 #ifdef __DragonFly__
 #include <pthread.h>
 #endif
 #ifdef _WIN32_WINNT
 #include <Windows.h>
-#endif                                                                         
+#endif
 
 class SERVER_DECL Mutex
 {
@@ -138,6 +138,3 @@ public:
 #define FastMutex Mutex
 
 #endif
-
-#endif
-

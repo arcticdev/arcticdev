@@ -949,14 +949,14 @@ void AnubRekhanAI::Destroy()
 	delete this;
 };
 
-void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType )
+void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit * pTarget, TargetType pType )
 {
 	AnubRekhanAI *AnubRekhan = ( pCreatureAI != NULL ) ? static_cast< AnubRekhanAI* >( pCreatureAI ) : NULL;
 	if ( AnubRekhan != NULL )
 	{
-		std::vector< pair< Player*, Coords > > PlayerCorpses;
-		Player* PlayerPtr = NULL;
-		Object* ObjectPtr = NULL;
+		std::vector< pair< Player *, Coords > > PlayerCorpses;
+		Player * PlayerPtr = NULL;
+		Object * ObjectPtr = NULL;
 		for( unordered_set< Player* >::iterator Iter = AnubRekhan->GetUnit()->GetInRangePlayerSetBegin(); Iter != AnubRekhan->GetUnit()->GetInRangePlayerSetEnd(); ++Iter ) 
 		{ 
 			if ( ( *Iter ) == NULL )
@@ -1000,7 +1000,7 @@ void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCrea
 
 		if ( PlayerCorpses.size() > 0 )
 		{
-			uint32 Id = RandomUInt( uint32(PlayerCorpses.size()) - 1 );
+			uint32 Id = RandomUInt( (uint32)PlayerCorpses.size() - 1 );
 			PlayerPtr = PlayerCorpses[ Id ].first;
 			AnubRekhan->mUsedCorpseGuids.insert( PlayerPtr->GetGUID() );
 			AnubRekhan->ApplyAura( ANUBREKHAN_SUMMON_CORPSE_SCARABS_5 );

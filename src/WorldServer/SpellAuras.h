@@ -19,7 +19,7 @@ struct Modifier
 
     // needed for per level effect
     int32 realamount;
-    
+
 	// need this to store % values or they cannot be reverted corectly (i think :D )
     int32 fixed_amount[7];
 
@@ -125,18 +125,18 @@ public:
 	void AttemptDispel(Unit* pCaster, bool canResist = true);
 	bool m_dispelled;
 	uint32 m_resistPctChance;
-		
+
 	ARCTIC_INLINE uint32 GetTimeLeft()//in sec
 	{
 		if(m_duration==-1)return (uint32)-1;
 		int32 n=int32((UNIXTIME-time_t(timeleft))*1000);
 		if(n>=m_duration) return 0;
-		else 
+		else
 		return (m_duration-n);
 	}
 
 	ARCTIC_INLINE uint32 GetMSExpiryTime()
-	{ 		
+	{
 		if (GetDuration() == -1)
 			return -1;
 		int32 n = getMSTime() - timeleft;
@@ -154,7 +154,7 @@ public:
 	void ModStackSize(int32 mod);
 	void UpdateModAmounts();
 
-		// Aura Handlers
+	// Aura Handlers
 	void SpellAuraNULL(bool apply);
 	void SpellAuraBindSight(bool apply);
 	void SpellAuraModPossess(bool apply);
@@ -199,9 +199,9 @@ public:
 	void SpellAuraProcTriggerSpell(bool apply);
 	void SpellAuraProcTriggerDamage(bool apply);
 	void SpellAuraTrackCreatures(bool apply);
-	void SpellAuraTrackResources(bool apply);	
-	void SpellAuraModParryPerc(bool apply);	
-	void SpellAuraModDodgePerc(bool apply);	
+	void SpellAuraTrackResources(bool apply);
+	void SpellAuraModParryPerc(bool apply);
+	void SpellAuraModDodgePerc(bool apply);
 	void SpellAuraModBlockPerc(bool apply);
 	void SpellAuraModCritPerc(bool apply);
 	void SpellAuraPeriodicLeech(bool apply);
@@ -209,17 +209,17 @@ public:
 	void SpellAuraModSpellHitChance(bool apply);
 	void SpellAuraTransform(bool apply);
 	void SpellAuraModSpellCritChance(bool apply);
-	void SpellAuraIncreaseSwimSpeed(bool apply);	
+	void SpellAuraIncreaseSwimSpeed(bool apply);
 	void SpellAuraModCratureDmgDone(bool apply);
 	void SpellAuraPacifySilence(bool apply);
 	void SpellAuraModScale(bool apply);
-	void SpellAuraPeriodicHealthFunnel(bool apply);	
+	void SpellAuraPeriodicHealthFunnel(bool apply);
 	void SpellAuraPeriodicManaLeech(bool apply);
 	void SpellAuraModCastingSpeed(bool apply);
 	void SpellAuraFeignDeath(bool apply);
 	void SpellAuraModDisarm(bool apply);
 	void SpellAuraModStalked(bool apply);
-	void SpellAuraSchoolAbsorb(bool apply);	
+	void SpellAuraSchoolAbsorb(bool apply);
 	void SpellAuraModSpellCritChanceSchool(bool apply);
 	void SpellAuraModPowerCost(bool apply);
 	void SpellAuraModPowerCostSchool(bool apply);
@@ -260,13 +260,13 @@ public:
 	void SpellAuraAddFlatModifier(bool apply);
 	void SpellAuraAddPctMod(bool apply);
 	void SpellAuraAddTargetTrigger(bool apply);
-	void SpellAuraModPowerRegPerc(bool apply);	
+	void SpellAuraModPowerRegPerc(bool apply);
 	void SpellAuraOverrideClassScripts(bool apply);
-	void SpellAuraModRangedDamageTaken(bool apply);	
+	void SpellAuraModRangedDamageTaken(bool apply);
 	void SpellAuraModHealing(bool apply);
 	void SpellAuraIgnoreRegenInterrupt(bool apply);
 	void SpellAuraModMechanicResistance(bool apply);
-	void SpellAuraModHealingPCT(bool apply);   
+	void SpellAuraModHealingPCT(bool apply);
 	void SpellAuraEmphaty(bool apply);
 	void SpellAuraUntrackable(bool apply);
 	void SpellAuraModOffhandDamagePCT(bool apply);
@@ -366,7 +366,7 @@ public:
 	void SpellAuraHasteRanged(bool apply);
 	void SpellAuraReflectInfront(bool apply);
 	void SpellAuraModPetTalentPoints(bool apply);
-	
+
 	void UpdateAuraModDecreaseSpeed();
 
 	void SendModifierLog(int32 ** m,int32 v,uint32 *mask,uint8 type,bool pct = false);
@@ -392,8 +392,7 @@ public:
 
 	// log message's
 	void SendPeriodicAuraLog(uint32 amt, uint32 Flags);
-	static void SendPeriodicAuraLog(Unit* Caster, Unit* Target, SpellEntry *sp, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0);
-	static void SendPeriodicAuraLog(const uint64& CasterGuid, Unit* Target, SpellEntry *sp, uint32 Amount, uint32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0);
+	void SendPeriodicAuraLog(uint64 casterGuid, Unit* Target, SpellEntry *sp, uint32 Amount, int32 abs_dmg, uint32 resisted_damage, uint32 Flags, uint32 pSpellId = 0, bool crit = false);
 
 	bool WasCastInDuel() { return m_castInDuel; }
 
@@ -404,16 +403,17 @@ public:
 	uint32 m_auraSlot;
 
 	uint32 m_castedItemId;
-	bool m_areaAura;		// Area aura stuff -> never passive.
+	bool m_areaAura; // Area aura stuff -> never passive.
 	uint8 m_auraFlags;
 	uint8 m_auraLevel;
-	uint32 pSpellId; //this represents the triggering spell id
+	uint32 pSpellId; // this represents the triggering spell id
 
 	// this stuff can be cached in spellproto.
 	ARCTIC_INLINE bool IsCombatStateAffecting()
 	{
-		for(uint32 x = 0; x < 3; ++x) {
-			if(m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE || 
+		for(uint32 x = 0; x < 3; ++x)
+		{
+			if(m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE ||
 				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_DAMAGE_PERCENT ||
 				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_TRIGGER_SPELL ||
 				m_spellProto->EffectApplyAuraName[x] == SPELL_AURA_PERIODIC_LEECH ||
@@ -459,12 +459,12 @@ private:
 		r+=t*t;
 		return ( r<=square_r);
 	}
-	
+
 	Unit* m_target;
 	uint64 m_casterGuid;
 	uint32 timeleft;
 	int32 m_duration; // in msecs
-//	bool m_positive;
+	// bool m_positive;
 	signed char m_positive;
 
 	uint32 m_modcount;

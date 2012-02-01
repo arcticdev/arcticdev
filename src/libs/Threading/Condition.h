@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef CONDITION_H
-#define CONDITION_H
+#pragma once
 
 #ifdef WIN32
 //#include <windows.h>
@@ -339,7 +338,3 @@ private:
 };
 
 #endif
-
-#endif
-
-	

@@ -4,15 +4,13 @@
  * See COPYING for license details.
  */
 
-#ifndef _THREADING_GUARD_H
-#define _THREADING_GUARD_H
+#pragma once
 
 #include "Mutex.h"
 
 /************************************************************************/
 /* Guard class, unlocks mutex on destroy								*/
 /************************************************************************/
-// crossplatform :)
 
 class SERVER_DECL Guard
 {
@@ -36,6 +34,3 @@ public:
 protected:
 	Mutex& target;
 };
-
-#endif
-

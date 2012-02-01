@@ -575,6 +575,8 @@ public:
 	bool has_waypoint_text;
 	bool has_combat_text;
 
+	bool m_isGuard;
+
 	void Remove();
 	bool CanAddToWorld();
 

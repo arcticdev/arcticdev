@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 
-bool isHostile(Object* objA, Object* objB)// B is hostile for A?
+bool isHostile(Object* objA, Object* objB) // B is hostile for A?
 {
 	bool hostile = false;
 
@@ -49,7 +49,7 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	Player* player_objA = GetPlayerFromObject(objA);
 	Player* player_objB = GetPlayerFromObject(objB);
 
-	//BG or PVP?
+	// BG or PVP?
 	if( player_objA && player_objB )
 	{
 		if( player_objA->m_bg != NULL )	
@@ -65,13 +65,13 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 
 
 	// Reputation System Checks
-	if(player_objA && !player_objB)	   // PvE
+	if(player_objA && !player_objB) // PvE
 	{
 		if(objB->m_factionDBC->RepListId >= 0)
 			hostile = player_objA->IsHostileBasedOnReputation( objB->m_factionDBC );
 	}
 	
-	if(player_objB && !player_objA)	   // PvE
+	if(player_objB && !player_objA) // PvE
 	{
 		if(objA->m_factionDBC->RepListId >= 0)
 			hostile = player_objB->IsHostileBasedOnReputation( objA->m_factionDBC );
@@ -86,8 +86,8 @@ bool isHostile(Object* objA, Object* objB)// B is hostile for A?
 	return hostile;
 }
 
-/// Where we check if we object A can attack object B. This is used in many feature's
-/// Including the spell class and the player class.
+// Where we check if we object A can attack object B. This is used in many feature's
+// Including the spell class and the player class.
 bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack B?
 {
 	// can't attack self.. this causes problems with buffs if we don't have it :p
@@ -113,16 +113,16 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if( CheckStealth && objB->IsUnit() && TO_UNIT(objB)->InStealth() )
 		return false;
 
-	//Get players (or owners of pets/totems)
+	// Get players (or owners of pets/totems)
 	Player* player_objA = GetPlayerFromObject(objA);
 	Player* player_objB = GetPlayerFromObject(objB);
 	if( player_objA && player_objB )
 	{
-		//Handle duels
+		// Handle duels
 		if( player_objA->DuelingWith == player_objB && player_objA->GetDuelState() == DUEL_STATE_STARTED )
 			return true;
 
-		//These area's are sanctuaries
+		// These area's are sanctuaries
 		for(uint32 i = 0; i < NUM_SANCTUARIES ; ++i)
 		{
 			if( player_objA->GetAreaID() == SANCTUARY_ZONES[i] || player_objB->GetAreaID() == SANCTUARY_ZONES[i])
@@ -144,10 +144,10 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 		if ( atA && atB && (atA->AreaFlags & AREA_SANCTUARY || atB->AreaFlags & AREA_SANCTUARY) )
 			return false;
 
-		//Handle BG's
+		// Handle BG's
 		if( player_objA->m_bg != NULL)
 		{
-			//Handle ffa_PVP
+			// Handle ffa_PVP
 			if( player_objA->HasFlag(PLAYER_FLAGS,PLAYER_FLAG_FREE_FOR_ALL_PVP) && player_objA->HasFlag(PLAYER_FLAGS,PLAYER_FLAG_FREE_FOR_ALL_PVP))
 			{
 				if( player_objA->GetGroup() == player_objB->GetGroup() )
@@ -155,7 +155,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 				else
 					return true;
 			}
-			//Handle Arenas
+			// Handle Arenas
 			if( player_objA->GetTeam() != player_objB->GetTeam() )
 				return true;
 		}
@@ -168,7 +168,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 			if( player_objA == player_objB ) // Totems...
 				return false;
 
-			return true;		// can hurt each other in FFA pvp
+			return true; // can hurt each other in FFA pvp
 		}
 
 		if( player_objA->GetAreaDBC() != NULL )
@@ -182,7 +182,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	if(objA->m_faction == objB->m_faction)  
 		return false;
 
-	//moved this from IsHostile(); 
+	// moved this from IsHostile(); 
 	// by doing so we skip a hell of a lot redundant checks, which we already passed in this routine.
 	uint32 faction = objB->m_faction->Mask;
 	uint32 host = objA->m_faction->HostileMask;
@@ -201,13 +201,13 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	}
 
 	// Reputation System Checks
-	if(player_objA && !player_objB)	   // PvE
+	if(player_objA && !player_objB) // PvE
 	{
 		if(objB->m_factionDBC->RepListId >= 0)
 			hostile = player_objA->IsHostileBasedOnReputation( objB->m_factionDBC );
 	}
 	
-	if(player_objB && !player_objA)	   // PvE
+	if(player_objB && !player_objA) // PvE
 	{
 		if(objA->m_factionDBC->RepListId >= 0)
 			hostile = player_objB->IsHostileBasedOnReputation( objA->m_factionDBC );
@@ -226,6 +226,7 @@ bool isAttackable(Object* objA, Object* objB, bool CheckStealth)// A can attack 
 	}
 	return hostile;
 }
+
 Player* GetPlayerFromObject(Object* obj)
 {
 	Player* player_obj = NULL;
@@ -249,7 +250,8 @@ Player* GetPlayerFromObject(Object* obj)
 	}
 	return player_obj;
 }
-bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
+
+bool isCombatSupport(Object* objA, Object* objB) // B combat supports A?
 {
 	if( !objA || !objB )
 		return false;   
@@ -287,20 +289,19 @@ bool isCombatSupport(Object* objA, Object* objB)// B combat supports A?
 	return combatSupport;
 }
 
-
-bool isAlliance(Object* objA)// A is alliance?
+bool isAlliance(Object* objA) // A is alliance?
 {
 	if(!objA || objA->m_factionDBC == NULL || objA->m_faction == NULL)
 		return true;
 
-	//Get stormwind faction frm dbc (11/72)
+	// Get stormwind faction frm dbc (11/72)
 	FactionTemplateDBC * m_sw_faction = dbcFactionTemplate.LookupEntry(11);
 	FactionDBC * m_sw_factionDBC = dbcFaction.LookupEntry(72);
 
 	if(m_sw_faction == objA->m_faction || m_sw_factionDBC == objA->m_factionDBC)
 		return true;
 
-	//Is StormWind hostile to ObjectA?
+	// Is StormWind hostile to ObjectA?
 	uint32 faction = m_sw_faction->Faction;
 	uint32 hostilemask = objA->m_faction->HostileMask;
 
@@ -314,7 +315,7 @@ bool isAlliance(Object* objA)// A is alliance?
 			return false;
 	}
 
-	//Is ObjectA hostile to StormWind?
+	// Is ObjectA hostile to StormWind?
 	faction = objA->m_faction->Faction;
 	hostilemask = m_sw_faction->HostileMask;
 
@@ -328,8 +329,6 @@ bool isAlliance(Object* objA)// A is alliance?
 			return false;
 	}
 
-	//We're not hostile towards SW, so we are allied
+	// We're not hostile towards SW, so we are allied
 	return true;
 }
-
-

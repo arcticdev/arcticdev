@@ -114,7 +114,7 @@ bool startdb()
 	{
 		sLog.outError("sql: Logon database initialization failed. Exiting.");
 		return false;
-	}   
+	}
 
 	return true;
 }
@@ -290,7 +290,7 @@ void LogonServer::Run(int argc, char ** argv)
 		sLog.m_fileLogLevel = -1;
 		sLog.m_screenLogLevel = 3;
 	}
-	
+
 	sLog.outString("===============================================================================");
 	printf(BANNER, BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	sLog.outString("===============================================================================");
@@ -323,7 +323,7 @@ void LogonServer::Run(int argc, char ** argv)
 
 	Log.Notice("ThreadMgr", "Starting...");
 	ThreadPool.Startup();
-   
+
 	if(!startdb())
 		return;
 
@@ -358,7 +358,7 @@ void LogonServer::Run(int argc, char ** argv)
 	hash.UpdateData(logon_pass);
 	hash.Finalize();
 	memcpy(sql_hash, hash.GetDigest(), 20);
-	
+
 	ThreadPool.ExecuteTask(new LogonConsoleThread);
 
 	new SocketMgr;
@@ -464,6 +464,8 @@ void LogonServer::Run(int argc, char ** argv)
 	delete SocketMgr::getSingletonPtr();
 	delete SocketGarbageCollector::getSingletonPtr();
 	delete pfc;
+	delete cl;
+	delete sl;
 	printf("Shutdown complete.\n");
 }
 

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _THREADING_STARTER_H
-#define _THREADING_STARTER_H
+#pragma once
 
 class SERVER_DECL ThreadContext
 {
@@ -26,6 +25,4 @@ public:
 protected:
 	bool m_threadRunning;
 };
-
-#endif
 

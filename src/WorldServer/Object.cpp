@@ -2624,33 +2624,33 @@ void Object::SendSpellLog(Object* Caster, Object* Target, uint32 Ability, uint8 
 	Caster->SendMessageToSet(&data, true);
 }
 
-
 void Object::SendSpellNonMeleeDamageLog( Object* Caster, Unit* Target, uint32 SpellID, uint32 Damage, uint8 School, uint32 AbsorbedDamage, uint32 ResistedDamage, bool PhysicalDamage, uint32 BlockedDamage, bool CriticalHit, bool bToset )
 {
 	if ( !Caster || !Target )
 		return;
-
+	if(Caster == Target)
+		if(Caster->IsVehicle())
+			return;
 	SpellEntry *sp = dbcSpell.LookupEntry(SpellID);
 	if( !sp )
 		return;
-
 	SpellID = sp->logsId ? sp->logsId : sp->Id;
 	uint32 overkill = Target->computeOverkill(Damage);
 
-	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG,40);
+	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, sizeof(Target->GetNewGUID())+sizeof(Caster->GetNewGUID())+4+4+4+1+4+4+1+1+4+1+4);
 	data << Target->GetNewGUID();
 	data << Caster->GetNewGUID();
-	data << SpellID;                    // SpellID / AbilityID
-	data << Damage;                     // All Damage
-	data << uint32(overkill);			// Overkill
-	data << uint8(g_spellSchoolConversionTable[School]);                     // School
-	data << AbsorbedDamage;             // Absorbed Damage
-	data << ResistedDamage;             // Resisted Damage
-	data << uint8(PhysicalDamage);      // Physical Damage (true/false)
-	data << uint8(0);                   // unknown or it binds with Physical Damage
-	data << BlockedDamage;		     // Physical Damage (true/false)
-	data << uint8(CriticalHit ? 7 : 5);                   // unknown const
-	data << uint32(0);
+	data << uint32(SpellID);				// SpellID / AbilityID
+	data << uint32(Damage);					// All Damage
+	data << uint32(overkill);				// Overkill
+	data << uint8(SchoolMask(School));		// School
+	data << uint32(AbsorbedDamage);			// Absorbed Damage
+	data << uint32(ResistedDamage);			// Resisted Damage
+	data << uint8(PhysicalDamage);			// Physical Damage (true/false)
+	data << uint8(0);						// unknown or it binds with Physical Damage
+	data << uint32(BlockedDamage);			// Physical Damage (true/false)
+	data << uint32(CriticalHit ? 0x00002 : 0);
+	data << uint8(0);
 
 	Caster->SendMessageToSet( &data, bToset );
 }
@@ -2768,57 +2768,59 @@ void Object::_SetExtension(const string& name, void* ptr)
 	m_extensions->insert( make_pair( name, ptr ) );
 }
 
-
 void Object::SendAttackerStateUpdate( Unit* Target, dealdamage *dmg, uint32 realdamage, uint32 abs, uint32 blocked_damage, uint32 hit_status, uint32 vstate )
 {
 	if (!Target || !dmg)
 		return;
 
-	WorldPacket data(SMSG_ATTACKERSTATEUPDATE, 70);
-
-	if (hit_status & HITSTATUS_BLOCK)
-	{
-		hit_status|= 0x800000;
-	}
-
+	WorldPacket data(SMSG_ATTACKERSTATEUPDATE, 108);
 	uint32 overkill = Target->computeOverkill(realdamage);
+	uint32 schooldam = SchoolMask(dmg->school_type);
 
-	data << (uint32)hit_status;   
+	data << uint32(hit_status);
 	data << GetNewGUID();
 	data << Target->GetNewGUID();
+	data << uint32(realdamage);					// Realdamage;
+	data << uint32(overkill);					// Overkill
+	data << uint8(1);							// Damage type counter / swing type
+	data << uint32(schooldam);					// Damage school
+	data << float(dmg->full_damage);			// Damage float
+	data << uint32(dmg->full_damage);			// Damage amount
 
-	data << (uint32)realdamage;			// Realdamage;
-	data << (uint32)overkill;			// Overkill
-	data << (uint8)1;					// Damage type counter / swing type
-
-	data << (uint32)g_spellSchoolConversionTable[dmg->school_type];				  // Damage school
-	data << (float)dmg->full_damage;		// Damage float
-	data << (uint32)dmg->full_damage;	// Damage amount
-
-	if(hit_status & HITSTATUS_ABSORBED)
+	if(hit_status & (HITSTATUS_ABSORBED | HITSTATUS_ABSORBED2))
 	{
-		data << (uint32)abs;				// Damage absorbed
+		data << (uint32)abs;					// Damage absorbed
 	}
-	if(hit_status & HITSTATUS_RESIST)
+	if(hit_status & (HITSTATUS_RESIST | HITSTATUS_RESIST2))
 	{
-		data << (uint32)dmg->resisted_damage;	// Damage resisted
+		data << uint32(dmg->resisted_damage);	// Damage resisted
 	}
 
-	data << (uint8)vstate;				// new victim state
+	data << uint8(vstate);						// new victim state
+	data << uint32(0);
+	data << uint32(0);
+
 	if(hit_status & HITSTATUS_BLOCK)
-		data << (uint32)0;				// can be 0,1000 or -1
-	else
-		data << (uint32)0x3e8;			// can be 0,1000 or -1
+		data << uint32(blocked_damage);			// Damage amount blocked
 
 	if (hit_status & 0x00800000)
+		data << uint32(0);						// unknown
+
+	if(hit_status & HITSTATUS_unk)
 	{
-		data << (uint32)0;				// unknown
+		data << uint32(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << float(0);
+		data << uint32(0);
 	}
-	if(hit_status & HITSTATUS_BLOCK)
-	{
-		data << (uint32)blocked_damage;	 // Damage amount blocked
-	}
-	data << (uint32)0;					// Unknown
 
 	SendMessageToSet(&data, IsPlayer());
 }

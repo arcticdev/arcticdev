@@ -4,12 +4,11 @@
  * See COPYING for license details.
  */
 
+#pragma once
+
 #include "../Common.h"
 #include "Mutex.h"
 #include "ThreadStarter.h"
-
-#ifndef __THREADPOOL_H
-#define __THREADPOOL_H
 
 #define THREAD_RESERVE 8
 
@@ -172,7 +171,7 @@ public:
 
 	// shutdown all threads
 	void Shutdown();
-	
+
 	// return true - suspend ourselves, and wait for a future task.
 	// return false - exit, we're shutting down or no longer needed.
 	bool ThreadExit(Thread * t);
@@ -200,5 +199,3 @@ public:
 };
 
 extern SERVER_DECL CThreadPool ThreadPool;
-
-#endif

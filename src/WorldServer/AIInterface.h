@@ -16,7 +16,7 @@
 #define ENABLE_CREATURE_DAZE
 #ifdef ENABLE_CREATURE_DAZE
 	#define CREATURE_SPELL_TO_DAZE 1604
-	#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 // for the beginners this means 45 degrees 
+	#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 // for the beginners this means 45 degrees
 #endif
 
 class Object;
@@ -234,9 +234,9 @@ class SERVER_DECL AIInterface
 		ARCTIC_INLINE void AddStopTime(uint32 Time) { m_moveTimer += Time; }
 		ARCTIC_INLINE void SetNextSpell(AI_Spell*sp) { m_nextSpell = sp; }
 		ARCTIC_INLINE Unit* GetNextTarget() { return m_nextTarget; }
-		ARCTIC_INLINE void SetNextTarget (Unit* nextTarget) 
-		{ 
-			m_nextTarget = nextTarget; 
+		ARCTIC_INLINE void SetNextTarget (Unit* nextTarget)
+		{
+			m_nextTarget = nextTarget;
 			if(nextTarget)
 			{
 				m_Unit->SetTargetGUID(m_nextTarget->GetGUID());
@@ -255,7 +255,7 @@ class SERVER_DECL AIInterface
 		void WipeReferences();
 		WayPointMap *m_waypoints;
 		ARCTIC_INLINE void SetPetOwner(Unit* owner) { m_PetOwner = owner; }
- 
+
 		list<AI_Spell*> m_spells;
 
 		bool disable_combat;
@@ -334,7 +334,7 @@ class SERVER_DECL AIInterface
 		float m_destinationX;
 		float m_destinationY;
 		float m_destinationZ;
-	
+
 		float m_nextPosX;
 		float m_nextPosY;
 		float m_nextPosZ;
@@ -346,7 +346,6 @@ class SERVER_DECL AIInterface
 
 		float m_lastFollowX;
 		float m_lastFollowY;
-		// typedef std::map<uint32, WayPoint*> WayPointMap;
 		Unit* UnitToFollow;
 		Unit* UnitToFollow_backup; // used unly when forcing creature to wander (blind spell) so when effect wears off we can follow our master again (guardian)
 		Unit* UnitToFear;

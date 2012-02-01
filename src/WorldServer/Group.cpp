@@ -7,26 +7,29 @@
 
 enum PartyUpdateFlags
 {
-    GROUP_UPDATE_FLAG_NONE                      = 0,        // 0x00000000
-    GROUP_UPDATE_FLAG_ONLINE                    = 1,        // 0x00000001  uint8
-    GROUP_UPDATE_FLAG_HEALTH                    = 2,        // 0x00000002  uint16
-    GROUP_UPDATE_FLAG_MAXHEALTH                 = 4,        // 0x00000004  uint16
-    GROUP_UPDATE_FLAG_POWER_TYPE                = 8,        // 0x00000008  uint16
-    GROUP_UPDATE_FLAG_POWER                     = 16,       // 0x00000010  uint16
-    GROUP_UPDATE_FLAG_MAXPOWER                  = 32,       // 0x00000020  uint16
-    GROUP_UPDATE_FLAG_LEVEL                     = 64,       // 0x00000040  uint16
-    GROUP_UPDATE_FLAG_ZONEID                    = 128,      // 0x00000080  uint16
-    GROUP_UPDATE_FLAG_POSITION                  = 256,      // 0x00000100  uint16, uint16
-    GROUP_UPDATE_FLAG_PLAYER_AURAS              = 512,      // 0x00000200  uint64, uint16 for each uint64
-    GROUP_UPDATE_FLAG_PET_GUID                  = 1024,     // 0x00000400  uint64
-    GROUP_UPDATE_FLAG_PET_NAME                  = 2048,     // 0x00000800  string
-    GROUP_UPDATE_FLAG_PET_DISPLAYID             = 4096,     // 0x00001000  uint16
-    GROUP_UPDATE_FLAG_PET_HEALTH                = 8192,     // 0x00002000  uint16
-    GROUP_UPDATE_FLAG_PET_MAXHEALTH             = 16384,    // 0x00004000  uint16
-    GROUP_UPDATE_FLAG_PET_POWER_TYPE            = 32768,    // 0x00008000  uint8
-    GROUP_UPDATE_FLAG_PET_POWER                 = 65535,    // 0x00010000  uint16
-    GROUP_UPDATE_FLAG_PET_MAXPOWER              = 131070,   // 0x00020000  uint16
-    GROUP_UPDATE_FLAG_PET_AURAS                 = 262144,   // 0x00040000  uint64, uint16 for each uint64
+	GROUP_UPDATE_FLAG_NONE						= 0,		// 0x00000000
+	GROUP_UPDATE_FLAG_ONLINE					= 1,		// 0x00000001  uint8
+	GROUP_UPDATE_FLAG_HEALTH					= 2,		// 0x00000002  uint16
+	GROUP_UPDATE_FLAG_MAXHEALTH					= 4,		// 0x00000004  uint16
+	GROUP_UPDATE_FLAG_POWER_TYPE				= 8,		// 0x00000008  uint16
+	GROUP_UPDATE_FLAG_POWER						= 16,		// 0x00000010  uint16
+	GROUP_UPDATE_FLAG_MAXPOWER					= 32,		// 0x00000020  uint16
+	GROUP_UPDATE_FLAG_LEVEL						= 64,		// 0x00000040  uint16
+	GROUP_UPDATE_FLAG_ZONEID					= 128,		// 0x00000080  uint16
+	GROUP_UPDATE_FLAG_POSITION					= 256,		// 0x00000100  uint16, uint16
+	GROUP_UPDATE_FLAG_PLAYER_AURAS				= 512,		// 0x00000200  uint64, uint16 for each uint64
+	GROUP_UPDATE_FLAG_PET_GUID					= 1024,		// 0x00000400  uint64
+	GROUP_UPDATE_FLAG_PET_NAME					= 2048,		// 0x00000800  string
+	GROUP_UPDATE_FLAG_PET_DISPLAYID				= 4096,		// 0x00001000  uint16
+	GROUP_UPDATE_FLAG_PET_HEALTH				= 8192,		// 0x00002000  uint16
+	GROUP_UPDATE_FLAG_PET_MAXHEALTH				= 16384,	// 0x00004000  uint16
+	GROUP_UPDATE_FLAG_PET_POWER_TYPE			= 32768,	// 0x00008000  uint8
+	GROUP_UPDATE_FLAG_PET_POWER					= 65535,	// 0x00010000  uint16
+	GROUP_UPDATE_FLAG_PET_MAXPOWER				= 131070,	// 0x00020000  uint16
+	GROUP_UPDATE_FLAG_PET_AURAS					= 262144,	// 0x00040000  uint64, uint16 for each uint64
+	GROUP_UPDATE_FLAG_VEHICLE_ENTRY				= 524288,	// 0x00080000
+	GROUP_UPDATE_PET							= 523264,	// 0x0007FC00
+	GROUP_UPDATE_FULL							= 524287,	// 0x0007FFFF
 };
 
 enum PartyUpdateFlagGroups
@@ -296,14 +299,14 @@ void Group::Update()
 								continue;
 
 							data << (*itr2)->name << (*itr2)->guid << uint32(0);	// highguid
-							
+
 							if( (*itr2)->m_loggedInPlayer != NULL )
 								data << uint8( 1 );
 							else
 								data << uint8( 0 );
 
 							data << uint8( sg2->GetID() );
-							
+
 							flags = 0;
 
 							if( (*itr2) == m_assistantLeader )
@@ -340,7 +343,7 @@ void Group::Update()
 					(*itr1)->m_loggedInPlayer->CopyAndSendDelayedPacket( &data );
 				else
 					(*itr1)->m_loggedInPlayer->GetSession()->SendPacket( &data );
-			}		
+			}
 		}
 	}
 
@@ -464,7 +467,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 		m_isqueued=false;
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
-	
+
 	m_groupLock.Acquire();
 	SubGroup *sg=NULL;
 	if(info->subGroup >= 0 && info->subGroup <= 8)
@@ -517,8 +520,8 @@ void Group::RemovePlayer(PlayerInfo * info)
 		// Remove some party auras.
 		for (uint32 i = 0; i < MAX_POSITIVE_AURAS; i++)
 		{
-			if (pPlayer->m_auras[i] != NULL && 
-				pPlayer->m_auras[i]->m_areaAura && 
+			if (pPlayer->m_auras[i] != NULL &&
+				pPlayer->m_auras[i]->m_areaAura &&
 				pPlayer->m_auras[i]->GetUnitCaster() &&
 				(!pPlayer->m_auras[i]->GetUnitCaster() ||(pPlayer->m_auras[i]->GetUnitCaster()->IsPlayer() && pPlayer!=pPlayer->m_auras[i]->GetUnitCaster())))
 				pPlayer->RemoveAuraBySlot(i);
@@ -527,7 +530,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 
 	if(m_MemberCount < 2)
 	{
-		// disband the group, except battleground groups. 
+		// disband the group, except battleground groups.
 		if(!(m_groupFlags & GROUP_FLAG_DONT_DISBAND_WITH_NO_MEMBERS))
 		{
 			Disband();
@@ -579,12 +582,12 @@ void Group::ExpandToRaid()
 }
 
 void Group::SetLooter(Player* pPlayer, uint8 method, uint16 threshold)
-{ 
+{
 	m_LootMethod = method;
 	m_Looter = pPlayer ? pPlayer->m_playerInfo : NULL;
 	m_LootThreshold  = threshold;
 	m_dirty = true;
-		
+
 	Update();
 }
 
@@ -601,7 +604,7 @@ void Group::SendPacketToAllButOne(WorldPacket *packet, Player* pSkipTarget)
 				(*itr)->m_loggedInPlayer->GetSession()->SendPacket(packet);
 		}
 	}
-	
+
 	m_groupLock.Release();
 }
 
@@ -722,7 +725,7 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 		m_groupLock.Release();
 		return;
 	}
-	
+
 	sg->RemovePlayer(info);
 
 	// Grab the new group, and insert
@@ -828,7 +831,7 @@ void Group::SaveToDB()
 		ss << m_assistantLeader->guid << ",";
 	else
 		ss << "0,";
-	
+
 	if(m_mainTank)
 		ss << m_mainTank->guid << ",";
 	else
@@ -930,7 +933,7 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 		Player* plr;
 		float dist = pPlayer->GetMapMgr()->m_UpdateDistance;
 		m_groupLock.Acquire();
-		for(uint32 i = 0; i < m_SubGroupCount; ++i)
+		for(uint32 i = 0; i < m_SubGroupCount; i++)
 		{
 			if(m_SubGroups[i]==NULL)
 				continue;
@@ -938,7 +941,7 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 			for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd();)
 			{
 				plr = (*itr)->m_loggedInPlayer;
-				itr++;
+				++itr;
 
 				if(plr && plr != pPlayer)
 				{
@@ -1002,7 +1005,7 @@ void Group::HandleUpdateFieldChange(uint32 Index, Player* pPlayer)
 	case UNIT_FIELD_HEALTH:
 		Flags = GROUP_UPDATE_FLAG_HEALTH;
 		break;
-		
+
 	case UNIT_FIELD_MAXHEALTH:
 		Flags = GROUP_UPDATE_FLAG_MAXHEALTH;
 		break;
@@ -1125,7 +1128,7 @@ void Group::SendPacketToAllInRange(Player* plr, WorldPacket *packet)
 	for(uint8 i = 0; i < GetSubGroupCount(); ++i)
 	{
 		SubGroup* sg = GetSubGroup(i);
-		
+
 		for(GroupMembersSet::iterator itr = sg->GetGroupMembersBegin(); itr != sg->GetGroupMembersEnd(); ++itr)
 		{
 			if( (*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->GetDistance2dSq(plr) < 80.0f)

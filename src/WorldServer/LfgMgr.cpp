@@ -32,8 +32,6 @@ LfgMgr::LfgMgr()
 
 LfgMgr::~LfgMgr()
 {
-	
-	
 }
 
 bool LfgMgr::AttemptLfgJoin(Player* pl, uint32 LfgDungeonId)
@@ -89,8 +87,8 @@ void LfgMgr::RemovePlayerFromLfgQueues(Player* pl)
 		if( pl->LfmDungeonId < MAX_DUNGEONS )
 			m_lookingForMore[pl->LfmDungeonId].remove(pl);
 
-		pl->LfmDungeonId=0;
-		pl->LfmType=0;
+		pl->LfmDungeonId = 0;
+		pl->LfmType = 0;
 	}
 
 	m_lock.Release();
@@ -196,17 +194,6 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 	// do we still have any members left over (enough to form a group)
 	while(possibleMembers.size() > 1)
 	{
-		/*pMatch = new LfgMatch(LfgDungeonId);
-		pMatch->lock.Acquire();
-		for(i = 0; i < 5, possibleMembers.size() > 0; ++i)
-		{
-			pMatch->PendingPlayers.insert(possibleMembers.front());
-			possibleMembers.front()->SendMeetingStoneQueue(LfgDungeonId, 0);
-			possibleMembers.front()->GetSession()->OutPacket(SMSG_LFG_INVITE, 4, &LfgDungeonId);
-			possibleMembers.front()->m_lfgMatch = pMatch;
-			possibleMembers.pop_front();
-		}
-		pMatch->lock.Release();*/
 		Group * pGroup = new Group(true);
 		for(i = 0; i < 5 && possibleMembers.size() > 0; ++i)
 		{
@@ -231,10 +218,6 @@ void LfgMgr::SendLfgList( Player* plr, uint32 Dungeon )
 	LfgPlayerList::iterator itr;
 	GroupMembersSet::iterator it2;
 	uint32 count = 0;
-	//Player* pl;
-	//uint32 i;
-	//uint64 tguid;
-	//SubGroup * sgrp;
 
 	m_lock.Acquire();
 }

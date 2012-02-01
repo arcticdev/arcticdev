@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _THREADING_LOCKED_QUEUE_H
-#define _THREADING_LOCKED_QUEUE_H
+#pragma once
 
 #include "Mutex.h"
 #include <deque>
@@ -76,5 +75,3 @@ protected:
 	std::deque<TYPE> queue;
 	Mutex mutex;
 };
-
-#endif

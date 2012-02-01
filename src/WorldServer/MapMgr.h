@@ -250,7 +250,7 @@ public:
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();
 	void HookOnAreaTrigger(Player* plr, uint32 id);
-	
+
 	// better hope to clear any references to us when calling this :P
 	void InstanceShutdown()
 	{
@@ -261,13 +261,11 @@ public:
 	// kill the worker thread only
 	void KillThread()
 	{
-		pInstance=NULL;
+		pInstance = NULL;
 		thread_kill_only = true;
 		Terminate();
 		while(thread_running)
-		{
 			Sleep(100);
-		}
 	}
 
 protected:

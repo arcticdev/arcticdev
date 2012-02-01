@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _THREADING_H
-#define _THREADING_H
+#pragma once
 
 // We need assertions.
 #include "../Errors.h"
@@ -24,6 +23,4 @@
 
 // Thread Pool
 #include "ThreadPool.h"
-
-#endif
 

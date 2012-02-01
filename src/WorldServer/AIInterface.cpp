@@ -3286,27 +3286,30 @@ void AIInterface::Event_Summon_Elemental(uint32 summon_duration, uint32 TotemEnt
 
 		m_Unit->m_SummonSlots[Slot] = ourslave;
 
-		/*
-			Spells can be added to AI_Agents for every summoned elemental ;)
-		*/
+		/* Spells can be added to AI_Agents for every summoned elemental ;) */
 	}
 }
 
 void AIInterface::CallGuards()
 {
-	if( m_Unit->isDead() || !m_Unit->isAlive() || m_Unit->GetInRangePlayersCount() == 0 )
+	ASSERT(m_Unit != NULL);
+	if(!m_Unit->IsCreature())
 		return;
 
-	if(  getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()))
+	Creature* m_Creature = TO_CREATURE(m_Unit);
+	if( m_Creature->isDead() || !m_Creature->isAlive() || m_Creature->GetInRangePlayersCount() == 0 || m_Creature->GetMapMgr() == NULL || m_Creature->m_isGuard )
+		return;
+
+	if( getMSTime() > m_guardTimer && !IS_INSTANCE(m_Unit->GetMapId()) )
 	{
 		m_guardTimer = getMSTime() + 15000;
 		uint16 AreaId = m_Unit->GetMapMgr()->GetAreaID(m_Unit->GetPositionX(),m_Unit->GetPositionY(),m_Unit->GetPositionZ());
 		AreaTable * at = dbcArea.LookupEntry(AreaId);
-		if(!at)
+		if(at == NULL)
 			return;
 
 		ZoneGuardEntry * zoneSpawn = ZoneGuardStorage.LookupEntry(at->ZoneId);
-		if(!zoneSpawn) 
+		if(zoneSpawn == NULL)
 			return;
 
 		uint32 team = isAlliance(m_Unit) ? 0 : 1; // Set team
@@ -3315,32 +3318,22 @@ void AIInterface::CallGuards()
 		guardId = guardId ? guardId : team ? 3296 : 68;
 
 		CreatureProto * cp = CreatureProtoStorage.LookupEntry( guardId );
-		if(!cp) 
-			return;
+		if(cp == NULL || m_Unit->GetEntry() == guardId)
+			return; // Do not let guards spawn themselves.
 
-		float x = m_Unit->GetPositionX() + (float(rand() % 150 + 100) / 1000.0f );
-		float y = m_Unit->GetPositionY() + (float(rand() % 150 + 100) / 1000.0f );
-#ifdef COLLISION
-		float z = CollideInterface.GetHeight(m_Unit->GetMapId(), x, y, m_Unit->GetPositionZ() + 2.0f);
-		if( z == NO_WMO_HEIGHT )
-			z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
-
-		if( fabs( z - m_Unit->GetPositionZ() ) > 10.0f )
-			z = m_Unit->GetPositionZ();
-#else
+		float x = m_Unit->GetPositionX() + (float((rand() % 150) + 100) / 1000.0f );
+		float y = m_Unit->GetPositionY() + (float((rand() % 150) + 100) / 1000.0f );
 		float z = m_Unit->GetPositionZ();
 		float adt_z = m_Unit->GetMapMgr()->GetLandHeight(x, y);
 		if(fabs(z - adt_z) < 3)
 			z = adt_z;
-#endif
 
 		// "Guards!"
 		m_Unit->SendChatMessage(CHAT_MSG_MONSTER_SAY, team ? LANG_ORCISH : LANG_COMMON, "Guards!");
 
 		uint8 spawned = 0;
-	
 		unordered_set<Player*>::iterator hostileItr = m_Unit->GetInRangePlayerSetBegin();
-		for(; hostileItr != m_Unit->GetInRangePlayerSetEnd(); hostileItr++)
+		for(; hostileItr != m_Unit->GetInRangePlayerSetEnd(); ++hostileItr)
 		{
 			if(spawned >= 3)
 				break;
@@ -3348,16 +3341,16 @@ void AIInterface::CallGuards()
 			if(!isHostile(*hostileItr, m_Unit))
 				continue;
 
-			Creature* guard = NULL;
-			guard = m_Unit->GetMapMgr()->CreateCreature(guardId);
+			Creature* guard = m_Unit->GetMapMgr()->CreateCreature(guardId);
 			if(guard == NULL)
 				continue;
-			guard->Load(cp, x, y, z);
+
+			guard->Load(cp, m_Unit->GetMapMgr()->iInstanceMode, x, y, z);
 			guard->SetInstanceID(m_Unit->GetInstanceID());
 			guard->SetZoneId(m_Unit->GetZoneId());
 			guard->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP); /* shitty DBs */
-			guard->m_noRespawn=true;
-		
+			guard->m_noRespawn = true;
+			guard->m_isGuard = true;
 			if(!guard->CanAddToWorld())
 			{
 				guard->SafeDelete();
@@ -3366,15 +3359,14 @@ void AIInterface::CallGuards()
 
 			uint32 t = spawned ? 0 : RandomUInt(8)*1000;
 			if( t == 0 )
-					guard->PushToWorld(m_Unit->GetMapMgr());
-				else
-					sEventMgr.AddEvent(guard,&Creature::AddToWorld, m_Unit->GetMapMgr(), EVENT_UNK, t, 1, 0);
+				guard->PushToWorld(m_Unit->GetMapMgr());
+			else
+				sEventMgr.AddEvent(guard,&Creature::AddToWorld, m_Unit->GetMapMgr(), EVENT_UNK, t, 1, 0);
 
-			//despawn after 5 minutes.
+			// despawn after 5 minutes.
 			sEventMgr.AddEvent(guard, &Creature::SafeDelete, EVENT_CREATURE_SAFE_DELETE, 60*5*1000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-			//Start patrolling if nothing else to do.
+			// Start patrolling if nothing else to do.
 			sEventMgr.AddEvent(guard, &Creature::SetGuardWaypoints, EVENT_UNK, 10000, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-
 			spawned++;
 		}
 	}

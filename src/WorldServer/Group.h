@@ -76,12 +76,12 @@ public:
 
 	bool AddPlayer(PlayerInfo * info);
 	void RemovePlayer(PlayerInfo * info);
-	
-	ARCTIC_INLINE bool IsFull(void)				{ return m_GroupMembers.size() >= MAX_GROUP_SIZE_PARTY; }
-	ARCTIC_INLINE size_t GetMemberCount(void)		{ return m_GroupMembers.size(); }
-	
+
+	ARCTIC_INLINE bool IsFull(void)                { return m_GroupMembers.size() >= MAX_GROUP_SIZE_PARTY; }
+	ARCTIC_INLINE size_t GetMemberCount(void)      { return m_GroupMembers.size(); }
+
 	ARCTIC_INLINE uint32 GetID(void)			   { return m_Id; }
-	ARCTIC_INLINE void SetID(uint32 newid)		 { m_Id = newid; }
+	ARCTIC_INLINE void SetID(uint32 newid)		   { m_Id = newid; }
 
 	ARCTIC_INLINE void   SetParent(Group* parent)  { m_Parent = parent; }
 	ARCTIC_INLINE Group* GetParent(void)		   { return m_Parent; }
@@ -137,7 +137,7 @@ public:
 	// Destroying/Converting
 	void Disband();
 	Player* FindFirstPlayer();
-	
+
 	// Accessing functions
 	ARCTIC_INLINE SubGroup* GetSubGroup(uint32 Id)
 	{
