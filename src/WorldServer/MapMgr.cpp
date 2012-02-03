@@ -36,7 +36,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	m_event_Instanceid = eventHolder.GetInstanceID();
 	forced_expire = false;
 	InactiveMoveTime = 0;
-	mLoopCounter=0;
+	mLoopCounter = 0;
 	pInstance = NULL;
 	thread_kill_only = false;
 	thread_running = false;
