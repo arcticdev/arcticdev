@@ -742,7 +742,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 				SpellEntry* spellInfo= dbcSpell.LookupEntryForced( damage );
 				Spell* sp (new Spell(p_caster, spellInfo, true, NULL));
 				SpellCastTargets targets;
-				sp->FillAllTargetsInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetRadius(i));
+				sp->FillAllTargetsInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetDBCCastTime(i));
 				sp->prepare(&targets);
 			}
 		}break;
@@ -2978,7 +2978,7 @@ void Spell::SpellEffectPersistentAA(uint32 i) // Persistent Area Aura
 		return;
 	//create only 1 dyn object
 	uint32 dur = GetDuration();
-	float r = GetRadius(i);
+	float r = GetDBCCastTime(i);
 
 	//Note: this code seems to be useless
 	//this must be only source point or dest point
@@ -3188,8 +3188,8 @@ void Spell::SummonCreature(uint32 i) // Summon
 		for (uint32 j=0; j<count; j++)
 		{
 			float m_fallowAngle=-((float(M_PI)/2)*j);
-			x += (GetRadius(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
-			y += (GetRadius(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
+			x += (GetDBCCastTime(i)*(cosf(m_fallowAngle+u_caster->GetOrientation())));
+			y += (GetDBCCastTime(i)*(sinf(m_fallowAngle+u_caster->GetOrientation())));
 
 			Creature* pCreature = NULL;
 			pCreature = p_caster->GetMapMgr()->CreateCreature(cp->Id);
@@ -3239,7 +3239,7 @@ void Spell::SpellEffectLeap(uint32 i) // Leap
 	if(m_caster == NULL )
 		return;
 
-	float radius = GetRadius(i);
+	float radius = GetDBCCastTime(i);
 
 	//FIXME: check for obstacles
 	 
@@ -3472,7 +3472,7 @@ void Spell::SpellEffectTriggerMissile(uint32 i) // Trigger Missile
 	if(spInfo == NULL )
 		return;
 
-	float spellRadius = GetRadius(i);
+	float spellRadius = GetDBCCastTime(i);
 
 	// Just send this spell where he wants :S
 	Spell* sp = new Spell(m_caster, spInfo, true, NULL);
@@ -3852,7 +3852,7 @@ void Spell::SpellEffectApplyAA(uint32 i) // Apply Area Aura
 		
 		unitTarget->tmpAura [m_spellInfo->Id]= pAura;
 	
-		float r=GetRadius(i);
+		float r=GetDBCCastTime(i);
 		r *= r;
 		if( u_caster->IsPlayer() || ( u_caster->GetTypeId() == TYPEID_UNIT && (TO_CREATURE(u_caster)->IsTotem() || TO_CREATURE(u_caster)->IsPet()) ) )
 		{
@@ -4932,7 +4932,7 @@ void Spell::SpellEffectAddFarsight(uint32 i) // Add Farsight
 	if(dyn == NULL)
 		return;
 
-	dyn->Create(p_caster, this, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, GetDuration(), GetRadius(i));
+	dyn->Create(p_caster, this, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, GetDuration(), GetDBCCastTime(i));
 	dyn->SetUInt32Value(OBJECT_FIELD_TYPE, 65);
 	dyn->SetUInt32Value(DYNAMICOBJECT_BYTES, 0x80000002);
 	dyn->AddToWorld(p_caster->GetMapMgr());

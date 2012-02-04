@@ -387,7 +387,7 @@ void GameObject::InitAI()
 	{
 		if(sp->Effect[i])
 		{
-			float t = GetRadius(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[i]));
+			float t = GetDBCCastTime(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[i]));
 			if(t > r)
 				r = t;
 		}

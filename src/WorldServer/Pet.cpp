@@ -445,7 +445,7 @@ AI_Spell*Pet::CreateAISpell(SpellEntry * info)
 
 	if(info->EffectImplicitTargetA[0] == EFF_TARGET_IN_FRONT_OF_CASTER)
 	{
-		float radius = ::GetRadius(dbcSpellRadius.LookupEntry(info->EffectRadiusIndex[0]));
+		float radius = ::GetDBCCastTime(dbcSpellRadius.LookupEntry(info->EffectRadiusIndex[0]));
 		sp->maxrange = radius;
 		sp->spelltargetType = TTYPE_SOURCE;
 	}

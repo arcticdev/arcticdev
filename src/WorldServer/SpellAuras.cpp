@@ -1836,10 +1836,10 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		return;
 	}
 
-
 	SpellEntry *proto = GetSpellProto();
 	float res = float(amount);
 	bool DOTCanCrit = false;
+
 	uint32 school = GetSpellProto()->School;
 
 	if( m_casterGuid && m_target->GetGUID() != m_casterGuid )//don't use resist when cast on self-- this is some internal stuff
@@ -1854,7 +1854,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 			if(res < 0)
 				res = 0;
-
 			else
 			{
 				float summaryPCTmod = 1.0f;
@@ -1869,6 +1868,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 				if( res < 0.0f )
 					res = 0.0f;
 			}
+
 			if( DOTCanCrit == true )
 			{
 				float CritChance = m_caster->spellcritperc + m_caster->SpellCritChanceSchool[school] + m_target->AttackerCritChanceMod[school];
@@ -1925,7 +1925,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 			abs_dmg += ms_abs_dmg;
 		}
 
-
 		res=float(ress < 0 ? 0 : ress);
 		dealdamage dmg;
 		dmg.school_type = school;
@@ -1934,7 +1933,6 @@ void Aura::EventPeriodicDamage(uint32 amount)
 
 		if(res <= 0)
 			dmg.resisted_damage = dmg.full_damage;
-
 
 		if(res > 0 && m_caster != NULL && m_spellProto->MechanicsType != MECHANIC_BLEEDING)
 		{
@@ -1975,9 +1973,9 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		}
 
 		if( m_caster != NULL)
-			m_caster->DealDamage(mtarget, float2int32(res), 2, 0, GetSpellId ());
+			m_caster->DealDamage(mtarget, float2int32(res), 2, 0, GetSpellId());
 		else
-			mtarget->DealDamage(mtarget, float2int32(res), 2, 0, GetSpellId ());
+			mtarget->DealDamage(mtarget, float2int32(res), 2, 0, GetSpellId());
 	}
 }
 
@@ -2827,35 +2825,6 @@ void Aura::SpellAuraDummy(bool apply)
 							TO_PLAYER( m_target )->UpdateStats();
 						}
 					}
-				}
-			}break;
-		case SPELL_HASH_BEACON_OF_LIGHT:
-			{//mark all targets inrange
-				if( m_caster == NULL )
-					return;
-
-				float range = GetMaxRange( dbcSpellRange.LookupEntry( m_spellProto->rangeIndex ) );
-				float r = range*range;
-				for( unordered_set<Object*>::iterator itr = m_target->GetInRangeSetBegin(); itr != m_target->GetInRangeSetEnd(); ++itr )
-				{
-					if( !(*itr)->IsPlayer() )
-						continue;
-
-					if( IsInrange( m_target->GetPositionX(), m_target->GetPositionY(), m_target->GetPositionZ(), (*itr), r ) )
-						if( !isAttackable( m_target,TO_UNIT( *itr ) ) )
-						{
-							if( apply )
-							{
-								TO_UNIT( *itr )->BeaconCaster = m_caster;
-								TO_UNIT( *itr )->BeaconTarget = m_target;
-								//just in case
-								sEventMgr.AddEvent( TO_UNIT( *itr ), &Unit::RemoveBeacons, EVENT_BEACON_REMOVE, 60*1000,1,0);
-							}else
-							{
-								TO_UNIT( *itr )->BeaconCaster = NULL;
-								TO_UNIT( *itr )->BeaconTarget = NULL;
-							}
-						}
 				}
 			}break;
 		case SPELL_HASH_EXHAUSTION:

@@ -422,11 +422,11 @@ public:
         return this->Dur;
     }
 
-    ARCTIC_INLINE float GetRadius(uint32 i)
+    ARCTIC_INLINE float GetDBCCastTime(uint32 i)
     {
         if(bRadSet[i])return Rad[i];
         bRadSet[i]=true;
-        Rad[i]=::GetRadius(dbcSpellRadius.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
+        Rad[i]=::GetDBCCastTime(dbcSpellRadius.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
         if(m_spellInfo->SpellGroupType && u_caster)
         {
             SM_FFValue(u_caster->SM[SMT_RADIUS][0],&Rad[i],m_spellInfo->SpellGroupType);
