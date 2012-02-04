@@ -710,7 +710,7 @@ bool Player::Create(WorldPacket& data )
 	m_restAmount = 0;
 	m_restState = 0;
 
-	memset(m_taximask, 0, sizeof(uint32)*12);
+	memset(m_taximask, 0, sizeof(uint32)*MAX_TAXI);
 
 	// set race dbc
 	myRace = dbcCharRace.LookupEntry(race);
@@ -731,10 +731,15 @@ bool Player::Create(WorldPacket& data )
 	uint8 powertype = myClass->power_type;
 
 	// Automatically add the race's taxi hub to the character's taximask at creation time ( 1 << (taxi_node_id-1) )
-	memset(m_taximask, 0, sizeof(m_taximask));
-	if(class_ == DEATHKNIGHT)
+	memset(m_taximask,0,sizeof(m_taximask));
+	if(sWorld.StartWithAllTaxiMasks)
 	{
-		for(uint8 i = 0; i < 12; ++i)
+		for(uint8 i = 0; i < MAX_TAXI; i++)
+			m_taximask[i] = 0xFFFFFFFF;
+	}
+	else if(class_ == DEATHKNIGHT)
+	{
+		for(uint8 i = 0; i < MAX_TAXI; i++)
 			m_taximask[i] |= DKNodesMask[i];
 	}
 
@@ -5732,7 +5737,7 @@ void Player::LoadTaxiMask(const char* data)
 	vector<string>::iterator iter;
 
 	for (iter = tokens.begin(), index = 0;
-		(index < 12) && (iter != tokens.end()); ++iter, ++index)
+		(index < MAX_TAXI) && (iter != tokens.end()); iter++, ++index)
 	{
 		m_taximask[index] = atol((*iter).c_str());
 	}

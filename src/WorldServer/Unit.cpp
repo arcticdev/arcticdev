@@ -219,8 +219,6 @@ Unit::Unit()
 	m_chargeSpellRemoveQueue.clear();
 	tmpAura.clear();
 	m_DummyAuras.clear();
-	BeaconCaster = NULL;
-	BeaconTarget = NULL;
 	m_LastSpellManaCost = 0;
 
 	for (uint32 x = 0;x<NUM_CUSTOM_TIMERS;x++)
@@ -6704,28 +6702,28 @@ void CombatStatusHandler::OnRemoveFromWorld()
 	DamageMap.clear();
 }
 
-void Unit::Heal(Unit* target, uint32 SpellId, uint32 amount)
-{//Static heal
+uint32 Unit::Heal(Unit* target, uint32 SpellId, uint32 amount, bool silent)
+{
+	// Static heal
 	if(!target || !SpellId || !amount || !target->isAlive() )
-		return;
+		return amount;
 
 	uint32 overheal = 0;
-	uint32 ch=target->GetUInt32Value(UNIT_FIELD_HEALTH);
-	uint32 mh=target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
-	if(mh!=ch)
+	uint32 th = target->GetUInt32Value(UNIT_FIELD_HEALTH) + amount;
+	uint32 mh = target->GetUInt32Value(UNIT_FIELD_MAXHEALTH);
+	if(th > mh)
 	{
-		ch += amount;
-		if(ch > mh)
-		{
-			target->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
-			overheal = ch - mh;
-		}
-		else
-			target->SetUInt32Value(UNIT_FIELD_HEALTH, ch);
-
-		Spell::SendHealSpellOnPlayer(TO_UNIT(this), target, amount, false, overheal, SpellId);
+		target->SetUInt32Value(UNIT_FIELD_HEALTH, mh);
+		overheal = th - mh;
 	}
+	else
+		target->SetUInt32Value(UNIT_FIELD_HEALTH, th);
+
+	if(!silent)
+		Spell::SendHealSpellOnPlayer(this, target, amount, false, overheal, SpellId);
+	return overheal;
 }
+
 void Unit::Energize(Unit* target, uint32 SpellId, uint32 amount, uint32 type)
 {//Static energize
 	if( !target || !SpellId )
@@ -7301,11 +7299,4 @@ void Unit::RemoveAuraBySlot(uint16 Slot)
 		m_auras[Slot]->Remove();
 		m_auras[Slot] = NULL;
 	}
-}
-
-void Unit::RemoveBeacons()
-{
-	//reset this fucker
-	BeaconCaster = NULL;
-	BeaconTarget = NULL;
 }

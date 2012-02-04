@@ -1405,7 +1405,7 @@ ARCTIC_INLINE float GetScale(CreatureDisplayInfo *Scale)
 	return Scale->Scale;
 }
 
-ARCTIC_INLINE float GetRadius(SpellRadius *radius)
+ARCTIC_INLINE float GetDBCCastTime(SpellRadius *radius)
 {
     return radius->Radius;
 }

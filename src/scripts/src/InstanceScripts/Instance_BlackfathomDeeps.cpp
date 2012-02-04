@@ -13,7 +13,7 @@
 class GhamooraAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(GhamooraAI, ArcTicScriptCreatureAI);
-    GhamooraAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    GhamooraAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		// Trample
 		AddSpell(5568, Target_Self, 12, 0, 0);
@@ -24,7 +24,7 @@ class GhamooraAI : public ArcTicScriptCreatureAI
 class LadySarevessAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(LadySarevessAI, ArcTicScriptCreatureAI);
-    LadySarevessAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    LadySarevessAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		// Forked Lightning
 		AddSpell(8435, Target_Current, 10, 2, 0);
@@ -40,7 +40,7 @@ class LadySarevessAI : public ArcTicScriptCreatureAI
 class GelihastAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(GelihastAI, ArcTicScriptCreatureAI);
-    GelihastAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    GelihastAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		// Net
 		AddSpell(6533, Target_RandomPlayer, 10, 0, 0);
@@ -51,7 +51,7 @@ class GelihastAI : public ArcTicScriptCreatureAI
 class LorgusJettAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(LorgusJettAI, ArcTicScriptCreatureAI);
-    LorgusJettAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    LorgusJettAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		// Lightning Bolt
 		AddSpell(12167, Target_Current, 20, 3, 0);
@@ -62,7 +62,7 @@ class LorgusJettAI : public ArcTicScriptCreatureAI
 class BaronAquanisAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(BaronAquanisAI, ArcTicScriptCreatureAI);
-    BaronAquanisAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    BaronAquanisAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		// Frostbolt
 		AddSpell(15043, Target_Current, 20, 3, 0);
@@ -97,7 +97,7 @@ protected:
 class KelrisAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(KelrisAI, ArcTicScriptCreatureAI);
-    KelrisAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    KelrisAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		AddEmote(Event_OnCombatStart, "Who dares disturb my meditation?!", Text_Yell, 5802);
 		AddEmote(Event_OnTargetDied, "Dust to dust.", Text_Yell, 5803);
@@ -113,7 +113,7 @@ class KelrisAI : public ArcTicScriptCreatureAI
 class AkumaiAI : public ArcTicScriptCreatureAI
 {
 	ARCTIC_SCRIPT_FACTORY_FUNCTION(AkumaiAI, ArcTicScriptCreatureAI);
-    AkumaiAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature) 
+    AkumaiAI(Creature* pCreature) : ArcTicScriptCreatureAI(pCreature)
 	{
 		AddEmote(Event_OnCombatStart, "Who dares disturb my meditation?!", Text_Yell); // Should this really be here?
 		AddEmote(Event_OnTargetDied, "Dust to dust.", Text_Yell); // Should this really be here?
@@ -132,7 +132,7 @@ public:
     {
         GossipMenu *Menu;
         objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 7247, plr);
-        
+
 		if(plr->GetTeam() == 0)
 			Menu->AddItem( 0, "Please Teleport me to Darnassus.", 1);
 		Menu->AddItem( 0, "I wish to leave this horrible place", 2);

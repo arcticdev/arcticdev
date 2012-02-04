@@ -276,7 +276,7 @@ bool Spell::IsInvisibilitySpell()
 
 void Spell::FillSpecifiedTargetsInArea( float srcx, float srcy, float srcz, uint32 ind, uint32 specification )
 {
-    FillSpecifiedTargetsInArea( ind, srcx, srcy, srcz, GetRadius(ind), specification );
+    FillSpecifiedTargetsInArea( ind, srcx, srcy, srcz, GetDBCCastTime(ind), specification );
 }
 
 // for the moment we do invisible targets
@@ -333,12 +333,12 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
 }
 void Spell::FillAllTargetsInArea(LocationVector & location,uint32 ind)
 {
-    FillAllTargetsInArea(ind,location.x,location.y,location.z,GetRadius(ind));
+    FillAllTargetsInArea(ind,location.x,location.y,location.z,GetDBCCastTime(ind));
 }
 
 void Spell::FillAllTargetsInArea(float srcx,float srcy,float srcz,uint32 ind)
 {
-	FillAllTargetsInArea(ind,srcx,srcy,srcz,GetRadius(ind));
+	FillAllTargetsInArea(ind,srcx,srcy,srcz,GetDBCCastTime(ind));
 }
 
 /// We fill all the targets in the area, including the stealth ed one's

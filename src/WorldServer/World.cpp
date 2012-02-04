@@ -1394,6 +1394,8 @@ void World::Rehash(bool load)
 	LatencyKickMax = Config.MainConfig.GetIntDefault("Server", "LatencyKickMax", 700); // Если не задано зн-е, то мы устанавливаем 700ms
 	LatencyTimer = Config.MainConfig.GetIntDefault("Server", "LatencyTimer", 120); // Значение в секундах
 
+	StartWithAllTaxiMasks = Config.MainConfig.GetBoolDefault("Server", "StartWithAllTaxiMasks", false);
+
 	// Dual Talent Specialization costs
 	dualTalentTrainCost = Config.MainConfig.GetIntDefault("Server", "DualTalentPrice", 1000);
 	if(dualTalentTrainCost)

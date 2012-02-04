@@ -545,6 +545,8 @@ public:
 	// Duel Talent cost
 	uint32 dualTalentTrainCost;
 
+	bool StartWithAllTaxiMasks;
+
 	// could add configs for every expansion..
 
 	void CharacterEnumProc(QueryResultVector& results, uint32 AccountId);

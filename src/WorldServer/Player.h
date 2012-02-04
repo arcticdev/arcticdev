@@ -38,6 +38,8 @@ struct LevelInfo;
 // gold cap
 #define PLAYER_MAX_GOLD 0x7FFFFFFF
 
+#define MAX_TAXI 12
+
 //====================================================================
 //  Inventory
 //  Holds the display id and item type id for objects in
@@ -898,7 +900,7 @@ public:
     /************************************************************************/
     ARCTIC_INLINE TaxiPath*    GetTaxiPath() { return m_CurrentTaxiPath; }
     ARCTIC_INLINE bool         GetTaxiState() { return m_onTaxi; }
-    const uint32&       GetTaximask( uint8 index ) const { return m_taximask[index]; }
+	const uint32&		GetTaximask( uint8 index ) const { ASSERT(index < MAX_TAXI); return m_taximask[index]; }
     void                LoadTaxiMask(const char* data);
     void                TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node);
     void                JumpToEndTaxiNode(TaxiPath * path);

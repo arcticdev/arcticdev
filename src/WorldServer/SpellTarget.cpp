@@ -128,7 +128,7 @@ pSpellTarget SpellTargetHandler[TOTAL_SPELL_TARGET] =
 // Type 7:
 // Point Blank Area of Effect
 // think its wrong, related to 2 spells, "Firegut Fear Storm" and "Mind Probe"
-// FillAllTargetsInArea(tmpMap,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+// FillAllTargetsInArea(tmpMap,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i));
 
 //fear storm is nice
 //Score 5.7	 Vote: [-] [+] by plle, 1.5 years ago
@@ -281,7 +281,7 @@ void Spell::SpellTargetSelf(uint32 i, uint32 j)
 }
 void Spell::SpellTargetInvisibleAOE(uint32 i, uint32 j)
 {
-	FillSpecifiedTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i),1); //TARGET_SPEC_INVISIBLE);
+	FillSpecifiedTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i),1); //TARGET_SPEC_INVISIBLE);
 }
 
 /// Spell Target Handling for type 4: Target is holder of the aura
@@ -387,13 +387,13 @@ void Spell::SpellTargetSingleTargetEnemy(uint32 i, uint32 j)
 void Spell::SpellTargetCustomAreaOfEffect(uint32 i, uint32 j)
 {
 	// This should be good enough for now
-	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i));
 }
 
 /// Spell Target Handling for type 15 / 16: All Enemies in Area of Effect (instant)
 void Spell::SpellTargetAreaOfEffect(uint32 i, uint32 j)
 {
-	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i));
 }
 
 /// Spell Target Handling for type 18: Land under caster
@@ -405,7 +405,7 @@ void Spell::SpellTargetLandUnderCaster(uint32 i, uint32 j) /// I don't think thi
 		m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_OBJECT_SLOT2 &&
 		m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_OBJECT_SLOT3 &&
 		m_spellInfo->Effect[i] != SPELL_EFFECT_SUMMON_OBJECT_SLOT4 )
-		FillAllTargetsInArea(i, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), GetRadius(i));
+		FillAllTargetsInArea(i, m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), GetDBCCastTime(i));
 	else
 		_AddTargetForced(m_caster->GetGUID(), i);
 }
@@ -426,7 +426,7 @@ void Spell::SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j)
 	if( p == NULL )
 		return;
 
-	float r = GetRadius(i);
+	float r = GetDBCCastTime(i);
 
 	r *= r;
 	if( IsInrange( m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ(), p, r ) )
@@ -470,7 +470,7 @@ void Spell::SpellTargetAoE(uint32 i, uint32 j) // something special
 // grep: this is *totally* broken. AoE only attacking friendly party members and self
 // is NOT correct. // not correct at all:P
 {
-	FillAllTargetsInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetRadius(i));
+	FillAllTargetsInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetDBCCastTime(i));
 }
 
 /// Spell Target Handling for type 23: Gameobject Target
@@ -493,7 +493,7 @@ void Spell::SpellTargetInFrontOfCaster(uint32 i, uint32 j)
 			if(!((*itr2)->IsUnit()) || !TO_UNIT(*itr2)->isAlive())
 				continue;
 			//is Creature in range
-			if(m_caster->isInRange((*itr2),GetRadius(i)))
+			if(m_caster->isInRange((*itr2),GetDBCCastTime(i)))
 			{
 				if(m_caster->isInFront(*itr2))
 				{
@@ -552,7 +552,7 @@ void Spell::SpellTargetPetOwner(uint32 i, uint32 j)
 /// Spell Target Handling for type 28: All Enemies in Area of Effect(Blizzard/Rain of Fire/volley) channeled
 void Spell::SpellTargetEnemysAreaOfEffect(uint32 i, uint32 j)
 {
-	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+	FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i));
 }
 
 // all object around the the caster / object
@@ -596,7 +596,7 @@ void Spell::SpellTargetAllyBasedAreaEffect(uint32 i, uint32 j)
 	// Used in
 	26043 -> Battle Shout
 	*/
-	FillAllFriendlyInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetRadius(i));
+	FillAllFriendlyInArea(i,m_caster->GetPositionX(),m_caster->GetPositionY(),m_caster->GetPositionZ(),GetDBCCastTime(i));
 }
 
 /// Spell Target Handling for type 31: related to scripted effects
@@ -632,7 +632,7 @@ void Spell::SpellTargetScriptedEffects(uint32 i, uint32 j)
 		}
 	}
 	else
-		FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+		FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i));
 }
 
 /// Spell Target Handling for type 32 / 73: related to summoned pet or creature
@@ -654,7 +654,7 @@ void Spell::SpellTargetNearbyPartyMembers(uint32 i, uint32 j)
 		{
 			if( TO_CREATURE( u_caster )->IsTotem() )
 			{
-				float r = GetRadius(i);
+				float r = GetDBCCastTime(i);
 				r *= r;
 
 				Player* p = TO_PLAYER( TO_CREATURE(u_caster)->GetSummonOwner());
@@ -754,7 +754,7 @@ void Spell::SpellTargetDummyTarget(uint32 i, uint32 j)
 	else if( m_spellInfo->Id == 12938 )
 	{
 		//FIXME:this ll be immortal targets
-		FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetRadius(i));
+		FillAllTargetsInArea(i,m_targets.m_destX,m_targets.m_destY,m_targets.m_destZ,GetDBCCastTime(i));
 	}
 	_AddTargetForced(m_caster->GetGUID(), i);
 }
@@ -908,7 +908,7 @@ void Spell::SpellTargetInFrontOfCaster2(uint32 i, uint32 j)
 		if(!((*itr)->IsUnit()) || !TO_UNIT(*itr)->isAlive())
 			continue;
 		//is Creature in range
-		if(m_caster->isInRange(TO_UNIT(*itr),GetRadius(i)))
+		if(m_caster->isInRange(TO_UNIT(*itr),GetDBCCastTime(i)))
 		{
 			if(m_caster->isInFront(TO_UNIT(*itr)))
 			{
@@ -1026,5 +1026,5 @@ void Spell::SpellTargetAllTargetsInArea(uint32 i, uint32 j)
 	if( !m_caster || !m_caster->IsInWorld() )
 		return;
 
-	FillAllTargetsInArea(i, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, GetRadius(i));
+	FillAllTargetsInArea(i, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, GetDBCCastTime(i));
 }

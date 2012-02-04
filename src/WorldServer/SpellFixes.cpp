@@ -5932,13 +5932,13 @@ void ApplyNormalFixes()
 
 		float radius = 0.0f;
 		if(sp->EffectRadiusIndex[0] != 0)
-			radius=::GetRadius(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[0]));
+			radius=::GetDBCCastTime(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[0]));
 
 		if( sp->EffectRadiusIndex[1] != 0 )
-			radius = std::max(radius,::GetRadius(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[1])));
+			radius = std::max(radius,::GetDBCCastTime(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[1])));
 
 		if( sp->EffectRadiusIndex[2] != 0 )
-			radius=std::max(::GetRadius(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[2])),radius);
+			radius=std::max(::GetDBCCastTime(dbcSpellRadius.LookupEntry(sp->EffectRadiusIndex[2])),radius);
 
 		radius=std::max(GetMaxRange(dbcSpellRange.LookupEntry(sp->rangeIndex)),radius);
 		sp->base_range_or_radius = radius;
