@@ -44,12 +44,12 @@ bool FillPathVector(uint32 PathID, TransportPath & Path)
 		DBCTaxiPathNode *pathnode = dbcTaxiPathNode.LookupRow(j);
 		if(pathnode->path == PathID)
 		{
-			Path[i].mapid	   = pathnode->mapid;
-			Path[i].x		   = pathnode->x;
-			Path[i].y		   = pathnode->y;
-			Path[i].z		   = pathnode->z;
-			Path[i].actionFlag  = pathnode->unk1;
-			Path[i].delay	   = pathnode->waittime;
+			Path[i].mapid		= pathnode->mapid;
+			Path[i].x			= pathnode->x;
+			Path[i].y			= pathnode->y;
+			Path[i].z			= pathnode->z;
+			Path[i].actionFlag	= pathnode->flag;
+			Path[i].delay		= pathnode->waittime;
 			++i;
 		}
 	}
@@ -111,8 +111,9 @@ bool Transporter::GenerateWaypoints()
 				pow(keyFrames[i].y - keyFrames[i - 1].y, 2) +
 				pow(keyFrames[i].z - keyFrames[i - 1].z, 2));
 		}
-		if (keyFrames[i].actionflag == 2) {
-            if(firstStop<0)
+		if (keyFrames[i].actionflag == 2)
+		{
+			if(firstStop<0)
 				firstStop=(int)i;
 
 			lastStop = (int)i;
@@ -176,7 +177,7 @@ bool Transporter::GenerateWaypoints()
 	t += keyFrames[0].delay * 1000;
 
 	int cM = keyFrames[0].mapid;
-	for (size_t i = 0; i < keyFrames.size() - 1; i++)	   //
+	for (size_t i = 0; i < keyFrames.size() - 1; i++)		//
 	{
 		float d = 0;
 		float tFrom = keyFrames[i].tFrom;
@@ -267,7 +268,6 @@ bool Transporter::GenerateWaypoints()
 		last_t = t;
 
 		t += keyFrames[i + 1].delay * 1000;
-		//		sLog.outString("------");
 	}
 
 	uint32 timer = t;
@@ -278,7 +278,7 @@ bool Transporter::GenerateWaypoints()
 	m_pathTime = timer;
 	m_timer = 0;
 	m_period = t;
-	
+
 	return true;
 }
 
@@ -298,7 +298,7 @@ void Transporter::UpdatePosition()
 		return;
 
 	m_timer = getMSTime() % m_period;
-	
+
 	while (((m_timer - mCurrentWaypoint->first) % m_pathTime) >= ((mNextWaypoint->first - mCurrentWaypoint->first) % m_pathTime))
 	{
 		mCurrentWaypoint = mNextWaypoint;
@@ -316,7 +316,7 @@ void Transporter::UpdatePosition()
 
 		if(mCurrentWaypoint->second.delayed)
 		{
-			PlaySoundToSet(5495); // BoatDockedWarning.wav
+			PlaySoundToSet(5495);		// BoatDockedWarning.wav
 		}
 	}
 }
@@ -338,9 +338,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 
 		for(; itr != mPassengers.end();)
 		{
-			it2 = itr;
-			itr++;
-
+			it2 = itr++;
 			Player* plr = objmgr.GetPlayer(it2->first);
 			if(!plr)
 			{
@@ -348,7 +346,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 				mPassengers.erase(it2);
 				continue;
 			}
-			if(!plr->GetSession() || !plr->IsInWorld()) 
+			if(!plr->GetSession() || !plr->IsInWorld())
 				continue;
 
 			v.x = x + plr->m_TransporterX;
@@ -371,9 +369,7 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 
 			// Lucky bitch. Do it like on official.
 			if(plr->isDead())
-			{
 				plr->RemoteRevive();
-			}
 
 			if( plr->m_CurrentVehicle )
 				plr->m_CurrentVehicle->RemovePassenger( plr );
@@ -390,8 +386,8 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 
 	// Set our position
 	RemoveFromWorld(false);
-	SetPosition(x,y,z,m_position.o,false);
 	SetMapId(mapid);
+	SetPosition(x,y,z,m_position.o,false);
 	AddToWorld();
 }
 
@@ -424,7 +420,8 @@ void ObjectMgr::LoadTransporters()
 #endif
 	Log.Notice("ObjectMgr", "Loading Transports...");
 	QueryResult * QR = WorldDatabase.Query("SELECT entry FROM gameobject_names WHERE type = %u", GAMEOBJECT_TYPE_MO_TRANSPORT);
-	if(!QR) return;
+	if(!QR)
+		return;
 
 	TransportersCount = QR->GetRowCount();
 	do 
@@ -436,14 +433,16 @@ void ObjectMgr::LoadTransporters()
 		{
 			Log.Warning("ObjectMgr","Skipped invalid transporterid %d.", entry);
 			pTransporter->Destructor();
-		}else
+			pTransporter = NULL;
+		}
+		else
 		{
 			AddTransport(pTransporter);
 
 			QueryResult * result2 = WorldDatabase.Query("SELECT * FROM transport_creatures WHERE transport_entry = %u", entry);
 			if(result2)
 			{
-				do 
+				do
 				{
 					pTransporter->AddNPC(result2->Fetch()[1].GetUInt32(), result2->Fetch()[2].GetFloat(),
 						result2->Fetch()[3].GetFloat(), result2->Fetch()[4].GetFloat(),
@@ -473,7 +472,7 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 
 	CreatureInfo * inf = CreatureNameStorage.LookupEntry(Entry);
 	CreatureProto * proto = CreatureProtoStorage.LookupEntry(Entry);
-	if(inf==NULL||proto==NULL)
+	if(inf == NULL || proto == NULL)
 		return;
 
 	Creature* pCreature(new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 | guid));

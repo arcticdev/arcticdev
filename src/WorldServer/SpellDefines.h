@@ -2092,7 +2092,13 @@ enum PowerType
 	POWER_TYPE_HAPPINESS = 4, // Not used in creature powertypes.
 	POWER_TYPE_RUNE		 = 5,
 	POWER_TYPE_RUNIC	 = 6,
-	MAX_POWER_TYPE		 = 7
+	MAX_POWER_TYPE		 = 7,
+};
+
+enum VehiclePowerType
+{
+   POWER_TYPE_PYRITE = 41,
+   POWER_TYPE_STEAM  = 61,
 };
 
 #define GO_FISHING_BOBBER 35591

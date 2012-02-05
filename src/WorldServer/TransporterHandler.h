@@ -29,7 +29,7 @@ public:
 	float GetTotalLength(void)
 	{
 		float len = 0, xd, yd, zd;
-		for(unsigned int idx=1; idx < i_nodes.size(); ++idx)
+		for(unsigned int idx=1; idx < i_nodes.size(); idx++)
 		{
 			xd = i_nodes[ idx ].x - i_nodes[ idx-1 ].x;
 			yd = i_nodes[ idx ].y - i_nodes[ idx-1 ].y;
@@ -48,7 +48,7 @@ protected:
 
 struct keyFrame {
 	keyFrame(float _x, float _y, float _z, uint32 _mapid, int _actionflag, int _delay)
-	{ x = _x; y = _y; z = _z; mapid = _mapid; actionflag = _actionflag; delay = _delay; distFromPrev = -1; distSinceStop = -1; distUntilStop = -1; 
+	{ x = _x; y = _y; z = _z; mapid = _mapid; actionflag = _actionflag; delay = _delay; distFromPrev = -1; distSinceStop = -1; distUntilStop = -1;
 	tFrom = 0; tTo = 0;}
 
 	float x;
@@ -65,7 +65,7 @@ struct keyFrame {
 
 struct TWayPoint {
 	TWayPoint() : mapid(0), x(0), y(0), z(0), teleport(0), delayed(false) {}
-	TWayPoint(uint32 _mapid, float _x, float _y, float _z, bool _teleport) : 
+	TWayPoint(uint32 _mapid, float _x, float _y, float _z, bool _teleport) :
 	mapid(_mapid), x(_x), y(_y), z(_z), teleport(_teleport), delayed(false) {}
 	uint32 mapid;
 	float x;
@@ -119,7 +119,7 @@ public:
 	GameObject* GetGameObject(uint32 Guid);
 
 private:
-	
+
 	TransportNPCMap m_npcs;
 	WaypointMap m_WayPoints;
 	PassengerMap mPassengers;

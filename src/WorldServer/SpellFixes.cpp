@@ -7434,8 +7434,6 @@ void ApplyNormalFixes()
 	for(list<SpellEntry*>::iterator itr = sWorld.dummyspells.begin(); itr != sWorld.dummyspells.end(); itr++)
 		ApplySingleSpellFixes(*itr);
 
-
-
 	/////////////////////////////////////////////////////////////////
 	//FORCER CREATURE SPELL TARGETING
 	//////////////////////////////////////////////////////////////////

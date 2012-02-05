@@ -53,6 +53,9 @@ build
 *.aps
 *.ipch
 *.rc
+*.i
+*.cfg
+*.cmd
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h

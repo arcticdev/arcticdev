@@ -6,12 +6,6 @@
 
 #pragma once
 
-enum VehiclePowerType
-{
-   POWER_STEAM  = 61,
-   POWER_PYRITE = 41,
-};
-
 class SERVER_DECL Vehicle : public Creature
 {
 public:
@@ -34,9 +28,9 @@ public:
 	void setDeathState(DeathState s);
 	void SetSpeed(PlayerSpeedType SpeedType, float value);
 
-	//---------------------------------------
-	// Accessors
-	//---------------------------------------
+	//////////////////////////////////////////////////////////////////////////
+	// Accessors                                                            //
+	//////////////////////////////////////////////////////////////////////////
 
 	uint32 GetMaxPassengerCount() { return m_maxPassengers; }
 	uint32 GetPassengerCount() { return m_passengerCount; }
@@ -52,13 +46,12 @@ public:
 
 	uint8 GetPassengerSlot(Unit* pPassenger);
 
-	//---------------------------------------
-	// End accessors
-	//---------------------------------------
+	//////////////////////////////////////////////////////////////////////////
+	// End accessors                                                        //
+	//////////////////////////////////////////////////////////////////////////
 
 	bool IsFull() { return m_passengerCount == m_maxPassengers; }
 
-	
 	bool Initialised;
 	bool m_CreatedFromSpell;
 	uint32 m_mountSpell;

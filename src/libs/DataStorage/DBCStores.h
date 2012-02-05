@@ -1078,7 +1078,7 @@ struct DBCTaxiPathNode
     float x;
     float y;
     float z;
-    uint32 unk1;
+    uint32 flag;
     uint32 waittime;
     //uint32 unk2;
     //uint32 unk3;
