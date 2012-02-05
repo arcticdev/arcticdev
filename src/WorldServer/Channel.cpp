@@ -79,7 +79,7 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id, uint32 id)
 
 void Channel::AttemptJoin(Player* plr, const char * password)
 {
-	if(plr == NULL)
+	if( plr == NULL )
 		return;
 
 	Guard mGuard(m_lock);

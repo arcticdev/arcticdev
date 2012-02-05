@@ -28,15 +28,22 @@ void AuctionMgr::LoadAuctionHouses()
 		uint32 c = 0;
 		do
 		{
-			ah = new AuctionHouse(res->Fetch()[0].GetUInt32());
-			ah->LoadAuctions();
-			auctionHouses.push_back(ah);
-			tempmap.insert( make_pair( res->Fetch()[0].GetUInt32(), ah ) );
-			if( !((++c) % period) )
-				Log.Notice("AuctionHouse", "Done %u/%u, %u%% complete.", c, res->GetRowCount(), float2int32( (float(c) / float(res->GetRowCount()))*100.0f ));
-
+			ah = new AuctionHouse();
+			if( ah->Init(res->Fetch()[0].GetUInt32()) )
+			{
+				ah->LoadAuctions();
+				auctionHouses.push_back(ah);
+				tempmap.insert( make_pair( res->Fetch()[0].GetUInt32(), ah ) );
+				if( !((++c) % period) )
+					Log.Notice("AuctionHouse", "Done %u/%u, %u%% complete.", c, res->GetRowCount(), float2int32( (float(c) / float(res->GetRowCount()))*100.0f ));
+			}
+			else
+			{
+				delete ah;
+				Log.Error("AuctionHouse", "Failded to initialize, ID: %u not found in dbc.", res->Fetch()[0].GetUInt32());
+			}
 		}while(res->NextRow());
-		delete res;
+	delete res;
 	}
 
 	res = WorldDatabase.Query("SELECT creature_entry, `group` FROM auctionhouse");

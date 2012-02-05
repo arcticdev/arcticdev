@@ -347,9 +347,6 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 					if(quest_giver)
 					{
 						GreenSystemMessage(m_session, "Found a quest_giver creature.");
-						//WorldPacket data;
-						//sQuestMgr.BuildOfferReward(&data, qst, quest_giver, 1);
-						//m_session->SendPacket(&data);
 						sQuestMgr.GiveQuestRewardReputation(plr, qst, quest_giver);
 					}
 					else
@@ -369,6 +366,7 @@ bool ChatHandler::HandleQuestFinishCommand(const char * args, WorldSession * m_s
 				plr->AddToFinishedDailyQuests(quest_id);
 			else
 				plr->AddToFinishedQuests(quest_id);
+
 		}
 	}
 	else

@@ -18,8 +18,8 @@
 const char * gAchievementRewardFormat					= "uuuu";
 const char * gAreaTriggerFormat							= "ucuusffffuu";
 const char * gCreatureNameFormat						= "usssuuuuuuuuuuuffcc";
-const char * gCreatureProtoFormat						= "uuuuuuufuuuffuffuuuuuuuuuuuffsuibuufffuuicuuuuuuuu";
-const char * gCreatureProtoHeroicFormat                 = "uuuuuffuuuuuuuusu";
+const char * gCreatureProtoFormat						= "uuuuuucufuuuffuffuuuuuuuuuuuffsuibuufffuuicuuuuuuuu";
+const char * gCreatureProtoHeroicFormat                 = "uuuuuffcuuuuuuuusu";
 const char * gFishingFormat								= "uuu";
 const char * gGameObjectNameFormat						= "uuusuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gGraveyardFormat							= "uffffuuuux";

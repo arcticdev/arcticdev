@@ -108,7 +108,8 @@ struct CreatureProto
 	uint32 Faction;
 	uint32 MinHealth;
 	uint32 MaxHealth;
-	uint32 Mana;
+	uint8  Powertype;
+	uint32 Power;
 	float  Scale;
 	uint32 NPCFLags;
 	uint32 AttackTime;
@@ -170,7 +171,8 @@ struct CreatureProtoHeroic
 	uint32 Maxhealth;
 	float  Mindmg;
 	float  Maxdmg;
-	uint32 mana;
+	uint8 Powertype;
+	uint32 Power;
 	uint32 Resistances[7];
 	char * aura_string;
 	uint32 auraimmune_flag;
