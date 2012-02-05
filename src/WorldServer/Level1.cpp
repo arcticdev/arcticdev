@@ -21,7 +21,6 @@ bool ChatHandler::HandleAnnounceCommand(const char* args, WorldSession *m_sessio
 	return true;
 }
 
-
 bool ChatHandler::HandleWAnnounceCommand(const char* args, WorldSession *m_session)
 {
 	if(!*args)
@@ -543,7 +542,6 @@ bool ChatHandler::HandleGetSkillsInfoCommand(const char *args, WorldSession *m_s
     return true;
 }
 
-
 bool ChatHandler::HandleRemoveSkillCommand(const char *args, WorldSession *m_session)
 {
 	uint32 skill = 0;
@@ -561,7 +559,6 @@ bool ChatHandler::HandleRemoveSkillCommand(const char *args, WorldSession *m_ses
 	SystemMessageToPlr(plr, "%s removed skill line %d from you. ", m_session->GetPlayer()->GetName(), skill);
 	return true;
 }
-
 
 bool ChatHandler::HandleEmoteCommand(const char* args, WorldSession *m_session)
 {
