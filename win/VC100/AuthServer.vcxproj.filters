@@ -73,4 +73,7 @@
       <Filter>PreCompiled</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\src\libs\icon.ico" />
+  </ItemGroup>
 </Project>

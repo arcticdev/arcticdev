@@ -2242,11 +2242,8 @@ void Spell::SendSpellGo()
 		data << ip->DisplayInfoID << ip->InventoryType;
 
 	m_caster->SendMessageToSet( &data, true );
-	// spell log execute is still send 2.08
-	// as I see with this combination, need to test it more
-	//if (flags != 0x120 && m_spellInfo->Attributes & 16) // not ranged and flag 5
-	  //  SendLogExecute(0,m_targets.m_unitTarget);
 }
+
 void Spell::writeSpellGoTargets( WorldPacket * data )
 {
 	SpellTargetList::iterator itr;
@@ -2303,9 +2300,10 @@ void Spell::SendInterrupted(uint8 result)
 {
 	SetSpellFailed();
 
-	if(!m_caster->IsInWorld()) return;
+	if(!m_caster->IsInWorld())
+		return;
 
-	//WorldPacket data(SMSG_SPELL_FAILURE, 20);
+	// WorldPacket data(SMSG_SPELL_FAILURE, 20);
 	uint8 buf[50];
 	StackPacket data(SMSG_SPELL_FAILURE, buf, 50);
 

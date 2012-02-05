@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __CIRCULARQUEUE_H
-#define __CIRCULARQUEUE_H
+#pragma once
 
 template<class T, int ELEMENTCOUNT>
 class CircularQueue
@@ -40,5 +39,3 @@ public:
 		printf("\n");
 	}
 };
-
-#endif		// _CIRCULARQUEUE_H

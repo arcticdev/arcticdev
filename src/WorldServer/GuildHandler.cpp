@@ -720,14 +720,11 @@ void WorldSession::HandleCharterQuery(WorldPacket & recv_data)
 	data << charter_id;
 	data << (uint64)c->LeaderGuid;
 	data << c->GuildName << uint8(0);
+
 	if(c->CharterType == CHARTER_TYPE_GUILD)
-	{
 		data << uint32(9) << uint32(9);
-	}
 	else
-	{
 		data << uint32(c->Slots) << uint32(c->Slots);
-	}
 
 	data << uint32(0);                                      // 4
     data << uint32(0);                                      // 5
