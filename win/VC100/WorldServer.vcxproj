@@ -292,6 +292,7 @@
     <ClCompile Include="..\..\src\WorldServer\BattlegroundCommands.cpp" />
     <ClCompile Include="..\..\src\WorldServer\BattlegroundHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\BattlegroundMgr.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\CalendarHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\ChainAggroEntity.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Channel.cpp" />
     <ClCompile Include="..\..\src\WorldServer\ChannelHandler.cpp" />

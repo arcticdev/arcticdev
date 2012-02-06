@@ -4,6 +4,7 @@ bin_PROGRAMS = WorldServer
 WorldServer_SOURCES = \
     CollideInterface.cpp \
     CollideInterface.h \
+    VoiceChatHandler.cpp \
     DayWatcherThread.cpp \
     DayWatcherThread.h \
     ArenaTeam.cpp \
@@ -32,6 +33,7 @@ WorldServer_SOURCES = \
     BattlegroundHandler.cpp \
     BattlegroundMgr.cpp \
     BattlegroundMgr.h \
+    CalendarHandler.cpp \
     CellHandler.h \
     Channel.cpp \
     Channel.h \
