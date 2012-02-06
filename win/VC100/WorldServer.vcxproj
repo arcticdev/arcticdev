@@ -380,6 +380,7 @@
     <ClCompile Include="..\..\src\WorldServer\IsleOfConquest.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TradeHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\TransporterHandler.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\VoiceChatHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Unit.cpp" />
     <ClCompile Include="..\..\src\WorldServer\VehicleHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Vehicle.cpp" />

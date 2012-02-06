@@ -709,11 +709,13 @@ protected:
 	void HandleWorldportOpcode(WorldPacket & recv_data);
 	void HandleWrapItemOpcode(WorldPacket& recv_data);
 
-	// VOICECHAT
+	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
+
+	// VoiceChat
 	void HandleEnableMicrophoneOpcode(WorldPacket & recv_data);
 	void HandleVoiceChatQueryOpcode(WorldPacket & recv_data);
-	void HandleChannelVoiceQueryOpcode(WorldPacket & recv_data);
-	void HandleSetAutoLootPassOpcode(WorldPacket & recv_data);
+	void HandleChannelVoiceOnOpcode(WorldPacket & recv_data);
+	void HandleChannelWatchOpcode(WorldPacket & recv_data);
 
 	void HandleSetFriendNote(WorldPacket & recv_data);
 	void HandleRealmSplit(WorldPacket & recv_data);

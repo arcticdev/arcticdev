@@ -3471,8 +3471,6 @@ void Player::_LoadQuestLogEntry(QueryResult * result)
 			}
 			if(m_questlog[slot] != 0)
 				continue;
-			else
-				delete entry;
 
 			entry = NULL;
 			entry = new QuestLogEntry;

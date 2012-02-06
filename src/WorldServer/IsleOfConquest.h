@@ -45,10 +45,10 @@ enum IOCvehicles
 	SIEGE_TURRET_H						= 36355,
 };
 
-#define IOC_TRANSPORTER         195313
+#define IOC_TRANSPORTER			195313
 #define TELEPORTER_EFFECT_A		195701
 #define TELEPORTER_EFFECT_H		195702
-#define IOC_FLAGPOLE            191311
+#define IOC_FLAGPOLE			191311
 #define IOC_DYNAMIC_DOOR_A		195703
 #define IOC_DYNAMIC_DOOR_H		195491
 
@@ -74,7 +74,6 @@ struct IOCNodeTemplate
 	const uint32 m_worldStateFields[IOC_NODE_STATE_COUNT];	// State fields
 	const uint32 m_defaultState;							// State of the node when battleground is spawned
 };
-
 
 class IsleOfConquest : public CBattleground
 {
