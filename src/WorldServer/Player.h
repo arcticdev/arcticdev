@@ -46,18 +46,20 @@ struct LevelInfo;
 //  a character's inventory
 //====================================================================
 
+// Class value is index in ChrClasses.dbc
 enum Classes
 {
-	WARRIOR = 1,
-	PALADIN = 2,
-	HUNTER = 3,
-	ROGUE = 4,
-	PRIEST = 5,
-	DEATHKNIGHT = 6,
-	SHAMAN = 7,
-	MAGE = 8,
-	WARLOCK = 9,
-	DRUID = 11,
+	CLASS_NONE = 0,
+	CLASS_WARRIOR = 1,
+	CLASS_PALADIN = 2,
+	CLASS_HUNTER = 3,
+	CLASS_ROGUE = 4,
+	CLASS_PRIEST = 5,
+	CLASS_DEATHKNIGHT = 6,
+	CLASS_SHAMAN = 7,
+	CLASS_MAGE = 8,
+	CLASS_WARLOCK = 9,
+	CLASS_DRUID = 11,
 	MAX_PLAYER_CLASSES
 };
 
@@ -423,7 +425,7 @@ struct LoginAura
     uint32 dur;
 };
 
-static const uint32 TalentTreesPerClass[DRUID+1][3] =
+static const uint32 TalentTreesPerClass[CLASS_DRUID+1][3] =
 {
 	{ 0, 0, 0 },		// NONE
 	{ 161, 163, 164 },	// WARRIOR

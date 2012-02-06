@@ -2047,7 +2047,7 @@ void Spell::SendSpellStart()
 	if(u_caster && !m_triggeredSpell && !(m_spellInfo->AttributesEx & ATTRIBUTESEX_AREA_OF_EFFECT))
 		cast_flags |= SPELL_START_FLAGS_POWER_UPDATE;
 
-	if(p_caster && p_caster->getClass() == DEATHKNIGHT)
+	if(p_caster && p_caster->getClass() == CLASS_DEATHKNIGHT)
 		cast_flags |= SPELL_START_FLAGS_RUNE_UPDATE;
 
 	if( GetType() == SPELL_DMG_TYPE_RANGED )
@@ -2967,7 +2967,7 @@ uint8 Spell::CanCast(bool tolerate)
 			}
 		}
 
-		if( m_spellInfo->Id == 53822 && p_caster->getClass()!=DEATHKNIGHT)			// DeathGate
+		if( m_spellInfo->Id == 53822 && p_caster->getClass()!=CLASS_DEATHKNIGHT)			// DeathGate
 			return SPELL_FAILED_SPELL_UNAVAILABLE;
 
 		if(p_caster->m_castFilterEnabled && 
@@ -3135,7 +3135,7 @@ uint8 Spell::CanCast(bool tolerate)
 		}
 
 		// no mana drains on shifted druids :(
-		if( GetPlayerTarget() && GetPlayerTarget()->getClass() == DRUID && (m_spellInfo->Effect[0] == SPELL_EFFECT_POWER_DRAIN || m_spellInfo->Effect[1] == SPELL_EFFECT_POWER_DRAIN || m_spellInfo->Effect[2] == SPELL_EFFECT_POWER_DRAIN))
+		if( GetPlayerTarget() && GetPlayerTarget()->getClass() == CLASS_DRUID && (m_spellInfo->Effect[0] == SPELL_EFFECT_POWER_DRAIN || m_spellInfo->Effect[1] == SPELL_EFFECT_POWER_DRAIN || m_spellInfo->Effect[2] == SPELL_EFFECT_POWER_DRAIN))
 		{
 			if( GetPlayerTarget()->GetShapeShift() == FORM_BEAR ||
 				GetPlayerTarget()->GetShapeShift() == FORM_DIREBEAR ||

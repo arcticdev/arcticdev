@@ -737,7 +737,7 @@ bool Player::Create(WorldPacket& data )
 		for(uint8 i = 0; i < MAX_TAXI; i++)
 			m_taximask[i] = 0xFFFFFFFF;
 	}
-	else if(class_ == DEATHKNIGHT)
+	else if(class_ == CLASS_DEATHKNIGHT)
 	{
 		for(uint8 i = 0; i < MAX_TAXI; i++)
 			m_taximask[i] |= DKNodesMask[i];
@@ -778,13 +778,13 @@ bool Player::Create(WorldPacket& data )
 	SetUInt32Value(UNIT_FIELD_MAXPOWER6, 8);
 	SetUInt32Value(PLAYER_FIELD_COINAGE, sWorld.StartGold);
 
-	if( sWorld.StartLevel >= uint8(class_ != DEATHKNIGHT ? 10: 55) )
+	if( sWorld.StartLevel >= uint8(class_ != CLASS_DEATHKNIGHT ? 10: 55) )
 	{
-		SetUInt32Value(PLAYER_CHARACTER_POINTS1, sWorld.StartLevel - uint32(class_ != DEATHKNIGHT ? 9: 55));
+		SetUInt32Value(PLAYER_CHARACTER_POINTS1, sWorld.StartLevel - uint32(class_ != CLASS_DEATHKNIGHT ? 9: 55));
 		SetUInt32Value(UNIT_FIELD_LEVEL,sWorld.StartLevel);
 	}
 	else
-		SetUInt32Value(UNIT_FIELD_LEVEL,uint32(class_ != DEATHKNIGHT ? 1: 55));
+		SetUInt32Value(UNIT_FIELD_LEVEL,uint32(class_ != CLASS_DEATHKNIGHT ? 1: 55));
 
 	InitGlyphSlots();
 	InitGlyphsForLevel();
@@ -801,7 +801,7 @@ bool Player::Create(WorldPacket& data )
 
 	SetUInt32Value(UNIT_FIELD_BYTES_0, ( ( race ) | ( class_ << 8 ) | ( gender << 16 ) | ( powertype << 24 ) ) );
 
-	if(class_ == WARRIOR)
+	if(class_ == CLASS_WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
@@ -1545,7 +1545,7 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
             lvlinfo->Stat[3] - oldlevel->Stat[3],
             lvlinfo->Stat[4] - oldlevel->Stat[4]);
 
-		if( getClass() == WARLOCK && GetSummon() && GetSummon()->IsInWorld() && GetSummon()->isAlive())
+		if( getClass() == CLASS_WARLOCK && GetSummon() && GetSummon()->IsInWorld() && GetSummon()->isAlive())
 		{
 			GetSummon()->ModUnsigned32Value( UNIT_FIELD_LEVEL, 1 );
 			GetSummon()->ApplyStatsForLevel();
@@ -2421,7 +2421,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	_SavePlayerCooldowns( buf );
 
 	// Pets
-	if(getClass() == HUNTER || getClass() == WARLOCK)
+	if(getClass() == CLASS_HUNTER || getClass() == CLASS_WARLOCK)
 	{
 		_SavePet(buf);
 		_SavePetSpells(buf);
@@ -3035,7 +3035,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	SetUInt32Value(UNIT_FIELD_MAXPOWER4, info->energy );
 	SetUInt32Value(UNIT_FIELD_MAXPOWER6, 8);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER7, 1000 );
-	if(getClass() == WARRIOR)
+	if(getClass() == CLASS_WARRIOR)
 		SetShapeShift(FORM_BATTLESTANCE);
 
 	// We're players!
@@ -3310,20 +3310,20 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	// class fixes
 	switch(getClass())
 	{
-	case PALADIN:
+	case CLASS_PALADIN:
 		armor_proficiency|=(1<<7); // Libram
 		break;
-	case DRUID:
+	case CLASS_DRUID:
 		armor_proficiency|=(1<<8); // Idol
 		break;
-	case SHAMAN:
+	case CLASS_SHAMAN:
 		armor_proficiency|=(1<<9); // Totem
 		break;
-	case DEATHKNIGHT:
+	case CLASS_DEATHKNIGHT:
 		armor_proficiency|=(1<<10); // Sigils
 		break;
-	case WARLOCK:
-	case HUNTER:
+	case CLASS_WARLOCK:
+	case CLASS_HUNTER:
 		_LoadPet(results[5].result);
         _LoadPetSpells(results[6].result);
 		_LoadPetActionBar(results[13].result);
@@ -4512,9 +4512,9 @@ void Player::KillPlayer()
 
 	SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED); //player death animation, also can be used with DYNAMIC_FLAGS <- huh???
 	SetUInt32Value( UNIT_DYNAMIC_FLAGS, 0x00 );
-	if(this->getClass() == WARRIOR) //rage resets on death
+	if(this->getClass() == CLASS_WARRIOR) //rage resets on death
 		SetUInt32Value(UNIT_FIELD_POWER2, 0);
-	if(this->getClass() == DEATHKNIGHT)
+	if(this->getClass() == CLASS_DEATHKNIGHT)
 		SetUInt32Value(UNIT_FIELD_POWER7, 0);
 
 	// combo points reset upon death
@@ -4984,7 +4984,7 @@ void Player::UpdateChances()
 
 	//parry
 	tmp = 5.0f + CalcRating( PLAYER_RATING_MODIFIER_PARRY ) + GetParryFromSpell();
-	if(pClass == DEATHKNIGHT) // DK gets 1/4 of strength as parry rating
+	if(pClass == CLASS_DEATHKNIGHT) // DK gets 1/4 of strength as parry rating
 	{
 		tmp += CalcPercentForRating(PLAYER_RATING_MODIFIER_PARRY, GetUInt32Value(UNIT_FIELD_STAT0) / 4);
 	}
@@ -5101,7 +5101,7 @@ void Player::UpdateStats()
 	uint32 cl = getClass();
 	switch (cl)
 	{
-	case DRUID:
+	case CLASS_DRUID:
         //(Strength x 2) - 20
         AP = str * 2 - 20;
         //Agility - 10
@@ -5125,7 +5125,7 @@ void Player::UpdateStats()
 		break;
 
 
-	case ROGUE:
+	case CLASS_ROGUE:
 		//Strength + Agility + (Character Level x 2) - 20
 		AP = str + agi + (lev *2) - 20;
 		//Character Level + Agility - 10
@@ -5134,7 +5134,7 @@ void Player::UpdateStats()
 		break;
 
 
-	case HUNTER:
+	case CLASS_HUNTER:
 		//Strength + Agility + (Character Level x 2) - 20
 		 AP = str + agi + (lev *2) - 20;
 		//(Character Level x 2) + Agility - 10
@@ -5142,7 +5142,7 @@ void Player::UpdateStats()
 
 		break;
 
-	case SHAMAN:
+	case CLASS_SHAMAN:
 		//(Strength) + (Agility) + (Character Level x 2) - 20
 		AP = str + agi + (lev *2) - 20;
 		//Agility - 10
@@ -5150,7 +5150,7 @@ void Player::UpdateStats()
 
 		break;
 
-	case PALADIN:
+	case CLASS_PALADIN:
 		//(Strength x 2) + (Character Level x 3) - 20
 		AP = (str *2) + (lev *3) - 20;
 		//Agility - 10
@@ -5159,8 +5159,8 @@ void Player::UpdateStats()
 		break;
 
 
-	case WARRIOR:
-	case DEATHKNIGHT:
+	case CLASS_WARRIOR:
+	case CLASS_DEATHKNIGHT:
 		{
 			//(Strength x 2) + (Character Level x 3) - 20
 		AP = (str *2) + (lev *3) - 20;
@@ -5219,13 +5219,13 @@ void Player::UpdateStats()
 
 	if( ( int32 )GetUInt32Value(UNIT_FIELD_HEALTH ) > res )
 		SetUInt32Value( UNIT_FIELD_HEALTH, res );
-	else if( ( cl == DRUID) && ( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR ) )
+	else if( ( cl == CLASS_DRUID) && ( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR ) )
 	{
 		res = float2int32( ( float )GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( float )GetUInt32Value( UNIT_FIELD_HEALTH ) / float( oldmaxhp ) );
 		SetUInt32Value( UNIT_FIELD_HEALTH, res );
 	}
 
-	if( cl != WARRIOR && cl != ROGUE && cl != DEATHKNIGHT)
+	if( cl != CLASS_WARRIOR && cl != CLASS_ROGUE && cl != CLASS_DEATHKNIGHT)
 	{
 		// MP
 		int32 mana = GetUInt32Value( UNIT_FIELD_BASE_MANA );
@@ -6576,12 +6576,12 @@ void Player::Reset_Talents()
 	// The dual wield skill for shamans can only be added by talents.
 	// so when reset, the dual wield skill should be removed too.
 	// (see also void Spell::SpellEffectDualWield)
-	if( getClass()==SHAMAN && _HasSkillLine( SKILL_DUAL_WIELD ) )
+	if( getClass()==CLASS_SHAMAN && _HasSkillLine( SKILL_DUAL_WIELD ) )
 		_RemoveSkillLine( SKILL_DUAL_WIELD );
 
 	SetUInt32Value(PLAYER_CHARACTER_POINTS1, GetMaxTalentPoints());
 
-	if( getClass() == WARRIOR )
+	if( getClass() == CLASS_WARRIOR )
 	{
 		titanGrip = false;
 		ResetTitansGrip();
@@ -6626,12 +6626,12 @@ void Player::ApplySpec(uint8 spec, bool init)
 					continue;
 				RemoveTalent(talentInfo->RankID[itr->second]);
 			}
-			if( getClass() == WARRIOR )
+			if( getClass() == CLASS_WARRIOR )
 			{
 				titanGrip = false;
 				ResetTitansGrip();
 			}
-			if( getClass() == DRUID )
+			if( getClass() == CLASS_DRUID )
 			{
 				SetShapeShift(0);
 			}
@@ -7542,61 +7542,61 @@ void Player::ResetAllCooldowns()
 
 	switch(getClass())
 	{
-		case WARRIOR:
+		case CLASS_WARRIOR:
 		{
 			ClearCooldownsOnLine(26, guid);
 			ClearCooldownsOnLine(256, guid);
 			ClearCooldownsOnLine(257 , guid);
 		} break;
-		case PALADIN:
+		case CLASS_PALADIN:
 		{
 			ClearCooldownsOnLine(594, guid);
 			ClearCooldownsOnLine(267, guid);
 			ClearCooldownsOnLine(184, guid);
 		} break;
-		case HUNTER:
+		case CLASS_HUNTER:
 		{
 			ClearCooldownsOnLine(50, guid);
 			ClearCooldownsOnLine(51, guid);
 			ClearCooldownsOnLine(163, guid);
 		} break;
-		case ROGUE:
+		case CLASS_ROGUE:
 		{
 			ClearCooldownsOnLine(253, guid);
 			ClearCooldownsOnLine(38, guid);
 			ClearCooldownsOnLine(39, guid);
 		} break;
-		case PRIEST:
+		case CLASS_PRIEST:
 		{
 			ClearCooldownsOnLine(56, guid);
 			ClearCooldownsOnLine(78, guid);
 			ClearCooldownsOnLine(613, guid);
 		} break;
-		case DEATHKNIGHT:
+		case CLASS_DEATHKNIGHT:
 		{
 			ClearCooldownsOnLine(770, guid);
 			ClearCooldownsOnLine(771, guid);
 			ClearCooldownsOnLine(772, guid);
 		} break;
-		case SHAMAN:
+		case CLASS_SHAMAN:
 		{
 			ClearCooldownsOnLine(373, guid);
 			ClearCooldownsOnLine(374, guid);
 			ClearCooldownsOnLine(375, guid);
 		} break;
-		case MAGE:
+		case CLASS_MAGE:
 		{
 			ClearCooldownsOnLine(6, guid);
 			ClearCooldownsOnLine(8, guid);
 			ClearCooldownsOnLine(237, guid);
 		} break;
-		case WARLOCK:
+		case CLASS_WARLOCK:
 		{
 			ClearCooldownsOnLine(355, guid);
 			ClearCooldownsOnLine(354, guid);
 			ClearCooldownsOnLine(593, guid);
 		} break;
-		case DRUID:
+		case CLASS_DRUID:
 		{
 			ClearCooldownsOnLine(573, guid);
 			ClearCooldownsOnLine(574, guid);
@@ -8911,7 +8911,7 @@ void Player::CompleteLoading()
 		loginauras.clear();
 
 		// warrior has to have battle stance
-		if( getClass() == WARRIOR && !HasAura(2457))
+		if( getClass() == CLASS_WARRIOR && !HasAura(2457))
 			CastSpell(TO_UNIT(this), dbcSpell.LookupEntry(2457), true);
 	}
 
@@ -9300,7 +9300,7 @@ void Player::SetShapeShift(uint8 ss)
 				}
 			}
 
-			if( this->getClass() == DRUID )
+			if( this->getClass() == CLASS_DRUID )
 			{
 				for (uint32 y = 0; y < 3; ++y )
 				{

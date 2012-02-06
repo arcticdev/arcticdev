@@ -1492,7 +1492,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 		}break;
 	case 39610://Mana Tide
 		{
-			if(unitTarget == NULL || unitTarget->isDead() || unitTarget->getClass() == WARRIOR || unitTarget->getClass() == ROGUE)
+			if(unitTarget == NULL || unitTarget->isDead() || unitTarget->getClass() == CLASS_WARRIOR || unitTarget->getClass() == CLASS_ROGUE)
  				return;
  			uint32 gain = (uint32) (unitTarget->GetUInt32Value(UNIT_FIELD_MAXPOWER1)*0.06);
 			unitTarget->Energize(unitTarget,16191,gain,POWER_TYPE_MANA);
@@ -4631,7 +4631,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 
 	uint8 result = SPELL_CANCAST_OK;
 
-	if(!tame || !p_caster || !p_caster->isAlive() || !tame->isAlive() || p_caster->getClass() != HUNTER )
+	if(!tame || !p_caster || !p_caster->isAlive() || !tame->isAlive() || p_caster->getClass() != CLASS_HUNTER )
 		result = SPELL_FAILED_BAD_TARGETS;
 	else if(!tame->GetCreatureInfo())
 		result = SPELL_FAILED_BAD_TARGETS;
@@ -4700,7 +4700,7 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	//Succubus:lash of pain, soothing kiss, seduce , lesser invisibility
 	//felhunter:	 Devour Magic,Paranoia,Spell Lock,	Tainted Blood
  
-	if( p_caster == NULL || p_caster->getClass() != WARLOCK)
+	if( p_caster == NULL || p_caster->getClass() != CLASS_WARLOCK)
 		return;
 	
 	// remove old pet
@@ -6174,7 +6174,7 @@ void Spell::SpellEffectSelfResurrect(uint32 i)
 		}break;
         }
 
-	if(class_==WARRIOR||class_==ROGUE)
+	if(class_==CLASS_WARRIOR||class_==CLASS_ROGUE)
 		mana=0;
 	
 	playerTarget->m_resurrectHealth = health;

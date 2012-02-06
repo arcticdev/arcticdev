@@ -2613,7 +2613,7 @@ void Unit::RegeneratePower(bool isinterrupted)
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		// druids regen mana when shapeshifted
-		if(getClass() == DRUID && powertype != POWER_TYPE_MANA)
+		if(getClass() == CLASS_DRUID && powertype != POWER_TYPE_MANA)
 			TO_PLAYER(this)->RegenerateMana(isinterrupted);
 	}
 	else
@@ -3297,7 +3297,7 @@ else
 		if( IsPlayer() )
 		{
 			Player* plr = TO_PLAYER( this );
-			if( plr->getClass() == WARRIOR	)
+			if( plr->getClass() == CLASS_WARRIOR	)
 			{
 				plr->AddComboPoints( pVictim->GetGUID(), 1 );
 				plr->UpdateComboPoints();
@@ -3310,7 +3310,7 @@ else
 		if( pVictim->IsPlayer() )
 		{
 			Player* vplr = TO_PLAYER( pVictim );
-			if( vplr->getClass() == DRUID )
+			if( vplr->getClass() == CLASS_DRUID )
 			{
 				if( (vplr->GetShapeShift() == FORM_BEAR ||
 					 vplr->GetShapeShift() == FORM_DIREBEAR) &&
@@ -3324,7 +3324,7 @@ else
 					}
 				}
 			}
-			else if( vplr->getClass() == ROGUE )
+			else if( vplr->getClass() == CLASS_ROGUE )
 			{
 				if( vplr->HasDummyAura(SPELL_HASH_SETUP) )
 				{
@@ -3396,7 +3396,7 @@ else
 			{
 				aproc |= PROC_ON_RANGED_ATTACK;
 				vproc |= PROC_ON_RANGED_ATTACK_VICTIM;
-				if( ability && ability->Id == 3018 && IsPlayer() && getClass() == HUNTER )
+				if( ability && ability->Id == 3018 && IsPlayer() && getClass() == CLASS_HUNTER )
 					aproc |= PROC_ON_AUTO_SHOT_HIT;
 			}
 //--------------------------------base damage calculation-----------------------------------
@@ -3447,7 +3447,7 @@ else
 			case 3:
 				{
 					float low_dmg_mod = 1.5f - (0.05f * diffAcapped);
-					if(getClass() == MAGE || getClass() == PRIEST || getClass() == WARLOCK) //casters = additional penalty.
+					if(getClass() == CLASS_MAGE || getClass() == CLASS_PRIEST || getClass() == CLASS_WARLOCK) //casters = additional penalty.
 					{
 						low_dmg_mod -= 0.7f;
 					}
@@ -3456,7 +3456,7 @@ else
 					if(low_dmg_mod>0.91)
 						low_dmg_mod = 0.91f;
 					float high_dmg_mod = 1.2f - (0.03f * diffAcapped);
-					if(getClass() == MAGE || getClass() == PRIEST || getClass() == WARLOCK) //casters = additional penalty.
+					if(getClass() == CLASS_MAGE || getClass() == CLASS_PRIEST || getClass() == CLASS_WARLOCK) //casters = additional penalty.
 					{
 						high_dmg_mod -= 0.3f;
 					}

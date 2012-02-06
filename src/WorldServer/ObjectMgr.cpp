@@ -1593,7 +1593,7 @@ void ObjectMgr::GenerateLevelUpInfo()
 {
 	// Generate levelup information for each class.
 	PlayerCreateInfo * PCI;
-	for(uint32 Class = WARRIOR; Class <= DRUID; ++Class)
+	for(uint32 Class = CLASS_WARRIOR; Class <= CLASS_DRUID; ++Class)
 	{
 		// These are empty.
 		if(Class == 10)
@@ -1676,58 +1676,58 @@ void ObjectMgr::GenerateLevelUpInfo()
 				
 				switch(Class)
 				{
-				case PRIEST:
+				case CLASS_PRIEST:
 					{
 						BaseHP = uint32(87 * Level);
 						BaseMana = uint32(48.2875f * Level);
 						break;
 					}
-				case WARRIOR:
+				case CLASS_WARRIOR:
 					{
 						BaseHP = uint32(101.5125f * Level);
 						break;
 					}
-				case DEATHKNIGHT:
+				case CLASS_DEATHKNIGHT:
 					{
 						BaseHP = uint32(101.5125f * Level);
 						break;
 					}
-				case HUNTER:
+				case CLASS_HUNTER:
 					{
 						BaseHP = uint32(91.55f * Level);
 						BaseMana = uint32(63.075f * Level);
 						break;
 					}
-				case ROGUE:
+				case CLASS_ROGUE:
 					{
 						BaseHP = uint32(95.05f * Level);
 						break;
 					}
-				case SHAMAN:
+				case CLASS_SHAMAN:
 					{
 						BaseHP = uint32(81.0625f * Level);
 						BaseMana = uint32(54.95f * Level);
 						break;
 					}
-				case DRUID:
+				case CLASS_DRUID:
 					{
 						BaseHP = uint32(92.7125f * Level);
 						BaseMana = uint32(43.7f * Level);
 						break;
 					}
-				case PALADIN:
+				case CLASS_PALADIN:
 					{
 						BaseHP = uint32(86.675f * Level);
 						BaseMana = uint32(54.925f * Level);
 						break;
 					}
-				case MAGE:
+				case CLASS_MAGE:
 					{
 						BaseHP = uint32(87.0375f * Level);
 						BaseMana = uint32(40.85f * Level);
 						break;
 					}
-				case WARLOCK:
+				case CLASS_WARLOCK:
 					{
 						BaseHP = uint32(89.55f * Level);
 						BaseMana = uint32(48.2f * Level);

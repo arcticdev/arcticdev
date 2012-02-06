@@ -166,7 +166,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 			if( fields[1].GetUInt8() > m_highestLevel )
 				m_highestLevel = fields[1].GetUInt8();
 
-			if( Class == DEATHKNIGHT )
+			if( Class == CLASS_DEATHKNIGHT )
 				m_hasDeathKnight = true;
 
 			banned = fields[13].GetUInt32();
@@ -177,19 +177,19 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				if(fields[16].GetUInt32() != 0)
 					data << uint32(0x00A04342);
 				else if(fields[15].GetUInt32() != 0)
-					data << (uint32)8704; // Dead (displaying as Ghost)
+					data << uint32(8704);                             // Dead (displaying as Ghost)
 				else
-					data << uint32(1);		// alive
+					data << uint32(1);                                // alive
 			}
 
 			if((fields[19].GetUInt32() != 0) || CanUseCommand('z'))
-				data << uint32(1); //Player customization
+				data << uint32(1);                                    // Player customization
 			else
-				data << uint32(0);				//Added in 3.0.2
-			//data << fields[14].GetUInt8();		// Rest State
-			data << uint8(0);					// Added in 3.2
+				data << uint32(0);                                    // Added in 3.0.2
+			//data << fields[14].GetUInt8();                          // Rest State
+			data << uint8(0);                                         // Added in 3.2
 
-			if( Class == WARLOCK || Class == HUNTER )
+			if( Class == CLASS_WARLOCK || Class == CLASS_HUNTER )
 			{
 				res = CharacterDatabase.Query("SELECT entry FROM playerpets WHERE ownerguid="I64FMTD" AND ( active MOD 10 ) =1", guid);
 
@@ -347,7 +347,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	if( class_ == DEATHKNIGHT && (!HasFlag(ACCOUNT_FLAG_XPACK_02) || !CanCreateDeathKnight() ) )
+	if( class_ == CLASS_DEATHKNIGHT && (!HasFlag(ACCOUNT_FLAG_XPACK_02) || !CanCreateDeathKnight() ) )
 	{
 		OutPacket(SMSG_CHAR_CREATE, 1, "\x3B");
 		return;
@@ -383,7 +383,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	pNewChar->UnSetBanned();
 	pNewChar->addSpell(22027); // Remove Insignia
 
-	if(pNewChar->getClass() == WARLOCK)
+	if(pNewChar->getClass() == CLASS_WARLOCK)
 	{
 		pNewChar->AddSummonSpell(416, 3110); // imp fireball
 		pNewChar->AddSummonSpell(417, 19505);

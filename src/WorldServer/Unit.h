@@ -157,6 +157,8 @@ enum Factions
 	FACTION_SILVERWING_SENTINELS,
 	FACTION_WARSONG_OUTRIDERS
 };
+
+// EmotesText.dbc
 typedef enum
 {
     TEXT_EMOTE_AGREE                = 1,
@@ -320,7 +322,7 @@ typedef enum
     TEXT_EMOTE_ATTACKMYTARGET       = 307,
     TEXT_EMOTE_OOM                  = 323,
     TEXT_EMOTE_FOLLOW               = 324,
-    TEXT_EMOTE_HELP                 = 325,
+    TEXT_EMOTE_WAIT                 = 325,
     TEXT_EMOTE_HEALME               = 326,
     TEXT_EMOTE_OPENFIRE             = 327,
     TEXT_EMOTE_FLIRT                = 328,
@@ -329,7 +331,7 @@ typedef enum
     TEXT_EMOTE_WINK                 = 363,
     TEXT_EMOTE_PAT                  = 364,
     TEXT_EMOTE_SERIOUS              = 365,
-    TEXT_EMOTE_MOUNTSPECIAL         = 366,
+    TEXT_EMOTE_MOUNT_SPECIAL        = 366,
     TEXT_EMOTE_GOODLUCK             = 367,
     TEXT_EMOTE_BLAME                = 368,
     TEXT_EMOTE_BLANK                = 369,
@@ -342,6 +344,7 @@ typedef enum
     TEXT_EMOTE_ENEMY                = 376,
     TEXT_EMOTE_EYEBROW              = 377,
     TEXT_EMOTE_TOAST                = 378,
+    TEXT_EMOTE_FAIL                 = 379,
     TEXT_EMOTE_HIGHFIVE             = 380,
     TEXT_EMOTE_ABSENT               = 381,
     TEXT_EMOTE_ARM                  = 382,
@@ -396,6 +399,7 @@ typedef enum
     TEXT_EMOTE_SNEEZE               = 436,
     TEXT_EMOTE_SNORT                = 437,
     TEXT_EMOTE_SQUEAL               = 438,
+    TEXT_EMOTE_STOPATTACK           = 439,
     TEXT_EMOTE_SUSPICIOUS           = 440,
     TEXT_EMOTE_THINK                = 441,
     TEXT_EMOTE_TRUCE                = 442,

@@ -7,6 +7,7 @@
 #include "StdAfx.h"
 #include "ObjectMgr.h"
 #include "Master.h"
+#include "ClassSpells.h"
 
 bool ChatHandler::HandleWorldPortCommand(const char* args, WorldSession *m_session)
 {
@@ -36,7 +37,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 	}
 	if(!plr) return false;
 
-	if(plr->getClass()==WARRIOR)
+	if(plr->getClass()==CLASS_WARRIOR)
 	{
 		plr->ClearCooldownsOnLine(26, guid);
 		plr->ClearCooldownsOnLine(256, guid);
@@ -44,7 +45,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Warrior cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==PALADIN)
+	if(plr->getClass()==CLASS_PALADIN)
 	{
 		plr->ClearCooldownsOnLine(594, guid);
 		plr->ClearCooldownsOnLine(267, guid);
@@ -52,7 +53,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Paladin cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==HUNTER)
+	if(plr->getClass()==CLASS_HUNTER)
 	{
 		plr->ClearCooldownsOnLine(50, guid);
 		plr->ClearCooldownsOnLine(51, guid);
@@ -60,7 +61,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Hunter cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==ROGUE)
+	if(plr->getClass()==CLASS_ROGUE)
 	{
 		plr->ClearCooldownsOnLine(253, guid);
 		plr->ClearCooldownsOnLine(38, guid);
@@ -68,7 +69,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Rogue cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==PRIEST)
+	if(plr->getClass()==CLASS_PRIEST)
 	{
 		plr->ClearCooldownsOnLine(56, guid);
 		plr->ClearCooldownsOnLine(78, guid);
@@ -76,7 +77,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Priest cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==SHAMAN)
+	if(plr->getClass()==CLASS_SHAMAN)
 	{
 		plr->ClearCooldownsOnLine(373, guid);
 		plr->ClearCooldownsOnLine(374, guid);
@@ -84,7 +85,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Shaman cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==DEATHKNIGHT)
+	if(plr->getClass()==CLASS_DEATHKNIGHT)
 	{
 		plr->ClearCooldownsOnLine(770, guid);
 		plr->ClearCooldownsOnLine(771, guid);
@@ -92,7 +93,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Death Knight cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==MAGE)
+	if(plr->getClass()==CLASS_MAGE)
 	{
 		plr->ClearCooldownsOnLine(6, guid);
 		plr->ClearCooldownsOnLine(8, guid);
@@ -100,7 +101,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Mage cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==WARLOCK)
+	if(plr->getClass()==CLASS_WARLOCK)
 	{
 		plr->ClearCooldownsOnLine(355, guid);
 		plr->ClearCooldownsOnLine(354, guid);
@@ -108,7 +109,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Warlock cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==DRUID)
+	if(plr->getClass()==CLASS_DRUID)
 	{
 		plr->ClearCooldownsOnLine(573, guid);
 		plr->ClearCooldownsOnLine(574, guid);
@@ -136,7 +137,6 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 	if(stricmp(args, "all")==0)
 	{
 		sGMLog.writefromsession(m_session, "taught %s all spells.", plr->GetName());
-#include "ClassSpells.h"
 
 		uint32 c = plr->getClass();
 		for(uint32 i = 0; spellarray[c][i] != 0; ++i)
@@ -144,49 +144,53 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 			plr->addSpell(spellarray[c][i]);
 		}
 
-		static uint32 paladinspellarray[RACE_DRAENEI+1][2] = {
-			{ 0 },		// RACE 0
+		static uint32 paladinspellarray[RACE_DRAENEI+1][2] =
+		{
+			{ 0 },		        // RACE 0
 			{ 13819, 0 },		// HUMAN
-			{ 0 },		// ORC
+			{ 0 },		        // ORC
 			{ 13819, 0 },		// DWARF
-			{ 0 },		// NIGHTELF
-			{ 0 },		// UNDEAD
-			{ 0 },		// TAUREN
-			{ 0 },		// GNOME
-			{ 0 },		// TROLL
+			{ 0 },		        // NIGHTELF
+			{ 0 },		        // UNDEAD
+			{ 0 },		        // TAUREN
+			{ 0 },		        // GNOME
+			{ 0 },		        // TROLL
 			{ 34769, 0 },		// BLOODELF
 			{ 13819, 0 },		// DRAENEI
 		};
 
-		static uint32 priestspellarray[RACE_DRAENEI+1][16] = {
-			{ 0 },		// RACE 0
+		static uint32 priestspellarray[RACE_DRAENEI+1][16] =
+		{
+			{ 0 },		                                                                                                    // RACE 0
 			{ 13896, 13908, 19236, 19238, 19240, 19241, 19242, 19243, 19271, 19273, 19274, 19275, 25437, 25441, 0 },		// HUMAN
-			{ 0 },		// ORC
+			{ 0 },		                                                                                                    // ORC
 			{ 13908, 19236, 19238, 19240, 44041, 19241, 19242, 19243, 25437, 44043, 44044, 44045, 44046, 44047, 0 },		// DWARF
-			{ 2651, 10797, 19296, 19299, 19302, 19303, 19304, 19305, 25446, 0 },		// NIGHTELF
-			{ 2652, 2944, 19261, 19262, 19264, 19265, 19266, 19276, 19277, 19278, 19279, 19280, 25461, 25467, 0 },		// UNDEAD
-			{ 0 },		// TAUREN
-			{ 0 },		// GNOME
-			{ 9035, 18137, 19281, 19282, 19283, 19284, 19285, 19308, 19309, 19310, 19311, 19312, 25470, 25477, 0 },		// TROLL
-			{ 2652, 19261, 19262, 19264, 19265, 19266, 25461, 32676, 0 },		// BLOODELF
-			{ 32548, 44041, 44043, 44044, 44045, 44046, 44047, 0 },		// DRAENEI
+			{ 2651, 10797, 19296, 19299, 19302, 19303, 19304, 19305, 25446, 0 },                                            // NIGHTELF
+			{ 2652, 2944, 19261, 19262, 19264, 19265, 19266, 19276, 19277, 19278, 19279, 19280, 25461, 25467, 0 },          // UNDEAD
+			{ 0 },		                                                                                                    // TAUREN
+			{ 0 },		                                                                                                    // GNOME
+			{ 9035, 18137, 19281, 19282, 19283, 19284, 19285, 19308, 19309, 19310, 19311, 19312, 25470, 25477, 0 },         // TROLL
+			{ 2652, 19261, 19262, 19264, 19265, 19266, 25461, 32676, 0 },		                                            // BLOODELF
+			{ 32548, 44041, 44043, 44044, 44045, 44046, 44047, 0 },		                                                    // DRAENEI
 		};
 
-		static uint32 shamanspellarray[RACE_DRAENEI+1][2] = {
-			{ 0 },		// RACE 0
-			{ 0 },		// HUMAN
+		static uint32 shamanspellarray[RACE_DRAENEI+1][2] =
+		{
+			{ 0 },				// RACE 0
+			{ 0 },				// HUMAN
 			{ 2825, 0 },		// ORC
-			{ 0 },		// DWARF
-			{ 0 },		// NIGHTELF
-			{ 0 },		// UNDEAD
+			{ 0 },				// DWARF
+			{ 0 },				// NIGHTELF
+			{ 0 },				// UNDEAD
 			{ 2825, 0 },		// TAUREN
-			{ 0 },		// GNOME
+			{ 0 },              // GNOME
 			{ 2825, 0 },		// TROLL
-			{ 0 },		// BLOODELF
+			{ 0 },              // BLOODELF
 			{ 32182, 0 },		// DRAENEI
 		};
 
-		static uint32 magespellarray[RACE_DRAENEI+1][11] = {
+		static uint32 magespellarray[RACE_DRAENEI+1][11] =
+		{
 			{ 0 },		// RACE 0
 			{ 3561, 3562, 3565, 10059, 11416, 11419, 32266, 32271, 33690, 33691, 0 },		// HUMAN
 			{ 3563, 3566, 3567, 11417, 11418, 11420, 32267, 32272, 35715, 35717, 0 },		// ORC
@@ -203,25 +207,25 @@ bool ChatHandler::HandleLearnCommand(const char* args, WorldSession *m_session)
 		uint32 r = plr->getRace();
 		switch(c)
 		{
-		case PALADIN:
+		case CLASS_PALADIN:
 			for( uint32 i = 0; paladinspellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( paladinspellarray[r][i] );
 			}
 			break;
-		case PRIEST:
+		case CLASS_PRIEST:
 			for( uint32 i = 0; priestspellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( priestspellarray[r][i] );
 			}
 			break;
-		case MAGE:
+		case CLASS_MAGE:
 			for( uint32 i = 0; magespellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( magespellarray[r][i] );
 			}
 			break;
-		case SHAMAN:
+		case CLASS_SHAMAN:
 			for( uint32 i = 0; shamanspellarray[r][i] != 0; ++i )
 			{
 				plr->addSpell( shamanspellarray[r][i] );

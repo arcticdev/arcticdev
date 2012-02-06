@@ -1947,7 +1947,7 @@ void Aura::EventPeriodicDamage(uint32 amount)
 		SendPeriodicAuraLog(m_casterGuid, m_target, GetSpellProto(), float2int32(res), abs_dmg, dmg.resisted_damage, FLAG_PERIODIC_DAMAGE);
 
 		if(school == SHADOW_DAMAGE)
-			if( m_caster != NULL && m_caster->isAlive() && m_caster->IsPlayer() && m_caster->getClass() == PRIEST )
+			if( m_caster != NULL && m_caster->isAlive() && m_caster->IsPlayer() && m_caster->getClass() == CLASS_PRIEST )
 				TO_PLAYER(m_caster)->VampiricSpell(float2int32(res), m_target, m_spellProto);
 	}
 	// grep: this is hack.. some auras seem to delete this shit.
@@ -4639,7 +4639,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 
 	if( apply )
 	{
-		if( m_target->getClass() == WARRIOR )
+		if( m_target->getClass() == CLASS_WARRIOR )
 		{
 			if( m_target->GetUInt32Value( UNIT_FIELD_POWER2 ) > TO_PLAYER( m_target )->m_retainedrage )
 				m_target->SetUInt32Value(UNIT_FIELD_POWER2, TO_PLAYER( m_target )->m_retainedrage );
@@ -4647,7 +4647,7 @@ void Aura::SpellAuraModShapeshift(bool apply)
 				m_target->SetUInt32Value(UNIT_FIELD_POWER2, m_target->GetUInt32Value(UNIT_FIELD_POWER2));
 		}
 
-		if( m_target->getClass() == DRUID )
+		if( m_target->getClass() == CLASS_DRUID )
 		{
 			if( m_target->HasDummyAura(SPELL_HASH_FUROR) && Rand( m_target->GetDummyAura(SPELL_HASH_FUROR)->RankNumber * 20 ) )
 			{
