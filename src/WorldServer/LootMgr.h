@@ -14,7 +14,7 @@ class LootRoll : public EventableObject
 public:
 	LootRoll();
 	~LootRoll();
-	void Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 itemunk1, uint32 itemunk2, MapMgr* mgr);
+	void Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid, uint32 itemid, uint32 randomsuffixid, uint32 randompropertyid, MapMgr* mgr);
 	void PlayerRolled(Player* player, uint8 choice);
 	void Finalize();
 
@@ -28,8 +28,8 @@ private:
 	uint32 _groupcount;
 	uint32 _slotid;
 	uint32 _itemid;
-	uint32 _itemunk1;
-	uint32 _itemunk2;
+	uint32 _randomsuffixid;
+	uint32 _randompropertyid;
 	uint32 _remaining;
 	uint64 _guid;
 	MapMgr* _mgr;
@@ -99,7 +99,7 @@ struct tempy
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-typedef HM_NAMESPACE::hash_map<uint32, StoreLootList > LootStore;  
+typedef HM_NAMESPACE::hash_map<uint32, StoreLootList > LootStore;
 
 enum PARTY_LOOT
 {
@@ -140,7 +140,7 @@ public:
 	void LoadLoot();
 	void LoadCreatureLoot();
 	void LoadLootProp();
-	
+
 	LootStore	CreatureLoot;
 	LootStore	FishingLoot;
 	LootStore	GatheringLoot;
@@ -156,13 +156,13 @@ public:
 	ItemRandomSuffixEntry * GetRandomSuffix(ItemPrototype * proto);
 
 	bool is_loading;
- 
+
 	void FillObjectLootMap(map<uint32, vector<uint32> > *dest);
 
 private:
 	void LoadLootTables(const char * szTableName,LootStore * LootTable);
 	void PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenchant);
-	
+
 	map<uint32, RandomPropertyVector> _randomprops;
 	map<uint32, RandomSuffixVector> _randomsuffix;
 };

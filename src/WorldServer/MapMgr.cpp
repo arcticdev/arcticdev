@@ -1140,9 +1140,9 @@ void MapMgr::ObjectUpdated(Object* obj)
 
 void MapMgr::PushToProcessed(Player* plr)
 {
-	_processQueue.insert(plr);
+	if(plr != NULL)
+		_processQueue.insert(plr);
 }
-
 
 void MapMgr::ChangeFarsightLocation(Player* plr, Unit* farsight, bool apply)
 {
