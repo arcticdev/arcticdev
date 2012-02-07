@@ -1535,15 +1535,15 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		ApplyLevelInfo(lvlinfo, level);
 
 		// Generate Level Info Packet and Send to client
-        SendLevelupInfo(
-            level,
-            lvlinfo->HP - oldlevel->HP,
-            lvlinfo->Mana - oldlevel->Mana,
-            lvlinfo->Stat[0] - oldlevel->Stat[0],
-            lvlinfo->Stat[1] - oldlevel->Stat[1],
-            lvlinfo->Stat[2] - oldlevel->Stat[2],
-            lvlinfo->Stat[3] - oldlevel->Stat[3],
-            lvlinfo->Stat[4] - oldlevel->Stat[4]);
+		SendLevelupInfo(
+			level,
+			lvlinfo->HP - oldlevel->HP,
+			lvlinfo->Mana - oldlevel->Mana,
+			lvlinfo->Stat[0] - oldlevel->Stat[0],
+			lvlinfo->Stat[1] - oldlevel->Stat[1],
+			lvlinfo->Stat[2] - oldlevel->Stat[2],
+			lvlinfo->Stat[3] - oldlevel->Stat[3],
+			lvlinfo->Stat[4] - oldlevel->Stat[4]);
 
 		if( getClass() == CLASS_WARLOCK && GetSummon() && GetSummon()->IsInWorld() && GetSummon()->isAlive())
 		{
@@ -1555,6 +1555,8 @@ void Player::GiveXP(uint32 xp, const uint64 &guid, bool allowbonus)
 		_UpdateMaxSkillCounts();
 
 		GetAchievementInterface()->HandleAchievementCriteriaLevelUp( getLevel() );
+		SetUInt32Value(UNIT_FIELD_HEALTH,GetUInt32Value(UNIT_FIELD_MAXHEALTH));
+		SetUInt32Value(UNIT_FIELD_POWER1,GetUInt32Value(UNIT_FIELD_MAXPOWER1));
 	}
 
 	// Set the update bit

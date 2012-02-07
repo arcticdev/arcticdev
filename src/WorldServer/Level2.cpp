@@ -14,7 +14,7 @@ bool ChatHandler::HandleResetReputationCommand(const char *args, WorldSession *m
 		SystemMessage(m_session, "Select a player or yourself first.");
 		return true;
 	}
-	
+
 	plr->_InitialReputation();
 	SystemMessage(m_session, "Done. Relog for changes to take effect.");
 	sGMLog.writefromsession(m_session, "used reset reputation for %s", plr->GetName());
@@ -55,7 +55,7 @@ bool ChatHandler::HandleInvisibleCommand(const char *args, WorldSession *m_sessi
 		pChar->m_isGmInvisible = true;
 		pChar->m_invisible = true;
 		pChar->bInvincible = true;
-		pChar->Social_TellFriendsOffline();		
+		pChar->Social_TellFriendsOffline();
 		strcat(msg,"ON. ");
 	}
 
@@ -138,7 +138,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		unit->GetPositionZ());
 
 	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
-	
+
 	MapMgr* unitMgr = unit->GetMapMgr();
 	if(unit->IsInWorld())
 	{
@@ -174,7 +174,12 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		}
 	}
 
-	unit->Destructor();
+	// unit->RemoveFromWorld(false,true);
+
+	if(unit->IsVehicle())
+		TO_VEHICLE(unit)->Destructor();
+	else
+		unit->Destructor();
 
 	return true;
 }
@@ -361,7 +366,7 @@ bool ChatHandler::HandleKillCommand(const char *args, WorldSession *m_session)
 		sGMLog.writefromsession(m_session, "used kill command on CREATURE %s", TO_CREATURE( target )->GetCreatureInfo() ? TO_CREATURE( target )->GetCreatureInfo()->Name : "unknown");
 		break;
 	}
-	
+
 
 	// If we're killing a player, send a message indicating a gm killed them.
 	if(target->IsPlayer())
@@ -427,7 +432,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 		RedSystemMessage(m_session, "Invalid spell id!");
 		return false;
 	}
-	
+
 	Spell* sp(new Spell(caster, spellentry, false, NULL));
 	if(!sp)
 	{
@@ -638,7 +643,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	
+
 	if(GObj->m_spawn != 0 && GObj->m_spawn->entry == GObj->GetEntry())
 	{
 		uint32 cellx=float2int32(((_maxX-GObj->m_spawn->x)/_cellSize));
@@ -680,7 +685,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 		return false;
 
 	uint32 EntryID  = atoi(pEntryID);
-	
+
 	bool Save = false;
 	char* pSave = strtok(NULL, " ");
 	if (pSave)
@@ -697,7 +702,7 @@ bool ChatHandler::HandleGOSpawn(const char *args, WorldSession *m_session)
 		SystemMessage(m_session, sstext.str().c_str());
 		return true;
 	}
-	
+
 	Player* chr = m_session->GetPlayer();
 	uint32 mapid = chr->GetMapId();
 	float x = chr->GetPositionX();
@@ -757,7 +762,7 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No selected GameObject...");
 		return true;
 	}
-	
+
 	sstext
 		<< MSG_COLOR_SUBWHITE << "Informations:\n"
 		<< MSG_COLOR_GREEN << "Entry: " << MSG_COLOR_LIGHTBLUE << GObj->GetEntry()						  << "\n"
@@ -935,7 +940,7 @@ bool ChatHandler::HandleGODamage(const char* args, WorldSession* m_session)
 		return false;
 	}
 	float damage = (float)atof(args);
-	if(!damage) 
+	if(!damage)
 		damage = 1;
 	go->TakeDamage(damage);		// Destroy it
 	BlueSystemMessage(m_session, "Gameobject Damaged %u .", damage);
@@ -1015,7 +1020,7 @@ bool ChatHandler::HandleMountCommand(const char *args, WorldSession *m_session)
 		RedSystemMessage(m_session, "No target found.");
 		return true;
 	}
-	
+
 	if(m_target->GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID) != 0)
 	{
 		RedSystemMessage(m_session, "Target is already mounted.");
@@ -1148,7 +1153,7 @@ bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 {
 	/*if(!m_session->GetPlayer()->m_GM_SelectedGO)
 		return false;
-	
+
 	std::stringstream name;
 	if (*args)
 	{
@@ -1158,7 +1163,7 @@ bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 	{
 		name << "GO_" << m_session->GetPlayer()->m_GM_SelectedGO->GetEntry() << ".sql";
 	}
-   
+
 	m_session->GetPlayer()->m_GM_SelectedGO->SaveToFile(name);
 
 	BlueSystemMessage(m_session, "Go saved to: %s", name.str().c_str());*/
@@ -1171,7 +1176,7 @@ bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 	QueryResult * qr = WorldDatabase.Query("SELECT * FROM vendors WHERE entry = %u", pCreature->GetEntry());
 	if(qr != NULL)
 	{
-		do 
+		do
 		{
 			WorldDatabase.WaitExecute("INSERT INTO items_export SELECT * FROM items WHERE entry = %u", qr->Fetch()[1].GetUInt32());
 		} while (qr->NextRow());
