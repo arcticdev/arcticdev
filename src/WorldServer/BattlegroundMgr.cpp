@@ -243,27 +243,20 @@ void CBattlegroundManager::HandleBattlegroundListPacket(WorldSession * m_session
 	data << uint32(0);				// count
 
 	if(!IS_ARENA(BattlegroundType))
- 	{
+	{
 		/* Append the battlegrounds */
 		m_instanceLock.Acquire();
 		for(map<uint32, CBattleground* >::iterator itr = m_instances[BattlegroundType].begin(); itr != m_instances[BattlegroundType].end(); itr++)
 		{
 			if( itr->second->GetLevelGroup() == LevelGroup  && !itr->second->HasEnded() )
 			{
-				data << itr->first;
+				data << uint32(itr->first);
 				++Count;
 			}
 		}
 		m_instanceLock.Release();
 		*(uint32*)&data.contents()[CountPos] = Count;
 	}
-	else
-	{
-		data << uint8(0);
-		data << uint8(0);
-		data << uint32(0);
-	}
-
 	m_session->SendPacket(&data);
 }
 
