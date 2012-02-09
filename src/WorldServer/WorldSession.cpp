@@ -583,7 +583,11 @@ void WorldSession::InitPacketHandlerTable()
 
 	// Account Data
 	WorldPacketHandlers[CMSG_UPDATE_ACCOUNT_DATA].handler = &WorldSession::HandleUpdateAccountData;
+	WorldPacketHandlers[CMSG_UPDATE_ACCOUNT_DATA].status = STATUS_AUTHED;
 	WorldPacketHandlers[CMSG_REQUEST_ACCOUNT_DATA].handler = &WorldSession::HandleRequestAccountData;
+	WorldPacketHandlers[CMSG_REQUEST_ACCOUNT_DATA].status = STATUS_AUTHED;
+	WorldPacketHandlers[CMSG_READY_FOR_ACCOUNT_DATA_TIMES].handler = &WorldSession::HandleReadyForAccountDataTimes;
+	WorldPacketHandlers[CMSG_READY_FOR_ACCOUNT_DATA_TIMES].status = STATUS_AUTHED;
 	WorldPacketHandlers[CMSG_SET_FACTION_ATWAR].handler = &WorldSession::HandleSetAtWarOpcode;
 	WorldPacketHandlers[CMSG_SET_WATCHED_FACTION].handler = &WorldSession::HandleSetWatchedFactionIndexOpcode;
 	WorldPacketHandlers[CMSG_TOGGLE_PVP].handler = &WorldSession::HandleTogglePVPOpcode;
@@ -1131,18 +1135,4 @@ uint8 WorldSession::CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldS
 	}
 	//Nothing more to check, should be ok
 	return AREA_TRIGGER_FAILURE_OK;
-}
-
-void WorldSession::SendAccountDataTimes(uint32 mask)
-{
-	WorldPacket data( SMSG_ACCOUNT_DATA_TIMES, 68 );
-	data << uint32(UNIXTIME); // Set Unix Timing?
-	data << uint8(1);
-	data << uint32(mask);
-
-	for(int i = 0; i < NUM_ACCOUNT_DATA_TYPES; ++i)
-		if(mask & (1 << i))
-			data << uint32(0);
-
-	SendPacket(&data);
 }

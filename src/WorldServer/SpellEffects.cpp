@@ -2863,9 +2863,9 @@ void Spell::SpellEffectWeapon(uint32 i)
 	uint32 skill = 0;
 	uint32 spell = 0;
 
-	switch( this->m_spellInfo->Id )
+	switch( GetSpellProto()->Id )
 	{
-	case 201:    // one-handed swords
+	case 201:	// one-handed swords
 		{
 			skill = SKILL_SWORDS;
 		}break;
@@ -2927,25 +2927,28 @@ void Spell::SpellEffectWeapon(uint32 i)
 	case 2567:  // thrown
 		{
 			skill = SKILL_THROWN;
+			spell = SPELL_RANGED_THROW;
 		}break;
 	case 5009:  // wands
 		{
 			skill = SKILL_WANDS;
 			spell = SPELL_RANGED_GENERAL;
 		}break;
-	//case 3386:  // spears
-	//	skill = 0;   // ??!!
-	//	break;
+	case 2382:   // Generic Weapon Spell
+		{
+			skill = SKILL_DODGE;
+			spell = SPELL_ATTACK;
+		}break;
+	case 9125:   // Generic Block Spell
+		{
+			skill = SKILL_BLOCK;
+		}break;
 	default:
 		{
 			skill = 0;
-			Log.Warning("Spell","Could not determine skill for spell id %d (SPELL_EFFECT_WEAPON)", this->m_spellInfo->Id);
+			Log.Warning("Spell","Could not determine skill for spell id %d (SPELL_EFFECT_WEAPON)", GetSpellProto()->Id);
 		}break;
 	}
-
-	// Don't add skills to players logging in.
-	/*if((m_spellInfo->Attributes & ATTRIBUTES_PASSIVE) && playerTarget->m_TeleportState == 1)
-		return;*/
 
 	if(skill)
 	{
@@ -2955,10 +2958,10 @@ void Spell::SpellEffectWeapon(uint32 i)
 		// if we do not have the skill line
 		if(!playerTarget->_HasSkillLine(skill))
 		{
-			playerTarget->_AddSkillLine(skill, 1, playerTarget->getLevel()*5);
-		}
-		else // unhandled.... if we have the skill line
-		{
+			if(sWorld.StartLevel > 1)
+				playerTarget->_AddSkillLine(skill, 5*sWorld.StartLevel, playerTarget->getLevel()*5);
+			else
+				playerTarget->_AddSkillLine(skill, 1, playerTarget->getLevel()*5);
 		}
 	}
 }

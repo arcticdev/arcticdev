@@ -2566,25 +2566,6 @@ void Aura::SpellAuraDummy(bool apply)
 				TO_PLAYER(m_caster)->GetSession()->SendPacket(&data);
 			}
 		}break;
-	/*case 570:   // far sight
-	case 1345:
-	case 6197:
-	case 6198:  // eagle eye
-	case 24125:
-	case 21171:
-		{
-				if(m_target->IsPlayer() || !m_target->IsInWorld())
-				return;
-				Creature* farsight = TO_PLAYER(m_target)->GetMapMgr()->GetCreature(TO_PLAYER(m_target)->GetUInt32Value(PLAYER_FARSIGHT));
-				TO_PLAYER(m_target)->SetUInt64Value(PLAYER_FARSIGHT, 0);
-				TO_PLAYER(m_target)->GetMapMgr()->ChangeFarsightLocation(TO_PLAYER(m_target), 0, 0, false);
-				if(farsight)
-				{
-					farsight->RemoveFromWorld(false,true);
-					farsight->Destructor();
-				}
-		}break;*/
-
 	case 23701://Darkmoon Card: Twisting Nether give 10% chance to self resurrect ->cast 23700
 		{
 			//if(!apply)
@@ -5025,7 +5006,7 @@ void Aura::SpellAuraProcTriggerDamage(bool apply)
 
 		ds.owner = (void*)this;
 		m_target->m_damageShields.push_back(ds);
-		OUT_DEBUG("registering dmg proc %u, school %u, flags %u, charges %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
+		DEBUG_LOG("Spell","registering dmg proc %u, school %u, flags %u, charges %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
 	}
 	else
 	{
@@ -5158,16 +5139,6 @@ void Aura::SpellAuraModCritPerc(bool apply)
 		}
 		else
 		{
-			/*std::list<WeaponModifier>::iterator i = TO_PLAYER( m_target )->tocritchance.begin();
-
-			for(;i!=TO_PLAYER( m_target )->tocritchance.end();i++)
-			{
-				if((*i).spellid==GetSpellId())
-				{
-					TO_PLAYER( m_target )->tocritchance.erase(i);
-					break;
-				}
-			}*/
 			TO_PLAYER( m_target )->tocritchance.erase(GetSpellId());
 		}
 		TO_PLAYER( m_target )->UpdateChances();

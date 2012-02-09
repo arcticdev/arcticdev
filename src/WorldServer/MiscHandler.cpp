@@ -2250,6 +2250,17 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )
 
 void WorldSession::HandleReadyForAccountDataTimes(WorldPacket& recv_data)
 {
-	sLog.outDebug("WORLD: CMSG_READY_FOR_ACCOUNT_DATA_TIMES");
-	SendAccountDataTimes(GLOBAL_CACHE_MASK);
+	DEBUG_LOG( "WORLD","Received CMSG_READY_FOR_ACCOUNT_DATA_TIMES" );
+
+	// account data == UI config
+	WorldPacket data(SMSG_ACCOUNT_DATA_TIMES, 4+1+4+8*4);
+	data << uint32(UNIXTIME) << uint8(1) << uint32(0x15);
+	for (int i = 0; i < 8; i++)
+	{
+		if(0x15 & (1 << i))
+		{
+			data << uint32(0);
+		}
+	}
+	SendPacket(&data);
 }

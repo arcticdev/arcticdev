@@ -111,6 +111,7 @@ enum SessionStatus
 
 struct AccountDataEntry
 {
+	time_t Time;
 	char * data;
 	uint32 sz;
 	bool bIsDirty;
@@ -728,7 +729,7 @@ protected:
 	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
 
 	void HandleCharacterCustomization(WorldPacket & recv_data);
-	void HandleReadyForAccountDataTimes(WorldPacket& recv_data);
+	void HandleReadyForAccountDataTimes(WorldPacket &recv_data);
 
 	// Vehicles
 	void HandleVehicleDismiss(WorldPacket & recv_data);
@@ -768,7 +769,7 @@ public:
 	void SendAuctionList(Creature* pCreature);
 	void SendSpiritHealerRequest(Creature* pCreature);
 	void FullLogin(Player* plr);
-	void SendAccountDataTimes(uint32 mask);
+
 #ifdef CLUSTERING
 	bool ClusterTryPlayerLogin(uint32 Guid, uint32 ClientBuild, string GMPermissions, uint32 Account_Flags);
 #endif
