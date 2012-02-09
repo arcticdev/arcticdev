@@ -491,27 +491,37 @@ void WorldSession::HandleSaveGuildEmblem(WorldPacket & recv_data)
 // Charter part
 void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 {
-	/* would be better, if we could skip the crap fields - will work on it in the future*/
-	uint8 error;
-	uint64 creature_guid;
-	uint64 crap;
-	uint32 crap2;
-	string name;
-	uint64 crap3, crap4, crap5, crap6, crap7, crap8;
-	uint32 crap9;
-	uint8 crap10;
-	uint32 arena_index;
-	uint32 crap11;
+	CHECK_PACKET_SIZE(recv_data, 8+8+4+1+5*8+2+1+4+4);
 
-	recv_data >> creature_guid;
-	recv_data >> crap >> crap2;
-	recv_data >> name;
-	recv_data >> crap3 >> crap4 >> crap5 >> crap6 >> crap7 >> crap8;
-	recv_data >> crap9;
-	recv_data >> crap10;
-	recv_data >> arena_index;
-	recv_data >> crap11;
-  
+	uint64 creature_guid;
+	uint64 unk1, unk3, unk4, unk5, unk6, unk7;
+	uint32 unk2;
+	std::string name;
+	uint16 unk8;
+	uint8  unk9;
+	uint32 arena_index;
+	uint32 unk10;
+
+	uint8 error;
+
+	recv_data >> creature_guid;                             // NPC GUID
+	recv_data >> unk1;                                      // 0
+	recv_data >> unk2;                                      // 0
+	recv_data >> name;                                      // name
+
+	// recheck
+	CHECK_PACKET_SIZE(recv_data, 8+8+4+(name.size()+1)+5*8+2+1+4+4);
+
+	recv_data >> unk3;                                      // 0
+	recv_data >> unk4;                                      // 0
+	recv_data >> unk5;                                      // 0
+	recv_data >> unk6;                                      // 0
+	recv_data >> unk7;                                      // 0
+	recv_data >> unk8;                                      // 0
+	recv_data >> unk9;                                      // 0
+	recv_data >> arena_index;                               // index
+	recv_data >> unk10;                                     // 0
+
 	Creature* crt = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(creature_guid));
 	if(!crt)
 	{
