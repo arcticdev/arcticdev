@@ -139,7 +139,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 	Instance * in = NULL;
 
 	//is the map vaild?
-	if(inf == NULL || mapid>=NUM_MAPS)
+	if(inf == NULL || mapid >= NUM_MAPS)
 		return INSTANCE_ABORT_NOT_FOUND;
 
 	// main continent check.

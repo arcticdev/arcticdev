@@ -500,12 +500,12 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 
 	// Check attached items
 	recv_data >> unk2 >> itemcount;
-	for( i = 0; i < itemcount; ++i )
+	for( i = 0; i < itemcount; i++ )
 	{
 		recv_data >> itemslot;
 		recv_data >> itemguid;
 
-        pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
+		pItem = _player->GetItemInterface()->GetItemByGUID( itemguid );
 		real_item_slot = _player->GetItemInterface()->GetInventorySlotByGuid( itemguid );
 		if( pItem == NULL || pItem->IsSoulbound() || pItem->HasFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_CONJURED ) ||
 			( pItem->IsContainer() && (TO_CONTAINER( pItem ))->HasItems() ) || real_item_slot >= 0 && real_item_slot < INVENTORY_SLOT_ITEM_START )
@@ -604,7 +604,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	// Check for the item, and required item.
 	if( !items.empty( ) )
 	{
-		for( itr = items.begin(); itr != items.end(); ++itr )
+		for( itr = items.begin(); itr != items.end(); itr++ )
 		{
 			pItem = *itr;
 			if( _player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(pItem->GetGUID(), false) != pItem )
@@ -622,6 +622,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 			}
 
 			delete pItem;
+			pItem = NULL;
 		}
 	}
 
