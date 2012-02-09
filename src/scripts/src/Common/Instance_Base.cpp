@@ -470,7 +470,7 @@ void ArcTicInstanceScript::BuildEncounterMap()
 		return;
 
 	QueryResult* KillResult = WorldDatabase.Query( "SELECT id, entry FROM creature_spawns WHERE map = %u AND entry IN ( SELECT entry FROM creature_names WHERE rank = 3 )", mInstance->GetMapId() );
-	if(KillResult)
+	if ( KillResult != NULL )
 	{
 		uint32 Id = 0, Entry = 0;
 		Field* CurrentField = NULL;
@@ -498,6 +498,8 @@ void ArcTicInstanceScript::BuildEncounterMap()
 			mEncounters.insert( EncounterMap::value_type( Entry, BossData( Id, 0, State ) ) );
 		}
 		while ( KillResult->NextRow() );
+
+		delete KillResult;
 	};
 };
 
@@ -518,7 +520,7 @@ void ArcTicInstanceScript::BuildEncounterMapWithEntries( IdVector pEntries )
 
 	Query << " )";
 	QueryResult* KillResult = WorldDatabase.Query( Query.str().c_str() );
-	if(KillResult)
+	if ( KillResult != NULL )
 	{
 		uint32 Id = 0, Entry = 0;
 		Field* CurrentField = NULL;

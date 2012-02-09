@@ -313,7 +313,7 @@ void StatDumper::DumpStats()
     fprintf(f, "  <status>\n");
 
 	uint32 races[RACE_DRAENEI+1];
-	uint32 classes[DRUID+1];
+	uint32 classes[CLASS_DRUID+1];
 	memset(&races[0], 0, sizeof(uint32)*(RACE_DRAENEI+1));
 	memset(&classes[0], 0, sizeof(uint32)*(RACE_DRAENEI+1));
     std::deque<Player*> gms;
@@ -391,7 +391,7 @@ void StatDumper::DumpStats()
 		"draenei",
 	};
 
-	static const char * class_names[DRUID+1] = {
+	static const char * class_names[CLASS_DRUID+1] = {
 		NULL,
 		"warrior",
 		"paladin",
@@ -414,7 +414,7 @@ void StatDumper::DumpStats()
 			fprintf(f, "    <%s>%u</%s>\n", race_names[i], races[i], race_names[i]);
 	}
 
-	for(i = 0; i <= DRUID; ++i)
+	for(i = 0; i <= CLASS_DRUID; ++i)
 	{
 		if( class_names[i] != NULL )
 			fprintf(f, "    <%s>%u</%s>\n", class_names[i], classes[i], class_names[i]);

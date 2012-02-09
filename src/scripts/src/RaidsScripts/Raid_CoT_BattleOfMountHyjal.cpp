@@ -1420,9 +1420,9 @@ public:
 			if(mTarget->GetTypeId() == TYPEID_PLAYER && _unit->isAlive() && !_unit->GetCurrentSpell() && t > spells[6].casttime)
 			{
 				uint32 SpellID = 0;
-				if (mTarget->getClass() == WARRIOR || mTarget->getClass() == ROGUE || mTarget->getClass() == MAGE)
+				if (mTarget->getClass() == CLASS_WARRIOR || mTarget->getClass() == CLASS_ROGUE || mTarget->getClass() == CLASS_MAGE)
 					SpellID = SOUL_CHARGEO;
-				if (mTarget->getClass() == PRIEST || mTarget->getClass() == PALADIN || mTarget->getClass() == WARLOCK)
+				if (mTarget->getClass() == CLASS_PRIEST || mTarget->getClass() == CLASS_PALADIN || mTarget->getClass() == CLASS_WARLOCK)
 					SpellID = SOUL_CHARGER;
 				else
 					SpellID = SOUL_CHARGEG;

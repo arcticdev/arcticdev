@@ -16,10 +16,10 @@ public:
     void GossipHello(Object* pObject, Player* plr, bool AutoSend)
     {
         GossipMenu *Menu;
-        if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF){
+        if(plr->getClass() == CLASS_DRUID && plr->getRace() == RACE_NIGHTELF){
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4914, plr);
 			Menu->AddItem( 0, GOSSIP_SILVA_FILNAVETH, 1);
-		}else if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN){
+		}else if(plr->getClass() == CLASS_DRUID && plr->getRace() == RACE_TAUREN){
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4915, plr);
 		}else{
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4913, plr);
@@ -59,10 +59,10 @@ public:
     void GossipHello(Object* pObject, Player* plr, bool AutoSend)
     {
         GossipMenu *Menu;
-		if(plr->getClass() == DRUID && plr->getRace() == RACE_TAUREN){
+		if(plr->getClass() == CLASS_DRUID && plr->getRace() == RACE_TAUREN){
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4918, plr);
 			Menu->AddItem( 0, GOSSIP_BUNTHEN_PLAINSWIND, 1);
-		}else if(plr->getClass() == DRUID && plr->getRace() == RACE_NIGHTELF){
+		}else if(plr->getClass() == CLASS_DRUID && plr->getRace() == RACE_NIGHTELF){
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4917, plr);
 		}else{
 			objmgr.CreateGossipMenuForPlayer(&Menu, pObject->GetGUID(), 4916, plr);

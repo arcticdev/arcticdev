@@ -822,7 +822,7 @@ AnubRekhanAI::AnubRekhanAI( Creature* pCreature ) : ArcTicScriptBossAI( pCreatur
 		mLocustSwarm = AddSpell( ANUBREKHAN_LOCUST_SWARM_NORMAL, Target_Self, 0, 3, 0 );
 	};
 
-	AddSpellFunc( &SpellFunc_AnubRekhanCorpseScarabsPlayer, Target_Self, 8, 0, 20 );
+	//AddSpellFunc( &SpellFunc_AnubRekhanCorpseScarabsPlayer, Target_Self, 8, 0, 20 );
 	AddSpellFunc( &SpellFunc_AnubRekhanCorpseScarabsCryptGuard, Target_Self, 8, 0, 20 );
 	Emote( "Ahh... welcome to my parlor.", Text_Yell, 8788 );
 	AddEmote( Event_OnCombatStart, "Just a little taste...", Text_Yell, 8785 );
@@ -949,7 +949,7 @@ void AnubRekhanAI::Destroy()
 	delete this;
 };
 
-void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit * pTarget, TargetType pType )
+/*void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit * pTarget, TargetType pType )
 {
 	AnubRekhanAI *AnubRekhan = ( pCreatureAI != NULL ) ? static_cast< AnubRekhanAI* >( pCreatureAI ) : NULL;
 	if ( AnubRekhan != NULL )
@@ -1019,7 +1019,7 @@ void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCrea
 			};
 		};
 	};
-};
+};*/
 
 void SpellFunc_AnubRekhanCorpseScarabsCryptGuard( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType )
 {

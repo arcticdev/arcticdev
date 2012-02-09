@@ -361,7 +361,7 @@ static Coords CryptGuards[] =
 	{ 3332.591797f, -3476.102539f, 287.073425f, 0.015707f, 0 }
 };
 
-void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType );
+//void SpellFunc_AnubRekhanCorpseScarabsPlayer( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType );
 void SpellFunc_AnubRekhanCorpseScarabsCryptGuard( SpellDesc* pThis, ArcTicScriptCreatureAI* pCreatureAI, Unit* pTarget, TargetType pType );
 
 class AnubRekhanAI : public ArcTicScriptBossAI

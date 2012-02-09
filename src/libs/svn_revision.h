@@ -2,6 +2,6 @@
 #define SVN_REVISION_H
 
 static const char * BUILD_TAG = "2.0";
-static int BUILD_REVISION = 218;
+static int BUILD_REVISION = 279;
 
 #endif		 // SVN_REVISION_H
