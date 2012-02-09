@@ -507,9 +507,7 @@ Player::~Player ( )
 	pTarget = NULL;
 
 	if(m_Summon)
-	{
 		m_Summon->Remove(true, true, false);
-	}
 
 	if (m_GM_SelectedGO)
 		m_GM_SelectedGO = NULL;

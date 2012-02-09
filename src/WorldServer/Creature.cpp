@@ -28,10 +28,10 @@ Creature::Creature(uint64 guid)
 	mTaxiNode = 0;
 
 	Skinned = false;
-	
+
 	m_enslaveCount = 0;
 	m_enslaveSpell = 0;
-	
+
 	for(uint32 x = 0; x < 7; x++)
 	{
 		FlatResistanceMod[x] = 0;
@@ -175,8 +175,8 @@ void Creature::OnRemoveCorpse()
 				else
 					RemoveFromWorld(false, true);
 			}
-		
-	   
+
+
 		setDeathState(DEAD);
 
 		m_position = m_spawnLocation;
@@ -241,7 +241,7 @@ uint32 Creature::GetRequiredLootSkill()
 	if(GetCreatureInfo()->TypeFlags & CREATURE_TYPEFLAGS_HERBLOOT)
 		return SKILL_HERBALISM;     // herbalism
 	else if(GetCreatureInfo()->TypeFlags & CREATURE_TYPEFLAGS_MININGLOOT)
-		return SKILL_MINING;        // mining   
+		return SKILL_MINING;        // mining
 	else
 		return SKILL_SKINNING;      // skinning
 };
@@ -255,7 +255,7 @@ void Creature::GenerateLoot()
 	}
 
 	lootmgr.FillCreatureLoot(&m_loot,GetEntry(), m_mapMgr ? (m_mapMgr->iInstanceMode > 0 ? true : false) : false);
-	
+
 	// -1 , no gold; 0 calculated according level; >0 coppercoins
 	if( proto->money == -1)
 	{
@@ -278,7 +278,7 @@ void Creature::GenerateLoot()
 	}
 	else
 		m_loot.gold = uint32(proto->money);
-	
+
 	if(m_loot.gold)
 		m_loot.gold = int32(float(m_loot.gold) * sWorld.getRate(RATE_MONEY));
 }
@@ -287,7 +287,7 @@ void Creature::SaveToDB()
 {
 	if(!spawnid)
 		spawnid = objmgr.GenerateCreatureSpawnID();
-	 
+
 	std::stringstream ss;
 	ss << "REPLACE INTO creature_spawns VALUES("
 		<< spawnid << ","
@@ -323,7 +323,7 @@ void Creature::SaveToFile(std::stringstream & name)
 
 	OutFile = fopen(name.str().c_str(), "wb");
 	if (!OutFile) return;
-	
+
 	uint32 creatureEntry = GetUInt32Value(OBJECT_FIELD_ENTRY);
 	if (!m_sqlid)
 		m_sqlid = objmgr.GenerateLowGuid(HIGHGUID_UNIT);
@@ -391,7 +391,7 @@ void Creature::DeleteQuest(QuestRelation *Q)
 }
 
 Quest* Creature::FindQuest(uint32 quest_id, uint8 quest_relation)
-{   
+{
 	list<QuestRelation *>::iterator it;
 	for (it = m_quests->begin(); it != m_quests->end(); ++it)
 	{
@@ -430,9 +430,9 @@ void Creature::_LoadQuests()
 	sQuestMgr.LoadNPCQuests(TO_CREATURE(this));
 }
 
-void Creature::setDeathState(DeathState s) 
+void Creature::setDeathState(DeathState s)
 {
-	if(s != JUST_DIED) 
+	if(s != JUST_DIED)
 		m_deathState = s;
 	else
 	{
@@ -509,17 +509,16 @@ void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 	m_lootMethod = 1;
 
 	RemoveAllAuras();
-	
+
 	if(IsPet()) /* Is a pet: IsPet() actually returns false on a pet? o_X */
 	{
 		if(IsInWorld())
 			Unit::RemoveFromWorld(true);
 
 		SafeDelete();
-		return;
 	}
 
-	if(IsInWorld())
+	if(this != NULL && IsInWorld())
 	{
 		uint32 delay = 0;
 		if(addrespawnevent && proto && proto->RespawnTime > 0)
@@ -530,7 +529,6 @@ void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 
 void Creature::EnslaveExpire()
 {
-	
 	m_enslaveCount++;
 	Player* caster = objmgr.GetPlayer(GetUInt32Value(UNIT_FIELD_CHARMEDBY));
 	if(caster)
@@ -612,10 +610,10 @@ void Creature::CalcResistance(uint32 type)
 void Creature::CalcStat(uint32 type)
 {
 	int32 res=(BaseStats[type]*(100+StatModPct[type]))/100;
-		
+
 	res+=FlatStatMod[type];
 	if(res<0)res=0;
-		
+
 	res+=(res*(TotalStatModPct[type]))/100;
 	SetUInt32Value(UNIT_FIELD_STAT0+type,res>0?res:0);
 }
@@ -629,7 +627,7 @@ void Creature::RegenerateHealth(bool isinterrupted)
 	uint32 cur=GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 mh=GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 	if(cur>=mh)return;
-	
+
 	//though creatures have their stats we use some wierd formula for amt
 	float amt = 0.0f;
 	uint32 lvl = getLevel();
@@ -637,10 +635,10 @@ void Creature::RegenerateHealth(bool isinterrupted)
 	amt = lvl*2.0f;
 	if (PctRegenModifier)
 		amt+= (amt * PctRegenModifier) / 100;
-		
+
 	//Apply shit from conf file
 	amt*=sWorld.getRate(RATE_HEALTH);
-	
+
 	if(amt<=1.0f)//this fixes regen like 0.98
 		cur++;
 	else
@@ -652,14 +650,14 @@ void Creature::RegenerateMana(bool isinterrupted)
 {
 	if (m_interruptRegen || isinterrupted)
 		return;
-   
+
 	uint32 cur=GetUInt32Value(UNIT_FIELD_POWER1);
 	uint32 mm=GetUInt32Value(UNIT_FIELD_MAXPOWER1);
 	if(cur>=mm)
 		return;
 
 	float amt=(getLevel()+10)*PctPowerRegenModifier[POWER_TYPE_MANA]/10;
-	
+
 	//Apply shit from conf file
 	amt*=sWorld.getRate(RATE_POWER1);
 	if(amt<=1.0)//this fixes regen like 0.98
@@ -722,7 +720,7 @@ void Creature::ModAvItemAmount(uint32 itemid, uint32 value)
 				}
 				else
 					itr->available_amount -= value;
-                
+
 				if(!event_HasEvent(EVENT_ITEM_UPDATE))
 					sEventMgr.AddEvent(TO_CREATURE(this), &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, itr->incrtime, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
@@ -832,7 +830,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	//Set fields
 	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
-	
+
 	// Heroic stats
 	if(mode)
 	{
@@ -895,7 +893,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))));
 
 	SetFloatValue( OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))));
-	DEBUG_LOG("Creatures","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, spawn->displayid, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))); 
+	DEBUG_LOG("Creatures","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, spawn->displayid, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid )));
 
 	SetUInt32Value(UNIT_NPC_EMOTESTATE, original_emotestate);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,original_MountedDisplayID);
@@ -922,7 +920,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	// set position
 	m_position.ChangeCoords( spawn->x, spawn->y, spawn->z, spawn->o );
 	m_spawnLocation.ChangeCoords(spawn->x, spawn->y, spawn->z, spawn->o);
-	m_aiInterface->setMoveType(spawn->movetype);	
+	m_aiInterface->setMoveType(spawn->movetype);
 	m_aiInterface->m_waypoints = objmgr.GetWayPointMap(spawn->id);
 
 	//use proto faction if spawn faction is unspecified
@@ -977,7 +975,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
 
 ////////////AI
-	
+
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); itr++)
 	{
@@ -994,7 +992,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	//these fields are always 0 in db
 	GetAIInterface()->setMoveRunFlag(0);
-	
+
 	// load formation data
 	if( spawn->form != NULL )
 	{
@@ -1013,12 +1011,12 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
-	
+
 // PLACE FOR DIRTY FIX BASTARDS
 	// HACK! set call for help on civ health @ 100%
 	if(creature_info->Civilian >= 1)
 		m_aiInterface->m_CallForHelpHealth = 100;
- 
+
  //HACK!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 ||
 		m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 ||
@@ -1092,7 +1090,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	setGender(gender);
 
 	SetFloatValue(OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))));
-	DEBUG_LOG("Creature","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, model, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))); 
+	DEBUG_LOG("Creature","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, model, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( model )));
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
@@ -1216,7 +1214,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		power = proto->Power* 10;
 	else
 		power = proto->Power;
-		
+
 	SetByte(UNIT_FIELD_BYTES_0, 3, proto->Powertype);
 	SetUInt32Value(UNIT_FIELD_POWER1 + proto->Powertype, power);
 	SetUInt32Value(UNIT_FIELD_MAXPOWER1 + proto->Powertype, power);
@@ -1258,7 +1256,7 @@ void Creature::OnPushToWorld()
 			if(sp != NULL)
 			{
 				Unit* target = TO_UNIT(this);
-				sEventMgr.AddEvent(target, &Unit::EventCastSpell, target, sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); 
+				sEventMgr.AddEvent(target, &Unit::EventCastSpell, target, sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 			}
 		}
 	}
@@ -1283,7 +1281,7 @@ void Creature::OnPushToWorld()
 		{
 			sEventMgr.AddEvent(TO_CREATURE(this), &Creature::ChannelLinkUpCreature, m_spawn->channel_target_creature, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0);	// only 5 attempts
 		}
-		
+
 		if(m_spawn->channel_target_go)
 		{
 			sEventMgr.AddEvent(TO_CREATURE(this), &Creature::ChannelLinkUpGO, m_spawn->channel_target_go, EVENT_CREATURE_CHANNEL_LINKUP, 1000, 5, 0);	// only 5 attempts
@@ -1297,7 +1295,7 @@ void Creature::OnPushToWorld()
 		{
 				if (itr->max_amount == 0)
 					itr->available_amount=0;
-				else if (itr->available_amount<itr->max_amount)				
+				else if (itr->available_amount<itr->max_amount)
 					sEventMgr.AddEvent(TO_CREATURE(this), &Creature::UpdateItemAmount, itr->itemid, EVENT_ITEM_UPDATE, VENDOR_ITEMS_UPDATE_TIME, 1,0);
 		}
 
@@ -1326,7 +1324,7 @@ void Creature::Despawn(uint32 delay, uint32 respawntime)
 		MapCell * pCell = m_mapMgr->GetCellByCoords(m_spawnLocation.x, m_spawnLocation.y);
 		if(!pCell)
 			pCell = m_mapCell;
-	
+
 		ASSERT(pCell);
 		pCell->_respawnObjects.insert(TO_OBJECT(this));
 		sEventMgr.RemoveEvents(this);
@@ -1427,7 +1425,7 @@ Unit* Creature::GetSummonOwner()
 	if( SummonOwner && GetMapMgr() )
 	{
 		Unit * u = NULL;
-		u = GetMapMgr()->GetUnit(SummonOwner); 
+		u = GetMapMgr()->GetUnit(SummonOwner);
 		return u != NULL ? u : NULL;
 	}
 	return NULL;
