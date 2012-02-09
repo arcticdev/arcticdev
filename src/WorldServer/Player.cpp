@@ -5822,24 +5822,21 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 	// add to looter set
 	lootObj->m_loot.looters.insert(GetLowGUID());
 
-	WorldPacket data, data2(29);
+	WorldPacket data, data2(32);
 	data.SetOpcode (SMSG_LOOT_RESPONSE);
-
 
 	m_lootGuid = guid;
 
-
 	data << guid;
-	data << loot_type;//loot_type;
+	data << loot_type; // loot_type;
 	data << lootObj->m_loot.gold;
-	data << (uint8) 0;//loot size reserve
-
+	data << uint8(0);  // loot size reserve
 
 	std::vector<__LootItem>::iterator iter=lootObj->m_loot.items.begin();
-	uint32 count=0;
+	uint32 count = 0;
 	uint8 slottype = 0;
 
-	for(uint32 x=0;iter!=lootObj->m_loot.items.end();iter++,x++)
+	for(uint32 x = 0; iter!=lootObj->m_loot.items.end();iter++,x++)
 	{
 		if (iter->iItemsCount == 0)
 			continue;

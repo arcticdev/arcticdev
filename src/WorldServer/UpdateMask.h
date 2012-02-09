@@ -43,15 +43,15 @@ public:
 		//actually int->bool conversion is not needed here
 	}
 
-	uint32 GetUpdateBlockCount() const 
+	uint32 GetUpdateBlockCount() const
 	{
 		uint32 x;
 		for( x=mBlocks-1;x;x--)
 			if(mUpdateMask[x])break;
-		return (x+1); 
+		return (x+1);
 	}
 	ARCTIC_INLINE uint32 GetBlockCount() const {return mBlocks;}
-	
+
 	ARCTIC_INLINE uint32 GetLength() const { return (mBlocks *sizeof(uint32)); }
 	ARCTIC_INLINE uint32 GetCount() const { return mCount; }
 	ARCTIC_INLINE const uint8* GetMask() const { return (uint8*)mUpdateMask; }
@@ -74,7 +74,7 @@ public:
 
 	void Clear()
 	{
-		if (mUpdateMask)
+		if(mUpdateMask)
 			memset(mUpdateMask, 0, mBlocks << 2);
 	}
 

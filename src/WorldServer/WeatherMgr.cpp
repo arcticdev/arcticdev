@@ -105,7 +105,7 @@ void WeatherMgr::SendWeather(Player* plr) // Update weather when player has chan
 	std::map<uint32, WeatherInfo* >::iterator itr;
 	itr = m_zoneWeathers.find(plr->GetZoneId());
 
-	if (itr == m_zoneWeathers.end())
+	if(itr == m_zoneWeathers.end())
 	{
 		WorldPacket data(SMSG_WEATHER, 9);
 		BuildWeatherPacket(&data, 0, 0);
@@ -149,15 +149,15 @@ void WeatherInfo::_GenerateWeather()
 
 	std::map<uint32, uint32>::iterator itr;
 
-	if (rv <= m_effectValues[4]) // %chance on changing weather from sunny to m_effectValues[5]
+	if(rv <= m_effectValues[4]) // %chance on changing weather from sunny to m_effectValues[5]
 	{
 		m_currentEffect = m_effectValues[5];
 	}
-	else if (rv <= m_effectValues[2]) // %chance on changing weather from sunny to m_effectValues[3]
+	else if(rv <= m_effectValues[2]) // %chance on changing weather from sunny to m_effectValues[3]
 	{
 		m_currentEffect = m_effectValues[3];
 	}
-	else if (rv <= m_effectValues[0]) // %chance on changing weather from sunny to m_effectValues[1]
+	else if(rv <= m_effectValues[0]) // %chance on changing weather from sunny to m_effectValues[1]
 	{
 		m_currentEffect = m_effectValues[1];
 	}

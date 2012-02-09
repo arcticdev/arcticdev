@@ -913,7 +913,8 @@ void LootMgr::FillItemLoot(Loot *loot, uint32 loot_id)
 	loot->items.clear();
 	loot->gold = 0;
 
-	LootStore::iterator tab =ItemLoot.find(loot_id);
+	LootStore::iterator tab = ItemLoot.find(loot_id);
+
 	if( ItemLoot.end()==tab)
 		return;
 	else

@@ -233,7 +233,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 								if( slot == EQUIPMENT_SLOT_MAINHAND || slot == EQUIPMENT_SLOT_OFFHAND )
 								{
 									// get enchant id
-									const char * enchant_field = res->Fetch()[3].GetString();	
+									const char * enchant_field = res->Fetch()[3].GetString();
 									if( sscanf( enchant_field , "%u,0,0;" , (unsigned int *)&enchantid ) == 1 && enchantid > 0 )
 									{
 										enc = dbcEnchant.LookupEntry( enchantid );
@@ -657,7 +657,7 @@ void WorldSession::FullLogin(Player* plr)
 	datab << uint32(0x00);
 	SendPacket(&datab);
 
-	// Send first line of MOTD 
+	// Send first line of MOTD
 	WorldPacket datat(SMSG_MOTD, 50);
 	datat << uint32(0x04);
 	datat << sWorld.GetMotd();
@@ -765,10 +765,10 @@ void WorldSession::FullLogin(Player* plr)
 		SendPacket(&data);
 	}
 
-	_player->ResetTitansGrip();
-
 	// Set TIME OF LOGIN
 	CharacterDatabase.Execute("UPDATE characters SET online = 1 WHERE guid = %u" , plr->GetLowGUID());
+
+	_player->ResetTitansGrip();
 
 	bool enter_world = true;
 #ifndef CLUSTERING
@@ -1018,7 +1018,7 @@ void WorldSession::HandleAlterAppearance(WorldPacket & recv_data)
 	_player->SetStandState(0);
 }
 
-void WorldSession::HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data) 
+void WorldSession::HandleDeclinedPlayerNameOpcode(WorldPacket& recv_data)
 {
 	uint64 guid;
 	uint32 error = 0;

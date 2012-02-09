@@ -581,9 +581,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				if( CastingSpell == NULL )
 					continue;
 
-				if ( itr2->SpellClassMask[0] || itr2->SpellClassMask[1] || itr2->SpellClassMask[2] )
+				if( itr2->SpellClassMask[0] || itr2->SpellClassMask[1] || itr2->SpellClassMask[2] )
 				{
-					if (!(itr2->SpellClassMask[0] & CastingSpell->SpellGroupType[0]) &&
+					if(!(itr2->SpellClassMask[0] & CastingSpell->SpellGroupType[0]) &&
 						!(itr2->SpellClassMask[1] & CastingSpell->SpellGroupType[1]) &&
 						!(itr2->SpellClassMask[2] & CastingSpell->SpellGroupType[2]))
 						continue;
@@ -806,7 +806,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						case 58180:
 						case 58181:
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_SHRED &&
 									CastingSpell->NameHash != SPELL_HASH_MAUL &&
@@ -873,7 +873,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//Desecration
 						case 55741:
 							{
-								if ( CastingSpell == NULL )
+								if( CastingSpell == NULL )
 									continue;
 
 								if( CastingSpell->NameHash != SPELL_HASH_PLAGUE_STRIKE &&
@@ -1022,7 +1022,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						case 12798:
 						case 58363:
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_REVENGE )
 									continue;
@@ -1213,7 +1213,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
                                     continue;
                                 SpellEntry *parentproc= dbcSpell.LookupEntry(origId);
                                 SpellEntry *spellInfo = dbcSpell.LookupEntry(spellId);
-								if (!parentproc || !spellInfo)
+								if(!parentproc || !spellInfo)
 									continue;
 								int32 val = parentproc->EffectBasePoints[0] + 1;
                                 Spell* spell(new Spell(TO_UNIT(this), spellInfo ,true, NULL));
@@ -1226,9 +1226,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//Druid Living Seed
 						case 48504:
 							{
-								if ( CastingSpell == NULL )
+								if( CastingSpell == NULL )
 									continue;
-								if ( CastingSpell->NameHash != SPELL_HASH_SWIFTMEND &&
+								if( CastingSpell->NameHash != SPELL_HASH_SWIFTMEND &&
 									 CastingSpell->NameHash != SPELL_HASH_REGROWTH &&
 									 CastingSpell->NameHash != SPELL_HASH_HEALING_TOUCH &&
 									 CastingSpell->NameHash != SPELL_HASH_NOURISH )
@@ -1682,40 +1682,40 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							}break;
 						case 37565: //setbonus
 							{
-								if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_FLASH_HEAL)
+								if(!CastingSpell || CastingSpell->NameHash != SPELL_HASH_FLASH_HEAL)
 									continue;
 							}break;
 						//SETBONUSES
 						case 37379:
 							{
-								if (!CastingSpell || CastingSpell->School != SCHOOL_SHADOW || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
+								if(!CastingSpell || CastingSpell->School != SCHOOL_SHADOW || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
 									continue;
 							}break;
 						case 37378:
 							{
-								if (!CastingSpell || CastingSpell->School != SCHOOL_FIRE || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
+								if(!CastingSpell || CastingSpell->School != SCHOOL_FIRE || !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
 									continue;
 							}break;
 						case 39950:
 							{
-								if (!CastingSpell ||  !(CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING))
+								if(!CastingSpell ||  !(CastingSpell->c_is_flags & SPELL_FLAG_IS_HEALING))
 									continue;
 							}break;
 						case 37234:
 						case 37214:
 						case 37601:
 							{
-								if (!CastingSpell ||  !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
+								if(!CastingSpell ||  !(CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING))
 									continue;
 							}break;
 						case 37237:
 							{
-								if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_LIGHTNING_BOLT)
+								if(!CastingSpell || CastingSpell->NameHash != SPELL_HASH_LIGHTNING_BOLT)
 									continue;
 							}break;
 						case 37193:
 							{
-								if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_HOLY_SHIELD)
+								if(!CastingSpell || CastingSpell->NameHash != SPELL_HASH_HOLY_SHIELD)
 									continue;
 							}break;
 						case 37196:
@@ -1758,7 +1758,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						//Pendulum of Telluric Currents
 						case 60483:
 							{
-								if (CastingSpell == NULL)
+								if(CastingSpell == NULL)
 									continue;
 
 								if(!( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ))
@@ -1852,7 +1852,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							}break;
 						case 37445: //using a mana gem grants you 225 spell damage for 15 sec
 							{
-								if (!CastingSpell || CastingSpell->NameHash != SPELL_HASH_REPLENISH_MANA)
+								if(!CastingSpell || CastingSpell->NameHash != SPELL_HASH_REPLENISH_MANA)
 									continue;
 							}break;
 
@@ -1878,7 +1878,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
  									continue;
 
 								m_hotStreakCount++;
-								if (m_hotStreakCount >= 2)
+								if(m_hotStreakCount >= 2)
 									m_hotStreakCount = 0;
 								else
 									continue;
@@ -1937,7 +1937,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						case 46989: //improved blink
 						case 47000:
 							{
-								if ( !CastingSpell || CastingSpell->NameHash != SPELL_HASH_BLINK )
+								if( !CastingSpell || CastingSpell->NameHash != SPELL_HASH_BLINK )
 									continue;
 							}break;
 						case 52752: // Ancestral Awakening
@@ -1971,21 +1971,21 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 						case 51460: // Necrosis - shadow damage
 							{
-								if ( dmg )
+								if( dmg )
 								{
 									dmg_overwrite = dmg * (ospinfo->EffectBasePoints[0] + 1) / 200;
 								}
 							}break;
 						case 25742: // Seal of righteousness - Holy damage
 						{
-							if ( dmg )
+							if( dmg )
 							{
 								dmg_overwrite = dmg * (ospinfo->EffectBasePoints[0] + 1) / 400;
 							}
 						}break;
 						case 54741: //Firestarter
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_BLAST_WAVE &&
 									CastingSpell->NameHash != SPELL_HASH_DRAGON_S_BREATH )
@@ -1993,7 +1993,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							}break;
 						case 12494: //Frostbite
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								//me thinks its correct
 								if( !( CastingSpell->SpellGroupType[0] & 0x100220 ) || victim == TO_UNIT(this) ) //frost
@@ -2001,7 +2001,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							}break;
 						case 53390: //Tidal Waves
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_CHAIN_HEAL &&
 									CastingSpell->NameHash != SPELL_HASH_RIPTIDE )
@@ -2027,7 +2027,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						case 59890:
 						case 59891:
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_POWER_WORD__SHIELD )
 									continue;
@@ -2068,7 +2068,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						case 33197:
 						case 33198:
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_MIND_FLAY &&
 									CastingSpell->NameHash != SPELL_HASH_VAMPIRIC_TOUCH &&
@@ -2120,7 +2120,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						case 54152:
 						case 54153:
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->buffIndexType != SPELL_TYPE_INDEX_JUDGEMENT )
 									continue;
@@ -2134,7 +2134,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 							}break;
 						case 16246: // Elemental focus
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( !( CastingSpell->c_is_flags & SPELL_FLAG_IS_DAMAGING ) )
 									continue;
@@ -2172,7 +2172,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						// Bloodsurge
 						case 46916:
 							{
-								if (!CastingSpell )
+								if(!CastingSpell )
 									continue;
 								if( CastingSpell->NameHash != SPELL_HASH_HEROIC_STRIKE &&
 									CastingSpell->NameHash != SPELL_HASH_BLOODTHIRST &&
@@ -2542,7 +2542,7 @@ void Unit::RegenerateEnergy()
 void Unit::RegeneratePower(bool isinterrupted)
 {
     // This is only 200 IF the power is not rage
-	if (isinterrupted)
+	if(isinterrupted)
 		m_interruptedRegenTime = 200;
 	else
 		m_P_regenTimer = 200;//set next regen time
@@ -5491,27 +5491,6 @@ bool Unit::HasActiveAura(uint32 spellid,uint64 guid)
 
 void Unit::EventSummonPetExpire()
 {
-	/*if(summonPet)
-	{
-		if(summonPet->GetEntry() == 7915)//Goblin Bomb
-		{
-			SpellEntry *spInfo = dbcSpell.LookupEntry(13259);
-			if(!spInfo)
-				return;
-
-			Spell* sp = NULL;
-			sp = (new Spell(summonPet,spInfo,true,NULL));
-			SpellCastTargets tgt;
-			tgt.m_unitTarget=summonPet->GetGUID();
-			sp->prepare(&tgt);
-		}
-		else
-		{
-			summonPet->RemoveFromWorld(false, true);
-			delete summonPet;
-			summonPet = NULL;
-		}
-	}*/
 	sEventMgr.RemoveEvents(this, EVENT_SUMMON_PET_EXPIRE);
 }
 
@@ -6308,7 +6287,7 @@ Unit* Unit::CreateTemporaryGuardian(uint32 guardian_entry,uint32 duration,float 
 	p->SetInstanceID(GetMapMgr()->GetInstanceID());
 	p->Load(proto, x, y, v.z, angle);
 
-	if (lvl != 0)
+	if(lvl != 0)
 	{
 		/* MANA */
 		p->SetPowerType(POWER_TYPE_MANA);
@@ -7021,7 +7000,7 @@ void Unit::EventStunOrImmobilize()
 // Proc on chill effects (such as frostbolt slow effect)
 void Unit::EventChill(Unit* proc_target)
 {
-	if ( !proc_target || TO_UNIT(this) == proc_target )
+	if( !proc_target || TO_UNIT(this) == proc_target )
 		return; //how and why would we chill ourselfs
 
 	if( trigger_on_chill )
@@ -7183,15 +7162,15 @@ void Unit::OnAuraRemove(uint32 NameHash, Unit* m_target)
 	{
 		bool apply;
 
-		if (itr->second->deleted == true)
+		if(itr->second->deleted == true)
 			return;
 
-		if (itr->second->chance != 100)
+		if(itr->second->chance != 100)
 			apply = RandomUInt(100) < itr->second->chance;
 		else
 			apply = true;
 
-		if (apply)
+		if(apply)
 		{
 			if (itr->second->self)
 				CastSpell(TO_UNIT(this), itr->second->spell, true);

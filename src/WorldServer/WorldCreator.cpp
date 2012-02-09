@@ -13,7 +13,7 @@ InstanceMgr::InstanceMgr()
 {
 	memset(m_maps, 0, sizeof(Map*)* NUM_MAPS);
 	memset(m_instances, 0, sizeof(InstanceMap*) * NUM_MAPS);
-	
+
 	for(uint32 i = 0; i < NUM_MAPS; ++i)
 		m_singleMaps[i] = NULL;
 }
@@ -40,7 +40,7 @@ void InstanceMgr::Load(TaskList * l)
 	result = WorldDatabase.Query("SELECT DISTINCT Map FROM creature_spawns");
 	if(result)
 	{
-		do 
+		do
 		{
 			if(WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL)
 				continue;
@@ -187,7 +187,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 	// so, first we have to check if they have an instance on this map already, if so, allow them to teleport to that.
 	// next we check if there is a saved instance belonging to him.
 	// otherwise, we can create them a new one.
-	
+
 	m_mapLock.Acquire();
 
 	//find all instances for our map
@@ -200,7 +200,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 		if(instanceid != 0)
 		{
 			itr = instancemap->find(instanceid);
-			if(itr != instancemap->end()) 
+			if(itr != instancemap->end())
 			{
 				in = itr->second;
 				//we have an instance,but can we enter it?
@@ -388,7 +388,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 							in->m_mapMgr = _CreateInstance(in);
 
 						if(owns == OWNER_CHECK_SAVED_OK && !in->m_mapMgr->HasPlayers())
-						{	
+						{
 							if(plr->GetGroup())
 								in->m_creatorGroup = plr->GetGroupID();
 						}
@@ -398,7 +398,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 				}
 			}
 
-			
+
 			// iterate over our instances, and see if any of them are owned/joinable by him.
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
@@ -414,7 +414,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 						in->m_mapMgr = _CreateInstance(in);
 
 					if(owns == OWNER_CHECK_SAVED_OK && !in->m_mapMgr->HasPlayers())
-					{	
+					{
 						if(plr->GetGroup())
 							in->m_creatorGroup = plr->GetGroupID();
 					}
@@ -532,7 +532,7 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 
 	// start its thread
 	ThreadPool.ExecuteTask(ret);
-    
+
 	// assign pointer
 	m_singleMaps[mapid] = ret;
 	return ret;
@@ -595,7 +595,7 @@ void InstanceMgr::_CreateMap(uint32 mapid)
 	if(inf==NULL || m_maps[mapid]!=NULL)
 		return;
 #ifdef CLUSTERING
-	if (!inf->cluster_loads_map)
+	if(!inf->cluster_loads_map)
 		return;
 #endif
 
@@ -629,7 +629,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	snprintf(tmp, 200, "		<maxplayers>%u</maxplayers>\n", inf->playerlimit);																		pushline;
 
 	//<creationtime>
-	if (inst)
+	if(inst)
 	{
 		tm *ttime = localtime( &inst->m_creation );
 		snprintf(tmp, 200, "		<creationtime>%02u:%02u:%02u %02u/%02u/%u</creationtime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
@@ -642,7 +642,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	}
 
 	//<expirytime>
-	if (inst && inst->m_expiration)
+	if(inst && inst->m_expiration)
 	{
 		tm *ttime = localtime( &inst->m_expiration );
 		snprintf(tmp, 200, "		<expirytime>%02u:%02u:%02u %02u/%02u/%u</expirytime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
@@ -655,7 +655,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 
 	}
 	//<idletime>
-	if (mgr->InactiveMoveTime)
+	if(mgr->InactiveMoveTime)
 	{
 		tm *ttime = localtime( &mgr->InactiveMoveTime );
 		snprintf(tmp, 200, "		<idletime>%02u:%02u:%02u %02u/%02u/%u</idletime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
@@ -677,7 +677,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
 	Instance * in;
-	
+
 	m_mapLock.Acquire();
 	for(i = 0; i < NUM_MAPS; ++i)
 	{
@@ -713,14 +713,14 @@ void InstanceMgr::_LoadInstances()
 	// clear any instances that have expired.
 	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
 	CharacterDatabase.WaitExecute("DELETE FROM instances WHERE expiration <= %u", UNIXTIME);
-	
+
 	// load saved instances
 	result = CharacterDatabase.Query("SELECT * FROM instances");
 	Log.Notice("InstanceMgr", "Loading %u saved instance(s)." , result ? result->GetRowCount() : 0);
 
 	if(result)
 	{
-		do 
+		do
 		{
 			inf = WorldMapInfoStorage.LookupEntry(result->Fetch()[1].GetUInt32());
 			if(inf == NULL || result->Fetch()[1].GetUInt32() >= NUM_MAPS)
@@ -768,7 +768,7 @@ void Instance::LoadFromDB(Field * fields)
 	{
 		*pnpcstr = 0;
 		uint32 val = atol(npcstr);
-		if (val)
+		if(val)
 			m_killedNpcs.insert( val );
 		npcstr = pnpcstr+1;
 		pnpcstr = strchr(npcstr, ' ');
@@ -784,7 +784,7 @@ void Instance::LoadFromDB(Field * fields)
 	{
 		*pplayerstr = 0;
 		uint32 val = atol(playerstr);
-		if (val) //	No mutex required here, we are only calling this during start up.
+		if(val) //	No mutex required here, we are only calling this during start up.
 			m_SavedPlayers.insert( val );
 		playerstr = pplayerstr+1;
 		pplayerstr = strchr(playerstr, ' ');
@@ -845,7 +845,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 			}
 		}
 	}
-    m_mapLock.Release();	
+    m_mapLock.Release();
 }
 
 void InstanceMgr::ResetHeroicInstances()
@@ -917,7 +917,7 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 	// delete the instance pointer.
 	delete in;
 	m_mapLock.Release();
-	
+
 	return true;
 }
 
@@ -1119,7 +1119,7 @@ void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player* pPlayer)
 						data << uint32(60000) << uint32(1);
 						pPlayer->GetSession()->SendPacket(&data);
 						pPlayer->raidgrouponlysent=true;
-	
+
 						sEventMgr.AddEvent(pPlayer, &Player::EjectFromInstance, EVENT_PLAYER_EJECT_FROM_INSTANCE, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 						m_mapLock.Release();
@@ -1245,7 +1245,7 @@ FormationMgr::FormationMgr()
 	if(res)
 	{
 		Formation *f ;
-		do 
+		do
 		{
 			f = new Formation;
 			f->fol = res->Fetch()[1].GetUInt32();

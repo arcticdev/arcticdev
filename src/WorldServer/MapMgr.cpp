@@ -1007,8 +1007,6 @@ void MapMgr::LoadAllCells()
 
 					if (!cellInfo->IsLoaded())
 					{
-						//DEBUG_LOG("MapMgr","Loading objects for Cell [%d][%d] on map %d (instance %d)...",
-						//	posX, posY, this->_mapId, m_instanceID);
 						spawns = _map->GetSpawnsList( x , y );
 						if( spawns )
 							cellInfo->LoadObjects( spawns );

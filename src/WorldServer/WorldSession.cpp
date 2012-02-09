@@ -1050,7 +1050,7 @@ void WorldSession::HandleRealmSplit(WorldPacket & recv_data)
 void WorldSession::HandleAchievementInspect(WorldPacket &recv_data)
 {
 	CHECK_PACKET_SIZE(recv_data, 2);
-	CHECK_INWORLD_RETURN
+	CHECK_INWORLD_RETURN;
 	WoWGuid guid;
 	recv_data >> guid;
 

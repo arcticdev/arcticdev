@@ -1619,7 +1619,6 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 {
 	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recvPacket, 12);
-	CHECK_INWORLD_RETURN
 	if(!GetPlayer())
 		return;
 
@@ -1684,10 +1683,12 @@ void WorldSession::HandleRepairItemOpcode(WorldPacket &recvPacket)
 				if (dDurability <= _player->GetUInt32Value(PLAYER_FIELD_COINAGE))
 				{
 					int32 cDurability = item->GetDurability();
+
 					_player->ModUnsigned32Value( PLAYER_FIELD_COINAGE , -(int32)dDurability );
 					item->SetDurabilityToMax();
 					item->m_isDirty = true;
 
+					// only apply item mods if they are on char equiped
 					if(cDurability <= 0 && searchres->ContainerSlot==INVALID_BACKPACK_SLOT && searchres->Slot<INVENTORY_SLOT_BAG_END)
 						_player->ApplyItemMods(item, searchres->Slot, true);
 				}

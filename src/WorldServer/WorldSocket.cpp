@@ -282,7 +282,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	uint8 AccountFlags;
 	string lang = "enUS";
 	uint32 i;
-	
+
 	recvData >> AccountID >> AccountName >> GMFlags >> AccountFlags;
 	ForcedPermissions = sLogonCommHandler.GetForcedPermissions(AccountName);
 	if( ForcedPermissions != NULL )
@@ -293,11 +293,11 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 
 	mRequestID = 0;
 	//Pull the session key.
-	
+
 	recvData.read(K, 40);
 
 	_crypt.Init(K);
-	
+
 	BigNumber BNK;
 	BNK.SetBinary(K, 40);
 
@@ -320,7 +320,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 		}
 		// AUTH_FAILED = 0x0D
 		session->Disconnect();
-		
+
 		// clear the logout timer so he times out straight away
 		session->SetLogoutTimer(1);
 
@@ -342,7 +342,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	else
 	{
 		sha.UpdateData(*m_fullAccountName);
-		
+
 		// this is unused now. we may as well free up the memory.
 		delete m_fullAccountName;
 		m_fullAccountName = NULL;
@@ -470,7 +470,7 @@ void WorldSocket::UpdateQueuePosition(uint32 Position)
 void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 {
 	uint32 ping;
-	
+
 	*recvPacket >> ping;
 	*recvPacket >> _latency;
 
@@ -608,7 +608,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 			fprintf(m_file, "|");
 			for (count = 0 ; count < lenght ; count++)
 			{
-				if (countpos == 16)
+				if(countpos == 16)
 				{
 					countpos = 0;
 
@@ -616,7 +616,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 					for (unsigned int a = count-16; a < count;a++)
 					{
-						if ((data[a] < 32) || (data[a] > 126))
+						if((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
 							fprintf(m_file, "%c",data[a]);
@@ -631,7 +631,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 				fprintf(m_file, "%02X ",data[count]);
 
 				// Fix to parse packets with lenght < or = to 16 bytes.
-				if (count+1 == lenght && lenght <= 16)
+				if(count+1 == lenght && lenght <= 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)
 						fprintf(m_file, "   ");
@@ -640,7 +640,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 					for (unsigned int a = 0; a < lenght;a++)
 					{
-						if ((data[a] < 32) || (data[a] > 126))
+						if((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
 							fprintf(m_file, "%c",data[a]);
@@ -653,7 +653,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 				}
 
 				//Fix to parse the last line of the packets when the lenght is > 16 and its in the last line.
-				if (count+1 == lenght && lenght > 16)
+				if(count+1 == lenght && lenght > 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)
 						fprintf(m_file, "   ");
@@ -664,7 +664,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 					for (unsigned int a = line * 16 - 16; a < lenght;a++)
 					{
-						if ((data[a] < 32) || (data[a] > 126))
+						if((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
 							fprintf(m_file, "%c",data[a]);
@@ -835,49 +835,49 @@ unsigned int FastGUIDPack(const uint64 & oldguid, unsigned char * buffer, uint32
 	int j = 1 + pos;
 	uint8 * test = (uint8*)&oldguid;
 
-	if (*test) //7*8
+	if(*test) //7*8
 	{
 		buffer[j] = *test;
 		guidmask |= 1;
 		j++;
 	}
-	if (*(test+1)) //6*8
+	if(*(test+1)) //6*8
 	{
 		buffer[j] = *(test+1);
 		guidmask |= 2;
 		j++;
 	}
-	if (*(test+2)) //5*8
+	if(*(test+2)) //5*8
 	{
 		buffer[j] = *(test+2);
 		guidmask |= 4;
 		j++;
 	}
-	if (*(test+3)) //4*8
+	if(*(test+3)) //4*8
 	{
 		buffer[j] = *(test+3);
 		guidmask |= 8;
 		j++;
 	}
-	if (*(test+4)) //3*8
+	if(*(test+4)) //3*8
 	{
 		buffer[j] = *(test+4);
 		guidmask |= 16;
 		j++;
 	}
-	if (*(test+5))//2*8
+	if(*(test+5))//2*8
 	{
 		buffer[j] = *(test+5);
 		guidmask |= 32;
 		j++;
 	}
-	if (*(test+6))//1*8
+	if(*(test+6))//1*8
 	{
 		buffer[j] = *(test+6);
 		guidmask |= 64;
 		j++;
 	}
-	if (*(test+7)) //0*8
+	if(*(test+7)) //0*8
 	{
 		buffer[j] = *(test+7);
 		guidmask |= 128;

@@ -196,7 +196,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 
 					if( (*itr)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_AFK) )
 						continue;
-					
+
 					uint32 item_count = (i == m_losingteam) ? 1 : 3;
 					uint8 slot = (*itr)->GetItemInterface()->GetInventorySlotById(20558);
 					if(slot != ITEM_NO_SLOT_AVAILABLE)
@@ -308,7 +308,7 @@ void WarsongGulch::HookFlagDrop(Player* plr, GameObject* obj)
 	 * - Burlex
 	 */
 	m_dropFlags[plr->GetTeam()]->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
-	
+
 	SpellEntry * pSp = dbcSpell.LookupEntry(23333 + (plr->GetTeam() * 2));
 	Spell* sp(new Spell(plr, pSp, true, NULL));
 	SpellCastTargets targets(plr->GetGUID());
@@ -321,12 +321,12 @@ void WarsongGulch::ReturnFlag(uint32 team)
 	if(m_flagAtBase[team])
 		return;
 
-	if (m_dropFlags[team]->IsInWorld())
+	if(m_dropFlags[team]->IsInWorld())
 		m_dropFlags[team]->RemoveFromWorld(false);
-	
+
 	if( !m_homeFlags[team]->IsInWorld() )
 		m_homeFlags[team]->PushToWorld(m_mapMgr);
-	
+
 	if( team )
 		SendChatMessage( CHAT_MSG_BG_SYSTEM_ALLIANCE, 0, "The Alliance flag was returned to its base!" );
 	else
@@ -521,7 +521,7 @@ void WarsongGulch::OnCreate()
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
 
-	gate = SpawnGameObject(179917, 953.0507202f, 1459.8424072f, 340.6525573f, 4.02f, 32, 114, 0.854700f);   
+	gate = SpawnGameObject(179917, 953.0507202f, 1459.8424072f, 340.6525573f, 4.02f, 32, 114, 0.854700f);
 	gate->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 	gate->PushToWorld(m_mapMgr);
 	m_gates.push_back(gate);
@@ -591,11 +591,11 @@ void WarsongGulch::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 	pCorpse->m_loot.gold = float2int32(gold);
 }
 
-void WarsongGulch::HookOnShadowSight() 
+void WarsongGulch::HookOnShadowSight()
 {
 }
 
-void WarsongGulch::SetIsWeekend(bool isweekend) 
+void WarsongGulch::SetIsWeekend(bool isweekend)
 {
 	m_isWeekend = isweekend;
 	if (isweekend)
