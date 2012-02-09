@@ -2785,7 +2785,7 @@ void Aura::SpellAuraDummy(bool apply)
 					m_caster->RemoveOnAuraRemoveSpell(SPELL_HASH_PSYCHIC_SCREAM);
 			}
 		}break;
-	case 47572:
+		case 47572:
 		{
 			if(m_caster!=NULL)
 			{
@@ -2795,6 +2795,60 @@ void Aura::SpellAuraDummy(bool apply)
 					m_caster->RemoveOnAuraRemoveSpell(SPELL_HASH_PSYCHIC_SCREAM);
 			}
 		}break;
+	case 71903: // Shadowmourne Weapon Effect
+		{
+			if(GetCaster()->IsPlayer())
+			{
+				if(!apply)
+				{
+					TO_PLAYER(GetCaster())->RemoveAura(71905);
+					TO_PLAYER(GetCaster())->RemoveAura(72521);
+					TO_PLAYER(GetCaster())->RemoveAura(72523);
+				}
+			}
+		}break;
+
+	case 71905: // Shard Effects
+		{
+			if(GetCaster()->IsPlayer())
+			{
+				Player* plr = TO_PLAYER(GetCaster());
+				if(apply)
+				{
+					if(stackSize == 1)
+					{
+						plr->RemoveAura(72523);
+						if(!plr->HasAura(72521))
+							plr->CastSpell(plr, 72521, false);
+					}
+					if(stackSize == 6)
+					{
+						plr->RemoveAura(72521);
+						if(!plr->HasAura(72523))
+							plr->CastSpell(plr, 72523, false);
+					}
+					if(stackSize >= 10)
+					{
+						SpellEntry* sp = dbcSpell.LookupEntry(71904);
+						plr->CastSpellAoF(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), sp, false);
+						plr->CastSpell(plr, 73422, false);
+						plr->RemoveAura(72521);
+						plr->RemoveAura(72523);
+						// Remove the aura after we are done with it.
+						sEventMgr.AddEvent(this, &Aura::Remove, EVENT_AURA_REMOVE, 50, 0, 0);
+					}
+				}
+				else
+				{
+					if(!plr->HasAura(71905)) // Stacksize is non existant on unapply.
+					{
+						plr->RemoveAura(72521);
+						plr->RemoveAura(72523);
+					}
+				}
+			}
+		}break;
+
 	default:
 		{
 			dummy_aura = true;
