@@ -5082,11 +5082,10 @@ void Player::UpdateAttackSpeed()
 	}
 }
 
+// formulas from wowwiki
 void Player::UpdateStats()
 {
 	UpdateAttackSpeed();
-
-	// formulas from wowwiki
 
 	int32 AP = 0;
 	int32 RAP = 0;
@@ -5102,88 +5101,119 @@ void Player::UpdateStats()
 	switch (cl)
 	{
 	case CLASS_DRUID:
-        //(Strength x 2) - 20
-        AP = str * 2 - 20;
-        //Agility - 10
-        RAP = agi - 10;
-
-        if( GetShapeShift() == FORM_MOONKIN )
-        {
-            //(Strength x 2) + (Character Level x 1.5) - 20
-            AP += float2int32( static_cast<float>(lev) * 1.5f );
-        }
-        if( GetShapeShift() == FORM_CAT )
 		{
-            //(Strength x 2) + Agility + (Character Level x 2) - 20
-            AP += agi + (lev *2);
-        }
-        if( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR )
-        {
-            //(Strength x 2) + (Character Level x 3) - 20
-            AP += (lev *3);
-		}
-		break;
+			// (Strength x 2) - 20
+			AP = str * 2 - 20;
+			// Agility - 10
+			RAP = agi - 10;
+
+			if( GetShapeShift() == FORM_MOONKIN )
+			{
+				// Checked 3.3.2 No AP modifiers
+			}
+			if( GetShapeShift() == FORM_CAT )
+			{
+				// Checked 3.3.2, Agil + 40
+				AP += agi + 40;
+			}
+			if( GetShapeShift() == FORM_DIREBEAR)
+			{
+				// Checked 3.3.2, 120
+				AP += 120;
+			}
+			if( GetShapeShift() == FORM_BEAR)
+			{
+				// Checked 3.3.2, 30
+				AP += 30;
+			}
+
+			if( GetShapeShift() == FORM_MOONKIN || GetShapeShift() == FORM_CAT
+				|| GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR )
+			{
+				// counting and adding AP from weapon to total AP.
+				Item* it = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_MAINHAND);
+				float dps = 0;
+				if(it)
+				{
+					ItemPrototype *ip = it->GetProto();
+					if(ip)
+					{
+						float wpndmg = ((ip->Damage[0].Max + ip->Damage[0].Min)/2);
+						float wpnspeed = (float(ip->Delay))/1000;
+						dps = wpndmg/wpnspeed;
+					}
+					if(dps > 54.8)
+					{
+						dps = ((dps - 54.8) * 14);
+						int32 feralAP = float2int32(dps);
+						AP += feralAP;
+					}
+				}
+			}
+		}break;
 
 
 	case CLASS_ROGUE:
-		//Strength + Agility + (Character Level x 2) - 20
-		AP = str + agi + (lev *2) - 20;
-		//Character Level + Agility - 10
-		RAP = lev + agi - 10;
-
-		break;
+		{
+			// Strength + Agility + (Character Level x 2) - 20
+			AP = str + agi + (lev *2) - 20;
+			// Character Level + Agility - 10
+			RAP = lev + agi - 10;
+		}break;
 
 
 	case CLASS_HUNTER:
-		//Strength + Agility + (Character Level x 2) - 20
-		 AP = str + agi + (lev *2) - 20;
-		//(Character Level x 2) + Agility - 10
-		RAP = (lev *2) + agi - 10;
-
-		break;
+		{
+			// Strength + Agility + (Character Level x 2) - 20
+			AP = str + agi + (lev *2) - 20;
+			// (Character Level x 2) + Agility - 10
+			RAP = (lev *2) + agi - 10;
+		}break;
 
 	case CLASS_SHAMAN:
-		//(Strength) + (Agility) + (Character Level x 2) - 20
-		AP = str + agi + (lev *2) - 20;
-		//Agility - 10
-		RAP = agi - 10;
-
-		break;
+		{
+			// (Strength) + (Agility) + (Character Level x 2) - 20
+			AP = str + agi + (lev *2) - 20;
+			// Agility - 10
+			RAP = agi - 10;
+		}break;
 
 	case CLASS_PALADIN:
-		//(Strength x 2) + (Character Level x 3) - 20
-		AP = (str *2) + (lev *3) - 20;
-		//Agility - 10
-		RAP = agi - 10;
-
-		break;
+		{
+			// (Strength x 2) + (Character Level x 3) - 20
+			AP = (str *2) + (lev *3) - 20;
+			// Agility - 10
+			RAP = agi - 10;
+		}break;
 
 
 	case CLASS_WARRIOR:
 	case CLASS_DEATHKNIGHT:
 		{
-			//(Strength x 2) + (Character Level x 3) - 20
-		AP = (str *2) + (lev *3) - 20;
-		uint32 divi = 0;
-		uint32 sprank = 0;
-		if     ( HasSpell(49393) ) { sprank = 5; divi = 180;} // Death Knight: Bladed Armor
-		else if( HasSpell(49392) ) { sprank = 4; divi = 180;} // Increases your attack power by <spellrank> for every 180 armor value you have.
-		else if( HasSpell(49391) ) { sprank = 3; divi = 180;}
-		else if( HasSpell(49390) ) { sprank = 2; divi = 180;}
-		else if( HasSpell(48978) ) { sprank = 1; divi = 180;}
-		else if( HasSpell(61222) ) { sprank = 3; divi = 108;} // Warrior: Armored to the Teeth
-		else if( HasSpell(61221) ) { sprank = 2; divi = 108;} //Increases your attack power by <spellrank> for every 108 armor value you have.
-		else if( HasSpell(61216) ) { sprank = 1; divi = 108;}
-		if(divi && sprank )
-			AP += sprank * (GetUInt32Value(UNIT_FIELD_RESISTANCES)/divi);
+			{
+				// (Strength x 2) + (Character Level x 3) - 20
+				AP = (str *2) + (lev *3) - 20;
+				uint32 divi = 0;
+				uint32 sprank = 0;
+				if     ( HasSpell(49393) ) { sprank = 5; divi = 180;} // Death Knight: Bladed Armor
+				else if( HasSpell(49392) ) { sprank = 4; divi = 180;} // Increases your attack power by <spellrank> for every 180 armor value you have.
+				else if( HasSpell(49391) ) { sprank = 3; divi = 180;}
+				else if( HasSpell(49390) ) { sprank = 2; divi = 180;}
+				else if( HasSpell(48978) ) { sprank = 1; divi = 180;}
+				else if( HasSpell(61222) ) { sprank = 3; divi = 108;} // Warrior: Armored to the Teeth
+				else if( HasSpell(61221) ) { sprank = 2; divi = 108;} // Increases your attack power by <spellrank> for every 108 armor value you have.
+				else if( HasSpell(61216) ) { sprank = 1; divi = 108;}
+				if(divi && sprank )
+					AP += sprank * (GetUInt32Value(UNIT_FIELD_RESISTANCES)/divi);
+			}
+			// Character Level + Agility - 10
+			RAP = lev + agi - 10;
+		}break;
+
+	default: // mage,priest,warlock
+		{
+			AP = agi - 10;
 		}
-		//Character Level + Agility - 10
-		RAP = lev + agi - 10;
-
-		break;
-
-	default:    //mage,priest,warlock
-		AP = agi - 10;
 	}
 
 	/* modifiers */
@@ -5215,10 +5245,10 @@ void Player::UpdateStats()
 	int32 oldmaxhp = GetUInt32Value( UNIT_FIELD_MAXHEALTH );
 
 	if( res < hp ) res = hp;
-	SetUInt32Value(UNIT_FIELD_MAXHEALTH, res );
+	SetUInt32Value( UNIT_FIELD_MAXHEALTH, res );
 
-	if( ( int32 )GetUInt32Value(UNIT_FIELD_HEALTH ) > res )
-		SetUInt32Value( UNIT_FIELD_HEALTH, res );
+	if( ( int32 )GetUInt32Value( UNIT_FIELD_HEALTH ) > res )
+		SetUInt32Value(UNIT_FIELD_HEALTH, res );
 	else if( ( cl == CLASS_DRUID) && ( GetShapeShift() == FORM_BEAR || GetShapeShift() == FORM_DIREBEAR ) )
 	{
 		res = float2int32( ( float )GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( float )GetUInt32Value( UNIT_FIELD_HEALTH ) / float( oldmaxhp ) );
@@ -5240,7 +5270,8 @@ void Player::UpdateStats()
 
 		if((int32)GetUInt32Value(UNIT_FIELD_POWER1)>res)
 			SetUInt32Value(UNIT_FIELD_POWER1,res);
-		//Manaregen
+
+		// Manaregen
 		const static float BaseRegen[80] =
 		{
 			0.034965f, 0.034191f, 0.033465f, 0.032526f, 0.031661f, 0.031076f, 0.030523f, 0.029994f, 0.029307f, 0.028661f,
@@ -5262,12 +5293,14 @@ void Player::UpdateStats()
 	}
 
 	/////////////////////RATINGS STUFF/////////////////
+
 	float cast_speed = CalcRating( PLAYER_RATING_MODIFIER_SPELL_HASTE );
 	if( cast_speed != SpellHasteRatingBonus )
 	{
 		ModFloatValue( UNIT_MOD_CAST_SPEED, ( SpellHasteRatingBonus - cast_speed ) / 100.0f);
 		SpellHasteRatingBonus = cast_speed;
 	}
+
 	////////////////////RATINGS STUFF//////////////////////
 
 	// Shield Block
@@ -10348,7 +10381,7 @@ void Player::EventTalentHeartOfWildChange(bool apply)
 	if(!hearth_of_wild_pct)
 		return;
 
-	//druid hearth of the wild should add more features based on form
+	// druid hearth of the wild should add more features based on form
 	int tval;
 	if(apply)
 		tval = hearth_of_wild_pct;
@@ -10356,16 +10389,16 @@ void Player::EventTalentHeartOfWildChange(bool apply)
 
 	uint32 SS=GetShapeShift();
 
-	//increase stamina if :
-	if(SS==FORM_BEAR || SS==FORM_DIREBEAR)
+	// increase stamina if :
+	if(SS == FORM_BEAR || SS == FORM_DIREBEAR)
 	{
 		TotalStatModPctPos[STAT_STAMINA] += tval;
 		CalcStat(STAT_STAMINA);
 		UpdateStats();
 		UpdateChances();
 	}
-	//increase attackpower if :
-	else if(SS==FORM_CAT)
+	// increase attackpower if :
+	else if(SS == FORM_CAT)
 	{
 		SetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER,GetFloatValue(UNIT_FIELD_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));
 		SetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER, GetFloatValue(UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER)+float(tval/200.0f));

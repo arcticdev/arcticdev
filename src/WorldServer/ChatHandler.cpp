@@ -189,7 +189,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		type = CHAT_MSG_BATTLEGROUND;
 	if( type == CHAT_MSG_RAID_LEADER && GetPlayer()->m_bg )
 		type = CHAT_MSG_BATTLEGROUND_LEADER;
-	
+
 
 	switch(type)
 	{
@@ -197,7 +197,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		{
 			if(GetPlayer()->m_modlanguage >=0)
 				data = sChatHandler.FillMessageData( CHAT_MSG_EMOTE, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
-			else	
+			else
 				data = sChatHandler.FillMessageData( CHAT_MSG_EMOTE, CanUseCommand('c') ? LANG_UNIVERSAL : lang,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 
 			GetPlayer()->SendMessageToSet( data, true ,true );
@@ -243,8 +243,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			Group *pGroup = _player->GetGroup();
 			if(pGroup == NULL) break;
-			
-			if(GetPlayer()->m_modlanguage >=0)
+
+			if(GetPlayer()->m_modlanguage >= 0)
 				data=sChatHandler.FillMessageData( type, GetPlayer()->m_modlanguage,  msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0 );
 			else
 				data=sChatHandler.FillMessageData( type, (CanUseCommand('c') && lang != -1) ? LANG_UNIVERSAL : lang, msg.c_str(), _player->GetGUID(), _player->bGMTagOn ? 4 : 0);
@@ -370,7 +370,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 
 			//Sent the to Users id as the channel, this should be fine as it's not used for wisper
-		  
+
 			data = sChatHandler.FillMessageData(CHAT_MSG_WHISPER_INFORM, LANG_UNIVERSAL,msg.c_str(), player->GetGUID(), player->bGMTagOn ? 4 : 0  );
 			SendPacket(data);
 			delete data;
@@ -395,7 +395,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		{
 			if (sChatHandler.ParseCommands(msg.c_str(), this) > 0)
 				break;
-#ifdef CLUSTERING 
+#ifdef CLUSTERING
 			WorldPacket data(ICMSG_CHANNEL_ACTION, 1 + misc.size() + 4 + msg.size() + 4 + 1);
 			data << uint8(CHANNEL_SAY);
 			data << misc;
@@ -405,7 +405,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			data << bool(false);
 			sClusterInterface.SendPacket(&data);
 #else
-			Channel *chn = channelmgr.GetChannel(misc.c_str(),GetPlayer()); 
+			Channel *chn = channelmgr.GetChannel(misc.c_str(),GetPlayer());
 			if(chn != NULL)
 				chn->Say(GetPlayer(),msg.c_str(), NULL, false);
 #endif
@@ -432,7 +432,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 					GetPlayer()->m_bg->RemovePlayer( GetPlayer(), false );
 					//GetPlayer()->BroadcastMessage("You have been kicked from %s for inactivity.", GetPlayer()->m_bg->GetName());
 				}
-			}			
+			}
 		} break;
 	case CHAT_MSG_DND:
 		{
@@ -443,7 +443,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			else
 			{
 				GetPlayer()->SetFlag(PLAYER_FLAGS, PLAYER_FLAG_DND);
-			}		  
+			}
 		} break;
 	default:
 		OUT_DEBUG("CHAT: unknown msg type %u, lang: %u", type, lang);
