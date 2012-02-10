@@ -7397,7 +7397,6 @@ void Player::UpdateKnownCurrencies(uint32 ItemId, bool apply)
 
 // Player::AddItemsToWorld
 // Adds all items to world, applies any modifiers for them.
-
 void Player::AddItemsToWorld()
 {
 	Item* pItem;

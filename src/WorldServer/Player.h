@@ -65,27 +65,27 @@ enum Classes
 
 enum Races
 {
-    RACE_HUMAN = 1, 
-    RACE_ORC = 2, 
-    RACE_DWARF = 3, 
-    RACE_NIGHTELF = 4, 
-    RACE_UNDEAD_PLAYER = 5, 
-    RACE_TAUREN = 6, 
-    RACE_GNOME = 7, 
-    RACE_TROLL = 8, 
-    // RACE_GOBLIN = 9, 
-    RACE_BLOODELF = 10, 
-    RACE_DRAENEI = 11, 
-    // RACE_FEL_ORC = 12, 
-    // RACE_NAGA = 13, 
-    // RACE_BROKEN = 14, 
-    // RACE_SKELETON = 15, 
-    // RACE_VRYKUL = 16, 
-    // RACE_TUSKARR = 17, 
-    // RACE_FOREST_TROLL = 18, 
-    // RACE_TAUNKA = 19, 
-    // RACE_NORTHREND_SKELETON = 20, 
-    // RACE_ICE_TROLL = 21 
+    RACE_HUMAN = 1,
+    RACE_ORC = 2,
+    RACE_DWARF = 3,
+    RACE_NIGHTELF = 4,
+    RACE_UNDEAD_PLAYER = 5,
+    RACE_TAUREN = 6,
+    RACE_GNOME = 7,
+    RACE_TROLL = 8,
+    // RACE_GOBLIN = 9,
+    RACE_BLOODELF = 10,
+    RACE_DRAENEI = 11,
+    // RACE_FEL_ORC = 12,
+    // RACE_NAGA = 13,
+    // RACE_BROKEN = 14,
+    // RACE_SKELETON = 15,
+    // RACE_VRYKUL = 16,
+    // RACE_TUSKARR = 17,
+    // RACE_FOREST_TROLL = 18,
+    // RACE_TAUNKA = 19,
+    // RACE_NORTHREND_SKELETON = 20,
+    // RACE_ICE_TROLL = 21
 };
 
 enum PlayerStatus
@@ -499,7 +499,7 @@ const float dodgeRatio[80][12] = {
 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 50
 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 51
 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 52
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 53										 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 
+{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 53										 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level
 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 54
 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 55
 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 56
@@ -537,7 +537,7 @@ Friendly	    6,000
 Neutral	        3,000
 Unfriendly	    3,000	 Cannot buy, sell or interact.
 Hostile	        3,000	 You will always be attacked on sight
-Hated	        36,000 
+Hated	        36,000
 */
 enum FactionRating
 {
@@ -577,7 +577,7 @@ struct PlayerInfo
 	uint32 gender;
 	uint32 cl;
 	uint32 team;
-	
+
 	time_t lastOnline;
 	uint32 lastZone;
 	uint32 lastLevel;
@@ -711,7 +711,7 @@ enum DUEL_WINNER
 	DUEL_WINNER_RETREAT,
 };
 #define PLAYER_ATTACK_TIMEOUT_INTERVAL    5000
-#define PLAYER_FORCED_RESURRECT_INTERVAL  360000 // 1000*60*6=6 minutes 
+#define PLAYER_FORCED_RESURRECT_INTERVAL  360000 // 1000*60*6=6 minutes
 
 struct PlayerSkill
 {
@@ -734,7 +734,7 @@ enum SPELL_INDEX
 	SPELL_TYPE_INDEX_EARTH_SHIELD	= 7,
 	SPELL_TYPE_INDEX_CYCLONE		= 8,
 	SPELL_TYPE_INDEX_BANISH			= 9,
-	SPELL_TYPE_INDEX_JUDGEMENT		= 10,	
+	SPELL_TYPE_INDEX_JUDGEMENT		= 10,
 	SPELL_TYPE_INDEX_REPENTANCE		= 11,
 	SPELL_TYPE_INDEX_SLOW			= 12,
 	NUM_SPELL_TYPE_INDEX			= 13,
@@ -851,7 +851,7 @@ protected:
 	// COOLDOWNS
 	PlayerCooldownMap m_cooldownMap[NUM_COOLDOWN_TYPES];
 	uint32 m_globalCooldown;
-	
+
 public:
 	void Cooldown_OnCancel(SpellEntry *pSpell);
 	void Cooldown_AddStart(SpellEntry * pSpell);
@@ -914,7 +914,7 @@ public:
     ARCTIC_INLINE void         SetTaxiPath     (TaxiPath *path) { m_CurrentTaxiPath = path; }
     ARCTIC_INLINE void         SetTaxiPos()	{m_taxi_pos_x = m_position.x; m_taxi_pos_y = m_position.y; m_taxi_pos_z = m_position.z;}
     ARCTIC_INLINE void         UnSetTaxiPos()	{m_taxi_pos_x = 0; m_taxi_pos_y = 0; m_taxi_pos_z = 0; }
- 
+
 	// Taxi related variables
 	vector<TaxiPath*>   m_taxiPaths;
     TaxiPath*           m_CurrentTaxiPath;
@@ -931,7 +931,7 @@ public:
     /************************************************************************/
     /* Quests                                                               */
     /************************************************************************/
-	bool HasQuests() 
+	bool HasQuests()
 	{
 		for(int i = 0; i < 25; ++i)
 		{
@@ -960,7 +960,7 @@ public:
 	void				AddToFinishedQuests(uint32 quest_id);
 	void				AddToFinishedDailyQuests(uint32 quest_id);
 	void				EventTimedQuestExpire(Quest *qst, QuestLogEntry *qle, uint32 log_slot, uint32 interval);
-	
+
 	bool				HasFinishedQuest(uint32 quest_id);
 	bool				HasFinishedDailyQuest(uint32 quest_id);
 	bool				HasQuestForItem(uint32 itemid);
@@ -1006,7 +1006,7 @@ public:
 
     const uint64& GetSelection( ) const { return m_curSelection; }
 	void SetSelection(const uint64 &guid) { m_curSelection = guid; }
-	
+
     /************************************************************************/
     /* Spells                                                               */
     /************************************************************************/
@@ -1062,7 +1062,7 @@ public:
 	void                setAction(uint8 button, uint16 action, uint8 type, uint8 misc);
 	void                SendInitialActions();
     bool                m_actionsDirty;
-	
+
     /************************************************************************/
     /* Reputation                                                           */
     /************************************************************************/
@@ -1078,10 +1078,10 @@ public:
 	void                Reputation_OnKilledUnit(Unit* pUnit, bool InnerLoop);
 	void                Reputation_OnTalk(FactionDBC * dbc);
 	static Standing     GetReputationRankFromStanding(int32 Standing_);
-	
+
 	bool titanGrip;
 	void ResetTitansGrip();
-	
+
     /************************************************************************/
     /* Factions                                                             */
     /************************************************************************/
@@ -1143,7 +1143,7 @@ public:
 	void CreateResetGuardHostileFlagEvent()
 	{
 		event_RemoveEvents( EVENT_GUARD_HOSTILE );
-		sEventMgr.AddEvent(this, &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);	
+		sEventMgr.AddEvent(this, &Player::SetGuardHostileFlag, false, EVENT_GUARD_HOSTILE, 10000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	}
 
 	uint32 m_hasInRangeGuards;
@@ -1188,7 +1188,7 @@ public:
 		mTradeTarget = 0;
 		m_tradeSequence = 2;
 	}
-	
+
 	/************************************************************************/
 	/* Pets                                                                 */
 	/************************************************************************/
@@ -1226,7 +1226,7 @@ public:
 		return NULL;
 	}
 	/*if we charmed or simply summoned a pet, this function should get called*/
-	void EventSummonPet(Pet* new_pet); 
+	void EventSummonPet(Pet* new_pet);
 	/*if pet/charm died or whatever happned we should call this function*/
 	void EventDismissPet();
 
@@ -1241,7 +1241,7 @@ public:
 
 	ARCTIC_INLINE AchievementInterface* GetAchievementInterface() { return m_achievementInterface; }
 	AchievementInterface * m_achievementInterface;
-	
+
 	/************************************************************************/
 	/* Loot                                                                 */
 	/************************************************************************/
@@ -1269,14 +1269,14 @@ public:
 	float GetSpellTimeMod(uint32 id);
 	int GetSpellDamageMod(uint32 id);
 	int32 GetSpellManaMod(uint32 id);
-	
+
 	// Talents
 	// These functions build a specific type of A9 packet
 	uint32 ARCTIC_FASTCALL BuildCreateUpdateBlockForPlayer( ByteBuffer *data, Player* target );
 	void DestroyForPlayer( Player* target ) const;
 	void SetTalentHearthOfWildPCT(int value){hearth_of_wild_pct=value;}
 	void EventTalentHeartOfWildChange(bool apply);
-	
+
 	std::list<LoginAura> loginauras;
 
 	std::set<uint32> OnMeleeAuras;
@@ -1303,13 +1303,13 @@ public:
 	void ResurrectPlayer(Player* pResurrector);
 	void BuildPlayerRepop();
 	Corpse* RepopRequestedPlayer();
-	
+
 	// silly event handler
 	void EventRepopRequestedPlayer() { RepopRequestedPlayer(); }
-	
+
 	void DeathDurabilityLoss(double percent);
 	void RepopAtGraveyard(float ox, float oy, float oz, uint32 mapid);
-	
+
     /************************************************************************/
     /* Movement system                                                      */
     /************************************************************************/
@@ -1321,7 +1321,7 @@ public:
 	uint8 m_isWaterWalking;
 	//Invisibility stuff
 	bool m_isGmInvisible;
-	
+
     /************************************************************************/
     /* Channel stuff                                                        */
     /************************************************************************/
@@ -1386,12 +1386,12 @@ public:
 		m_attackTimer += delay;
 		m_attackTimer_1 += delay;
 	}
-	
+
 	void SetShapeShift(uint8 ss);
 
-    //Showing Units WayPoints
+    // Showing Units WayPoints
 	AIInterface* waypointunit;
-	
+
 	uint32 m_nextSave;
 	//Tutorials
 	uint32 GetTutorialInt(uint32 intId );
@@ -1413,7 +1413,7 @@ public:
 	void Gossip_Complete();
 	int m_lifetapbonus;
 	uint32 m_lastShotTime;
-	
+
 	bool m_bUnlimitedBreath;
 	uint32 m_UnderwaterTime;
 	uint32 m_UnderwaterState;
@@ -1447,7 +1447,7 @@ public:
 
 	ARCTIC_INLINE InRangeSet::iterator GetVisibleSetBegin() { return m_visibleObjects.begin(); }
 	ARCTIC_INLINE InRangeSet::iterator GetVisibleSetEnd() { return m_visibleObjects.end(); }
-	
+
 	//Transporters
 	bool m_lockTransportVariables;
 	uint64 m_TransporterGUID;
@@ -1480,7 +1480,7 @@ public:
 	uint32 m_bgSlot;
 	bool m_bgRatedQueue;
 	uint32 m_bgEntryPointMap;
-	float m_bgEntryPointX;	
+	float m_bgEntryPointX;
 	float m_bgEntryPointY;
 	float m_bgEntryPointZ;
 	float m_bgEntryPointO;
@@ -1511,7 +1511,7 @@ public:
 	bool m_massSummonEnabled;
 
 	uint32 m_moltenFuryDamageIncreasePct;
-	
+
 	void CalcResistance(uint32 type);
 	ARCTIC_INLINE float res_M_crit_get(){return m_resist_critical[0];}
 	ARCTIC_INLINE void res_M_crit_set(float newvalue){m_resist_critical[0]=newvalue;}
@@ -1533,7 +1533,7 @@ public:
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;
 	uint32 m_casted_amount[7]; //Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
-	
+
 	uint32 FlatStatModPos[5];
 	uint32 FlatStatModNeg[5];
 	uint32 StatModPctPos[5];
@@ -1557,7 +1557,7 @@ public:
 	void LoseRage(int32 value);
 	void LooseRunic(int32 value);
 	void LoosePower(uint32 powerField, int32 value);
-	
+
     uint32 SoulStone;
 	uint32 SoulStoneReceiver;
 	void removeSoulStone();
@@ -1575,7 +1575,7 @@ public:
 	int32 rageFromDamageDealt;
 	// GameObject commands
 	GameObject* m_GM_SelectedGO;
-	
+
 #ifndef CLUSTERING
 	void _Relocate(uint32 mapid,const LocationVector & v, bool sendpending, bool force_new_world, uint32 instance_id);
 #else
@@ -1584,12 +1584,12 @@ public:
 	void AddItemsToWorld();
 	void RemoveItemsFromWorld();
 	void UpdateKnownCurrencies(uint32 ItemId, bool apply);
-	
+
 	uint32 m_ShapeShifted;
 	uint32 m_MountSpellId;
 
 	ARCTIC_INLINE bool IsMounted() {return (m_MountSpellId!=0 ? true : false); }
-	
+
 	bool bHasBindDialogOpen;
 	bool bGMTagOn;
 	uint32 TrackingSpell;
@@ -1602,7 +1602,7 @@ public:
 	uint32 m_KickDelay;
 	Unit* m_CurrentCharm;
 	Transporter* m_CurrentTransporter;
-	
+
 	Object* GetSummonedObject () {return m_SummonedObject;};
 	void SetSummonedObject (Object* t_SummonedObject) {m_SummonedObject = t_SummonedObject;};
 	uint32 roll;
@@ -1620,7 +1620,7 @@ public:
 	void ProcessPendingUpdates(ByteBuffer *pBuildBuffer, ByteBuffer *pCompressionBuffer);
 	bool ARCTIC_FASTCALL CompressAndSendUpdateBuffer(uint32 size, const uint8* update_buffer, ByteBuffer *pCompressionBuffer);
 	void ClearAllPendingUpdates();
-	
+
 	uint32 GetArmorProficiency() { return armor_proficiency; }
 	uint32 GetWeaponProficiency() { return weapon_proficiency; }
 
@@ -1650,8 +1650,8 @@ public:
 	ARCTIC_INLINE uint32 GetAreaID() { return m_AreaID; }
 	void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
 	ARCTIC_INLINE AreaTable *GetAreaDBC() { return m_areaDBC; }
-	
-	
+
+
 	std::string Lfgcomment;
 	uint16 LfgDungeonId[3];
 	uint8 LfgType[3];
@@ -1716,7 +1716,7 @@ public:
 	void SafeTeleport(MapMgr* mgr, LocationVector vec);
 	void EjectFromInstance();
 	bool raidgrouponlysent;
-	
+
 #ifdef CLUSTERING
 	RPlayerInfo * UpdateRPlayerInfo(RPlayerInfo * pRPlayer, bool newRplr = false)
 	{
@@ -1760,7 +1760,7 @@ public:
 	ARCTIC_INLINE void ResetPvPTimer();
 	// Stop the timer for pvp off
 	ARCTIC_INLINE void StopPvPTimer() { RemoveFlag(PLAYER_FLAGS, PLAYER_FLAG_PVP_TIMER); m_pvpTimer = 0; }
-	
+
 	// Called at login to add the honorless buff, etc.
 	void LoginPvPSetup();
 	// Update our pvp area (called when zone changes)
@@ -1793,9 +1793,9 @@ public:
 	uint32 iInstanceType;
 	ARCTIC_INLINE void SetName(string& name) { m_name = name; }
 	// spell to (delay, last time)
-	
+
 	FactionReputation * reputationByListId[128];
-	
+
 	uint64 m_comboTarget;
 	int8 m_comboPoints;
 	bool m_retainComboPoints;
@@ -1829,7 +1829,7 @@ public:
 	}
 
 	Item* getTradeItem(uint32 slot) {return mTradeItems[slot];};
-        
+
 	// Water level related stuff (they are public because they need to be accessed fast)
 	// Nose level of the character (needed for proper breathing)
 	float m_noseLevel;
@@ -1997,9 +1997,9 @@ protected:
 	Pet*        m_Summon;
 	uint32      m_PetNumberMax;
 	std::map<uint32, PlayerPet*> m_Pets;
-	
+
     uint32      m_invitersGuid; // It is guild inviters guid ,0 when its not used
-    
+
 
     // bind
 	float m_bind_pos_x;
@@ -2031,7 +2031,7 @@ protected:
 	uint32 m_manafromspell;
 	uint32 m_healthfromitems;
 	uint32 m_manafromitems;
-	
+
 	uint32 armor_proficiency;
 	uint32 weapon_proficiency;
 	// Talents
@@ -2110,10 +2110,10 @@ private:
 	set<uint32> m_hasFriendList;
 
 	void Social_SendFriendList(uint32 flag);
-	
+
 	void Social_AddFriend(const char * name, const char * note);
 	void Social_RemoveFriend(uint32 guid);
-	
+
 	void Social_AddIgnore(const char * name);
 	void Social_RemoveIgnore(uint32 guid);
 
@@ -2133,7 +2133,7 @@ public:
 	PlayerInfo * m_playerInfo;
 	uint32 m_skipCastCheck[3];  // spell group relation of spell types that should ignore some cancast checks
 	bool m_castFilterEnabled;
-	uint32 m_castFilter[3];	// spell group relation of only spells that player can currently cast 
+	uint32 m_castFilter[3];	// spell group relation of only spells that player can currently cast
 
 	uint32 m_vampiricEmbrace;
 	void VampiricSpell(uint32 dmg, Unit* pTarget, SpellEntry *spellinfo);
