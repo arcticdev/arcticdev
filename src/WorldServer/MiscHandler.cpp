@@ -2162,10 +2162,22 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
+	uint64 summonguid;
+	bool agree;
+	recv_data >> summonguid;
+	recv_data >> agree;
+
 	//Do we have a summoner?
 	if(!_player->m_summoner)
 	{
-		SendNotification(NOTIFICATION_MESSAGE_NO_PERMISSION);
+		SendNotification("Summoner guid has changed or does not exist.");
+		return;
+	}
+
+	// Summoner changed?
+	if(_player->m_summoner->GetGUID() != summonguid)
+	{
+		SendNotification("Summoner guid has changed or does not exist.");
 		return;
 	}
 
@@ -2173,7 +2185,7 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 	if(_player->CombatStatus.IsInCombat())
 		return;
 
-	//Map checks.
+	//Map checks. 
 	MapInfo * inf = WorldMapInfoStorage.LookupEntry(_player->m_summonMapId);
 	if(!inf)
 		return;
@@ -2189,11 +2201,22 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 			return;
 		}
 	}
-	if(!_player->SafeTeleport(_player->m_summonMapId, _player->m_summonInstanceId, _player->m_summonPos))
-		SendNotification(NOTIFICATION_MESSAGE_FAILURE);
+	if(agree)
+	{
+		if(!_player->SafeTeleport(_player->m_summonMapId, _player->m_summonInstanceId, _player->m_summonPos))
+			SendNotification(NOTIFICATION_MESSAGE_FAILURE);
 
-	// Null-out the summoner
-	_player->m_summoner = _player->m_summonInstanceId = _player->m_summonMapId = 0;
+		_player->m_summoner = NULL;
+		_player->m_summonInstanceId = _player->m_summonMapId = 0;
+		return;
+	}
+	else
+	{
+		// Null-out the summoner
+		_player->m_summoner = NULL;
+		_player->m_summonInstanceId = _player->m_summonMapId = 0;
+		return;
+	}
 }
 
 void WorldSession::HandleDismountOpcode(WorldPacket& recv_data)

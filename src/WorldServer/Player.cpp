@@ -9865,7 +9865,7 @@ void Player::UnPossess()
 	m_session->SendPacket(&data);
 }
 
-void Player::SummonRequest(uint32 Requestor, uint32 ZoneID, uint32 MapID, uint32 InstanceID, const LocationVector & Position)
+void Player::SummonRequest(Object* Requestor, uint32 ZoneID, uint32 MapID, uint32 InstanceID, const LocationVector & Position)
 {
 	m_summonInstanceId = InstanceID;
 	m_summonPos = Position;
@@ -9873,7 +9873,7 @@ void Player::SummonRequest(uint32 Requestor, uint32 ZoneID, uint32 MapID, uint32
 	m_summonMapId = MapID;
 
 	WorldPacket data(SMSG_SUMMON_REQUEST, 16);
-	data << uint64(Requestor) << ZoneID << uint32(120000);		// 2 minutes
+	data << Requestor->GetGUID() << ZoneID << uint32(120000);		// 2 minutes
 	m_session->SendPacket(&data);
 }
 
