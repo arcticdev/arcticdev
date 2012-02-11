@@ -1224,9 +1224,19 @@ public:
 	uint32 GetResistance(uint32 type);	
 
 	uint32 m_teleportAckCounter;
-	// Vehicle
+
+	/************************************************************************/	
+	/* Vehicle                                                              */
+	/************************************************************************/
+
 	uint8 m_inVehicleSeatId;
 	Vehicle* m_CurrentVehicle;
+	ARCTIC_INLINE int8 GetSeatID() { return m_inVehicleSeatId; }
+
+	// Enters the passenger into an available seat
+	void EnterVehicle(Vehicle * vehicle);
+	// Enters the passenger into a prefered seat if possible
+	bool EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force);
 
 	// Pet
 	ARCTIC_INLINE void SetIsPet(bool chck) { m_isPet = chck; }

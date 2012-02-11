@@ -19,5 +19,3 @@ ARCTIC_INLINE uint32 getMSTime()
 #endif
 
 #endif
-
-

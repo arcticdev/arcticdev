@@ -122,7 +122,7 @@ bool HolidayCheer(uint32 i, Spell *pSpell)
 	if(!pSpell->m_caster) return true;
 
 	Unit *target;
-	float dist = pSpell->GetRadius(i);
+	float dist = pSpell->GetDBCCastTime(i);
 
 	for(ObjectSet::iterator itr = pSpell->m_caster->GetInRangeSetBegin(); itr != pSpell->m_caster->GetInRangeSetEnd(); ++itr)
 	{

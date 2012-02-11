@@ -808,11 +808,11 @@ void MovementInfo::init(WorldPacket & data)
 		data >> pitch;
 	}
 
-	data >> unklast;
+	data >> FallTime;
 
 	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
 	{
-		data >> FallTime >> jump_sinAngle >> jump_cosAngle >> jump_xySpeed;
+		data >> jumpspeed >> jump_sinAngle >> jump_cosAngle >> jump_xySpeed;
 	}
 	if (flags & MOVEFLAG_SPLINE_MOVER)
 	{
@@ -843,11 +843,11 @@ void MovementInfo::write(WorldPacket & data)
 		data << pitch;
 	}
 
-	data << unklast;
+	data << FallTime;
 
 	if (flags & MOVEFLAG_FALLING || flags & MOVEFLAG_REDIRECTED)
 	{
-		data << FallTime << jump_sinAngle << jump_cosAngle << jump_xySpeed;
+		data << jumpspeed << jump_sinAngle << jump_cosAngle << jump_xySpeed;
 	}
 	if (flags & MOVEFLAG_SPLINE_MOVER)
 	{

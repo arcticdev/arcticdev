@@ -352,7 +352,6 @@ void Creature::SaveToFile(std::stringstream & name)
 	fclose(OutFile);*/
 }
 
-
 void Creature::LoadScript()
 {
 	_myScriptClass = sScriptMgr.CreateAIScriptClassForEntry(TO_CREATURE(this));
@@ -363,13 +362,14 @@ void Creature::DeleteFromDB()
 	if( m_spawn == NULL )
 		return;
 
+	GetAIInterface()->deleteWaypoints();
 	WorldDatabase.Execute("DELETE FROM creature_spawns WHERE id=%u",  GetSQL_id());
 	WorldDatabase.Execute("DELETE FROM creature_waypoints WHERE spawnid=%u",  GetSQL_id());
 }
 
-
-/////////////
-/// Quests
+/************************************************************************/
+/* Quests                                                               */
+/************************************************************************/
 
 void Creature::AddQuest(QuestRelation *Q)
 {

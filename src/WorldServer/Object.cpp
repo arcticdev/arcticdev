@@ -412,12 +412,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				Unit* pUnit = TO_UNIT(this);
 				Vehicle* vehicle = TO_UNIT(this)->m_CurrentVehicle;
 
-				if (pUnit->m_inVehicleSeatId != 0xFF  && vehicle->GetVehicleSeatEntry(pUnit->m_inVehicleSeatId) != NULL )
+				if (pUnit->m_inVehicleSeatId != 0xFF && vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId] != NULL)
 				{
 					*data << pUnit->m_CurrentVehicle->GetNewGUID();
-					*data << vehicle->GetVehicleSeatEntry(pUnit->m_inVehicleSeatId)->m_attachmentOffsetX;
-					*data << vehicle->GetVehicleSeatEntry(pUnit->m_inVehicleSeatId)->m_attachmentOffsetY;
-					*data << vehicle->GetVehicleSeatEntry(pUnit->m_inVehicleSeatId)->m_attachmentOffsetZ;
+					*data << vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId]->m_attachmentOffsetX;
+					*data << vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId]->m_attachmentOffsetY;
+					*data << vehicle->m_vehicleSeats[pUnit->m_inVehicleSeatId]->m_attachmentOffsetZ;
 					*data << float(0.0f);
 					*data << uint32(0);
 					*data << pUnit->m_inVehicleSeatId;
@@ -443,7 +443,6 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			else if(m_objectTypeId==TYPEID_UNIT && TO_CREATURE(this)->m_transportPosition != NULL)
 			{
 				*data << TO_CREATURE(this)->m_transportNewGuid;
-
 				*data << uint32(HIGHGUID_TYPE_TRANSPORTER);
 				*data << TO_CREATURE(this)->m_transportPosition->x << TO_CREATURE(this)->m_transportPosition->y << 
 					TO_CREATURE(this)->m_transportPosition->z << TO_CREATURE(this)->m_transportPosition->o;
@@ -462,16 +461,16 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		}
 		if(pThis && moveinfo)
 		{
-			*data << moveinfo->unklast;
+			*data << moveinfo->FallTime;
 		}
 		else
-			*data << uint32(0); //last fall time
+			*data << uint32(0); // last fall time
 
 		if(flags2 & 0x1000) // BYTE1(flags2) & 0x10
 		{
 			if(pThis && moveinfo)
 			{
-				*data << moveinfo->FallTime;
+				*data << moveinfo->jumpspeed;
 				*data << moveinfo->jump_sinAngle;
 				*data << moveinfo->jump_cosAngle;
 				*data << moveinfo->jump_xySpeed;
@@ -481,7 +480,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			*data << (float)0;	 //cosAngle
 			*data << (float)0;	 //xySpeed
 		}
-		if(flags2 & MOVEFLAG_SPLINE_MOVER)
+		if(flags2 & MOVEFLAG_SPLINE_MOVER) // 0x4000000
 		{
 			*data << (float)0; //unknown float
 		}
@@ -537,12 +536,12 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		*data << GetUInt32Value(OBJECT_FIELD_GUID+1);
 
 	if(flags & 0x0004)
-		*data << uint8(0);// unknown NewGUID
+		*data << uint8(0); // unknown NewGUID
 
 	if(flags & 2)
-        *data << (uint32)getMSTime();
+		*data << (uint32)getMSTime();
 
-	if (flags & 0x80) //if ((_BYTE)flags_ < 0)
+	if (flags & 0x80) // if ((_BYTE)flags_ < 0)
 		*data << TO_VEHICLE(this)->GetVehicleEntry() << float(0.0f);
 
 	// 0x200

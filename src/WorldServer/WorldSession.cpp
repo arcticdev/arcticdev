@@ -928,10 +928,10 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_SPELLCLICK].handler = &WorldSession::HandleSpellClick;
 	WorldPacketHandlers[CMSG_DISMISS_CONTROLLED_VEHICLE].handler = &WorldSession::HandleVehicleDismiss;
 	WorldPacketHandlers[CMSG_REQUEST_VEHICLE_EXIT].handler = &WorldSession::HandleVehicleDismiss;
-	WorldPacketHandlers[CMSG_BOARD_PLAYER_VEHICLE].handler = &WorldSession::HandleBoardPlayerVehicleOpcode;
-	WorldPacketHandlers[CMSG_EJECT_PASSENGER].handler = &WorldSession::HandleEjectPassengerOpcode;
-	// WorldPacketHandlers[CMSG_REQUEST_VEHICLE_SWITCH_SEAT].handler = &WorldSession::HandleRequestSeatChange;
-	// WorldPacketHandlers[CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE].handler = &WorldSession::HandleRequestSeatChange;
+	//WorldPacketHandlers[CMSG_BOARD_PLAYER_VEHICLE].handler = &WorldSession::HandleBoardPlayerVehicleOpcode;
+	//WorldPacketHandlers[CMSG_EJECT_PASSENGER].handler = &WorldSession::HandleEjectPassengerOpcode;
+	WorldPacketHandlers[CMSG_REQUEST_VEHICLE_SWITCH_SEAT].handler = &WorldSession::HandleRequestSeatChange;
+	WorldPacketHandlers[CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE].handler = &WorldSession::HandleRequestSeatChange;
 
 }
 

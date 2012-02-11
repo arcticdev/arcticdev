@@ -113,12 +113,20 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		SystemMessage(m_session, "No selection.");
 		return true;
 	}
-
 	if(m_session->GetPlayer()->m_TransporterGUID != 0)
 	{
 		SystemMessage(m_session, "Despawning crew-members is not supported yet (delete from database instead).");
 		return true;
 	}
+
+	Vehicle* veh = m_session->GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
+	if(veh)
+	{
+		SystemMessage(m_session, "Current selection is a vehicle. Use .vehicle delete instead.");
+		delete veh;
+		return true;
+	}
+	delete veh;
 
 	Creature* unit = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 	if(!unit)
@@ -138,7 +146,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		unit->GetPositionZ());
 
 	BlueSystemMessage(m_session, "Deleted creature ID %u", unit->spawnid);
-
+	
 	MapMgr* unitMgr = unit->GetMapMgr();
 	if(unit->IsInWorld())
 	{
@@ -162,7 +170,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 				for(itr = c->CreatureSpawns.begin(); itr != c->CreatureSpawns.end();)
 				{
 					itr2 = itr;
-					itr++;
+					++itr;
 					if((*itr2) == unit->m_spawn)
 					{
 						c->CreatureSpawns.erase(itr2);
@@ -174,12 +182,12 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 		}
 	}
 
-	// unit->RemoveFromWorld(false,true);
+	/* unit->RemoveFromWorld(false,true);
 
 	if(unit->IsVehicle())
 		TO_VEHICLE(unit)->Destructor();
-	else
-		unit->Destructor();
+	else*/
+	unit->Destructor();
 
 	return true;
 }
@@ -1193,5 +1201,21 @@ bool ChatHandler::HandleNpcComeCommand(const char* args, WorldSession* m_session
 	if(!crt) return true;
 
 	crt->GetAIInterface()->MoveTo(plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), plr->GetOrientation());
+	return true;
+}
+
+bool ChatHandler::HandleVehicleDelete(const char *args, WorldSession *m_session)
+{
+	if(!m_session->GetPlayer()->GetSelection())
+		return false;
+
+	Unit* veh = m_session->GetPlayer()->GetMapMgr()->GetUnit(m_session->GetPlayer()->GetSelection());
+	if(!veh || !veh->IsVehicle())
+	{
+		return false;
+	}
+
+	TO_VEHICLE(veh)->SafeDelete();
+	BlueSystemMessage(m_session, "Vehicle %u deleted.", veh->GetEntry());
 	return true;
 }
