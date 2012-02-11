@@ -1880,8 +1880,8 @@ void AIInterface::UpdateMove()
 		// check if we're returning to our respawn location. if so, reset back to default orientation
 		if(creature->GetSpawnX() == m_destinationX && creature->GetSpawnY() == m_destinationY)
 		{
-			float o = creature->GetSpawnO();
-			creature->SetOrientation(o);
+			angle = creature->GetSpawnO();
+			creature->SetOrientation(angle);
 		}
 		else
 		{
@@ -1891,7 +1891,7 @@ void AIInterface::UpdateMove()
 			float dy = (float)m_destinationY - m_Unit->GetPositionY();
 			if(dy != 0.0f)
 			{
-				float angle = atan2(dy, dx);
+				angle = atan2(dy, dx);
 				m_Unit->SetOrientation(angle);
 			}
 		}
