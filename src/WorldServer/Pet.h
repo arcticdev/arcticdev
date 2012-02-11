@@ -199,6 +199,11 @@ public:
 	ARCTIC_INLINE PetSpellMap* GetSpells() { return &mSpells; }
 	ARCTIC_INLINE bool IsSummonedPet() { return Summon; }
 
+	bool IsWarlockPet()
+	{
+		return GetEntry() == 691 ? true : GetEntry() == 688 ? true : GetEntry() == 712 ? true : GetEntry() == 697 ? true : false;
+	}
+
 	void ARCTIC_FASTCALL SetAutoCastSpell(AI_Spell*sp);
 	void Rename(string NewName);
 	ARCTIC_INLINE string& GetName() { return m_name; }

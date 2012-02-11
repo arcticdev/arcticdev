@@ -11,6 +11,7 @@ class SERVER_DECL Vehicle : public Creature
 public:
 	Vehicle(uint64 guid);
 	~Vehicle();
+	virtual void Destructor();
 
 	void Init();
 	void InitSeats(uint32 vehicleEntry, Player* pRider = NULL);
@@ -25,13 +26,14 @@ public:
 	void AddPassenger(Unit* pPassenger, uint8 requestedseat);
 	void RemovePassenger(Unit* pPassenger);
 	bool HasPassenger(Unit* pPassenger);
-	void SendSlotSpells(uint32 entry, Player* plr, int8 seat);
+	void SendSpells(uint32 entry, Player* plr);
 	void setDeathState(DeathState s);
 	void SetSpeed(uint8 SpeedType, float value);
 
 	//////////////////////////////////////////////////////////////////////////
 	// Accessors                                                            //
 	//////////////////////////////////////////////////////////////////////////
+
 	uint32 GetMaxPassengerCount() { return m_maxPassengers; }
 	uint32 GetPassengerCount() { return m_passengerCount; }
 
@@ -58,7 +60,6 @@ public:
 	//////////////////////////////////////////////////////////////////////////
 
 	bool IsFull() { return m_passengerCount >= m_maxPassengers; }
-	bool SeatIsEnterableByPlayer(uint8 seat);
 
 	VehicleSeatEntry* m_vehicleSeats[8];
 	bool seatisusable[8];

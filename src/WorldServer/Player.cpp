@@ -7384,19 +7384,47 @@ void Player::_Relocate(uint32 mapid, const LocationVector & v, bool sendpending,
 }
 #endif
 
-void Player::UpdateKnownCurrencies(uint32 ItemId, bool apply)
+void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
 {
-	if(CurrencyTypesEntry * ctEntry = dbcCurrencyTypes.LookupEntryForced(ItemId))
+	if(CurrencyTypesEntry const* ctEntry = dbcCurrencyTypes.LookupEntry(itemId))
 	{
-		if(apply)
-			SetFlag64(PLAYER_FIELD_KNOWN_CURRENCIES,(1 << (ctEntry->BitIndex-1)));
-		else
-			RemoveFlag64(PLAYER_FIELD_KNOWN_CURRENCIES,(1 << (ctEntry->BitIndex-1)));
+		if(ctEntry)
+		{
+			if(apply)
+			{
+				uint64 oldval = GetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES );
+				uint64 newval = oldval | ( uint64((( uint32 )1) << (ctEntry->BitIndex-1)));
+				SetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES, newval );
+			}
+			else
+			{
+				uint64 oldval = GetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES );
+				uint64 newval = oldval & ~( uint64((( uint32 )1) << (ctEntry->BitIndex-1)));
+				SetUInt64Value( PLAYER_FIELD_KNOWN_CURRENCIES, newval );
+			}
+		}
 	}
 }
 
-// Player::AddItemsToWorld
-// Adds all items to world, applies any modifiers for them.
+uint32 Player::GetTotalItemLevel()
+{
+	ItemInterface *Ii = GetItemInterface();
+
+	uint32 playertotalitemlevel = 0;
+
+	for(int8 i = EQUIPMENT_SLOT_START; i < EQUIPMENT_SLOT_END; ++i)
+	{
+		uint32 previoustil = playertotalitemlevel;
+		Item* item = Ii->GetInventoryItem(i);
+
+		if(!item)
+			continue;
+
+		playertotalitemlevel = previoustil + item->GetProto()->ItemLevel;
+	}
+	return playertotalitemlevel;
+}
+
 void Player::AddItemsToWorld()
 {
 	Item* pItem;

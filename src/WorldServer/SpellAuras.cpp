@@ -6196,103 +6196,90 @@ void Aura::SpellAuraMounted(bool apply)
 	if(!m_target->IsPlayer())
 		return;
 
-	//Remove any previous mount if we had one
-	if(TO_PLAYER(m_target)->IsMounted())
-		m_target->Dismount();
+	Player* pPlayer = TO_PLAYER(m_target);
 
-	if(m_target->InStealth())
+	// Remove any previous mount if we had one
+	if(pPlayer->IsMounted())
+		pPlayer->Dismount();
+
+	if(pPlayer->InStealth())
 	{
 		uint32 id = m_target->m_stealth;
-		m_target->m_stealth = 0;
-		m_target->RemoveAura(id);
+		pPlayer->m_stealth = 0;
+		pPlayer->RemoveAura(id);
 	}
 
-	bool isVehicleSpell  = m_spellProto->Effect[1] == SPELL_EFFECT_SUMMON ? true : false;
+	bool isVehicleSpell = m_spellProto->Effect[1] == SPELL_EFFECT_SUMMON ? true : false;
+	bool warlockpet;
+
+	if(pPlayer->GetSummon() && pPlayer->GetSummon()->IsWarlockPet() == true)
+		warlockpet = true;
 
 	if(apply)
 	{
 		if( isVehicleSpell ) // get rid of meeeee, I'm a useless placeholder!
 			SetDuration(100);
 
-		TO_PLAYER(m_target)->m_bgFlagIneligible++;
+		pPlayer->m_bgFlagIneligible++;
 		SetPositive();
 
-		//Dismiss any pets
-		if(TO_PLAYER(m_target)->GetSummon())
+		// Dismiss any pets
+		if(pPlayer->GetSummon())
 		{
-			if(TO_PLAYER(m_target)->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-				TO_PLAYER(m_target)->GetSummon()->Dismiss(false);				// warlock summon -> dismiss
+			Pet* pPet = pPlayer->GetSummon();
+			if((pPet->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0) && (warlockpet == false))
+				pPet->Dismiss(false); // Spell pet -> Dismiss
 			else
 			{
-				TO_PLAYER(m_target)->GetSummon()->Remove(false, true, true);	// hunter pet -> just remove for later re-call
-				TO_PLAYER(m_target)->hasqueuedpet = true;
+				pPet->Remove(false, true, true); // hunter pet -> just remove for later re-call
+				pPlayer->hasqueuedpet = true;
 			}
 		}
 
-		if(TO_PLAYER(m_target)->m_bg)
-			TO_PLAYER(m_target)->m_bg->HookOnMount(TO_PLAYER(m_target));
+		if(pPlayer->m_bg)
+			pPlayer->m_bg->HookOnMount(pPlayer);
 
 		m_target->RemoveAurasByInterruptFlag(AURA_INTERRUPT_ON_MOUNT);
 
-		TO_PLAYER(m_target)->m_MountSpellId = m_spellProto->Id;
-		TO_PLAYER(m_target)->m_FlyingAura = 0;
-
-		if( TO_PLAYER(m_target)->GetShapeShift() &&
-			!(TO_PLAYER(m_target)->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) &&
-			TO_PLAYER(m_target)->m_ShapeShifted != m_spellProto->Id )
-			m_target->RemoveAura( TO_PLAYER(m_target)->m_ShapeShifted );
-
-		// Vehicle stuff
 		CreatureInfo* ci = CreatureNameStorage.LookupEntry(mod->m_miscValue);
-		CreatureProto* cp = CreatureProtoStorage.LookupEntry(mod->m_miscValue);
-		if(ci != NULL && ci->Male_DisplayID != 0 && (!cp || !cp->vehicle_entry) ) // regular mount
+		if(!isVehicleSpell && ci != NULL && ci->Male_DisplayID != 0)
 			m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID , ci->Male_DisplayID);
-		/*else
-		{
-			// some complicated shit goes here!
-			m_target->SetUInt32Value( UNIT_FIELD_MOUNTDISPLAYID, ci->Male_DisplayID );
-			if( m_target && TO_PLAYER(m_target)->GetGroup() )
-			{
-				WorldPacket * data = TO_PLAYER(m_target)->BuildFieldUpdatePacket(UNIT_NPC_FLAGS, TO_PLAYER(m_target)->GetUInt32Value(UNIT_NPC_FLAGS) | UNIT_NPC_FLAG_PLAYER_VEHICLE);
-				TO_PLAYER(m_target)->GetGroup()->SendPacketToAllInRange(TO_PLAYER(m_target), data);
-			}
-			m_target->SetFlag(PLAYER_BYTES_3, 0x01000000);
-			TO_VEHICLE(m_target)->SetVehicleEntry(cp->vehicle_entry);
 
-			// fill the first slot
-			VehicleSeatEntry* vse = dbcVehicleSeat.LookupEntry( cp->vehicle_entry );
-			//m_target->m_CurrentVehicle = vse;
-			TO_VEHICLE(m_target)->SetVehiclePassenger(0, m_target->GetGUID());
+		pPlayer->m_MountSpellId = m_spellProto->Id;
+		pPlayer->m_FlyingAura = 0;
 
-			WorldPacket data(SMSG_PLAYER_VEHICLE_DATA, 12);
-			data << m_target->GetNewGUID();
-			data << cp->vehicle_entry;
-			m_target->SendMessageToSet(&data, true);
-		}*/
+		if( pPlayer->GetShapeShift() && 
+				!(pPlayer->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) && 
+				pPlayer->m_ShapeShifted != m_spellProto->Id )
+			m_target->RemoveAura( pPlayer->m_ShapeShifted );
 	}
 	else
 	{
-		TO_PLAYER(m_target)->m_bgFlagIneligible--;
-		TO_PLAYER(m_target)->m_MountSpellId = 0;
-		TO_PLAYER(m_target)->m_FlyingAura = 0;
+		pPlayer->m_bgFlagIneligible--;
+		pPlayer->m_MountSpellId = 0;
+		pPlayer->m_FlyingAura = 0;
 
 		if( !isVehicleSpell )
 			m_target->SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
 
-		uint8 petnum = TO_PLAYER(m_target)->GetUnstabledPetNumber();
-		if( petnum && TO_PLAYER(m_target)->hasqueuedpet )
-		{
-			//unstable selected pet
-			PlayerPet * pPet = NULL;
-			pPet = TO_PLAYER(m_target)->GetPlayerPet(petnum);
-			if( TO_PLAYER(m_target) != NULL && pPet != NULL )
-			{
-				TO_PLAYER(m_target)->SpawnPet(petnum);
-				pPet->stablestate = STABLE_STATE_ACTIVE;
-			}
-			TO_PLAYER(m_target)->hasqueuedpet = false;
-		}
+		uint8 petnum = pPlayer->GetUnstabledPetNumber();
 
+		if(warlockpet && !petnum)
+			petnum = pPlayer->GetFirstPetNumber();
+
+		if( petnum && pPlayer->hasqueuedpet )
+		{
+			// unstable selected pet
+			PlayerPet * pPet = NULL;
+			pPet = pPlayer->GetPlayerPet(petnum);
+			if( pPlayer != NULL && pPet != NULL )
+			{
+				pPlayer->SpawnPet(petnum);
+				if(!warlockpet)
+					pPet->stablestate = STABLE_STATE_ACTIVE;
+			}
+			pPlayer->hasqueuedpet = false;
+		}
 	}
 }
 

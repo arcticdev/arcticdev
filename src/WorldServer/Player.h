@@ -1583,7 +1583,9 @@ public:
 #endif
 	void AddItemsToWorld();
 	void RemoveItemsFromWorld();
-	void UpdateKnownCurrencies(uint32 ItemId, bool apply);
+	void UpdateKnownCurrencies(uint32 itemId, bool apply);
+
+	uint32 GetTotalItemLevel();
 
 	uint32 m_ShapeShifted;
 	uint32 m_MountSpellId;

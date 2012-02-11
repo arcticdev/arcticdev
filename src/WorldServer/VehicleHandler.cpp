@@ -6,13 +6,12 @@
 
 #include "StdAfx.h"
 
-
 /* This function handles the packet sent from the client when we
 leave a vehicle, it removes us server side from our current
 vehicle*/
 void WorldSession::HandleVehicleDismiss(WorldPacket & recv_data)
 {
-	if (GetPlayer() == NULL || !GetPlayer()->m_CurrentVehicle)
+	if(GetPlayer() == NULL || !GetPlayer()->m_CurrentVehicle)
 		return;
 
 	if(recv_data.rpos() != recv_data.wpos())
@@ -30,10 +29,10 @@ void WorldSession::HandleSpellClick( WorldPacket & recv_data )
 	if (GetPlayer() == NULL || GetPlayer()->m_CurrentVehicle)
 		return;
 
-	CHECK_PACKET_SIZE(recv_data, 8);
+    CHECK_PACKET_SIZE(recv_data, 8);
 
-	uint64 guid = 0;
-	recv_data >> guid;
+    uint64 guid;
+    recv_data >> guid;
 
 	Vehicle* pVehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
 	Unit* pPlayer = TO_UNIT(GetPlayer());
@@ -78,10 +77,16 @@ void WorldSession::HandleRequestSeatChange( WorldPacket & recv_data )
 	}
 
 	uint64 guid = Vehicleguid.GetOldGuid();
-	if(RequestedSeat == GetPlayer()->GetSeatID())
-		return;
-
 	Vehicle* vehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
+
+	if(vehicle = GetPlayer()->m_CurrentVehicle)
+	{
+		if(RequestedSeat == GetPlayer()->GetSeatID())
+		{
+			OUT_DEBUG("Return, Matching Seats. Requsted: %u, current: %u", RequestedSeat, GetPlayer()->GetSeatID());
+			return;
+		}
+	}
 
 	Unit* existpassenger = vehicle->GetPassenger(RequestedSeat);
 	if(existpassenger && (existpassenger != GetPlayer()))
@@ -100,4 +105,3 @@ void WorldSession::HandleRequestSeatChange( WorldPacket & recv_data )
 
 	GetPlayer()->EnterVehicle(vehicle, RequestedSeat, false);
 }
-
