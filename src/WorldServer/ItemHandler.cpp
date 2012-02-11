@@ -338,8 +338,8 @@ void WorldSession::HandleSwapInvItemOpcode( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 2);
 	WorldPacket data;
-	int8 srcslot=0, dstslot=0;
-	int8 error=0;
+	int8 dstslot = 0, srcslot = 0;
+	int8 error = 0;
 
 	recv_data >> dstslot >> srcslot;
 
