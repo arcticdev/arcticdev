@@ -438,15 +438,6 @@ public:
 
     ARCTIC_INLINE static uint32 GetBaseThreat(uint32 dmg)
     {
-        //there should be a formula to determine what spell cause threat and which don't
-/*        switch(m_spellInfo->NameHash)
-        {
-            //hunter's mark
-            case 4287212498:
-                {
-                    return 0;
-                }break;
-        }*/
         return dmg;
     }
 

@@ -3911,24 +3911,25 @@ uint8 Spell::CanCast(bool tolerate)
 				switch( m_spellInfo->NameHash )
 				{
 					case SPELL_HASH_ICE_BLOCK: //Ice Block
-					case 0x9840A1A6: //Divine Shield
+					case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
 						break;
 
-					case 0x3DFA70E5: //Will of the Forsaken
+					case SPELL_HASH_WILL_OF_THE_FORSAKEN: //Will of the Forsaken
 						{
 							if( u_caster->m_special_state & ( UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP ) )
 								break;
 						}break;
 
-					case 0xF60291F4: //Death Wish
-					case 0x19700707: //Berserker Rage
+					case SPELL_HASH_DEATH_WISH: // Death Wish
+					case SPELL_HASH_FEAR_WARD: // Fear Ward
+					case SPELL_HASH_BERSERKER_RAGE: // Berserker Rage
 						{
 							if( u_caster->m_special_state & UNIT_STATE_FEAR )
 								break;
 						}break;
 
 					// {Insignia|Medallion} of the {Horde|Alliance}
-					case 0xC7C45478: //Immune Movement Impairment and Loss of Control
+					case SPELL_HASH_WORD_OF_RECALL__OLD_: //Immune Movement Impairment and Loss of Control
 					case SPELL_HASH_PVP_TRINKET: // insignia of the alliance/horde 2.4.3
 					case SPELL_HASH_EVERY_MAN_FOR_HIMSELF:
 					case SPELL_HASH_DISPERSION:
@@ -3936,7 +3937,7 @@ uint8 Spell::CanCast(bool tolerate)
 							break;
 						}
 
-					case 0xCD4CDF55: // Barksin
+					case SPELL_HASH_BARKSKIN: // Barksin
 					{ // This spell is usable while stunned, frozen, incapacitated, feared or asleep.  Lasts 12 sec.
 						if( u_caster->m_special_state & ( UNIT_STATE_STUN | UNIT_STATE_FEAR | UNIT_STATE_SLEEP ) ) // Uh, what unit_state is Frozen? (freezing trap...)
 							break;
@@ -3966,8 +3967,8 @@ uint8 Spell::CanCast(bool tolerate)
 			switch( m_spellInfo->NameHash )
 			{
 				case SPELL_HASH_ICE_BLOCK: //Ice Block
-				case 0x9840A1A6: //Divine Shield
-				case 0x3DFA70E5: //Will of the Forsaken
+				case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
+				case SPELL_HASH_WILL_OF_THE_FORSAKEN: //Will of the Forsaken
 				{
 					if( u_caster->m_special_state & (UNIT_STATE_FEAR | UNIT_STATE_CHARM | UNIT_STATE_SLEEP))
 						break;
@@ -3995,15 +3996,15 @@ uint8 Spell::CanCast(bool tolerate)
 				case SPELL_HASH_ICE_BLOCK: //Ice Block
 				case SPELL_HASH_DIVINE_SHIELD: //Divine Shield
 				case SPELL_HASH_DIVINE_PROTECTION: //Divine Protection
-				case 0xCD4CDF55: //Barkskin
+				case SPELL_HASH_BARKSKIN: //Barkskin
 					break;
 				/* -Supalosa- For some reason, being charmed or sleep'd is counted as 'Stunned'. 
 				Check it: http://www.wowhead.com/?spell=700 */
 
-				case 0xC7C45478: /* Immune Movement Impairment and Loss of Control (PvP Trinkets) */
+				case SPELL_HASH_WORD_OF_RECALL__OLD_: /* Immune Movement Impairment and Loss of Control (PvP Trinkets) */
 					break;
 
-				case 0x3DFA70E5: /* Will of the Forsaken (Undead Racial) */
+				case SPELL_HASH_WILL_OF_THE_FORSAKEN: /* Will of the Forsaken (Undead Racial) */
 					break;
 
 				case SPELL_HASH_PVP_TRINKET: // insignia of the alliance/horde 2.4.3
