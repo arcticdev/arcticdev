@@ -309,11 +309,12 @@ public:
 
     void Heal(int32 amount);
 
-    GameObject*			g_caster;
-    Unit*					u_caster;
-    Item*					i_caster;
-    Player* 				p_caster;
-    Object*				m_caster;
+	GameObject*			g_caster;
+	Unit*				u_caster;
+	Item*				i_caster;
+	Player* 			p_caster;
+	Object*				m_caster;
+	Vehicle*			v_caster;
 
 	bool SpellEffectUpdateQuest(uint32 questid);
 
@@ -328,7 +329,6 @@ public:
     ARCTIC_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
 
     uint32 chaindamage;
-    // -------------------------------------------
 
     bool IsAspect();
     bool IsSeal();
@@ -337,7 +337,7 @@ public:
     uint32 GetDuration()
     {
         if(bDurSet)return Dur;
-        bDurSet=true;
+        bDurSet = true;
         int32 c_dur = 0;
 
         if(m_spellInfo->DurationIndex)

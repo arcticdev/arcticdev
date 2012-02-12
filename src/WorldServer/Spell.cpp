@@ -136,74 +136,84 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 
 	switch( Caster->GetTypeId() )
 	{
-		case TYPEID_PLAYER:
-        {
-		    g_caster = NULL;
-		    i_caster = NULL;
-		    u_caster = TO_UNIT( Caster );
-		    p_caster = TO_PLAYER( Caster );
+	case TYPEID_PLAYER:
+		{
+			g_caster = NULL;
+			i_caster = NULL;
+			u_caster = TO_UNIT( Caster );
+			p_caster = TO_PLAYER( Caster );
+			v_caster = NULL;
+			if(Caster->IsVehicle())
+				v_caster = TO_VEHICLE( Caster );
 			if( p_caster->GetDuelState() == DUEL_STATE_STARTED )
-			    duelSpell = true;
-        }break;
+				duelSpell = true;
+		}break;
 
-		case TYPEID_UNIT:
-        {
-		    g_caster = NULL;
-		    i_caster = NULL;
-		    p_caster = NULL;
-		    u_caster = TO_UNIT( Caster );
-		    if( u_caster->IsPet() && TO_PET( u_caster)->GetPetOwner() != NULL && TO_PET( u_caster )->GetPetOwner()->GetDuelState() == DUEL_STATE_STARTED )
-			    duelSpell = true;
-        }break;
+	case TYPEID_UNIT:
+		{
+			g_caster = NULL;
+			i_caster = NULL;
+			p_caster = NULL;
+			v_caster = NULL;
+			u_caster = TO_UNIT( Caster );
+			if(Caster->IsVehicle())
+			{
+				v_caster = TO_VEHICLE( Caster );
+				if(!p_caster)
+					p_caster = v_caster->m_redirectSpellPackets;
+			}
+			if( u_caster->IsPet() && TO_PET( u_caster)->GetPetOwner() != NULL && TO_PET( u_caster )->GetPetOwner()->GetDuelState() == DUEL_STATE_STARTED )
+				duelSpell = true;
+		}break;
 
-		case TYPEID_ITEM:
-		case TYPEID_CONTAINER:
-        {
-		    g_caster = NULL;
-		    u_caster = NULL;
-		    p_caster = NULL;
-		    i_caster = TO_ITEM( Caster );
+	case TYPEID_ITEM:
+	case TYPEID_CONTAINER:
+		{
+			g_caster = NULL;
+			u_caster = NULL;
+			p_caster = NULL;
+			v_caster = NULL;
+			i_caster = TO_ITEM( Caster );
 			if( i_caster->GetOwner() && i_caster->GetOwner()->GetDuelState() == DUEL_STATE_STARTED )
 				duelSpell = true;
-        }break;
-		
-		case TYPEID_GAMEOBJECT:
-        {
-		    u_caster = NULL;
-		    p_caster = NULL;
-		    i_caster = NULL;
-		    g_caster = TO_GAMEOBJECT( Caster );
-        }break;
-        default:
-            OUT_DEBUG("[DEBUG][SPELL] Incompatible object type, please report this to the dev's");
-        break;
+		}break;
+
+	case TYPEID_GAMEOBJECT:
+		{
+			u_caster = NULL;
+			p_caster = NULL;
+			v_caster = NULL;
+			i_caster = NULL;
+			g_caster = TO_GAMEOBJECT( Caster );
+		}break;
+
+	default:
+		OUT_DEBUG("[DEBUG][SPELL] Incompatible object type, please report this to the dev's");
+		break;
 	}
 
 	m_spellState = SPELL_STATE_NULL;
 
 	m_castPositionX = m_castPositionY = m_castPositionZ = 0;
-	//TriggerSpellId = 0;
-	//TriggerSpellTarget = 0;
 	m_triggeredSpell = triggered;
 	m_AreaAura = false;
-  
+
 	m_triggeredByAura = aur;
 
 	damageToHit = 0;
 	castedItemId = 0;
-	
+
 	m_usesMana = false;
 	m_Spell_Failed = false;
 	bDurSet = false;
 	bRadSet[0] = false;
 	bRadSet[1] = false;
 	bRadSet[2] = false;
-	
+
 	cancastresult = SPELL_CANCAST_OK;
 	
 	m_requiresCP = false;
 	unitTarget = NULL;
-	//ModeratedTargets.clear();
 	itemTarget = NULL;
 	gameObjTarget = NULL;
 	playerTarget = NULL;
@@ -214,7 +224,7 @@ Spell::Spell(Object* Caster, SpellEntry *info, bool triggered, Aura* aur)
 	m_ForceConsumption = false;
 	pSpellId = 0;
 	m_cancelled = false;
-	ProcedOnSpell = 0;
+	ProcedOnSpell = NULL;
 	forced_basepoints[0] = forced_basepoints[1] = forced_basepoints[2] = 0;
 	extra_cast_number = 0;
 	m_glyphIndex = 0;
@@ -2710,7 +2720,7 @@ void Spell::HandleEffects(uint32 i)
 	damage = CalculateEffect(i, unitTarget);  
 	DEBUG_LOG( "Spell","Handling Effect id = %u, damage = %d", m_spellInfo->Effect[i], damage); 
 	
-	if( m_spellInfo->Effect[i]<TOTAL_SPELL_EFFECTS)
+	if( m_spellInfo->Effect[i] < TOTAL_SPELL_EFFECTS)
 		(*this.*SpellEffectsHandler[m_spellInfo->Effect[i]])(i);
 	else
 		DEBUG_LOG("Spell","Unknown effect %u spellid %u",m_spellInfo->Effect[i], m_spellInfo->Id);
