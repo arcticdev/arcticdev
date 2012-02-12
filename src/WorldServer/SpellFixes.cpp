@@ -979,16 +979,6 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 						sp->Effect[1]	=	SPELL_EFFECT_TRIGGER_SPELL;
 						sp->EffectTriggerSpell[1]	=	25329;
 					}break;
-			case 48077:
-					{
-						sp->Effect[1]	=	SPELL_EFFECT_TRIGGER_SPELL;
-						sp->EffectTriggerSpell[1]	=	48075;
-					}break;
-			case 48078:
-				{
-					sp->Effect[1]	=	SPELL_EFFECT_TRIGGER_SPELL;
-					sp->EffectTriggerSpell[1]	=	48076;
-				}break;
 
 			// Moroes' garrote targets a single	enemy	instead	of us
 			case 37066:
@@ -1344,16 +1334,6 @@ void ApplySingleSpellFixes(SpellEntry *sp)
 			case 58427:
 				{
 						sp->AttributesEx |= ATTRIBUTESEX_NOT_BREAK_STEALTH;
-				}break;
-
-			//rogue	-	Find Weakness.
-			case  31233:
-			case  31239:
-			case  31240:
-			case  31241:
-			case  31242:
-				{
-						sp->procFlags	=	PROC_ON_CAST_SPELL;
 				}break;
 
 			//rogue	-	Cheap	Shot
