@@ -221,193 +221,67 @@ uint32 fill( uint32* arr, ... ){
 }
 
 #ifdef GENERATE_NAME_HASES_FILE
+
 // Generates SpellNameHashes.h
 void GenerateNameHashesFile()
 {
-	Log.Notice("GenerateNameHashesFile", "Please wait this might take some time...");
 	const uint32 fieldSize = 81;
 	const char* prefix = "SPELL_HASH_";
-	//I commented out the dynamic calculation
-	//of length since this is a constant
-	//uint32 prefixLen = strlen(prefix);
-	//This is the number of characters in "SPELL_HASH_"
-	const uint32 prefixLen = 11;
-
-	//Create an instance of the DBCFile class
+	uint32 prefixLen = uint32(strlen(prefix));
 	DBCFile dbc;
-	//Open the Spell.dbc file so that we can
-	//iterate over the values to grab the spell
-	//names
+
 	if( !dbc.open( "DBC/Spell.dbc" ) )
 	{
 		Log.Error("GenerateNameHashesFile", "Cannot find file ./DBC/Spell.dbc" );
 		return;
 	}
-	//Get the number of records in the DBC file
-	//so that we know how many iterations to make
+
 	uint32 cnt = (uint32)dbc.getRecordCount();
-	//Set up a variable to store the namehash
-	//of the spell
 	uint32 namehash = 0;
-	//Use a vector to store the completed line
-	//of text once we have built it, which we
-	//will call a field, using a vector will
-	//allow us to use some fancy algorithms later :)
-	std::vector<std::string> fields;
-	fields.reserve(32*cnt);
+	FILE * f = fopen("SpellNameHashes.h", "w");
+	char spaces[fieldSize], namearray[fieldSize];
+	strcpy(namearray, prefix);
+	char* name = &namearray[prefixLen];
+	for(int i = 0;i < fieldSize-1; ++i)
+		spaces[i] = ' ';
 
-	//Calculate the period of time to
-	//report progress while building the
-	//fields and our counter
-	uint32 period = (cnt / 20) + 1;
-	uint32 counter = 0;
+	std::set<uint32> namehashes;
 
-	//Iterate over every record in the spell dbc file
-	sLog.outDebug("GenerateNameHashesFile: Iterating over Spell.dbc and building fields");
-	for(uint32 x=0; x < cnt; x++)
+	spaces[fieldSize-1] = 0;
+	uint32 nameTextLen = 0, nameLen = 0;
+	for(uint32 x = 0; x < cnt; x++)
 	{
-		//Instantiate our stringstream
-		std::ostringstream ssField;
-
-		//Write a tab before anything else
-		//is written for nice formatting
-		//in the resulting file
-		ssField << "\t";
-		//Write the SPELL_HASH_ prefix to the
-		//string stream
-		ssField << prefix;
-
-		//Store the full spell name for this entry in the
-		//DBC file.
-		//This will be used to calculate the namehash
-		std::string nametext = dbc.getRecord(x).getString(143-1);
-		//Store a trimmed spell name so that it fits
-		//neatly on the line in the resulting file
-		std::string name = nametext.substr(0, 69);
-
-		//Transform the trimmed spell name so that
-		//all characters are upper case
-		std::transform(name.begin(), name.end(), name.begin(), &toupper);
-
-		//Iterate over each character in the trimmed
-		//name and replace any non-standard characters
-		//with an underscore
-		for(uint16 i = 0; i < name.length(); i++)
+		const char* nametext = dbc.getRecord(x).getString(136);
+		nameTextLen = (unsigned int)strlen(nametext);
+		strncpy(name, nametext, fieldSize-prefixLen-2);	// Cut it to fit in field size
+		name[fieldSize-prefixLen-2] = 0; // in case nametext is too long and strncpy didn't copy the null
+		nameLen = (unsigned int)strlen(name);
+		for(uint32 i = 0;i<nameLen;++i)
 		{
-			if(!(name[i] >= '0' && name[i] <= '9') && !(name[i] >= 'A' && name[i] <= 'Z'))
+			if(name[i] >= 'a' && name[i] <= 'z')
+				name[i] = toupper(name[i]);
+			else if(!(name[i] >= '0' && name[i] <= '9') &&
+				!(name[i] >= 'A' && name[i] <= 'Z'))
 				name[i] = '_';
 		}
-		//now that the name has been prepared for use
-		//in the resulting file, write it to the
-		//string stream
-		ssField << name;
 
-		//Work out how many spaces we need to add after
-		//the string that we have just built and write
-		//them one by one to the stringstream less three
-		//so that we can add our equals sign later
-		int32 length = int32(ssField.str().length());
-		int32 spacesToAdd = (fieldSize - 3) - length;
-		do
-		{  	--spacesToAdd;
-			ssField << " ";
-		}while(spacesToAdd > 0);
+		namehash = crc32((const unsigned char*)nametext, nameTextLen);
 
-		//Write the equals sign and a space to the string
-		//stream
-		ssField << "= ";
+		if(namehashes.find(namehash) != namehashes.end())
+			continue; // Skip namehashes we've already done.
 
-		//Set the stringstream format flags
-		//to use hexadecimal and show the 0x
-		//before the value!
-		ssField.setf(std::ios::showbase);
-		ssField.setf(std::ios_base::hex , std::ios_base::basefield);
+		int32 numSpaces = fieldSize-prefixLen-nameLen-1;
+		if(numSpaces < 0)
+			fprintf(f, "WTF");
 
-		//Calculate a name hash using the spell name
-		namehash = crc32((const unsigned char*)nametext.c_str(), (unsigned int)nametext.length());
-		//Write the result to the string stream
-		ssField << std::uppercase << namehash << ",";
-
-		//Now that we have our mighty string add it
-		//to the vector.
-		fields.push_back(ssField.str());
-
-		//Clear the the stream ready for
-		//the next iteration
-		ssField.clear();
-
-		if( !((++counter) % period) )
-			Log.Notice("GenerateNameHashesFile", "Fields done: %u/%u, %u%% complete.", counter, cnt, float2int32( (float(counter) / float(cnt))*100.0f ));
+		spaces[numSpaces] = 0;
+		fprintf(f, "#define %s%s0x%08X\n", namearray, spaces, namehash);
+		spaces[numSpaces] = ' ';
+		namehashes.insert(namehash);
 	}
-
-	//Now we can sort all of the lines
-	//in the vector alphabetically!
-	sLog.outDebug("GenerateNameHashesFile: Sorting fields alphabetically");
-	sort(fields.begin(),fields.end());
-
-	//Now we want to remove any duplicates
-	//from the vector, since there can be
-	//multiple spells with the same name
-	//therefore they will have the same hash
-	sLog.outDebug("GenerateNameHashesFile: Searching for duplicates");
-	std::vector<std::string>::iterator new_end_pos;
-	new_end_pos = std::unique( fields.begin(), fields.end() );
-
-	//The elements between new_end_pos and
-	//fields.end() hold the old values,
-	//which were found to be duplicates
-	//we will now erase them!
-	sLog.outDebug("GenerateNameHashesFile: Removing duplicates!");
-	fields.erase( new_end_pos, fields.end() );
-
-
-	//Create the SpellNameHashes.h file and
-	//open it for writing. If it fails print
-	//an error and stop execution
-	ofstream out("SpellNameHashes.h");
-	if(!out)
-	{
-		Log.Error("GenerateNameHashesFile", "Cannot open output file SpellNameHashes.h!\n");
-		return;
-	}
-
-	//Write the license to beginning of the file
-	//also a message warning not to modify, header
-	//guards and the enum declaration
-	sLog.outDebug("GenerateNameHashesFile: Writing header to file");
-	out << "/*" << endl;
-	out << " * ArcTic MMORPG Server" << endl;
-	out << " */" << endl;
-	out << endl;
-	out << "/* This file has been automatically generated, please do not modify. */" << endl;
-	out << "// Last update: " << _VERSION << endl;
-	out << endl;
-	out << "#ifndef _SPELLHASHES_H" << endl;
-	out << "#define _SPELLHASHES_H" << endl;
-	out << endl;
-	out << "enum SpellNameHashes" << endl;
-	out << "{" << endl;
-
-	sLog.outDebug("GenerateNameHashesFile: Writing fields to file");
-	counter = 0;
-	for (std::vector<std::string>::iterator it = fields.begin(); it != fields.end(); it++)
-	{
-		++counter;
-		out << *it << "\t//" << counter << endl;
-	}
-
-	// Close the enum
-	out << "};" << endl;
-
-	// Close the ifdef for the header guard
-	out << endl;
-	out << "#endif		// _SPELLHASHES_H" << endl;
-
-	// We have finished writing!
-	// Close the file
-	out.close();
-	sLog.outDebug("GenerateNameHashesFile: Done!");
+	fclose(f);
 }
+
 #endif
 
 // Copies effect number 'fromEffect' in 'fromSpell' to effect number 'toEffect' in 'toSpell'
