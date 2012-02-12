@@ -24,7 +24,7 @@ PacketLog::PacketLog()
     // clear world logfile
     if (sConfig.GetBoolDefault("LogWorld", false))
     {
-        FILE *pFile = fopen("world.log", "w+");
+        FILE *pFile = fopen("logs/world.log", "w+");
         fclose(pFile);
     }
 }
@@ -126,7 +126,7 @@ void PacketLog::WorldHexDump(WorldPacket* data, uint32 socket, bool direction)
         return;
 
     FILE *pFile;
-    pFile = fopen("world.log", "a");
+    pFile = fopen("logs/world.log", "a");
 
     uint16 len = data->size();// + 4;
     uint16 opcode = data->GetOpcode();
@@ -136,6 +136,6 @@ void PacketLog::WorldHexDump(WorldPacket* data, uint32 socket, bool direction)
         fprintf(pFile, "CLIENT:\nSOCKET: %d\nLENGTH: %d\nOPCODE: %.4X\nDATA:\n", socket, len, opcode);
 
     fclose(pFile);
-    HexDump((char *)data->contents(), data->size(), "world.log");
+    HexDump((char *)data->contents(), data->size(), "logs/world.log");
 
 }

@@ -184,7 +184,7 @@ void oLog::Init(int32 fileLogLevel, int32 screenLogLevel)
 
 	if (m_fileLogLevel >= 0)
 	{
-		const char *filename = "file.log";
+		const char *filename = "logs/logs.log";
 		m_file = fopen(filename, "w");
 		if (m_file == NULL)
 		{
@@ -236,7 +236,7 @@ WorldLog::WorldLog()
 
 	if (Config.MainConfig.GetBoolDefault("LogLevel", "World", false))
 	{
-		Log.Notice("WorldLog", "Enabling packetlog output to \"world.log\"");
+		Log.Notice("WorldLog", "Enabling packetlog output to \"logs/world.log\"");
 		Enable();
 	} else {
 		Disable();
@@ -244,7 +244,7 @@ WorldLog::WorldLog()
 
 	if (Config.MainConfig.GetBoolDefault("LogLevel", "WorldXml", false))
 	{
-		Log.Notice("WorldLog", "Enabling packetlog output to \"world.xml\"");
+		Log.Notice("WorldLog", "Enabling packetlog output to \"logs/world.xml\"");
 		EnableXml();
 	} else {
 		DisableXml();
@@ -263,7 +263,7 @@ void WorldLog::Enable()
 		Disable();
 		bEnabled=true;
 	}
-	m_file = fopen("world.log", "w");
+	m_file = fopen("logs/world.log", "w");
 }
 
 void WorldLog::Disable()
@@ -291,7 +291,7 @@ void WorldLog::EnableXml()
 		DisableXml();
 		bEnabledXml=true;
 	}
-	m_xml = fopen("world.xml", "w");
+	m_xml = fopen("logs/world.xml", "w");
 	if (m_xml)
 	{
 		fprintf(m_xml, "<?xml version=\"1.0\" ?><log>");
