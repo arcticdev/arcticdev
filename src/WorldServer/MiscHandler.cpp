@@ -818,7 +818,6 @@ void WorldSession::HandlePlayerLogoutOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleLogoutCancelOpcode( WorldPacket & recv_data )
 {
-
 	DEBUG_LOG( "WORLD"," Recvd CMSG_LOGOUT_CANCEL Message" );
 
 	Player* pPlayer = GetPlayer();
@@ -879,10 +878,10 @@ void WorldSession::HandleSetSelectionOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleStandStateChangeOpcode( WorldPacket & recv_data )
 {
-	uint8 animstate;
+	uint32 animstate;
 	recv_data >> animstate;
 
-	_player->SetStandState(animstate);
+	_player->SetStandState(int8(animstate));
 }
 
 void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
