@@ -1236,7 +1236,7 @@ public:
 	// Enters the passenger into an available seat
 	void EnterVehicle(Vehicle * vehicle);
 	// Enters the passenger into a prefered seat if possible
-	bool EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force);
+	void EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force);
 
 	// Pet
 	ARCTIC_INLINE void SetIsPet(bool chck) { m_isPet = chck; }
@@ -1252,7 +1252,7 @@ public:
 	uint32 m_CombatUpdateTimer;
 
 	ARCTIC_INLINE void setcanperry(bool newstatus){can_parry=newstatus;}
-		
+
 	std::map<uint32,Aura* > tmpAura;
 
 	uint32 BaseResistance[7]; //there are resistances for silence, fear, mechanics ....

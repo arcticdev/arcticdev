@@ -7327,10 +7327,10 @@ void Unit::EnterVehicle(Vehicle * vehicle)
 	}
 }
 
-bool Unit::EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force)
+void Unit::EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force)
 {
 	if(vehicle->IsVehicle() == false && vehicle->IsPlayer() == false)
-		return false;
+		return;
 
 	if(vehicle->IsPlayer())
 	{
@@ -7347,13 +7347,11 @@ bool Unit::EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force)
 		if( preferedseat > vehicle->GetMaxSeat())
 		{
 			sLog.outDebug("Object::EnterVehicle -> Unit "I64FMT" tried to enter seat %u wich is invalid.", GetGUID(), preferedseat);
-			return false;
+			return;
 		}
 	}
 	else
-	{
-		return false;
-	}
+		return;
 
 	if(m_CurrentVehicle)
 		m_CurrentVehicle->RemovePassenger(this);
@@ -7361,7 +7359,7 @@ bool Unit::EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force)
 	if(preferedseat == -1) // Lovely, freedom of choice
 	{
 		EnterVehicle(vehicle);
-		return true;
+		return;
 	}
 
 	if(force)
@@ -7391,7 +7389,7 @@ bool Unit::EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force)
 		data << uint32(0);										// GetTransOffsetZ();
 		SendMessageToSet(&data, true);
 
-		return true;
+		return;
 	}
 	else
 	{
@@ -7419,8 +7417,8 @@ bool Unit::EnterVehicle(Vehicle * vehicle, int8 preferedseat, bool force)
 			data << uint32(0);										// GetTransOffsetZ();
 			SendMessageToSet(&data, true);
 
-			return true;
+			return;
 		}
 	}
-	return false;
+	return;
 }
