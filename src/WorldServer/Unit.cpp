@@ -13,6 +13,9 @@ Unit::Unit()
 	m_attackTimer_1 = 0;
 	m_duelWield = false;
 
+	memset(movement_packet, 0, sizeof(movement_packet));
+	movement_info.FallTime = 0;
+
 	m_ignoreArmorPct = 0.0f;
 	m_ignoreArmorPctMaceSpec = 0.0f;
 	m_fearmodifiers = 0;
@@ -1097,7 +1100,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								if( new_caster != NULL && new_caster->isAlive() )
 								{
 									SpellEntry* spellInfo = dbcSpell.LookupEntry( 25228 ); //we already modified this spell on server loading so it must exist
-									Spell* spell(new Spell( new_caster, spellInfo, true, NULL ));
+									Spell* spell = new Spell( new_caster, spellInfo, true, NULL );
 									spell->forced_basepoints[0] = dmg;
 									SpellCastTargets targets;
 									targets.m_unitTarget = GetGUID();
@@ -1215,7 +1218,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								if(!parentproc || !spellInfo)
 									continue;
 								int32 val = parentproc->EffectBasePoints[0] + 1;
-                                Spell* spell(new Spell(TO_UNIT(this), spellInfo ,true, NULL));
+                                Spell* spell = new Spell(TO_UNIT(this), spellInfo ,true, NULL);
                                 spell->forced_basepoints[0] = (val*dmg)/300; //per tick
                                 SpellCastTargets targets;
                                 targets.m_unitTarget = GetGUID();
@@ -1248,7 +1251,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								if(!caster)
 									caster = TO_UNIT(this);
 								targets.m_unitTarget = GetGUID();
-								Spell* spell(new Spell(TO_UNIT(this), spellInfo ,true, NULL));
+								Spell* spell = new Spell(TO_UNIT(this), spellInfo ,true, NULL);
 								spell->forced_basepoints[0] = ospinfo->EffectBasePoints[0] + 1;
 								spell->ProcedOnSpell = CastingSpell;
 								spell->pSpellId=origId;
@@ -5721,13 +5724,13 @@ void Unit::RemoveFromWorld(bool free_guid)
 							m_auras[x]->RemoveAA();//so remove AAura from AAura targets
 						else
 						{
-							RemoveAuraBySlot(x); //we have left the caster, remove AAura from us.
+							RemoveAuraBySlot(x); // we have left the caster, remove AAura from us.
 							break;
 						}
 					}
 				}
 			}
-			else //Brrr.. how did we end up here??
+			else // Brrr.. how did we end up here??
 				RemoveAuraBySlot(x);
 		}
 	}

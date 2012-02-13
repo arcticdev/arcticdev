@@ -174,7 +174,7 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]=
 	&Spell::SpellEffectNULL,						// 160
 	&Spell::SpellEffectSetTalentSpecsCount,			// 161 Sets number of talent specs available to the player
 	&Spell::SpellEffectActivateTalentSpec,			// 162 Activates one of talent specs
-//	&Spell::SpellEffectNULL,                        // 163 
+//	&Spell::SpellEffectNULL,                        // 163
 // 	&Spell::SpellEffectNULL,                        // 164
 };
 
@@ -1005,7 +1005,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 			if(spellInfo && spellInfo->c_is_flags & SPELL_FLAG_IS_POISON )
 			{
-				Spell* spell(new Spell( p_caster, spellInfo, true, NULL));
+				Spell* spell = new Spell( p_caster, spellInfo, true, NULL);
 				SpellCastTargets targets;
 				targets.m_unitTarget = unitTarget->GetGUID();
 				spell->prepare( &targets );
@@ -1017,7 +1017,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	 * IDs:
 	 * 34297 Improved Leader of the Pack RANK 1		STATUS: DONE
 	 * 34300 Improved Leader of the Pack RANK 2		STATUS: DONE
-	 *  --------------------------------------------
 	 *************************/
 
 	/*
@@ -2451,7 +2450,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						amplitude = 3;
 
 					//our hapiness is that we did not store the aura mod amount so we have to recalc it
-					Spell* spell(new Spell( m_caster, taura->GetSpellProto(), false, NULL ));
+					Spell* spell = new Spell( m_caster, taura->GetSpellProto(), false, NULL );
 					uint32 healamount = spell->CalculateEffect( 1, unitTarget );
 					spell->Destructor();
 					spell = NULL;
@@ -2477,7 +2476,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 							amplitude = 3;
 
 						//our hapiness is that we did not store the aura mod amount so we have to recalc it
-						Spell* spell(new Spell( m_caster, taura->GetSpellProto(), false, NULL ));
+						Spell* spell = new Spell( m_caster, taura->GetSpellProto(), false, NULL );
 						uint32 healamount = spell->CalculateEffect( 0, unitTarget );
 						spell->Destructor();
 						spell = NULL;
@@ -5803,15 +5802,15 @@ void Spell::SpellEffectActivateObject(uint32 i) // Activate Object
 
 void Spell::SpellEffectWMODamage(uint32 i)
 {
-	if(gameObjTarget && gameObjTarget->GetInfo()->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING) 
-		gameObjTarget->TakeDamage(uint32(damage)); 
+	if(gameObjTarget && gameObjTarget->GetInfo()->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+		gameObjTarget->TakeDamage(uint32(damage));
 }
 
-void Spell::SpellEffectWMORepair(uint32 i) 
-{ 
-	if(gameObjTarget && gameObjTarget->GetInfo()->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING) 
-		gameObjTarget->Rebuild(); 
-} 
+void Spell::SpellEffectWMORepair(uint32 i)
+{
+	if(gameObjTarget && gameObjTarget->GetInfo()->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+		gameObjTarget->Rebuild();
+}
 
 void Spell::SummonTotem(uint32 i) // Summon Totem
 {
@@ -6904,7 +6903,7 @@ void Spell::SpellEffectDummyMelee( uint32 i ) // Normalized Weapon damage +
 			return; //omg how did this happen ?
 
 		//we should also cast sunder armor effect on target with or without dmg
-		Spell* spell(new Spell(u_caster, spellInfo ,true, NULL));
+		Spell* spell = new Spell(u_caster, spellInfo ,true, NULL);
 		spell->ProcedOnSpell = m_spellInfo;
 		spell->pSpellId=m_spellInfo->Id;
 		SpellCastTargets targets(unitTarget->GetGUID());
@@ -7603,7 +7602,7 @@ void Spell::SpellEffectActivateTalentSpec(uint32 i)
 		SendCastResult(SPELL_FAILED_NOT_IN_BATTLEGROUND);
 		return;
 	}
-	if(damage > 2) 
+	if(damage > 2)
 		damage = 2;
 
 	// 1 = primary, 2 = secondary

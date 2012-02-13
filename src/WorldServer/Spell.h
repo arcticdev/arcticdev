@@ -13,7 +13,7 @@ class SpellCastTargets
 public:
     void read ( WorldPacket & data,uint64 caster );
     void write ( WorldPacket & data);
-	void write ( StackPacket & data);
+    void write ( StackPacket & data);
 
     SpellCastTargets() : m_targetMask(0), m_unitTarget(0), m_itemTarget(0), m_srcX(0), m_srcY(0), m_srcZ(0),
         m_destX(0), m_destY(0), m_destZ(0) {}
@@ -66,7 +66,7 @@ public:
     friend class DummySpellHandler;
     Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
-	void Destructor();
+    void Destructor();
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -80,11 +80,11 @@ public:
     void FillAllTargetsInArea(LocationVector & location,uint32 ind);
     // Fills the targets at the area of effect. We suppose we already inited this spell and know the details
     void FillAllFriendlyInArea(uint32 i, float srcx,float srcy,float srcz, float range);
-    //get single Enemy as target
+    // get single Enemy as target
     uint64 GetSinglePossibleEnemy(uint32 i, float prange=0);
-    //get single Enemy as target
+    // get single Enemy as target
     uint64 GetSinglePossibleFriend(uint32 i, float prange=0);
-    //generate possible target list for a spell. Use as last resort since it is not acurate
+    // generate possible target list for a spell. Use as last resort since it is not acurate
     void GenerateTargets(SpellCastTargets *store_buff);
     // Fills the target map of the spell packet
     void FillTargetMap(uint32);
@@ -105,7 +105,7 @@ public:
     // Has power?
     bool HasPower();
     // Checks the caster is ready for cast
-    uint8 CanCast(bool);
+    uint8 CanCast(bool tolerate);
     // Removes reagents, ammo, and items/charges
     void RemoveItems();
     // Calculates the i'th effect value
@@ -119,12 +119,11 @@ public:
     void AddCooldown();
     void AddStartCooldown();
 
-
     bool Reflect(Unit* refunit);
 
     ARCTIC_INLINE uint32 getState() { return m_spellState; }
     ARCTIC_INLINE void SetUnitTarget(Unit* punit){unitTarget=punit;}
-	ARCTIC_INLINE SpellEntry *GetSpellProto() { return m_spellInfo; }
+    ARCTIC_INLINE SpellEntry *GetSpellProto() { return m_spellInfo; }
 
     // Send Packet functions
     void SendCastResult(uint8 result);
@@ -135,7 +134,7 @@ public:
     void SendChannelUpdate(uint32 time);
     void SendChannelStart(uint32 duration);
     void SendResurrectRequest(Player* target);
-	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
+    static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
     static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
 
     void HandleAddAura(uint64 guid);
@@ -148,7 +147,7 @@ public:
 
     void CreateItem(uint32 itemId);
 
-    // Effect Handlers
+	// Effect Handlers
 	void SpellEffectNULL(uint32 i);
 	void SpellEffectInstantKill(uint32 i);
 	void SpellEffectSchoolDMG(uint32 i);
@@ -302,13 +301,14 @@ public:
     void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
     void SpellTargetTargetPartyMember(uint32 i, uint32 j);
     void SpellTargetSameGroupSameClass(uint32 i, uint32 j);
-	void SpellTargetPositionOfTarget(uint32 i, uint32 j);
-	void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
-	void SpellTargetAllTargetsInArea(uint32 i, uint32 j);
+    void SpellTargetPositionOfTarget(uint32 i, uint32 j);
+    void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
+    void SpellTargetAllTargetsInArea(uint32 i, uint32 j);
+    void SpellTargetVehicle(uint32 i, uint32 j);
 
 	uint64 static FindLowestHealthRaidMember(Player* Target, uint32 dist);
 
-    void Heal(int32 amount);
+	void Heal(int32 amount);
 
 	GameObject*			g_caster;
 	Unit*				u_caster;
@@ -319,11 +319,11 @@ public:
 
 	bool SpellEffectUpdateQuest(uint32 questid);
 
-	// 15007 = resurecting sickness
-	
-	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
-	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-	ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
+    // 15007 = resurecting sickness
+
+    // This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
+    // It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
+    ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
     ARCTIC_INLINE Item* GetItemTarget() { return itemTarget; }
     ARCTIC_INLINE Unit* GetUnitTarget() { return unitTarget; }
     ARCTIC_INLINE Player* GetPlayerTarget() { return playerTarget; }
@@ -333,7 +333,7 @@ public:
 
     bool IsAspect();
     bool IsSeal();
-	bool static IsBinary(SpellEntry * sp);
+    bool static IsBinary(SpellEntry * sp);
 
     uint32 GetDuration()
     {
@@ -357,15 +357,15 @@ public:
                     }
 
                     if((int32)this->Dur < 0)
-						this->Dur = 0;
-					c_dur = this->Dur;
+                        this->Dur = 0;
+                    c_dur = this->Dur;
                 }
                 if(sd->Duration1 >= 0 && !c_dur)
                 {
                     this->Dur = sd->Duration1;
                 }
                 //combo point lolerCopter? ;P
-                if(p_caster)  
+                if(p_caster)
                 {
                     uint32 cp=p_caster->m_comboPoints;
                     if(cp)
@@ -477,11 +477,11 @@ public:
     bool IsStealthSpell();
     bool IsInvisibilitySpell();
 
-	SummonPropertiesEntry * m_summonProperties;
-    
+    SummonPropertiesEntry * m_summonProperties;
+
     int32 damage;
     Aura*  m_triggeredByAura;
-	signed int	forced_basepoints[3]; //some talent inherit base points from previous caster spells
+    signed int	forced_basepoints[3]; //some talent inherit base points from previous caster spells
 
     bool m_triggeredSpell;
     bool m_AreaAura;
@@ -491,12 +491,12 @@ public:
     float m_castPositionX;
     float m_castPositionY;
     float m_castPositionZ;
-   
+
     int32 damageToHit;
     uint32 castedItemId;
-	uint8 extra_cast_number;
-	uint32 m_glyphIndex;
-	uint32 m_pushbackCount;
+    uint8 extra_cast_number;
+    uint32 m_glyphIndex;
+    uint32 m_pushbackCount;
 
     bool duelSpell;
 
@@ -513,8 +513,8 @@ public:
 	bool DuelSpellNoMoreValid()
 	{
 		if(duelSpell && (
-				(p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||  
-				(u_caster != NULL && u_caster->IsPet() && TO_PET(u_caster)->GetPetOwner() && TO_PET(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))  
+				(p_caster != NULL && p_caster->GetDuelState() != DUEL_STATE_STARTED) ||
+				(u_caster != NULL && u_caster->IsPet() && TO_PET(u_caster)->GetPetOwner() && TO_PET(u_caster)->GetPetOwner()->GetDuelState() != DUEL_STATE_STARTED)))
 			return true;
 		else
 			return false;
@@ -525,8 +525,8 @@ public:
 		m_cancelled = true;
 	}
 
-    /// Spell state's
-    /// Spell failed
+    // Spell state's
+    // Spell failed
     ARCTIC_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
     ARCTIC_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
 
@@ -535,25 +535,25 @@ public:
 	// Returns true if spellEffect's effectNum effect affects testSpell based on EffectSpellClassMask
 	ARCTIC_INLINE static bool EffectAffectsSpell(SpellEntry* spellEffect, uint32 effectNum, SpellEntry* testSpell)
 	{
-		return (testSpell->SpellGroupType[0] && (spellEffect->EffectSpellClassMask[effectNum][0] & testSpell->SpellGroupType[0]) || 
-			testSpell->SpellGroupType[1] && (spellEffect->EffectSpellClassMask[effectNum][1] & testSpell->SpellGroupType[1]) || 
+		return (testSpell->SpellGroupType[0] && (spellEffect->EffectSpellClassMask[effectNum][0] & testSpell->SpellGroupType[0]) ||
+			testSpell->SpellGroupType[1] && (spellEffect->EffectSpellClassMask[effectNum][1] & testSpell->SpellGroupType[1]) ||
 			testSpell->SpellGroupType[2] && (spellEffect->EffectSpellClassMask[effectNum][2] & testSpell->SpellGroupType[2]));
 	}
 
 protected:
 
 	/// Spell state's
-	bool    m_usesMana;
-	bool    m_Spell_Failed;        //for 5sr
-	bool    m_Delayed;
-	uint32  m_spellState;
-	int32   m_castTime;
-	int32   m_timer;
-	bool    m_ForceConsumption;
+	bool        m_usesMana;
+	bool        m_Spell_Failed;        //for 5sr
+	bool        m_Delayed;
+	uint32      m_spellState;
+	int32       m_castTime;
+	int32       m_timer;
+	bool        m_ForceConsumption;
 
 	// Current Targets to be used in effect handler
-	Unit*      unitTarget;
-	Item*      itemTarget;
+	Unit*       unitTarget;
+	Item*       itemTarget;
 	GameObject* gameObjTarget;
 	Player*     playerTarget;
 	Corpse*     corpseTarget;
@@ -565,8 +565,8 @@ protected:
 	float       Rad[3];
 	bool        bRadSet[3];
 	bool        m_cancelled;
-	bool m_isCasting;
-	bool m_projectileWait;
+	bool        m_isCasting;
+	bool        m_projectileWait;
 
 private:
 	struct SpellTarget
@@ -600,7 +600,7 @@ private:
 
 	uint32 m_hitTargetCount;
 	uint32 m_missTargetCount;
-	
+
 	// magnet
 	Unit* m_magnetTarget;
 };

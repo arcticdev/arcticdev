@@ -2568,8 +2568,6 @@ void Aura::SpellAuraDummy(bool apply)
 		}break;
 	case 23701://Darkmoon Card: Twisting Nether give 10% chance to self resurrect ->cast 23700
 		{
-			//if(!apply)
-
 		}break;
 
 	//Second Wind - triggers only on stun and Immobilize
@@ -6248,8 +6246,8 @@ void Aura::SpellAuraMounted(bool apply)
 		pPlayer->m_MountSpellId = m_spellProto->Id;
 		pPlayer->m_FlyingAura = 0;
 
-		if( pPlayer->GetShapeShift() && 
-				!(pPlayer->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) && 
+		if( pPlayer->GetShapeShift() &&
+				!(pPlayer->GetShapeShift() & FORM_BATTLESTANCE | FORM_DEFENSIVESTANCE | FORM_BERSERKERSTANCE ) &&
 				pPlayer->m_ShapeShifted != m_spellProto->Id )
 			m_target->RemoveAura( pPlayer->m_ShapeShifted );
 	}

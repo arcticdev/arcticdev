@@ -9,7 +9,7 @@
 void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_RETURN;
-	
+
 	Player* p_User = GetPlayer();
 	DEBUG_LOG("WORLD","Received use Item packet, data length = %i",recvPacket.size());
 	//can't use items while dead.
@@ -43,7 +43,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 	{
 		// Item Starter
 		Quest *qst = QuestStorage.LookupEntry(itemProto->QuestId);
-		if(!qst) 
+		if(!qst)
 			return;
 
 		if( sQuestMgr.PlayerMeetsReqs(_player, qst, false) != QMGR_QUEST_AVAILABLE || qst->min_level > _player->getLevel() )
@@ -53,7 +53,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
         sQuestMgr.BuildQuestDetails(&data, qst, tmpItem, 0, language, _player);
 		SendPacket(&data);
 	}
-	
+
 	SpellCastTargets targets(recvPacket, _player->GetGUID());
 	uint32 x;
 	for(x = 0; x < 5; x++)
@@ -85,7 +85,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 			_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_CANT_DO_IN_COMBAT);
 			return;
 		}
-	
+
 		if(p_User->GetStandState()!=STANDSTATE_SIT)
 			p_User->SetStandState(STANDSTATE_SIT);
 	}
@@ -116,12 +116,12 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 			}
 		}
 	}
-	
+
 	if( itemProto->AllowableClass && !(_player->getClassMask() & itemProto->AllowableClass) || itemProto->AllowableRace && !(_player->getRaceMask() & itemProto->AllowableRace) )
 	{
 		_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_YOU_CAN_NEVER_USE_THAT_ITEM);
 		return;
-	}		
+	}
 
 	if( !_player->Cooldown_CanCast( itemProto, x ) )
 	{
@@ -161,7 +161,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	Spell* spell(new Spell(_player, spellInfo, false, NULL));
+	Spell* spell = new Spell(_player, spellInfo, false, NULL);
 	spell->extra_cast_number=cn;
 	spell->m_glyphIndex = glyphIndex;
 	spell->i_caster = tmpItem;
@@ -172,7 +172,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_RETURN;
-	if(_player->getDeathState()==CORPSE)
+	if(_player->getDeathState() == CORPSE)
 		return;
 
 	uint32 spellId;
@@ -195,7 +195,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 
 	OUT_DEBUG("WORLD: got cast spell packet, spellId - %i (%s), data length = %i",
 		spellId, spellInfo->Name, recvPacket.size());
-	
+
 	// Cheat Detection only if player and not from an item
 	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
 	// WPE allows them to mod the outgoing packet and basicly choose what ever spell they want :(
@@ -223,7 +223,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		if((spellInfo->Flags3 & FLAGS3_ACTIVATE_AUTO_SHOT) /*spellInfo->Attributes == 327698*/)	// auto shot..
 		{
 			Item* weapon = GetPlayer()->GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_RANGED);
-			if(!weapon) 
+			if(!weapon)
 				return;
 			uint32 spellid;
 			switch(weapon->GetProto()->SubClass)
@@ -243,10 +243,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				spellid = 0;
 				break;
 			}
-		   
-			if(!spellid) 
+
+			if(!spellid)
 				spellid = spellInfo->Id;
-			
+
 			if(!_player->m_onAutoShot)
 			{
 				_player->m_AutoShotTarget = _player->GetSelection();
@@ -258,7 +258,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 					return;
 				}
 				SpellEntry *sp = dbcSpell.LookupEntry(spellid);
-			
+
 				_player->m_AutoShotSpell = sp;
 				_player->m_AutoShotDuration = duration;
 				//This will fix fast clicks
@@ -270,8 +270,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			return;
 		}
 
-        if(_player->m_currentSpell)
-        {
+		SpellCastTargets targets(recvPacket, GetPlayer()->GetGUID());
+
+		if(_player->m_currentSpell)
+		{
 			if( _player->m_currentSpell->getState() == SPELL_STATE_CASTING )
 			{
 				// cancel the existing channel spell, cast this one
@@ -284,8 +286,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				return;
 			}
         }
-
-		SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
 
 		// some anticheat stuff
 		if( spellInfo->self_cast_only )
@@ -311,7 +311,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			}
 		}
 
-		Spell* spell(new Spell(GetPlayer(), spellInfo, false, NULL));
+		Spell* spell = new Spell(GetPlayer(), spellInfo, false, NULL);
 		spell->extra_cast_number=cn;
 		spell->prepare(&targets);
 	}
@@ -333,7 +333,7 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
 
 	if(spellId == 33763 || spellId == 48450 || spellId == 48451) // Prevents Lifebloom exploit
 		return;
-	
+
 	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; ++x)
 	{
 		if(_player->m_auras[x] && _player->m_auras[x]->IsPositive() && _player->m_auras[x]->GetSpellId() == spellId)
@@ -351,7 +351,7 @@ void WorldSession::HandleCancelChannellingOpcode( WorldPacket& recvPacket)
 	if(!plyr)
 		return;
 	if(plyr->m_currentSpell)
-	{		
+	{
 		plyr->m_currentSpell->cancel();
 	}
 }

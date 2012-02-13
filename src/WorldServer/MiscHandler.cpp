@@ -1336,7 +1336,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 			SpellEntry *info = dbcSpell.LookupEntry(goinfo->SpellFocus);
 			if(!info)
 				break;
-			Spell* spell(new Spell(plyr, info, false, NULL));
+			Spell* spell = new Spell(plyr, info, false, NULL);
 			// spell->SpellByOther = true;
 			SpellCastTargets targets;
 			targets.m_unitTarget = plyr->GetGUID();
@@ -1438,7 +1438,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					Spell* spell(new Spell(pleader, info, true, NULL));
+					Spell* spell = new Spell(pleader, info, true, NULL);
 					SpellCastTargets targets(plr->GetGUID());
 					spell->prepare(&targets);
 
@@ -1452,7 +1452,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 						return;
 
 					info = dbcSpell.LookupEntry(goinfo->sound1);
-					Spell* spell(new Spell(pleader, info, true, NULL));
+					Spell* spell = new Spell(pleader, info, true, NULL);
 					SpellCastTargets targets(pleader->GetGUID());
 					spell->prepare(&targets);
 
@@ -1467,7 +1467,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 							return;
 
 						info = dbcSpell.LookupEntry(goinfo->sound1);
-						Spell* spell(new Spell(pleader, info, true, NULL));
+						Spell* spell = new Spell(pleader, info, true, NULL);
 						SpellCastTargets targets(pleader->GetGUID());
 						spell->prepare(&targets);
 
@@ -1482,7 +1482,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 							return;
 
 						info = dbcSpell.LookupEntry(goinfo->sound1);
-						Spell* spell(new Spell(pleader, info, true, NULL));
+						Spell* spell = new Spell(pleader, info, true, NULL);
 						SpellCastTargets targets(pleader->GetGUID());
 						spell->prepare(&targets);
 					}break;
@@ -2184,7 +2184,7 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 	if(_player->CombatStatus.IsInCombat())
 		return;
 
-	//Map checks. 
+	//Map checks.
 	MapInfo * inf = WorldMapInfoStorage.LookupEntry(_player->m_summonMapId);
 	if(!inf)
 		return;

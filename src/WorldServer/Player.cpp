@@ -5813,11 +5813,11 @@ bool Player::HasQuestForItem(uint32 itemid)
 3-Fishing
 */
 void Player::SendLoot(uint64 guid,uint8 loot_type)
-{	
+{
 	Group * m_Group = m_playerInfo->m_Group;
 	if(!IsInWorld()) return;
 	Object* lootObj;
-	
+
 	// handle items
 	if(GET_TYPE_FROM_GUID(guid) == HIGHGUID_TYPE_ITEM)
 	{
@@ -5865,13 +5865,13 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 	data << lootObj->m_loot.gold;
 	data << (uint8) 0;//loot size reserve
 
-	  
+
 	std::vector<__LootItem>::iterator iter=lootObj->m_loot.items.begin();
 	uint32 count=0;
 	uint8 slottype = 0;
-   
+
 	for(uint32 x=0;iter!=lootObj->m_loot.items.end();iter++,x++)
-	{ 
+	{
 		if (iter->iItemsCount == 0)
 			continue;
 
@@ -5880,7 +5880,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 			continue;
 
 		ItemPrototype* itemProto =iter->item.itemproto;
-		if (!itemProto)		   
+		if (!itemProto)
 			continue;
         //quest items check. type 4/5
         //quest items that dont start quests.
@@ -5922,7 +5922,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
                 if(!HasRequiredQuests)
                     continue;
             }
-        } 
+        }
 
 
 		slottype = 0;
@@ -5957,10 +5957,10 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				slottype = 0;
 		}
 
-		data << uint8(x); 
+		data << uint8(x);
 		data << uint32(itemProto->ItemId);
 		data << uint32(iter->iItemsCount);//nr of items of this type
-		data << uint32(iter->item.displayid); 
+		data << uint32(iter->item.displayid);
 		//data << uint32(iter->iRandomSuffix ? iter->iRandomSuffix->id : 0);
 		//data << uint32(iter->iRandomProperty ? iter->iRandomProperty->ID : 0);
 		if(iter->iRandomSuffix)
@@ -5980,7 +5980,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		}
 
 		data << slottype;   // "still being rolled for" flag
-		
+
 		if(slottype == 1)
 		{
 			if(iter->roll == NULL && !iter->passed)
@@ -5999,7 +5999,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				{
 					iter->roll = new LootRoll;
 					iter->roll->Init(60000, (m_Group != NULL ? m_Group->MemberCount() : 1),  guid, x, iter->item.itemproto->ItemId, factor, uint32(ipid), GetMapMgr());
-					
+
 					data2.Initialize(SMSG_LOOT_START_ROLL);
 					data2 << guid;
 					data2 << x;
@@ -6040,7 +6040,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				{
 					GetSession()->SendPacket(&data2);
 				}
-			}			
+			}
 		}
 		count++;
 	}
@@ -11561,7 +11561,7 @@ bool Player::IsFlyHackEligible()
 
 	if(GetMapId() == 369) return false; // Deeprun Tram
 
-	MovementInfo* moveInfo = GetSession()->GetMovementInfo();
+	MovementInfo* moveInfo = GetMovementInfo();
 	if(!moveInfo) return false;
 
 	uint32 moveFlags = moveInfo->flags;

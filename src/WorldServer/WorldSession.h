@@ -37,7 +37,7 @@ enum MovementFlags
 
 	// Byte 2 (Resets on Situation Change)
 	MOVEFLAG_WALK						= 0x100,		//verified
-	MOVEFLAG_TAXI						= 0x200,		
+	MOVEFLAG_TAXI						= 0x200,
 	MOVEFLAG_NO_COLLISION				= 0x400,
 	MOVEFLAG_FLYING	    				= 0x800,		//verified
 	MOVEFLAG_REDIRECTED					= 0x1000,		//Unconfirmed
@@ -120,14 +120,14 @@ struct AccountDataEntry
 // 3.2.2 Account DataType Enums
 enum AccountDataTypes
 {
-	GLOBAL_CONFIG_CACHE				= 0,	// 0x01 
-	PER_CHARACTER_CONFIG_CACHE		= 1,	// 0x02 
-	GLOBAL_BINDINGS_CACHE			= 2,	// 0x04 
-	PER_CHARACTER_BINDINGS_CACHE	= 3,	// 0x08 
-	GLOBAL_MACROS_CACHE				= 4,	// 0x10 
-	PER_CHARACTER_MACROS_CACHE		= 5,	// 0x20 
-	PER_CHARACTER_LAYOUT_CACHE		= 6,	// 0x40 
-	PER_CHARACTER_CHAT_CACHE		= 7,	// 0x80 
+	GLOBAL_CONFIG_CACHE				= 0,	// 0x01
+	PER_CHARACTER_CONFIG_CACHE		= 1,	// 0x02
+	GLOBAL_BINDINGS_CACHE			= 2,	// 0x04
+	PER_CHARACTER_BINDINGS_CACHE	= 3,	// 0x08
+	GLOBAL_MACROS_CACHE				= 4,	// 0x10
+	PER_CHARACTER_MACROS_CACHE		= 5,	// 0x20
+	PER_CHARACTER_LAYOUT_CACHE		= 6,	// 0x40
+	PER_CHARACTER_CHAT_CACHE		= 7,	// 0x80
 	NUM_ACCOUNT_DATA_TYPES			= 8
 };
 
@@ -138,33 +138,6 @@ typedef struct Cords
 {
 	float x,y,z;
 }Cords;
-
-class MovementInfo
-{
-public:
-	uint32 time;
-	float pitch; // -1.55=looking down, 0=looking forward, +1.55=looking up
-	float jump_sinAngle; // on slip 8 is zero, on jump some other number
-	float jump_cosAngle, jump_xySpeed; // 9,10 changes if you are not on foot
-	float jumpspeed; // something related to collision,
-	uint32 unk11;
-	uint32 spline_unk;
-	uint8 unk13;
-	uint16 flag16;
-
-	float x, y, z, orientation;
-	uint32 flags;
-	uint32 FallTime;
-	WoWGuid transGuid;
-	float transX, transY, transZ, transO;
-	uint32 transTime;
-	uint8 transSeat;
-
-	WoWGuid guid;
-
-	void init(WorldPacket & data);
-	void write(WorldPacket & data);
-};
 
 #define PLAYER_LOGOUT_DELAY (20*1000) /* 20 seconds should be more than enough to gank ya. */
 
@@ -217,7 +190,7 @@ public:
 
 	ARCTIC_INLINE uint32 GetAccountId() const { return _accountId; }
 	ARCTIC_INLINE Player* GetPlayer() { return _player; }
-	
+
 	/* Acct flags */
 	void SetAccountFlags(uint32 flags) { _accountFlags = flags; }
 	bool HasFlag(uint32 flag) { return (_accountFlags & flag) != 0; }
@@ -236,16 +209,16 @@ public:
 
 		return (strchr(permissions,'a')!=NULL) ? true : false;
 	}
-   
+
 	bool CanUseCommand(char cmdstr);
 
-	
+
 	ARCTIC_INLINE void SetSocket(WorldSocket *sock)
 	{
 		_socket = sock;
 	}
 	ARCTIC_INLINE void SetPlayer(Player* plr) { _player = plr; }
-	
+
 	ARCTIC_INLINE void SetAccountData(uint32 index, char* data, bool initial,uint32 sz)
 	{
 		ASSERT(index < 8);
@@ -258,7 +231,7 @@ public:
 		else if(initial)
 			sAccountData[index].bIsDirty = false;
 	}
-	
+
 	ARCTIC_INLINE AccountDataEntry* GetAccountData(uint32 index)
 	{
 		ASSERT(index < 8);
@@ -278,7 +251,7 @@ public:
 		m_lastPing = (uint32)UNIXTIME;
 		_recvQueue.Push(packet);
 	}
-	
+
 	void OutPacket(uint16 opcode, uint16 len, const void* data)
 	{
 		if(_socket && _socket->IsConnected())
@@ -286,7 +259,7 @@ public:
 	}
 
 	ARCTIC_INLINE WorldSocket* GetSocket() { return _socket; }
-	
+
 	void Disconnect()
 	{
 		if(_socket && _socket->IsConnected())
@@ -453,7 +426,7 @@ protected:
 	// NPC opcodes (NPCHandler.cpp)
 	void HandleTabardVendorActivateOpcode(WorldPacket& recvPacket);
 	void HandleBankerActivateOpcode(WorldPacket& recvPacket);
-	void HandleBuyBankSlotOpcode(WorldPacket& recvPacket); 
+	void HandleBuyBankSlotOpcode(WorldPacket& recvPacket);
 	void HandleTrainerListOpcode(WorldPacket& recvPacket);
 	void HandleTrainerBuySpellOpcode(WorldPacket& recvPacket);
 	void HandleCharterShowListOpcode(WorldPacket& recvPacket);
@@ -672,13 +645,13 @@ protected:
 
 	// Acknowledgements
 	void HandleAcknowledgementOpcodes( WorldPacket & recv_data );
-	void HandleMountSpecialAnimOpcode(WorldPacket& recv_data);	
+	void HandleMountSpecialAnimOpcode(WorldPacket& recv_data);
 
 	void HandleSelfResurrectOpcode(WorldPacket& recv_data);
 	void HandleUnlearnSkillOpcode(WorldPacket &recv_data);
 	void HandleRandomRollOpcode(WorldPacket &recv_data);
 	void HandleOpenItemOpcode(WorldPacket &recv_data);
-	
+
 	void HandleToggleHelmOpcode(WorldPacket &recv_data);
 	void HandleToggleCloakOpcode(WorldPacket &recv_data);
 	void HandleSetVisibleRankOpcode(WorldPacket& recv_data);
@@ -737,8 +710,8 @@ protected:
 	void HandleVehicleDismiss(WorldPacket & recv_data);
 	void HandleSpellClick( WorldPacket & recv_data );
 	//void HandleBoardPlayerVehicleOpcode(WorldPacket & recv_data);
-	//void HandleEjectPassengerOpcode(WorldPacket & recv_data);	
-	void HandleRequestSeatChange( WorldPacket & recv_data );	
+	//void HandleEjectPassengerOpcode(WorldPacket & recv_data);
+	void HandleRequestSeatChange( WorldPacket & recv_data );
 	// void HandleRequestVehicleExitOpcode(WorldPacket & recv_data);
 
 	// Calendar
@@ -779,16 +752,10 @@ public:
 	float m_wLevel; // Level of water the player is currently in
 	bool m_bIsWLevelSet; // Does the m_wLevel variable contain up-to-date information about water level?
 
-	MovementInfo* GetMovementInfo() { return &movement_info; }
-
 private:
 	friend class Player;
 	Player* _player;
 	WorldSocket *_socket;
-		
-	/* Preallocated buffers for movement handlers */
-	MovementInfo movement_info;
-	uint8 movement_packet[90];
 
 	bool m_isFalling;
 

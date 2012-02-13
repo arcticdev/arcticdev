@@ -864,7 +864,7 @@ void Pet::AddSpell(SpellEntry * sp, bool learning, bool sendspells)
 	{
 		if(IsInWorld())
 		{
-			Spell* spell(new Spell(TO_OBJECT(this), sp, true, NULL));
+			Spell* spell = new Spell(TO_OBJECT(this), sp, true, NULL);
 			SpellCastTargets targets(GetGUID());
 			spell->prepare(&targets);
 			mSpells[sp] = 0x0100;

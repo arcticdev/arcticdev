@@ -27,7 +27,7 @@ Vehicle::Vehicle(uint64 guid) : Creature(guid)
 }
 
 Vehicle::~Vehicle()
-{	
+{
 	m_passengerCount = 0;
 	if( IsInWorld() )
 		RemoveFromWorld(false, true);
@@ -216,7 +216,7 @@ void Vehicle::Despawn(uint32 delay, uint32 respawntime)
 		MapCell * pCell = m_mapMgr->GetCellByCoords(m_spawnLocation.x, m_spawnLocation.y);
 		if(!pCell)
 			pCell = m_mapCell;
-	
+
 		ASSERT(pCell);
 		pCell->_respawnObjects.insert(TO_OBJECT(this));
 		sEventMgr.RemoveEvents(this);
@@ -254,12 +254,8 @@ void Vehicle::SafeDelete()
 
 void Vehicle::DeleteMe()
 {
-	Vehicle* pThis = TO_VEHICLE(this);
-
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
-
-	pThis->DeleteFromDB();
 
 	Destructor();
 }
@@ -388,6 +384,14 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 	data << uint32(0);
 	pPassenger->SendMessageToSet(&data, false);
 
+	pPassenger->movement_info.flags &= ~MOVEFLAG_TAXI;
+	pPassenger->movement_info.transX = 0;
+	pPassenger->movement_info.transY = 0;
+	pPassenger->movement_info.transZ = 0;
+	pPassenger->movement_info.transO = 0;
+ 	pPassenger->movement_info.transTime = 0;
+	pPassenger->movement_info.transSeat = 0;
+
 	if(pPassenger->IsPlayer())
 	{
 		Player* plr = TO_PLAYER(pPassenger);
@@ -417,7 +421,7 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 		data << uint32(0);
 		plr->GetSession()->SendPacket(&data);
 
-		plr->SetUInt64Value( PLAYER_FARSIGHT, 0 );	
+		plr->SetUInt64Value( PLAYER_FARSIGHT, 0 );
 
 		data.Initialize(SMSG_PET_DISMISS_SOUND);
 		data << uint32(m_vehicleSeats[slot]->m_exitUISoundID);
@@ -444,7 +448,7 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 		}
 		plr->SetPlayerStatus(NONE);
 	}
-		
+
 	if(slot == 0)
 	{
 		m_redirectSpellPackets = NULL;
@@ -532,7 +536,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 		// Dismount
 		if(pPlayer->m_MountSpellId)
 			pPlayer->RemoveAura(pPlayer->m_MountSpellId);
-	
+
 		// Remove morph spells
 		if(pPlayer->GetUInt32Value(UNIT_FIELD_DISPLAYID)!= pPlayer->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID))
 		{
@@ -706,7 +710,7 @@ void Vehicle::SetSpeed(uint8 SpeedType, float value)
 		data << uint32(0);
 		data << value;
 	}
-	
+
 	switch(SpeedType)
 	{
 	case RUN:
@@ -736,7 +740,7 @@ void Vehicle::SetSpeed(uint8 SpeedType, float value)
 		}break;
 	default:return;
 	}
-	
+
 	SendMessageToSet(&data , true);
 
 }

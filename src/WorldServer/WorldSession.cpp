@@ -17,8 +17,6 @@ _logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), insta
 	m_hasDeathKnight = false;
 	m_highestLevel = 0;
 	m_asyncQuery = false;
-	memset(movement_packet, 0, sizeof(movement_packet));
-	memset(&movement_info, 0, sizeof(MovementInfo)); // New movement packet
 	m_currMsTime = getMSTime();
 	bDeleted = false;
 	m_bIsWLevelSet = false;
@@ -31,7 +29,6 @@ _logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), insta
 	language = 0;
 	m_muted = 0;
 	_side = -1;
-	movement_info.FallTime = 0;
 	m_lastEnumTime = 0;
 	m_repeatTime = 0;
 	m_repeatEmoteTime = 0;
@@ -253,8 +250,8 @@ void WorldSession::LogoutPlayer(bool Save)
 		// part channels
 		_player->CleanupChannels();
 
-		// Remove from vehicle for now. 
-		if(_player->m_CurrentVehicle) 
+		// Remove from vehicle for now.
+		if(_player->m_CurrentVehicle)
 			_player->m_CurrentVehicle->RemovePassenger(_player);
 
 		if( _player->m_CurrentTransporter != NULL )
@@ -322,14 +319,14 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		_player->m_playerInfo->m_loggedInPlayer = NULL;
 
-		if(_player->GetGroup()) // Init group logout checks. 
-		{ 
-			// Remove player from the group if he is in a group and not in a raid. 
-			if(!(_player->GetGroup()->GetGroupType() & GROUP_TYPE_RAID) && _socket) 
-				_player->GetGroup()->RemovePlayer(_player->m_playerInfo); 
-			else 
-				_player->m_playerInfo->m_Group->Update(); 
-		} 
+		if(_player->GetGroup()) // Init group logout checks.
+		{
+			// Remove player from the group if he is in a group and not in a raid.
+			if(!(_player->GetGroup()->GetGroupType() & GROUP_TYPE_RAID) && _socket)
+				_player->GetGroup()->RemovePlayer(_player->m_playerInfo);
+			else
+				_player->m_playerInfo->m_Group->Update();
+		}
 
 		// Remove the "player locked" flag, to allow movement on next login
 		GetPlayer()->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER );
@@ -370,7 +367,7 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		_player->Destructor();
 		_player = NULL;
-		
+
 		OutPacket(SMSG_LOGOUT_COMPLETE, 0, NULL);
 		DEBUG_LOG( "WorldSession","Sent SMSG_LOGOUT_COMPLETE Message" );
 	}
