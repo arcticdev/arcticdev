@@ -6,7 +6,7 @@
 
 #include "StdAfx.h"
 
-#define CREATESPELL(caster,info,triggered,aur) \
+#define CREATESPELL(caster, info, triggered, aur) \
 	new Spell( caster, info, triggered, (aur == NULL ? NULL : aur));
 
 pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]=
@@ -165,15 +165,17 @@ pSpellEffect SpellEffectsHandler[TOTAL_SPELL_EFFECTS]=
 	&Spell::SpellEffectTriggerSpell,				// 151 SPELL_EFFECT_TRIGGER_SPELL_2
 	&Spell::SpellEffectNULL,						// unknown - 152
 	&Spell::SpellEffectNULL,						// unknown - 153 // SPELL_EFFECT_CREATE_PET  misc value is creature entry
-	&Spell::SpellEffectNULL,						//154 unused
+	&Spell::SpellEffectNULL,						// 154 unused
 	&Spell::SpellEffectTitanGrip,					// Titan's Grip - 155
-	&Spell::SpellEffectNULL,						//156 Add Socket
-	&Spell::SpellEffectCreateRandomItem,			//157 create/learn random item/spell for profession
-	&Spell::SpellEffectMilling,						//158 milling
-	&Spell::SpellEffectNULL,						//159 allow rename pet once again
-	&Spell::SpellEffectNULL,						//160
-	&Spell::SpellEffectSetTalentSpecsCount,			//161 Sets number of talent specs available to the player
-	&Spell::SpellEffectActivateTalentSpec,			//162 Activates one of talent specs
+	&Spell::SpellEffectAddPrismaticSocket,			// 156 Add Socket
+	&Spell::SpellEffectCreateRandomItem,			// 157 create/learn random item/spell for profession
+	&Spell::SpellEffectMilling,						// 158 milling
+	&Spell::SpellEffectNULL,						// 159 allow rename pet once again
+	&Spell::SpellEffectNULL,						// 160
+	&Spell::SpellEffectSetTalentSpecsCount,			// 161 Sets number of talent specs available to the player
+	&Spell::SpellEffectActivateTalentSpec,			// 162 Activates one of talent specs
+//	&Spell::SpellEffectNULL,                        // 163 
+// 	&Spell::SpellEffectNULL,                        // 164
 };
 
 void Spell::SpellEffectNULL(uint32 i)
@@ -801,14 +803,14 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 			uint32 ClearSpellId[8] =
 			{
-			23922,  /* Shield Slam - Rank 1 */
-			23923,  /* Shield Slam - Rank 2 */
-			23924,  /* Shield Slam - Rank 3 */
-			23925,  /* Shield Slam - Rank 4 */
-			25258,  /* Shield Slam - Rank 5 */
-			30356,  /* Shield Slam - Rank 6 */
-			47487,  /* Shield Slam - Rank 7 */
-			47488,  /* Shield Slam - Rank 8 */
+				23922,  /* Shield Slam - Rank 1 */
+				23923,  /* Shield Slam - Rank 2 */
+				23924,  /* Shield Slam - Rank 3 */
+				23925,  /* Shield Slam - Rank 4 */
+				25258,  /* Shield Slam - Rank 5 */
+				30356,  /* Shield Slam - Rank 6 */
+				47487,  /* Shield Slam - Rank 7 */
+				47488,  /* Shield Slam - Rank 8 */
 			};
 
 			for(i = 0; i < 8; i++)
@@ -938,12 +940,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 					gameObjTarget->_Expire();
 			}
 		}break;
-	/*
-		Preparation
-		When activated, this ability immediately finishes the cooldown on your Evasion, Sprint, Vanish, Cold Blood and Shadowstep abilities.
 
-		Effect	Dummy
-	*/
 	case 14185:
 		{
 			if( p_caster == NULL )
@@ -951,16 +948,16 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 			uint32 ClearSpellId[10] =
 			{
-			5277,  /* Evasion - Rank 1 */
-			26669, /* Evasion - Rank 2 */
-			2983,  /* Sprint  - Rank 1 */
-			8696,  /* Sprint  - Rank 2 */
-			11305, /* Sprint  - Rank 3 */
-			1856,  /* Vanish  - Rank 1 */
-			1857,  /* Vanish  - Rank 2 */
-			26889, /* Vanish  - Rank 3 */
-			14177, /* Cold Blood       */
-			36554  /* Shadowstep       */
+				5277,  /* Evasion - Rank 1 */
+				26669, /* Evasion - Rank 2 */
+				2983,  /* Sprint  - Rank 1 */
+				8696,  /* Sprint  - Rank 2 */
+				11305, /* Sprint  - Rank 3 */
+				1856,  /* Vanish  - Rank 1 */
+				1857,  /* Vanish  - Rank 2 */
+				26889, /* Vanish  - Rank 3 */
+				14177, /* Cold Blood       */
+				36554  /* Shadowstep       */
 			};
 
 			for(i = 0; i < 10; ++i)
@@ -2457,6 +2454,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					Spell* spell(new Spell( m_caster, taura->GetSpellProto(), false, NULL ));
 					uint32 healamount = spell->CalculateEffect( 1, unitTarget );
 					spell->Destructor();
+					spell = NULL;
 					new_dmg = healamount * 18 / amplitude;
 
 					unitTarget->RemoveAura( taura );
@@ -2482,6 +2480,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						Spell* spell(new Spell( m_caster, taura->GetSpellProto(), false, NULL ));
 						uint32 healamount = spell->CalculateEffect( 0, unitTarget );
 						spell->Destructor();
+						spell = NULL;
 						new_dmg = healamount * 12 / amplitude;
 
 						unitTarget->RemoveAura( taura );
@@ -2608,11 +2607,11 @@ void Spell::SpellEffectAddExtraAttacks(uint32 i) // Add Extra Attacks
 
 void Spell::SpellEffectDodge(uint32 i)
 {
-	//i think this actually enbles the skill to be able to dodge melee+ranged attacks
-	//value is static and sets value directly which will be modified by other factors
-	//this is only basic value and will be overwiten elsewhere !!!
+// i think this actually enbles the skill to be able to dodge melee+ranged attacks
+// value is static and sets value directly which will be modified by other factors
+// this is only basic value and will be overwiten elsewhere !!!
 //	if(unitTarget->IsPlayer())
-//		unitTarget->SetFloatValue(PLAYER_DODGE_PERCENTAGE,damage);
+// unitTarget->SetFloatValue(PLAYER_DODGE_PERCENTAGE,damage);
 }
 
 void Spell::SpellEffectParry(uint32 i)
@@ -2623,70 +2622,97 @@ void Spell::SpellEffectParry(uint32 i)
 
 void Spell::SpellEffectBlock(uint32 i)
 {
-	//i think this actually enbles the skill to be able to block melee+ranged attacks
-	//value is static and sets value directly which will be modified by other factors
-//	if(unitTarget->IsPlayer())
-//		unitTarget->SetFloatValue(PLAYER_BLOCK_PERCENTAGE,damage);
+// i think this actually enbles the skill to be able to block melee+ranged attacks
+// value is static and sets value directly which will be modified by other factors
+// if(unitTarget->IsPlayer())
+// unitTarget->SetFloatValue(PLAYER_BLOCK_PERCENTAGE,damage);
 }
 
 void Spell::SpellEffectCreateItem(uint32 i) // Create item
 {
-	if( p_caster == NULL)
+	if(!playerTarget)
 		return;
 
-	Item* newItem = NULL;
-	Item* add = NULL;
-	uint8 slot;
+	if(GetSpellProto()->EffectItemType[i] == 0)
+		return;
+
 	SlotResult slotresult;
-
-	skilllinespell* skill = objmgr.GetSpellSkill(m_spellInfo->Id);
-
-	ItemPrototype *m_itemProto;
-	m_itemProto = ItemPrototypeStorage.LookupEntry( m_spellInfo->EffectItemType[i] );
+	ItemPrototype *m_itemProto = ItemPrototypeStorage.LookupEntry( GetSpellProto()->EffectItemType[i] );
 	if (!m_itemProto)
 		return;
 
-	if(m_spellInfo->EffectItemType[i] == 0)
-		return;
+	if(GetSpellProto()->Id == 3286)
+	{
+		// Add a hearthstone if they don't have one
+		if(!playerTarget->GetItemInterface()->GetItemCount(6948, true))
+		{
+			// We don't have a hearthstone. Add one.
+			if(playerTarget->GetItemInterface()->CalculateFreeSlots(NULL) > 0)
+			{
+				Item* item = objmgr.CreateItem( 6948, playerTarget);
+				if( playerTarget->GetItemInterface()->AddItemToFreeSlot(item) )
+				{
+					SlotResult * lr = playerTarget->GetItemInterface()->LastSearchResult();
+					playerTarget->GetSession()->SendItemPushResult(item,false,true,false,true,lr->ContainerSlot,lr->Slot,1);
+				}
+				else
+				{
+					delete item;
+					item = NULL;
+				}
+			}
+		}return;
+	}
 
 	uint32 item_count = 0;
-	if (m_itemProto->Class != ITEM_CLASS_CONSUMABLE || m_spellInfo->SpellFamilyName != SPELLFAMILY_MAGE)
+	if (m_itemProto->Class != ITEM_CLASS_CONSUMABLE || GetSpellProto()->SpellFamilyName != SPELLFAMILY_MAGE)
 		item_count = damage;
-	else if(p_caster->getLevel() >= m_spellInfo->spellLevel)
-		item_count = ((p_caster->getLevel() - (m_spellInfo->spellLevel-1))*damage);
+	else if(playerTarget->getLevel() >= GetSpellProto()->spellLevel)
+	{
+		item_count = ((playerTarget->getLevel() - (GetSpellProto()->spellLevel-1))*damage);
+		// These spells can only create one stack!
+		if((m_itemProto->MaxCount > 0) && (item_count > m_itemProto->MaxCount))
+			item_count = m_itemProto->MaxCount;
+	}
 
 	if(!item_count)
 		item_count = damage;
 
 	//conjure water ranks 7,8 & 9 and conjure food ranks 7 & 8 have different starting amounts
 	// tailoring specializations get +1 cloth bonus
-	switch(m_spellInfo->Id)
+	switch(GetSpellProto()->Id)
 	{
 		case 27389: //Conjure Food 7
 		case 10140: //Conjure Water 7
 		case 37420: //Conjure Water 8
-			item_count += 8;
-			break;
+			{
+				if(item_count <= 12)
+					item_count += 8;
+			}break;
 		case 36686: //Shadowcloth
-			if(p_caster->HasSpell(26801)) item_count += 1;
+			if(playerTarget->HasSpell(26801))
+				item_count += 1;
 			break;
 		case 26751: // Primal Mooncloth
-			if(p_caster->HasSpell(26798)) item_count += 1;
+			if(playerTarget->HasSpell(26798))
+				item_count += 1;
 			break;
 		case 31373: //Spellcloth
-			if(p_caster->HasSpell(26797)) item_count += 1;
+			if(playerTarget->HasSpell(26797))
+				item_count += 1;
 			break;
 	}
 
-	if (skill)
+	skilllinespell* skill = objmgr.GetSpellSkill(GetSpellProto()->Id);
+	if(skill)
 	{
 		// Alchemy Specializations
 		// http://www.wowwiki.com/Alchemy#Alchemy_Specializations
 		if ( skill->skilline == SKILL_ALCHEMY && Rand(15) )
 		{
 			//Potion Master and Elixer Master (Elixers and Flasks)
-			if(( p_caster->HasSpell(28675) && m_itemProto->SubClass == ITEM_SUBCLASS_CONSUMABLE_POTION ) ||
-				( p_caster->HasSpell(28677) && ( m_itemProto->SubClass == ITEM_SUBCLASS_CONSUMABLE_ELIXIR || m_itemProto->SubClass == ITEM_SUBCLASS_CONSUMABLE_FLASK ) ))
+			if(( playerTarget->HasSpell(28675) && m_itemProto->SubClass == ITEM_SUBCLASS_CONSUMABLE_POTION ) ||
+				( playerTarget->HasSpell(28677) && ( m_itemProto->SubClass == ITEM_SUBCLASS_CONSUMABLE_ELIXIR || m_itemProto->SubClass == ITEM_SUBCLASS_CONSUMABLE_FLASK ) ))
 			{
 				for(int x=0; x<5; x++)
 				{
@@ -2704,7 +2730,7 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 				}
 			}
 			//Transmutation Master
-			else if( p_caster->HasSpell(28672) && m_spellInfo->Category == 310 )
+			else if( playerTarget->HasSpell(28672) && GetSpellProto()->Category == 310 )
 			{
 				item_count = item_count + rand() % 4 + 1;
 			}
@@ -2713,146 +2739,49 @@ void Spell::SpellEffectCreateItem(uint32 i) // Create item
 		// Profession Discoveries
 		uint32 discovered_recipe = 0;
 		std::set<ProfessionDiscovery*>::iterator itr = objmgr.ProfessionDiscoveryTable.begin();
-		for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); ++itr )
+		for ( ; itr != objmgr.ProfessionDiscoveryTable.end(); itr++ )
 		{
 			ProfessionDiscovery * pf = ( *itr );
-			if ( pf != NULL && m_spellInfo->Id == pf->SpellId && p_caster->_GetSkillLineCurrent( skill->skilline ) >= pf->SkillValue && !p_caster->HasSpell( pf->SpellToDiscover ) && Rand( pf->Chance ) )
+			if ( pf != NULL && GetSpellProto()->Id == pf->SpellId && playerTarget->_GetSkillLineCurrent( skill->skilline ) >= pf->SkillValue && !playerTarget->HasSpell( pf->SpellToDiscover ) && Rand( pf->Chance ) )
 			{
 				discovered_recipe = pf->SpellToDiscover;
 				break;
 			}
 		}
-		// if something discovered learn p_caster that recipe and broadcast message
+		// if something discovered learn playerTarget that recipe and broadcast message
 		if ( discovered_recipe != 0 )
 		{
 			SpellEntry * se = dbcSpell.LookupEntry( discovered_recipe );
 			if ( se != NULL )
 			{
-				p_caster->addSpell( discovered_recipe );
+				playerTarget->addSpell( discovered_recipe );
 				WorldPacket * data;
 				char msg[256];
-				sprintf( msg, "%sDISCOVERY! %s has discovered how to create %s.|r", MSG_COLOR_GOLD, p_caster->GetName(), se->Name );
-				data = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL,  msg, p_caster->GetGUID(), 0 );
-				p_caster->GetMapMgr()->SendChatMessageToCellPlayers( p_caster, data, 2, 1, LANG_UNIVERSAL, p_caster->GetSession() );
+				sprintf( msg, "%sDISCOVERY! %s has discovered how to create %s.|r", MSG_COLOR_GOLD, playerTarget->GetName(), se->Name );
+				data = sChatHandler.FillMessageData( CHAT_MSG_SYSTEM, LANG_UNIVERSAL,  msg, playerTarget->GetGUID(), 0 );
+				playerTarget->GetMapMgr()->SendChatMessageToCellPlayers( playerTarget, data, 2, 1, LANG_UNIVERSAL, playerTarget->GetSession() );
 				delete data;
 			}
 		}
 	}
 
-	// item count cannot be more than allowed in a single stack
-	if (item_count > m_itemProto->MaxCount)
-		item_count = m_itemProto->MaxCount;
-
 	// item count cannot be more than item unique value
-	if(m_itemProto->Unique && item_count > m_itemProto->Unique)
+	if(m_itemProto->Unique > 0 && item_count > m_itemProto->Unique)
 		item_count = m_itemProto->Unique;
 
-	if(p_caster->GetItemInterface()->CanReceiveItem(m_itemProto, item_count, NULL)) //reversed since it sends >1 as invalid and 0 as valid
+	if(playerTarget->GetItemInterface()->CanReceiveItem(m_itemProto, item_count, NULL)) //reversed since it sends >1 as invalid and 0 as valid
 	{
 		SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
 		return;
 	}
 
-	slot = 0;
-	add = p_caster->GetItemInterface()->FindItemLessMax(m_spellInfo->EffectItemType[i],1, false);
-	if (add == NULL)
-	{
-		slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
-		if(!slotresult.Result)
-		{
-			SendCastResult(SPELL_FAILED_TOO_MANY_OF_ITEM);
-			return;
-		}
+	if(!playerTarget->GetItemInterface()->AddItemById(GetSpellProto()->EffectItemType[i], (item_count > 1 ? item_count : 1 ), m_itemProto->RandomPropId ? m_itemProto->RandomPropId : 0, true, playerTarget))
+		return;
 
-		newItem =objmgr.CreateItem(m_spellInfo->EffectItemType[i],p_caster);
-		if(newItem == NULL)
-			return;
-		newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
-		newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count);
+	if(skill)
+		DetermineSkillUp(skill->skilline);
 
-		if (m_itemProto->RandomPropId)
-		{
-			RandomProps * iRandomProperty = lootmgr.GetRandomProperties(m_itemProto);
-			if( iRandomProperty )
-			{
-				newItem->SetRandomProperty(iRandomProperty->ID);
-				newItem->ApplyRandomProperties(false);
-			}
-		}
-		if (m_itemProto->RandomSuffixId)
-		{
-			ItemRandomSuffixEntry * iRandomSuffix = lootmgr.GetRandomSuffix(m_itemProto);
-			if( iRandomSuffix )
-			{
-				newItem->SetRandomSuffix(iRandomSuffix->id);
-				newItem->ApplyRandomProperties(false);
-			}
-		}
-
-		if(p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
-		{
-			/*WorldPacket data(45);
-			p_caster->GetSession()->BuildItemPushResult(&data, p_caster->GetGUID(), 1, item_count, m_spellInfo->EffectSpellGroupRelation[i] ,0,0xFF,1,0xFFFFFFFF);
-			p_caster->SendMessageToSet(&data, true);*/
-			p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
-
-			if (m_itemProto->BagFamily & ITEM_TYPE_CURRENCY)
-				p_caster->UpdateKnownCurrencies(m_itemProto->ItemId, true);
-		}
-		else
-		{
-			newItem->Destructor();
-		}
-
-		if(skill)
-			DetermineSkillUp(skill->skilline);
-	}
-	else
-	{
-		//scale item_count down if total stack will be more than 20
-		if(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20)
-		{
-			uint32 item_count_filled;
-			item_count_filled = 20 - add->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-			add->SetCount(20);
-			add->m_isDirty = true;
-
-			slotresult = p_caster->GetItemInterface()->FindFreeInventorySlot(m_itemProto);
-			if(!slotresult.Result)
-				item_count = item_count_filled;
-			else
-			{
-				newItem =objmgr.CreateItem(m_spellInfo->EffectItemType[i],p_caster);
-				newItem->SetUInt64Value(ITEM_FIELD_CREATOR,m_caster->GetGUID());
-				newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
-				if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
-				{
-					newItem->Destructor();
-					item_count = item_count_filled;
-				}
-				else
-				{
-					p_caster->GetSession()->SendItemPushResult(newItem, true, false, true, true, slotresult.ContainerSlot, slotresult.Slot, item_count-item_count_filled);
-
-					if (m_itemProto->BagFamily & ITEM_TYPE_CURRENCY)
-						p_caster->UpdateKnownCurrencies(m_itemProto->ItemId, true);
-				}
-			}
-		}
-		else
-		{
-			add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count);
-			add->m_isDirty = true;
-			p_caster->GetSession()->SendItemPushResult(add, true,false,true,false,p_caster->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()),0xFFFFFFFF,item_count);
-
-			if (m_itemProto->BagFamily & ITEM_TYPE_CURRENCY)
-				p_caster->UpdateKnownCurrencies(m_itemProto->ItemId, true);
-		}
-
-		if(skill)
-			DetermineSkillUp(skill->skilline);
-	}
-	p_caster->Cooldown_Add(m_spellInfo, NULL);
+	playerTarget->Cooldown_Add(GetSpellProto(), NULL);
 }
 
 void Spell::SpellEffectWeapon(uint32 i)
@@ -3576,19 +3505,8 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				loottype = LOOT_SKINNING;
 			}
 			else
-			{
-				/*
-				if(rand()%100 <= 30)
-				{
-					//30% chance to not be able to reskin on fail
-					TO_CREATURE(unitTarget)->Skinned = true;
-					WorldPacket *pkt=unitTarget->BuildFieldUpdatePacket(UNIT_FIELD_FLAGS,0);
-					TO_PLAYER( m_caster )->GetSession()->SendPacket(pkt);
-					delete pkt;
-
-				}*/
 				SendCastResult(SPELL_FAILED_TRY_AGAIN);
-			}
+
 			//Skill up
 			if(!bAlreadyUsed) //Avoid cheats with opening/closing without taking the loot
 				DetermineSkillUp(SKILL_HERBALISM,v/5);
@@ -3661,7 +3579,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 			{
  				CALL_GO_SCRIPT_EVENT(gameObjTarget, OnActivate)(TO_PLAYER(p_caster));
 				CALL_INSTANCE_SCRIPT_EVENT( gameObjTarget->GetMapMgr(), OnGameObjectActivate )( gameObjTarget, p_caster );
-			};
+			}
 
 			if(sQuestMgr.OnGameObjectActivate(p_caster, gameObjTarget))
 			{
@@ -4225,18 +4143,14 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 			else
 				max = 1;
 			break;
-		default: //u cant learn other types in game
+		default: // u cant learn other types in game
 			return;
-	};
+	}
 
 	if( target->_HasSkillLine( skill ) )
 		target->_ModifySkillMaximum( skill, max );
 	else
 	{
-		// Don't add skills to players logging in.
-		/*if((m_spellInfo->Attributes & 64) && playerTarget->m_TeleportState == 1)
-			return;*/
-
 		if( sk->type == SKILL_TYPE_PROFESSION )
 			target->ModUnsigned32Value( PLAYER_CHARACTER_POINTS2, -1 );
 
@@ -4246,9 +4160,9 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 			target->_AddSkillLine( skill, 1, max );
 	}
 
-	//professions fix, for unknow reason when u learn profession it
-	//does not teach find herbs for herbalism etc. moreover there is no spell
-	//in spell.dbc that would teach u this. It means blizz does it in some tricky way too
+	// professions fix, for unknow reason when u learn profession it
+	// does not teach find herbs for herbalism etc. moreover there is no spell
+	// in spell.dbc that would teach u this. It means blizz does it in some tricky way too
 	switch( skill )
 	{
 	case SKILL_ALCHEMY:
@@ -4319,8 +4233,7 @@ void Spell::SpellEffectSkillStep(uint32 i) // Skill Step
 		target->addSpell( 48114 );// Scroll of Intellect
 		target->addSpell( 45382 );// Scroll of Stamina
 		target->addSpell( 52738 );// Ivory Ink
-
-	};
+	}
 }
 
 void Spell::SpellEffectSummonObject(uint32 i)
@@ -4542,6 +4455,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 				else
 				{
 					newItem->Destructor();
+					newItem = NULL;
 				}
 				DetermineSkillUp(SKILL_ENCHANTING);
 			}
@@ -4568,6 +4482,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 						if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 						{
 							newItem->Destructor();
+							newItem = NULL;
 							item_count = item_count_filled;
 						}
 						else
@@ -4625,10 +4540,51 @@ void Spell::SpellEffectEnchantItemTemporary(uint32 i)  // Enchant Item Temporary
 	itemTarget->m_isDirty = true;
 }
 
+void Spell::SpellEffectAddPrismaticSocket(uint32 i)
+{
+	if( p_caster == NULL)
+		return;
+
+	if(!itemTarget)
+		return;
+
+	EnchantEntry* pEnchant = dbcEnchant.LookupEntry(GetSpellProto()->EffectMiscValue[i]);
+	if(!pEnchant)
+		return;
+
+	bool add_socket = false;
+	for(uint8 i = 0; i < 3; i++)
+	{
+		if(pEnchant->type[i] == 8)
+		{
+			add_socket = true;
+			break;
+		}
+	}
+
+	if(!add_socket) // Wrong spell.
+		return;
+
+	// Item can be in trade slot and have owner diff. from caster
+	Player* item_owner = itemTarget->GetOwner();
+	if(!item_owner)
+		return;
+
+	if(itemTarget->GetSocketsCount() >= 3)
+	{
+		SendCastResult(SPELL_FAILED_MAX_SOCKETS);
+		return;
+	}
+
+	itemTarget->RemoveProfessionEnchant();
+	itemTarget->AddEnchantment(pEnchant, 0, true, true, false, 6); // 6 is profession slot.
+}
+
 void Spell::SpellEffectTameCreature(uint32 i)
 {
 	Creature* tame = NULL;
 	tame = ((unitTarget->GetTypeId() == TYPEID_UNIT) ? TO_CREATURE(unitTarget) : NULL);
+
 	if(tame== NULL )
 		return;
 
@@ -4697,12 +4653,6 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 		return;
 	}
 
-	//uint32 entryId = m_spellInfo->EffectMiscValue[i];
-
-	//VoidWalker:torment, sacrifice, suffering, consume shadows
-	//Succubus:lash of pain, soothing kiss, seduce , lesser invisibility
-	//felhunter:	 Devour Magic,Paranoia,Spell Lock,	Tainted Blood
-
 	if( p_caster == NULL || p_caster->getClass() != CLASS_WARLOCK)
 		return;
 
@@ -4715,9 +4665,6 @@ void Spell::SpellEffectSummonPet(uint32 i) //summon - pet
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 	if(ci)
 	{
-		//if demonic sacrifice auras are still active, remove them
-		//uint32 spids[] = { 18789, 18790, 18791, 18792, 35701, 0 };
-		//p_caster->RemoveAuras(spids);
 		p_caster->RemoveAura(18789);
 		p_caster->RemoveAura(18790);
 		p_caster->RemoveAura(18791);
@@ -4740,7 +4687,7 @@ void Spell::SpellEffectWeapondamage( uint32 i ) // Weapon damage +
 	if( unitTarget == NULL || u_caster == NULL )
 		return;
 
-	//Hackfix for Mangle
+	// Hackfix for Mangle
 	if( m_spellInfo->NameHash == SPELL_HASH_MANGLE__CAT_ && u_caster->IsPlayer() )
 		TO_PLAYER( u_caster )->AddComboPoints( unitTarget->GetGUID(), 1 );
 
@@ -6498,9 +6445,11 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	 * http://petopia.brashendeavors.net/html/articles/basics_feeding.shtml */
 
 	int8 deltaLvl = pPet->getLevel() - itemTarget->GetProto()->ItemLevel;
-	damage /= 1000; //damage of Feed pet spell is 35000
-	if(deltaLvl > 10) damage = damage >> 1;//divide by 2
-	if(deltaLvl > 20) damage = damage >> 1;
+	damage /= 1000;       // damage of Feed pet spell is 35000
+	if(deltaLvl > 10)
+		damage = damage >> 1; // divide by 2
+	if(deltaLvl > 20)
+		damage = damage >> 1;
 	damage *= 1000;
 
 	SpellEntry *spellInfo = dbcSpell.LookupEntry(m_spellInfo->EffectTriggerSpell[i]);
@@ -6564,6 +6513,7 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 				GoSummon->RemoveFromWorld(true);
 
 			GoSummon->Destructor();
+			GoSummon = NULL;
 		}
 	}
 	//create a new GoSummon
@@ -7191,6 +7141,7 @@ void Spell::SpellEffectTranformItem(uint32 i)
 	{
 		owner->GetItemInterface()->BuildInventoryChangeError(NULL, NULL,INV_ERR_BAG_FULL);
 		it->Destructor();
+		it = NULL;
 	}
 }
 
@@ -7546,10 +7497,6 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 	if( m_itemProto == NULL )
 		return;
 
-	// item count cannot be more than allowed in a single stack
-	if (item_count > m_itemProto->MaxCount)
-		item_count = m_itemProto->MaxCount;
-
 	// item count cannot be more than item unique value
 	if (m_itemProto->Unique && item_count > m_itemProto->Unique)
 		item_count = m_itemProto->Unique;
@@ -7583,7 +7530,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 		else
 			newItem->Destructor();
 
-		if(skill!= NULL)
+		if(skill != NULL)
 			DetermineSkillUp(skill->skilline);
 	}
 	else
@@ -7609,6 +7556,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 				if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 				{
 					newItem->Destructor();
+					newItem = NULL;
 					item_count = item_count_filled;
 				}
 				else
@@ -7631,6 +7579,9 @@ void Spell::SpellEffectSetTalentSpecsCount(uint32 i)
 	if(!p_caster)
 		return;
 
+	if(damage > 2)
+		damage = 2;
+
 	if(p_caster->m_talentActiveSpec >= damage) // activate primary spec
 	{
 		p_caster->ApplySpec(0, false);
@@ -7652,9 +7603,11 @@ void Spell::SpellEffectActivateTalentSpec(uint32 i)
 		SendCastResult(SPELL_FAILED_NOT_IN_BATTLEGROUND);
 		return;
 	}
+	if(damage > 2) 
+		damage = 2;
 
 	// 1 = primary, 2 = secondary
-	p_caster->ApplySpec(uint8(damage - 1), false);
+	p_caster->ApplySpec(uint8(damage), false);
 
 	// Use up all our power.
 	switch(p_caster->GetPowerType())

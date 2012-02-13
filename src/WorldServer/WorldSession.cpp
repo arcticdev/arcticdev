@@ -60,7 +60,7 @@ WorldSession::~WorldSession()
 	while((packet = _recvQueue.Pop()))
 		delete packet;
 
-	for(uint32 x=0;x<8;x++)
+	for(uint32 x = 0; x < 8; x++)
 	{
 		if(sAccountData[x].data)
 			delete [] sAccountData[x].data;
@@ -146,8 +146,11 @@ int WorldSession::Update(uint32 InstanceID)
 					Log.Warning("WorldSession", "Received unhandled packet with opcode %s (0x%.4X)", LookupOpcodeName(packet->GetOpcode()), packet->GetOpcode());
 				else
 					(this->*Handler->handler)(*packet);
-			}
 
+					if(Handler->status == STATUS_AUTHED)
+						if(packet->GetOpcode() != CMSG_SET_ACTIVE_VOICE_CHANNEL)
+							_recentlogout = false;
+			}
 			delete packet;
 			packet = NULL;
 			if(InstanceID != instanceId)
@@ -250,6 +253,10 @@ void WorldSession::LogoutPlayer(bool Save)
 		// part channels
 		_player->CleanupChannels();
 
+		// Remove from vehicle for now. 
+		if(_player->m_CurrentVehicle) 
+			_player->m_CurrentVehicle->RemovePassenger(_player);
+
 		if( _player->m_CurrentTransporter != NULL )
 		{
 			_player->m_CurrentTransporter->RemovePlayer( _player );
@@ -315,8 +322,14 @@ void WorldSession::LogoutPlayer(bool Save)
 
 		_player->m_playerInfo->m_loggedInPlayer = NULL;
 
-		if( _player->m_playerInfo->m_Group != NULL )
-			_player->m_playerInfo->m_Group->Update();
+		if(_player->GetGroup()) // Init group logout checks. 
+		{ 
+			// Remove player from the group if he is in a group and not in a raid. 
+			if(!(_player->GetGroup()->GetGroupType() & GROUP_TYPE_RAID) && _socket) 
+				_player->GetGroup()->RemovePlayer(_player->m_playerInfo); 
+			else 
+				_player->m_playerInfo->m_Group->Update(); 
+		} 
 
 		// Remove the "player locked" flag, to allow movement on next login
 		GetPlayer()->RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_LOCK_PLAYER );
@@ -356,7 +369,8 @@ void WorldSession::LogoutPlayer(bool Save)
 		_player->ObjUnlock();
 
 		_player->Destructor();
-
+		_player = NULL;
+		
 		OutPacket(SMSG_LOGOUT_COMPLETE, 0, NULL);
 		DEBUG_LOG( "WorldSession","Sent SMSG_LOGOUT_COMPLETE Message" );
 	}
@@ -864,7 +878,8 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_COMPLAIN].handler = &WorldSession::HandleReportSpamOpcode;
 	WorldPacketHandlers[CMSG_WORLD_STATE_UI_TIMER_UPDATE].handler = &WorldSession::HandleWorldStateUITimerUpdate;
 
-	WorldPacketHandlers[CMSG_PET_CAST_SPELL].handler = &WorldSession::HandleAddDynamicTargetOpcode;
+	// Minion Cast Spell
+	WorldPacketHandlers[CMSG_PET_CAST_SPELL].handler = &WorldSession::HandleCharmForceCastSpell;
 
 	// Arenas
 	WorldPacketHandlers[CMSG_ARENA_TEAM_QUERY].handler = &WorldSession::HandleArenaTeamQueryOpcode;
@@ -906,6 +921,7 @@ void WorldSession::InitPacketHandlerTable()
 	WorldPacketHandlers[CMSG_REMOVE_GLYPH].handler = &WorldSession::HandleRemoveGlyph;
 
 	WorldPacketHandlers[CMSG_QUERY_INSPECT_ACHIEVEMENTS].handler = &WorldSession::HandleAchievementInspect;
+	WorldPacketHandlers[CMSG_FAR_SIGHT].handler = &WorldSession::HandleFarsightOpcode;
 
 	// Calendar
 	WorldPacketHandlers[CMSG_CALENDAR_GET_CALENDAR].handler = &WorldSession::HandleCalendarGetCalendar;

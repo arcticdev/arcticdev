@@ -89,10 +89,10 @@ void WorldSession::HandleMoveWorldportAckOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleMoveTeleportAckOpcode( WorldPacket & recv_data )
 {
-	uint64 guid;
-	WoWGuid wguid;
-	recv_data >> wguid;
-	guid = wguid.GetOldGuid();
+	WoWGuid guid;
+	uint32 flags, time;
+	recv_data >> guid;
+	recv_data >> flags >> time;
 
 	if(guid == _player->GetGUID())
 	{

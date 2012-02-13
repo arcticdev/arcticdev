@@ -377,6 +377,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		// Player not create (race/class problem?)
 		pNewChar->ok_to_remove = true;
 		pNewChar->Destructor();
+		pNewChar = NULL;
 		return;
 	}
 
@@ -411,6 +412,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 
 	pNewChar->ok_to_remove = true;
 	pNewChar->Destructor();
+	pNewChar = NULL;
 
 	// CHAR_CREATE_SUCCESS
 	OutPacket(SMSG_CHAR_CREATE, 1, "\x2F");
@@ -804,6 +806,8 @@ void WorldSession::FullLogin(Player* plr)
 		}
 	}
 #endif
+	if(plr->m_CurrentVehicle) 
+		plr->m_CurrentVehicle->RemovePassenger(plr);
 
 	DEBUG_LOG( "WorldSession","Player %s logged in.", plr->GetName());
 

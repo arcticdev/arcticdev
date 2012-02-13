@@ -266,7 +266,7 @@ void Vehicle::DeleteMe()
 
 void Vehicle::AddPassenger(Unit* pPassenger)
 {
-	if(!m_maxPassengers || !m_seatSlotMax) // how is this happening?
+	if(!m_maxPassengers || !m_seatSlotMax) //how is this happening?
 	{
 		sLog.outColor(TRED, "Vehicle was not correctly initialised, retrying");
 		sLog.outColor(TNORMAL, "\n");
@@ -274,6 +274,9 @@ void Vehicle::AddPassenger(Unit* pPassenger)
 	}
 
 	OUT_DEBUG("AddPassenger1: Max Vehicle Slot: %u, Max Passengers: %u", m_seatSlotMax, m_maxPassengers);
+
+	if(pPassenger->m_CurrentVehicle)
+		pPassenger->m_CurrentVehicle->RemovePassenger(pPassenger);
 
 	// Find an available seat
 	for(uint8 i = 0; i < m_seatSlotMax; ++i)
@@ -306,6 +309,9 @@ void Vehicle::AddPassenger(Unit* pPassenger, uint8 requestedseat)
 		sLog.outColor(TNORMAL, "\n");
 		InitSeats(m_vehicleEntry);
 	}
+
+	if(pPassenger->m_CurrentVehicle)
+		pPassenger->m_CurrentVehicle->RemovePassenger(pPassenger);
 
 	OUT_DEBUG("AddPassenger2: Max Vehicle Slot: %u, Max Passengers: %u\n", m_seatSlotMax, m_maxPassengers);
 
@@ -363,7 +369,7 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 	pPassenger->m_CurrentVehicle = NULL;
 	pPassenger->m_inVehicleSeatId = 0xFF;
 
-	pPassenger->RemoveFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION));
+	pPassenger->RemoveFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION | UNIT_FLAG_NOT_SELECTABLE));
 	if( pPassenger->IsPlayer() )
 		pPassenger->RemoveAura(TO_PLAYER(pPassenger)->m_MountSpellId);
 
@@ -436,6 +442,7 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 				SetUInt32Value(UNIT_FIELD_MAXHEALTH, GetProto()->MaxHealth);
 			}
 		}
+		plr->SetPlayerStatus(NONE);
 	}
 		
 	if(slot == 0)
@@ -443,6 +450,7 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 		m_redirectSpellPackets = NULL;
 		CombatStatus.Vanished();
 		pPassenger->SetUInt64Value( UNIT_FIELD_CHARM, 0 );
+		SetUInt64Value(UNIT_FIELD_CHARMEDBY, 0);
 		SetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE, GetCharmTempVal());
 		/* update target faction set */
 		_setFaction();
@@ -496,6 +504,12 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 	if(pPassenger->IsPlayer() && TO_PLAYER(pPassenger)->m_CurrentCharm)
 		return;
 
+	if(pPassenger->IsPlayer() && TO_PLAYER(pPassenger)->m_isGmInvisible)
+	{
+		sChatHandler.GreenSystemMessage(TO_PLAYER(pPassenger)->GetSession(), "Please turn of invis before entering vehicle.");
+		return;
+	}
+
 	m_passengers[ slot ] = pPassenger;
 	pPassenger->m_inVehicleSeatId = slot;
 	/* pPassenger->m_transportGuid = GetGUID(); */
@@ -526,7 +540,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 			pPlayer->RemoveAllAurasOfType(SPELL_AURA_MOD_SHAPESHIFT);
 		}
 
-		// Dismiss any pets
+		//Dismiss any pets
 		if(pPlayer->GetSummon())
 		{
 			if(pPlayer->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
@@ -537,7 +551,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 
 		pPlayer->m_CurrentVehicle = TO_VEHICLE(this);
 
-		pPlayer->SetFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION));
+		pPlayer->SetFlag(UNIT_FIELD_FLAGS, (UNIT_FLAG_UNKNOWN_5 | UNIT_FLAG_PREPARATION | UNIT_FLAG_NOT_SELECTABLE));
 
 		pPlayer->SetUInt64Value(PLAYER_FARSIGHT, GetGUID());
 
@@ -607,6 +621,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 		data << uint32(m_vehicleSeats[slot]->m_enterUISoundID);
 		data << pPlayer->GetPosition();
 		pPlayer->GetSession()->SendPacket(&data);
+		pPlayer->SetPlayerStatus(NONE);
 	}
 	else
 	{
@@ -627,7 +642,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 		data << v.x;											// GetTransOffsetX();
 		data << v.y;											// GetTransOffsetY();
 		data << v.z;											// GetTransOffsetZ();
-		SendMessageToSet(&data, true);
+		SendMessageToSet(&data, false);
 	}
 }
 

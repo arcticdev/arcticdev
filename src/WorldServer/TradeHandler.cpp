@@ -356,6 +356,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 							if( !pTarget->m_ItemInterface->AddItemToFreeSlot(pItem) )
 							{
 								pItem->Destructor();
+								pItem = NULL;
 							}
 						}
 
@@ -381,6 +382,7 @@ void WorldSession::HandleAcceptTrade(WorldPacket & recv_data)
 							if( !_player->m_ItemInterface->AddItemToFreeSlot(pItem) )
 							{
 								pItem->Destructor();
+								pItem = NULL;
 							}
 
 						}

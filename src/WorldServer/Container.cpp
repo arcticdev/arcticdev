@@ -37,9 +37,7 @@ Container::~Container( )
 	for(uint32 i = 0; i < m_itemProto->ContainerSlots; i++)
 	{
 		if(m_Slot[i] && m_Slot[i]->GetOwner() == m_owner)
-		{
 			m_Slot[i]->Destructor();
-		}
 	}
 }
 
@@ -50,25 +48,24 @@ void Container::Destructor()
 
 void Container::LoadFromDB( Field*fields )
 {
-
 	uint32 itemid=fields[2].GetUInt32();
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
 	ASSERT(m_itemProto);
 	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
-	
 
 	SetUInt32Value( ITEM_FIELD_CREATOR, fields[5].GetUInt32() );
 	SetUInt32Value( ITEM_FIELD_STACK_COUNT, 1);
-	
+
 	SetUInt32Value( ITEM_FIELD_FLAGS, fields[8].GetUInt32());
 	SetUInt32Value( ITEM_FIELD_RANDOM_PROPERTIES_ID, fields[9].GetUInt32());
 
 	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability);
 	SetUInt32Value( ITEM_FIELD_DURABILITY, fields[12].GetUInt32());
-  
 
 	SetUInt32Value( CONTAINER_FIELD_NUM_SLOTS, m_itemProto->ContainerSlots);
+
+	Bind(ITEM_BIND_ON_PICKUP); // Check if we need to bind our shit.
 }
 
 void Container::Create( uint32 itemid, Player* owner )
@@ -140,8 +137,7 @@ bool Container::AddItem(int8 slot, Item* item)
 	item->SetUInt64Value(ITEM_FIELD_CONTAINED, GetGUID());
 	item->SetOwner(m_owner);
 
-	if (item->GetProto()->Bonding == ITEM_BIND_ON_PICKUP) 
-		item->SoulBind();
+	Bind(ITEM_BIND_ON_PICKUP);
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + (slot*2), item->GetGUID());
 

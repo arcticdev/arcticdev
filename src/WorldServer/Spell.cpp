@@ -18,7 +18,7 @@ enum SpellTargetSpecification
     TARGET_SPEC_DEAD        = 2,
 };
 
-void SpellCastTargets::read( WorldPacket & data,uint64 caster )
+void SpellCastTargets::read( WorldPacket & data, uint64 caster )
 {
 	m_unitTarget = m_itemTarget = 0;
 	m_srcX = m_srcY = m_srcZ = m_destX = m_destY = m_destZ = 0;
@@ -1948,7 +1948,8 @@ void Spell::finish()
 void Spell::SendCastResult(uint8 result)
 {
 	uint32 Extra = 0;
-	if(result == SPELL_CANCAST_OK) return;
+	if(result == SPELL_CANCAST_OK)
+		return;
 
 	SetSpellFailed();
 

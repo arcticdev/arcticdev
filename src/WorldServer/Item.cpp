@@ -136,6 +136,8 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	}
 
 	SetUInt32Value( ITEM_FIELD_FLAGS, fields[8].GetUInt32() );
+	Bind(ITEM_BIND_ON_PICKUP); // Check if we need to bind our shit.
+
 	random_prop = fields[9].GetUInt32();
 	random_suffix = fields[10].GetUInt32();
 
@@ -503,7 +505,6 @@ void Item::SetOwner( Player* owner )
 	m_owner = owner;
 }
 
-
 int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Perm /* = false */, bool apply /* = true */, bool RemoveAtLogout /* = false */, uint32 Slot_, uint32 RandomSuffix )
 {
 	int32 Slot = Slot_;
@@ -557,7 +558,7 @@ int32 Item::AddEnchantment( EnchantEntry* Enchantment, uint32 Duration, bool Per
 		{
 			owner->SendTradeUpdate();
 		}
-
+	
 		/* Only apply the enchantment bonus if we're equipped */
 		uint8 slot = m_owner->GetItemInterface()->GetInventorySlotByGuid( GetGUID() );
 		if( slot > EQUIPMENT_SLOT_START && slot < EQUIPMENT_SLOT_END )

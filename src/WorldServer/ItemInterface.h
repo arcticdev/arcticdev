@@ -139,6 +139,8 @@ public:
 		return true;
 	}
 
+	bool AddItemById(uint32 itemid, uint32 count, int32 randomprop, bool created, Player* creator = NULL);
+
 	ARCTIC_INLINE bool VerifyBagSlotsWithBank(uint8 ContainerSlot, uint8 Slot)
 	{
 		if( ContainerSlot > 0 && (ContainerSlot < INVENTORY_SLOT_BAG_START || ContainerSlot >= INVENTORY_SLOT_BAG_END) )

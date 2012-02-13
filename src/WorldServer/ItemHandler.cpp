@@ -127,7 +127,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 	if(!GetPlayer())
 		return;
-
+	
 	recv_data >> DstInvSlot >> DstSlot >> SrcInvSlot >> SrcSlot;
 
 	OUT_DEBUG("ITEM: swap, DstInvSlot %i DstSlot %i SrcInvSlot %i SrcSlot %i", DstInvSlot, DstSlot, SrcInvSlot, SrcSlot);
@@ -140,7 +140,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 	if( ( DstInvSlot <= 0 && DstSlot < 0 ) || DstInvSlot < -1 )
 		return;
-
+	
 	if( ( SrcInvSlot <= 0 && SrcSlot < 0 ) || SrcInvSlot < -1 )
 		return;
 
@@ -217,7 +217,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 					_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 					return;
 				}
-			}
+			} 
 		}
 		else
 		{
@@ -288,7 +288,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				}
 			}
 		}
-
+	   
 		if(SrcItem)
 			SrcItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
 
@@ -304,10 +304,12 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				if (!_player->GetItemInterface()->SafeAddItem(SrcItem, SrcInvSlot, SrcSlot))
 				{
 					SrcItem->Destructor();
+					SrcItem = NULL;
 				}
 				if (DstItem && !_player->GetItemInterface()->SafeAddItem(DstItem, DstInvSlot, DstSlot))
 				{
 					DstItem->Destructor();
+					DstItem = NULL;
 				}
 				return;
 			}

@@ -253,6 +253,7 @@ public:
 	void SpellEffectTriggerSpellWithValue(uint32 i);
 	void SpellEffectMegaJump(uint32 i);
 	void SpellEffectMilling(uint32 i);
+	void SpellEffectAddPrismaticSocket(uint32 i);
 	void SpellEffectTitanGrip(uint32 i);
 	void SummonLightwell(uint32 i);
 	void SpellEffectCreateRandomItem(uint32 i);

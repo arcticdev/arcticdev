@@ -1047,12 +1047,20 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		RedSystemMessage(m_session, "Invalid item set.");
 		return true;
 	}
-	//const char* setname = sItemSetStore.LookupString(entry->name);
+
+	// const char* setname = sItemSetStore.LookupString(entry->name);
 	BlueSystemMessage(m_session, "Searching item set %u...", setid);
 	uint32 start = getMSTime();
+
 	sGMLog.writefromsession(m_session, "used add item set command, set %u, target %s", setid, chr->GetName());
 	for(std::list<ItemPrototype*>::iterator itr = l->begin(); itr != l->end(); itr++)
 	{
+		if(!chr->GetItemInterface()->AddItemById((*itr)->ItemId, 1, 0, false, m_session->GetPlayer()))
+		{
+			m_session->SendNotification("No free slots left!");
+			return true;
+		}
+
 		Item* itm = objmgr.CreateItem((*itr)->ItemId, m_session->GetPlayer());
 		if(!itm) continue;
 		if(itm->GetProto()->Bonding == ITEM_BIND_ON_PICKUP)

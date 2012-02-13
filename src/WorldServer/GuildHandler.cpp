@@ -598,7 +598,9 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
 				c->Destroy();
+				c = NULL;
 				i->Destructor();
+				i = NULL;
 				return;
 			}
 

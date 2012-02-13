@@ -1479,6 +1479,10 @@ public:
 	void SetWeaponDisplayId(uint8 slot, uint32 displayId);
 
 protected:
+	/* Preallocated buffers for movement handlers */
+	uint8 movement_packet[90];
+
+protected:
 	Unit ();
 
 	uint32 m_meleespell;

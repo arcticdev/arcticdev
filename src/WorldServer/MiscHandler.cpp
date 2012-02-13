@@ -1985,7 +1985,7 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 	li->PlayerRolled(_player, choice);
 }
 
-void WorldSession::HandleOpenItemOpcode(WorldPacket& recv_data)
+void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 {
 	CHECK_INWORLD_RETURN;
 	CHECK_PACKET_SIZE(recv_data, 2);
@@ -2005,7 +2005,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recv_data)
 
 		pItem->SetUInt32Value(ITEM_FIELD_GIFTCREATOR,0);
 		pItem->SetUInt32Value(OBJECT_FIELD_ENTRY,pItem->wrapped_item_id);
-		pItem->wrapped_item_id=0;
+		pItem->wrapped_item_id = 0;
 		pItem->SetProto(it);
 
 		if(it->Bonding==ITEM_BIND_ON_PICKUP)
@@ -2051,7 +2051,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket& recv_data)
 				return;
 			}
 		}
-		for(int i = 0; i < 5; i++)
+		for(int i=0;i<5;i++)
 			if(removeLockItems[i])
 				_player->GetItemInterface()->RemoveItemAmt(removeLockItems[i],1);
 	}
@@ -2284,4 +2284,12 @@ void WorldSession::HandleReadyForAccountDataTimes(WorldPacket& recv_data)
 		}
 	}
 	SendPacket(&data);
+}
+
+void WorldSession::HandleFarsightOpcode(WorldPacket& recv_data)
+{
+	uint8 type;
+	recv_data >> type;
+
+	GetPlayer()->UpdateVisibility();
 }

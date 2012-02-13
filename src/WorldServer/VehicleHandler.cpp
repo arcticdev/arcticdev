@@ -29,17 +29,35 @@ void WorldSession::HandleSpellClick( WorldPacket & recv_data )
 	if (GetPlayer() == NULL || GetPlayer()->m_CurrentVehicle)
 		return;
 
-    CHECK_PACKET_SIZE(recv_data, 8);
+	CHECK_PACKET_SIZE(recv_data, 8);
 
-    uint64 guid;
-    recv_data >> guid;
+	uint64 guid;
+	recv_data >> guid;
 
-	Vehicle* pVehicle = GetPlayer()->GetMapMgr()->GetVehicle(GET_LOWGUID_PART(guid));
+	Vehicle* pVehicle = NULL;
+	Unit* unit = GetPlayer()->GetMapMgr()->GetUnit(guid);
 	Unit* pPlayer = TO_UNIT(GetPlayer());
 
-	if(!pVehicle)
+	if(!unit)
 		return;
-	
+
+	if(!unit->IsVehicle())
+	{
+		if(unit->IsCreature())
+		{
+			Creature* ctr = TO_CREATURE(unit);
+			if(ctr->GetProto()->SpellClickid)
+				ctr->CastSpell(pPlayer, ctr->GetProto()->SpellClickid, true);
+			else
+				OUT_DEBUG("[SPELL][CLICK]: Unknown spell click spell on creature %u", ctr->GetEntry());
+		}
+		return;
+	}
+	else
+	{
+		pVehicle = TO_VEHICLE(unit);
+	}
+
 	if(!pVehicle->GetMaxPassengerCount())
 		return;
 
@@ -103,5 +121,6 @@ void WorldSession::HandleRequestSeatChange( WorldPacket & recv_data )
 			return;
 	}
 
-	GetPlayer()->EnterVehicle(vehicle, RequestedSeat, false);
+	vehicle->AddPassenger(GetPlayer(), RequestedSeat);
+	// GetPlayer()->EnterVehicle(vehicle, RequestedSeat, false);
 }

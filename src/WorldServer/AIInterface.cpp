@@ -544,14 +544,8 @@ void AIInterface::Update(uint32 p_time)
 			else
 			{
 				pSpell->Destructor();
+				pSpell = NULL;
 			}
-			// these will *almost always* be AoE, so no need to find a target here.
-//			SpellCastTargets targets(m_Unit->GetGUID());
-//			Spell* pSpell = NULL
-//			pSpell = new Spell(m_Unit, totemspell, true, NULL);
-//			pSpell->prepare(&targets);
-			// need proper cooldown time!
-//			m_totemspelltimer = m_totemspelltime;
 		}
 		else
 		{

@@ -149,6 +149,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 						if(!v->CanAddToWorld())
 						{
 							v->Destructor();
+							v = NULL;
 							continue;
 						}
 
@@ -157,6 +158,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 					else
 					{
 						v->Destructor();
+						v = NULL;
 					}
 				}
 				else
@@ -172,6 +174,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 						if(!c->CanAddToWorld())
 						{
 							c->Destructor();
+							c = NULL;
 							continue;
 						}
 
@@ -180,6 +183,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 					else
 					{
 						c->Destructor();
+						c = NULL;
 					}
 				}
 			}
@@ -389,7 +393,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 			pObject->RemoveFromWorld( true );
 
 		pObject->Destructor();
-
+		pObject = NULL;
 	}
 }
 

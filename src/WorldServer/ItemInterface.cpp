@@ -3385,3 +3385,82 @@ void ItemInterface::CheckAreaItems()
 		}
 	}
 }
+
+bool ItemInterface::AddItemById( uint32 itemid, uint32 count, int32 randomprop, bool created, Player* creator /* = NULL*/ )
+{
+	if( count < 1 )
+		count = 1;
+
+	Player *chr = GetOwner();
+
+	// checking if the iteminterface has owner, impossible to not have one
+	if( chr == NULL )
+		return false;
+
+	ItemPrototype* it = ItemPrototypeStorage.LookupEntry(itemid);
+	if(it == NULL )
+		return false;
+
+	uint32 maxStack = (it->MaxCount > 0 ? it->MaxCount : 1 ); // Our database is lacking :|
+	uint32 toadd;
+	bool freeslots = true;
+
+	while( count > 0 && freeslots )
+	{
+		if( count < maxStack )
+		{
+			// find existing item with free stack
+			Item* free_stack_item = FindItemLessMax( itemid, count, false );
+			if( free_stack_item != NULL )
+			{
+				// increase stack by new amount
+				chr->GetSession()->SendItemPushResult( free_stack_item, created ? true : false, created ? false : true, true, true, (uint8)-1, (uint32)-1, count);
+				free_stack_item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, free_stack_item->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + count );
+				free_stack_item->m_isDirty = true;
+				return true;
+			}
+		}
+
+		// create new item
+		Item *item = objmgr.CreateItem( itemid, chr );
+		if( item == NULL )
+			return false;
+
+		if(creator != NULL)
+			item->SetUInt64Value(ITEM_FIELD_CREATOR, creator->GetGUID());
+
+		item->Bind(ITEM_BIND_ON_PICKUP);
+		if( randomprop != 0 )
+		{
+			if( randomprop < 0 )
+				item->SetRandomSuffix( -randomprop );
+			else
+				item->SetRandomProperty( randomprop );
+
+			item->ApplyRandomProperties( false );
+		}
+
+		toadd = count > maxStack ? maxStack : count;
+
+		item->SetUInt32Value( ITEM_FIELD_STACK_COUNT, toadd );
+		if( AddItemToFreeSlot( item ) )
+		{
+			SlotResult *lr = LastSearchResult();
+
+			chr->GetSession()->SendItemPushResult( item, created ? true : false, created ? false : true, true, true, lr->ContainerSlot, lr->Slot, toadd);
+			count -= toadd;
+		}
+		else
+		{
+			freeslots = false;
+			chr->GetSession()->SendNotification("No free slots were found in your inventory!");
+
+			delete item;
+			item = NULL;
+
+			if(creator != NULL && creator != chr) // If someone else is creating the item, its mainly for GM command though.
+				creator->GetSession()->SendNotification("No free slots were found in target's inventory!");
+		}
+	}
+	return true;
+}

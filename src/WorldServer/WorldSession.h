@@ -515,7 +515,7 @@ protected:
 	void HandleCancelAuraOpcode(WorldPacket& recvPacket);
 	void HandleCancelChannellingOpcode(WorldPacket& recvPacket);
 	void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data);
-	void HandleAddDynamicTargetOpcode(WorldPacket & recvPacket);
+	void HandleCharmForceCastSpell(WorldPacket & recvPacket);
 
 	// Skill opcodes (SkillHandler.spp)
 	//void HandleSkillLevelUpOpcode(WorldPacket& recvPacket);
@@ -728,6 +728,7 @@ protected:
 	void HandleAchievementInspect(WorldPacket & recv_data);
 	void HandleRemoveGlyph(WorldPacket & recv_data);
 	void HandleWorldStateUITimerUpdate( WorldPacket & recv_data );
+	void HandleFarsightOpcode(WorldPacket &recv_data);
 
 	void HandleCharacterCustomization(WorldPacket & recv_data);
 	void HandleReadyForAccountDataTimes(WorldPacket &recv_data);

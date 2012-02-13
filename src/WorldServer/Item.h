@@ -140,7 +140,18 @@ public:
 	void SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer* buf );
 	bool LoadAuctionItemFromDB( uint64 guid );
 	void DeleteFromDB();
-	
+
+	ARCTIC_INLINE void Bind(uint32 bondtype)
+	{
+		if(GetProto())
+		{
+			if(bondtype != ITEM_BIND_NONE && GetProto()->Bonding == bondtype)
+				SoulBind();
+			if(GetProto()->Flags & ITEM_FLAG_BINDONACC)
+				AccountBind();
+		}
+	}
+
 	ARCTIC_INLINE void SoulBind()
 	{
 		SetFlag( ITEM_FIELD_FLAGS, ITEM_FLAG_SOULBOUND );
@@ -218,7 +229,8 @@ public:
 	ARCTIC_INLINE uint32 GetDurability() { return GetUInt32Value( ITEM_FIELD_DURABILITY ); }
 	ARCTIC_INLINE uint32 GetDurabilityMax() { return GetUInt32Value( ITEM_FIELD_MAXDURABILITY ); }
 	ARCTIC_INLINE bool IsAmmoBag() { return (m_itemProto->Class == ITEM_CLASS_QUIVER); }
-
+	void AccountBind() { SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_BINDONACC); }
+	
 	void RemoveFromWorld();
 
 	bool locked;
