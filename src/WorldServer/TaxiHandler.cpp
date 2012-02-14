@@ -29,13 +29,9 @@ void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
-		data << uint8( 0 );	
-	}
+		data << uint8( 0 );
 	else
-	{
 		data << uint8( 1 );
-	}	
 
 	SendPacket( &data );
 	DEBUG_LOG("WORLD:","Sent SMSG_TAXINODE_STATUS");
@@ -82,7 +78,7 @@ void WorldSession::SendTaxiList(Creature* pCreature)
 		return;
 	}
 
-	// Set Mask
+	//Set Mask
 	memset(TaxiMask, 0, sizeof(uint32)*MAX_TAXI);
 	sTaxiMgr.GetGlobalTaxiNodeMask(curloc, TaxiMask);
 	TaxiMask[field] |= 1 << ((curloc-1)%32);
@@ -131,7 +127,7 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 
 	// Check for known nodes
 	if ( (GetPlayer( )->GetTaximask(field) & submask) != submask )
-	{   
+	{
 		data << uint32( 1 );
 		SendPacket( &data );
 		return;
@@ -173,24 +169,47 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	// gryph: 1147
 	// wyvern: 295
 	// hippogryph: 479
+	uint32 modelid = 0;
 
-	uint32 modelid =0;
-	if( _player->GetTeam() )
+	CreatureInfo* ci = CreatureNameStorage.LookupEntry( (_player->GetTeam() ? taxinode->horde_mount : taxinode->alliance_mount) );
+	if(!ci)
 	{
-		if( taxinode->horde_mount == 2224 )
-			modelid =295; // In case it's a wyvern
+		if(_player->GetTeam())
+		{
+			if( taxinode->horde_mount == 2224 )
+				modelid = 295; // In case it's a wyvern
+			else
+				modelid = 1566; // In case it's a bat or a bad id
+		}
 		else
-			modelid =1566; // In case it's a bat or a bad id
+		{
+			if( taxinode->alliance_mount == 3837 )
+				modelid = 479; // In case it's an hippogryph
+			else
+				modelid = 1147; // In case it's a gryphon or a bad id
+		}
 	}
 	else
 	{
-		if( taxinode->alliance_mount == 3837 )
-			modelid =479; // In case it's an hippogryph
-		else
-			modelid =1147; // In case it's a gryphon or a bad id
+		modelid = ci->Male_DisplayID;
+		if(!modelid)
+		{
+			if(_player->GetTeam())
+			{
+				if( taxinode->horde_mount == 2224 )
+					modelid = 295; // In case it's a wyvern
+				else
+					modelid = 1566; // In case it's a bat or a bad id
+			}
+			else
+			{
+				if( taxinode->alliance_mount == 3837 )
+					modelid = 479; // In case it's an hippogryph
+				else
+					modelid = 1147; // In case it's a gryphon or a bad id
+			}
+		}
 	}
-
-	//GetPlayer( )->setDismountCost( newmoney );
 
 	data << uint32( 0 );
 	// 0 Ok
@@ -200,24 +219,19 @@ void WorldSession::HandleActivateTaxiOpcode( WorldPacket & recv_data )
 	SendPacket( &data );
 	DEBUG_LOG("WORLD:","Sent SMSG_ACTIVATETAXIREPLY");
 
-	// 0x001000 seems to make a mount visible
-	// 0x002000 seems to make you sit on the mount, and the mount move with you
 	// 0x000004 locks you so you can't move, no msg_move updates are sent to the server
 	// 0x000008 seems to enable detailed collision checking
+	// 0x001000 seems to make a mount visible
+	// 0x002000 seems to make you sit on the mount, and the mount move with you
 
 	// check for a summon -> if we do, remove.
 	if(_player->GetSummon() != NULL)
-	{
-		if(_player->GetSummon()->GetUInt32Value(UNIT_CREATED_BY_SPELL) > 0)
-			_player->GetSummon()->Dismiss(false);						   // warlock summon -> dismiss
-		else
-			_player->GetSummon()->Remove(false, true, true);					  // hunter pet -> just remove for later re-call
-	}
+		_player->GetSummon()->Remove(false, true, true);					  // hunter pet -> just remove for later re-call
 
 	_player->taxi_model_id = modelid;
 	GetPlayer()->TaxiStart(taxipath, modelid, 0);
 	GetPlayer()->GetAchievementInterface()->HandleAchievementCriteriaFlightPathsTaken();
-	
+
 	//sLog.outString("TAXI: Starting taxi trip. Next update in %d msec.", first_node_time);
 }
 

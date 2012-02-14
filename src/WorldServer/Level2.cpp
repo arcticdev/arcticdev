@@ -99,12 +99,6 @@ bool ChatHandler::CreateGuildCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
-/*
-#define isalpha(c)  {isupper(c) || islower(c))
-#define isupper(c)  (c >=  'A' && c <= 'Z')
-#define islower(c)  (c >=  'a' && c <= 'z')
-*/
-
 bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
@@ -135,7 +129,7 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 	if(unit->IsVehicle())
 	{
 		Vehicle* veh = TO_VEHICLE(unit);
-		for(int i = 0; i < 8; ++i)
+		for(int i = 0; i < 8; i++)
 		{
 			if(!veh->GetPassenger(i))
 				continue;

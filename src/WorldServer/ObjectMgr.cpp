@@ -1872,10 +1872,10 @@ void ObjectMgr::SetVendorList(uint32 Entry, std::vector<CreatureItem>* list_)
 
 void ObjectMgr::LoadCreatureWaypoints()
 {
-	QueryResult *result = WorldDatabase.Query("SELECT * FROM creature_waypoints ORDER BY spawnid,waypointid");
+	QueryResult *result = WorldDatabase.Query("SELECT * FROM creature_waypoints ORDER BY spawnid, waypointid");
 	if(!result)
 		return;
-	QueryResult *result2 = WorldDatabase.Query("SELECT spawnid,COUNT(waypointid) FROM creature_waypoints GROUP BY spawnid ORDER BY spawnid,waypointid");
+	QueryResult *result2 = WorldDatabase.Query("SELECT spawnid,COUNT(waypointid) FROM creature_waypoints GROUP BY spawnid ORDER BY spawnid, waypointid");
 	if(!result2)
 	{
 		delete result;
@@ -1935,8 +1935,8 @@ void ObjectMgr::LoadCreatureWaypoints()
 		wp->count = count;
 
 		HM_NAMESPACE::hash_map<uint32,WayPointMap*>::const_iterator i;
-		i=m_waypoints.find(spawnid);
-		if(i==m_waypoints.end())
+		i = m_waypoints.find(spawnid);
+		if(i == m_waypoints.end())
 		{
 			if(wp->id > 1)
 			{
@@ -1988,7 +1988,7 @@ Pet* ObjectMgr::CreatePet()
 {
 	uint32 guid;
 	m_petlock.Acquire();
-	guid =++m_hiPetGuid;
+	guid = ++m_hiPetGuid;
 	m_petlock.Release();
 
 	uint64 fullguid = ((uint64)HIGHGUID_TYPE_PET << 32) | ((uint64)guid << 24) | guid;

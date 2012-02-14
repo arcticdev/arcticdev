@@ -55,9 +55,9 @@ Unit::Unit()
 	m_maxSpeed = 0;
 	for(uint32 x=0;x<MECHANIC_COUNT;x++)
 	{
-		MechanicsDispels[x]=0;
-		MechanicsResistancesPCT[x]=0;
-		ModDamageTakenByMechPCT[x]=0;
+		MechanicsDispels[x] = 0;
+		MechanicsResistancesPCT[x] = 0;
+		ModDamageTakenByMechPCT[x] = 0;
 	}
 
 	//SM
@@ -67,9 +67,9 @@ Unit::Unit()
 	m_interruptRegen = 0;
 	m_resistChance = 0;
 	m_powerRegenPCT = 0;
-	RAPvModifier=0;
-	APvModifier=0;
-	stalkedby=0;
+	RAPvModifier = 0;
+	APvModifier = 0;
+	stalkedby = 0;
 
 	m_extraattacks[0] = 0;
 	m_extraattacks[1] = 0;
@@ -83,10 +83,10 @@ Unit::Unit()
 	m_modlanguage = -1;
 
 	m_useAI = false;
-	for(uint32 x=0;x<10;x++)
-		dispels[x]=0;
+	for(uint32 x = 0; x < 10; x++)
+		dispels[x] = 0;
 
-	for(uint32 x=0;x<12;x++)
+	for(uint32 x = 0; x < 12; x++)
 	{
 		CreatureAttackPowerMod[x] = 0;
 		CreatureRangedAttackPowerMod[x] = 0;
@@ -104,7 +104,6 @@ Unit::Unit()
 
 		m_invisDetect[i] = 0;
 
-
 	m_stealthLevel = 0;
 	m_stealthDetectBonus = 0;
 	m_stealth = 0;
@@ -116,21 +115,18 @@ Unit::Unit()
 	m_H_regenTimer = 2000;
 	m_P_regenTimer = 2000;
 
-	//	if(GetTypeId() == TYPEID_PLAYER) //only player for now
-	//		CalculateActualArmor();
-
 	m_emoteState = 0;
 	m_oldEmote = 0;
 
-	BaseDamage[0]=0;
-	BaseOffhandDamage[0]=0;
-	BaseRangedDamage[0]=0;
+	BaseDamage[0] = 0;
+	BaseOffhandDamage[0] = 0;
+	BaseRangedDamage[0] = 0;
 	BaseDamage[1]=0;
-	BaseOffhandDamage[1]=0;
-	BaseRangedDamage[1]=0;
+	BaseOffhandDamage[1] = 0;
+	BaseRangedDamage[1] = 0;
 
 	m_CombatUpdateTimer = 0;
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x = 0; x < 7; x++)
 	{
 		m_SummonSlots[x] = NULL;
 		SchoolImmunityList[x] = 0;
@@ -145,9 +141,9 @@ Unit::Unit()
 		SpellCritChanceSchool[x] = 0;
 		PowerCostMod[x] = 0;
 		PowerCostPctMod[x] = 0; // armor penetration & spell penetration
-		AttackerCritChanceMod[x]=0;
-		CritMeleeDamageTakenPctMod[x]=0;
-		CritRangedDamageTakenPctMod[x]=0;
+		AttackerCritChanceMod[x] = 0;
+		CritMeleeDamageTakenPctMod[x] = 0;
+		CritRangedDamageTakenPctMod[x] = 0;
 	}
 
 	RangedDamageTaken = 0;
@@ -239,17 +235,13 @@ Unit::~Unit()
 	if (IsInWorld())
 		RemoveFromWorld(true);
 
-	for(uint32 x=0;x<SPELL_MODIFIERS;x++)
-		for(uint32 y=0;y<2;y++)
+	for(uint32 x= 0; x < SPELL_MODIFIERS; x++)
+		for(uint32 y = 0; y < 2; y++)
 			if(SM[x][y]) delete [] SM[x][y] ;
 
 	delete m_aiInterface;
 
 	m_redirectSpellPackets = NULL;
-
-	/*for(int i = 0; i < 4; i++)
-	if(m_ObjectSlots[i])
-	delete m_ObjectSlots[i];*/
 
 	if(m_currentSpell)
 	{
@@ -4543,7 +4535,7 @@ void Unit::RemoveAllAuras()
 //ex:to remove morph spells
 void Unit::RemoveAllAurasOfType(uint32 auratype)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x]!= NULL )
 		{
@@ -4607,7 +4599,7 @@ Aura* Unit::FindNegativeAuraByNameHash(uint32 namehash)
 
 Aura* Unit::FindActiveAura(uint32 spellId, uint64 guid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellId()==spellId && (!guid || m_auras[x]->GetCasterGUID() == guid))
 		{
@@ -4619,7 +4611,7 @@ Aura* Unit::FindActiveAura(uint32 spellId, uint64 guid)
 
 Aura* Unit::FindActiveAuraWithNameHash(uint32 namehash, uint64 guid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellProto()->NameHash == namehash && (!guid || m_auras[x]->GetCasterGUID() == guid))
 		{
@@ -5471,7 +5463,7 @@ void Unit::UpdateSpeed()
 
 bool Unit::HasActiveAura(uint32 spellid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	if(m_auras[x] != NULL && m_auras[x]->GetSpellId()==spellid)
 	{
 		return true;
@@ -5482,7 +5474,7 @@ bool Unit::HasActiveAura(uint32 spellid)
 
 bool Unit::HasActiveAura(uint32 spellid,uint64 guid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellId() == spellid && (!guid || m_auras[x]->GetCasterGUID() == guid))
 	{
 		return true;
@@ -5601,7 +5593,7 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 {
 	uint64 sguid = buff_type >= SPELL_TYPE_BLESSING ? guid : 0;
 
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellProto()->buffType & buff_type && m_auras[x]->GetSpellId()!=skip)
 		{
@@ -5613,7 +5605,7 @@ void Unit::RemoveAurasByBuffType(uint32 buff_type, const uint64 &guid, uint32 sk
 
 void Unit::RemoveAurasByBuffIndexType(uint32 buff_index_type, const uint64 &guid)
 {
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellProto()->buffIndexType == buff_index_type)
 		{
@@ -5627,7 +5619,7 @@ bool Unit::HasAurasOfBuffType(uint32 buff_type, const uint64 &guid,uint32 skip)
 {
 	uint64 sguid = (buff_type == SPELL_TYPE_BLESSING || buff_type == SPELL_TYPE_WARRIOR_SHOUT) ? guid : 0;
 
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellProto()->buffType & buff_type && m_auras[x]->GetSpellId()!=skip)
 			if(!sguid || (sguid && m_auras[x]->GetCasterGUID() == sguid))
@@ -5647,7 +5639,7 @@ AuraCheckResponse Unit::AuraCheck(SpellEntry *info)
 
 	// look for spells with same namehash
 	bool stronger = false;
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		if( m_auras[x] == NULL )
 			continue;
@@ -5756,7 +5748,7 @@ void Unit::RemoveFromWorld(bool free_guid)
 void Unit::RemoveAurasByInterruptFlagButSkip(uint32 flag, uint32 skip)
 {
 	Aura* a = NULL;
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		a = m_auras[x];
 		if(a == NULL)
