@@ -5330,7 +5330,7 @@ void Unit::SetStandState(uint8 standstate)
 void Unit::RemoveAurasByInterruptFlag(uint32 flag)
 {
 	Aura* a = NULL;
-	for(uint32 x=0;x<MAX_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS; x++)
 	{
 		a = m_auras[x];
 		if(a == NULL)
@@ -5344,7 +5344,7 @@ void Unit::RemoveAurasByInterruptFlag(uint32 flag)
 
 bool Unit::HasAuraVisual(uint32 visualid)
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS+MAX_PASSIVE_AURAS; x++)
 	if(m_auras[x] && m_auras[x]->GetSpellProto()->SpellVisual==visualid)
 	{
 		return true;
