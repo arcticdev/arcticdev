@@ -531,7 +531,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 			}
 		}
 
-		uint32 mail_id = it->GetUInt32Value(ITEM_FIELD_PAD);
+		uint32 mail_id = it->GetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID);
 		if(mail_id)
 			_player->m_mailBox->OnMessageCopyDeleted(mail_id);
 

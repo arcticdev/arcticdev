@@ -12,7 +12,7 @@ typedef struct
 	uint8 LiquidType[2][2];
 	float LiquidLevel[2][2];
 	float Z[32][32];
-}CellTerrainInformation; 
+}CellTerrainInformation;
 
 #define FL2UINT (uint32)
 #define TERRAIN_HEADER_SIZE 1048576	 // size of [512][512] array.
@@ -32,10 +32,10 @@ typedef struct
    wanting to access this information at once.
   */
 
-class TerrainMgr
+class SERVER_DECL TerrainMgr
 {
 public:
-	/* Initializes the terrain interface, allocates all required arrays, and sets 
+	/* Initializes the terrain interface, allocates all required arrays, and sets
 	   all variables.
 	   Parameter 1: The path to the packed map files.
 	   Parameter 2: The map that we'll be retrieving information from.
@@ -91,30 +91,15 @@ private:
 	/// We don't want to be reading from a file from more than one thread at once
 	Mutex mutex;
 
-#ifndef USE_MEMORY_MAPPING_FOR_MAPS
-	
 	/// Our main file descriptor for accessing the binary terrain file.
 	FILE * FileDescriptor;
 
 	/// This holds the offsets of the cell information for each cell.
 	uint32 CellOffsets[_sizeX][_sizeY];
 
-#else
-
-	/// Mapped file handle
-	HANDLE hMappedFile;
-	HANDLE hMap;
-	uint32 mFileSize;
-
-	/// This holds the offsets of the cell information for each cell.
-	uint32 CellOffsets[_sizeX][_sizeY];
-	uint8 * m_Memory;
-
-#endif
-
 	/// Our storage array. This contains pointers to all allocated CellInfo's.
 	CellTerrainInformation *** CellInformation;
-	
+
 public:
 	/* Initializes the file descriptor and readys it for data retreival.
 	   No parameters taken.

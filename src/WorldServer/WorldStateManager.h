@@ -60,7 +60,7 @@ public:
 	void CreateWorldState(uint32 uWorldStateId, uint32 uInitialValue, int32 iFactionMask = FACTION_MASK_ALL, int32 iZoneMask = ZONE_MASK_ALL);
 
 	// updates a world state (sets and stores value, updates in clients on map)
-	// NOTE: If the world state is not created/initialized, it WILL NOT BE UPDATED/SENT to the client!!!! 
+	// NOTE: If the world state is not created/initialized, it WILL NOT BE UPDATED/SENT to the client!!!!
 	void UpdateWorldState(uint32 uWorldStateId, uint32 uValue);
 
 	// sends the current world states to a new player on the map.
@@ -71,8 +71,8 @@ public:
 	void ClearWorldStates(Player* pPlayer);
 
 	// loads a setting from the database.
-	static const string GetPersistantSetting(const char *szKeyName, const char *szValue);
-	static void SetPersistantSetting(const char *szKeyName, const char *szValue);
+	static int32 GetPersistantSetting(uint32 keyVal, int32 defaultReturn);
+	static void SetPersistantSetting(uint32 keyVal, int32 Value);
 };
 
 struct WorldStateTemplate
@@ -80,7 +80,7 @@ struct WorldStateTemplate
 	uint32 uField;
 	int32 iFactionMask;
 	int32 iZoneMask;
-	uint32 uValue;
+	int32 uValue;
 };
 
 class WorldStateTemplateManager : public Singleton<WorldStateTemplateManager>
@@ -89,9 +89,8 @@ class WorldStateTemplateManager : public Singleton<WorldStateTemplateManager>
 	WorldStateTemplateList m_templatesForMaps[NUM_MAPS];
 	WorldStateTemplateList m_general;
 public:
-
-	// loads predefined fields from database 
-	void LoadFromDB();
+	// loads predefined fields from database
+	void LoadFromDB(int32 mapid = -1);
 
 	// applys a map template to a new instance
 	void ApplyMapTemplate(MapMgr* pmgr);

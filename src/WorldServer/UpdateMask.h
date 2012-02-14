@@ -74,7 +74,7 @@ public:
 
 	void Clear()
 	{
-		if(mUpdateMask)
+		if (mUpdateMask)
 			memset(mUpdateMask, 0, mBlocks << 2);
 	}
 

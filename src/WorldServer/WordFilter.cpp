@@ -23,7 +23,7 @@ WordFilter::~WordFilter()
 	if(!m_filters)
 		return;
 
-	for(i = 0; i < m_filterCount; ++i)
+	for(i = 0; i < m_filterCount; i++)
 	{
 		p = m_filters[i];
 		if(p==NULL)
@@ -55,9 +55,9 @@ WordFilter::~WordFilter()
 bool WordFilter::CompileExpression(const char * szExpression, void** pOutput, void** pExtraOutput)
 {
 	pcre * re;
-	pcre_extra * ee;
-	const char * error;
-	const char * error2;
+	pcre_extra * ee = NULL;
+	const char * error = "";
+	const char * error2 = "";
 	int erroffset;
 
 	re = pcre_compile(szExpression, 0, &error, &erroffset, NULL);
@@ -92,7 +92,7 @@ void WordFilter::Load(const char * szTableName)
 	if(pResult==NULL)
 		return;
 
-	do 
+	do
 	{
 		pMatch = new WordFilterMatch;
 		pMatch->szMatch = (strlen(pResult->Fetch()[0].GetString()) > 1) ? strdup(pResult->Fetch()[0].GetString()) : NULL;
@@ -157,9 +157,9 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 	WordFilterMatch * pFilter;
 	const char * szInput = sMessage.c_str();
 	size_t iLen = sMessage.length();
-	//char 
+	//char
 
-	for(i = 0; i < m_filterCount; ++i)
+	for(i = 0; i < m_filterCount; i++)
 	{
 		pFilter = m_filters[i];
 		if((n = pcre_exec((const pcre*)pFilter->pCompiledExpression,

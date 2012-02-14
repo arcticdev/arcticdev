@@ -43,22 +43,16 @@ WorldSocket::~WorldSocket()
 	WorldPacket * pck;
 	queueLock.Acquire();
 	while((pck = _queue.Pop()))
-	{
-		// delete pck;
-		g_bufferPool.Deallocate(pck);
-	}
+		delete pck;
 	queueLock.Release();
 
 	if(pAuthenticationPacket)
-	{
-		g_bufferPool.Deallocate(pAuthenticationPacket);
-		// delete pAuthenticationPacket;
-	}
+		delete pAuthenticationPacket;
 
 	if(mSession)
 	{
 		mSession->SetSocket(NULL);
-		mSession = NULL;
+		mSession=NULL;
 	}
 
 	if( m_fullAccountName != NULL )
@@ -92,7 +86,7 @@ void WorldSocket::OnDisconnect()
 	queueLock.Acquire();
 	WorldPacket *pck;
 	while((pck = _queue.Pop()))
-		g_bufferPool.Deallocate(pck);
+		delete pck;
 	queueLock.Release();
 }
 
@@ -115,7 +109,8 @@ void WorldSocket::OutPacket(uint16 opcode, size_t len, const void* data)
 		queueLock.Acquire();
 		WorldPacket * pck = g_bufferPool.Allocate(len);
 		pck->SetOpcode(opcode);
-		if(len) pck->append((const uint8*)data, len);
+		if(len)
+			pck->append((const uint8*)data, len);
 		_queue.Push(pck);
 		queueLock.Release();
 	}
@@ -138,8 +133,7 @@ void WorldSocket::UpdateQueuedPackets()
 		{
 		case OUTPACKET_RESULT_SUCCESS:
 			{
-				//delete pck;
-				g_bufferPool.Deallocate(pck);
+				delete pck;
 				_queue.pop_front();
 			}break;
 
@@ -153,11 +147,8 @@ void WorldSocket::UpdateQueuedPackets()
 		default:
 			{
 				/* kill everything in the buffer */
-				while((pck == _queue.Pop()))
-				{
-					g_bufferPool.Deallocate(pck);
-					//delete pck;
-				}
+				while((pck = _queue.Pop()))
+					delete pck;
 				queueLock.Release();
 				return;
 			}break;
@@ -210,33 +201,33 @@ void WorldSocket::OnConnect()
 	WorldPacket data (SMSG_AUTH_CHALLENGE, 25);
 	data << uint32(1);			// Unk
 	data << mSeed;
-	data << uint32(0xC0FFEEEE);	// Generated Random.
-	data << uint32(0x00BABE00);	// 3.2.2
-	data << uint32(0xDF1697E5);	// 3.2.2
-	data << uint32(0x1234ABCD);	// 3.2.2
+	data << uint32(0xF3539DA3);	// Generated Random.
+	data << uint32(0x6E8547B9);	// 3.2.2
+	data << uint32(0x9A6AA2F8);	// 3.2.2
+	data << uint32(0xA4F170F4);	// 3.2.2
 	SendPacket(&data);
 }
 
 void WorldSocket::_HandleAuthSession(WorldPacket* recvPacket)
 {
 	std::string account;
-	uint32 unk1, unk2, unk4, unk5, unk6;
-	uint64 unk3;
+	uint32 unk;
+	uint64 unk3; // 3.2.2 Unk
 	_latency = getMSTime() - _latency;
 
 	try
 	{
 		*recvPacket >> mClientBuild;
-		*recvPacket >> unk1;
+		*recvPacket >> unk;
 		*recvPacket >> account;
-		*recvPacket >> unk2;
+		*recvPacket >> unk;
 		*recvPacket >> mClientSeed;
 		// 3.2.2
 		*recvPacket >> unk3;
 		// 3.3.5
-		*recvPacket >> unk4;
-		*recvPacket >> unk5;
-		*recvPacket >> unk6;
+		*recvPacket >> unk;
+		*recvPacket >> unk;
+		*recvPacket >> unk;
 	}
 	catch(ByteBuffer::error &)
 	{
@@ -294,15 +285,13 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	mRequestID = 0;
 	//Pull the session key.
 
-	recvData.read(K, 40);
-
-	_crypt.Init(K);
-
 	BigNumber BNK;
+	recvData.read(K, 40);
+	_crypt.Init(K);
 	BNK.SetBinary(K, 40);
 
-	// checking if player is already connected
-	// disconnect current player and login this one(blizzlike)
+	//checking if player is already connected
+	//disconnect current player and login this one(blizzlike)
 
 	if(recvData.rpos() != recvData.wpos())
 		recvData.read((uint8*)lang.data(), 4);
@@ -377,7 +366,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	if(recvData.rpos() != recvData.wpos())
 		recvData >> pSession->m_muted;
 
-	for(uint32 i = 0; i < 8; ++i)
+	for(uint32 i = 0; i < 8; i++)
 		pSession->SetAccountData(i, NULL, true, 0);
 
 	if(sWorld.m_useAccountData)
@@ -387,10 +376,10 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 			CharacterDatabase.Execute("INSERT INTO account_data VALUES(%u, '', '', '', '', '', '', '', '', '')", AccountID);
 		else
 		{
+			char * d;
 			size_t len;
 			const char * data;
-			char * d;
-			for(i = 0; i < 8; ++i)
+			for(i = 0; i < 8; i++)
 			{
 				data = pResult->Fetch()[1+i].GetString();
 				len = data ? strlen(data) : 0;
@@ -417,9 +406,10 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 #endif
 
 	// Check for queue.
-	if( (sWorld.GetSessionCount() < sWorld.GetPlayerLimit()) || pSession->HasGMPermissions() ) {
+	if( (sWorld.GetSessionCount() < sWorld.GetPlayerLimit()) || pSession->HasGMPermissions() ) 
 		Authenticate();
-	} else {
+	else
+	{
 		// Queued, sucker.
 		uint32 Position = sWorld.AddQueuedSocket(this);
 		mQueued = true;
@@ -439,7 +429,10 @@ void WorldSocket::Authenticate()
 	mQueued = false;
 
 	if(!pSession)
+	{
+		DEBUG_LOG( "WorldSocket","Lost Session");
 		return;
+	}
 
 	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
@@ -451,7 +444,7 @@ void WorldSocket::Authenticate()
 	sAddonMgr.SendAddonInfoPacket(pAuthenticationPacket, (uint32)pAuthenticationPacket->rpos(), pSession);
 	pSession->_latency = _latency;
 
-	g_bufferPool.Deallocate(pAuthenticationPacket);
+	delete pAuthenticationPacket;
 	pAuthenticationPacket = NULL;
 
 	sWorld.AddSession(pSession);
@@ -835,49 +828,49 @@ unsigned int FastGUIDPack(const uint64 & oldguid, unsigned char * buffer, uint32
 	int j = 1 + pos;
 	uint8 * test = (uint8*)&oldguid;
 
-	if(*test) //7*8
+	if (*test) //7*8
 	{
 		buffer[j] = *test;
 		guidmask |= 1;
 		j++;
 	}
-	if(*(test+1)) //6*8
+	if (*(test+1)) //6*8
 	{
 		buffer[j] = *(test+1);
 		guidmask |= 2;
 		j++;
 	}
-	if(*(test+2)) //5*8
+	if (*(test+2)) //5*8
 	{
 		buffer[j] = *(test+2);
 		guidmask |= 4;
 		j++;
 	}
-	if(*(test+3)) //4*8
+	if (*(test+3)) //4*8
 	{
 		buffer[j] = *(test+3);
 		guidmask |= 8;
 		j++;
 	}
-	if(*(test+4)) //3*8
+	if (*(test+4)) //3*8
 	{
 		buffer[j] = *(test+4);
 		guidmask |= 16;
 		j++;
 	}
-	if(*(test+5))//2*8
+	if (*(test+5))//2*8
 	{
 		buffer[j] = *(test+5);
 		guidmask |= 32;
 		j++;
 	}
-	if(*(test+6))//1*8
+	if (*(test+6))//1*8
 	{
 		buffer[j] = *(test+6);
 		guidmask |= 64;
 		j++;
 	}
-	if(*(test+7)) //0*8
+	if (*(test+7)) //0*8
 	{
 		buffer[j] = *(test+7);
 		guidmask |= 128;

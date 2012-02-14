@@ -44,8 +44,7 @@ void WorldStateManager::CreateWorldState(uint32 uWorldStateId, uint32 uInitialVa
 void WorldStateManager::UpdateWorldState(uint32 uWorldStateId, uint32 uValue)
 {
 	WorldStateMap::iterator itr;
-	uint8 msgdata[10];
-	StackPacket data(SMSG_UPDATE_WORLD_STATE, msgdata, 10);
+	WorldPacket data(SMSG_UPDATE_WORLD_STATE, 20);
 
 	if( !m_states.size() )
 		return;
@@ -93,8 +92,6 @@ void WorldStateManager::SendWorldStates(Player* pPlayer)
 
 	// header
 	data << m_mapMgr->GetMapId();
-	// data << m_property1;
-	// data << m_property2;
 	data << pPlayer->GetZoneId();
 	data << pPlayer->GetAreaID();
 
@@ -102,7 +99,7 @@ void WorldStateManager::SendWorldStates(Player* pPlayer)
 	data << uint16(0);
 
 	// add states to packet
-	for(itr = m_states.begin(); itr != m_states.end(); ++itr)
+	for(itr = m_states.begin(); itr != m_states.end(); itr++)
 	{
 		if( itr->second.FactionMask != FACTION_MASK_ALL && itr->second.FactionMask != (int32)pPlayer->GetTeam() )
 			continue;
@@ -125,64 +122,59 @@ void WorldStateManager::SendWorldStates(Player* pPlayer)
 void WorldStateManager::ClearWorldStates(Player* pPlayer)
 {
 	// clears the clients view of world states for this map
-	uint8 msgdata[10];
-	StackPacket data(SMSG_INIT_WORLD_STATES, msgdata, 10);
+	WorldPacket data(SMSG_INIT_WORLD_STATES, 20);
 
-	// map = 0
-	// data1 = 0
-	// data2 = 0
-	// valcount = 0
+	// map=0
+	// data1=0
+	// data2=0
+	// valcount=0
 	data << uint32(0) << uint16(0) << uint16(0) << uint16(0);
 
 	// send
 	pPlayer->GetSession()->SendPacket(&data);
 }
 
-const string WorldStateManager::GetPersistantSetting(const char *szKeyName, const char *szDefaultValue)
+int32 WorldStateManager::GetPersistantSetting(uint32 keyVal, int32 defaultReturn)
 {
-	QueryResult * pResult = CharacterDatabase.Query("SELECT setting_value FROM worldstate_save_data WHERE setting_id = \"%s\"", 
-		CharacterDatabase.EscapeString(string(szKeyName)).c_str());
-
+	QueryResult * pResult = CharacterDatabase.Query("SELECT setting_value FROM worldstate_save_data WHERE setting_id = \'%u\'", keyVal);
 	if( pResult == NULL )
-		return string(szDefaultValue);
+		return defaultReturn;
 
-	string ret = string(pResult->Fetch()[0].GetString());
+	int32 ret = pResult->Fetch()[0].GetInt32();
 	delete pResult;
 	return ret;
 }
 
-void WorldStateManager::SetPersistantSetting(const char *szKeyName, const char *szValue)
+void WorldStateManager::SetPersistantSetting(uint32 keyVal, int32 Value)
 {
-	string pkey = string(szKeyName);
-	string pval = string(szValue);
-
-	pkey = CharacterDatabase.EscapeString(pkey);
-	pval = CharacterDatabase.EscapeString(pval);
-
-	CharacterDatabase.Execute("REPLACE INTO worldstate_save_data VALUES(\"%s\", \"%s\")", pkey.c_str(), pval.c_str());
+	CharacterDatabase.Execute("REPLACE INTO worldstate_save_data VALUES(\"%u\", \"%u\")", keyVal, Value);
 }
 
 //////////////////////////////////////////////////////////////////////////
-// Template Manager                                                     //
+// Template Manager
 //////////////////////////////////////////////////////////////////////////
 
-void WorldStateTemplateManager::LoadFromDB()
+void WorldStateTemplateManager::LoadFromDB(int32 mapid)
 {
-	QueryResult * pResult = WorldDatabase.Query("SELECT * FROM worldstate_template");
+	QueryResult * pResult = NULL;
+	if(mapid == -1)
+		pResult = WorldDatabase.Query("SELECT * FROM worldstate_template");
+	else
+		pResult = WorldDatabase.Query("SELECT * FROM worldstate_template WHERE mapid = '%i' OR mapid = '-1'", mapid);
+
 	if( pResult == NULL )
 		return;
 
 	Field *fields;
 	WorldStateTemplate tmpl;
-	int32 mapid;
-	do 
+	do
 	{
 		fields = pResult->Fetch();
 		mapid = fields[0].GetInt32();
 		tmpl.iZoneMask = fields[1].GetInt32();
 		tmpl.iFactionMask = fields[2].GetInt32();
 		tmpl.uField = fields[3].GetUInt32();
-		tmpl.uValue = fields[4].GetUInt32();
+		tmpl.uValue = WorldStateManager::GetPersistantSetting(tmpl.uField, fields[4].GetInt32());
 
 		if( mapid == -1 )
 		{
@@ -192,7 +184,7 @@ void WorldStateTemplateManager::LoadFromDB()
 		{
 			if( mapid >= NUM_MAPS )
 			{
-				Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Worldstate template for field %u on map %u (%s) contains out of range map.", 
+				Log.LargeErrorMessage(LARGERRORMESSAGE_WARNING, "Worldstate template for field %u on map %u (%s) contains out of range map.",
 					tmpl.uField, mapid, fields[5].GetString());
 
 				continue;
@@ -208,11 +200,11 @@ void WorldStateTemplateManager::ApplyMapTemplate(MapMgr* pmgr)
 {
 	WorldStateTemplateList::iterator itr = m_templatesForMaps[pmgr->GetMapId()].begin();
 	WorldStateTemplateList::iterator itrend = m_templatesForMaps[pmgr->GetMapId()].end();
-	for(; itr != itrend; ++itr)
+	for(; itr != itrend; itr++)
 		pmgr->GetStateManager().CreateWorldState(itr->uField, itr->uValue, itr->iFactionMask, itr->iZoneMask);
 
 	itr = m_general.begin();
 	itrend = m_general.end();
-	for(; itr != itrend; ++itr)
+	for(; itr != itrend; itr++)
 		pmgr->GetStateManager().CreateWorldState(itr->uField, itr->uValue, itr->iFactionMask, itr->iZoneMask);
 }

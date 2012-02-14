@@ -84,7 +84,7 @@ struct MailMessage
 
 typedef map<uint32, MailMessage> MessageMap;
 
-class Mailbox
+class SERVER_DECL Mailbox
 {
 private:
 	bool AddMessageToListingPacket(WorldPacket& data, MailMessage *msg);
@@ -115,7 +115,7 @@ public:
 };
 
 
-class MailSystem : public Singleton<MailSystem>, public EventableObject
+class SERVER_DECL MailSystem : public Singleton<MailSystem>, public EventableObject
 {
 private:
 	uint32 loopcount;
@@ -128,7 +128,7 @@ public:
 	void StartMailSystem();
 	void DeliverMessage(MailMessage* message);
 	void DeliverMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body,
-                        uint32 money, uint32 cod, uint64 item_guid, uint32 stationary, bool returned);
+						uint32 money, uint32 cod, uint64 item_guid, uint32 stationary, bool returned);
 	void ReturnToSender(MailMessage* message);
 	void SendAutomatedMessage(uint32 type, uint64 sender, uint64 receiver, string subject, string body, uint32 money,
 							  uint32 cod, uint64 item_guid, uint32 stationary);

@@ -119,7 +119,7 @@ bool ChatHandler::HandleWPMoveTypeCommand(const char* args, WorldSession *m_sess
 
 	uint32 option = atoi((char*)args);
 
-	if(option != 0 && option != 1 && option != 2)
+	if (option != 0 && option != 1 && option != 2)
 	{
 		std::stringstream ss;
 		ss << "Incorrect value." << endl;
@@ -131,7 +131,7 @@ bool ChatHandler::HandleWPMoveTypeCommand(const char* args, WorldSession *m_sess
 	}
 
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -224,7 +224,7 @@ bool ChatHandler::HandleWPShowCommand(const char* args, WorldSession *m_session)
 bool ChatHandler::HandleWPDeleteCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -272,7 +272,7 @@ bool ChatHandler::HandleWPDeleteCommand(const char* args, WorldSession *m_sessio
 bool ChatHandler::HandleWPChangeNoCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -378,7 +378,7 @@ bool ChatHandler::HandleWPFlagsCommand(const char* args, WorldSession *m_session
 bool ChatHandler::HandleWPMoveHereCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -490,7 +490,7 @@ bool ChatHandler::HandleWPWaitCommand(const char* args, WorldSession *m_session)
 bool ChatHandler::HandleWaypointGettextCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -584,7 +584,7 @@ bool ChatHandler::HandleWaypointForwardTextCommand(const char* args, WorldSessio
 bool ChatHandler::HandleWaypointBackwardTextCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -690,7 +690,7 @@ bool ChatHandler::HandleWPSpellToCastCommand(const char* args, WorldSession *m_s
 bool ChatHandler::HandleWPStandStateCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -811,7 +811,7 @@ bool ChatHandler::HandleWPEmoteCommand(const char* args, WorldSession *m_session
 bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session,  "No selection.");
 		return true;
@@ -870,7 +870,7 @@ bool ChatHandler::HandleWPSkinCommand(const char* args, WorldSession *m_session)
 bool ChatHandler::HandleWPInfoCommand(const char* args, WorldSession *m_session)
 {
 	uint64 guid = m_session->GetPlayer()->GetSelection();
-	if(guid == 0)
+	if (guid == 0)
 	{
 		SystemMessage(m_session, "No selection.");
 		return true;
@@ -977,8 +977,8 @@ bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession *m_session)
 
 bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_session)
 {
-	Creature* cr =
-		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
+	Creature* cr = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
+
 	if(!cr)
 	{
 		SystemMessage(m_session, "You should select a creature.");
@@ -1054,7 +1054,6 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		wp->backwardSpellToCast = 0;
 		wp->forwardSayText = "";
 		wp->backwardSayText = "";
-
 		cr->GetAIInterface()->addWayPoint(wp);
 	}
 
@@ -1064,9 +1063,9 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		cr->GetAIInterface()->m_moveType = 1;
 		WorldDatabase.Execute("UPDATE creature_spawns SET movetype = 1 WHERE id = %u", cr->GetSQL_id());
 	}
+
 	m_session->GetPlayer()->waypointunit = cr->GetAIInterface();
 	cr->GetAIInterface()->showWayPoints(m_session->GetPlayer(),cr->GetAIInterface()->m_WayPointsShowBackwards);
-
 	return true;
 }
 

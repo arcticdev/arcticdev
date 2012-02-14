@@ -10,15 +10,12 @@
 
 TerrainMgr::TerrainMgr(string MapPath, uint32 MapId, bool Instanced) : mapPath(MapPath), mapId(MapId), Instance(Instanced)
 {
-#ifndef USE_MEMORY_MAPPING_FOR_MAPS
 	FileDescriptor = NULL;
-#endif
 	CellInformation = NULL;
 }
 
 TerrainMgr::~TerrainMgr()
 {
-#ifndef USE_MEMORY_MAPPING_FOR_MAPS
 	if(FileDescriptor)
 	{
 		// Free up our file pointer.
@@ -43,26 +40,6 @@ TerrainMgr::~TerrainMgr()
 		delete [] CellInformation;
 		CellInformation = NULL;
 	}
-#else
-
-	mutex.Acquire();
-
-	// Big memory cleanup, whee.
-	for(uint32 x = 0; x < _sizeX; ++x)
-	{
-		delete [] CellInformation[x];
-	}
-	delete [] CellInformation;
-
-#ifdef WIN32
-	UnmapViewOfFile(m_Memory);
-	CloseHandle(hMap);
-	CloseHandle(hMappedFile);
-#else
-#error moo
-#endif
-	mutex.Release();
-#endif
 }
 
 bool TerrainMgr::LoadTerrainHeader()
@@ -72,15 +49,10 @@ bool TerrainMgr::LoadTerrainHeader()
 
 	snprintf(File, 200, "%s/Map_%u.bin", mapPath.c_str(), (unsigned int)mapId);
 
-#ifndef USE_MEMORY_MAPPING_FOR_MAPS
-
 	FileDescriptor = fopen(File, "rb");
-
 	if(FileDescriptor == 0)
-	{
 		//Log.Error("TerrainMgr", "Map load failed for %s. Missing file?", File);
 		return false;
-	}
 
 	/* check file size */
 	fseek(FileDescriptor, 0, SEEK_END);
@@ -115,66 +87,10 @@ bool TerrainMgr::LoadTerrainHeader()
 	}
 
 	return true;
-
-#else
-#ifdef WIN32
-	
-	DWORD sizehigh;
-
-	hMappedFile = CreateFile(File, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_ARCHIVE, NULL);
-	if(hMappedFile == INVALID_HANDLE_VALUE)
-		return false;
-
-	hMap = CreateFileMapping(hMappedFile, NULL, PAGE_READONLY, 0, 0, NULL);
-	if(hMap==INVALID_HANDLE_VALUE)
-	{
-		CloseHandle(hMappedFile);
-		return false;
-	}
-
-	mFileSize = GetFileSize(hMappedFile, &sizehigh);
-
-	ASSERT(ReadFile(hMappedFile, CellOffsets, TERRAIN_HEADER_SIZE, &sizehigh, NULL));
-	ASSERT(sizehigh==TERRAIN_HEADER_SIZE);
-
-	SetFilePointer(hMappedFile, 0, NULL, FILE_BEGIN);
-	m_Memory = (uint8*)MapViewOfFile(hMap, FILE_MAP_READ, 0, TERRAIN_HEADER_SIZE, mFileSize-TERRAIN_HEADER_SIZE);
-	if(m_Memory==NULL)
-	{
-		CloseHandle(hMap);
-		CloseHandle(hMappedFile);
-	}
-
-	// Allocate both storage arrays.
-	CellInformation = new CellTerrainInformation**[_sizeX];
-	for(uint32 x = 0; x < _sizeX; ++x)
-	{
-		CellInformation[x] = new CellTerrainInformation*[_sizeY];
-		for(uint32 y = 0; y < _sizeY; ++y)
-		{
-			// Set pointer
-			if(CellOffsets[x][y] != 0)
-				CellInformation[x][y] = (CellTerrainInformation*)m_Memory+CellOffsets[x][y]-TERRAIN_HEADER_SIZE;
-			else
-				CellInformation[x][y] = 0;
-		}
-	}
-
-#else
-#error unimplemented in *nix
-#endif
-	return true;
-#endif
 }
 
 bool TerrainMgr::LoadCellInformation(uint32 x, uint32 y)
 {
-#ifdef USE_MEMORY_MAPPING_FOR_MAPS
-	if(CellOffsets[x][y]==0)
-		return false;
-	else
-		return true;
-#else
 	if(!FileDescriptor)
 		return false;
 
@@ -184,7 +100,7 @@ bool TerrainMgr::LoadCellInformation(uint32 x, uint32 y)
 	// Find our offset in our cached header.
 	uint32 Offset = CellOffsets[x][y];
 
-	// If our offset = 0, it means we don't have cell information for 
+	// If our offset = 0, it means we don't have cell information for
 	// these coords.
 	if(Offset == 0)
 		return false;
@@ -198,7 +114,7 @@ bool TerrainMgr::LoadCellInformation(uint32 x, uint32 y)
 		mutex.Release();
 		return true;
 	}
-	
+
 	// Seek to our specified offset.
 	if(fseek(FileDescriptor, Offset, SEEK_SET) == 0)
 	{
@@ -216,14 +132,10 @@ bool TerrainMgr::LoadCellInformation(uint32 x, uint32 y)
 		return true;
 	else
 		return false;
-#endif
 }
 
 bool TerrainMgr::UnloadCellInformation(uint32 x, uint32 y)
 {
-#ifdef USE_MEMORY_MAPPING_FOR_MAPS
-	return true;
-#else
 	uint32 Start = getMSTime();
 
 	assert(!Instance);
@@ -240,7 +152,6 @@ bool TerrainMgr::UnloadCellInformation(uint32 x, uint32 y)
 	DEBUG_LOG("TerrainMgr","Unloaded cell information for cell [%u][%u] in %ums.", x, y, getMSTime() - Start);
 	// Success
 	return true;
-#endif
 }
 
 uint8 TerrainMgr::GetWaterType(float x, float y)
@@ -355,6 +266,6 @@ void TerrainMgr::CellGoneActive(uint32 x, uint32 y)
 void TerrainMgr::CellGoneIdle(uint32 x, uint32 y)
 {
 	// If we're not an instance, unload our cell info.
-	if(!Instance && CellInformationLoaded(x, y) && sWorld.UnloadMapFiles)
+	if(!Instance && CellInformationLoaded(x, y))
 		UnloadCellInformation(x, y);
 }
