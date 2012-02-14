@@ -58,7 +58,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 	m_oppFactsInRange.clear();
 }
 
-Object::~Object( )
+Object::~Object()
 {
 	if(m_phaseAura)
 	{
@@ -66,7 +66,7 @@ Object::~Object( )
 		m_phaseAura = NULL;
 	}
 
-	if(m_objectTypeId != TYPEID_ITEM)
+	if(m_objectTypeId != TYPEID_ITEM && m_objectTypeId != TYPEID_CONTAINER)
 		ASSERT(!m_inQueue);
 
 	if (IsInWorld() && m_objectTypeId != TYPEID_ITEM && m_objectTypeId != TYPEID_CONTAINER)
@@ -183,7 +183,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 
 	case TYPEID_DYNAMICOBJECT:
 		{
-			flags = 0x0150;
+			flags = 0x0048;
 		}break;
 
 	case TYPEID_CORPSE:
@@ -352,7 +352,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	{
 		if(pThis && pThis->m_TransporterGUID != 0)
 			flags2 |= 0x200;
-		else if(m_objectTypeId==TYPEID_UNIT && TO_CREATURE(this)->m_transportGuid != 0 && TO_CREATURE(this)->m_transportPosition != NULL)
+		else if(m_objectTypeId == TYPEID_UNIT && TO_CREATURE(this)->m_transportGuid != 0 && TO_CREATURE(this)->m_transportPosition != NULL)
 			flags2 |= 0x200;
 		else if (IsUnit() && TO_UNIT(this)->m_CurrentVehicle != NULL)
 			flags2 |= 0x200;
@@ -440,7 +440,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
 				*data << pThis->m_TransporterUnk << uint8(0);
 			}
-			else if(m_objectTypeId==TYPEID_UNIT && TO_CREATURE(this)->m_transportPosition != NULL)
+			else if(m_objectTypeId == TYPEID_UNIT && TO_CREATURE(this)->m_transportPosition != NULL)
 			{
 				*data << TO_CREATURE(this)->m_transportNewGuid;
 				*data << uint32(HIGHGUID_TYPE_TRANSPORTER);
@@ -946,12 +946,12 @@ void Object::AddToWorld(MapMgr* pMapMgr)
 	mSemaphoreTeleport = false;
 }
 
-//Unlike addtoworld it pushes it directly ignoring add pool
-//this can only be called from the thread of mapmgr!!!
+// Unlike addtoworld it pushes it directly ignoring add pool
+// this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr* mgr)
 {
-	ASSERT(mgr!=NULL);
-	if(mgr==NULL)
+	ASSERT(mgr != NULL);
+	if(mgr == NULL)
 	{
 		// Reset these so session will get updated properly.
 		mSemaphoreTeleport = false;
@@ -962,7 +962,7 @@ void Object::PushToWorld(MapMgr* mgr)
 			Log.Error("Object","Kicking Player %s due to empty MapMgr;",TO_PLAYER(this)->GetName());
 			TO_PLAYER(this)->GetSession()->LogoutPlayer(false);
 		}
-		return; //instance add failed
+		return; // instance add failed
 	}
 
 	m_mapId=mgr->GetMapId();
@@ -1011,7 +1011,7 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 
 	if(index1 > 4)
 	{
-		sLog.outError("Object::SetByteValue: wrong offset %u", index1);
+		sLog.outError("Object: SetByteValue: wrong offset %u", index1);
 		return;
 	}
 
