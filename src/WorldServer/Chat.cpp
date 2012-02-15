@@ -479,7 +479,7 @@ void CommandTableStorage::Init()
 		{ "mount",                 'm', &ChatHandler::HandleMountCommand, "Mounts into modelid x.", NULL, 0, 0, 0 },
 		{ "dismount",              'm', &ChatHandler::HandleDismountCommand, "Dismounts.", NULL, 0, 0, 0 },
 		{ "fulldismount",          'm', &ChatHandler::HandleFullDismountCommand, "Force a player to full dismount (taxi)",  NULL, 0, 0, 0 },
-		{ "gm",                    '0', &ChatHandler::HandleGMListCommand, "Shows active GM's", NULL, 0, 0, 0 },
+		{ "gmlist",                '0', &ChatHandler::HandleGMListCommand, "Shows active GM's", NULL, 0, 0, 0 },
 		{ "gmoff",                 't', &ChatHandler::HandleGMOffCommand, "Sets GM tag off", NULL, 0, 0, 0 },
 		{ "gmon",                  't', &ChatHandler::HandleGMOnCommand, "Sets GM tag on", NULL, 0, 0, 0 },
 		{ "gps",                   '0', &ChatHandler::HandleGPSCommand, "Shows Position", NULL, 0, 0, 0 },

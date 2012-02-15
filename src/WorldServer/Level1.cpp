@@ -43,13 +43,8 @@ bool ChatHandler::HandleWAnnounceCommand(const char* args, WorldSession *m_sessi
 	return true;
 }
 
-
 bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 {
-	/*uint32 newbytes = m_session->GetPlayer( )->GetUInt32Value(PLAYER_BYTES_2) | 0x8;
-	m_session->GetPlayer( )->SetUInt32Value( PLAYER_BYTES_2, newbytes);
-
-	GreenSystemMessage(m_session, "GM Flag Set.");*/
 	GreenSystemMessage(m_session, "Setting GM Flag on yourself...");
 	if(m_session->GetPlayer()->bGMTagOn)
 		RedSystemMessage(m_session, "GM Flag is already set on. Use !gmoff to disable it.");
@@ -63,13 +58,8 @@ bool ChatHandler::HandleGMOnCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
-
 bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 {
-	//uint32 newbytes = m_session->GetPlayer( )->GetUInt32Value(PLAYER_BYTES_2) & ~(0x8);
-	//m_session->GetPlayer( )->SetUInt32Value( PLAYER_BYTES_2, newbytes);
-
-	//GreenSystemMessage(m_session, "GM Flag Unset.");
 	GreenSystemMessage(m_session, "Unsetting GM Flag on yourself...");
 	if(!m_session->GetPlayer()->bGMTagOn)
 		RedSystemMessage(m_session, "GM Flag not set. Use !gmon to enable it.");
@@ -82,7 +72,6 @@ bool ChatHandler::HandleGMOffCommand(const char* args, WorldSession *m_session)
 
 	return true;
 }
-
 
 bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 {
@@ -111,7 +100,6 @@ bool ChatHandler::HandleGPSCommand(const char* args, WorldSession *m_session)
 	return true;
 }
 
-
 bool ChatHandler::HandleKickCommand(const char* args, WorldSession *m_session)
 {
 
@@ -138,11 +126,6 @@ bool ChatHandler::HandleKickCommand(const char* args, WorldSession *m_session)
 			RedSystemMessage(m_session, "You cannot kick %s, as they are a higher level gm than you.", chr->GetName());
 			return true;
 		}
-		/*if(m_session->GetSecurity() < chr->GetSession()->GetSecurity())
-		{
-			SystemMessage(m_session, "You cannot kick %s, as he is a higher GM level than you.", chr->GetName());
-			return true;
-		}*/ // we might have to re-work this
 
 		char msg[200];
 		snprintf(msg, 200, "%s%s was kicked by %s (%s)", MSG_COLOR_WHITE, chr->GetName(), m_session->GetPlayer()->GetName(), kickreason.c_str());
