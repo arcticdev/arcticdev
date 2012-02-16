@@ -159,7 +159,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 				// Try to find a saved instance and
 				// do not handle Hyjal Inn (trigger 4319), since we need a unique mapid when generating our instance_id.
 
-				if( id != 4319 && pMi && ( pMi->type == INSTANCE_RAID || _player->iInstanceType >= MODE_HEROIC && pMi->type == INSTANCE_MULTIMODE ) )
+				if( id != 4319 && pMi && ( pMi->type == INSTANCE_RAID || _player->iInstanceType >= MODE_HEROIC_5MEN && pMi->type == INSTANCE_MULTIMODE ) )
 				{
 					//Do we have a saved instance we should use?
 					Instance * in = NULL;

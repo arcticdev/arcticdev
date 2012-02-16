@@ -1117,18 +1117,18 @@ uint8 WorldSession::CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldS
 			return AREA_TRIGGER_FAILURE_NO_RAID;
 
 		//Are we trying to enter a non-heroic instance in heroic mode?
-		if( pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
+		if( pPlayer->iInstanceType >= MODE_HEROIC_5MEN && pMapInfo->type != INSTANCE_MULTIMODE && pMapInfo->type != INSTANCE_NULL)
 			return AREA_TRIGGER_FAILURE_NO_HEROIC;
 
 		//Are we trying to enter a saved raid/heroic instance?
-		if( pMapInfo->type == INSTANCE_RAID || pPlayer->iInstanceType >= MODE_HEROIC && pMapInfo->type != INSTANCE_NULL )
+		if( pMapInfo->type == INSTANCE_RAID || pPlayer->iInstanceType >= MODE_HEROIC_5MEN && pMapInfo->type != INSTANCE_NULL )
 		{
 			//Raid queue, did we reach our max amt of players?
 			if( pPlayer->m_playerInfo && pMapInfo->playerlimit >= 5 && (int32)((pMapInfo->playerlimit - 5)/5) < pPlayer->m_playerInfo->subGroup)
 				return AREA_TRIGGER_FAILURE_IN_QUEUE;
 
 			// Need http://www.wowhead.com/?spell=46591 to enter Magisters Terrace
-			if( pMapInfo->mapid == 585 && pPlayer->iInstanceType >= MODE_HEROIC && !pPlayer->HasSpell(46591)) // Heroic Countenance
+			if( pMapInfo->mapid == 585 && pPlayer->iInstanceType >= MODE_HEROIC_5MEN && !pPlayer->HasSpell(46591)) // Heroic Countenance
 				return AREA_TRIGGER_FAILURE_NO_HEROIC;
 
 			//All Heroic instances are automatically unlocked when reaching lvl 80, no keys needed here.

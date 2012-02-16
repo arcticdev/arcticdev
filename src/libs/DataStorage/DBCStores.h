@@ -21,7 +21,7 @@ struct AchievementEntry
     char* name; // 4
     // uint32 unk1[14]; // 5-19
     // uint32 name_flags; // 20
-    // char* description; // 21
+    char* description; // 21
     // char *descriptionextra[15]; // 22-36
     // uint32 desc_flags; // 37
     uint32 categoryId; // 38
@@ -1196,6 +1196,8 @@ struct MapEntry
 	float start_y;			// enter y coordinate (if exist single entry)
 	uint32 addon;			// 0-original maps, 1-tbc addon, 2-wotlk addon
 	uint32 maxPlayers;		// max players
+
+	bool israid() { return map_type == 2; } 
 };
 
 struct ItemRandomSuffixEntry

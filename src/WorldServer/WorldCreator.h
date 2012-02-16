@@ -19,11 +19,28 @@ enum INSTANCE_TYPE
 	INSTANCE_MULTIMODE,
 };
 
+enum MAPENTRY_TYPE
+{
+	BATTLEGROUND            = 0,
+	INSTANCE                = 1,
+	RAID                    = 2,
+	ARENA                   = 4,
+};
+
 enum INSTANCE_MODE
 {
-    MODE_NORMAL = 0,
-    MODE_HEROIC = 1,
-    MODE_EPIC   = 2,
+    MODE_NORMAL_5MEN        = 0,
+    MODE_HEROIC_5MEN        = 1,
+    MODE_EPIC               = 2,
+};
+
+enum RAID_MODE
+{
+    MODE_NORMAL_10MEN       = 0,
+    MODE_NORMAL_25MEN       = 1,
+    MODE_HEROIC_10MEN       = 2,
+    MODE_HEROIC_25MEN       = 3,
+    TOTAL_RAID_MODES        = 4,
 };
 
 enum INSTANCE_ABORT_ERROR
@@ -36,7 +53,7 @@ enum INSTANCE_ABORT_ERROR
 	INSTANCE_ABORT_NON_CLIENT_TYPE				= 0x06,
 	INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE	= 0x07,
 	INSTANCE_ABORT_NOT_IN_RAID_GROUP			= 0x08,
-	INSTANCE_OK = 0x10,
+	INSTANCE_OK                                 = 0x10,
 };
 
 enum OWNER_CHECK
@@ -72,7 +89,7 @@ class SERVER_DECL FormationMgr : public Singleton < FormationMgr >
 	map<uint32, Formation*> m_formations;
 public:
 	typedef std::map<uint32, Formation*> FormationMap;
-    FormationMgr();
+	FormationMgr();
 	~FormationMgr();
 
 	Formation * GetFormation(uint32 sqlid)
@@ -137,7 +154,6 @@ public:
 
 	// Has instance expired? Can player join?
 	ARCTIC_INLINE uint8 PlayerOwnsInstance(Instance * pInstance, Player* pPlayer)
-
 	{
 		// expired?
 		if( HasInstanceExpired( pInstance) )
@@ -146,8 +162,8 @@ public:
 			return OWNER_CHECK_EXPIRED;
 		}
 
-		//Valid map?
-		if( !pInstance->m_mapInfo )
+		// Valid map?
+		if( !pInstance->m_mapInfo || !dbcMap.LookupEntry(pInstance->m_mapId))
 			return OWNER_CHECK_NOT_EXIST;
 
 		// Triggercheat in use?
@@ -155,7 +171,7 @@ public:
 			return OWNER_CHECK_TRIGGERPASS;
 
 		// Matching the requested mode?
-		if( pInstance->m_difficulty != pPlayer->iInstanceType )
+		if( pInstance->m_difficulty != (dbcMap.LookupEntry(pInstance->m_mapId)->israid() ? pPlayer->iRaidType : pPlayer->iInstanceType) )
 			return OWNER_CHECK_DIFFICULT;
 
 		//Reached player limit?
@@ -205,8 +221,12 @@ public:
 	// has an instance expired?
 	ARCTIC_INLINE bool HasInstanceExpired(Instance * pInstance)
 	{
+		MapEntry* map = dbcMap.LookupEntry(pInstance->m_mapId);
+		if(map && map->israid())
+			return false;
+
 		// expired? (heroic instances never expire, they are reset every day at 05:00).
-		if( pInstance->m_difficulty != MODE_HEROIC && pInstance->m_expiration && (UNIXTIME+20) >= pInstance->m_expiration)
+		if( pInstance->m_difficulty == 0 && pInstance->m_expiration && (UNIXTIME+20) >= pInstance->m_expiration)
 			return true;
 
 		return false;

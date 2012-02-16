@@ -66,8 +66,8 @@ Group::Group(bool Assign)
 	m_groupFlags = 0;
 	memset(m_targetIcons, 0, sizeof(uint64) * 8);
 	m_isqueued = false;
-	m_difficulty = MODE_NORMAL;
-	m_raidDifficulty = MODE_NORMAL;
+	m_difficulty = MODE_NORMAL_5MEN;
+	m_raidDifficulty = MODE_NORMAL_5MEN;
 	m_assistantLeader = m_mainAssist = m_mainTank = NULL;
 
 	m_prayerOfMendingCount = 0;

@@ -818,7 +818,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 				if(	(in->m_mapInfo->type == INSTANCE_NONRAID || in->m_mapInfo->type == INSTANCE_MULTIMODE )&&  plr->GetGroupID() == in->m_creatorGroup )
 				{
 
-					if( in->m_difficulty == MODE_HEROIC && in->m_SavedPlayers.size() )//heroic instances can't be reset once they are saved.
+					if( in->m_difficulty == MODE_HEROIC_5MEN && in->m_SavedPlayers.size() )//heroic instances can't be reset once they are saved.
 					{
 						plr->GetSession()->SystemMessage("Heroic instances are reset daily at 08:00 CET!");
 						continue;
@@ -869,7 +869,7 @@ void InstanceMgr::ResetHeroicInstances()
 				itr++;
 
 				// use a "soft" delete here.
-				if(in->m_difficulty == MODE_HEROIC)
+				if(in->m_difficulty == MODE_HEROIC_5MEN)
 					_DeleteInstance(in, false);
 			}
 		}
@@ -1152,7 +1152,7 @@ MapMgr* InstanceMgr::CreateBattlegroundInstance(uint32 mapid)
 	pInstance->m_creation = UNIXTIME;
 	pInstance->m_creatorGroup = 0;
 	pInstance->m_creatorGuid = 0;
-	pInstance->m_difficulty = MODE_NORMAL;
+	pInstance->m_difficulty = MODE_NORMAL_5MEN;
 	pInstance->m_expiration = 0;
 	pInstance->m_instanceId = ret->GetInstanceID();
 	pInstance->m_isBattleground = true;

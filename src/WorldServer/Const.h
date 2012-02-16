@@ -6,5 +6,4 @@
 
 #pragma once
 
-#define NUM_MAPS 800
-// const unsigned NUM_MAPS = 800;
+const unsigned NUM_MAPS = 800;

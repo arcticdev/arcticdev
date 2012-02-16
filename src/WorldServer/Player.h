@@ -1792,7 +1792,10 @@ public:
 	bool resend_speed;
 	bool rename_pending;
 	bool recustomize_pending;
+
 	uint32 iInstanceType;
+	uint32 iRaidType;
+
 	ARCTIC_INLINE void SetName(string& name) { m_name = name; }
 	// spell to (delay, last time)
 
@@ -1806,7 +1809,7 @@ public:
 
 	ARCTIC_INLINE void AddComboPoints(uint64 target, uint8 count)
 	{
-        if(m_comboTarget == target)
+		if(m_comboTarget == target)
 			m_comboPoints += count;
 		else
 		{

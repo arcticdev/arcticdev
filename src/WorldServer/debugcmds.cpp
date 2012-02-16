@@ -142,9 +142,16 @@ bool ChatHandler::HandleDebugSetPhase(const char* args, WorldSession *m_session)
 	}
 
 	int32 phaseId = atoi(args);
-	if(phaseId == 0 || phaseId < -1)
+	if(phaseId < -1)
 	{
 		m_session->GetPlayer()->BroadcastMessage("You must specify a valid phase id.");
+		return true;
+	}
+	if(phaseId == 0)
+	{
+		pUnit->SetPhase(1);
+		m_session->GetPlayer()->BroadcastMessage("Resetting Phase.");
+		return true;
 	}
 
 	pUnit->SetPhase( phaseId );
@@ -591,11 +598,11 @@ bool ChatHandler::HandleThreatListCommand(const char* args, WorldSession *m_sess
 	{
 		if(!itr->second)
 		{
-			itr++;
+			++itr;
 			continue;
 		}
 		sstext << "guid: " << itr->first->GetGUID() << " | threat: " << itr->second << "| threat after mod: " << (itr->second + itr->first->GetThreatModifier()) << "\n";
-		itr++;
+		++itr;
 	}
 
 	SendMultilineMessage(m_session, sstext.str().c_str());
@@ -748,8 +755,8 @@ bool ChatHandler::HandleDebugDumpCoordsCommmand(const char * args, WorldSession 
 	return true;
 }
 
-// As requested by WaRxHeAd for database development.
-// This should really only be available in special cases and NEVER on real servers... -DGM
+//As requested by WaRxHeAd for database development.
+//This should really only be available in special cases and NEVER on real servers... -DGM
 bool ChatHandler::HandleSQLQueryCommand(const char* args, WorldSession *m_session)
 {
 	#ifdef _ONLY_FOOLS_TRY_THIS_

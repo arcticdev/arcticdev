@@ -2506,7 +2506,7 @@ bool ObjectMgr::HandleInstanceReputationModifiers(Player* pPlayer, Unit* pVictim
 		return false;
 
 	is_boss = (TO_CREATURE( pVictim )->proto && TO_CREATURE( pVictim )->proto->boss) ? true : false;
-	is_heroic = (pPlayer->IsInWorld() && pPlayer->iInstanceType == MODE_HEROIC && pPlayer->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
+	is_heroic = (pPlayer->IsInWorld() && pPlayer->iInstanceType == MODE_HEROIC_5MEN && pPlayer->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL) ? true : false;
 
 	// Apply the bonuses as normal.
 	int32 replimit;
