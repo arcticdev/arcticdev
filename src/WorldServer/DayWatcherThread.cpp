@@ -164,7 +164,8 @@ bool DayWatcherThread::run()
 	pthread_mutex_init(&abortmutex,NULL);
 	pthread_cond_init(&abortcond,NULL);
 #endif
-	uint32 interv = 120000; // Daywatcher check interval (in ms), must be >> 30secs !
+	uint32 interv = 120000;//Daywatcher check interval (in ms), must be >> 30secs !
+	uint32 counter = 0;
 
 	while(m_threadRunning)
 	{
@@ -184,14 +185,14 @@ bool DayWatcherThread::run()
 		// reset will occur daily between 07:59:00 CET and 08:01:30 CET (players inside will get 60 sec countdown)
 		// 8AM = 25200s
 		uint32 umod = uint32(currenttime + 3600) % 86400;
-		if(!m_heroic_reset && umod >= 25140 && umod <= 25140 + (interv/1000) + 30 )  
+		if(!m_heroic_reset && umod >= 25140 && umod <= 25140 + (interv/1000) + 30 )
 		{
 			//It's approx 8AM, let's reset (if not done so already)
 			Reset_Heroic_Instances();
 			m_heroic_reset = true;
 		}
 		if(m_heroic_reset && umod > 25140 + (interv/1000) + 30 )
-			m_heroic_reset = false;		
+			m_heroic_reset = false;
 
 		if(has_timeout_expired(&local_currenttime, &local_last_eventid_time, HOURLY))
 		{
@@ -231,6 +232,7 @@ bool DayWatcherThread::run()
 					{
 						if(!SpawnEventId((*itr)->eventId))
 							break;
+
 						(*itr)->isactive = true;
 						time_t activated = (*itr)->lastactivated = UNIXTIME;
 						update_event_settings((*itr)->eventId, activated);
@@ -244,17 +246,31 @@ bool DayWatcherThread::run()
 			m_dirty = true;
 		}
 
-		if(runEvents = true)
+		if(runEvents = true) // We run checks every 2 minutes.
 		{
 			if(_loaded)
 			{
 				runEvents = false;
 				bool monthexpired = false;
-				Log.Notice("DayWatcherThread", "Running Daily In Game Events checks...");
+				counter++;
+				/* If we used sWorld.SpamWaitTime, we would do counter == (sWorld.SpamWaitTime/2 + 3)
+				This would be say 30 minutes in config, so 30/2 = 15 + 2 = 17 and we set counter to 2
+				every time so 17 - 2 = 15 so 15x2 for every two minutes = 30 minutes timings.*/
+				if(counter <= 2) // First ticks
+				{
+					Log.Notice("DayWatcherThread", "Running In Game Events checks...");
+				}
+				if(counter == 17/*15 + 2*/) // Tick every 30 minutes and reset.
+				{
+					Log.Notice("DayWatcherThread", "Running In Game Events checks...");
+					counter = 2;
+				}
+
 				for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
 				{
 					if((*itr)->eventbyhour)
 						continue;
+
 					if((*itr)->isactive)
 					{
 						if((*itr)->lastactivated && has_eventid_expired((*itr)->activedays, (*itr)->lastactivated))
@@ -405,7 +421,7 @@ void DayWatcherThread::update_arena()
 						//if(power < 1.0)
 						//	power = 1.0;
 
-						double divisor = pow(((double)(2.71828)), power);						
+						double divisor = pow(((double)(2.71828)), power);
 						divisor *= 1639.28;
 						divisor += 1.0;
 						//if(divisor < 1.0)
@@ -442,7 +458,7 @@ void DayWatcherThread::update_arena()
 			if(orig_arenapoints != arenapoints)
 			{
 				plr = objmgr.GetPlayer(guid);
-				if(plr != NULL)
+				if(plr!=NULL)
 				{
 					plr->m_arenaPoints = arenapoints;
 

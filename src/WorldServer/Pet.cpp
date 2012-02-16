@@ -109,14 +109,17 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);	// better set this one
 
 	// Fields common to both lock summons and pets
-	uint32 level = (m_Owner->GetUInt32Value( UNIT_FIELD_LEVEL ) - 5);
+	int32 level = (m_Owner->GetUInt32Value( UNIT_FIELD_LEVEL ) + (m_Owner->getClass() == HUNTER ? - 5 : 0));
+
+	if(level < 1)
+		level = 1; // Double check.
+
 	if( type & 0x2 && created_from_creature != NULL && created_from_creature->getLevel() > level)
 	{
 		level = created_from_creature->getLevel();
 	}
 
-	SetUInt32Value( UNIT_FIELD_LEVEL, level);
-
+	SetUInt32Value(UNIT_FIELD_LEVEL, level);
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,  ci->Male_DisplayID);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID, ci->Male_DisplayID);
 	SetSummonedByGUID(owner->GetGUID());
@@ -143,8 +146,9 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 			m_name = "Shadowfiend";
 		else
 			m_name = sWorld.GenerateName();
-
-	} else {
+	}
+	else
+	{
 		SetUInt32Value(UNIT_FIELD_BYTES_0, 2048 | (0 << 24));
 		SetUInt32Value(UNIT_FIELD_BASEATTACKTIME, 2000);
 		SetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME, 2000); // Supalosa: 2.00 normalized attack speed
@@ -157,8 +161,8 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 		}
 		else
 		{
-		SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, created_from_creature->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS));
-		SetFloatValue(UNIT_FIELD_COMBATREACH, created_from_creature->GetFloatValue(UNIT_FIELD_COMBATREACH));
+			SetFloatValue(UNIT_FIELD_BOUNDINGRADIUS, created_from_creature->GetFloatValue(UNIT_FIELD_BOUNDINGRADIUS));
+			SetFloatValue(UNIT_FIELD_COMBATREACH, created_from_creature->GetFloatValue(UNIT_FIELD_COMBATREACH));
 		}
 
 		// These need to be checked.
