@@ -71,6 +71,7 @@ void Vehicle::InitSeats(uint32 vehicleEntry, Player* pRider)
 	}
 
 	Initialised = true;
+	InstallAccessories();
 
 	if( pRider != NULL)
 		AddPassenger( pRider );
@@ -216,7 +217,7 @@ void Vehicle::Despawn(uint32 delay, uint32 respawntime)
 		MapCell * pCell = m_mapMgr->GetCellByCoords(m_spawnLocation.x, m_spawnLocation.y);
 		if(!pCell)
 			pCell = m_mapCell;
-
+	
 		ASSERT(pCell);
 		pCell->_respawnObjects.insert(TO_OBJECT(this));
 		sEventMgr.RemoveEvents(this);
@@ -296,7 +297,7 @@ void Vehicle::AddPassenger(Unit* pPassenger)
 	}
 }
 
-void Vehicle::AddPassenger(Unit* pPassenger, uint8 requestedseat)
+void Vehicle::AddPassenger(Unit* pPassenger, uint8 requestedseat, bool force /*= false*/)
 {
 	// Look at how fancy we are, we get to request a slot for ourselves!
 	if(!m_maxPassengers || !m_seatSlotMax) //how is this happening?
@@ -313,10 +314,24 @@ void Vehicle::AddPassenger(Unit* pPassenger, uint8 requestedseat)
 
 	if(requestedseat > 0)
 	{
-		if(!m_passengers[requestedseat] && m_vehicleSeats[requestedseat] && seatisusable[requestedseat] == true) // Slot available?
+		if(force)
 		{
-			_AddToSlot(pPassenger, requestedseat );
-			return;
+			if(m_vehicleSeats[requestedseat] && seatisusable[requestedseat] == true) // Slot available?
+			{
+				if(m_passengers[requestedseat])
+					RemovePassenger(m_passengers[requestedseat]);
+
+				_AddToSlot(pPassenger, requestedseat);
+				return;
+			}
+		}
+		else
+		{
+			if(!m_passengers[requestedseat] && m_vehicleSeats[requestedseat] && seatisusable[requestedseat] == true) // Slot available?
+			{
+				_AddToSlot(pPassenger, requestedseat );
+				return;
+			}
 		}
 	}
 	else
@@ -358,6 +373,9 @@ uint8 Vehicle::GetPassengerSlot(Unit* pPassenger)
 
 void Vehicle::RemovePassenger(Unit* pPassenger)
 {
+	if(!pPassenger) // We have enough problems that we need to do this :(
+		return;
+
 	Vehicle* pThis = TO_VEHICLE(this);
 
 	uint8 slot = pPassenger->m_inVehicleSeatId;
@@ -372,24 +390,25 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 	if( m_mountSpell )
 		pPassenger->RemoveAura( m_mountSpell );
 
-	WorldPacket data(MSG_MOVE_HEARTBEAT, 48);
-	data << pPassenger->GetNewGUID();
-	data << uint32(MOVEFLAG_FLYING);
-	data << uint16(0x40);
-	data << getMSTime();
-	data << GetPositionX();
-	data << GetPositionY();
-	data << GetPositionZ();
-	data << GetOrientation();
-	data << uint32(0);
-	pPassenger->SendMessageToSet(&data, false);
+	WorldPacket data(SMSG_MONSTER_MOVE, 85);
+	data << pPassenger->GetNewGUID();			// PlayerGUID
+	data << uint8(0);							// Unk - blizz uses 0x40
+	data << pPassenger->GetPosition();			// Player Position xyz
+	data << getMSTime();						// Timestamp
+	data << uint8(0x4);							// Flags
+	data << pPassenger->GetOrientation();		// Orientation
+	data << uint32(MOVEFLAG_AIR_SUSPENSION);	// MovementFlags
+	data << uint32(0);							// MovementTime
+	data << uint32(1);							// Pointcount
+	data << GetPosition();						// Vehicle Position xyz
+	SendMessageToSet(&data, false);
 
 	pPassenger->movement_info.flags &= ~MOVEFLAG_TAXI;
 	pPassenger->movement_info.transX = 0;
 	pPassenger->movement_info.transY = 0;
 	pPassenger->movement_info.transZ = 0;
 	pPassenger->movement_info.transO = 0;
- 	pPassenger->movement_info.transTime = 0;
+	pPassenger->movement_info.transTime = 0;
 	pPassenger->movement_info.transSeat = 0;
 
 	if(pPassenger->IsPlayer())
@@ -489,6 +508,18 @@ void Vehicle::RemovePassenger(Unit* pPassenger)
 		else //we're a temp spawn
 			SafeDelete();
 	}
+
+	// We need to null this out, its changed automatically.
+	if(m_TransporterGUID) // Vehicle has a transport guid?
+		pPassenger->m_TransporterGUID = m_TransporterGUID;
+	else
+		pPassenger->m_TransporterGUID = NULL;
+
+	if(pPassenger->IsPlayer())
+		--m_passengerCount;
+
+	if(!IsFull())
+		SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 }
 
 bool Vehicle::HasPassenger(Unit* pPassenger)
@@ -516,7 +547,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 
 	m_passengers[ slot ] = pPassenger;
 	pPassenger->m_inVehicleSeatId = slot;
-	/* pPassenger->m_transportGuid = GetGUID(); */
+	//pPassenger->m_TransporterGUID = GetGUID();
 	LocationVector v;
 	v.x = m_vehicleSeats[slot]->m_attachmentOffsetX; /* pPassenger->m_TransporterX =*/
 	v.y = m_vehicleSeats[slot]->m_attachmentOffsetY; /* pPassenger->m_TransporterY = */
@@ -533,11 +564,11 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 	{
 		Player* pPlayer = TO_PLAYER(pPassenger);
 
-		// Dismount
+		//Dismount
 		if(pPlayer->m_MountSpellId)
 			pPlayer->RemoveAura(pPlayer->m_MountSpellId);
-
-		// Remove morph spells
+	
+		//Remove morph spells
 		if(pPlayer->GetUInt32Value(UNIT_FIELD_DISPLAYID)!= pPlayer->GetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID))
 		{
 			pPlayer->RemoveAllAurasOfType(SPELL_AURA_TRANSFORM);
@@ -626,6 +657,7 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 		data << pPlayer->GetPosition();
 		pPlayer->GetSession()->SendPacket(&data);
 		pPlayer->SetPlayerStatus(NONE);
+		++m_passengerCount;
 	}
 	else
 	{
@@ -648,6 +680,9 @@ void Vehicle::_AddToSlot(Unit* pPassenger, uint8 slot)
 		data << v.z;											// GetTransOffsetZ();
 		SendMessageToSet(&data, false);
 	}
+
+	if(IsFull())
+		RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 }
 
 /* This function changes a vehicles position server side to
@@ -710,7 +745,7 @@ void Vehicle::SetSpeed(uint8 SpeedType, float value)
 		data << uint32(0);
 		data << value;
 	}
-
+	
 	switch(SpeedType)
 	{
 	case RUN:
@@ -740,7 +775,12 @@ void Vehicle::SetSpeed(uint8 SpeedType, float value)
 		}break;
 	default:return;
 	}
-
+	
 	SendMessageToSet(&data , true);
 
+}
+void Vehicle::ChangeSeats(Unit* unit, uint8 seatid)
+{
+	unit->m_TransporterGUID = GetGUID();
+	// TODO!
 }

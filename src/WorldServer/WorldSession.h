@@ -355,6 +355,7 @@ protected:
 	void HandleCompleteCinematic(WorldPacket & recv_data);
 	void HandleInspectOpcode(WorldPacket & recv_data);
 	void HandleGameobjReportUseOpCode(WorldPacket& recv_data);
+	void HandleTimeSyncResp(WorldPacket& recv_data);
 
 	// Gm Ticket System in GMTicket.cpp:
 	void HandleGMTicketCreateOpcode(WorldPacket& recvPacket);
@@ -491,10 +492,10 @@ protected:
 	void HandleCharmForceCastSpell(WorldPacket & recvPacket);
 
 	// Skill opcodes (SkillHandler.spp)
-	//void HandleSkillLevelUpOpcode(WorldPacket& recvPacket);
 	void HandleLearnTalentOpcode(WorldPacket& recvPacket);
 	void HandleLearnPreviewTalents(WorldPacket& recv_data);
 	void HandleUnlearnTalents( WorldPacket & recv_data );
+	void HandleTalentWipeConfirmOpcode(WorldPacket &recv_data);
 
 	// Quest opcodes (QuestHandler.cpp)
 	void HandleQuestgiverStatusQueryOpcode(WorldPacket& recvPacket);
@@ -659,7 +660,8 @@ protected:
 
 	// instances
 	void HandleResetInstanceOpcode(WorldPacket& recv_data);
-    void HandleDungeonDifficultyOpcode(WorldPacket& recv_data);
+	void HandleDungeonDifficultyOpcode(WorldPacket& recv_data);
+	void HandleRaidDifficultyOpcode(WorldPacket& recv_data);
 
 	uint8 TrainerGetSpellStatus(TrainerSpell* pSpell);
 	void SendMailError(uint32 error);
@@ -780,7 +782,7 @@ private:
 	uint32 client_build;
 	uint32 instanceId;
 	uint8 _updatecount;
-	uint8 CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, MapInfo * pMapInfo);
+	uint8 CheckTeleportPrerequsites(AreaTrigger * pAreaTrigger, WorldSession * pSession, Player* pPlayer, uint32 mapid);
 public:
 	static void InitPacketHandlerTable();
 	uint32 floodLines;

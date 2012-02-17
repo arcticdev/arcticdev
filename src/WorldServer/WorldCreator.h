@@ -45,14 +45,14 @@ enum RAID_MODE
 
 enum INSTANCE_ABORT_ERROR
 {
-	INSTANCE_ABORT_ERROR_ERROR					= 0x01,
-	INSTANCE_ABORT_FULL							= 0x02,
-	INSTANCE_ABORT_NOT_FOUND					= 0x03,
-	INSTANCE_ABORT_TOO_MANY						= 0x04,
-	INSTANCE_ABORT_ENCOUNTER					= 0x05,
-	INSTANCE_ABORT_NON_CLIENT_TYPE				= 0x06,
-	INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE	= 0x07,
-	INSTANCE_ABORT_NOT_IN_RAID_GROUP			= 0x08,
+	INSTANCE_ABORT_ERROR_ERROR                  = 0x01,
+	INSTANCE_ABORT_FULL                         = 0x02,
+	INSTANCE_ABORT_NOT_FOUND                    = 0x03,
+	INSTANCE_ABORT_TOO_MANY                     = 0x04,
+	INSTANCE_ABORT_ENCOUNTER                    = 0x05,
+	INSTANCE_ABORT_NON_CLIENT_TYPE              = 0x06,
+	INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE    = 0x07,
+	INSTANCE_ABORT_NOT_IN_RAID_GROUP            = 0x08,
 	INSTANCE_OK                                 = 0x10,
 };
 
@@ -174,15 +174,15 @@ public:
 		if( pInstance->m_difficulty != (dbcMap.LookupEntry(pInstance->m_mapId)->israid() ? pPlayer->iRaidType : pPlayer->iInstanceType) )
 			return OWNER_CHECK_DIFFICULT;
 
-		//Reached player limit?
+		// Reached player limit?
 		if( pInstance->m_mapMgr && pInstance->m_mapInfo->playerlimit < uint32(pInstance->m_mapMgr->GetPlayerCount()))
 			return OWNER_CHECK_MAX_LIMIT;
 
-		//Meet level requirements?
+		// Meet level requirements?
 		if( pInstance->m_mapMgr && pPlayer->getLevel() < pInstance->m_mapInfo->minlevel )
 			return OWNER_CHECK_MIN_LEVEL;
 
-		//Need to be in group?
+		// Need to be in group?
 		if(!pPlayer->GetGroup() && pInstance->m_mapInfo->type == INSTANCE_RAID )
 			return OWNER_CHECK_NO_GROUP;
 
@@ -198,7 +198,7 @@ public:
 		// Active raid?
 		if( pInstance->m_mapMgr && pInstance->m_mapMgr->HasPlayers() )
 		{
-			//we have ensured the groupid is valid when it was created.
+			// we have ensured the groupid is valid when it was created.
 			if( pPlayer->GetGroup() && pPlayer->GetGroupID() != pInstance->m_creatorGroup )
 				return OWNER_CHECK_WRONG_GROUP;
 		}
@@ -213,10 +213,9 @@ public:
 					return OWNER_CHECK_WRONG_GROUP;
 			}
 		}
-		//nothing left to check, should be OK then
+		// nothing left to check, should be OK then
 		return OWNER_CHECK_OK;
 	}
-
 
 	// has an instance expired?
 	ARCTIC_INLINE bool HasInstanceExpired(Instance * pInstance)
@@ -249,7 +248,7 @@ public:
 	MapMgr* GetMapMgr(uint32 mapId);
 
 	//Find saved instance for player at given mapid
-	Instance* GetSavedInstance(uint32 map_id, uint32 guid);
+	Instance* GetSavedInstance(uint32 map_id, uint32 guid, uint32 difficulty);
 	InstanceMap * GetInstancesForMap(uint32 map_id) {return m_instances[map_id];}
 
 private:

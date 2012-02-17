@@ -45,7 +45,7 @@ Group::Group(bool Assign)
 	m_GroupType = GROUP_TYPE_PARTY;	 // Always init as party
 
 	// Create initial subgroup
-    memset(m_SubGroups,0, sizeof(SubGroup*)*8);
+	memset(m_SubGroups,0, sizeof(SubGroup*)*8);
 	m_SubGroups[0] = new SubGroup(this, 0);
 
 	m_Leader = NULL;
@@ -54,6 +54,8 @@ Group::Group(bool Assign)
 	m_LootThreshold = 2;
 	m_SubGroupCount = 1;
 	m_MemberCount = 0;
+	m_difficulty = MODE_NORMAL_5MEN;
+	m_raiddifficulty = MODE_NORMAL_10MEN;
 
 	if( Assign )
 	{
@@ -66,8 +68,6 @@ Group::Group(bool Assign)
 	m_groupFlags = 0;
 	memset(m_targetIcons, 0, sizeof(uint64) * 8);
 	m_isqueued = false;
-	m_difficulty = MODE_NORMAL_5MEN;
-	m_raidDifficulty = MODE_NORMAL_5MEN;
 	m_assistantLeader = m_mainAssist = m_mainTank = NULL;
 
 	m_prayerOfMendingCount = 0;
@@ -336,7 +336,7 @@ void Group::Update()
 
 				data << uint8( m_LootThreshold );
 				data << uint8( m_difficulty );
-				data << uint8( m_raidDifficulty ); // raid difficulty
+				data << uint8( m_raiddifficulty ); // raid difficulty
 				data << uint8( 0 ); // 3.3 - unk
 
 				if( !(*itr1)->m_loggedInPlayer->IsInWorld() )
@@ -780,7 +780,7 @@ void Group::LoadFromDB(Field *fields)
 	m_LootMethod = fields[3].GetUInt8();
 	m_LootThreshold = fields[4].GetUInt8();
 	m_difficulty = fields[5].GetUInt8();
-	m_raidDifficulty = fields[6].GetUInt8();
+	m_raiddifficulty = fields[6].GetUInt8();
 
 	LOAD_ASSISTANT(7, m_assistantLeader);
 	LOAD_ASSISTANT(8, m_mainTank);
@@ -825,7 +825,7 @@ void Group::SaveToDB()
 		<< uint32(m_LootMethod) << ","
 		<< uint32(m_LootThreshold) << ","
 		<< uint32(m_difficulty) << ","
-		<< uint32(m_raidDifficulty) << ",";
+		<< uint32(m_raiddifficulty) << ",";
 
 	if(m_assistantLeader)
 		ss << m_assistantLeader->guid << ",";
@@ -1063,27 +1063,11 @@ void Group::HandlePartialChange(uint32 Type, Player* pPlayer)
 
 void WorldSession::HandlePartyMemberStatsOpcode(WorldPacket & recv_data)
 {
-	return;
-	CHECK_INWORLD_RETURN;
-
 	uint64 guid;
 	recv_data >> guid;
-
-	Player* plr = _player->GetMapMgr()->GetPlayer((uint32)guid);
-
-	if(!_player->GetGroup() || !plr)
-		return;
-
-	WorldPacket data(200);
-	if(!_player->GetGroup()->HasMember(plr))
-		return; // invalid player
-
-	if(_player->IsVisible(plr))
-		return;
-
-	_player->GetGroup()->UpdateOutOfRangePlayer(plr, GROUP_UPDATE_TYPE_FULL_CREATE | GROUP_UPDATE_TYPE_FULL_REQUEST_REPLY, false, &data);
-	data.SetOpcode(SMSG_PARTY_MEMBER_STATS_FULL);
-	SendPacket(&data);
+	guid = NULL;
+	return;
+	// This is handled in the core already :D
 }
 
 Group* Group::Create()

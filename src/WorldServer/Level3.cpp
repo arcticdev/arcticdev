@@ -2218,16 +2218,27 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 		return true;
 	}
 
-	//Are we on a transporter?
+
+	// Are we on a transporter?
 	if(m_session->GetPlayer()->m_TransporterGUID != 0)
 	{
-		Transporter* t = objmgr.GetTransporter(GUID_LOPART(m_session->GetPlayer()->m_TransporterGUID));
-		t->AddNPC(entry,m_session->GetPlayer()->m_TransporterX,m_session->GetPlayer()->m_TransporterY,m_session->GetPlayer()->m_TransporterZ,m_session->GetPlayer()->GetOrientation());
-		WorldDatabase.Execute("INSERT INTO transport_creatures VALUES(%u, %u, '%f', '%f', '%f', '%f')",GUID_LOPART(m_session->GetPlayer()->m_TransporterGUID),entry,m_session->GetPlayer()->m_TransporterX,m_session->GetPlayer()->m_TransporterY,m_session->GetPlayer()->m_TransporterZ,m_session->GetPlayer()->GetOrientation());
-		BlueSystemMessage(m_session, "Spawned crew-member %u on transport %u. You might need to relog.",entry,GUID_LOPART(m_session->GetPlayer()->m_TransporterGUID));
-		sGMLog.writefromsession(m_session, "spawned crew-member %u on transport %u.",entry,GUID_LOPART(m_session->GetPlayer()->m_TransporterGUID));
-		return true;
+		Player* pl = m_session->GetPlayer();
+		Transporter* t = objmgr.GetTransporter(GUID_LOPART(pl->m_TransporterGUID));
+		if(t)
+		{
+			WorldDatabase.Execute("INSERT INTO transport_creatures VALUES(%u, %u, '%f', '%f', '%f', '%f')", GUID_LOPART(pl->m_TransporterGUID), entry, pl->m_TransporterX, pl->m_TransporterY, pl->m_TransporterZ, pl->GetOrientation());
+			t->AddNPC(entry, pl->m_TransporterX, pl->m_TransporterY, pl->m_TransporterZ, pl->GetOrientation());
+			BlueSystemMessage(m_session, "Spawned crew-member %u on transport %u. You might need to relog.", entry, GUID_LOPART(pl->m_TransporterGUID));
+			sGMLog.writefromsession(m_session, "spawned crew-member %u on transport %u.", entry, GUID_LOPART(pl->m_TransporterGUID));
+			return true;
+		}
+		else
+		{
+			BlueSystemMessage(m_session, "Incorrect transportguid %u. Spawn has been denied.", GUID_LOPART(pl->m_TransporterGUID));
+			return true;
+		}
 	}
+
 	bool spVehicle = proto->vehicle_entry > 0 ? true : false;
 
 	Creature* p = NULL;
@@ -2246,7 +2257,6 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 	if( save )
 	{
 		sp = new CreatureSpawn;
-		//sp->displayid = info->DisplayID;
 		info->GenerateModelId(&sp->displayid);
 		sp->entry = entry;
 		sp->form = 0;
@@ -2256,13 +2266,12 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 		sp->y = m_session->GetPlayer()->GetPositionY();
 		sp->z = m_session->GetPlayer()->GetPositionZ();
 		sp->o = m_session->GetPlayer()->GetOrientation();
-		sp->emote_state =0;
+		sp->emote_state = 0;
 		sp->flags = 0;
 		sp->factionid = proto->Faction;
-		sp->bytes=0;
-		sp->bytes1=0;
-		sp->bytes2=0;
-		//sp->respawnNpcLink = 0;
+		sp->bytes = 0;
+		sp->bytes1 = 0;
+		sp->bytes2 = 0;
 		sp->stand_state = 0;
 		sp->channel_spell=sp->channel_target_creature=sp->channel_target_go=0;
 		sp->MountedDisplayID = 0;
@@ -2275,10 +2284,8 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 		p->Load(sp, (uint32)NULL, NULL);
 	}
 	else
-	{
 		p->Load(proto, m_session->GetPlayer()->GetPositionX(), m_session->GetPlayer()->GetPositionY(), m_session->GetPlayer()->GetPositionZ(), 0.0f);
-	}
-	
+
 	p->PushToWorld(m_session->GetPlayer()->GetMapMgr());
 	
 	BlueSystemMessage(m_session, "Spawned a creature `%s` with entry %u at %f %f %f on map %u", info->Name, 

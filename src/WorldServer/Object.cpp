@@ -225,20 +225,20 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	return 1;
 }
 
-//That is dirty fix it actually creates update of 1 field with
-//the given value ignoring existing changes in fields and so on
-//usefull if we want update this field for certain players
-//NOTE: it does not change fields. This is also very fast method
+// That is dirty fix it actually creates update of 1 field with
+// the given value ignoring existing changes in fields and so on
+// usefull if we want update this field for certain players
+// NOTE: it does not change fields. This is also very fast method
 WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 {
-   // uint64 guidfields = GetGUID();
-   // uint8 guidmask = 0;
+	// uint64 guidfields = GetGUID();
+	// uint8 guidmask = 0;
 	WorldPacket * packet=new WorldPacket(1500);
 	packet->SetOpcode( SMSG_UPDATE_OBJECT );
 
-	*packet << (uint32)1;//number of update/create blocks
+	*packet << (uint32)1; // number of update/create blocks
 
-	*packet << (uint8) UPDATETYPE_VALUES;		// update type == update
+	*packet << (uint8) UPDATETYPE_VALUES; // update type == update
 	*packet << GetNewGUID();
 
 	uint32 mBlocks = index/32+1;
@@ -322,16 +322,20 @@ void Object::DestroyForPlayer(Player* target) const
 	target->GetSession()->SendPacket( &data );
 }
 
-///////////////////////////////////////////////////////////////
-/// Build the Movement Data portion of the update packet
-/// Fills the data with this object's movement/speed info
-/// TODO: rewrite this stuff, document unknown fields and flags
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//Build the Movement Data portion of the update packet
+// Fills the data with this object's movement/speed info
+// TODO: rewrite this stuff, document unknown fields and flags
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
 uint32 TimeStamp();
 
-void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2, Player* target )
+void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2, Player* target )
 {
 	ByteBuffer *splinebuf = (m_objectTypeId == TYPEID_UNIT) ? target->GetAndRemoveSplinePacket(GetGUID()) : 0;
 	uint16 flag16 = 0;	// some other flag
+
 	*data << (uint16)flags;
 
 	Player* pThis = NULL;
@@ -352,19 +356,19 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	{
 		if(pThis && pThis->m_TransporterGUID != 0)
 			flags2 |= 0x200;
-		else if(m_objectTypeId == TYPEID_UNIT && TO_CREATURE(this)->m_transportGuid != 0 && TO_CREATURE(this)->m_transportPosition != NULL)
+		else if(m_objectTypeId==TYPEID_UNIT && TO_CREATURE(this)->m_TransporterGUID != 0 && TO_CREATURE(this)->m_transportPosition != NULL)
 			flags2 |= 0x200;
 		else if (IsUnit() && TO_UNIT(this)->m_CurrentVehicle != NULL)
 			flags2 |= 0x200;
 
 		if(splinebuf)
 		{
-			flags2 |= 0x08000001;	   //1=move forward
+			flags2 |= 0x08000001;
 			if(GetTypeId() == TYPEID_UNIT)
 			{
 				if( TO_UNIT(this)->GetAIInterface()->m_moveRun == false)
-					flags2 |= 0x100;	//100=walk
-			}
+					flags2 |= 0x100;
+			}			
 		}
 
 		if(GetTypeId() == TYPEID_UNIT)
@@ -380,7 +384,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 
 			if( TO_UNIT(this)->GetAIInterface()->IsFlying())
-				flags2 |= 0x400; // Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time
+				flags2 |= 0x400; // Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
 			if( TO_CREATURE(this)->proto && TO_CREATURE(this)->proto->extra_a9_flags)
 			{
 				if(!(flags2 & 0x0200))
@@ -388,17 +392,19 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 		}
 
-		*data << (uint32)flags2;
+		*data << uint32(flags2);
 
-		*data << (uint16)flag16;
+		*data << uint16(flag16);
 
 		*data << getMSTime(); // this appears to be time in ms but can be any thing
 
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 		// this stuff:
 		//   0x01 -> Enable Swimming?
 		//   0x04 -> ??
 		//   0x10 -> disables movement compensation and causes players to jump around all the place
 		//   0x40 -> disables movement compensation and causes players to jump around all the place
+		///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		*data << (float)m_position.x;
 		*data << (float)m_position.y;
@@ -442,8 +448,8 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 			else if(m_objectTypeId == TYPEID_UNIT && TO_CREATURE(this)->m_transportPosition != NULL)
 			{
-				*data << TO_CREATURE(this)->m_transportNewGuid;
-				*data << uint32(HIGHGUID_TYPE_TRANSPORTER);
+				WoWGuid tguid(TO_CREATURE(this)->m_TransporterGUID);
+				*data << tguid;
 				*data << TO_CREATURE(this)->m_transportPosition->x << TO_CREATURE(this)->m_transportPosition->y <<
 					TO_CREATURE(this)->m_transportPosition->z << TO_CREATURE(this)->m_transportPosition->o;
 				*data << uint32(0);
@@ -451,22 +457,19 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 			}
 		}
 
-		if(flags2 & 0x2200000 || flag16 & 0x20) //flying/swimming, && unk sth to do with vehicles?
+		if(flags2 & 0x2200000 || flag16 & 0x20) // flying/swimming, && unk sth to do with vehicles?
 		{
 			if(pThis && moveinfo)
-			{
 				*data << moveinfo->pitch;
-			}
-			*data << (float)0; //pitch
+			*data << float(0); // pitch
 		}
+
 		if(pThis && moveinfo)
-		{
 			*data << moveinfo->FallTime;
-		}
 		else
 			*data << uint32(0); // last fall time
 
-		if(flags2 & 0x1000) // BYTE1(flags2) & 0x10
+		if(flags2 & 0x1000)
 		{
 			if(pThis && moveinfo)
 			{
@@ -476,26 +479,26 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 				*data << moveinfo->jump_xySpeed;
 			}
 			*data << (float)0;
-			*data << (float)1.0; //sinAngle
-			*data << (float)0;	 //cosAngle
-			*data << (float)0;	 //xySpeed
+			*data << (float)1.0; // sinAngle
+			*data << (float)0;	 // cosAngle
+			*data << (float)0;	 // xySpeed
 		}
-		if(flags2 & MOVEFLAG_SPLINE_MOVER) // 0x4000000
+		if( flags2 & MOVEFLAG_SPLINE_MOVER )
 		{
-			*data << (float)0; //unknown float
+			*data << (float)0; // unknown float
 		}
 
-		*data << m_walkSpeed;             // walk speed
-		*data << m_runSpeed;              // run speed
-		*data << m_backWalkSpeed;         // backwards run speed
-		*data << m_swimSpeed;             // swim speed
-		*data << m_backSwimSpeed;         // backwards swim speed
-		*data << m_flySpeed;              // fly speed
-		*data << m_backFlySpeed;          // back fly speed
-		*data << m_turnRate;              // turn rate
-		*data << float(7);                // pitch rate
+		*data << m_walkSpeed;		// walk speed
+		*data << m_runSpeed;		// run speed
+		*data << m_backWalkSpeed;	// backwards run speed
+		*data << m_swimSpeed;		// swim speed
+		*data << m_backSwimSpeed;	// backwards swim speed
+		*data << m_flySpeed;		// fly speed
+		*data << m_backFlySpeed;	// back fly speed
+		*data << m_turnRate;		// turn rate
+		*data << float(7);			// pitch rate
 
-		if(splinebuf)	// client expects that flags2 & 0x8000000 != 0 in this case
+		if(splinebuf) // client expects that flags2 & 0x8000000 != 0 in this case
 		{
 			data->append(*splinebuf);
 			delete splinebuf;
@@ -503,14 +506,14 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	}
 	else if(flags & 0x100)
 	{
-		*data << uint8(0);                // unk PGUID!
-		*data << (float)m_position.x;
-		*data << (float)m_position.y;
-		*data << (float)m_position.z;
-		*data << (float)m_position.x;
-		*data << (float)m_position.y;
-		*data << (float)m_position.z;
-		*data << (float)m_position.o;
+		*data << uint8(0); // unk PGUID!
+		*data << float(m_position.x);
+		*data << float(m_position.y);
+		*data << float(m_position.z);
+		*data << float(m_position.x);
+		*data << float(m_position.y);
+		*data << float(m_position.z);
+		*data << float(m_position.o);
 		*data << float(0);
 	}
 	else if(flags & 0x40)
@@ -523,25 +526,26 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 		}
 		else
 		{
-			*data << (float)m_position.x;
-			*data << (float)m_position.y;
-			*data << (float)m_position.z;
+			*data << float(m_position.x);
+			*data << float(m_position.y);
+			*data << float(m_position.z);
 		}
-		*data << (float)m_position.o;
+		*data << float(m_position.o);
 	}
 
 	if(flags & 8)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
+	
 	if(flags & 0x0010)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID+1);
 
 	if(flags & 0x0004)
-		*data << uint8(0); // unknown NewGUID
+		FastGUIDPack(*data, GetUInt64Value(UNIT_FIELD_TARGET)); // Compressed target guid.
 
 	if(flags & 2)
 		*data << (uint32)getMSTime();
 
-	if (flags & 0x80) // if ((_BYTE)flags_ < 0)
+	if (flags & 0x80)
 		*data << TO_VEHICLE(this)->GetVehicleEntry() << float(0.0f);
 
 	// 0x200
@@ -554,10 +558,9 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint16 flags, uint32 flags2
 	}
 }
 
-//=======================================================================================
-//  Creates an update block with the values of this object as
-//  determined by the updateMask.
-//=======================================================================================
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Creates an update block with the values of this object as determined by the updateMask.
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Player* target)
 {
 	bool reset = false;

@@ -78,8 +78,6 @@ Creature::Creature(uint64 guid)
 	m_noRespawn = false;
 	m_isGuard = false;
 	m_canRegenerateHP = true;
-	m_transportGuid = 0;
-	m_transportPosition = NULL;
 	BaseAttackType = SCHOOL_NORMAL;
 	m_taggingPlayer = m_taggingGroup = 0;
 	m_lootMethod = -1;

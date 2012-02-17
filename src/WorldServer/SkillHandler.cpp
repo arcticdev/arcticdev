@@ -37,7 +37,7 @@ void WorldSession::HandleLearnPreviewTalents( WorldPacket & recv_data )
 	_player->smsg_TalentsInfo(false);
 }
 
-void WorldSession::HandleUnlearnTalents( WorldPacket & recv_data )
+void WorldSession::HandleTalentWipeConfirmOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
 	uint32 playerGold = GetPlayer()->GetUInt32Value( PLAYER_FIELD_COINAGE );

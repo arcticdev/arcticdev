@@ -121,6 +121,5 @@ void WorldSession::HandleRequestSeatChange( WorldPacket & recv_data )
 			return;
 	}
 
-	vehicle->AddPassenger(GetPlayer(), RequestedSeat);
-	// GetPlayer()->EnterVehicle(vehicle, RequestedSeat, false);
+	vehicle->ChangeSeats(GetPlayer(), RequestedSeat);
 }

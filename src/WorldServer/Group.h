@@ -190,8 +190,10 @@ public:
 	ARCTIC_INLINE PlayerInfo * GetMainTank() { return m_mainTank; }
 	ARCTIC_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
 
-	ARCTIC_INLINE void SetDifficulty(uint8 newDifficulty) { m_difficulty = newDifficulty; };
-	ARCTIC_INLINE void SetRaidDifficulty(uint8 newDifficulty) { m_raidDifficulty = newDifficulty; };
+	ARCTIC_INLINE int8 GetDifficulty() { return m_difficulty; } 
+	ARCTIC_INLINE int8 GetRaidDifficulty() { return m_raiddifficulty; } 
+	ARCTIC_INLINE void SetDifficulty(uint8 diff) { m_difficulty = diff; } 
+	ARCTIC_INLINE void SetRaidDifficulty(uint8 diff) { m_raiddifficulty = diff; } 
 
 	ARCTIC_INLINE void SetFlag(uint8 groupflag) { m_groupFlags |= groupflag; }
 	ARCTIC_INLINE void RemoveFlag(uint8 groupflag) { m_groupFlags &= ~groupflag; }
@@ -216,7 +218,7 @@ protected:
 	bool m_dirty;
 	bool m_updateblock;
 	uint8 m_difficulty;
-	uint8 m_raidDifficulty;
+	uint8 m_raiddifficulty;
 	uint8 m_groupFlags;
 
 	// Evil prayer of mending stuff

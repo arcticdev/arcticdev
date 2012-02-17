@@ -206,15 +206,6 @@ void Player::Init()
 	m_BreathDamageTimer = 0;
 	LatencyKickTimer = 0;
 
-	// transport shit
-	m_TransporterGUID = 0;
-	m_TransporterX = 0.0f;
-	m_TransporterY = 0.0f;
-	m_TransporterZ = 0.0f;
-	m_TransporterO = 0.0f;
-	m_TransporterUnk = 0.0f;
-	m_lockTransportVariables = false;
-
 	// Autoshot variables
 	m_AutoShotTarget = 0;
 	m_onAutoShot = false;
@@ -327,6 +318,7 @@ void Player::Init()
 	recustomize_pending = false;
 	titanGrip = false;
 	iInstanceType = 0;
+	iRaidType = 0;
 	memset(reputationByListId, 0, sizeof(FactionReputation*) * 128);
 
 	m_comboTarget = 0;
@@ -2378,6 +2370,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << m_honorToday << ", " << m_honorYesterday << ", ";
 	ss << m_honorPoints << ", ";
    	ss << iInstanceType << ", ";
+	ss << iRaidType << ", ";
 
 	ss << uint32(m_talentActiveSpec) << ", ";
 	ss << uint32(m_talentSpecsCount) << ", ";
@@ -2389,7 +2382,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	else
 		buf->AddQueryStr(ss.str());
 
-	//Save Other related player stuff
+	// Save Other related player stuff
 
 	sHookInterface.OnPlayerSaveToDB(TO_PLAYER(this), buf);
 
@@ -3297,6 +3290,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 
 	RolloverHonor();
     iInstanceType = get_next_field.GetUInt32();
+	iRaidType = get_next_field.GetUInt32();
 
 	HonorHandler::RecalculateHonorFields(TO_PLAYER(this));
 
@@ -8101,9 +8095,7 @@ void Player::ZoneUpdate(uint32 ZoneId)
 	if( m_session->HasGMPermissions() && m_zoneId != 0 )
 	{
 		if( at != NULL )
-		{
 			BroadcastMessage("Entered zone: %s.", at->name);
-		}
 	}
 
 	if( at != NULL )

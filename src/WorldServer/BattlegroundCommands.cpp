@@ -48,7 +48,7 @@ bool ChatHandler::HandleBattlegroundCommand(const char* args, WorldSession *m_se
 
 bool ChatHandler::HandleSetWorldStateCommand(const char* args, WorldSession *m_session)
 {
-	uint32 id,val;
+	uint32 id, val;
 	if(sscanf(args,"%u %u", &id,&val)!=2)
 		return false;
 

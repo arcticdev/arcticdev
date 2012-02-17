@@ -1378,7 +1378,7 @@ bool MapMgr::Do()
 		else
 		{
 			// just null out the pointer
-			pInstance->m_mapMgr=NULL;
+			pInstance->m_mapMgr = NULL;
 		}
 	}
 	else if(GetMapInfo()->type == INSTANCE_NULL)

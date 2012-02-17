@@ -1448,14 +1448,6 @@ public:
 	ARCTIC_INLINE InRangeSet::iterator GetVisibleSetBegin() { return m_visibleObjects.begin(); }
 	ARCTIC_INLINE InRangeSet::iterator GetVisibleSetEnd() { return m_visibleObjects.end(); }
 
-	//Transporters
-	bool m_lockTransportVariables;
-	uint64 m_TransporterGUID;
-	float m_TransporterX;
-	float m_TransporterY;
-	float m_TransporterZ;
-	float m_TransporterO;
-	float m_TransporterUnk;
 	// Misc
 	void EventReduceDrunk(bool full);
 	bool m_AllowAreaTriggerPort;

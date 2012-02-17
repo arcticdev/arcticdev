@@ -455,7 +455,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		/************************************************************************/
 		/* Distribute to all inrange players.                                   */
 		/************************************************************************/
-		for(unordered_set<Player*>::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
+		for(unordered_set<Player*  >::iterator itr = _player->m_inRangePlayers.begin(); itr != _player->m_inRangePlayers.end(); ++itr)
 		{
 			if( (*itr)->GetSession() && (*itr)->IsInWorld() )
 			{
@@ -584,21 +584,39 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				if(_player->m_CurrentTransporter)
 					_player->m_CurrentTransporter->AddPlayer(_player);
 
+				// Create a location vector with position variables.
+				LocationVector v;
+				v.x = _player->movement_info.transX;
+				v.y = _player->movement_info.transY;
+				v.z = _player->movement_info.transZ;
+				v.o = _player->movement_info.transO;
+
 				/* set variables */
 				_player->m_TransporterGUID = _player->movement_info.transGuid.GetOldGuid();
 				_player->m_TransporterUnk = _player->movement_info.transTime;
-				_player->m_TransporterX = _player->movement_info.transX;
-				_player->m_TransporterY = _player->movement_info.transY;
-				_player->m_TransporterZ = _player->movement_info.transZ;
+				_player->m_TransporterX = v.x;
+				_player->m_TransporterY = v.y;
+				_player->m_TransporterZ = v.z;
+				_player->m_TransporterO = v.o;
+				_player->m_transportPosition =& v;
 				_player->DelaySpeedHack(5000);
 			}
 			else
 			{
+				// Create a location vector with position variables.
+				LocationVector v;
+				v.x = _player->movement_info.transX;
+				v.y = _player->movement_info.transY;
+				v.z = _player->movement_info.transZ;
+				v.o = _player->movement_info.transO;
+
 				/* no changes */
 				_player->m_TransporterUnk = _player->movement_info.transTime;
-				_player->m_TransporterX = _player->movement_info.transX;
-				_player->m_TransporterY = _player->movement_info.transY;
-				_player->m_TransporterZ = _player->movement_info.transZ;
+				_player->m_TransporterX = v.x;
+				_player->m_TransporterY = v.y;
+				_player->m_TransporterZ = v.z;
+				_player->m_TransporterO = v.o;
+				_player->m_transportPosition =& v;
 			}
 		}
 		/*float x = _player->movement_info.x - _player->movement_info.transX;
@@ -629,7 +647,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		_player->m_CurrentCharm->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation);
 	else
 	{
-		if(!_player->m_CurrentTransporter)
+		if(!_player->m_CurrentTransporter) 
 		{
 			if( !_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation) )
 			{
@@ -639,7 +657,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 		else
 		{
-			_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z,
+			_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, 
 				_player->movement_info.orientation + _player->movement_info.transO, false);
 		}
 	}

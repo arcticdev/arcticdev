@@ -16,12 +16,12 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 1);
 	WorldPacket data(100);
 	std::string membername;
-	uint32 serverID;
+	uint32 serverid; // Sent as of 3.3 multiserver parties
 	Player* player = NULL;
 	Group *group = NULL;
 
 	recv_data >> membername;
-	recv_data >> serverID;
+	recv_data >> serverid;
 	if(_player->HasBeenInvited())return;
 
 	player = objmgr.GetPlayer(membername.c_str(), false);
@@ -122,12 +122,11 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
 
-	uint32 serverID;
-
-	recv_data >> serverID;
+	uint32 serverid; // Sent as of 3.3 multiserver parties
+	recv_data >> serverid;
 
 	Player* player = objmgr.GetPlayer(_player->GetInviter());
-	if ( !player )
+	if(!player)
 		return;
 	
 	player->SetInviter(0);
@@ -139,18 +138,26 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
 	{
 		grp->AddMember(_player->m_playerInfo);
 		if(grp->GetLeader()->m_loggedInPlayer)
+		{
 			_player->iInstanceType = grp->GetLeader()->m_loggedInPlayer->iInstanceType;
+			_player->iRaidType = grp->GetLeader()->m_loggedInPlayer->iRaidType;
+		}
 
-        _player->GetSession()->OutPacket(MSG_SET_DUNGEON_DIFFICULTY, 4, &_player->iInstanceType);
+		_player->GetSession()->OutPacket(MSG_SET_DUNGEON_DIFFICULTY, 4, &_player->iInstanceType);
+		_player->GetSession()->OutPacket(MSG_SET_RAID_DIFFICULTY, 4, &_player->iRaidType);
 		return;
 	}
-	
+
 	// If we're this far, it means we have no existing group, and have to make one.
 	grp = new Group(true);
 	grp->AddMember(player->m_playerInfo);		// add the inviter first, therefore he is the leader
-	grp->AddMember(_player->m_playerInfo);	   // add us.
-    _player->iInstanceType = player->iInstanceType;
-    _player->GetSession()->OutPacket(MSG_SET_DUNGEON_DIFFICULTY, 4, &player->iInstanceType);
+	grp->AddMember(_player->m_playerInfo);		// add us.
+	grp->SetDifficulty(player->iInstanceType);	// Set our instance difficulty.
+	grp->SetRaidDifficulty(player->iRaidType);	// Set our raid difficulty.
+	_player->iInstanceType = player->iInstanceType;
+	_player->iRaidType = player->iRaidType;
+	_player->GetSession()->OutPacket(MSG_SET_DUNGEON_DIFFICULTY, 4, &player->iInstanceType);
+	_player->GetSession()->OutPacket(MSG_SET_RAID_DIFFICULTY, 4, &player->iRaidType);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -195,7 +202,6 @@ void WorldSession::HandleGroupUninviteOpcode( WorldPacket & recv_data )
 void WorldSession::HandleGroupUninviteGUIDOpcode( WorldPacket & recv_data )
 {
 	CHECK_INWORLD_RETURN;
-
 	CHECK_PACKET_SIZE(recv_data, 1);
 	std::string membername;
 	Player* player;
@@ -321,7 +327,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 
 	uint64 guid;
 	uint8 icon;
-	
+
 	recv_data >> icon;
 	if(icon == 0xFF)
 	{
@@ -341,11 +347,7 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 
 		// setting icon
 		WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);
-        data << uint8(0);  
-        data << icon;  
-        data << uint64(GetPlayer()->GetGUID());  
-        data << guid;  
-
+		data << uint8(0) << icon << uint64(GetPlayer()->GetGUID()) << guid;
 		pGroup->SendPacketToAll(&data);
 
 		pGroup->m_targetIcons[icon] = guid;

@@ -42,8 +42,8 @@ void MapMgr::SpawnEvent(uint8 eventId)
 					if(_cells[i][j] != 0)
 					{
 						sp = _map->GetSpawnsList(i, j);
-						_cells[i][j]->LoadEventIdObjects(sp, eventId);
-						_cells[i][j]->ModifyEventIdSetting(true, eventId);
+//						_cells[i][j]->LoadEventIdObjects(sp, eventId);
+//						_cells[i][j]->ModifyEventIdSetting(true, eventId);
 					}
 				}
 			}
@@ -84,7 +84,6 @@ void DayWatcherThread::LoadEventIdSettings()
 	delete result;
 	m_creatureEventSpawnMaps.clear();
 	m_gameobjectEventSpawnMaps.clear();
-
 	uint8 eventid;
 
 	result = WorldDatabase.Query("SELECT eventid FROM events");
@@ -121,96 +120,100 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 {
 	Instance * pInstance = _mapmgr->pInstance;
 
-	if(sp->CreatureSpawns.size())//got creatures
+	if(sp)
 	{
-		Vehicle* v;
-		Creature* c;
-		for(CreatureSpawnList::iterator i=sp->CreatureSpawns.begin();i!=sp->CreatureSpawns.end();i++)
+		if(sp->CreatureSpawns.size())//got creatures
 		{
-			if(pInstance)
+			Vehicle* v;
+			Creature* c;
+			for(CreatureSpawnList::iterator i = sp->CreatureSpawns.begin(); i != sp->CreatureSpawns.end(); ++i)
 			{
-				if(pInstance->m_killedNpcs.find((*i)->id) != pInstance->m_killedNpcs.end())
-					continue;
-			}
-			if((*i)->eventid && (*i)->eventid == eventId)
-			{
-				if(!((*i)->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
-					continue;
-				if((*i)->vehicle != 0)
+				if(pInstance)
 				{
-					v=_mapmgr->CreateVehicle((*i)->entry);
+					if(pInstance->m_killedNpcs.find((*i)->id) != pInstance->m_killedNpcs.end())
+						continue;
+				}
+				if((*i)->eventid && (*i)->eventid == eventId)
+				{
+					if(!((*i)->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
+						continue;
 
-					v->SetMapId(_mapmgr->GetMapId());
-					v->SetInstanceID(_mapmgr->GetInstanceID());
-					v->m_loadedFromDB = true;
-
-					if(v->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()))
+					if((*i)->vehicle != 0)
 					{
-						if(!v->CanAddToWorld())
+						v=_mapmgr->CreateVehicle((*i)->entry);
+
+						v->SetMapId(_mapmgr->GetMapId());
+						v->SetInstanceID(_mapmgr->GetInstanceID());
+						v->m_loadedFromDB = true;
+
+						if(v->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()))
+						{
+							if(!v->CanAddToWorld())
+							{
+								v->Destructor();
+								v = NULL;
+								continue;
+							}
+
+							v->PushToWorld(_mapmgr);
+						}
+						else
 						{
 							v->Destructor();
 							v = NULL;
-							continue;
 						}
-
-						v->PushToWorld(_mapmgr);
 					}
 					else
 					{
-						v->Destructor();
-						v = NULL;
-					}
-				}
-				else
-				{
-					c=_mapmgr->CreateCreature((*i)->entry);
+						c = _mapmgr->CreateCreature((*i)->entry);
 
-					c->SetMapId(_mapmgr->GetMapId());
-					c->SetInstanceID(_mapmgr->GetInstanceID());
-					c->m_loadedFromDB = true;
+						c->SetMapId(_mapmgr->GetMapId());
+						c->SetInstanceID(_mapmgr->GetInstanceID());
+						c->m_loadedFromDB = true;
 
-					if(c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()))
-					{
-						if(!c->CanAddToWorld())
+						if(c->Load(*i, _mapmgr->iInstanceMode, _mapmgr->GetMapInfo()))
+						{
+							if(!c->CanAddToWorld())
+							{
+								c->Destructor();
+								c = NULL;
+								continue;
+							}
+
+							c->PushToWorld(_mapmgr);
+						}
+						else
 						{
 							c->Destructor();
 							c = NULL;
-							continue;
 						}
-
-						c->PushToWorld(_mapmgr);
-					}
-					else
-					{
-						c->Destructor();
-						c = NULL;
 					}
 				}
 			}
 		}
-	}
 
-	if(sp->GOSpawns.size()) // got GOs
-	{
-		GameObject* go;
-		for(GOSpawnList::iterator i=sp->GOSpawns.begin();i!=sp->GOSpawns.end();i++)
+		if(sp->GOSpawns.size())//got GOs
 		{
-			if((*i)->eventid && (*i)->eventid == eventId)
+			GameObject* go;
+			for(GOSpawnList::iterator i = sp->GOSpawns.begin(); i != sp->GOSpawns.end(); ++i)
 			{
-				if(!((*i)->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
-					continue;
-				go = _mapmgr->CreateGameObject((*i)->entry);
-				if(go == NULL)
-					continue;
-				if(go->Load(*i))
+				if((*i)->eventid && (*i)->eventid == eventId)
 				{
-					go->m_loadedFromDB = true;
-					go->PushToWorld(_mapmgr);
-					CALL_GO_SCRIPT_EVENT(go, OnSpawn)();
-				}
-				else
-				{
-					go->Destructor();
+					if(!((*i)->eventinfo->eventchangesflag & EVENTID_FLAG_SPAWN))
+						continue;
+					go = _mapmgr->CreateGameObject((*i)->entry);
+					if(go == NULL)
+						continue;
+					if(go->Load(*i))
+					{
+						go->m_loadedFromDB = true;
+						go->PushToWorld(_mapmgr);
+						CALL_GO_SCRIPT_EVENT(go, OnSpawn)();
+					}
+					else
+					{
+						go->Destructor();
+					}
 				}
 			}
 		}
@@ -220,7 +223,7 @@ void MapCell::LoadEventIdObjects(CellSpawns * sp, uint8 eventId)
 void MapCell::ModifyEventIdSetting(bool active, uint8 eventId)
 {
 	ObjectSet::iterator itr;
-	Object* pObject; // do this outside the loop!
+	Object* pObject; //do this outside the loop!
 	for(itr = _objects.begin(); itr != _objects.end();)
 	{
 		pObject = (*itr);
@@ -253,9 +256,9 @@ void MapCell::ModifyEventIdSetting(bool active, uint8 eventId)
 					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem1)
 						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem1 : TO_CREATURE(pObject)->proto->Item1);
 					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2)
-						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID +1, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2 : TO_CREATURE(pObject)->proto->Item2);
+						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_1, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem2 : TO_CREATURE(pObject)->proto->Item2);
 					if(TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3)
-						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID +2, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3 : TO_CREATURE(pObject)->proto->Item3);
+						TO_CREATURE(pObject)->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID_2, active ? TO_CREATURE(pObject)->m_spawn->eventinfo->eventitem3 : TO_CREATURE(pObject)->proto->Item3);
 				}
 			}break;
 		case TYPEID_GAMEOBJECT:
@@ -299,7 +302,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 
 	/* delete objects in pending respawn state */
 	Object* pObject;
-	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); itr++)
+	for(itr = _respawnObjects.begin(); itr != _respawnObjects.end(); ++itr)
 	{
 		pObject = *itr;
 		if(!pObject)
@@ -428,7 +431,7 @@ void DayWatcherThread::update_event_settings(uint8 eventid, time_t activated)
 	if(activated)
 		CharacterDatabase.Execute("REPLACE INTO events_settings VALUES('%u','%u')", eventid, activated);
 	else
-		CharacterDatabase.Execute("DELETE FROM events_settings where eventid = %u", eventid);
+		CharacterDatabase.Execute("DELETE FROM events_settings where eventid = '%u')", eventid);
 }
 
 bool DayWatcherThread::SpawnEventId(uint8 eventId, bool activate)

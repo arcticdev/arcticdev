@@ -2139,6 +2139,7 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
         Group * m_Group = _player->GetGroup();
 
         m_Group->Lock();
+
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
 		{
 			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); itr++)
@@ -2159,6 +2160,39 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
     }
 }
 
+void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)
+{
+	uint32 data;
+	recv_data >> data;
+
+	if(_player->GetGroup() && _player->IsGroupLeader())
+	{
+		WorldPacket pData;
+		pData.Initialize(MSG_SET_RAID_DIFFICULTY);
+		pData << data;
+
+		_player->iRaidType = data;
+		Group * m_Group = _player->GetGroup();
+
+		m_Group->SetRaidDifficulty(data);
+		m_Group->Lock();
+		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
+		{
+			for(GroupMembersSet::iterator itr = m_Group->GetSubGroup(i)->GetGroupMembersBegin(); itr != m_Group->GetSubGroup(i)->GetGroupMembersEnd(); ++itr)
+			{
+				if((*itr)->m_loggedInPlayer)
+				{
+					(*itr)->m_loggedInPlayer->iRaidType = data;
+					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&pData);
+				}
+			}
+		}
+		m_Group->Unlock();
+	}
+	else if(!_player->GetGroup())
+		_player->iRaidType = data;
+}
+
 void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 {
 	uint64 summonguid;
@@ -2166,7 +2200,7 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 	recv_data >> summonguid;
 	recv_data >> agree;
 
-	//Do we have a summoner?
+	// Do we have a summoner?
 	if(!_player->m_summoner)
 	{
 		SendNotification("Summoner guid has changed or does not exist.");
@@ -2180,20 +2214,20 @@ void WorldSession::HandleSummonResponseOpcode(WorldPacket & recv_data)
 		return;
 	}
 
-	//not during combat
+	// not during combat
 	if(_player->CombatStatus.IsInCombat())
 		return;
 
-	//Map checks.
+	// Map checks. 
 	MapInfo * inf = WorldMapInfoStorage.LookupEntry(_player->m_summonMapId);
 	if(!inf)
 		return;
 
-	//are we summoning from witin the same instance?
+	// are we summoning from witin the same instance?
 	if( _player->m_summonInstanceId != _player->GetInstanceID() )
 	{
 		// if not, are we allowed on the summoners map?
-		uint8 pReason = CheckTeleportPrerequsites(NULL, this, _player, inf);
+		uint8 pReason = CheckTeleportPrerequsites(NULL, this, _player, inf->mapid);
 		if( pReason )
 		{
 			SendNotification(NOTIFICATION_MESSAGE_NO_PERMISSION);
