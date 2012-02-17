@@ -31,7 +31,7 @@ enum INSTANCE_MODE
 {
     MODE_NORMAL_5MEN        = 0,
     MODE_HEROIC_5MEN        = 1,
-    MODE_EPIC               = 2,
+    TOTAL_INSTANCE_MODE     = 2,
 };
 
 enum RAID_MODE
