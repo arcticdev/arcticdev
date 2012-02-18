@@ -15,7 +15,7 @@ public:
 
     MEATHOOK_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		/* SPELLS INIT */
 		ScriptSpell* ConstrictingChains = new ScriptSpell;
@@ -186,7 +186,7 @@ public:
 
     SALRAMM_THE_FLESHCRAFTER_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		/* SPELLS INIT */
 		ScriptSpell* ShadowBolt = new ScriptSpell;
@@ -365,7 +365,7 @@ public:
 
     CHRONO_LORD_EPOCH_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		/* SPELLS INIT */
 		ScriptSpell* WoundingStrike = new ScriptSpell;
@@ -530,7 +530,7 @@ public:
 
     INFINITE_CORRUPTOR_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		ScriptSpell* VoidStrike = new ScriptSpell;
 		VoidStrike->normal_spellid = 60590;
@@ -660,7 +660,7 @@ public:
 
     MALGANIS_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		scene = true;
 		spells.clear();
 		ScriptSpell* CarrionSwarm = new ScriptSpell;

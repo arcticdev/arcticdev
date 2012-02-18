@@ -26,7 +26,7 @@ public:
 
     GENERAL_BJARNGRIM_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		stances_timer = 0;
 		phase = 0;
 		spells.clear();
@@ -287,7 +287,7 @@ public:
 
     VOLKHAN_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		last_creation_hp = 0;
 		freezed = 0;
     }
@@ -451,7 +451,7 @@ public:
 
     MOLTEN_GOLEM_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		/* SPELLS INIT */
 		ScriptSpell* ImmolationStrike = new ScriptSpell;
@@ -651,7 +651,7 @@ public:
 
     IONAR_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		for( uint8 i=0; i<SPARKS_COUNT; i++)
 			sparks[i] = 0;
@@ -901,7 +901,7 @@ public:
 
     LOKEN_AI(Creature* pCreature) : CreatureAIScript(pCreature)
     {
-		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC );
+		heroic = ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN );
 		spells.clear();
 		/* SPELLS INIT */
 		ScriptSpell* ArcLightning = new ScriptSpell;

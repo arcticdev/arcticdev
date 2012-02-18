@@ -8996,6 +8996,7 @@ void Player::OnWorldPortAck()
 	// only rezz if player is porting to a instance portal
 	MapInfo *pPMapinfo = NULL;
 	pPMapinfo = WorldMapInfoStorage.LookupEntry(GetMapId());
+	MapEntry* map = dbcMap.LookupEntry(GetMapId());
 
 	if(pPMapinfo != NULL)
 	{
@@ -9007,6 +9008,44 @@ void Player::OnWorldPortAck()
 			std::string welcome_msg;
 			welcome_msg = "Welcome to ";
 			welcome_msg += pPMapinfo->name;
+			welcome_msg += pPMapinfo->name;
+			if(map->israid())
+			{
+				switch(iRaidType)
+				{
+				case MODE_NORMAL_10MEN:
+					welcome_msg += " (10 Player)";
+					break;
+				case MODE_NORMAL_25MEN:
+					welcome_msg += " (25 Player)";
+					break;
+				case MODE_HEROIC_10MEN:
+					welcome_msg += " (10 Player Heroic)";
+					break;
+				case MODE_HEROIC_25MEN:
+					welcome_msg += " (25 Player Heroic)";
+					break;
+				default:
+					break;
+				}
+			}
+			else
+			{
+				switch(iInstanceType)
+				{
+				case MODE_NORMAL_5MEN:
+					welcome_msg += " (5 Player)";
+					break;
+				case MODE_HEROIC_5MEN:
+					welcome_msg += " (5 Player Heroic)";
+					break;
+				case MODE_EPIC_5MEN:
+					welcome_msg += " (5 Player Epic)";
+					break;
+				default:
+					break;
+				}
+			}
 			welcome_msg += ". ";
 			if(pPMapinfo->type != INSTANCE_NONRAID && m_mapMgr->pInstance)
 			{

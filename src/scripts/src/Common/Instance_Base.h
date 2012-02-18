@@ -14,7 +14,7 @@
 #include <map>
 
 #define INVALIDATE_TIMER			-1
-#define DEFAULT_UPDATE_FREQUENCY	1000	//milliseconds
+#define DEFAULT_UPDATE_FREQUENCY	1000 // milliseconds
 
 #define ARCTIC_SCRIPT_INSTANCE_FACTORY_FUNCTION( ClassName, ParentClassName ) \
 public:\
@@ -39,9 +39,9 @@ enum InstanceType
 
 enum InstanceMode
 {
-	Mode_Normal					= MODE_NORMAL,
-	Mode_Heroic					= MODE_HEROIC,
-	Mode_Epic					= MODE_EPIC
+	Mode_Normal					= MODE_NORMAL_5MEN,
+	Mode_Heroic					= MODE_HEROIC_5MEN,
+	Mode_Epic					= MODE_EPIC_5MEN,
 };
 
 enum DataType
@@ -113,17 +113,17 @@ public:
 	CreatureSet					FindCreaturesOnMap( uint32 pEntry );
 
 	// GameObject
-	GameObject*					GetGameObjectBySqlId( uint32 pSqlId );
-	GameObject*					GetGameObjectByGuid( uint32 pGuid );
-	GameObject*					FindClosestGameObjectOnMap( uint32 pEntry, float pX, float pY, float pZ );
-	GameObject*					SpawnGameObject( uint32 pEntry, float pX, float pY, float pZ, float pO );
+	GameObject *			GetGameObjectBySqlId( uint32 pSqlId );
+	GameObject *			GetGameObjectByGuid( uint32 pGuid );
+	GameObject *			FindClosestGameObjectOnMap( uint32 pEntry, float pX, float pY, float pZ );
+	GameObject *			SpawnGameObject( uint32 pEntry, float pX, float pY, float pZ, float pO );
 	GameObjectSet				FindGameObjectsOnMap( uint32 pEntry );
 	void						AddGameObjectStateByEntry( uint32 pEntry, GameObjectState pState, bool pUseQuery = false );
 	void						AddGameObjectStateById( uint32 pId, GameObjectState pState );
 
 	// Distance calculation
-	float						GetRangeToObject( Object* pObjectA, Object* pObjectB );
-	float						GetRangeToObject( Object* pObject, float pX, float pY, float pZ );
+	float						GetRangeToObject( Object *pObjectA, Object *pObjectB );
+	float						GetRangeToObject( Object *pObject, float pX, float pY, float pZ );
 	float						GetRangeToObject( float pX1, float pY1, float pZ1, float pX2, float pY2, float pZ2 );
 
 	// Player and instance - reimplementation for easier calling
@@ -149,27 +149,27 @@ public:
 	void						SetCellForcedStates( float pMinX, float pMaxX, float pMinY, float pMaxY, bool pActivate = true );
 
 	// Player
-	virtual void				OnPlayerDeath( Player * pVictim, Unit * pKiller );
+	virtual void				OnPlayerDeath( Player *pVictim, Unit *pKiller );
 
 	// Area and AreaTrigger
-	virtual void				OnPlayerEnter( Player * pPlayer );
-	virtual void				OnAreaTrigger( Player * pPlayer, uint32 pAreaId );
-	virtual void				OnZoneChange( Player * pPlayer, uint32 pNewZone, uint32 pOldZone );
+	virtual void				OnPlayerEnter( Player *pPlayer );
+	virtual void				OnAreaTrigger( Player *pPlayer, uint32 pAreaId );
+	virtual void				OnZoneChange( Player *pPlayer, uint32 pNewZone, uint32 pOldZone );
 
 	// Data get / set - idea taken from ScriptDev2
 	virtual void				SetInstanceData( uint32 pType, uint32 pIndex, uint32 pData );
 	virtual uint32				GetInstanceData( uint32 pType, uint32 pIndex );
 
 	// Creature / GameObject
-	virtual void				OnCreatureDeath( Creature * pVictim, Unit * pKiller );
-	virtual void				OnCreaturePushToWorld( Creature * pCreature );
-	virtual void				OnGameObjectActivate( GameObject * pGameObject, Player * pPlayer );
-	virtual void				OnGameObjectPushToWorld( GameObject * pGameObject );
+	virtual void				OnCreatureDeath( Creature *pVictim, Unit *pKiller );
+	virtual void				OnCreaturePushToWorld( Creature *pCreature );
+	virtual void				OnGameObjectActivate( GameObject *pGameObject, Player *pPlayer );
+	virtual void				OnGameObjectPushToWorld( GameObject *pGameObject );
 
 	// Reimplemented events
-	virtual GameObject *	GetObjectForOpenLock( Player * pCaster, Spell * pSpell, SpellEntry* pSpellEntry );
-	virtual void				SetLockOptions( uint32 pEntryId, GameObject * pGameObject );
-	virtual uint32				GetRespawnTimeForCreature( uint32 pEntryId, Creature * pCreature);
+	virtual GameObject *	GetObjectForOpenLock( Player *pCaster, Spell *pSpell, SpellEntry* pSpellEntry );
+	virtual void				SetLockOptions( uint32 pEntryId, GameObject *pGameObject );
+	virtual uint32				GetRespawnTimeForCreature( uint32 pEntryId, Creature *pCreature);
 	virtual void				OnLoad();
 	virtual void				UpdateEvent();
 	virtual void				Destroy();

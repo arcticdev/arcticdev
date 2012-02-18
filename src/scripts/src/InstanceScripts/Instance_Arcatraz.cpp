@@ -2984,7 +2984,7 @@ public:
 		spells[0].mindist2cast = 0.0f;
 		spells[0].maxdist2cast = 100.0f;
 
-		if(_unit->GetMapMgr()->iInstanceMode != MODE_HEROIC)
+		if(_unit->GetMapMgr()->iInstanceMode != MODE_HEROIC_5MEN)
 		{
 
 			spells[1].info = dbcSpell.LookupEntry(SHADOW_NOVA);
@@ -3261,7 +3261,7 @@ public:
 	{
 		// M4ksiu: I'm not sure if it should be cast once, on start
 		uint32 SpellId = CONSUMPTION;
-		if ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC )
+		if ( _unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN )
 			SpellId = CONSUMPTION_H;
 
 		_unit->CastSpell( _unit, SpellId, true );
@@ -3289,7 +3289,7 @@ public:
 
 	DalliahTheDoomsayerAI(Creature* pCreature) : CreatureAIScript(pCreature)
 	{
-		if(_unit->GetMapMgr()->iInstanceMode == MODE_HEROIC)
+		if(_unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN)
 		{
 				nrspells = 4;
 			}
@@ -3323,7 +3323,7 @@ public:
 			spells[2].perctrigger = 0.0f;
 			spells[2].attackstoptimer = 1000;
 			
-			if(_unit->GetMapMgr()->iInstanceMode == MODE_HEROIC)
+			if(_unit->GetMapMgr()->iInstanceMode == MODE_HEROIC_5MEN)
 			{
 				spells[3].info = dbcSpell.LookupEntry(SHADOW_WAVE);
 				spells[3].targettype = TARGET_ATTACKING;

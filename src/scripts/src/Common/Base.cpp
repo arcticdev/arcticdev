@@ -367,7 +367,7 @@ bool ArcTicScriptCreatureAI::IsHeroic()
 {
 	if ( _unit->GetMapMgr() == NULL )
 		return false;
-	if ( _unit->GetMapMgr()->iInstanceMode != MODE_HEROIC )
+	if ( _unit->GetMapMgr()->iInstanceMode != MODE_HEROIC_5MEN )
 		return false;
 
 	return true;
