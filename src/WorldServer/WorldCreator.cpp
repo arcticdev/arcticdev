@@ -110,7 +110,7 @@ void InstanceMgr::Shutdown()
 			}
 
 			delete m_instances[i];
-			m_instances[i]=NULL;
+			m_instances[i] = NULL;
 		}
 
 		if(m_singleMaps[i] != NULL)
@@ -125,7 +125,7 @@ void InstanceMgr::Shutdown()
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i]=NULL;
+			m_maps[i] = NULL;
 		}
 	}
 

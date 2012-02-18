@@ -152,7 +152,7 @@ MapMgr::~MapMgr()
 	_mapWideStaticObjects.clear();
 
 	Corpse* pCorpse;
-	for(unordered_set<Corpse* >::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
+	for(unordered_set<Corpse*>::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
 	{
 		pCorpse = *itr;
 		if(!pCorpse)

@@ -313,7 +313,7 @@ public:
 	VehicleSet activeVehicles;
 	EventableObjectHolder eventHolder;
 	CBattleground* m_battleground;
-	unordered_set<Corpse* > m_corpses;
+	unordered_set<Corpse*> m_corpses;
 	VehicleSqlIdMap _sqlids_vehicles;
 	CreatureSqlIdMap _sqlids_creatures;
 	GameObjectSqlIdMap _sqlids_gameobjects;

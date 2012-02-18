@@ -368,7 +368,7 @@ void Group::Disband()
 
 	if(m_isqueued)
 	{
-		m_isqueued=false;
+		m_isqueued = false;
 		WorldPacket * data = sChatHandler.FillSystemMessageData("A change was made to your group. Removing the arena queue.");
 		SendPacketToAll(data);
 		delete data;
@@ -469,7 +469,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 
 	if(m_isqueued)
 	{
-		m_isqueued=false;
+		m_isqueued = false;
 		BattlegroundManager.RemoveGroupFromQueues(this);
 	}
 	
@@ -502,7 +502,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 		return;
 	}
 
-	m_dirty=true;
+	m_dirty = true;
 	sg->RemovePlayer(info);
 	--m_MemberCount;
 	
@@ -518,12 +518,12 @@ void Group::RemovePlayer(PlayerInfo * info)
 			pPlayer->GetSession()->SendPacket( &data );
 
 			data.Initialize( SMSG_PARTY_COMMAND_RESULT );
-			data << uint32(2) << uint8(0) << uint32(0);  // you leave the group
+			data << uint32(2) << uint8(0) << uint32(0); // you leave the group
 			pPlayer->GetSession()->SendPacket( &data );
 		}
 
-		//Remove some party auras.
-		for (uint32 i=0;i<MAX_POSITIVE_AURAS;i++)
+		// Remove some party auras.
+		for (uint32 i = 0; i < MAX_POSITIVE_AURAS; i++)
 		{
 			if (pPlayer->m_auras[i] != NULL && 
 				pPlayer->m_auras[i]->m_areaAura && 
@@ -564,7 +564,7 @@ void Group::ExpandToRaid()
 {
 	if(m_isqueued)
 	{
-		m_isqueued=false;
+		m_isqueued = false;
 		WorldPacket * data = sChatHandler.FillSystemMessageData("A change was made to your group. Removing the arena queue.");
 		SendPacketToAll(data);
 		delete data;
@@ -581,7 +581,7 @@ void Group::ExpandToRaid()
 		m_SubGroups[i] = new SubGroup(this, i);
 
 	m_GroupType = GROUP_TYPE_RAID;
-	m_dirty=true;
+	m_dirty = true;
 	Update();
 	m_groupLock.Release();
 }
@@ -1092,7 +1092,7 @@ void Group::SetMainAssist(PlayerInfo * pMember)
 
 void Group::SetMainTank(PlayerInfo * pMember)
 {
-	if(m_mainTank==pMember)
+	if(m_mainTank == pMember)
 		return;
 
 	m_mainTank=pMember;

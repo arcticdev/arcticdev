@@ -822,7 +822,7 @@ bool Player::Create(WorldPacket& data )
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
 	SetUInt32Value(PLAYER_FIELD_MAX_LEVEL, sWorld.GetMaxLevel(TO_PLAYER(this)));
 
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x = 0; x < 7; x++)
 		SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+x, 1.00);
 
 	SetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, 0xEEEEEEEE);
@@ -6896,7 +6896,7 @@ void Player::Reset_ToLevel1()
 	SetUInt32Value(UNIT_FIELD_ATTACK_POWER, info->attackpower );
 	SetUInt32Value(PLAYER_CHARACTER_POINTS1,0);
 	SetUInt32Value(PLAYER_CHARACTER_POINTS2,2);
-	for(uint32 x=0;x<7;x++)
+	for(uint32 x = 0; x < 7; x++)
 		SetFloatValue(PLAYER_FIELD_MOD_DAMAGE_DONE_PCT+x, 1.00);
 
 }

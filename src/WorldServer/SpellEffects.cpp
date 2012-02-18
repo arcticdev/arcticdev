@@ -7113,30 +7113,30 @@ void Spell::SpellEffectTranformItem(uint32 i)
 
 	if( i_caster == NULL)
 		return;
-	uint32 itemid=m_spellInfo->EffectItemType[i];
+	uint32 itemid = m_spellInfo->EffectItemType[i];
 	if(!itemid)
 		return;
 
-	//Save durability of the old item
-	Player* owner=i_caster->GetOwner();
-	uint32 dur= i_caster->GetUInt32Value(ITEM_FIELD_DURABILITY);
+	// Save durability of the old item
+	Player* owner = i_caster->GetOwner();
+	uint32 dur = i_caster->GetUInt32Value(ITEM_FIELD_DURABILITY);
 
 	result  = owner->GetItemInterface()->SafeFullRemoveItemByGuid(i_caster->GetGUID());
 	if(!result)
 	{
-		//something went wrong if this happen, item doesnt exist, so it wasnt destroyed.
+		// something went wrong if this happen, item doesnt exist, so it wasnt destroyed.
 		return;
 	}
 
 	i_caster=NULL;
 
-	Item* it=objmgr.CreateItem(itemid,owner);
+	Item* it = objmgr.CreateItem(itemid,owner);
 	it->SetDurability(dur);
-	//additem
+	// additem
 
-	   //additem
+	   // additem
 	result2 = owner->GetItemInterface()->AddItemToFreeSlot(it);
-	if(!result2) //should never get here
+	if(!result2) // should never get here
 	{
 		owner->GetItemInterface()->BuildInventoryChangeError(NULL, NULL,INV_ERR_BAG_FULL);
 		it->Destructor();
@@ -7288,10 +7288,8 @@ void Spell::SpellEffectTriggerSpellWithValue(uint32 i)
 
 	Spell* sp= new Spell(m_caster,dbcSpell.LookupEntry(TriggeredSpell->Id),true,NULL);
 
-	for(uint32 x=0;x<3;x++)
-	{
+	for(uint32 x = 0; x < 3; x++)
 		sp->forced_basepoints[x] = TriggeredSpell->EffectBasePoints[i];
-	}
 
 	SpellCastTargets tgt(unitTarget->GetGUID());
 	sp->prepare(&tgt);
