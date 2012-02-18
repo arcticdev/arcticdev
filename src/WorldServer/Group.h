@@ -90,10 +90,9 @@ public:
 	bool HasMember(uint32 guid);
 
 protected:
-
-	GroupMembersSet	 m_GroupMembers;
-	Group*			  m_Parent;
-	uint32			  m_Id;
+	GroupMembersSet   m_GroupMembers;
+	Group*            m_Parent;
+	uint32            m_Id;
 
 };
 
@@ -190,10 +189,13 @@ public:
 	ARCTIC_INLINE PlayerInfo * GetMainTank() { return m_mainTank; }
 	ARCTIC_INLINE PlayerInfo * GetMainAssist() { return m_mainAssist; }
 
-	ARCTIC_INLINE int8 GetDifficulty() { return m_difficulty; } 
-	ARCTIC_INLINE int8 GetRaidDifficulty() { return m_raiddifficulty; } 
-	ARCTIC_INLINE void SetDifficulty(uint8 diff) { m_difficulty = diff; } 
-	ARCTIC_INLINE void SetRaidDifficulty(uint8 diff) { m_raiddifficulty = diff; } 
+	ARCTIC_INLINE int8 GetDifficulty() { return m_difficulty; }
+	ARCTIC_INLINE int8 GetRaidDifficulty() { return m_raiddifficulty; }
+	ARCTIC_INLINE void SetDifficulty(uint8 diff) { m_difficulty = diff; }
+	ARCTIC_INLINE void SetRaidDifficulty(uint8 diff) { m_raiddifficulty = diff; }
+
+	uint8 m_difficulty;
+	uint8 m_raiddifficulty;
 
 	ARCTIC_INLINE void SetFlag(uint8 groupflag) { m_groupFlags |= groupflag; }
 	ARCTIC_INLINE void RemoveFlag(uint8 groupflag) { m_groupFlags &= ~groupflag; }
@@ -217,8 +219,6 @@ protected:
 	Mutex m_groupLock;
 	bool m_dirty;
 	bool m_updateblock;
-	uint8 m_difficulty;
-	uint8 m_raiddifficulty;
 	uint8 m_groupFlags;
 
 	// Evil prayer of mending stuff

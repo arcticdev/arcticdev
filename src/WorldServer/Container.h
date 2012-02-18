@@ -27,15 +27,16 @@ public:
 		else
 			return NULL;
 	}
-	
+
 	int8 FindFreeSlot();
 	bool HasItems();
-	
+
 	void SwapItems(int8 SrcSlot,int8 DstSlot);
 	Item* SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy); // doesnt destroy item from memory
 	bool SafeFullRemoveItemFromSlot(int8 slot); // destroys item fully
-   
+
 	void SaveBagToDB(int8 slot, bool first, QueryBuffer * buf);
+	uint32 GetSlotCount() { return GetUInt32Value(CONTAINER_FIELD_NUM_SLOTS); }
 
 protected:
 	Item* m_Slot[72];

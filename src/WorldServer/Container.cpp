@@ -18,7 +18,7 @@ Container::Container(uint32 high,uint32 low) : Item()
 	SetUInt32Value( OBJECT_FIELD_GUID+1,high);
 	m_wowGuid.Init(GetGUID());
 
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 );//always 1
+	SetFloatValue( OBJECT_FIELD_SCALE_X, 1 ); // always 1
 
 
 	for(uint32 i = 0; i < 72; ++i)
@@ -32,7 +32,7 @@ void Container::Init()
 	Item::Init();
 }
 
-Container::~Container( )
+Container::~Container()
 {
 	for(uint32 i = 0; i < m_itemProto->ContainerSlots; i++)
 	{
@@ -88,15 +88,14 @@ void Container::Create( uint32 itemid, Player* owner )
 	m_owner = owner;
 }
 
-
 int8 Container::FindFreeSlot()
 {
-	int8 TotalSlots = GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS );
-	for (int8 i=0; i < TotalSlots; i++)
+	int8 TotalSlots = GetSlotCount();
+	for (int8 i = 0; i < TotalSlots; i++)
 	{
-		if(!m_Slot[i]) 
-		{ 
-			return i; 
+		if(!m_Slot[i])
+		{
+			return i;
 		}
 	}
 	DEBUG_LOG( "Container","FindFreeSlot: no slot available" );
@@ -105,12 +104,12 @@ int8 Container::FindFreeSlot()
 
 bool Container::HasItems()
 {
-	int8 TotalSlots = GetUInt32Value( CONTAINER_FIELD_NUM_SLOTS );
-	for (int8 i=0; i < TotalSlots; i++)
+	int8 TotalSlots = GetSlotCount();
+	for (int8 i = 0; i < TotalSlots; i++)
 	{
-		if(m_Slot[i]) 
-		{ 
-			return true; 
+		if(m_Slot[i])
+		{
+			return true;
 		}
 	}
 	return false;
@@ -121,12 +120,8 @@ bool Container::AddItem(int8 slot, Item* item)
 	if (slot < 0 || (uint32)slot >= GetProto()->ContainerSlots)
 		return false;
 
-	//ASSERT(m_Slot[slot] == NULL);
 	if(m_Slot[slot] != NULL)
-	{
-		//sLog.outString("Bad container item %u slot %d", item->GetGUID(), slot);
 		return false;
-	}
 
 	if (!m_owner)
 		return false;
@@ -141,10 +136,9 @@ bool Container::AddItem(int8 slot, Item* item)
 
 	SetUInt64Value(CONTAINER_FIELD_SLOT_1  + (slot*2), item->GetGUID());
 
-	//new version to fix bag issues
+	// new version to fix bag issues
 	if(m_owner->IsInWorld() && !item->IsInWorld())
 	{
-		//item->AddToWorld();
 		item->PushToWorld(m_owner->GetMapMgr());
 
 		ByteBuffer buf(2500);
@@ -159,10 +153,10 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 	Item* temp;
 	if( SrcSlot < 0 || SrcSlot >= (int8)m_itemProto->ContainerSlots )
 		return;
-	
+
 	if( DstSlot < 0 || DstSlot >= (int8)m_itemProto->ContainerSlots )
 		return;
-	
+
 	if(m_Slot[DstSlot] &&  m_Slot[SrcSlot]&&m_Slot[DstSlot]->GetEntry()==m_Slot[SrcSlot]->GetEntry() && m_Slot[SrcSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->wrapped_item_id == 0 && m_Slot[DstSlot]->GetProto()->MaxCount>1)
 	{
 		uint32 total=m_Slot[SrcSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT)+m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
@@ -177,10 +171,6 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 		{
 			if(m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT) == m_Slot[DstSlot]->GetProto()->MaxCount)
 			{
-
-			}
-			else
-			{
 				int32 delta=m_Slot[DstSlot]->GetProto()->MaxCount-m_Slot[DstSlot]->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
 				m_Slot[DstSlot]->SetUInt32Value(ITEM_FIELD_STACK_COUNT,m_Slot[DstSlot]->GetProto()->MaxCount);
 				m_Slot[SrcSlot]->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT,-delta);
@@ -188,7 +178,7 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 			}
 		}
 	}
-   
+
 	temp = m_Slot[SrcSlot];
 	m_Slot[SrcSlot] = m_Slot[DstSlot];
 	m_Slot[DstSlot] = temp;
@@ -199,9 +189,7 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 		m_Slot[DstSlot]->m_isDirty = true;
 	}
 	else
-	{
 		SetUInt64Value(CONTAINER_FIELD_SLOT_1  + (DstSlot*2), 0 );
-	}
 
 	if( m_Slot[SrcSlot])
 	{
@@ -209,9 +197,7 @@ void Container::SwapItems(int8 SrcSlot, int8 DstSlot)
 		m_Slot[SrcSlot]->m_isDirty = true;
 	}
 	else
-	{
 		SetUInt64Value(CONTAINER_FIELD_SLOT_1  + (SrcSlot*2), 0 );
-	}
 }
 
 Item* Container::SafeRemoveAndRetreiveItemFromSlot(int8 slot, bool destroy)
@@ -297,7 +283,6 @@ bool Container::AddItemToFreeSlot(Item* pItem, uint32 * r_slot)
 	return false;
 }
 
-
 void Container::SaveBagToDB(int8 slot, bool first, QueryBuffer * buf)
 {
 	SaveToDB(INVENTORY_SLOT_NOT_SET, slot, first, buf);
@@ -310,5 +295,3 @@ void Container::SaveBagToDB(int8 slot, bool first, QueryBuffer * buf)
 		}
 	}
 }
-
-
