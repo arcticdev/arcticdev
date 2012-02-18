@@ -193,7 +193,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		return;
 	}
 
-	OUT_DEBUG("WORLD: got cast spell packet, spellId - %i (%s), data length = %i", spellId, spellInfo->Name, recvPacket.size());
+	DEBUG_LOG("WORLD","Received cast_spell packet, spellId - %i (%s), data length = %i", spellId, spellInfo->Name, recvPacket.size());
 
 	// Cheat Detection only if player and not from an item
 	// this could fuck up things but meh it's needed ALOT of the newbs are using WPE now
@@ -242,10 +242,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				spellid = 0;
 				break;
 			}
-
-			if(!spellid)
+		   
+			if(!spellid) 
 				spellid = spellInfo->Id;
-
+			
 			if(!_player->m_onAutoShot)
 			{
 				_player->m_AutoShotTarget = _player->GetSelection();
@@ -257,7 +257,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 					return;
 				}
 				SpellEntry *sp = dbcSpell.LookupEntry(spellid);
-
+			
 				_player->m_AutoShotSpell = sp;
 				_player->m_AutoShotDuration = duration;
 				//This will fix fast clicks
@@ -284,7 +284,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_SPELL_IN_PROGRESS, cn, 0);
 				return;
 			}
-        }
+		}
 
 		// some anticheat stuff
 		if( spellInfo->self_cast_only )
@@ -311,7 +311,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		}
 
 		Spell* spell = new Spell(GetPlayer(), spellInfo, false, NULL);
-		spell->extra_cast_number=cn;
+		spell->extra_cast_number = cn;
 		spell->prepare(&targets);
 	}
 }
@@ -332,7 +332,7 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
 
 	if(spellId == 33763 || spellId == 48450 || spellId == 48451) // Prevents Lifebloom exploit
 		return;
-
+	
 	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; ++x)
 	{
 		if(_player->m_auras[x] && _player->m_auras[x]->IsPositive() && _player->m_auras[x]->GetSpellId() == spellId)
@@ -350,7 +350,7 @@ void WorldSession::HandleCancelChannellingOpcode( WorldPacket& recvPacket)
 	if(!plyr)
 		return;
 	if(plyr->m_currentSpell)
-	{
+	{		
 		plyr->m_currentSpell->cancel();
 	}
 }
@@ -364,17 +364,14 @@ void WorldSession::HandleCharmForceCastSpell(WorldPacket & recvPacket)
 {
 	DEBUG_LOG( "WORLD"," got CMSG_PET_CAST_SPELL." );
 	uint64 guid;
-	uint8 counter;
 	uint32 spellid;
-	uint8 flags;
+	uint8 counter, flags;
 	Unit* caster;
 	SpellCastTargets targets;
-	SpellEntry *sp;
-	Spell* pSpell;
 	list<AI_Spell*>::iterator itr;
 
 	recvPacket >> guid >> counter >> spellid >> flags;
-	sp = dbcSpell.LookupEntry(spellid);
+	SpellEntry *sp = dbcSpell.LookupEntry(spellid);
 
 	// Summoned Elemental's Freeze
 	if(spellid == 33395)
@@ -385,7 +382,10 @@ void WorldSession::HandleCharmForceCastSpell(WorldPacket & recvPacket)
 	}
 	else
 	{
-		caster = _player->m_CurrentCharm;
+		if(_player->m_CurrentVehicle)
+			caster = _player->m_CurrentVehicle;
+		else
+			caster = _player->m_CurrentCharm;
 		if( caster != NULL )
 		{
 			if(caster->IsVehicle() && !caster->IsPlayer())
@@ -447,6 +447,6 @@ void WorldSession::HandleCharmForceCastSpell(WorldPacket & recvPacket)
 
 	targets.read(recvPacket, _player->GetGUID());
 
-	pSpell = new Spell(caster, sp, false, NULL);
+	Spell* pSpell = new Spell(caster, sp, false, NULL);
 	pSpell->prepare(&targets);
 }

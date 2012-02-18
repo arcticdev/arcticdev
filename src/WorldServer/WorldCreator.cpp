@@ -40,7 +40,7 @@ void InstanceMgr::Load(TaskList * l)
 	result = WorldDatabase.Query("SELECT DISTINCT Map FROM creature_spawns");
 	if(result)
 	{
-		do
+		do 
 		{
 			if(WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL)
 				continue;
@@ -51,7 +51,7 @@ void InstanceMgr::Load(TaskList * l)
 				continue;
 			}
 
-			// _CreateMap(result->Fetch()[0].GetUInt32());
+			//_CreateMap(result->Fetch()[0].GetUInt32());
 			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, result->Fetch()[0].GetUInt32())));
 		} while(result->NextRow());
 		delete result;
@@ -110,7 +110,7 @@ void InstanceMgr::Shutdown()
 			}
 
 			delete m_instances[i];
-			m_instances[i] = NULL;
+			m_instances[i]=NULL;
 		}
 
 		if(m_singleMaps[i] != NULL)
@@ -125,7 +125,7 @@ void InstanceMgr::Shutdown()
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i] = NULL;
+			m_maps[i]=NULL;
 		}
 	}
 
@@ -182,7 +182,7 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 					return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
 			}
 			else
-				// otherwise we still need to be lvl 70/80 for heroic.
+				//otherwise we still need to be lvl 70/80 for heroic.
 				if( plr->iRaidType > 1 && plr->getLevel() < uint32(inf->HasFlag(WMI_INSTANCE_XPACK_02) ? 80 : 70))
 					return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
 
@@ -413,7 +413,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 							in->m_mapMgr = _CreateInstance(in);
 
 						if(owns == OWNER_CHECK_SAVED_OK && !in->m_mapMgr->HasPlayers())
-						{
+						{	
 							if(plr->GetGroup())
 								in->m_creatorGroup = plr->GetGroupID();
 						}
@@ -439,7 +439,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 						in->m_mapMgr = _CreateInstance(in);
 
 					if(owns == OWNER_CHECK_SAVED_OK && !in->m_mapMgr->HasPlayers())
-					{
+					{	
 						if(plr->GetGroup())
 							in->m_creatorGroup = plr->GetGroupID();
 					}
@@ -546,7 +546,7 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 	MapInfo * inf = NULL;
 	inf = WorldMapInfoStorage.LookupEntry(mapid);
 
-	ASSERT(inf!= NULL && inf->type == INSTANCE_NULL);
+	ASSERT(inf != NULL && inf->type == INSTANCE_NULL);
 	ASSERT(mapid < NUM_MAPS && m_maps[mapid] != NULL);
 
 	Log.Notice("InstanceMgr", "Creating continent %s.", m_maps[mapid]->GetName());
@@ -656,7 +656,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	snprintf(tmp, 200, "		<maxplayers>%u</maxplayers>\n", inf->playerlimit);																		pushline;
 
 	//<creationtime>
-	if(inst)
+	if (inst)
 	{
 		tm *ttime = localtime( &inst->m_creation );
 		snprintf(tmp, 200, "		<creationtime>%02u:%02u:%02u %02u/%02u/%u</creationtime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
@@ -669,7 +669,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 	}
 
 	//<expirytime>
-	if(inst && inst->m_expiration)
+	if (inst && inst->m_expiration)
 	{
 		tm *ttime = localtime( &inst->m_expiration );
 		snprintf(tmp, 200, "		<expirytime>%02u:%02u:%02u %02u/%02u/%u</expirytime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
@@ -682,7 +682,7 @@ void BuildStats(MapMgr* mgr, char * m_file, Instance * inst, MapInfo * inf)
 
 	}
 	//<idletime>
-	if(mgr->InactiveMoveTime)
+	if (mgr->InactiveMoveTime)
 	{
 		tm *ttime = localtime( &mgr->InactiveMoveTime );
 		snprintf(tmp, 200, "		<idletime>%02u:%02u:%02u %02u/%02u/%u</idletime>\n",ttime->tm_hour, ttime->tm_min, ttime->tm_sec, ttime->tm_mday, ttime->tm_mon, uint32( ttime->tm_year + 1900 ));
@@ -704,7 +704,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
 	Instance * in;
-
+	
 	m_mapLock.Acquire();
 	for(i = 0; i < NUM_MAPS; ++i)
 	{
@@ -740,14 +740,14 @@ void InstanceMgr::_LoadInstances()
 	// clear any instances that have expired.
 	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
 	CharacterDatabase.WaitExecute("DELETE FROM instances WHERE expiration <= %u", UNIXTIME);
-
+	
 	// load saved instances
 	result = CharacterDatabase.Query("SELECT * FROM instances");
 	Log.Notice("InstanceMgr", "Loading %u saved instance(s)." , result ? result->GetRowCount() : 0);
 
 	if(result)
 	{
-		do
+		do 
 		{
 			inf = WorldMapInfoStorage.LookupEntry(result->Fetch()[1].GetUInt32());
 			if(inf == NULL || result->Fetch()[1].GetUInt32() >= NUM_MAPS)
@@ -782,7 +782,7 @@ void Instance::LoadFromDB(Field * fields)
 	m_difficulty = fields[5].GetUInt32();
 	m_creatorGroup = fields[6].GetUInt32();
 	m_creatorGuid = fields[7].GetUInt32();
-	m_mapMgr=NULL;
+	m_mapMgr = NULL;
 	m_isBattleground = false;
 
 	// process saved npc's
@@ -795,7 +795,7 @@ void Instance::LoadFromDB(Field * fields)
 	{
 		*pnpcstr = 0;
 		uint32 val = atol(npcstr);
-		if(val)
+		if (val)
 			m_killedNpcs.insert( val );
 		npcstr = pnpcstr+1;
 		pnpcstr = strchr(npcstr, ' ');
@@ -811,7 +811,7 @@ void Instance::LoadFromDB(Field * fields)
 	{
 		*pplayerstr = 0;
 		uint32 val = atol(playerstr);
-		if(val) //	No mutex required here, we are only calling this during start up.
+		if (val) //	No mutex required here, we are only calling this during start up.
 			m_SavedPlayers.insert( val );
 		playerstr = pplayerstr+1;
 		pplayerstr = strchr(playerstr, ' ');
@@ -824,7 +824,8 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 	WorldPacket data(SMSG_INSTANCE_RESET, 4);
 	Instance * in;
 	InstanceMap::iterator itr;
-	InstanceMap * instancemap;
+	InstanceMap* instancemap;
+	MapEntry* map;
 	uint32 i;
 
 	if(plr == NULL || !plr->IsInWorld() || plr->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL)
@@ -836,15 +837,15 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 		if(m_instances[i] != NULL)
 		{
 			instancemap = m_instances[i];
+			map = dbcMap.LookupEntry(i);
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				itr++;
+				++itr;
 
-				if(	(in->m_mapInfo->type == INSTANCE_NONRAID || in->m_mapInfo->type == INSTANCE_MULTIMODE )&&  plr->GetGroupID() == in->m_creatorGroup )
+				if((!map->israid()) && in->m_mapInfo->type == INSTANCE_MULTIMODE && plr->GetGroupID() == in->m_creatorGroup)
 				{
-
-					if( in->m_difficulty == MODE_HEROIC_5MEN && in->m_SavedPlayers.size() )//heroic instances can't be reset once they are saved.
+					if( in->m_difficulty == MODE_HEROIC_5MEN && in->m_SavedPlayers.size() ) // heroic instances can't be reset once they are saved.
 					{
 						plr->GetSession()->SystemMessage("Heroic instances are reset daily at 08:00 CET!");
 						continue;
@@ -872,7 +873,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 			}
 		}
 	}
-    m_mapLock.Release();
+	m_mapLock.Release();
 }
 
 void InstanceMgr::ResetHeroicInstances()
@@ -894,10 +895,14 @@ void InstanceMgr::ResetHeroicInstances()
 				in = itr->second;
 				itr++;
 
-				// use a "soft" delete here.
-				if(in->m_difficulty == MODE_HEROIC_5MEN)
-					_DeleteInstance(in, false);
+				if(in->m_mapInfo->type != INSTANCE_RAID)
+				{
+					// use a "soft" delete here.
+					if(in->m_difficulty == MODE_HEROIC_5MEN)
+						_DeleteInstance(in, false);
+				}
 			}
+
 		}
 	}
 	m_mapLock.Release();
@@ -944,7 +949,7 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 	// delete the instance pointer.
 	delete in;
 	m_mapLock.Release();
-
+	
 	return true;
 }
 

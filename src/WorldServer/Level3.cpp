@@ -37,7 +37,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 	}
 	if(!plr) return false;
 
-	if(plr->getClass()==CLASS_WARRIOR)
+	if(plr->getClass() == CLASS_WARRIOR)
 	{
 		plr->ClearCooldownsOnLine(26, guid);
 		plr->ClearCooldownsOnLine(256, guid);
@@ -45,7 +45,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Warrior cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_PALADIN)
+	if(plr->getClass() == CLASS_PALADIN)
 	{
 		plr->ClearCooldownsOnLine(594, guid);
 		plr->ClearCooldownsOnLine(267, guid);
@@ -53,7 +53,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Paladin cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_HUNTER)
+	if(plr->getClass() == CLASS_HUNTER)
 	{
 		plr->ClearCooldownsOnLine(50, guid);
 		plr->ClearCooldownsOnLine(51, guid);
@@ -61,7 +61,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Hunter cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_ROGUE)
+	if(plr->getClass() == CLASS_ROGUE)
 	{
 		plr->ClearCooldownsOnLine(253, guid);
 		plr->ClearCooldownsOnLine(38, guid);
@@ -69,7 +69,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Rogue cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_PRIEST)
+	if(plr->getClass() == CLASS_PRIEST)
 	{
 		plr->ClearCooldownsOnLine(56, guid);
 		plr->ClearCooldownsOnLine(78, guid);
@@ -77,7 +77,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Priest cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_SHAMAN)
+	if(plr->getClass() == CLASS_SHAMAN)
 	{
 		plr->ClearCooldownsOnLine(373, guid);
 		plr->ClearCooldownsOnLine(374, guid);
@@ -85,7 +85,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Shaman cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_DEATHKNIGHT)
+	if(plr->getClass() == CLASS_DEATHKNIGHT)
 	{
 		plr->ClearCooldownsOnLine(770, guid);
 		plr->ClearCooldownsOnLine(771, guid);
@@ -93,7 +93,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Death Knight cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_MAGE)
+	if(plr->getClass() == CLASS_MAGE)
 	{
 		plr->ClearCooldownsOnLine(6, guid);
 		plr->ClearCooldownsOnLine(8, guid);
@@ -101,7 +101,7 @@ bool ChatHandler::HandleClearCooldownsCommand(const char *args, WorldSession *m_
 		BlueSystemMessage(m_session, "Cleared all Mage cooldowns.");
 		return true;
 	}
-	if(plr->getClass()==CLASS_WARLOCK)
+	if(plr->getClass() == CLASS_WARLOCK)
 	{
 		plr->ClearCooldownsOnLine(355, guid);
 		plr->ClearCooldownsOnLine(354, guid);
@@ -314,7 +314,7 @@ bool ChatHandler::HandleExploreCheatCommand(const char* args, WorldSession *m_se
 	SystemMessage(m_session,  buf);
 
 
-	for (uint8 i=0; i<128; i++)
+	for (uint8 i = 0; i < 128; i++)
 	{
 		if (flag != 0)
 		{
@@ -568,10 +568,10 @@ bool ChatHandler::HandleGMTicketDelByIdCommand(const char* args, WorldSession *m
 		if(!plr->IsInWorld())
 			return true;
 
-		WorldPacket data2(SMSG_GMTICKET_DELETETICKET, 4);
-		data2 << uint32(9);
+		WorldPacket data(SMSG_GMTICKET_DELETETICKET, 4);
+		data << uint32(9);
 
-		plr->GetSession()->SendPacket( &data2 );
+		plr->GetSession()->SendPacket( &data );
 	}
 
 	return true;
@@ -623,7 +623,7 @@ bool ChatHandler::HandleNpcInfoCommand(const char *args, WorldSession *m_session
 	if(!crt) return false;
 	if(crt->GetCreatureInfo())
 		BlueSystemMessage(m_session, "Showing creature info for %s", crt->GetCreatureInfo()->Name);
-	snprintf(msg,512,"GUID: %d\nFaction: %d\nNPCFlags: %d\nDisplayID: %d\n Scale %f", (int)guid, (int)crt->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), (int)crt->GetUInt32Value(UNIT_NPC_FLAGS), (int)crt->GetUInt32Value(UNIT_FIELD_DISPLAYID), (float)crt->proto->Scale);
+	snprintf(msg,512,"GUID: %d\nFaction: %d\nNPCFlags: %d\nDisplayID: %d\n Scale %f", (int)guid, (int)crt->GetUInt32Value(UNIT_FIELD_FACTIONTEMPLATE), (int)crt->GetUInt32Value(UNIT_NPC_FLAGS), (int)crt->GetUInt32Value(UNIT_FIELD_DISPLAYID), (int)crt->proto->Scale);
 	SystemMessage(m_session, msg);
 	if(crt->m_faction)
 		GreenSystemMessage(m_session, "Combat Support: 0x%.3X", crt->m_faction->FriendlyMask);
@@ -1230,8 +1230,8 @@ bool ChatHandler::HandleDBReloadCommand(const char* args, WorldSession* m_sessio
 	{
 		objmgr.ReloadDisabledSpells();
 		ret = 1;
-	} else
-	if (0 == stricmp(args, "vendors"))
+	} 
+	else if (0 == stricmp(args, "vendors"))
 	{
 		objmgr.ReloadVendors();
 		ret = 1;
@@ -1299,6 +1299,7 @@ bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_ses
 		return true;
 	}
 
+	plr->UpdateStats();
 	plr->ApplyLevelInfo(Info, Level);
 	return true;
 }
@@ -1390,11 +1391,11 @@ if(!args || strlen(args) < 2)
 
 	uint32 Entry = atol(args);
 	if(!Entry)
-		return false;
+	return false;
 
 	Player * player = m_session->GetPlayer();
 	if(!player)
-		return false;
+	return false;
 
 	CreatureProto * pTemplate = CreatureProtoStorage.LookupEntry(Entry);
 	CreatureInfo * pCreatureInfo = CreatureNameStorage.LookupEntry(Entry);
@@ -1403,12 +1404,12 @@ if(!args || strlen(args) < 2)
 		RedSystemMessage(m_session, "Invalid creature spawn template: %u", Entry);
 		return true;
 	}
-	
+
 	if(player->GeneratePetNumber() == 0)
-		return false;
+	return false;
 
 	else if(player->GetSummon() || player->GetUnstabledPetNumber())
-		return false;
+	return false;
 
 	CreatureFamilyEntry *cf = dbcCreatureFamily.LookupEntry(pCreatureInfo->Family);
 	if(cf && !cf->tameable)
@@ -2014,8 +2015,10 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	}
 	else
 		plr = getSelectedChar(m_session, true);
-	
-	if(!plr) return true;
+
+	if(!plr)
+		return true;
+
 	if(!plr->GetSession())
 	{
 		RedSystemMessage(m_session, "ERROR: this player hasn't got any session !");
@@ -2093,7 +2096,7 @@ bool ChatHandler::HandlePlayerInfo(const char* args, WorldSession * m_session)
 	}
 	snprintf(playedTotal, 64, "[%d days, %d hours, %d minutes, %d seconds]", days, hours, mins, seconds);
 
-	GreenSystemMessage(m_session, "%s is a %s %s %s", plr->GetName(),
+	GreenSystemMessage(m_session, "%s[%u] is a %s %s %s", plr->GetName(), plr->GetLowGUID(),
 		(plr->getGender()?"Female":"Male"), races[plr->getRace()], classes[plr->getClass()]);
 
 	BlueSystemMessage(m_session, "%s has played %s at this level",(plr->getGender()?"She":"He"), playedLevel);
@@ -2201,10 +2204,10 @@ bool ChatHandler::HandleCreatureSpawnCommand(const char *args, WorldSession *m_s
 		if( sscanf(args, "%u", &entry) != 1 )
 			return false;
 
-		save = (uint32)m_session->CanUseCommand('n');
+		save = (uint32)m_session->CanUseCommand('z');
 	}
 
-	if( save && !m_session->CanUseCommand('n') )
+	if( save && !m_session->CanUseCommand('z') )
 	{
 		SystemMessage(m_session, "You are not allowed to save spawns.");
 		return true;
@@ -2644,7 +2647,7 @@ bool ChatHandler::HandleAIAgentDebugBegin(const char * args, WorldSession * m_se
 	} while(result->NextRow());
 	delete result;
 
-	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); itr++)
+	for(list<SpellEntry*>::iterator itr = aiagent_spells.begin(); itr != aiagent_spells.end(); ++itr)
 	{
 		result = WorldDatabase.Query("SELECT * FROM ai_agents WHERE spell = %u", (*itr)->Id);
 		ASSERT(result);
@@ -3065,7 +3068,7 @@ bool ChatHandler::HandleClearBonesCommand(const char *args, WorldSession *m_sess
 	Object::InRangeSet::iterator itr;
 	Object* obj;
 
-	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); itr++)
+	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); ++itr)
 	{
 		obj = *itr;
 		if(!obj)
@@ -3087,7 +3090,7 @@ bool ChatHandler::HandleClearCorpsesCommand(const char *args, WorldSession *m_se
 	Object::InRangeSet::iterator itr;
 	Object* obj;
 
-	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); itr++)
+	for( itr = p->GetInRangeSetBegin(); itr != p->GetInRangeSetEnd(); ++itr)
 	{
 		obj = *itr;
 		if(!obj)

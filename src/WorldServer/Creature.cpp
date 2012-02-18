@@ -31,21 +31,21 @@ Creature::Creature(uint64 guid)
 
 	m_enslaveCount = 0;
 	m_enslaveSpell = 0;
-
-	for(uint32 x = 0; x < 7; x++)
+	
+	for(uint32 x=0;x<7;x++)
 	{
-		FlatResistanceMod[x] = 0;
-		BaseResistanceModPct[x] = 0;
-		ResistanceModPct[x] = 0;
-		ModDamageDone[x] = 0;
-		ModDamageDonePct[x] = 1.0;
+		FlatResistanceMod[x]=0;
+		BaseResistanceModPct[x]=0;
+		ResistanceModPct[x]=0;
+		ModDamageDone[x]=0;
+		ModDamageDonePct[x]=1.0;
 	}
 
-	for(uint32 x = 0; x < 5; x++)
+	for(uint32 x=0;x<5;x++)
 	{
-		TotalStatModPct[x] = 0;
-		StatModPct[x] = 0;
-		FlatStatMod[x] = 0;
+		TotalStatModPct[x]=0;
+		StatModPct[x]=0;
+		FlatStatMod[x]=0;
 	}
 
 	SummonOwner = 0;
@@ -506,7 +506,7 @@ void Creature::RemoveFromWorld(bool addrespawnevent, bool free_guid)
 	m_lootMethod = 1;
 
 	RemoveAllAuras();
-
+	
 	if(IsPet()) /* Is a pet: IsPet() actually returns false on a pet? o_X */
 	{
 		if(IsInWorld())
@@ -607,10 +607,10 @@ void Creature::CalcResistance(uint32 type)
 void Creature::CalcStat(uint32 type)
 {
 	int32 res=(BaseStats[type]*(100+StatModPct[type]))/100;
-
+		
 	res+=FlatStatMod[type];
 	if(res<0)res=0;
-
+		
 	res+=(res*(TotalStatModPct[type]))/100;
 	SetUInt32Value(UNIT_FIELD_STAT0+type,res>0?res:0);
 }
@@ -624,7 +624,7 @@ void Creature::RegenerateHealth(bool isinterrupted)
 	uint32 cur=GetUInt32Value(UNIT_FIELD_HEALTH);
 	uint32 mh=GetUInt32Value(UNIT_FIELD_MAXHEALTH);
 	if(cur>=mh)return;
-
+	
 	//though creatures have their stats we use some wierd formula for amt
 	float amt = 0.0f;
 	uint32 lvl = getLevel();
@@ -632,10 +632,10 @@ void Creature::RegenerateHealth(bool isinterrupted)
 	amt = lvl*2.0f;
 	if (PctRegenModifier)
 		amt+= (amt * PctRegenModifier) / 100;
-
+		
 	//Apply shit from conf file
 	amt*=sWorld.getRate(RATE_HEALTH);
-
+	
 	if(amt<=1.0f)//this fixes regen like 0.98
 		cur++;
 	else
@@ -647,14 +647,14 @@ void Creature::RegenerateMana(bool isinterrupted)
 {
 	if (m_interruptRegen || isinterrupted)
 		return;
-
+   
 	uint32 cur=GetUInt32Value(UNIT_FIELD_POWER1);
 	uint32 mm=GetUInt32Value(UNIT_FIELD_MAXPOWER1);
 	if(cur>=mm)
 		return;
 
 	float amt=(getLevel()+10)*PctPowerRegenModifier[POWER_TYPE_MANA]/10;
-
+	
 	//Apply shit from conf file
 	amt*=sWorld.getRate(RATE_POWER1);
 	if(amt<=1.0)//this fixes regen like 0.98
@@ -827,12 +827,12 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	//Set fields
 	SetUInt32Value(OBJECT_FIELD_ENTRY,proto->Id);
-
+	
 	// Heroic stats
 	if(mode)
 	{
 		proto_heroic = CreatureProtoHeroicStorage.LookupEntry(spawn->entry);
-		if(proto_heroic!=NULL)
+		if(proto_heroic != NULL)
 		{
 			health = proto_heroic->Minhealth + RandomUInt(proto_heroic->Maxhealth - proto_heroic->Minhealth);
 			powertype = proto_heroic->Powertype;
@@ -877,7 +877,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetUInt32Value(UNIT_FIELD_BYTES_2, spawn->bytes2);
 
 	//Use proto displayid (random + gender generator), unless there is an id  specified in spawn->displayid
-	uint32 model;
+	uint32 model = 0;
 	if(!spawn->displayid)
 	{
 		uint32 gender = creature_info->GenerateModelId(&model);
@@ -890,7 +890,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	SetFloatValue(OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))));
 
 	SetFloatValue( OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))));
-	DEBUG_LOG("Creatures","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, spawn->displayid, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid )));
+	DEBUG_LOG("Creatures","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, spawn->displayid, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( spawn->displayid ))); 
 
 	SetUInt32Value(UNIT_NPC_EMOTESTATE, original_emotestate);
 	SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID,original_MountedDisplayID);
@@ -933,8 +933,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	else
 		Log.Warning("Creature","Creature is missing a valid faction template for entry %u.", spawn->entry);
 
-
-//SETUP NPC FLAGS
+	// Setup npc flags
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
@@ -943,22 +942,22 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ) )
 		_LoadQuests();
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER) )
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROFESSION))
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROF))
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
-//NPC FLAGS
+	// NPC FLAGS
 	 m_aiInterface->m_waypoints=objmgr.GetWayPointMap(spawn->id);
 
-	//load resistances
-	for(uint32 x=0;x<7;x++)
+	// load resistances
+	for(uint32 x = 0; x < 7; x++)
 		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
-	for(uint32 x=0;x<5;x++)
+	for(uint32 x = 0; x < 5; x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
 	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
@@ -971,7 +970,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);   // better set this one
 
-////////////AI
+	// AI //
 
 	// kek
 	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); itr++)
@@ -988,8 +987,9 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
 
 	//these fields are always 0 in db
+	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
-
+	
 	// load formation data
 	if( spawn->form != NULL )
 	{
@@ -1008,7 +1008,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 
-
+	
 // PLACE FOR DIRTY FIX BASTARDS
 	// HACK! set call for help on civ health @ 100%
 	if(creature_info->Civilian >= 1)
@@ -1017,7 +1017,6 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
  //HACK!
 	if(m_uint32Values[UNIT_FIELD_DISPLAYID] == 17743 || m_uint32Values[UNIT_FIELD_DISPLAYID] == 20242 || m_uint32Values[UNIT_FIELD_DISPLAYID] == 15435 || (creature_info->Family == UNIT_TYPE_MISC))
 		m_useAI = false;
-
 
 	switch(powertype)
 	{
@@ -1060,7 +1059,7 @@ bool Creature::Load(CreatureSpawn *spawn, uint32 mode, MapInfo *info)
 		}break;
 	default:
 		{
-			sLog.outError("Creature %u has an incorrect powertype.", this->GetEntry());
+			sLog.outError("Creature %u has an incorrect powertype.", this->GetEntry());	
 		}break;
 	}
 
@@ -1116,7 +1115,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	setGender(gender);
 
 	SetFloatValue(OBJECT_FIELD_SCALE_X,( proto->Scale ? proto->Scale : GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))));
-	DEBUG_LOG("Creature","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, model, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( model )));
+	DEBUG_LOG("Creature","NPC %u (model %u) got scale %f, found in DBC %f", proto->Id, model, GetFloatValue(OBJECT_FIELD_SCALE_X), GetScale( dbcCreatureDisplayInfo.LookupEntry( model ))); 
 
 	SetUInt32Value(UNIT_FIELD_DISPLAYID,model);
 	SetUInt32Value(UNIT_FIELD_NATIVEDISPLAYID,model);
@@ -1158,7 +1157,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		}
 	}
 
-	//SETUP NPC FLAGS
+	// Setup npc flags
 	SetUInt32Value(UNIT_NPC_FLAGS,proto->NPCFLags);
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR ) )
@@ -1167,19 +1166,19 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER ) )
 		_LoadQuests();
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER) )
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TAXIVENDOR) )
 		m_TaxiNode = sTaxiMgr.GetNearestTaxiNode( m_position.x, m_position.y, m_position.z, GetMapId() );
 
-	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROFESSION))
+	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER) || HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER_PROF))
 		mTrainer = objmgr.GetTrainer(GetEntry());
 
 	if ( HasFlag( UNIT_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER ) )
 		auctionHouse = sAuctionMgr.GetAuctionHouse(GetEntry());
 
-	//load resistances
-	for(uint32 x=0;x<7;x++)
-		BaseResistance[x]=GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
-	for(uint32 x=0;x<5;x++)
+	// load resistances
+	for(uint32 x = 0; x < 7; x++)
+		BaseResistance[x] = GetUInt32Value(UNIT_FIELD_RESISTANCES+x);
+	for(uint32 x = 0; x < 5; x++)
 		BaseStats[x]=GetUInt32Value(UNIT_FIELD_STAT0+x);
 
 	BaseDamage[0]=GetFloatValue(UNIT_FIELD_MINDAMAGE);
@@ -1195,7 +1194,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	////////////AI
 
 	// kek
-	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); itr++)
+	for(list<AI_Spell*>::iterator itr = proto->spells.begin(); itr != proto->spells.end(); ++itr)
 	{
 		m_aiInterface->addSpellToList(*itr);
 	}
@@ -1209,6 +1208,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 	m_aiInterface->m_FleeDuration = proto->m_fleeDuration;
 
 	//these fields are always 0 in db
+	GetAIInterface()->setMoveType(0);
 	GetAIInterface()->setMoveRunFlag(0);
 
 	// load formation data
@@ -1270,7 +1270,7 @@ void Creature::Load(CreatureProto * proto_, float x, float y, float z, float o)
 		}break;
 	default:
 		{
-			sLog.outError("Creature %u has an incorrect powertype.", this->GetEntry());
+			sLog.outError("Creature %u has an incorrect powertype.", this->GetEntry());	
 		}break;
 	}
 

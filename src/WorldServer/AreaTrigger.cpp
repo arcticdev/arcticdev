@@ -41,7 +41,7 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 	// Are we REALLY here?
 	CHECK_INWORLD_RETURN;
 
-    // Search quest log, find any exploration quests
+	// Search quest log, find any exploration quests
 	sQuestMgr.OnPlayerExploreArea(GetPlayer(),id);
 
 	AreaTrigger* pAreaTrigger = AreaTriggerStorage.LookupEntry( id );
@@ -73,7 +73,6 @@ void WorldSession::_HandleAreaTriggerOpcode(uint32 id)
 		return;
 	}
 
-	DEBUG_LOG( "WorldSession","HandleAreaTriggerOpcode: Type %u", pAreaTrigger->Type);
 	switch(pAreaTrigger->Type)
 	{
 	case ATTYPE_INSTANCE:

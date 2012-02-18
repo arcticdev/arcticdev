@@ -553,13 +553,13 @@ void WorldSession::HandleCharRenameOpcode(WorldPacket & recv_data)
 			{
 				data << uint8(CHAR_NAME_TOO_SHORT); // Name is too short.
 			}
-			else if((int)szName[x] > 122)           // Name is too long.
+			else if((int)szName[x] > 122) // Name is too long.
 			{
 				data << uint8(CHAR_NAME_TOO_LONG);
 			}
 			else
 			{
-				data << uint8(CHAR_NAME_FAILURE);   // No clue.
+				data << uint8(CHAR_NAME_FAILURE); // No clue.
 			}
 			data << guid << name;
 			SendPacket(&data);
@@ -621,7 +621,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	uint8 response = CHAR_LOGIN_NO_CHARACTER;
 
 	//already active?
-	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player)
+	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player) 
 		response = CHAR_LOGIN_DUPLICATE_CHARACTER;
 	else //Do we exist in DB yet?
 	{
@@ -652,6 +652,10 @@ void WorldSession::FullLogin(Player* plr)
 	DEBUG_LOG("WorldSession", "Fully loading player %u", plr->GetLowGUID());
 	SetPlayer(plr);
 	m_MoverWoWGuid.Init(plr->GetGUID());
+
+	// copy to movement array
+	plr->movement_packet[0] = m_MoverWoWGuid.GetNewGuidMask();
+	memcpy(&plr->movement_packet[1], m_MoverWoWGuid.GetNewGuid(), m_MoverWoWGuid.GetNewGuidLen());
 
 	WorldPacket datab(MSG_SET_DUNGEON_DIFFICULTY, 20);
 	datab << plr->iInstanceType;

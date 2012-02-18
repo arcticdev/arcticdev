@@ -128,24 +128,24 @@ public:
     // Send Packet functions
     void SendCastResult(uint8 result);
     void SendSpellStart();
-    void SendSpellGo();
-    void SendLogExecute(uint32 damage, uint64 & targetGuid);
-    void SendInterrupted(uint8 result);
-    void SendChannelUpdate(uint32 time);
-    void SendChannelStart(uint32 duration);
-    void SendResurrectRequest(Player* target);
-    static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
-    static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
+	void SendSpellGo();
+	void SendLogExecute(uint32 damage, uint64 & targetGuid);
+	void SendInterrupted(uint8 result);
+	void SendChannelUpdate(uint32 time);
+	void SendChannelStart(uint32 duration);
+	void SendResurrectRequest(Player* target);
+	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
+	static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
+	
+	void HandleAddAura(uint64 guid);
+	void writeSpellGoTargets( WorldPacket * data );
 
-    void HandleAddAura(uint64 guid);
-    void writeSpellGoTargets( WorldPacket * data );
+	SpellEntry* m_spellInfo;
+	uint32 pSpellId;
+	SpellEntry *ProcedOnSpell; //some spells need to know the origins of the proc too
+	SpellCastTargets m_targets;
 
-    SpellEntry* m_spellInfo;
-    uint32 pSpellId;
-    SpellEntry *ProcedOnSpell; //some spells need to know the origins of the proc too
-    SpellCastTargets m_targets;
-
-    void CreateItem(uint32 itemId);
+	void CreateItem(uint32 itemId);
 
 	// Effect Handlers
 	void SpellEffectNULL(uint32 i);
@@ -209,8 +209,8 @@ public:
 	void SpellEffectStuck(uint32 i);
 	void SpellEffectSummonPlayer(uint32 i);
 	void SpellEffectActivateObject(uint32 i);
-	void SpellEffectWMODamage(uint32 i);
-	void SpellEffectWMORepair(uint32 i);
+	void SpellEffectWMODamage(uint32 i); 
+ 	void SpellEffectWMORepair(uint32 i); 
 	void SummonTotem(uint32 i);
 	void SpellEffectProficiency(uint32 i);
 	void SpellEffectSendEvent(uint32 i);
@@ -262,49 +262,49 @@ public:
 	void SpellEffectSetTalentSpecsCount(uint32 i);
 	void SpellEffectActivateTalentSpec(uint32 i);
 
-    // Spell Targets Handlers
-    void SpellTargetNULL(uint32 i, uint32 j);
-    void SpellTargetDefault(uint32 i, uint32 j);
-    void SpellTargetSelf(uint32 i, uint32 j);
-    void SpellTargetInvisibleAOE(uint32 i, uint32 j);
-    void SpellTargetFriendly(uint32 i, uint32 j);
-    void SpellTargetPet(uint32 i, uint32 j);
-    void SpellTargetSingleTargetEnemy(uint32 i, uint32 j);
-    void SpellTargetCustomAreaOfEffect(uint32 i, uint32 j);
-    void SpellTargetAreaOfEffect(uint32 i, uint32 j);
-    void SpellTargetLandUnderCaster(uint32 i, uint32 j); /// I don't think this is the correct name for this one
-    void SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j);
-    void SpellTargetSingleTargetFriend(uint32 i, uint32 j);
-    void SpellTargetAoE(uint32 i, uint32 j); // something special
-    void SpellTargetSingleGameobjectTarget(uint32 i, uint32 j);
-    void SpellTargetInFrontOfCaster(uint32 i, uint32 j);
-    void SpellTargetSingleFriend(uint32 i, uint32 j);
-    void SpellTargetGameobject_itemTarget(uint32 i, uint32 j);
-    void SpellTargetPetOwner(uint32 i, uint32 j);
-    void SpellTargetEnemysAreaOfEffect(uint32 i, uint32 j);
-    void SpellTargetTypeTAOE(uint32 i, uint32 j);
-    void SpellTargetAllyBasedAreaEffect(uint32 i, uint32 j);
-    void SpellTargetScriptedEffects(uint32 i, uint32 j);
-    void SpellTargetSummon(uint32 i, uint32 j);
-    void SpellTargetNearbyPartyMembers(uint32 i, uint32 j);
-    void SpellTargetSingleTargetPartyMember(uint32 i, uint32 j);
-    void SpellTargetScriptedEffects2(uint32 i, uint32 j);
-    void SpellTargetPartyMember(uint32 i, uint32 j);
-    void SpellTargetDummyTarget(uint32 i, uint32 j);
-    void SpellTargetFishing(uint32 i, uint32 j);
-    void SpellTargetType40(uint32 i, uint32 j);
-    void SpellTargetTotem(uint32 i, uint32 j);
-    void SpellTargetChainTargeting(uint32 i, uint32 j);
-    void SpellTargetSimpleTargetAdd(uint32 i, uint32 j);
-    void SpellTarget56(uint32 o, uint32 j);
-    void SpellTargetTargetAreaSelectedUnit(uint32 i, uint32 j);
-    void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
-    void SpellTargetTargetPartyMember(uint32 i, uint32 j);
-    void SpellTargetSameGroupSameClass(uint32 i, uint32 j);
-    void SpellTargetPositionOfTarget(uint32 i, uint32 j);
-    void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
-    void SpellTargetAllTargetsInArea(uint32 i, uint32 j);
-    void SpellTargetVehicle(uint32 i, uint32 j);
+	// Spell Targets Handlers
+	void SpellTargetNULL(uint32 i, uint32 j);
+	void SpellTargetDefault(uint32 i, uint32 j);
+	void SpellTargetSelf(uint32 i, uint32 j);
+	void SpellTargetInvisibleAOE(uint32 i, uint32 j);
+	void SpellTargetFriendly(uint32 i, uint32 j);
+	void SpellTargetPet(uint32 i, uint32 j);
+	void SpellTargetSingleTargetEnemy(uint32 i, uint32 j);
+	void SpellTargetCustomAreaOfEffect(uint32 i, uint32 j);
+	void SpellTargetAreaOfEffect(uint32 i, uint32 j);
+	void SpellTargetLandUnderCaster(uint32 i, uint32 j); /// I don't think this is the correct name for this one
+	void SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j);
+	void SpellTargetSingleTargetFriend(uint32 i, uint32 j);
+	void SpellTargetAoE(uint32 i, uint32 j); // something special
+	void SpellTargetSingleGameobjectTarget(uint32 i, uint32 j);
+	void SpellTargetInFrontOfCaster(uint32 i, uint32 j);
+	void SpellTargetSingleFriend(uint32 i, uint32 j);
+	void SpellTargetGameobject_itemTarget(uint32 i, uint32 j);
+	void SpellTargetPetOwner(uint32 i, uint32 j);
+	void SpellTargetEnemysAreaOfEffect(uint32 i, uint32 j);
+	void SpellTargetTypeTAOE(uint32 i, uint32 j);
+	void SpellTargetAllyBasedAreaEffect(uint32 i, uint32 j);
+	void SpellTargetScriptedEffects(uint32 i, uint32 j);
+	void SpellTargetSummon(uint32 i, uint32 j);
+	void SpellTargetNearbyPartyMembers(uint32 i, uint32 j);
+	void SpellTargetSingleTargetPartyMember(uint32 i, uint32 j);
+	void SpellTargetScriptedEffects2(uint32 i, uint32 j);
+	void SpellTargetPartyMember(uint32 i, uint32 j);
+	void SpellTargetDummyTarget(uint32 i, uint32 j);
+	void SpellTargetFishing(uint32 i, uint32 j);
+	void SpellTargetType40(uint32 i, uint32 j);
+	void SpellTargetTotem(uint32 i, uint32 j);
+	void SpellTargetChainTargeting(uint32 i, uint32 j);
+	void SpellTargetSimpleTargetAdd(uint32 i, uint32 j);
+	void SpellTarget56(uint32 o, uint32 j);
+	void SpellTargetTargetAreaSelectedUnit(uint32 i, uint32 j);
+	void SpellTargetInFrontOfCaster2(uint32 i, uint32 j);
+	void SpellTargetTargetPartyMember(uint32 i, uint32 j);
+	void SpellTargetSameGroupSameClass(uint32 i, uint32 j);
+	void SpellTargetPositionOfTarget(uint32 i, uint32 j);
+	void SpellTargetAreaOfEffect87(uint32 i, uint32 j);
+	void SpellTargetAllTargetsInArea(uint32 i, uint32 j);
+	void SpellTargetVehicle(uint32 i, uint32 j);
 
 	uint64 static FindLowestHealthRaidMember(Player* Target, uint32 dist);
 
@@ -319,71 +319,71 @@ public:
 
 	bool SpellEffectUpdateQuest(uint32 questid);
 
-    // 15007 = resurecting sickness
+	// 15007 = resurecting sickness
+	
+	// This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
+	// It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
+	ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
+	ARCTIC_INLINE Item* GetItemTarget() { return itemTarget; }
+	ARCTIC_INLINE Unit* GetUnitTarget() { return unitTarget; }
+	ARCTIC_INLINE Player* GetPlayerTarget() { return playerTarget; }
+	ARCTIC_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
 
-    // This returns SPELL_ENTRY_Spell_Dmg_Type where 0 = SPELL_DMG_TYPE_NONE, 1 = SPELL_DMG_TYPE_MAGIC, 2 = SPELL_DMG_TYPE_MELEE, 3 = SPELL_DMG_TYPE_RANGED
-    // It should NOT be used for weapon_damage_type which needs: 0 = MELEE, 1 = OFFHAND, 2 = RANGED
-    ARCTIC_INLINE uint32 GetType() { return ( m_spellInfo->Spell_Dmg_Type == SPELL_DMG_TYPE_NONE ? SPELL_DMG_TYPE_MAGIC : m_spellInfo->Spell_Dmg_Type ); }
-    ARCTIC_INLINE Item* GetItemTarget() { return itemTarget; }
-    ARCTIC_INLINE Unit* GetUnitTarget() { return unitTarget; }
-    ARCTIC_INLINE Player* GetPlayerTarget() { return playerTarget; }
-    ARCTIC_INLINE GameObject* GetGameObjectTarget() { return gameObjTarget; }
+	uint32 chaindamage;
 
-    uint32 chaindamage;
+	bool IsAspect();
+	bool IsSeal();
+	bool static IsBinary(SpellEntry * sp);
 
-    bool IsAspect();
-    bool IsSeal();
-    bool static IsBinary(SpellEntry * sp);
+	uint32 GetDuration()
+	{
+		if(bDurSet)return Dur;
+		bDurSet=true;
+		int32 c_dur = 0;
 
-    uint32 GetDuration()
-    {
-        if(bDurSet)return Dur;
-        bDurSet = true;
-        int32 c_dur = 0;
+		if(m_spellInfo->DurationIndex)
+		{
+			SpellDuration *sd=dbcSpellDuration.LookupEntry(m_spellInfo->DurationIndex);
+			if(sd)
+			{
+				//check for negative and 0 durations.
+				//duration affected by level
+				if((int32)sd->Duration1 < 0 && sd->Duration2 && u_caster)
+				{
+					this->Dur = uint32(((int32)sd->Duration1 + (sd->Duration2 * u_caster->getLevel())));
+					if((int32)this->Dur > 0 && sd->Duration3 > 0 && (int32)this->Dur > (int32)sd->Duration3)
+					{
+						this->Dur = sd->Duration3;
+					}
 
-        if(m_spellInfo->DurationIndex)
-        {
-            SpellDuration *sd=dbcSpellDuration.LookupEntry(m_spellInfo->DurationIndex);
-            if(sd)
-            {
-                //check for negative and 0 durations.
-                //duration affected by level
-                if((int32)sd->Duration1 < 0 && sd->Duration2 && u_caster)
-                {
-                    this->Dur = uint32(((int32)sd->Duration1 + (sd->Duration2 * u_caster->getLevel())));
-                    if((int32)this->Dur > 0 && sd->Duration3 > 0 && (int32)this->Dur > (int32)sd->Duration3)
-                    {
-                        this->Dur = sd->Duration3;
-                    }
+					if((int32)this->Dur < 0)
+						this->Dur = 0;
+					c_dur = this->Dur;
+				}
+				if(sd->Duration1 >= 0 && !c_dur)
+				{
+					this->Dur = sd->Duration1;
+				}
+				//combo point lolerCopter? ;P
+				if(p_caster)  
+				{
+					uint32 cp=p_caster->m_comboPoints;
+					if(cp)
+					{
+						uint32 bonus=(cp*(sd->Duration3-sd->Duration1))/5;
+						if(bonus)
+						{
+							this->Dur+=bonus;
+							m_requiresCP=true;
+						}
+					}
+				}
 
-                    if((int32)this->Dur < 0)
-                        this->Dur = 0;
-                    c_dur = this->Dur;
-                }
-                if(sd->Duration1 >= 0 && !c_dur)
-                {
-                    this->Dur = sd->Duration1;
-                }
-                //combo point lolerCopter? ;P
-                if(p_caster)
-                {
-                    uint32 cp=p_caster->m_comboPoints;
-                    if(cp)
-                    {
-                        uint32 bonus=(cp*(sd->Duration3-sd->Duration1))/5;
-                        if(bonus)
-                        {
-                            this->Dur+=bonus;
-                            m_requiresCP=true;
-                        }
-                    }
-                }
-
-                if(m_spellInfo->SpellGroupType && u_caster)
-                {
-                    SM_FIValue(u_caster->SM[SMT_DURATION][0],(int32*)&this->Dur,m_spellInfo->SpellGroupType);
-                    SM_PIValue(u_caster->SM[SMT_DURATION][1],(int32*)&this->Dur,m_spellInfo->SpellGroupType);
-                }
+				if(m_spellInfo->SpellGroupType && u_caster)
+				{
+					SM_FIValue(u_caster->SM[SMT_DURATION][0],(int32*)&this->Dur,m_spellInfo->SpellGroupType);
+					SM_PIValue(u_caster->SM[SMT_DURATION][1],(int32*)&this->Dur,m_spellInfo->SpellGroupType);
+				}
 				// Limit duration in PvP but not applying diminishing returns
 				if(unitTarget != NULL && unitTarget->IsPlayer() && this->Dur > 10000)
 				{
@@ -409,38 +409,38 @@ public:
 							Dur += 20 * MSTIME_MINUTE;
 					}
 				}
-            }
-            else
-            {
-                this->Dur = (uint32)-1;
-            }
-        }
-        else
-        {
-             this->Dur = (uint32)-1;
-        }
+			}
+			else
+			{
+				this->Dur = (uint32)-1;
+			}
+		}
+		else
+		{
+			 this->Dur = (uint32)-1;
+		}
 
-        return this->Dur;
-    }
+		return this->Dur;
+	}
 
-    ARCTIC_INLINE float GetDBCCastTime(uint32 i)
-    {
-        if(bRadSet[i])return Rad[i];
-        bRadSet[i]=true;
-        Rad[i]=::GetDBCCastTime(dbcSpellRadius.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
-        if(m_spellInfo->SpellGroupType && u_caster)
-        {
-            SM_FFValue(u_caster->SM[SMT_RADIUS][0],&Rad[i],m_spellInfo->SpellGroupType);
-            SM_PFValue(u_caster->SM[SMT_RADIUS][1],&Rad[i],m_spellInfo->SpellGroupType);
-        }
+	ARCTIC_INLINE float GetDBCCastTime(uint32 i)
+	{
+		if(bRadSet[i])return Rad[i];
+		bRadSet[i]=true;
+		Rad[i]=::GetDBCCastTime(dbcSpellRadius.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
+		if(m_spellInfo->SpellGroupType && u_caster)
+		{
+			SM_FFValue(u_caster->SM[SMT_RADIUS][0],&Rad[i],m_spellInfo->SpellGroupType);
+			SM_PFValue(u_caster->SM[SMT_RADIUS][1],&Rad[i],m_spellInfo->SpellGroupType);
+		}
 
-        return Rad[i];
-    }
+		return Rad[i];
+	}
 
-    ARCTIC_INLINE static uint32 GetBaseThreat(uint32 dmg)
-    {
-        return dmg;
-    }
+	ARCTIC_INLINE static uint32 GetBaseThreat(uint32 dmg)
+	{
+		return dmg;
+	}
 
 	ARCTIC_INLINE static bool HasMechanic(SpellEntry * sp, uint32 MechanicsType)
 	{
@@ -525,10 +525,10 @@ public:
 		m_cancelled = true;
 	}
 
-    // Spell state's
-    // Spell failed
-    ARCTIC_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
-    ARCTIC_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
+	// Spell state's
+	// Spell failed
+	ARCTIC_INLINE bool GetSpellFailed(){return m_Spell_Failed;}
+	ARCTIC_INLINE void SetSpellFailed(bool failed = true){m_Spell_Failed = failed;}
 
 	Spell* m_reflectedParent;
 
@@ -543,30 +543,30 @@ public:
 protected:
 
 	/// Spell state's
-	bool        m_usesMana;
-	bool        m_Spell_Failed;        //for 5sr
-	bool        m_Delayed;
-	uint32      m_spellState;
-	int32       m_castTime;
-	int32       m_timer;
-	bool        m_ForceConsumption;
+	bool	m_usesMana;
+	bool	m_Spell_Failed;		//for 5sr
+	bool	m_Delayed;
+	uint32  m_spellState;
+	int32   m_castTime;
+	int32   m_timer;
+	bool	m_ForceConsumption;
 
 	// Current Targets to be used in effect handler
-	Unit*       unitTarget;
-	Item*       itemTarget;
+	Unit*	  unitTarget;
+	Item*	  itemTarget;
 	GameObject* gameObjTarget;
-	Player*     playerTarget;
-	Corpse*     corpseTarget;
-	uint32      add_damage;
+	Player*	 playerTarget;
+	Corpse*	 corpseTarget;
+	uint32	  add_damage;
 
-	uint8       cancastresult;
-	uint32      Dur;
-	bool        bDurSet;
-	float       Rad[3];
-	bool        bRadSet[3];
-	bool        m_cancelled;
-	bool        m_isCasting;
-	bool        m_projectileWait;
+	uint8	   cancastresult;
+	uint32	  Dur;
+	bool		bDurSet;
+	float	   Rad[3];
+	bool		bRadSet[3];
+	bool		m_cancelled;
+	bool m_isCasting;
+	bool m_projectileWait;
 
 private:
 	struct SpellTarget
@@ -594,13 +594,13 @@ private:
 	// sets the pointers (unitTarget, itemTarget, etc) for a given guid
 	void _SetTargets(const uint64& guid);
 
-    friend class DynamicObject;
+	friend class DynamicObject;
 	void DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplicator = 1);
-    void DetermineSkillUp(uint32 skillid);
+	void DetermineSkillUp(uint32 skillid);
 
 	uint32 m_hitTargetCount;
 	uint32 m_missTargetCount;
-
+	
 	// magnet
 	Unit* m_magnetTarget;
 };

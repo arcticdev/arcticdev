@@ -120,6 +120,7 @@ void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
 
 uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 {
+	OUT_DEBUG("Building update block for Player");
 	uint16 flags = 0;
 	uint32 flags2 = 0;
 
@@ -139,7 +140,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		{
 			flags = 0x0010;
 		}break;
-
+		
 		// player/unit: 0x0070 (except self)
 	case TYPEID_UNIT:
 		{
@@ -158,26 +159,26 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 
 			switch(GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID))
 			{
-			case GAMEOBJECT_TYPE_MO_TRANSPORT:
-				{
-					if(GetTypeFromGUID() != HIGHGUID_TYPE_TRANSPORTER)
-						return 0;   // bad transporter
-					else
+				case GAMEOBJECT_TYPE_MO_TRANSPORT:  
+					{
+						if(GetTypeFromGUID() != HIGHGUID_TYPE_TRANSPORTER)
+							return 0;   // bad transporter
+						else
+							flags |= 0x0002;
+					}break;
+
+				case GAMEOBJECT_TYPE_TRANSPORT:
+					{
+						/* deeprun tram, etc */
 						flags |= 0x0002;
-				}break;
+					}break;
 
-			case GAMEOBJECT_TYPE_TRANSPORT:
-				{
-					/* deeprun tram, etc */
-					flags |= 0x0002;
-				}break;
-
-			case GAMEOBJECT_TYPE_DUEL_ARBITER:
-				{
-					// duel flags have to stay as updatetype 3, otherwise
-					// it won't animate
-					updatetype = UPDATETYPE_CREATE_YOURSELF;
-				}break;
+				case GAMEOBJECT_TYPE_DUEL_ARBITER:
+					{
+						// duel flags have to stay as updatetype 3, otherwise
+						// it won't animate
+						updatetype = UPDATETYPE_CREATE_YOURSELF;
+					}break;
 			}
 		}break;
 
@@ -225,10 +226,10 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	return 1;
 }
 
-// That is dirty fix it actually creates update of 1 field with
-// the given value ignoring existing changes in fields and so on
-// usefull if we want update this field for certain players
-// NOTE: it does not change fields. This is also very fast method
+//That is dirty fix it actually creates update of 1 field with
+//the given value ignoring existing changes in fields and so on
+//usefull if we want update this field for certain players
+//NOTE: it does not change fields. This is also very fast method
 WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 {
 	// uint64 guidfields = GetGUID();
@@ -236,9 +237,9 @@ WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 	WorldPacket * packet=new WorldPacket(1500);
 	packet->SetOpcode( SMSG_UPDATE_OBJECT );
 
-	*packet << (uint32)1; // number of update/create blocks
+	*packet << (uint32)1;//number of update/create blocks
 
-	*packet << (uint8) UPDATETYPE_VALUES; // update type == update
+	*packet << (uint8) UPDATETYPE_VALUES;		// update type == update
 	*packet << GetNewGUID();
 
 	uint32 mBlocks = index/32+1;
@@ -750,7 +751,7 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 		if( m_objectTypeId == TYPEID_PLAYER && TO_PLAYER(this)->GetGroup() && TO_PLAYER(this)->m_last_group_position.Distance2DSq(m_position) > 25.0f ) // distance of 5.0
 		{
             TO_PLAYER(this)->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_POSITION, TO_PLAYER(this) );
-		}
+		}	
 	}
 
 	return result;
@@ -949,8 +950,8 @@ void Object::AddToWorld(MapMgr* pMapMgr)
 	mSemaphoreTeleport = false;
 }
 
-// Unlike addtoworld it pushes it directly ignoring add pool
-// this can only be called from the thread of mapmgr!!!
+//Unlike addtoworld it pushes it directly ignoring add pool
+//this can only be called from the thread of mapmgr!!!
 void Object::PushToWorld(MapMgr* mgr)
 {
 	ASSERT(mgr != NULL);
@@ -965,10 +966,10 @@ void Object::PushToWorld(MapMgr* mgr)
 			Log.Error("Object","Kicking Player %s due to empty MapMgr;",TO_PLAYER(this)->GetName());
 			TO_PLAYER(this)->GetSession()->LogoutPlayer(false);
 		}
-		return; // instance add failed
+		return; //instance add failed
 	}
 
-	m_mapId=mgr->GetMapId();
+	m_mapId = mgr->GetMapId();
 	m_instanceId = mgr->GetInstanceID();
 
 	m_mapMgr = mgr;
@@ -979,9 +980,9 @@ void Object::PushToWorld(MapMgr* mgr)
 	// correct incorrect instance id's
 	mSemaphoreTeleport = false;
 	m_inQueue = false;
-
+   
 	event_Relocate();
-
+	
 	// call virtual function to handle stuff.. :P
 	OnPushToWorld();
 }
@@ -1039,8 +1040,8 @@ void Object::SetByte(uint32 index, uint32 index1,uint8 value)
 // Set uint32 property
 void Object::SetUInt32Value( const uint32 index, const uint32 value )
 {
-    if(index > m_valuesCount)
-        printf("Index: %u, m_valuesCount: %u, Value: %u\n", index, m_valuesCount, value);
+	if(index > m_valuesCount)
+		printf("Index: %u, m_valuesCount: %u, Value: %u\n", index, m_valuesCount, value);
 
 	ASSERT( index < m_valuesCount );
 	// save updating when val isn't changing.
@@ -1459,7 +1460,7 @@ bool Object::inArc(float Position1X, float Position1Y, float FOV, float Orientat
 	{
 		return false;
 	}
-}
+} 
 
 bool Object::isInFront(Object* target)
 {
@@ -1489,7 +1490,7 @@ bool Object::isInFront(Object* target)
 bool Object::isInBack(Object* target)
 {
 	if(CalcDistance(target) < 0.5f)
-		return false;
+		return false; 
 
 	// check if we are behind something ( is the object within a 180 degree slice of our negative y axis )
 
@@ -1564,7 +1565,7 @@ void Object::UpdateOppFactionSet()
 					(*i)->m_oppFactsInRange.insert(this);
 				if (!IsInRangeOppFactSet((*i)))
 					m_oppFactsInRange.insert((*i));
-
+				
 			}
 			else
 			{
@@ -1677,7 +1678,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
         // Rage
         float val;
 
-		if( pVictim->GetPowerType() == POWER_TYPE_RAGE
+		if( pVictim->GetPowerType() == POWER_TYPE_RAGE 
 			&& pVictim != TO_UNIT(this)
 			&& pVictim->IsPlayer())
 		{
@@ -1688,7 +1689,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			rage += float2int32(val) * 10;
 			if( rage > pVictim->GetUInt32Value(UNIT_FIELD_MAXPOWER2) )
 				rage = pVictim->GetUInt32Value(UNIT_FIELD_MAXPOWER2);
-
+			
 			pVictim->SetUInt32Value(UNIT_FIELD_POWER2, rage);
 			pVictim->SendPowerUpdate();
 		}
@@ -2294,7 +2295,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 						sp->prepare(&targets);
 					}
 				}
-			}
+			}	
 		}
 
 		pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, health - damage );
@@ -2645,15 +2646,15 @@ void Object::SendSpellNonMeleeDamageLog( Object* Caster, Unit* Target, uint32 Sp
 	WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, sizeof(Target->GetNewGUID())+sizeof(Caster->GetNewGUID())+4+4+4+1+4+4+1+1+4+1+4);
 	data << Target->GetNewGUID();
 	data << Caster->GetNewGUID();
-	data << uint32(SpellID);				// SpellID / AbilityID
-	data << uint32(Damage);					// All Damage
-	data << uint32(overkill);				// Overkill
-	data << uint8(SchoolMask(School));		// School
-	data << uint32(AbsorbedDamage);			// Absorbed Damage
-	data << uint32(ResistedDamage);			// Resisted Damage
-	data << uint8(PhysicalDamage);			// Physical Damage (true/false)
-	data << uint8(0);						// unknown or it binds with Physical Damage
-	data << uint32(BlockedDamage);			// Physical Damage (true/false)
+	data << uint32(SpellID);					// SpellID / AbilityID
+	data << uint32(Damage);						// All Damage
+	data << uint32(overkill);					// Overkill
+	data << uint8(SchoolMask(School));			// School
+	data << uint32(AbsorbedDamage);				// Absorbed Damage
+	data << uint32(ResistedDamage);				// Resisted Damage
+	data << uint8(PhysicalDamage);				// Physical Damage (true/false)
+	data << uint8(0);							// unknown or it binds with Physical Damage
+	data << uint32(BlockedDamage);				// Physical Damage (true/false)
 	data << uint32(CriticalHit ? 0x00002 : 0);
 	data << uint8(0);
 
@@ -2921,7 +2922,7 @@ int32 Object::GetSpellBaseCost(SpellEntry *sp)
 		else
 			cost = GetUInt32Value(UNIT_FIELD_BASE_HEALTH) * (sp->ManaCostPercentage / 100.0f);
 	}
-	else
+	else 
 	{
 		cost = (float)sp->manaCost;
 	}

@@ -1597,7 +1597,7 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 		plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 		plr->ResurrectPlayer(NULL);
 	}
-
+	
 	/* teleport out */
 	if(!logout)
 	{
@@ -1801,7 +1801,7 @@ Creature* CBattleground::SpawnSpiritGuide(float x, float y, float z, float o, ui
 	pCreature->SetUInt32Value(UNIT_CHANNEL_SPELL, 22011);
 	pCreature->SetUInt32Value(UNIT_MOD_CAST_SPEED, 1065353216);
 
-	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER);
+	pCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER_PROF);
 	pCreature->SetUInt32Value(UNIT_FIELD_BYTES_2, 1 | (0x10 << 8));
 
 	pCreature->SetPvPFlag();

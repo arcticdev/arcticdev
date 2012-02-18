@@ -1333,7 +1333,8 @@ inline static const char *LookupOpcodeName(uint32 id)
 	return g_worldOpcodeNames[id].name;
 }
 
-enum FriendsResult {
+enum FriendsResult
+{
 	FRIEND_DB_ERROR				= 0x00,
 	FRIEND_LIST_FULL			= 0x01,
 	FRIEND_ONLINE				= 0x02,
@@ -1370,8 +1371,8 @@ enum NPCFlags
 	UNIT_NPC_FLAG_VENDOR_POISON         = 0x00000400,		//1024			12		guessed
 	UNIT_NPC_FLAG_VENDOR_REAGENT        = 0x00000800,		//2048			13		100%
 	UNIT_NPC_FLAG_ARMORER               = 0x00001000,		//4096			14		100%
-	UNIT_NPC_FLAG_FLIGHTMASTER          = 0x00002000,       //8192			15		100%
-	UNIT_NPC_FLAG_SPIRITHEALER          = 0x00004000,       //16384			16		guessed
+	UNIT_NPC_FLAG_TAXIVENDOR            = 0x00002000,       //8192			15		100%
+	UNIT_NPC_FLAG_TRAINER_PROF          = 0x00004000,       //16384			16		guessed
 	UNIT_NPC_FLAG_SPIRITGUIDE           = 0x00008000,       //32768			17		guessed
 	UNIT_NPC_FLAG_INNKEEPER             = 0x00010000,       //65536			18		100%
 	UNIT_NPC_FLAG_BANKER                = 0x00020000,       //131072		19		100%

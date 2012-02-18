@@ -902,7 +902,7 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 	OUT_DEBUG( content.c_str( ) );
 }
 
-void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
+void WorldSession::HandleCorpseReclaimOpcode(WorldPacket& recv_data)
 {
 	if(_player->isAlive())
 		return;
@@ -912,10 +912,17 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	uint64 guid;
 	recv_data >> guid;
 
-	Corpse* pCorpse = objmgr.GetCorpse( (uint32)guid );
+	Corpse* pCorpse = objmgr.GetCorpse( uint32(guid) );
 
 	if( pCorpse == NULL )
-		return;
+	{
+		QueryResult* result = CharacterDatabase.Query("SELECT * FROM corpses WHERE guid = %u AND mapId = %u",
+			guid, _player->GetMapId());
+		if(result == NULL)
+			return;
+		delete result;
+		pCorpse = _player->CreateCorpse();
+	}
 
 	// Check that we're reviving from a corpse, and that corpse is associated with us.
 	if( pCorpse->GetUInt32Value( CORPSE_FIELD_OWNER ) != _player->GetLowGUID() && pCorpse->GetUInt32Value( CORPSE_FIELD_FLAGS ) == 5 )
@@ -927,16 +934,16 @@ void WorldSession::HandleCorpseReclaimOpcode(WorldPacket &recv_data)
 	}
 
 	// Check we are actually in range of our corpse
-    if ( pCorpse->GetDistance2dSq( _player ) > CORPSE_MINIMUM_RECLAIM_RADIUS_SQ )
-  	{
+	if ( pCorpse->GetDistance2dSq( _player ) > CORPSE_MINIMUM_RECLAIM_RADIUS_SQ )
+	{
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1);
 		SendPacket(&data);
 		return;
 	}
 
-    // Check death clock before resurrect they must wait for release to complete
-    if( pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME > time( NULL ) )
+	// Check death clock before resurrect they must wait for release to complete
+	if( pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME > time( NULL ) )
 	{
 		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
 		data << uint32(1);

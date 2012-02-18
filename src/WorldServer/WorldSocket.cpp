@@ -331,7 +331,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	else
 	{
 		sha.UpdateData(*m_fullAccountName);
-
+		
 		// this is unused now. we may as well free up the memory.
 		delete m_fullAccountName;
 		m_fullAccountName = NULL;
@@ -429,10 +429,7 @@ void WorldSocket::Authenticate()
 	mQueued = false;
 
 	if(!pSession)
-	{
-		DEBUG_LOG( "WorldSocket","Lost Session");
 		return;
-	}
 
 	if(pSession->HasFlag(ACCOUNT_FLAG_XPACK_02))
 		OutPacket(SMSG_AUTH_RESPONSE, 11, "\x0C\x30\x78\x00\x00\x00\x00\x00\x00\x00\x02");
@@ -463,7 +460,7 @@ void WorldSocket::UpdateQueuePosition(uint32 Position)
 void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 {
 	uint32 ping;
-
+	
 	*recvPacket >> ping;
 	*recvPacket >> _latency;
 
@@ -601,7 +598,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 			fprintf(m_file, "|");
 			for (count = 0 ; count < lenght ; count++)
 			{
-				if(countpos == 16)
+				if (countpos == 16)
 				{
 					countpos = 0;
 
@@ -609,7 +606,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 					for (unsigned int a = count-16; a < count;a++)
 					{
-						if((data[a] < 32) || (data[a] > 126))
+						if ((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
 							fprintf(m_file, "%c",data[a]);
@@ -645,7 +642,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 					fprintf(m_file, "|\n");
 				}
 
-				//Fix to parse the last line of the packets when the lenght is > 16 and its in the last line.
+				// Fix to parse the last line of the packets when the lenght is > 16 and its in the last line.
 				if(count+1 == lenght && lenght > 16)
 				{
 					for (unsigned int b = countpos+1; b < 16;b++)
@@ -657,7 +654,7 @@ void WorldLog::LogPacket(uint32 len, uint16 opcode, const uint8* data, uint8 dir
 
 					for (unsigned int a = line * 16 - 16; a < lenght;a++)
 					{
-						if((data[a] < 32) || (data[a] > 126))
+						if ((data[a] < 32) || (data[a] > 126))
 							fprintf(m_file, ".");
 						else
 							fprintf(m_file, "%c",data[a]);

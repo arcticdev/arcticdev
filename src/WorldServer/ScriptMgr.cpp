@@ -558,7 +558,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 		}
 	}
 
-	if(flags & UNIT_NPC_FLAG_FLIGHTMASTER)
+	if(flags & UNIT_NPC_FLAG_TAXIVENDOR)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_FLIGHT, "Give me a ride.", 3);
 
 	if(flags & UNIT_NPC_FLAG_AUCTIONEER)
@@ -570,7 +570,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	if(flags & UNIT_NPC_FLAG_BANKER)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_COIN, "I would like to check my deposit box.", 6);
 
-	if(flags & UNIT_NPC_FLAG_SPIRITHEALER)
+	if(flags & UNIT_NPC_FLAG_TRAINER_PROF)
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "Bring me back to life.", 7);
 
 	if(flags & UNIT_NPC_FLAG_PETITIONER)
