@@ -1,7 +1,4 @@
-#ifndef SVN_REVISION_H
-#define SVN_REVISION_H
+#pragma once
 
 static const char * BUILD_TAG = "2.0";
 static int BUILD_REVISION = 279;
-
-#endif		 // SVN_REVISION_H

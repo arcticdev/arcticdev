@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _SP_GARBAGE_COLLECTOR_H
-#define _SP_GARBAGE_COLLECTOR_H
+#pragma once
 
 template <class T> class SharedPointer;
 template <class T>
@@ -107,5 +106,3 @@ private:
 	}
 	PointerReference<T>* m_Reference;
 };
-
-#endif

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _PREALLOCATED_QUEUE_H
-#define _PREALLOCATED_QUEUE_H
+#pragma once
 
 template<typename Type>
 class PreallocatedQueue
@@ -79,5 +78,3 @@ protected:
 	uint32 type_size;
 	uint32 m_reallocsize;
 };
-
-#endif

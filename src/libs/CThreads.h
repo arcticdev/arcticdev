@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _MAPUPDATER_H
-#define _MAPUPDATER_H
+#pragma once
 
 class MapMgr;
 class Object;
@@ -49,5 +48,3 @@ protected:
 	time_t start_time;
 	int ThreadId;
 };
-
-#endif

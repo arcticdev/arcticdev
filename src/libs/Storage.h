@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef STORAGE_H_
-#define STORAGE_H_
+#pragma once
 
 #ifdef WIN32
 #pragma warning(disable:4312)
@@ -755,5 +754,3 @@ public:
 		delete result;
 	}
 };
-
-#endif

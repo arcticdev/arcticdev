@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _STACKBUFFER_H
-#define _STACKBUFFER_H
+#pragma once
 
 #include "Common.h"
 #include "WoWGuid.h"
@@ -214,5 +213,3 @@ public:
 	 */
 	size_t GetSize() { return m_writePos; }
 };
-
-#endif

@@ -4,9 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _CALLBACK_H
-#define _CALLBACK_H
-
+#pragma once
 
 class CallbackBase {
 public:
@@ -283,5 +281,3 @@ public:
 	~SQLFunctionCallbackP1();
 	void run(QueryResult * data) { method(data, p1); }
 };
-
-#endif

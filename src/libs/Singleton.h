@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef WOWSERVER_SINGLETON_H
-#define WOWSERVER_SINGLETON_H
+#pragma once
 
 #include "Errors.h"
 
@@ -42,9 +41,6 @@ public:
 
 protected:
 
-  /// Singleton pointer, must be set to 0 prior to creating the object
+  // Singleton pointer, must be set to 0 prior to creating the object
   static type * mSingleton;
 };
-
-#endif
-

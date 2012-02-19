@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _BYTEBUFFER_H
-#define _BYTEBUFFER_H
+#pragma once
 
 #include "Common.h"
 #include "WoWGuid.h"
@@ -422,5 +421,3 @@ template <typename K, typename V> ByteBuffer &operator>>(ByteBuffer &b, std::map
 	}
 	return b;
 }
-
-#endif

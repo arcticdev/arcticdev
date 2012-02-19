@@ -1,11 +1,10 @@
 /*
- * Arctic MMORPG Server Software
+ * Sandshroud Hearthstone
  * Copyright (c) 2008-2012 Arctic Server Team
  * See COPYING for license details.
  */
 
-#ifndef _AUTHCODES_H
-#define _AUTHCODES_H
+#pragma once
 
 enum LoginErrorCode
 {
@@ -124,4 +123,3 @@ enum LoginErrorCode
 	CHAR_NAME_DECLENSION_DOESNT_MATCH_BASE_NAME					= 0x67,
 };
 
-#endif

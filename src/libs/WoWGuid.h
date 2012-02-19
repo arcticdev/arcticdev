@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _WOWGUID_H
-#define _WOWGUID_H
+#pragma once
 
 #include "Common.h"
 
@@ -215,5 +214,3 @@ private:
 		compiled = true;
 	}
 };
-
-#endif

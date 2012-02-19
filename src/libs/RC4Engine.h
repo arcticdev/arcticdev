@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef _SHARED_RC4ENGINE_H
-#define _SHARED_RC4ENGINE_H
+#pragma once
 
 class RC4Engine
 {
@@ -85,5 +84,3 @@ __inline void ReverseBytes(unsigned char * Pointer, unsigned int Length)
 
 	free(Temp);
 }
-
-#endif  // _SHARED_RC4ENGINE_H

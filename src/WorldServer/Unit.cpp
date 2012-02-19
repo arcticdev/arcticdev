@@ -189,7 +189,7 @@ Unit::Unit()
 	RangedDamageTaken = 0;
 	m_procCounter = 0;
 	m_damgeShieldsInUse = false;
-	m_temp_summon=false;
+	m_temp_summon = false;
 	m_interruptedRegenTime = 0;
 	mAngerManagement = false;
 	mRecentlyBandaged = false;
@@ -245,7 +245,7 @@ Unit::~Unit()
 	if (IsInWorld())
 		RemoveFromWorld(true);
 
-	for(uint32 x= 0; x < SPELL_MODIFIERS; x++)
+	for(uint32 x = 0; x < SPELL_MODIFIERS; x++)
 		for(uint32 y = 0; y < 2; y++)
 			if(SM[x][y]) delete [] SM[x][y] ;
 
@@ -397,7 +397,6 @@ void Unit::Update( uint32 p_time )
 
 bool Unit::canReachWithAttack(Unit* pVictim)
 {
-//	float targetreach = pVictim->GetFloatValue(UNIT_FIELD_COMBATREACH);
 	float selfreach = m_floatValues[UNIT_FIELD_COMBATREACH];
 	float targetradius = pVictim->m_floatValues[UNIT_FIELD_BOUNDINGRADIUS];
 	float selfradius = m_floatValues[UNIT_FIELD_BOUNDINGRADIUS];
@@ -451,7 +450,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 	if(!pGroup)
 		return;
 
-	//Get Highest Level Player, Calc Xp and give it to each group member
+	// Get Highest Level Player, Calc Xp and give it to each group member
 	Player* pHighLvlPlayer = NULL;
 	Player* pGroupGuy = NULL;
 	  int active_player_count = 0;
@@ -459,8 +458,8 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 	int total_level = 0;
 	float xp_mod = 1.0f;
 
-	//change on 2007 04 22 by Zack
-	//we only take into count players that are near us, on same map
+	// change on 2007 04 22 by Zack
+	// we only take into count players that are near us, on same map
 	GroupMembersSet::iterator itr;
 	pGroup->Lock();
 	for(uint32 i = 0; i < pGroup->GetSubGroupCount(); i++) {
@@ -487,7 +486,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 		}
 	}
 	pGroup->Unlock();
-	if(active_player_count<1) //killer is always close to the victim. This should never execute
+	if(active_player_count < 1) // killer is always close to the victim. This should never execute
 	{
 		if(PlayerInGroup == 0)
 		{
@@ -505,16 +504,16 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 	{
 		if( pGroup->GetGroupType() == GROUP_TYPE_PARTY)
 		{
-			if(active_player_count==3)
-				xp_mod=1.1666f;
-			else if(active_player_count==4)
-				xp_mod=1.3f;
-			else if(active_player_count==5)
-				xp_mod=1.4f;
-			else xp_mod=1;//in case we have only 2 members ;)
+			if(active_player_count == 3)
+				xp_mod = 1.1666f;
+			else if(active_player_count == 4)
+				xp_mod = 1.3f;
+			else if(active_player_count == 5)
+				xp_mod = 1.4f;
+			else xp_mod = 1;//in case we have only 2 members ;)
 		}
 		else if(pGroup->GetGroupType() == GROUP_TYPE_RAID)
-			xp_mod=0.5f;
+			xp_mod = 0.5f;
 
 		if(pHighLvlPlayer == 0)
 		{
@@ -527,7 +526,7 @@ void Unit::GiveGroupXP(Unit* pVictim, Player* PlayerInGroup)
 
 		xp = CalculateXpToGive(pVictim, pHighLvlPlayer);
 		//i'm not sure about this formula is correct or not. Maybe some brackets are wrong placed ?
-		for(int i=0;i<active_player_count;i++)
+		for(int i = 0; i < active_player_count; i++)
 			active_player_list[i]->GiveXP( float2int32(((xp*active_player_list[i]->getLevel()) / total_level)*xp_mod), pVictim->GetGUID(), true );
 	}
 }
@@ -537,11 +536,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 	uint32 resisted_dmg = 0;
 
 	++m_procCounter;
-	bool can_delete = !bProcInUse; //if this is a nested proc then we should have this set to TRUE by the father proc
-	bProcInUse = true; //locking the proc list
+	bool can_delete = !bProcInUse; // if this is a nested proc then we should have this set to TRUE by the father proc
+	bProcInUse = true; // locking the proc list
 
 	std::list< struct ProcTriggerSpell >::iterator itr,itr2;
-	for( itr = m_procSpells.begin(); itr != m_procSpells.end(); )  // Proc Trigger Spells for Victim
+	for( itr = m_procSpells.begin(); itr != m_procSpells.end(); ) // Proc Trigger Spells for Victim
 	{
 		itr2 = itr;
 		if( itr != m_procSpells.end() )
@@ -560,17 +559,12 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 		uint32 origId = itr2->origId;
 		if( CastingSpell != NULL )
 		{
-			//this is to avoid spell proc on spellcast loop. We use dummy that is same for both spells
-			//if( CastingSpell->Id == itr2->spellId )
 			if( CastingSpell->Id == itr2->origId || CastingSpell->Id == itr2->spellId )
-			{
-				//printf("WOULD CRASH HERE ON PROC: CastingId: %u, OrigId: %u, SpellId: %u\n", CastingSpell->Id, itr2->origId, itr2->spellId);
 				continue;
-			}
 		}
-		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId );//no need to check if exists or not since we were not able to register this trigger if it would not exist :P
+		SpellEntry* ospinfo = dbcSpell.LookupEntry( origId ); // no need to check if exists or not since we were not able to register this trigger if it would not exist :P
 
-		//this requires some specific spell check,not yet implemented
+		// this requires some specific spell check,not yet implemented
 		if( itr2->procFlags & flag )
 		{
 			if(itr2->weapon_damage_type > 0 && itr2->weapon_damage_type < 3 &&
@@ -579,8 +573,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				continue; // This spell should proc only from other hand attacks
 
 			uint32 spellId = itr2->spellId;
+			SpellEntry* sp = dbcSpell.LookupEntry(itr2->spellId);
 
-			if( itr2->procFlags & PROC_ON_CAST_SPELL || itr2->procFlags & PROC_ON_SPELL_LAND || itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_ANY_HOSTILE_ACTION )
+			if( itr2->procFlags & PROC_ON_CAST_SPELL || itr2->procFlags & PROC_ON_SPELL_LAND || itr2->procFlags & PROC_ON_CAST_SPECIFIC_SPELL || itr2->procFlags & PROC_ON_ANY_HOSTILE_ACTION || (itr2->procFlags & PROC_ON_PHYSICAL_ATTACK && sp->Spell_Dmg_Type & SPELL_DMG_TYPE_MELEE))
 			{
 				if( CastingSpell == NULL )
 					continue;

@@ -4,8 +4,7 @@
  * See COPYING for license details.
  */
 
-#ifndef __BUFFERPOOL_H
-#define __BUFFERPOOL_H
+#pragma once
 
 #include "Common.h"
 #include "Log.h"
@@ -279,5 +278,3 @@ public:
 };
 
 extern BufferPool g_bufferPool;
-
-#endif		// __BUFFERPOOL_H

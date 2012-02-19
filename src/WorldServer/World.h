@@ -22,7 +22,7 @@ class Battleground;
 
 enum Rates
 {
-	RATE_HEALTH=0,
+	RATE_HEALTH = 0,
 	RATE_POWER1,	
 	RATE_POWER2,	
 	RATE_POWER3,	
