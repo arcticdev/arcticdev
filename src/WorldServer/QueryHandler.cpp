@@ -51,9 +51,6 @@ void WorldSession::HandleQueryTimeOpcode( WorldPacket & recv_data )
 void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 {
 	CHECK_PACKET_SIZE(recv_data, 12);
-
-	uint8 databuffer[10000];
-	StackPacket data(SMSG_CREATURE_QUERY_RESPONSE, databuffer, 10000);
 	uint32 entry;
 	uint64 guid;
 	CreatureInfo *ci;
@@ -61,6 +58,7 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 	recv_data >> entry;
 	recv_data >> guid;
 
+	WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 150);
 	if(entry == 300000)
 	{
 		data << (uint32)entry;
@@ -85,7 +83,7 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		data << uint8(0) << uint8(0) << uint8(0);
 		data << ci->SubName;
 
-		data << ci->info_str; // this is a string in 2.3.0 Example: stormwind guard has : "Direction"
+		data << ci->info_str;                        // this is a string in 2.3.0 Example: stormwind guard has : "Direction"
 		data << ci->Flags1;
 		data << ci->Type;
 		data << ci->Family;
@@ -99,13 +97,10 @@ void WorldSession::HandleCreatureQueryOpcode( WorldPacket & recv_data )
 		data << ci->unkfloat1;
 		data << ci->unkfloat2;
 		data << ci->Leader;
-		data << uint32(0);	// unk
-		data << uint32(0);	// unk
-		data << uint32(0);	// unk
-		data << uint32(0);	// unk
-		data << uint32(0);	// unk
+		for(uint32 i = 0; i < 6; i++)
+			data << uint32(0);                       // QuestItems
+		data << uint32(0);                           // CreatureMovementInfo.dbc
 	}
-
 	SendPacket( &data );
 }
 

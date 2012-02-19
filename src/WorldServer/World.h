@@ -469,7 +469,7 @@ public:
 	bool free_guild_charters;
 	bool m_useIrc;
 	uint32 m_deathKnightReqLevel;
-	bool   m_deathKnightOnePerAccount;
+	bool m_deathKnightOnePerAccount;
 
 	void SaveAllPlayers();
 
@@ -478,7 +478,10 @@ public:
 	bool UnloadMapFiles;
 	bool BreathingEnabled;
 	bool SpeedhackProtection;
+
 	bool Collision;
+	bool AHEnabled;
+
 	uint32 mInWorldPlayerCount;
 	uint32 mAcceptedConnections;
 	uint32 SocketSendBufSize;
@@ -500,8 +503,8 @@ public:
 	uint8 StartLevel;
 	uint32 StartGold;
 
-	void	SetKickAFKPlayerTime(uint32 idletimer){m_KickAFKPlayers=idletimer;}
-	uint32	GetKickAFKPlayerTime(){return m_KickAFKPlayers;}
+	void SetKickAFKPlayerTime(uint32 idletimer){m_KickAFKPlayers=idletimer;}
+	uint32 GetKickAFKPlayerTime(){return m_KickAFKPlayers;}
 
     uint32 GetRealmType() { return realmtype; }
 

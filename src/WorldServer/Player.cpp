@@ -1631,7 +1631,7 @@ void Player::smsg_InitialSpells()
 	GetSession()->SendPacket(&data);
 
 	uint32 v = 0;
-	GetSession()->OutPacket(0x041d, 4, &v);
+	GetSession()->OutPacket(SMSG_SERVER_BUCK_DATA, 4, &v);
 }
 
 void Player::BuildPlayerTalentsInfo(WorldPacket *data, bool self)
@@ -6392,19 +6392,14 @@ void Player::RemoveQuestsFromLine(int skill_line)
 void Player::SendInitialLogonPackets()
 {
 	// Initial Packets... they seem to be re-sent on port.
-	m_session->OutPacket(SMSG_QUEST_FORCE_REMOVE, 4, &m_timeLogoff);
+	WorldPacket data(SMSG_BINDPOINTUPDATE, 32);
+	data << m_bind_pos_x;
+	data << m_bind_pos_y;
+	data << m_bind_pos_z;
+	data << m_bind_mapid;
+	data << m_bind_zoneid;
+	GetSession()->SendPacket( &data );
 
-    WorldPacket data(SMSG_BINDPOINTUPDATE, 32);
-    data << m_bind_pos_x;
-    data << m_bind_pos_y;
-    data << m_bind_pos_z;
-    data << m_bind_mapid;
-    data << m_bind_zoneid;
-    GetSession()->SendPacket( &data );
-
-	//Proficiencies
-    //SendSetProficiency(4,armor_proficiency);
-    //SendSetProficiency(2,weapon_proficiency);
 	packetSMSG_SET_PROFICICENCY pr;
 	pr.ItemClass = 4;
 	pr.Profinciency = armor_proficiency;
@@ -6413,7 +6408,7 @@ void Player::SendInitialLogonPackets()
 	pr.Profinciency = weapon_proficiency;
 	m_session->OutPacket( SMSG_SET_PROFICIENCY, sizeof(packetSMSG_SET_PROFICICENCY), &pr );
 
-	//Tutorial Flags
+	// Tutorial Flags
 	data.Initialize( SMSG_TUTORIAL_FLAGS );
 	for (int i = 0; i < 8; i++)
 		data << uint32( m_Tutorials[i] );

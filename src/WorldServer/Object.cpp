@@ -20,7 +20,7 @@ Object::Object() : m_position(0,0,0,0), m_spawnLocation(0,0,0,0)
 
 	m_valuesCount = 0;
 
-	//official Values
+	// official Values
 	m_walkSpeed = 2.5f;
 	m_runSpeed = 8.0f;
 	m_base_runSpeed = m_runSpeed;
@@ -120,7 +120,7 @@ void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
 
 uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 {
-	OUT_DEBUG("Building update block for Player");
+	DEBUG_LOG("Object","Building update block for Player");
 	uint16 flags = 0;
 	uint32 flags2 = 0;
 
@@ -884,11 +884,6 @@ void Object::_SetUpdateBits(UpdateMask *updateMask, Player* target) const
 
 void Object::_SetCreateBits(UpdateMask *updateMask, Player* target) const
 {
-	/*for( uint16 index = 0; index < m_valuesCount; index++ )
-	{
-		if(GetUInt32Value(index) != 0)
-			updateMask->SetBit(index);
-	}*/
 	for(uint32 i = 0; i < m_valuesCount; ++i)
 		if(m_uint32Values[i] != 0)
 			updateMask->SetBit(i);

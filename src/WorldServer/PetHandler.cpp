@@ -207,7 +207,8 @@ void WorldSession::HandlePetNameQuery(WorldPacket & recv_data)
 
 	recv_data >> reqNumber >> petGuid;
 	Pet* pPet = _player->GetMapMgr()->GetPet(GET_LOWGUID_PART(petGuid));
-	if(!pPet) return;
+	if(!pPet)
+		return;
 
 	WorldPacket data(8 + pPet->GetName().size());
 	data.SetOpcode(SMSG_PET_NAME_QUERY_RESPONSE);

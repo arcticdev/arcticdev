@@ -3238,4 +3238,18 @@ bool ChatHandler::HandleMultiAccountBanCommand(const char *args, WorldSession *m
 	return true;
 }
 
+bool ChatHandler::HandleEnableAH(const char *args, WorldSession *m_session)
+{
+	BlueSystemMessage(m_session, "Auction House Enabled, staff has been alerted.");
+	sWorld.SendMessageToGMs(m_session, "%s has disabled the auction house", (m_session->GetPlayer() ? m_session->GetPlayer()->GetName() : m_session->GetAccountNameS()));
+	sWorld.AHEnabled = true;
+	return true;
+}
 
+bool ChatHandler::HandleDisableAH(const char *args, WorldSession *m_session)
+{
+	BlueSystemMessage(m_session, "Auction house Disabled, staff has been alerted.");
+	sWorld.SendMessageToGMs(m_session, "%s has enabled the auction house", (m_session->GetPlayer() ? m_session->GetPlayer()->GetName() : m_session->GetAccountNameS()));
+	sWorld.AHEnabled = false;
+	return true;
+}
