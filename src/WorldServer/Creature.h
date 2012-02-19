@@ -440,6 +440,8 @@ public:
 	void RegenerateMana(bool isinterrupted);
 	int BaseAttackType;
 
+	void EventAttack(Unit * target);
+
 	bool CanSee(Unit* obj) // * Invisibility & Stealth Detection - Partha *
 	{
 		if(!obj)

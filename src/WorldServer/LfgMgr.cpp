@@ -209,17 +209,7 @@ void LfgMgr::UpdateLfgQueue(uint32 LfgDungeonId)
 
 void LfgMgr::SendLfgList( Player* plr, uint32 Dungeon )
 {
-	if( plr == NULL )
-		return;
-
-	if( Dungeon >= MAX_DUNGEONS )
-		return;
-
-	LfgPlayerList::iterator itr;
-	GroupMembersSet::iterator it2;
-	uint32 count = 0;
-
-	m_lock.Acquire();
+	return; 
 }
 
 void LfgMgr::SetPlayerInLfmList(Player* pl, uint32 LfgDungeonId)

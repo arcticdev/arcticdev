@@ -30,7 +30,7 @@ enum BattleGroundTypes
 	BATTLEGROUND_ISLE_OF_CONQUEST = 30,
 	// 31 Non Existant
 	BATTLEGROUND_ALL_BATTLEGROUND = 32,
-	BATTLEGROUND_NUM_TYPES		= 33,
+	BATTLEGROUND_NUM_TYPES = 33,
 };
 
 struct BGScore
@@ -152,7 +152,7 @@ public:
 	void Init();
 
 	/* Packet Handlers */
-	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, bool battlemaster = true);
+	void HandleBattlegroundListPacket(WorldSession * m_session, uint32 BattlegroundType, bool battlemaster = true, bool random = false);
 	void HandleArenaJoin(WorldSession * m_session, uint32 BattlegroundType, uint8 as_group, uint8 rated_match);
 
 	/* Player Logout Handler */
@@ -358,7 +358,6 @@ public:
 
 	GameObject* SpawnGameObject(uint32 entry,float x, float y, float z, float o, uint32 flags, uint32 faction, float scale);
 	Creature* SpawnCreature(uint32 entry,float x, float y, float z, float o);
-	Vehicle* SpawnVehicle(uint32 entry, float x, float y, float z, float o);
 	void UpdatePvPData();
 
 	ARCTIC_INLINE uint32 GetStartTime() { return m_startTime; }

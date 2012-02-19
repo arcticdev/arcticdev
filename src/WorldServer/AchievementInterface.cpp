@@ -369,6 +369,8 @@ bool AchievementInterface::HandleBeforeChecks(AchievementData * ad)
 	if((string(ach->description).find("Heroic Difficulty") != string::npos) || ach->ID == 4526)
 		if(m_player->iInstanceType < MODE_HEROIC_5MEN)
 			return false;
+	if(m_player->getLevel() < 10) // Blizzard says no. 
+		return false;
 
 	return true;
 }
@@ -382,9 +384,8 @@ AchievementData* AchievementInterface::GetAchievementDataByAchievementID(uint32 
 	{
 		AchievementEntry * ae = dbcAchievement.LookupEntryForced(ID);
 		if(ae == NULL)
-		{
 			printf("No achievement for %u!\n", ID);
-		}
+
 		return CreateAchievementDataEntryForAchievement(ae);
 	}
 }
@@ -395,7 +396,11 @@ void AchievementInterface::SendCriteriaUpdate(AchievementData * ad, uint32 idx)
 	ad->date = (uint32)time(NULL);
 	ad->groupid = m_player->GetGroupID();
 	WorldPacket data(SMSG_CRITERIA_UPDATE, 50);
-	AchievementEntry * ae = dbcAchievement.LookupEntry(ad->id);
+
+	AchievementEntry * ae = dbcAchievement.LookupEntry(ad->id); 
+	if(!ae) 
+		return;
+
 	data << uint32(ae->AssociatedCriteria[idx]);
 	FastGUIDPack( data, (uint64)ad->counter[idx] );
 	data << m_player->GetNewGUID();
@@ -918,6 +923,7 @@ void AchievementInterface::HandleAchievementCriteriaTalentResetCostTotal(uint32 
 
 		AchievementEntry * pAchievementEntry = dbcAchievement.LookupEntryForced(AchievementID);
 		if(pAchievementEntry == NULL)
+
 			continue;
 
 		AchievementCriteriaEntry * compareCriteria = NULL;

@@ -1483,3 +1483,14 @@ Unit* Creature::GetSummonOwner()
 	}
 	return NULL;
 }
+
+void Creature::EventAttack(Unit * target)
+{
+	if(!target)
+		return;
+
+	if(!GetAIInterface())
+		return;
+
+	GetAIInterface()->AttackReaction(target, 1, 0);
+}

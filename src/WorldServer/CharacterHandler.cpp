@@ -879,10 +879,7 @@ void WorldSession::FullLogin(Player* plr)
 
 	// send to gms
 	if(HasGMPermissions())
-		if(CanUseCommand('z')) // Admins
-			sWorld.SendMessageToGMs(this, "Admin %s (%s) is now online.", _player->GetName(), GetAccountNameS(), GetPermissions());
-		else // Game Masters
-			sWorld.SendMessageToGMs(this, "GameMaster %s (%s) is now online.", _player->GetName(), GetAccountNameS(), GetPermissions());
+		sWorld.SendMessageToGMs(this, "%s %s (%s) is now online.", CanUseCommand('z') ? "Admin" : "GameMaster", _player->GetName(), GetAccountNameS(), GetPermissions());
 
 	//Set current RestState
 	if( plr->m_isResting) 		// We are in a resting zone, turn on Zzz
@@ -905,14 +902,18 @@ void WorldSession::FullLogin(Player* plr)
 		info->m_Group->Update();
 
 	// Retroactive: Level achievement
-	_player->GetAchievementInterface()->HandleAchievementCriteriaLevelUp( _player->getLevel() );
-
-	// Send achievement data!
-	if( _player->GetAchievementInterface()->HasAchievements() )
+	if(plr->getLevel() > 10 && !GetPermissions())
 	{
-		WorldPacket * data = _player->GetAchievementInterface()->BuildAchievementData();
-		_player->CopyAndSendDelayedPacket(data);
-		delete data;
+		// Retroactive: Level achievement
+		_player->GetAchievementInterface()->HandleAchievementCriteriaLevelUp( _player->getLevel() ); 
+	
+		// Send achievement data! 
+		if( _player->GetAchievementInterface()->HasAchievements() ) 
+		{ 
+			WorldPacket * data = _player->GetAchievementInterface()->BuildAchievementData(); 
+			_player->CopyAndSendDelayedPacket(data); 
+			delete data; 
+		}
 	}
 
 	if(enter_world && !_player->GetMapMgr())
