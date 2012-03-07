@@ -18,13 +18,13 @@ const static uint32 BGMapIds[BATTLEGROUND_NUM_TYPES] =
 	529,	// AB
 	0,		// 2v2
 	0,		// 3v3
- 	0,		// 5v5
- 	566,	// EOTS
+	0,		// 5v5
+	566,	// EOTS
 	572,
 	607,	// SOTA
 	617,
 	618,
- 	0,
+	0,
 	0,
 	0,
 	0,
@@ -217,7 +217,7 @@ void CBattlegroundManager::AddAverageQueueTime(uint32 BgType, uint32 queueTime)
 	assert(BgType < BATTLEGROUND_NUM_TYPES);
 
 	// move the queue times one place in the array
-	for (i=0; i<9; i++)
+	for (i = 0; i < 9; i++)
 	{
 		m_averageQueueTimes[BgType][i+1] = m_averageQueueTimes[BgType][i];
 	}
@@ -996,7 +996,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 			teams[1] = objmgr.GetArenaTeamById(arena->m_teams[1]);
 		}
 
-		for(uint32 i=0; i<2; i++)
+		for(uint32 i = 0; i < 2; i++)
 		{
 			if(m_deltaRating[i] >= 0)
 				ratingPositiveChange[i] = m_deltaRating[i];

@@ -339,7 +339,7 @@ void GameObject::InitAI()
 			Lock *pLock = dbcLock.LookupEntry(GetInfo()->SpellFocus);
 			if(pLock)
 			{
-				for(uint32 i=0; i < 5; i++)
+				for(uint32 i = 0; i < 5; i++)
 				{
 					if(pLock->locktype[i])
 					{
@@ -383,7 +383,7 @@ void GameObject::InitAI()
 	
 	float r = 0;
 
-	for(uint32 i=0;i<3;i++)
+	for(uint32 i = 0; i < 3; i++)
 	{
 		if(sp->Effect[i])
 		{

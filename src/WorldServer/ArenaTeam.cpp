@@ -118,7 +118,7 @@ void ArenaTeam::Destroy()
 	SendPacket(data);
 	delete data;
 
-	for(i=0; i < m_memberCount; ++i)
+	for(i = 0; i < m_memberCount; ++i)
 	{
 		if(m_members[i].Info)
 			tokill.push_back(m_members[i].Info);
