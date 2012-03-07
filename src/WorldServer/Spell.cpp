@@ -2297,8 +2297,7 @@ void Spell::SendLogExecute(uint32 damage, uint64 & targetGuid)
 	data << m_caster->GetNewGUID();
 	data << m_spellInfo->Id;
 	data << uint32(1);
-//	data << m_spellInfo->SpellVisual;
-//	data << uint32(1);
+
 	if (m_caster->GetGUID() != targetGuid)
 		data << targetGuid;
 	if (damage)
@@ -2351,7 +2350,8 @@ void Spell::SendChannelUpdate(uint32 time)
 			if(dynObj)
 			{
 				dynObj->RemoveFromWorld(true);
-				dynObj->Destructor();
+				delete dynObj;
+				dynObj = NULL;
 			}
 		}
 		if( p_caster && p_caster->IsInWorld() && p_caster->GetUInt64Value(PLAYER_FARSIGHT) )
@@ -2360,7 +2360,8 @@ void Spell::SendChannelUpdate(uint32 time)
 			if( dynObj )
 			{
 				dynObj->RemoveFromWorld(true);
-				dynObj->Destructor();
+				delete dynObj;
+				dynObj = NULL;
 				p_caster->SetUInt32Value(PLAYER_FARSIGHT, 0);
 			}
 			p_caster->SetUInt64Value(PLAYER_FARSIGHT, 0);
@@ -2371,12 +2372,10 @@ void Spell::SendChannelUpdate(uint32 time)
 		u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,0);
 	}
 
-	uint8 buf[20];
-	StackPacket data(MSG_CHANNEL_UPDATE, buf, 20);
-
-	data << p_caster->GetNewGUID();
+	WorldPacket data(MSG_CHANNEL_UPDATE, 40);
+	data << m_caster->GetNewGUID();
 	data << time;
-	p_caster->SendMessageToSet(&data, true);
+	m_caster->SendMessageToSet(&data, (m_caster->IsPlayer() ? true : false));
 }
 
 void Spell::SendChannelStart(uint32 duration)
