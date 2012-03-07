@@ -65,7 +65,7 @@ void OnEmote(Player* pPlayer, uint32 Emote, Unit* pUnit)
 	case EMOTE_ONESHOT_KISS:
 		GaurdsOnKiss(pPlayer, pUnit);
 		break;
-	
+
 	case EMOTE_ONESHOT_WAVE:
 		GuardsOnWave(pPlayer, pUnit);
 		break;

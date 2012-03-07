@@ -38,17 +38,17 @@ bool Rand(int32 chance)
 template <class T>  // works for anything that has the field 'chance' and is stored in plain array
 const T& RandomChoice( const T* variant, int count )
 {
-  float totalChance = 0;
-  for( int i = 0; i < count; i++)
-    totalChance += variant[i].chance;
-  float val = RandomFloat(totalChance);
-  for( int i = 0; i < count; i++)
-  {
-    val -= variant[i].chance;
-    if (val <= 0) return variant[i];
-  }
-  // should not come here, buf if it does, we should return something reasonable
-  return variant[count-1];
+	float totalChance = 0;
+	for( int i = 0; i < count; ++i)
+		totalChance += variant[i].chance;
+	float val = RandomFloat(totalChance);
+	for( int i = 0; i < count; ++i)
+	{
+		val -= variant[i].chance;
+		if (val <= 0) return variant[i];
+	}
+	// should not come here, buf if it does, we should return something reasonable
+	return variant[count-1];
 }
 
 template <class T>  // works for anything that has the field 'chance' and is stored in plain array
@@ -61,12 +61,12 @@ T* RandomChoiceVector( vector<pair<T*, float> > & variant )
 	if(variant.size() == 0)
 		return NULL;
 
-	for(itr = variant.begin(); itr != variant.end(); itr++)
+	for(itr = variant.begin(); itr != variant.end(); ++itr)
 		totalChance += itr->second;
 
 	val = RandomFloat(totalChance);
 
-	for(itr = variant.begin(); itr != variant.end(); itr++)
+	for(itr = variant.begin(); itr != variant.end(); ++itr)
 	{
 		val -= itr->second;
 		if (val <= 0) return itr->first;
@@ -82,26 +82,26 @@ LootMgr::LootMgr()
 
 void LootMgr::LoadLoot()
 {
-	//THIS MUST BE CALLED AFTER LOADING OF ITEMS
 	is_loading = true;
 	LoadLootProp();
+
 	DEBUG_LOG("LootMgr","Loading loot...");
-	//LoadLootTables("creatureloot",&CreatureLoot);
-	LoadLootTables("objectloot",&GOLoot);
-	LoadLootTables("creatureloot_gathering",&GatheringLoot);
-	LoadLootTables("fishingloot",&FishingLoot);
-	LoadLootTables("itemloot", &ItemLoot);
-	LoadLootTables("prospectingloot", &ProspectingLoot);
+
+	LoadLootTables("fishingloot",       &FishingLoot);
+	LoadLootTables("itemloot",          &ItemLoot);
+	LoadLootTables("prospectingloot",   &ProspectingLoot);
 	LoadLootTables("disenchantingloot", &DisenchantingLoot);
 	LoadLootTables("pickpocketingloot", &PickpocketingLoot);
-	LoadLootTables("millingloot", &MillingLoot);
+	LoadLootTables("millingloot",       &MillingLoot);
 	is_loading = false;
 }
 
-void LootMgr::LoadCreatureLoot()
+void LootMgr::LoadDelayedLoot()
 {
 	is_loading = true;
-	LoadLootTables("creatureloot",&CreatureLoot);
+	LoadLootTables(OBJECT_LOOT,&GOLoot);
+	LoadLootTables(CREATURE_LOOT,&CreatureLoot);
+	LoadLootTables(CREATURE_LOOT_GATHERING,&GatheringLoot);
 	is_loading = false;
 }
 
@@ -109,7 +109,7 @@ RandomProps * LootMgr::GetRandomProperties(ItemPrototype * proto)
 {
 	map<uint32,RandomPropertyVector>::iterator itr;
 
-	if(proto->RandomPropId==0)
+	if(proto->RandomPropId == 0)
 		return NULL;
 
     itr = _randomprops.find(proto->RandomPropId);
@@ -123,7 +123,7 @@ ItemRandomSuffixEntry * LootMgr::GetRandomSuffix(ItemPrototype * proto)
 {
 	map<uint32,RandomSuffixVector>::iterator itr;
 
-	if(proto->RandomSuffixId==0)
+	if(proto->RandomSuffixId == 0)
 		return NULL;
 
 	itr = _randomsuffix.find(proto->RandomSuffixId);
@@ -132,7 +132,6 @@ ItemRandomSuffixEntry * LootMgr::GetRandomSuffix(ItemPrototype * proto)
 
 	return RandomChoiceVector<ItemRandomSuffixEntry>(itr->second);
 }
-
 
 void LootMgr::LoadLootProp()
 {
@@ -215,7 +214,6 @@ LootMgr::~LootMgr()
 	for(LootStore::iterator iter=FishingLoot.begin(); iter != FishingLoot.end(); ++iter)
 		delete [] iter->second.items;
 
-
 	for(LootStore::iterator iter=GatheringLoot.begin(); iter != GatheringLoot.end(); ++iter)
 		delete [] iter->second.items;
 
@@ -240,18 +238,12 @@ LootMgr::~LootMgr()
 
 void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 {
-  /*  DBCFile *dbc = new DBCFile();
-	dbc->open("DBC/ItemRandomProperties.dbc");
-	_propCount = dbc->getRecordCount();
-	delete dbc;*/
-	//HM_NAMESPACE::hash_map<uint32, std::vector<loot_tb> > loot_db;
-	//HM_NAMESPACE::hash_map<uint32, std::vector<loot_tb> >::iterator itr;
 	DEBUG_LOG("LootMgr","Attempting to load loot from table %s...", szTableName);
 	vector< pair< uint32, vector< tempy > > > db_cache;
 	vector< pair< uint32, vector< tempy > > >::iterator itr;
 	db_cache.reserve(10000);
 	LootStore::iterator tab;
-	QueryResult *result =WorldDatabase.Query("SELECT * FROM %s ORDER BY entryid ASC",szTableName);
+	QueryResult *result = WorldDatabase.Query("SELECT * FROM %s ORDER BY entryid ASC",szTableName);
 	if(!result)
 	{
 		Log.Error("LootMgr", "Loading loot from table %s failed.", szTableName);
@@ -268,6 +260,12 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 	{
 		Field *fields = result->Fetch();
 		entry_id = fields[0].GetUInt32();
+		if(entry_id < last_entry)
+		{
+			Log.Error("LootMgr", "WARNING: Out of order loot table being loaded.\n");
+			delete result;
+			return;
+		}
 		if(entry_id != last_entry)
 		{
 			if(last_entry != 0)
@@ -275,18 +273,32 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 			ttab.clear();
 		}
 
-		t.itemid = fields[1].GetUInt32();
-		t.chance = fields[2].GetFloat();
-		t.chance_2 = fields[3].GetFloat();
-		t.mincount = fields[4].GetUInt32();
-		t.maxcount = fields[5].GetUInt32();
-		t.ffa_loot = fields[6].GetUInt32();
+		if(szTableName == CREATURE_LOOT || szTableName == OBJECT_LOOT
+			|| szTableName == CREATURE_LOOT_GATHERING) // We have multiple difficulties.
+		{
+			t.itemid = fields[1].GetUInt32();
+			for(int i = 0; i < 4; ++i)
+				t.chance[i] = fields[2+i].GetFloat();
+			t.mincount = fields[5].GetUInt32();
+			t.maxcount = fields[6].GetUInt32();
+			t.ffa_loot = fields[7].GetUInt32();
+		}
+		else // We have one chance, regardless of difficulty.
+		{
+			t.itemid = fields[1].GetUInt32();
+			t.chance[0] = fields[2].GetFloat();
+			for(int i = 1; i < 4; ++i) // Other difficulties.
+				t.chance[i] = 0.0f;
+			t.mincount = fields[3].GetUInt32();
+			t.maxcount = fields[4].GetUInt32();
+			t.ffa_loot = fields[5].GetUInt32();
+		}
 
 		ttab.push_back( t );
 
 		last_entry = entry_id;
 	} while( result->NextRow() );
-	//last list was not pushed in
+	// last list was not pushed in
 	if(last_entry != 0 && ttab.size())
 		db_cache.push_back( make_pair( last_entry, ttab) );
 	pos = 0;
@@ -295,22 +307,18 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 	uint32 itemid;
 
 	//for(itr=loot_db.begin();itr!=loot_db.end();++itr)
-	for( itr = db_cache.begin(); itr != db_cache.end(); itr++)
+	for( itr = db_cache.begin(); itr != db_cache.end(); ++itr)
 	{
 		entry_id = (*itr).first;
 		if(LootTable->end()==LootTable->find(entry_id))
 		{
 			StoreLootList list;
-			//list.count = itr->second.size();
 			list.count = (uint32)(*itr).second.size();
 			list.items=new StoreLootItem[list.count];
 
-			uint32 ind=0;
-			//for(std::vector<loot_tb>::iterator itr2=itr->second.begin();itr2!=itr->second.end();++itr2)
+			uint32 ind = 0;
 			for(vector< tempy >::iterator itr2 = (*itr).second.begin(); itr2 != (*itr).second.end(); ++itr2)
 			{
-				//Omit items that are not in db to prevent future bugs
-				//uint32 itemid=(*itr2).itemid;
 				itemid = itr2->itemid;
 				proto=ItemPrototypeStorage.LookupEntry(itemid);
 				if(!proto)
@@ -326,9 +334,8 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 				{
 					list.items[ind].item.itemproto=proto;
 					list.items[ind].item.displayid=proto->DisplayInfoID;
-					//list.items[ind].chance=(*itr2).chance;
-					list.items[ind].chance= itr2->chance;
-					list.items[ind].chance2 = itr2->chance_2;
+					for(int i = 0; i < 4; ++i)
+						list.items[ind].chance[i] = itr2->chance[i];
 					list.items[ind].mincount = itr2->mincount;
 					list.items[ind].maxcount = itr2->maxcount;
 					list.items[ind].ffa_loot = itr2->ffa_loot;
@@ -337,29 +344,28 @@ void LootMgr::LoadLootTables(const char * szTableName,LootStore * LootTable)
 					{
 						if(proto->Class == ITEM_CLASS_QUEST)
 						{
-							//printf("Quest item \"%s\" allocated to quest ", proto->Name1.c_str());
 							sQuestMgr.SetGameObjectLootQuest(itr->first, itemid);
 							quest_loot_go[entry_id].insert(proto->ItemId);
 						}
 					}
 				}
-				ind++;
+				++ind;
 			}
 			(*LootTable)[entry_id]=list;
 		}
 	}
 
 	Log.Notice("LootMgr","%d loot templates loaded from %s", db_cache.size(), szTableName);
- //   loot_db.clear();
 	delete result;
 }
 
-void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenchant)
+void LootMgr::PushLoot(StoreLootList *list,Loot * loot, uint8 difficulty, bool disenchant)
 {
 	uint32 i;
 	uint32 count;
 	float nrand = 0;
 	float ncount;
+	assert(difficulty < 4);
 
 	if (disenchant)
 	{
@@ -371,18 +377,20 @@ void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenc
 	{
 		if( list->items[x].item.itemproto )// this check is needed until loot DB is fixed
 		{
-			float chance = heroic ? list->items[x].chance2 : list->items[x].chance;
-			if(chance == 0.0f) continue;
+			float chance = list->items[x].chance[difficulty];
+			if(chance == 0.0f)
+				continue;
 
 			ItemPrototype *itemproto = list->items[x].item.itemproto;
 			int lucky;
 
-			if (disenchant) {
+			if (disenchant)
+			{
 				lucky = nrand >= ncount && nrand <= (ncount+chance);
 				ncount+= chance;
-			} else {
-				lucky = Rand( chance * sWorld.getRate( RATE_DROP0 + itemproto->Quality ) );
 			}
+			else
+				lucky = Rand( chance * sWorld.getRate( RATE_DROP0 + itemproto->Quality ) );
 
 			if( lucky )
 			{
@@ -393,7 +401,7 @@ void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenc
 
 				for( i = 0; i < loot->items.size(); ++i )
 				{
-					//itemid rand match a already placed item, if item is stackable and unique(stack), increment it, otherwise skips
+					// itemid rand match a already placed item, if item is stackable and unique(stack), increment it, otherwise skips
 					if((loot->items[i].item.itemproto == list->items[x].item.itemproto) && itemproto->MaxCount && ((loot->items[i].iItemsCount + count) < itemproto->MaxCount))
 					{
 						if(itemproto->Unique && ((loot->items[i].iItemsCount+count) < itemproto->Unique))
@@ -459,29 +467,30 @@ void LootMgr::PushLoot(StoreLootList *list,Loot * loot, bool heroic, bool disenc
 			loot->items.erase( item_to_remove );
 		}
 	}
-
 }
 
-void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, bool heroic)
+void LootMgr::FillCreatureLoot(Loot * loot,uint32 loot_id, uint8 difficulty)
 {
 	loot->items.clear();
 	loot->gold = 0;
 
-	LootStore::iterator tab =CreatureLoot.find(loot_id);
-	if( CreatureLoot.end()==tab)
+	LootStore::iterator tab = CreatureLoot.find(loot_id);
+	if( CreatureLoot.end() == tab)
 		return;
 	else
-		PushLoot(&tab->second,loot, heroic, false);
+		PushLoot(&tab->second, loot, difficulty, false);
 }
 
-void LootMgr::FillGOLoot(Loot * loot,uint32 loot_id, bool heroic)
+void LootMgr::FillGOLoot(Loot * loot,uint32 loot_id, uint8 difficulty)
 {
-	loot->items.clear();
+	loot->items.clear ();
 	loot->gold = 0;
 
-	LootStore::iterator tab =GOLoot.find(loot_id);
-	if( GOLoot.end()==tab)return;
-	else PushLoot(&tab->second,loot, heroic, false);
+	LootStore::iterator tab = GOLoot.find(loot_id);
+	if( GOLoot.end() == tab)
+		return;
+	else
+		PushLoot(&tab->second, loot, difficulty, false);
 }
 
 void LootMgr::FillFishingLoot(Loot * loot,uint32 loot_id)
@@ -491,7 +500,7 @@ void LootMgr::FillFishingLoot(Loot * loot,uint32 loot_id)
 
     LootStore::iterator tab = FishingLoot.find(loot_id);
     if( FishingLoot.end() == tab) return;
-    else PushLoot(&tab->second, loot, false, false);
+    else PushLoot(&tab->second, loot, 0, false);
 }
 
 void LootMgr::FillGatheringLoot(Loot * loot,uint32 loot_id)
@@ -501,7 +510,7 @@ void LootMgr::FillGatheringLoot(Loot * loot,uint32 loot_id)
 
 	LootStore::iterator tab = GatheringLoot.find(loot_id);
 	if(tab != GatheringLoot.end())
-		PushLoot(&tab->second, loot, false, false);
+		PushLoot(&tab->second, loot, 0, false);
 }
 
 void LootMgr::FillPickpocketingLoot(Loot * loot,uint32 loot_id)
@@ -510,8 +519,8 @@ void LootMgr::FillPickpocketingLoot(Loot * loot,uint32 loot_id)
 	loot->gold = 0;
 
 	LootStore::iterator tab =PickpocketingLoot.find(loot_id);
-	if( PickpocketingLoot.end()==tab)return;
-	else PushLoot(&tab->second,loot,false, false);
+	if( PickpocketingLoot.end() == tab)return;
+	else PushLoot(&tab->second,loot, 0, false);
 }
 
 void LootMgr::FillDisenchantingLoot(Loot *loot, uint32 loot_id)
@@ -520,10 +529,10 @@ void LootMgr::FillDisenchantingLoot(Loot *loot, uint32 loot_id)
 	loot->gold = 0;
 
 	LootStore::iterator tab = DisenchantingLoot.find(loot_id);
-	if( DisenchantingLoot.end()==tab)
+	if( DisenchantingLoot.end() == tab)
 		return;
 	else
-		PushLoot(&tab->second,loot,false, true);
+		PushLoot(&tab->second,loot, 0, true);
 }
 
 void LootMgr::FillProspectingLoot(Loot *loot, uint32 loot_id)
@@ -532,10 +541,10 @@ void LootMgr::FillProspectingLoot(Loot *loot, uint32 loot_id)
 	loot->gold = 0;
 
 	LootStore::iterator tab = ProspectingLoot.find(loot_id);
-	if( ProspectingLoot.end()==tab)
+	if( ProspectingLoot.end() == tab)
 		return;
 	else
-		PushLoot(&tab->second,loot,false, false);
+		PushLoot(&tab->second, loot, 0, false);
 }
 
 void LootMgr::FillMillingLoot(Loot *loot, uint32 loot_id)
@@ -544,10 +553,10 @@ void LootMgr::FillMillingLoot(Loot *loot, uint32 loot_id)
 	loot->gold = 0;
 
 	LootStore::iterator tab = MillingLoot.find(loot_id);
-	if( MillingLoot.end()==tab)
+	if( MillingLoot.end() == tab)
 		return;
 	else
-		PushLoot(&tab->second,loot,false, false);
+		PushLoot(&tab->second, loot, 0, false);
 }
 
 bool LootMgr::CanGODrop(uint32 LootId,uint32 itemid)
@@ -556,13 +565,13 @@ bool LootMgr::CanGODrop(uint32 LootId,uint32 itemid)
 	if( GOLoot.end()==tab)
 	return false;
 	StoreLootList *list=&(tab->second);
-	for(uint32 x=0;x<list->count;x++)
+	for(uint32 x = 0; x < list->count; x++)
 		if(list->items[x].item.itemproto->ItemId==itemid)
 			return true;
 	return false;
 }
 
-//THIS should be cached
+// THIS should be cached
 bool LootMgr::IsPickpocketable(uint32 creatureId)
 {
 	LootStore::iterator tab =PickpocketingLoot.find(creatureId);
@@ -570,7 +579,7 @@ bool LootMgr::IsPickpocketable(uint32 creatureId)
 	else return true;
 }
 
-//THIS should be cached
+// THIS should be cached
 bool LootMgr::IsSkinnable(uint32 creatureId)
 {
 	LootStore::iterator tab = GatheringLoot.find(creatureId);
@@ -580,7 +589,7 @@ bool LootMgr::IsSkinnable(uint32 creatureId)
 	return false;
 }
 
-//THIS should be cached
+// THIS should be cached
 bool LootMgr::IsFishable(uint32 zoneid)
 {
 	LootStore::iterator tab =FishingLoot.find(zoneid);
@@ -593,7 +602,7 @@ void LootMgr::AddLoot(Loot * loot, uint32 itemid, uint32 mincount, uint32 maxcou
 	uint32 count;
 	ItemPrototype *itemproto = ItemPrototypeStorage.LookupEntry(itemid);
 
-	if( itemproto )// this check is needed until loot DB is fixed
+	if( itemproto ) // this check is needed until loot DB is fixed
 	{
 		if( mincount == maxcount )
 			count = maxcount;
@@ -602,7 +611,7 @@ void LootMgr::AddLoot(Loot * loot, uint32 itemid, uint32 mincount, uint32 maxcou
 
 		for( i = 0; i < loot->items.size(); ++i )
 		{
-			//itemid rand match a already placed item, if item is stackable and unique(stack), increment it, otherwise skips
+			// itemid rand match a already placed item, if item is stackable and unique(stack), increment it, otherwise skips
 			if((loot->items[i].item.itemproto == itemproto) && itemproto->MaxCount && ((loot->items[i].iItemsCount + count <= itemproto->MaxCount)))
 			{
 				if(itemproto->Unique && ((loot->items[i].iItemsCount+count) < itemproto->Unique))
@@ -668,7 +677,6 @@ void LootRoll::Init(uint32 timer, uint32 groupcount, uint64 guid, uint32 slotid,
 
 LootRoll::~LootRoll()
 {
-
 }
 
 void LootRoll::Finalize()
@@ -691,7 +699,7 @@ void LootRoll::Finalize()
 
 	WorldPacket data(34);
 
-	for(std::map<uint32, uint32>::iterator itr = m_NeedRolls.begin(); itr != m_NeedRolls.end(); itr++)
+	for(std::map<uint32, uint32>::iterator itr = m_NeedRolls.begin(); itr != m_NeedRolls.end(); ++itr)
 	{
 		if(itr->second > highest)
 		{
@@ -703,7 +711,7 @@ void LootRoll::Finalize()
 
 	if(!highest)
 	{
-		for(std::map<uint32, uint32>::iterator itr = m_GreedRolls.begin(); itr != m_GreedRolls.end(); itr++)
+		for(std::map<uint32, uint32>::iterator itr = m_GreedRolls.begin(); itr != m_GreedRolls.end(); ++itr)
 		{
 			if(itr->second > highest)
 			{
@@ -757,7 +765,10 @@ void LootRoll::Finalize()
 		data << _guid << _groupcount << _itemid << _randomsuffixid << _randompropertyid;
 		set<uint32>::iterator pitr = m_passRolls.begin();
 		while(_player == NULL && pitr != m_passRolls.end())
-			_player = _mgr->GetPlayer( (*(pitr++)) );
+		{
+			_player = _mgr->GetPlayer( (*(pitr)) );
+			++pitr;
+		}
 
 		if( _player != NULL )
 		{
@@ -817,7 +828,6 @@ void LootRoll::Finalize()
 			item->ApplyRandomProperties(false);
 		}
 
-
 		if( _player->GetItemInterface()->SafeAddItem(item,slotresult.ContainerSlot, slotresult.Slot) )
 		{
 			_player->GetSession()->SendItemPushResult(item,false,true,true,true,slotresult.ContainerSlot,slotresult.Slot,1);
@@ -841,19 +851,11 @@ void LootRoll::Finalize()
 	data.Initialize(SMSG_LOOT_REMOVED);
 	data << uint8(_slotid);
 	Player* plr;
-	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); itr++)
+	for(LooterSet::iterator itr = pLoot->looters.begin(); itr != pLoot->looters.end(); ++itr)
 	{
 		if((plr = _player->GetMapMgr()->GetPlayer(*itr)))
 			plr->GetSession()->SendPacket(&data);
 	}
-
-	/*WorldPacket idata(45);
-	_player->GetSession()->BuildItemPushResult(&idata, _player->GetGUID(), ITEM_PUSH_TYPE_LOOT, amt, itemid, pLoot->items.at(_slotid).iRandomProperty ? pLoot->items.at(_slotid).iRandomProperty->ID : 0);
-
-	if(_player->InGroup())
-		_player->GetGroup()->SendPacketToAll(&idata);
-	else
-		_player->GetSession()->SendPacket(&idata);*/
 
 	delete this;
 }
@@ -899,8 +901,7 @@ void LootRoll::PlayerRolled(Player* player, uint8 choice)
 	if(!--_remaining)
 	{
 		mLootLock.Release(); // so we can call the other lock in a sec.
-		// kill event early
-		//sEventMgr.RemoveEvents(this);
+
 		Finalize();
 		return;
 	}
@@ -914,11 +915,10 @@ void LootMgr::FillItemLoot(Loot *loot, uint32 loot_id)
 	loot->gold = 0;
 
 	LootStore::iterator tab = ItemLoot.find(loot_id);
-
 	if( ItemLoot.end()==tab)
 		return;
 	else
-		PushLoot(&tab->second,loot,false, false);
+		PushLoot(&tab->second, loot, false, false);
 }
 
 int32 LootRoll::event_GetInstanceID()
@@ -949,7 +949,6 @@ void LootMgr::FillObjectLootMap(map<uint32, vector<uint32> > *dest)
 		} while (result->NextRow());
 		delete result;
 	}
-
 }
 
 bool Loot::HasLoot(Player* Looter)
@@ -960,10 +959,11 @@ bool Loot::HasLoot(Player* Looter)
 
 	return HasItems(Looter);
 }
+
 bool Loot::HasItems(Player* Looter)
 {
 	// check items
-	for(vector<__LootItem>::iterator itr = items.begin(); itr != items.end(); itr++)
+	for(vector<__LootItem>::iterator itr = items.begin(); itr != items.end(); ++itr)
 	{
 		if( itr->iItemsCount > 0 )
 		{
@@ -973,7 +973,5 @@ bool Loot::HasItems(Player* Looter)
 				return true;
 		}
 	}
-
 	return false;
 }
-
