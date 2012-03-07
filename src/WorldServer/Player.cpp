@@ -1036,9 +1036,9 @@ void Player::Update( uint32 p_time )
 	if(m_CurrentTransporter && !m_lockTransportVariables)
 	{
 		// Update our position, using trnasporter X/Y
-		float c_tposx = m_CurrentTransporter->GetPositionX() + m_TransporterX;
-		float c_tposy = m_CurrentTransporter->GetPositionY() + m_TransporterY;
-		float c_tposz = m_CurrentTransporter->GetPositionZ() + m_TransporterZ;
+		float c_tposx = m_CurrentTransporter->GetPositionX() + m_transportPosition->x;
+		float c_tposy = m_CurrentTransporter->GetPositionY() + m_transportPosition->y;
+		float c_tposz = m_CurrentTransporter->GetPositionZ() + m_transportPosition->z;
 		SetPosition(c_tposx, c_tposy, c_tposz, GetOrientation(), false);
 	}
 
@@ -2266,25 +2266,25 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	}
 
 	ss
-	<< m_bind_pos_x			 << ", "
-	<< m_bind_pos_y			 << ", "
-	<< m_bind_pos_z			 << ", "
-	<< m_bind_mapid			 << ", "
-	<< m_bind_zoneid			<< ", "
+	<< m_bind_pos_x << ", "
+	<< m_bind_pos_y << ", "
+	<< m_bind_pos_z << ", "
+	<< m_bind_mapid << ", "
+	<< m_bind_zoneid << ", "
 
-	<< uint32(m_isResting)	  << ", "
-	<< uint32(m_restState)	  << ", "
-	<< uint32(m_restAmount)	 << ", '"
+	<< uint32(m_isResting) << ", "
+	<< uint32(m_restState) << ", "
+	<< uint32(m_restAmount) << ", '"
 
-	<< uint32(m_playedtime[0])  << " "
-	<< uint32(m_playedtime[1])  << " "
-	<< uint32(playedt)		  << " ', "
-	<< uint32(m_deathState)	 << ", "
+	<< uint32(m_playedtime[0]) << " "
+	<< uint32(m_playedtime[1]) << " "
+	<< uint32(playedt) << " ', "
+	<< uint32(m_deathState) << ", "
 
-	<< m_talentresettimes	   << ", "
-	<< m_FirstLogin			 << ", "
-	<< rename_pending        << ","
-	<< m_arenaPoints         << ","
+	<< m_talentresettimes << ", "
+	<< m_FirstLogin << ", "
+	<< rename_pending << ","
+	<< m_arenaPoints << ","
 	<< (uint32)m_StableSlotCount << ",";
 
 	// instances
@@ -2294,27 +2294,28 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	}
 	else
 	{
-		ss << m_instanceId		   << ", ";
+		ss << m_instanceId << ", ";
 	}
 
-	ss << m_bgEntryPointMap	  << ", "
-	<< m_bgEntryPointX		<< ", "
-	<< m_bgEntryPointY		<< ", "
-	<< m_bgEntryPointZ		<< ", "
-	<< m_bgEntryPointO		<< ", "
+	ss << m_bgEntryPointMap << ", "
+	<< m_bgEntryPointX << ", "
+	<< m_bgEntryPointY << ", "
+	<< m_bgEntryPointZ << ", "
+	<< m_bgEntryPointO << ", "
 	<< m_bgEntryPointInstance << ", ";
 
 	// taxi
-	if(m_onTaxi&&m_CurrentTaxiPath) {
+	if(m_onTaxi&&m_CurrentTaxiPath)
+	{
 		ss << m_CurrentTaxiPath->GetID() << ", ";
 		ss << lastNode << ", ";
 		ss << GetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID);
-	} else {
-		ss << "0, 0, 0";
 	}
+	else
+		ss << "0, 0, 0";
 
-	ss << "," << (m_CurrentTransporter ? m_CurrentTransporter->GetEntry() : (uint32)0);
-	ss << ",'" << m_TransporterX << "','" << m_TransporterY << "','" << m_TransporterZ << "'";
+	ss << "," << (m_CurrentTransporter ? m_CurrentTransporter->GetEntry() : uint32(0));
+	ss << ",'" << m_transportPosition->x << "','" << m_transportPosition->y << "','" << m_transportPosition->z << "'";
 	ss << ",'";
 
 	// Dump deleted spell data to stringstream
@@ -2346,7 +2347,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	if(!bNewCharacter)
 		SaveAuras(ss);
 
-	//ss << LoadAuras;
+	// ss << LoadAuras;
 	ss << "','";
 
 	// Add player finished quests
@@ -2375,7 +2376,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 	ss << uint32(m_talentActiveSpec) << ", ";
 	ss << uint32(m_talentSpecsCount) << ", ";
 
-	ss << "0, " << recustomize_pending << ")";	// force_reset_talents
+	ss << "0)";	// force_reset_talents
 
 	if(bNewCharacter)
 		CharacterDatabase.WaitExecuteNA(ss.str().c_str());
@@ -2469,7 +2470,7 @@ void Player::_LoadGlyphs(QueryResult * result)
 	// init with 0s just in case
 	for(uint8 s = 0; s < MAX_SPEC_COUNT; s++)
 	{
-		for(uint32 i=0; i < GLYPHS_COUNT; i++)
+		for(uint32 i = 0; i < GLYPHS_COUNT; i++)
 		{
 			m_specs[s].glyphs[i] = 0;
 		}
@@ -2487,7 +2488,7 @@ void Player::_LoadGlyphs(QueryResult * result)
 					spec, fields[0].GetUInt32());
 				continue;
 			}
-			for(uint32 i=0; i < GLYPHS_COUNT; i++)
+			for(uint32 i = 0; i < GLYPHS_COUNT; i++)
 			{
 				m_specs[spec].glyphs[i] = fields[2 + i].GetUInt16();
 			}
@@ -2500,7 +2501,7 @@ void Player::_SaveGlyphsToDB(QueryBuffer * buf)
 	bool empty = true;
 	for(uint8 s = 0; s < m_talentSpecsCount; s++)
 	{
-		for(uint32 i=0; i < GLYPHS_COUNT; i++)
+		for(uint32 i = 0; i < GLYPHS_COUNT; i++)
 		{
 			if(m_specs[s].glyphs[i] != 0)
 			{
@@ -3138,12 +3139,9 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		Transporter* t = objmgr.GetTransporter(GUID_LOPART(m_TransporterGUID));
 		m_TransporterGUID = t ? t->GetGUID() : 0;
 	}
+	m_transportPosition = new LocationVector(get_next_field.GetFloat(), get_next_field.GetFloat(), get_next_field.GetFloat());
 
-	m_TransporterX = get_next_field.GetFloat();
-	m_TransporterY = get_next_field.GetFloat();
-	m_TransporterZ = get_next_field.GetFloat();
-
-	start = (char*)get_next_field.GetString();//buff;
+	start = (char*)get_next_field.GetString(); // buff;
 	while(true)
 	{
 		end = strchr(start,',');
@@ -3500,13 +3498,14 @@ void Player::SetQuestLogSlot(QuestLogEntry *entry, uint32 slot)
 void Player::AddToWorld()
 {
 	FlyCheat = false;
-	m_setflycheat=false;
+	m_setflycheat = false;
+
 	// check transporter
 	if(m_TransporterGUID && m_CurrentTransporter)
 	{
-		SetPosition(m_CurrentTransporter->GetPositionX() + m_TransporterX,
-			m_CurrentTransporter->GetPositionY() + m_TransporterY,
-			m_CurrentTransporter->GetPositionZ() + m_TransporterZ,
+		SetPosition(m_CurrentTransporter->GetPositionX() + m_transportPosition->x,
+			m_CurrentTransporter->GetPositionY() + m_transportPosition->y,
+			m_CurrentTransporter->GetPositionZ() + m_transportPosition->z,
 			GetOrientation(), false);
 	}
 
@@ -3534,13 +3533,13 @@ void Player::AddToWorld()
 void Player::AddToWorld(MapMgr* pMapMgr)
 {
 	FlyCheat = false;
-	m_setflycheat=false;
+	m_setflycheat = false;
 	// check transporter
 	if(m_TransporterGUID && m_CurrentTransporter)
 	{
-		SetPosition(m_CurrentTransporter->GetPositionX() + m_TransporterX,
-			m_CurrentTransporter->GetPositionY() + m_TransporterY,
-			m_CurrentTransporter->GetPositionZ() + m_TransporterZ,
+		SetPosition(m_CurrentTransporter->GetPositionX() + m_transportPosition->x,
+			m_CurrentTransporter->GetPositionY() + m_transportPosition->y,
+			m_CurrentTransporter->GetPositionZ() + m_transportPosition->z,
 			GetOrientation(), false);
 	}
 
@@ -4197,7 +4196,6 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 	if( !skip_stat_apply )
 		UpdateStats();
 }
-
 
 void Player::SetMovement(uint8 pType, uint32 flag)
 {
@@ -4904,7 +4902,7 @@ void Player::_LoadTutorials(QueryResult * result)
 	if(result)
 	{
 		 Field *fields = result->Fetch();
-		 for (int iI=0; iI<8; iI++)
+		 for (int iI = 0; iI < 8; iI++)
 			 m_Tutorials[iI] = fields[iI + 1].GetUInt32();
 	}
 	tutorialsDirty = false;
@@ -5721,13 +5719,6 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		}
 	}
 
-	/* wehee loop unrolling */
-/*	if(m_spellTypeTargets[0] == pObj)
-		m_spellTypeTargets[0] = NULL;
-	if(m_spellTypeTargets[1] == pObj)
-		m_spellTypeTargets[1] = NULL;
-	if(m_spellTypeTargets[2] == pObj)
-		m_spellTypeTargets[2] = NULL;*/
 	if(pObj->IsUnit())
 	{
 		for(uint32 x = 0; x < NUM_SPELL_TYPE_INDEX; ++x)
@@ -5980,7 +5971,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 			if(iter->roll == NULL && !iter->passed)
 			{
 				int32 ipid = 0;
-				uint32 factor=0;
+				uint32 factor = 0;
 				if(iter->iRandomProperty)
 					ipid=iter->iRandomProperty->ID;
 				else if(iter->iRandomSuffix)
@@ -6060,10 +6051,6 @@ void Player::SendDualTalentConfirm()
 		// Not enough money!
 		sChatHandler.SystemMessage(m_session, "You must have at least %u copper to use this function.", talentCost);
 	}
-	/*WorldPacket data();
-	data << GetGUID();
-	data << sWorld.dualTalentTrainCost;
-	GetSession()->SendPacket( &data );*/
 }
 
 void Player::EventAllowTiggerPort(bool enable)
@@ -6178,14 +6165,6 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 				if( GetItemInterface()->GetItemCount( itm->GetProto()->ItemId ) == 0 )
 					fail = SPELL_FAILED_NO_AMMO;
 	}
-/*  else
-	{
-		if(GetUInt32Value(PLAYER_AMMO_ID))//for wand
-			if(this->GetItemInterface()->GetItemCount(GetUInt32Value(PLAYER_AMMO_ID)) == 0)
-				fail = SPELL_FAILED_NO_AMMO;
-	}
-*/
-
 	if (GetMapMgr() && GetMapMgr()->IsCollisionEnabled())
 	{
 		if( !CollideInterface.CheckLOS(m_mapId, GetPositionX(), GetPositionY(), GetPositionZ(),
@@ -7164,7 +7143,7 @@ void Player::JumpToEndTaxiNode(TaxiPath * path)
 void Player::RemoveSpellsFromLine(uint32 skill_line)
 {
 	uint32 cnt = dbcSkillLineSpell.GetNumRows();
-	for(uint32 i=0; i < cnt; i++)
+	for(uint32 i = 0; i < cnt; i++)
 	{
 		skilllinespell* sp = dbcSkillLineSpell.LookupRow(i);
 		if(sp)
@@ -11701,7 +11680,7 @@ uint32 Player::GetMaxPersonalRating()
 
 	ASSERT(m_playerInfo != NULL);
 
-	for (i=0; i<NUM_ARENA_TEAM_TYPES; i++)
+	for (i = 0; i < NUM_ARENA_TEAM_TYPES; i++)
 	{
 		if(m_playerInfo->arenaTeam[i] != NULL)
 		{

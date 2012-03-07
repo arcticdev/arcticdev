@@ -14,7 +14,7 @@ bool Transporter::CreateAsTransporter(uint32 EntryID, const char* Name)
 	// Try to spawn the Gameobject, no need for locations.
 	if(!CreateFromProto(EntryID,0,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f,0.0f))
 		return false;
-	
+
 	SetUInt32Value(GAMEOBJECT_FLAGS,40);
 	SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 
@@ -160,12 +160,6 @@ bool Transporter::GenerateWaypoints()
 		keyFrames[i].tTo *= 1000;
 	}
 
-	//	for (int i = 0; i < keyFrames.size(); i++) {
-	//		sLog.outString("%f, %f, %f, %f, %f, %f, %f", keyFrames[i].x, keyFrames[i].y, keyFrames[i].distUntilStop, keyFrames[i].distSinceStop, keyFrames[i].distFromPrev, keyFrames[i].tFrom, keyFrames[i].tTo);
-	//	}
-
-	// Now we're completely set up; we can move along the length of each waypoint at 100 ms intervals
-	// speed = max(30, t) (remember x = 0.5s^2, and when accelerating, a = 1 unit/s^2
 	int t = 0;
 	bool teleport = false;
 	if (keyFrames[keyFrames.size() - 1].mapid != keyFrames[0].mapid)
@@ -257,10 +251,6 @@ bool Transporter::GenerateWaypoints()
 
 		TWayPoint pos(keyFrames[i + 1].mapid, keyFrames[i + 1].x, keyFrames[i + 1].y, keyFrames[i + 1].z, teleport);
 
-		//		sLog.outString("T: %d, x: %f, y: %f, z: %f, t:%d", t, pos.x, pos.y, pos.z, teleport);
-
-		//if (teleport)
-		//m_WayPoints[t] = pos;
 		if(keyFrames[i+1].delay > 5)
 			pos.delayed = true;
 
@@ -273,7 +263,6 @@ bool Transporter::GenerateWaypoints()
 	uint32 timer = t;
 
 	mCurrentWaypoint = m_WayPoints.begin();
-	//mCurrentWaypoint = GetNextWaypoint();
 	mNextWaypoint = GetNextWaypoint();
 	m_pathTime = timer;
 	m_timer = 0;
@@ -315,9 +304,7 @@ void Transporter::UpdatePosition()
 		}
 
 		if(mCurrentWaypoint->second.delayed)
-		{
-			PlaySoundToSet(5495);		// BoatDockedWarning.wav
-		}
+			PlaySoundToSet(5495); // BoatDockedWarning.wav
 	}
 }
 
@@ -349,9 +336,9 @@ void Transporter::TransportPassengers(uint32 mapid, uint32 oldmap, float x, floa
 			if(!plr->GetSession() || !plr->IsInWorld())
 				continue;
 
-			v.x = x + plr->m_TransporterX;
-			v.y = y + plr->m_TransporterY;
-			v.z = z + plr->m_TransporterZ;
+			v.x = x + plr->m_transportPosition->x;
+			v.y = y + plr->m_transportPosition->y;
+			v.z = z + plr->m_transportPosition->z;
 			v.o = plr->GetOrientation();
 
 			if(mapid == 530 && !plr->GetSession()->HasFlag(ACCOUNT_FLAG_XPACK_01))
@@ -404,10 +391,6 @@ Transporter::~Transporter()
 		{
 			delete TO_CREATURE( itr->second )->m_transportPosition;
 			TO_CREATURE( itr->second )->m_TransporterGUID = NULL;
-			TO_CREATURE( itr->second )->m_TransporterX = NULL;
-			TO_CREATURE( itr->second )->m_TransporterY = NULL;
-			TO_CREATURE( itr->second )->m_TransporterZ = NULL;
-			TO_CREATURE( itr->second )->m_TransporterO = NULL;
 		}
 		itr->second->Destructor();
 	}
@@ -429,7 +412,7 @@ void ObjectMgr::LoadTransporters()
 		return;
 
 	TransportersCount = QR->GetRowCount();
-	do 
+	do
 	{
 		uint32 entry = QR->Fetch()[0].GetUInt32();
 
@@ -486,10 +469,7 @@ void Transporter::AddNPC(uint32 Entry, float offsetX, float offsetY, float offse
 	Creature* pCreature(new Creature((uint64)HIGHGUID_TYPE_TRANSPORTER<<32 | guid));
 	pCreature->Init();
 	pCreature->Load(proto, offsetX, offsetY, offsetZ, offsetO);
-	pCreature->m_TransporterX = offsetX;
-	pCreature->m_TransporterY = offsetY;
-	pCreature->m_TransporterZ = offsetZ;
-	pCreature->m_TransporterO = offsetO;
+
 	pCreature->m_TransporterUnk = UNIXTIME;
 	pCreature->m_transportPosition = new LocationVector(offsetX, offsetY, offsetZ, offsetO);
 	pCreature->m_TransporterGUID = GetGUID();

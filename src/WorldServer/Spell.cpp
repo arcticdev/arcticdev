@@ -715,12 +715,12 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 		SM_PFValue(u_caster->SM[SMT_RADIUS][1],&r,m_spellInfo->SpellGroupType);
 	}
 	uint32 cur;
-	for(uint32 i=0;i<3;i++)
-		for(uint32 j=0;j<2;j++)
+	for(uint32 i = 0; i < 3; i++)
+		for(uint32 j = 0; j < 2; j++)
 		{
-			if(j==0)
+			if(j == 0)
 				cur = m_spellInfo->EffectImplicitTargetA[i];
-			else // if(j==1)
+			else
 				cur = m_spellInfo->EffectImplicitTargetB[i];
 			switch(cur)
 			{
@@ -3268,7 +3268,7 @@ uint8 Spell::CanCast(bool tolerate)
 
 		// check if we have the required reagents
 		if( CheckReagents && (!i_caster || (i_caster->GetProto() && i_caster->GetProto()->Flags != 268435520)) )
-			for(i=0; i<8 ;i++)
+			for(i = 0; i < 8; i++)
 			{
 				if( m_spellInfo->Reagent[i] <= 0 || m_spellInfo->ReagentCount[i] <= 0)
 					continue;
@@ -3373,7 +3373,7 @@ uint8 Spell::CanCast(bool tolerate)
 			AreaGroup const* groupEntry = dbcAreaGroup.LookupEntry( m_spellInfo->AreaGroupId );
 			if( groupEntry )
 			{
-				for ( uint8 i=0; i<7; ++i )
+				for ( uint8 i = 0; i < 7; ++i )
 				{
 					if( groupEntry->AreaId[i] == zone_id || groupEntry->AreaId[i] == area_id )
 					{
@@ -4096,7 +4096,7 @@ void Spell::RemoveItems()
 	}
 
 	// Reagent Removal
-	for(uint32 i=0; i<8 ;i++)
+	for(uint32 i = 0; i < 8; i++)
 	{
 		if( p_caster && m_spellInfo->Reagent[i])
 		{
@@ -4725,7 +4725,7 @@ bool Spell::Reflect(Unit* refunit)
 		return false;
 
 	// if the spell to reflect is a reflect spell, do nothing.
-	for(int i=0; i<3; i++)
+	for(int i = 0; i < 3; i++)
     {
 		if( m_spellInfo->Effect[i] == 6 && (m_spellInfo->EffectApplyAuraName[i] == 74 || m_spellInfo->EffectApplyAuraName[i] == 28))
 			return false;

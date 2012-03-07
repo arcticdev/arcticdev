@@ -1500,19 +1500,15 @@ public:
 
 	void OnPositionChange();
 	void Dismount();
-	//	custom functions for scripting
+	// custom functions for scripting
 	void SetWeaponDisplayId(uint8 slot, uint32 displayId);
 
-	//Transporters
-	bool m_lockTransportVariables;
-	uint64 m_TransporterGUID;
-	float m_TransporterX;
-	float m_TransporterY;
-	float m_TransporterZ;
-	float m_TransporterO;
-	float m_TransporterUnk;
-	LocationVector* m_transportPosition;
+	// Transporters
 	WoWGuid m_transportNewGuid;
+	uint64 m_TransporterGUID;
+	LocationVector* m_transportPosition;
+	float m_TransporterUnk;
+	bool m_lockTransportVariables;
 
 	// Movement Info.
 	MovementInfo* GetMovementInfo() { return &movement_info; }

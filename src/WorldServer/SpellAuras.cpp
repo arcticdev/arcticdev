@@ -8108,7 +8108,7 @@ void Aura::SpellAuraIncreaseSpellDamageByAttribute(bool apply)
 		val = -mod->realamount;
 
 	uint32 stat = 3;
-	for(uint32 i=0; i < 3; i++)
+	for(uint32 i = 0; i < 3; i++)
 	{ //bit hacky but it will work with all currently available spells
 		if (m_spellProto->EffectApplyAuraName[i] == SPELL_AURA_INCREASE_SPELL_HEALING_PCT)
 		{

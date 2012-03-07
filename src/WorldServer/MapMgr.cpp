@@ -229,7 +229,7 @@ void MapMgr::PushObject(Object* obj)
 			return;
 		}
 	}
-	
+
 	obj->ClearInRangeSet();
 
 	///////////////////////
@@ -517,16 +517,16 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 		else
 		{
 			obj->SetMapCell(this->GetCellByCoords(obj->GetPositionX(), obj->GetPositionY()));
-		}		
+		}
 	}
 
 	if(obj->GetMapCell())
 	{
 		ASSERT(obj->GetMapCell());
-	
+
 		// Remove object from cell
 		obj->GetMapCell()->RemoveObject(obj);
-	
+
 		// Unset object's cell
 		obj->SetMapCell(NULL);
 	}
@@ -537,7 +537,7 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 		_processQueue.erase(TO_PLAYER(obj));
 		TO_PLAYER( obj )->ClearAllPendingUpdates();
 	}
-	
+
 	// Remove object from all objects 'seeing' him
 	for (Object::InRangeSet::iterator iter = obj->GetInRangeSetBegin();
 		iter != obj->GetInRangeSetEnd(); ++iter)
@@ -552,7 +552,7 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 			(*iter)->RemoveInRangeObject(obj);
 		}
 	}
-	
+
 	// Clear object's in-range set
 	obj->ClearInRangeSet();
 
@@ -633,7 +633,7 @@ void MapMgr::ChangeObjectLocation( Object* obj )
 			else
 				fRange = m_UpdateDistance; // normal distance
 
-			//If we have a update_distance, check if we are in range. 
+			//If we have a update_distance, check if we are in range.
 			if( fRange > 0.0f && curObj->GetDistance2dSq(obj) > fRange )
 			{
 				if( plObj )
@@ -714,7 +714,7 @@ void MapMgr::ChangeObjectLocation( Object* obj )
 
 		if(obj->GetMapCell())
 			obj->GetMapCell()->RemoveObject(obj);
-	
+
 		objCell->AddObject(obj);
 		obj->SetMapCell(objCell);
 
@@ -980,7 +980,7 @@ void MapMgr::LoadAllCells()
 		for( uint32 y = 0 ; y < _sizeY ; y ++ )
 		{
 			cellInfo = GetCell( x , y );
-			
+
 			if( !cellInfo )
 			{
 				// Cell doesn't exist, create it.
@@ -1041,14 +1041,14 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 					objCell = Create(posX, posY);
 					objCell->Init(posX, posY, _mapId, this);
 
-//					DEBUG_LOG("MapMgr","Cell [%d,%d] on map %d (instance %d) is now active.", 
+//					DEBUG_LOG("MapMgr","Cell [%d,%d] on map %d (instance %d) is now active.",
 //						posX, posY, this->_mapId, m_instanceID);
 					objCell->SetActivity(true);
 					_map->CellGoneActive(posX, posY);
 
 					ASSERT(!objCell->IsLoaded());
 
-//					DEBUG_LOG("MapMgr","Loading objects for Cell [%d][%d] on map %d (instance %d)...", 
+//					DEBUG_LOG("MapMgr","Loading objects for Cell [%d][%d] on map %d (instance %d)...",
 //						posX, posY, this->_mapId, m_instanceID);
 
 					sp = _map->GetSpawnsList(posX, posY);
@@ -1060,14 +1060,14 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is now active
 				if (_CellActive(posX, posY) && !objCell->IsActive())
 				{
-//					DEBUG_LOG("MapMgr","Cell [%d,%d] on map %d (instance %d) is now active.", 
+//					DEBUG_LOG("MapMgr","Cell [%d,%d] on map %d (instance %d) is now active.",
 //						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneActive(posX, posY);
 					objCell->SetActivity(true);
 
 					if (!objCell->IsLoaded())
 					{
-//						DEBUG_LOG("MapMgr","Loading objects for Cell [%d][%d] on map %d (instance %d)...", 
+//						DEBUG_LOG("MapMgr","Loading objects for Cell [%d][%d] on map %d (instance %d)...",
 //							posX, posY, this->_mapId, m_instanceID);
 						sp = _map->GetSpawnsList(posX, posY);
 						if(sp) objCell->LoadObjects(sp);
@@ -1076,7 +1076,7 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 				//Cell is no longer active
 				else if (!_CellActive(posX, posY) && objCell->IsActive())
 				{
-//					DEBUG_LOG("MapMgr","Cell [%d,%d] on map %d (instance %d) is now idle.", 
+//					DEBUG_LOG("MapMgr","Cell [%d,%d] on map %d (instance %d) is now idle.",
 //						posX, posY, this->_mapId, m_instanceID);
 					_map->CellGoneIdle(posX, posY);
 					objCell->SetActivity(false);
@@ -1189,7 +1189,7 @@ void MapMgr::ChangeFarsightLocation(Player* plr, Unit* farsight, bool apply)
 							plr->m_visibleFarsightObjects.insert(obj);
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -1242,7 +1242,7 @@ void MapMgr::ChangeFarsightLocation(Player* plr, float X, float Y, bool apply)
 							plr->m_visibleFarsightObjects.insert(obj);
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -1328,7 +1328,7 @@ bool MapMgr::Do()
 		}
 		m_objectinsertlock.Release();//>>>>>>>>>>>>>>>>
 		//-------------------------------------------------------
-				
+
 		//Now update sessions of this map + objects
 		_PerformObjectDuties();
 
@@ -1403,7 +1403,7 @@ void MapMgr::BeginInstanceExpireCountdown()
 
 	// so players getting removed don't overwrite us
 	forced_expire = true;
-	
+
 	// send our sexy packet
 	data << uint32(60000) << uint32(1);
 
@@ -1514,7 +1514,7 @@ void MapMgr::_PerformObjectDuties()
 		++__pet_iterator;
 
 		ptr2->Update(difftime);
-	}		
+	}
 
 	Vehicle* ptr3;
 	__vehicle_iterator = activeVehicles.begin();
@@ -1522,7 +1522,7 @@ void MapMgr::_PerformObjectDuties()
 	{
 		ptr3 = *__vehicle_iterator;
 		++__vehicle_iterator;
- 
+
 		ptr3->Update(difftime);
 	}
 
@@ -1534,7 +1534,7 @@ void MapMgr::_PerformObjectDuties()
 	__player_iterator = m_PlayerStorage.begin();
 	for(; __player_iterator != m_PlayerStorage.end();)
 	{
-		ptr4 = __player_iterator->second;;
+		ptr4 = __player_iterator->second;
 		++__player_iterator;
 
 		ptr4->Update( difftime );
@@ -1558,7 +1558,7 @@ void MapMgr::_PerformObjectDuties()
 		}
 
 		lastGameobjectUpdate = mstime;
-	}	
+	}
 
 	// Sessions are updated every loop.
 	{
@@ -1583,7 +1583,7 @@ void MapMgr::_PerformObjectDuties()
 			// Don't update players not on our map.
 			// If we abort in the handler, it means we will "lose" packets, or not process this.
 			// .. and that could be diasterous to our client :P
-			if( MapSession->GetPlayer()->GetMapMgr()== NULL || 
+			if( MapSession->GetPlayer()->GetMapMgr()== NULL ||
 				MapSession->GetPlayer()->GetMapMgr() != this)
 				continue;
 
@@ -1655,7 +1655,7 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 	MapCell * c = GetCell(x,y);
 	if(c == NULL || c->HasPlayers() || _CellActive(x,y) || !c->IsUnloadPending()) return;
 
-	DEBUG_LOG("MapMgr","Unloading Cell [%d][%d] on map %d (instance %d)...", 
+	DEBUG_LOG("MapMgr","Unloading Cell [%d][%d] on map %d (instance %d)...",
 		x,y,_mapId,m_instanceID);
 
 	c->Unload();
@@ -1803,7 +1803,7 @@ void MapMgr::HookOnAreaTrigger(Player* plr, uint32 id)
 Vehicle* MapMgr::CreateVehicle(uint32 entry)
 {
 	uint64 newguid = ( (uint64)HIGHGUID_TYPE_VEHICLE << 32 ) | ( (uint64)entry << 24 );
-	Creature* cr = NULL;
+	Vehicle* v = NULL;
 	if(_reusable_guids_vehicle.size())
 	{
 		uint32 guid = _reusable_guids_vehicle.front();
@@ -1814,11 +1814,7 @@ Vehicle* MapMgr::CreateVehicle(uint32 entry)
 	else
 		newguid |= ++m_VehicleHighGuid;
 
-	cr = new Creature(newguid);
-
-	Vehicle* v = NULL;
-
-	v = new Vehicle(cr->GetGUID());
+	v = new Vehicle(newguid);
 	v->Init();
 
 	ASSERT( v->GetTypeFromGUID() == HIGHGUID_TYPE_VEHICLE );
@@ -1986,7 +1982,8 @@ void MapMgr::CastSpellOnPlayers(int32 iFactionMask, uint32 uSpellId)
 			if( iFactionMask != FACTION_MASK_ALL && ptr->GetTeam() != (uint32)iFactionMask )
 				continue;
 
-			ptr->CastSpell(TO_UNIT(__player_iterator->second), sp, true);
+			if(sp != NULL)
+				sEventMgr.AddEvent(TO_UNIT(ptr), &Unit::EventCastSpell, TO_UNIT(__player_iterator->second), sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		}
 	}
 }

@@ -23,6 +23,7 @@
 #include <string>
 //#include <fstream>
 
+#include "../libs/AuthCodes.h"
 #include "../libs/Common.h"
 #include "../libs/MersenneTwister.h"
 #include "../libs/WorldPacket.h"

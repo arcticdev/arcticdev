@@ -109,9 +109,7 @@ void Pet::CreateAsSummon(uint32 entry, CreatureInfo *ci, Creature* created_from_
 	SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);	// better set this one
 
 	// Fields common to both lock summons and pets
-	uint32 level = (m_Owner->GetUInt32Value( UNIT_FIELD_LEVEL ) + (m_Owner->getClass() == CLASS_HUNTER ? - 5 : 0)) < 1 ?
-		1 : (m_Owner->GetUInt32Value( UNIT_FIELD_LEVEL ) + (m_Owner->getClass() == CLASS_HUNTER ? - 5 : 0));
-
+	uint32 level = (m_Owner->GetUInt32Value( UNIT_FIELD_LEVEL ) - 5);
 	if( type & 0x2 && created_from_creature != NULL && created_from_creature->getLevel() > level)
 	{
 		level = created_from_creature->getLevel();
@@ -547,7 +545,7 @@ void Pet::InitializeMe(bool first)
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 	SetPetDiet();
 	_setFaction();
-	m_State = 1;		// dont set agro on spawn
+	m_State = 1; // dont set agro on spawn
 
 	if(GetEntry() == 416)
 		m_aiInterface->disable_melee = true;
@@ -1470,7 +1468,7 @@ void Pet::HandleAutoCastEvent(uint32 Type)
 			// more than one autocast spell. pick a random one.
 			uint32 i;
 			uint32 ms = getMSTime();
-			for(i=0;i<m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size();++i)
+			for(i = 0; i < m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size(); ++i)
 			{
 				uint32 c = RandomUInt((uint32)m_autoCastSpells[AUTOCAST_EVENT_ATTACK].size());
 				uint32 j = 0;

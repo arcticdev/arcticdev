@@ -42,12 +42,8 @@ Unit::Unit()
 	m_CurrentVehicle = NULL;
 
 	// Transport shit
-	m_transportPosition = NULL;
+	m_transportPosition = new LocationVector(0, 0, 0, 0);
 	m_TransporterGUID = NULL;
-	m_TransporterX = 0.0f;
-	m_TransporterY = 0.0f;
-	m_TransporterZ = 0.0f;
-	m_TransporterO = 0.0f;
 	m_TransporterUnk = 0.0f;
 	m_lockTransportVariables = false;
 
@@ -2047,7 +2043,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								stats[1] = GetUInt32Value(UNIT_FIELD_AGILITY);
 								stats[2] = GetUInt32Value(UNIT_FIELD_INTELLECT);
 								stats[3] = GetUInt32Value(UNIT_FIELD_SPIRIT);
-								for(uint32 i=0; i<4; i++)
+								for(uint32 i = 0; i < 4; i++)
 								{
 									if(stats[i] > stats[maxstat])
 										maxstat = i;
@@ -6799,7 +6795,7 @@ bool Unit::RemoveAllAurasByMechanic( uint32 MechanicType , uint32 MaxDispel = -1
 					}
 					else if( MechanicType == MECHANIC_ENSNARED ) // if got immunity for slow, remove some that are not in the mechanics
 					{
-						for( int i=0 ; i<3 ; ++i )
+						for( int i = 0 ; i < 3 ; ++i )
 						{
 							// SNARE + ROOT
 							if( m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_DECREASE_SPEED || m_auras[x]->GetSpellProto()->EffectApplyAuraName[i] == SPELL_AURA_MOD_ROOT )
