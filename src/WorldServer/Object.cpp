@@ -140,7 +140,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		{
 			flags = 0x0010;
 		}break;
-		
+
 		// player/unit: 0x0070 (except self)
 	case TYPEID_UNIT:
 		{
@@ -159,7 +159,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 
 			switch(GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID))
 			{
-				case GAMEOBJECT_TYPE_MO_TRANSPORT:  
+				case GAMEOBJECT_TYPE_MO_TRANSPORT:
 					{
 						if(GetTypeFromGUID() != HIGHGUID_TYPE_TRANSPORTER)
 							return 0;   // bad transporter
@@ -327,7 +327,6 @@ void Object::DestroyForPlayer(Player* target) const
 //Build the Movement Data portion of the update packet
 // Fills the data with this object's movement/speed info
 // TODO: rewrite this stuff, document unknown fields and flags
-//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 uint32 TimeStamp();
@@ -369,7 +368,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 			{
 				if( TO_UNIT(this)->GetAIInterface()->m_moveRun == false)
 					flags2 |= 0x100;
-			}			
+			}
 		}
 
 		if(GetTypeId() == TYPEID_UNIT)
@@ -385,7 +384,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 			}
 
 			if( TO_UNIT(this)->GetAIInterface()->IsFlying())
-				flags2 |= 0x400; // Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time 
+				flags2 |= 0x400; // Zack : Teribus the Cursed had flag 400 instead of 800 and he is flying all the time
 			if( TO_CREATURE(this)->proto && TO_CREATURE(this)->proto->extra_a9_flags)
 			{
 				if(!(flags2 & 0x0200))
@@ -394,9 +393,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 		}
 
 		*data << uint32(flags2);
-
 		*data << uint16(flag16);
-
 		*data << getMSTime(); // this appears to be time in ms but can be any thing
 
 		///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -444,7 +441,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 			{
 				WoWGuid wowguid(pThis->m_TransporterGUID);
 				*data << wowguid;
-				*data << pThis->m_TransporterX << pThis->m_TransporterY << pThis->m_TransporterZ << pThis->m_TransporterO;
+				*data << pThis->m_transportPosition->x << pThis->m_transportPosition->y << pThis->m_transportPosition->z << pThis->m_transportPosition->o;
 				*data << pThis->m_TransporterUnk << uint8(0);
 			}
 			else if(m_objectTypeId == TYPEID_UNIT && TO_CREATURE(this)->m_transportPosition != NULL)
@@ -536,7 +533,7 @@ void Object::_BuildMovementUpdate(ByteBuffer * data, uint32 flags, uint32 flags2
 
 	if(flags & 8)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID);
-	
+
 	if(flags & 0x0010)
 		*data << GetUInt32Value(OBJECT_FIELD_GUID+1);
 
@@ -751,7 +748,7 @@ bool Object::SetPosition( float newX, float newY, float newZ, float newOrientati
 		if( m_objectTypeId == TYPEID_PLAYER && TO_PLAYER(this)->GetGroup() && TO_PLAYER(this)->m_last_group_position.Distance2DSq(m_position) > 25.0f ) // distance of 5.0
 		{
             TO_PLAYER(this)->GetGroup()->HandlePartialChange( PARTY_UPDATE_FLAG_POSITION, TO_PLAYER(this) );
-		}	
+		}
 	}
 
 	return result;
@@ -975,9 +972,9 @@ void Object::PushToWorld(MapMgr* mgr)
 	// correct incorrect instance id's
 	mSemaphoreTeleport = false;
 	m_inQueue = false;
-   
+
 	event_Relocate();
-	
+
 	// call virtual function to handle stuff.. :P
 	OnPushToWorld();
 }
@@ -1455,7 +1452,7 @@ bool Object::inArc(float Position1X, float Position1Y, float FOV, float Orientat
 	{
 		return false;
 	}
-} 
+}
 
 bool Object::isInFront(Object* target)
 {
@@ -1485,7 +1482,7 @@ bool Object::isInFront(Object* target)
 bool Object::isInBack(Object* target)
 {
 	if(CalcDistance(target) < 0.5f)
-		return false; 
+		return false;
 
 	// check if we are behind something ( is the object within a 180 degree slice of our negative y axis )
 
@@ -1560,7 +1557,7 @@ void Object::UpdateOppFactionSet()
 					(*i)->m_oppFactsInRange.insert(this);
 				if (!IsInRangeOppFactSet((*i)))
 					m_oppFactsInRange.insert((*i));
-				
+
 			}
 			else
 			{
@@ -1673,7 +1670,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
         // Rage
         float val;
 
-		if( pVictim->GetPowerType() == POWER_TYPE_RAGE 
+		if( pVictim->GetPowerType() == POWER_TYPE_RAGE
 			&& pVictim != TO_UNIT(this)
 			&& pVictim->IsPlayer())
 		{
@@ -1684,7 +1681,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 			rage += float2int32(val) * 10;
 			if( rage > pVictim->GetUInt32Value(UNIT_FIELD_MAXPOWER2) )
 				rage = pVictim->GetUInt32Value(UNIT_FIELD_MAXPOWER2);
-			
+
 			pVictim->SetUInt32Value(UNIT_FIELD_POWER2, rage);
 			pVictim->SendPowerUpdate();
 		}
@@ -2290,7 +2287,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 						sp->prepare(&targets);
 					}
 				}
-			}	
+			}
 		}
 
 		pVictim->SetUInt32Value(UNIT_FIELD_HEALTH, health - damage );
@@ -2917,7 +2914,7 @@ int32 Object::GetSpellBaseCost(SpellEntry *sp)
 		else
 			cost = GetUInt32Value(UNIT_FIELD_BASE_HEALTH) * (sp->ManaCostPercentage / 100.0f);
 	}
-	else 
+	else
 	{
 		cost = (float)sp->manaCost;
 	}

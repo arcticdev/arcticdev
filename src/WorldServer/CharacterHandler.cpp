@@ -5,8 +5,6 @@
  */
 
 #include "StdAfx.h"
-
-#include "AuthCodes.h"
 #include "svn_revision.h"
 
 #define BUG_TRACKER "https://github.com/arcticdev/arcticdev/issues"
@@ -16,7 +14,7 @@ bool VerifyName(const char * name, size_t nlen)
 	const char * p;
 	size_t i;
 
-	static const char * bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\? <>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
+	static const char * bannedCharacters = "\t\v\b\f\a\n\r\\\"\'\?<>[](){}_=+-|/!@#$%^&*~`.,0123456789\0";
 	static const char * allowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	if(sWorld.m_limitedNames)
 	{
@@ -66,7 +64,7 @@ bool ChatHandler::HandleRenameAllCharacter(const char * args, WorldSession * m_s
 			if( !VerifyName(pName, szLen) )
 			{
 				printf("renaming character %s, %u\n", pName,uGuid);
-                Player* pPlayer = objmgr.GetPlayer(uGuid);
+				Player* pPlayer = objmgr.GetPlayer(uGuid);
 				if( pPlayer != NULL )
 				{
 					pPlayer->rename_pending = true;
@@ -621,7 +619,7 @@ void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 	uint8 response = CHAR_LOGIN_NO_CHARACTER;
 
 	//already active?
-	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player) 
+	if(objmgr.GetPlayer((uint32)playerGuid) != NULL || m_loggingInPlayer || _player)
 		response = CHAR_LOGIN_DUPLICATE_CHARACTER;
 	else //Do we exist in DB yet?
 	{
@@ -795,10 +793,10 @@ void WorldSession::FullLogin(Player* plr)
 				plr->RemoteRevive();
 			}
 
-			float c_tposx = pTrans->GetPositionX() + plr->m_TransporterX;
-			float c_tposy = pTrans->GetPositionY() + plr->m_TransporterY;
-			float c_tposz = pTrans->GetPositionZ() + plr->m_TransporterZ;
-			if(plr->GetMapId() != pTrans->GetMapId())	   // loaded wrong map
+			float c_tposx = pTrans->GetPositionX() + plr->m_transportPosition->x;
+			float c_tposy = pTrans->GetPositionY() + plr->m_transportPosition->y;
+			float c_tposz = pTrans->GetPositionZ() + plr->m_transportPosition->z;
+			if(plr->GetMapId() != pTrans->GetMapId())								// loaded wrong map
 			{
 				plr->SetMapId(pTrans->GetMapId());
 
@@ -816,7 +814,7 @@ void WorldSession::FullLogin(Player* plr)
 		}
 	}
 #endif
-	if(plr->m_CurrentVehicle) 
+	if(plr->m_CurrentVehicle)
 		plr->m_CurrentVehicle->RemovePassenger(plr);
 
 	DEBUG_LOG( "WorldSession","Player %s logged in.", plr->GetName());
@@ -905,14 +903,14 @@ void WorldSession::FullLogin(Player* plr)
 	if(plr->getLevel() > 10 && !GetPermissions())
 	{
 		// Retroactive: Level achievement
-		_player->GetAchievementInterface()->HandleAchievementCriteriaLevelUp( _player->getLevel() ); 
-	
-		// Send achievement data! 
-		if( _player->GetAchievementInterface()->HasAchievements() ) 
-		{ 
-			WorldPacket * data = _player->GetAchievementInterface()->BuildAchievementData(); 
-			_player->CopyAndSendDelayedPacket(data); 
-			delete data; 
+		_player->GetAchievementInterface()->HandleAchievementCriteriaLevelUp( _player->getLevel() );
+
+		// Send achievement data!
+		if( _player->GetAchievementInterface()->HasAchievements() )
+		{
+			WorldPacket * data = _player->GetAchievementInterface()->BuildAchievementData();
+			_player->CopyAndSendDelayedPacket(data);
+			delete data;
 		}
 	}
 
