@@ -371,7 +371,8 @@ bool AchievementInterface::HandleBeforeChecks(AchievementData * ad)
 			return false;
 	if(m_player->getLevel() < 10) // Blizzard says no. 
 		return false;
-
+	if(m_player->GetSession()->HasGMPermissions())
+		return false; 
 	return true;
 }
 
