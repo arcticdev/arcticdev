@@ -623,19 +623,19 @@ void WorldSession::HandleNpcTextQueryOpcode( WorldPacket & recv_data )
 	} 
 	else 
 	{
-		data << float(1.0f);		// prob
+		data << float(1.0f);                           // prob
 		data << "Hello, $N. What can I do for you?";
 		data << "Hello, $N. What can I do for you?";
-		data << uint32(0);	// lang
-		for(uint32 e=0;e<6;e++)		// emotes
+		data << uint32(0);                             // lang
+		for(uint32 e = 0; e < 6; e++)                  // emotes
 			data << uint32(0x00);
 
-		for(int i=0;i<7;i++)
+		for(int i = 0; i < 7; i++)
 		{
 			data << float(0.0f);
 			data << uint8(0x00) << uint8(0x00);
-			data << uint32(0x00);	// lang
-			for(uint32 e=0;e<6;e++) // emotes
+			data << uint32(0x00);                     // lang
+			for(uint32 e = 0; e < 6; e++)             // emotes
 				data << uint32(0x00);
 		}
 	}

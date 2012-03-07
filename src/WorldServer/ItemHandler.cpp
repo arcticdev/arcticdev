@@ -707,7 +707,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	CHECK_PACKET_SIZE(recv_data, 4);
 
 	int i;
-	uint32 itemid=0;
+	uint32 itemid = 0;
 	recv_data >> itemid;
 
 	ItemPrototype *itemProto = ItemPrototypeStorage.LookupEntry(itemid);
@@ -717,6 +717,8 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 		return;
 	}
 
+	// LocalizedItem* li = (language>0) ? sLocalizationMgr.GetLocalizedItem(itemid, language) : NULL;
+
 	uint8 databuffer[1000];
 	StackPacket data(SMSG_ITEM_QUERY_SINGLE_RESPONSE, databuffer, 1000);
 
@@ -724,7 +726,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 	data << itemProto->Class;
 	data << itemProto->SubClass;
 	data << itemProto->unknown_bc;
-	data << itemProto->Name1;
+	 data << /*(li ? li->Name : */itemProto->Name1/*)*/;
 
 	data << uint8(0) << uint8(0) << uint8(0); // name 2,3,4
 	data << itemProto->DisplayInfoID;

@@ -1175,7 +1175,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 			data << r->iRights;
 			data << r->iGoldLimitPerDay;
 
-			for (j=0; j<6; j++)
+			for (j = 0; j < 6; j++)
 			{
 				data << r->iTabPermissions[j].iFlags;
 				data << r->iTabPermissions[j].iStacksPerDay;

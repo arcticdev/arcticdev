@@ -333,7 +333,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
                 Lock* pLock = dbcLock.LookupEntry( pGO->GetInfo()->SpellFocus );
                 if( pLock )
                 {
-                    for( uint32 i=0; i < 5; ++i )
+                    for( uint32 i = 0; i < 5; ++i )
                     {
                         if( pLock->locktype[i] )
                         {
@@ -2037,7 +2037,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 
 	if(lock) // locked item
 	{
-		for(int i=0;i<5;i++)
+		for(int i = 0; i < 5; i++)
 		{
 			if(lock->locktype[i] == 1 && lock->lockmisc[i] > 0)
 			{
@@ -2058,7 +2058,7 @@ void WorldSession::HandleOpenItemOpcode(WorldPacket &recv_data)
 				return;
 			}
 		}
-		for(int i=0;i<5;i++)
+		for(int i = 0; i < 5; i++)
 			if(removeLockItems[i])
 				_player->GetItemInterface()->RemoveItemAmt(removeLockItems[i],1);
 	}

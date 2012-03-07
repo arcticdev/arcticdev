@@ -1242,15 +1242,13 @@ void MapMgr::ChangeFarsightLocation(Player* plr, float X, float Y, bool apply)
 							plr->m_visibleFarsightObjects.insert(obj);
 						}
 					}
-
 				}
 			}
 		}
 	}
 }
 
-/* new stuff
-*/
+/* new stuff */
 
 bool MapMgr::run()
 {
