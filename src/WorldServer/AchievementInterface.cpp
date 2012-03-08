@@ -43,7 +43,7 @@ void AchievementInterface::LoadFromDB( QueryResult * pResult )
 	if( !pResult ) // We have no achievements yet. :)
 		return;
 
-	do
+	do 
 	{
 		Field * fields = pResult->Fetch();
 		uint32 achievementid = fields[1].GetUInt32();
@@ -1348,7 +1348,8 @@ void AchievementInterface::HandleAchievementCriteriaReachSkillLevel(uint32 skill
 			if( compareCriteria == ace )
 			{
 				ad->counter[i] = skillLevel;
-				SendCriteriaUpdate(ad, i); break;
+				SendCriteriaUpdate(ad, i);
+					break;
 			}
 		}
 
