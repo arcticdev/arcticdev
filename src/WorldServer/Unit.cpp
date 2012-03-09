@@ -2661,7 +2661,7 @@ void Unit::CalculateResistanceReduction(Unit* pVictim,dealdamage * dmg, SpellEnt
 	double reduction = GetResistanceReducion(pVictim, dmg->school_type, armorReducePct);
 
 	// only for physical or non binary spells
-	if(reduction > 0)
+	if(reduction>0)
 		(*dmg).resisted_damage = (uint32)(((*dmg).full_damage)*reduction);
 	else
 		(*dmg).resisted_damage = 0;

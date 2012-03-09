@@ -49,7 +49,7 @@ World::World()
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
 #endif
-	m_limitedNames = false;
+	m_limitedNames=false;
 	m_banTable = NULL;
 	m_lfgForNonLfg = false;
 	m_speedHackThreshold = -500.0f;
@@ -509,8 +509,8 @@ bool World::SetInitialWorldSettings()
 	{
 		MAKE_TASK(ObjectMgr, LoadCreatureWaypoints);
 	}
-	MAKE_TASK(ObjectMgr,  LoadTrainers);
-	MAKE_TASK(ObjectMgr,  LoadTotemSpells);
+	MAKE_TASK(ObjectMgr, LoadTrainers);
+	MAKE_TASK(ObjectMgr, LoadTotemSpells);
 	MAKE_TASK(ObjectMgr,  LoadSpellOverride);
 	MAKE_TASK(ObjectMgr,  LoadVendors);
 	MAKE_TASK(ObjectMgr,  LoadAIThreatToSpellId);
@@ -520,15 +520,15 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(AddonMgr,   LoadFromDB);
 	MAKE_TASK(ObjectMgr,  SetHighestGuids);
 	MAKE_TASK(ObjectMgr,  LoadReputationModifiers);
-	MAKE_TASK(ObjectMgr,  LoadMonsterSay);
-	MAKE_TASK(WeatherMgr, LoadFromDB);
-	MAKE_TASK(ObjectMgr,  LoadGroups);
+	MAKE_TASK(ObjectMgr, LoadMonsterSay);
+	MAKE_TASK(WeatherMgr,LoadFromDB);
+	MAKE_TASK(ObjectMgr, LoadGroups);
 
-	MAKE_TASK(ObjectMgr,  LoadExtraCreatureProtoStuff);
-	MAKE_TASK(ObjectMgr,  LoadExtraItemStuff);
-	MAKE_TASK(QuestMgr,   LoadExtraQuestStuff);
-	MAKE_TASK(ObjectMgr,  LoadArenaTeams);
-	MAKE_TASK(ObjectMgr,  LoadProfessionDiscoveries);
+	MAKE_TASK(ObjectMgr, LoadExtraCreatureProtoStuff);
+	MAKE_TASK(ObjectMgr, LoadExtraItemStuff);
+	MAKE_TASK(QuestMgr,  LoadExtraQuestStuff);
+	MAKE_TASK(ObjectMgr, LoadArenaTeams);
+	MAKE_TASK(ObjectMgr, LoadProfessionDiscoveries);
 	MAKE_TASK(ObjectMgr,  LoadQuestPOI);
 
 #undef MAKE_TASK
@@ -827,7 +827,7 @@ void World::UpdateSessions(uint32 diff)
 		GlobalSession = (*itr);
 		it2 = itr;
 		++itr;
-		// We have been moved to mapmgr, remove us here.
+		//We have been moved to mapmgr, remove us here.
 		if( GlobalSession->GetInstance() != 0 )
 		{
 			GlobalSessions.erase(it2);
@@ -836,7 +836,7 @@ void World::UpdateSessions(uint32 diff)
 		result = GlobalSession->Update(0);
 		if(result)
 		{
-			if(result == 1) // socket don't exist anymore, delete from worldsessions.
+			if(result == 1)//socket don't exist anymore, delete from worldsessions.
 				DeleteGlobalSession(GlobalSession);
 
 			//We have been (re-)moved to mapmgr, remove us here.
@@ -1924,11 +1924,11 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 				case RACE_NIGHTELF:
 				case RACE_DRAENEI:
 					{
-						inf->team = 0;
+						inf->team=0;
 					}break;
 				default:
 					{
-						inf->team = 1;
+						inf->team=1;
 					}break;
 			}
 
@@ -1975,7 +1975,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			}
 
 			ss << ")";
-			// Execute the query
+			//Execute the query
 			CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 
 			// Add playerinfo to the objectmgr
@@ -1987,10 +1987,10 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playeritem>::iterator vtr = itr->second.begin(); vtr != itr->second.end(); ++vtr)
 				{
-					// Generate a new item guid
+					//Generate a new item guid
 					uint32 new_item_guid = objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM);
 
-					// empty our query string
+					//empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2012,7 +2012,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr).containerslot << ","
 						<< (*vtr).slot << ",'"
 						<< (*vtr).enchantments << "')";
-					// Execute query
+					//Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2023,7 +2023,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerskill>::iterator vtr1 = itr1->second.begin(); vtr1 != itr1->second.end(); ++vtr1)
 				{
-					// empty our query string
+					//empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2033,7 +2033,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr1).type << ","
 						<< (*vtr1).currentlvl << ","
 						<< (*vtr1).maxlvl << " )";
-					// Execute query
+					//Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}

@@ -8,12 +8,15 @@
 
 #include "AchievementDefines.h"
 
-#define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400 /*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
+#define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL 600 // ms
 #define PLAYER_SIZE 1.5f
 
-#define CREATURE_SPELL_TO_DAZE 1604
-#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 // for the beginners this means 45 degrees
+#define ENABLE_CREATURE_DAZE
+#ifdef ENABLE_CREATURE_DAZE
+	#define CREATURE_SPELL_TO_DAZE 1604
+	#define CREATURE_DAZE_TRIGGER_ANGLE M_PI/2 // for the beginners this means 45 degrees
+#endif
 
 class Object;
 class Creature;
@@ -23,6 +26,7 @@ class WorldSession;
 class SpellCastTargets;
 
 struct SpellEntry;
+
 struct AI_Spell
 {
 	~AI_Spell() { autocast_type=(uint32)-1; }
