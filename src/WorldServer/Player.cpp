@@ -8,8 +8,8 @@
 
 UpdateMask Player::m_visibleUpdateMask;
 #define COLLISION_MOUNT_CHECK_INTERVAL 1000
-static const uint8 baseRunes[6] = {0,0,1,1,2,2};
-static const uint32 DKNodesMask[12] = {4294967295,4093640703,830406655,0,33570816,1310944,3250593812,73752,896,67111952,0,0}; // all old continents are available to DK's by default.
+static const uint8 baseRunes[6] = { 0, 0, 1, 1, 2, 2 };
+static const uint32 DKNodesMask[12] = { 4294967295, 4093640703, 830406655, 0, 33570816, 1310944, 3250593812, 73752, 896, 67111952, 0, 0 }; // all old continents are available to DK's by default.
 
 Player::Player( uint32 guid )
 {
@@ -5273,7 +5273,7 @@ void Player::UpdateStats()
 			0.013724f, 0.013522f, 0.013363f, 0.013175f, 0.012996f, 0.012853f, 0.012687f, 0.012539f, 0.012384f, 0.012233f,
 			0.012113f, 0.011973f, 0.011859f, 0.011714f, 0.011575f, 0.011473f, 0.011342f, 0.011245f, 0.011110f, 0.010999f,
 			0.010700f, 0.010522f, 0.010290f, 0.010119f, 0.009968f, 0.009808f, 0.009651f, 0.009553f, 0.009445f, 0.009327f,
-			0.008859f, 0.008415f, 0.007993f, 0.007592f, 0.007211f, 0.006849f, 0.006506f, 0.006179f, 0.005869f, 0.005575f
+			0.008859f, 0.008415f, 0.007993f, 0.007592f, 0.007211f, 0.006849f, 0.006506f, 0.006179f, 0.005869f, 0.005575f,
 		};
 
 		uint32 lvl = getLevel();
@@ -5341,7 +5341,6 @@ void Player::AddCalculatedRestXP(uint32 seconds)
 	// accumulate rest credit four times faster than players logged off outside of an Inn or City.
 	// Players who log out anywhere else in the world will earn rest credit four times slower.
 	// http://www.worldofwarcraft.com/info/basics/resting.html
-
 
 	// Define xp for a full bar ( = 20 bubbles)
 	uint32 xp_to_lvl = uint32(lvlinfo->XPToNextLevel);
@@ -5601,15 +5600,13 @@ bool Player::CanSee(Object* obj) // * Invisibility & Stealth Detection - Partha 
 
 void Player::AddInRangeObject(Object* pObj)
 {
-	//Send taxi move if we're on a taxi
+	// Send taxi move if we're on a taxi
 	if (m_CurrentTaxiPath && (pObj->GetTypeId() == TYPEID_PLAYER))
 	{
 		uint32 ntime = getMSTime();
 
 		if (ntime > m_taxi_ride_time)
 			m_CurrentTaxiPath->SendMoveForTime( TO_PLAYER(this), TO_PLAYER( pObj ), ntime - m_taxi_ride_time);
-		/*else
-			m_CurrentTaxiPath->SendMoveForTime( TO_PLAYER(this), TO_PLAYER( pObj ), m_taxi_ride_time - ntime);*/
 	}
 
 	if( pObj->IsCreature() && pObj->m_faction->FactionFlags & 0x1000 )
@@ -5617,15 +5614,13 @@ void Player::AddInRangeObject(Object* pObj)
 
 	Unit::AddInRangeObject(pObj);
 
-	//if the object is a unit send a move packet if they have a destination
+	// if the object is a unit send a move packet if they have a destination
 	if(pObj->GetTypeId() == TYPEID_UNIT)
 	{
-		//add an event to send move update have to send guid as pointer was causing a crash :(
-		//sEventMgr.AddEvent( TO_CREATURE( pObj )->GetAIInterface(), &AIInterface::SendCurrentMove, TO_PLAYER(this)->GetGUID(), EVENT_UNIT_SENDMOVE, 200, 1);
 		TO_CREATURE( pObj )->GetAIInterface()->SendCurrentMove(TO_PLAYER(this));
 	}
 
-	//unit based objects, send aura data
+	// unit based objects, send aura data
 	if (pObj->IsUnit())
 	{
 		Unit* pUnit=TO_UNIT(pObj);
@@ -5635,7 +5630,7 @@ void Player::AddInRangeObject(Object* pObj)
 		{
 			WorldPacket data(SMSG_AURA_UPDATE_ALL, 28 * MAX_AURAS);
 			data << pUnit->GetNewGUID();
-			for (uint32 i=0; i<MAX_AURAS; ++i)
+			for (uint32 i = 0; i<MAX_AURAS; ++i)
 			{
 				aur = pUnit->m_auras[i];
 				if (aur != NULL)
@@ -5695,7 +5690,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		else
 			this->UnPossess();
 		if(m_currentSpell)
-			m_currentSpell->cancel();	   // cancel the spell
+			m_currentSpell->cancel(); // cancel the spell
 		m_CurrentCharm = NULL;
 
 		if( p->m_temp_summon&&p->GetTypeId() == TYPEID_UNIT )
@@ -5792,11 +5787,8 @@ bool Player::HasQuestForItem(uint32 itemid)
 	return false;
 }
 
-/*Loot type MUST be
-1-corpse, go
-2-skinning/herbalism/minning
-3-Fishing
-*/
+/*
+Loot type MUST be 1-corpse | go 2-skinning/herbalism/minning | 3-Fishing */
 void Player::SendLoot(uint64 guid,uint8 loot_type)
 {
 	Group * m_Group = m_playerInfo->m_Group;
@@ -5818,7 +5810,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 	int8 loot_method = -1;
 
-	//lootsteal fix
+	// lootsteal fix
 	if( lootObj->GetTypeId() == TYPEID_UNIT )
 	{
 		Creature* LootOwner = TO_CREATURE( lootObj );
@@ -5848,14 +5840,14 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 	data << guid;
 	data << loot_type; // loot_type;
 	data << lootObj->m_loot.gold;
-	data << (uint8) 0;//loot size reserve
+	data << (uint8) 0; // loot size reserve
 
 
-	std::vector<__LootItem>::iterator iter=lootObj->m_loot.items.begin();
-	uint32 count=0;
+	std::vector<__LootItem>::iterator iter = lootObj->m_loot.items.begin();
+	uint32 count = 0;
 	uint8 slottype = 0;
 
-	for(uint32 x=0;iter!=lootObj->m_loot.items.end();iter++,x++)
+	for(uint32 x = 0; iter != lootObj->m_loot.items.end(); iter++, x++)
 	{
 		if (iter->iItemsCount == 0)
 			continue;
@@ -5867,14 +5859,14 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 		ItemPrototype* itemProto =iter->item.itemproto;
 		if (!itemProto)
 			continue;
-        //quest items check. type 4/5
-        //quest items that dont start quests.
+        // quest items check. type 4/5
+        // quest items that dont start quests.
         if((itemProto->Bonding == ITEM_BIND_QUEST) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
             continue;
         if((itemProto->Bonding == ITEM_BIND_QUEST2) && !(itemProto->QuestId) && !HasQuestForItem(iter->item.itemproto->ItemId))
             continue;
 
-        //quest items that start quests need special check to avoid drops all the time.
+        // quest items that start quests need special check to avoid drops all the time.
         if((itemProto->Bonding == ITEM_BIND_QUEST) && (itemProto->QuestId) && GetQuestLogForEntry(itemProto->QuestId))
             continue;
         if((itemProto->Bonding == ITEM_BIND_QUEST2) && (itemProto->QuestId) && GetQuestLogForEntry(itemProto->QuestId))
@@ -5885,14 +5877,14 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
         if((itemProto->Bonding == ITEM_BIND_QUEST2) && (itemProto->QuestId) && HasFinishedQuest(itemProto->QuestId))
             continue;
 
-        //check for starting item quests that need questlines.
+        // check for starting item quests that need questlines.
         if((itemProto->QuestId && itemProto->Bonding != ITEM_BIND_QUEST && itemProto->Bonding != ITEM_BIND_QUEST2))
         {
             bool HasRequiredQuests = true;
             Quest * pQuest = QuestStorage.LookupEntry(itemProto->QuestId);
             if(pQuest)
             {
-                //check if its a questline.
+                // check if its a questline.
                 for(uint32 i = 0; i < pQuest->count_requiredquests; i++)
                 {
                     if(pQuest->required_quests[i])
@@ -5935,19 +5927,17 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 
 			/* if all people passed anyone can loot it? :P */
 			if(iter->passed)
-				slottype = 0;					// All players passed on the loot
+				slottype = 0; // All players passed on the loot
 
-			//if it is ffa loot and not an masterlooter
+			// if it is ffa loot and not an masterlooter
 			if(iter->ffa_loot)
 				slottype = 0;
 		}
 
 		data << uint8(x);
 		data << uint32(itemProto->ItemId);
-		data << uint32(iter->iItemsCount);//nr of items of this type
+		data << uint32(iter->iItemsCount); // nr of items of this type
 		data << uint32(iter->item.displayid);
-		//data << uint32(iter->iRandomSuffix ? iter->iRandomSuffix->id : 0);
-		//data << uint32(iter->iRandomProperty ? iter->iRandomProperty->ID : 0);
 		if(iter->iRandomSuffix)
 		{
 			data << Item::GenerateRandomSuffixFactor(itemProto);
@@ -5977,7 +5967,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 				else if(iter->iRandomSuffix)
 				{
 					ipid = -int32(iter->iRandomSuffix->id);
-					factor=Item::GenerateRandomSuffixFactor(iter->item.itemproto);
+					factor = Item::GenerateRandomSuffixFactor(iter->item.itemproto);
 				}
 
 				if(iter->item.itemproto)
@@ -6013,7 +6003,7 @@ void Player::SendLoot(uint64 guid,uint8 loot_type)
 							if((*itr)->m_loggedInPlayer && (*itr)->m_loggedInPlayer->GetItemInterface()->CanReceiveItem(itemProto, iter->iItemsCount, NULL) == 0)
 							{
 								if( (*itr)->m_loggedInPlayer->m_passOnLoot )
-									iter->roll->PlayerRolled( (*itr)->m_loggedInPlayer, 3 );		// passed
+									iter->roll->PlayerRolled( (*itr)->m_loggedInPlayer, 3 ); // passed
 								else
 									(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&data2);
 							}
@@ -6102,8 +6092,6 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	if( spellinfo == NULL )
 		return -1;
 
-	//sLog.outString( "Canshootwithrangedweapon!?!? spell: [%u] %s" , spellinfo->Id , spellinfo->Name );
-
 	// Check ammo
 	Item* itm = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
 	if( itm == NULL )
@@ -6134,14 +6122,6 @@ int32 Player::CanShootRangedWeapon( uint32 spellid, Unit* target, bool autoshot 
 	{
 		SM_FFValue( this->SM[SMT_RANGE][0], &maxr, spellinfo->SpellGroupType );
 		SM_PFValue( this->SM[SMT_RANGE][1], &maxr, spellinfo->SpellGroupType );
-#ifdef COLLECTION_OF_UNTESTED_STUFF_AND_TESTERS
-		float spell_flat_modifers=0;
-		float spell_pct_modifers=0;
-		SM_FFValue(this->SM[SMT_RANGE][0],&spell_flat_modifers,spellinfo->SpellGroupType);
-		SM_FFValue(this->SM[SMT_RANGE][1],&spell_pct_modifers,spellinfo->SpellGroupType);
-		if(spell_flat_modifers!=0 || spell_pct_modifers!=0)
-			printf("!!!!!spell range bonus mod flat %f , spell range bonus pct %f , spell range %f, spell group %u\n",spell_flat_modifers,spell_pct_modifers,maxr,spellinfo->SpellGroupType);
-#endif
 	}
 
 	maxr += 4.0f; // Matches client range

@@ -459,6 +459,12 @@
     <ClCompile Include="..\..\src\WorldServer\VehicleHandler.cpp">
       <Filter>EventableObject\Object\Unit\Creature</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\CalendarHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\VoiceChatHandler.cpp">
+      <Filter>Networking, Handlers\Handlers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\WorldServer\Packets.h" />

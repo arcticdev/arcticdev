@@ -1,67 +1,43 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="LogonComm">
-      <UniqueIdentifier>{79629075-36d0-4c63-9ed6-a33cfa1d6fd4}</UniqueIdentifier>
+    <Filter Include="Chat">
+      <UniqueIdentifier>{66e786a6-07d7-449c-87e9-1c3def324682}</UniqueIdentifier>
     </Filter>
     <Filter Include="Client">
-      <UniqueIdentifier>{7ea4417e-e453-4615-9f7e-a850210ea244}</UniqueIdentifier>
+      <UniqueIdentifier>{b7350898-1d76-47aa-bcd3-3165a181bcdf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Client\Chat">
-      <UniqueIdentifier>{48f0db2f-0beb-4c60-9414-096c5f7de9df}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{c1dc06d1-e4fd-4e8d-8367-c83e6347fef9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Worker Server">
-      <UniqueIdentifier>{ca8d143c-6533-4957-9475-d076fff12f5e}</UniqueIdentifier>
+    <Filter Include="Console">
+      <UniqueIdentifier>{19fbb97c-6bd3-427c-ae70-141976962b23}</UniqueIdentifier>
     </Filter>
     <Filter Include="Defines">
-      <UniqueIdentifier>{855391eb-233c-4343-9740-272dc0e424a9}</UniqueIdentifier>
+      <UniqueIdentifier>{6b5da8e7-29d2-42ca-b51a-2f61008f4c59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LogonComm">
+      <UniqueIdentifier>{fbcae4d1-021e-4227-987e-f3f0f334f8d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{928f843a-a0ec-4f1b-a786-cb1ce61b5fba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Storage">
-      <UniqueIdentifier>{45d1ecc5-70a2-4693-9532-37fc74dac4ec}</UniqueIdentifier>
+      <UniqueIdentifier>{a4ae3e9e-2e00-4c71-97d5-daac6217bb1a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PreCompiled">
-      <UniqueIdentifier>{59afd513-096d-49dd-ad2c-e8780c88c08a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Launcher">
-      <UniqueIdentifier>{eac46017-13cb-4ab7-b134-bfd9417fd6f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Launcher\Console">
-      <UniqueIdentifier>{e2aabe05-8767-4d1d-bc24-73be2cfc5ab6}</UniqueIdentifier>
+    <Filter Include="Worker Server">
+      <UniqueIdentifier>{f88524eb-e90c-4c8d-a474-487a16ac7790}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\ClusterServer\LogonCommClient.cpp">
-      <Filter>LogonComm</Filter>
+    <ClCompile Include="..\..\src\ClusterServer\Channel.cpp">
+      <Filter>Chat</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\LogonCommHandler.cpp">
-      <Filter>LogonComm</Filter>
+    <ClCompile Include="..\..\src\ClusterServer\ChannelHandler.cpp">
+      <Filter>Chat</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\CharacterHandler.cpp">
       <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\QueryHandler.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\Session.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\WorldSocket.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\Channel.cpp">
-      <Filter>Client\Chat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\ChannelHandler.cpp">
-      <Filter>Client\Chat</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\Chat.cpp">
-      <Filter>Client\Chat</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\ChatHandler.cpp">
-      <Filter>Client\Chat</Filter>
+      <Filter>Chat</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\ClientManager.cpp">
       <Filter>Manager</Filter>
@@ -69,56 +45,81 @@
     <ClCompile Include="..\..\src\ClusterServer\ClusterManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\ConsoleCommands.cpp">
+      <Filter>Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\ConsoleListener.cpp">
+      <Filter>Console</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\LocalizationMgr.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\LogonCommClient.cpp">
+      <Filter>LogonComm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\LogonCommHandler.cpp">
+      <Filter>LogonComm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\Main.cpp" />
+    <ClCompile Include="..\..\src\ClusterServer\Master.cpp" />
+    <ClCompile Include="..\..\src\ClusterServer\ObjectStorage.cpp">
+      <Filter>Storage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\QueryHandler.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\ClusterServer\RStdAfx.cpp" />
+    <ClCompile Include="..\..\src\ClusterServer\Session.cpp">
+      <Filter>Client</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\WorkerServer.cpp">
       <Filter>Worker Server</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\ClusterServer\WorkerServerSocket.cpp">
       <Filter>Worker Server</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\ObjectStorage.cpp">
-      <Filter>Storage</Filter>
+    <ClCompile Include="..\..\src\ClusterServer\WorldSocket.cpp">
+      <Filter>Client</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\ConsoleCommands.cpp">
-      <Filter>Launcher\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\ConsoleListener.cpp">
-      <Filter>Launcher\Console</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\RStdAfx.cpp">
-      <Filter>PreCompiled</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\Master.cpp">
-      <Filter>Launcher</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\src\ClusterServer\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\ClusterServer\LogonCommClient.h">
-      <Filter>LogonComm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\LogonCommHandler.h">
-      <Filter>LogonComm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\Session.h">
-      <Filter>Client</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\WorldSocket.h">
-      <Filter>Client</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\Channel.h">
-      <Filter>Client\Chat</Filter>
+      <Filter>Chat</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\ChannelMgr.h">
-      <Filter>Client\Chat</Filter>
+      <Filter>Chat</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\Chat.h">
-      <Filter>Client\Chat</Filter>
+      <Filter>Chat</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\ClientManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\ClusterManager.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\ConsoleCommands.h">
+      <Filter>Console</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\LocalizationMgr.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\LogonCommClient.h">
+      <Filter>LogonComm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\LogonCommHandler.h">
+      <Filter>LogonComm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\Master.h" />
+    <ClInclude Include="..\..\src\ClusterServer\ObjectStorage.h">
+      <Filter>Storage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\RStdAfx.h" />
+    <ClInclude Include="..\..\src\ClusterServer\Session.h">
+      <Filter>Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\ClusterServer\Structures.h">
+      <Filter>Defines</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\ClusterServer\WorkerOpcodes.h">
       <Filter>Worker Server</Filter>
@@ -129,20 +130,8 @@
     <ClInclude Include="..\..\src\ClusterServer\WorkerServerSocket.h">
       <Filter>Worker Server</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\Structures.h">
-      <Filter>Defines</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\ObjectStorage.h">
-      <Filter>Storage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\ConsoleCommands.h">
-      <Filter>Launcher\Console</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\RStdAfx.h">
-      <Filter>PreCompiled</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\ClusterServer\Master.h">
-      <Filter>Launcher</Filter>
+    <ClInclude Include="..\..\src\ClusterServer\WorldSocket.h">
+      <Filter>Client</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

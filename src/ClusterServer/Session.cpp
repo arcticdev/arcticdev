@@ -39,7 +39,6 @@ void Session::InitHandlers()
 	Handlers[CMSG_CHANNEL_MODERATE]	= &Session::HandleChannelModerate;
 	Handlers[CMSG_GET_CHANNEL_MEMBER_COUNT]	= &Session::HandleChannelNumMembersQuery;
 	Handlers[CMSG_CHANNEL_DISPLAY_LIST]	= &Session::HandleChannelRosterQuery;
-	Handlers[CMSG_MESSAGECHAT] = &Session::HandleMessagechatOpcode;
 }
 
 Session::Session(uint32 id) : m_sessionId(id)

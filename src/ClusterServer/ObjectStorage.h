@@ -23,3 +23,4 @@ extern SQLStorage<MapInfo, HashMapStorageContainer<MapInfo> >						WorldMapInfoS
 void Storage_Cleanup();
 void Storage_Load();
 bool Storage_ReloadTable(const char * TableName);
+

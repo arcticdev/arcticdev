@@ -123,14 +123,12 @@ void CThreadPool::Startup(uint8 ThreadCount)
 
 void CThreadPool::ShowStats()
 {
-	_mutex.Acquire();
-	DEBUG_LOG("ThreadPool", "============ ThreadPool Status =============");
+	DEBUG_LOG("ThreadPool", "================== ThreadPool Status ===================");
 	DEBUG_LOG("ThreadPool", "Active Threads: %u", m_activeThreads.size());
 	DEBUG_LOG("ThreadPool", "Suspended Threads: %u", m_freeThreads.size());
 	DEBUG_LOG("ThreadPool", "Requested-To-Freed Ratio: %.3f%% (%u/%u)", float( float(_threadsRequestedSinceLastCheck+1) / float(_threadsExitedSinceLastCheck+1) * 100.0f ), _threadsRequestedSinceLastCheck, _threadsExitedSinceLastCheck);
 	DEBUG_LOG("ThreadPool", "Eaten Count: %d (negative is bad!)", _threadsEaten);
-	DEBUG_LOG("ThreadPool", "============================================");
-	_mutex.Release();
+	DEBUG_LOG("ThreadPool", "========================================================");
 }
 
 void CThreadPool::IntegrityCheck(uint8 ThreadCount)
@@ -138,10 +136,10 @@ void CThreadPool::IntegrityCheck(uint8 ThreadCount)
 	_mutex.Acquire();
 	int32 gobbled = _threadsEaten;
 
-    if(gobbled < 0)
+	if(gobbled < 0)
 	{
 		// this means we requested more threads than we had in the pool last time.
-        // spawn "gobbled" + THREAD_RESERVE extra threads.
+		// spawn "gobbled" + THREAD_RESERVE extra threads.
 		uint32 new_threads = abs(gobbled) + ThreadCount;
 		_threadsEaten=0;
 
@@ -152,7 +150,7 @@ void CThreadPool::IntegrityCheck(uint8 ThreadCount)
 	}
 	else if(gobbled < ThreadCount)
 	{
-        // this means while we didn't run out of threads, we were getting damn low.
+		// this means while we didn't run out of threads, we were getting damn low.
 		// spawn enough threads to keep the reserve amount up.
 		uint32 new_threads = (THREAD_RESERVE - gobbled);
 		for(uint32 i = 0; i < new_threads; ++i)
