@@ -25,7 +25,7 @@ _logoutTime(0), permissions(NULL), permissioncount(0), _loggingOut(false), insta
 	_updatecount = 0;
 	m_moveDelayTime = 0;
 	m_clientTimeDelay = 0;
-	m_loggingInPlayer=NULL;
+	m_loggingInPlayer = NULL;
 	language = 0;
 	m_muted = 0;
 	_side = -1;

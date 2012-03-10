@@ -859,7 +859,7 @@ void CBattlegroundManager::RemovePlayerFromQueues(Player* plr)
 		}
 		plr->m_bgIsQueued[i] = false;
 		plr->m_bgTeam=plr->GetTeam();
-		plr->m_pendingBattleground[i]=NULL;
+		plr->m_pendingBattleground[i] = NULL;
 		plr->m_bgQueueType[i] = 0;
 		plr->m_bgQueueInstanceId[i] = 0;
 		plr->m_bgQueueTime[i] = 0;
@@ -1729,7 +1729,7 @@ void CBattleground::Close()
 			++it2;
 			plr = objmgr.GetPlayer(guid);
 
-			if(plr!=NULL)
+			if(plr != NULL)
 				RemovePendingPlayer(plr);
 			else
 				m_pendPlayers[i].erase(guid);

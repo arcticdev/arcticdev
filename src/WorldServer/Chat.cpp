@@ -1004,7 +1004,7 @@ bool ChatHandler::CmdSetValueField(WorldSession *m_session, uint32 field, uint32
 	}
 
 	Player* plr = getSelectedChar(m_session, false);
-	if(plr!=NULL)
+	if(plr != NULL)
 	{
 		sGMLog.writefromsession(m_session, "used modify field value: %s, %u on %s", fieldname, av, plr->GetName());
 		if(fieldmax)
@@ -1113,7 +1113,7 @@ bool ChatHandler::CmdSetFloatField(WorldSession *m_session, uint32 field, uint32
 	}
 
 	Player* plr = getSelectedChar(m_session, false);
-	if(plr!=NULL)
+	if(plr != NULL)
 	{
 		sGMLog.writefromsession(m_session, "used modify field value: %s, %f on %s", fieldname, av, plr->GetName());
 		if(fieldmax)

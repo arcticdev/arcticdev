@@ -49,7 +49,7 @@ World::World()
 	SocketSendBufSize = WORLDSOCKET_SENDBUF_SIZE;
 	SocketRecvBufSize = WORLDSOCKET_RECVBUF_SIZE;
 #endif
-	m_limitedNames=false;
+	m_limitedNames = false;
 	m_banTable = NULL;
 	m_lfgForNonLfg = false;
 	m_speedHackThreshold = -500.0f;
@@ -827,7 +827,7 @@ void World::UpdateSessions(uint32 diff)
 		GlobalSession = (*itr);
 		it2 = itr;
 		++itr;
-		//We have been moved to mapmgr, remove us here.
+		// We have been moved to mapmgr, remove us here.
 		if( GlobalSession->GetInstance() != 0 )
 		{
 			GlobalSessions.erase(it2);
@@ -836,10 +836,10 @@ void World::UpdateSessions(uint32 diff)
 		result = GlobalSession->Update(0);
 		if(result)
 		{
-			if(result == 1)//socket don't exist anymore, delete from worldsessions.
+			if(result == 1) // socket don't exist anymore, delete from worldsessions.
 				DeleteGlobalSession(GlobalSession);
 
-			//We have been (re-)moved to mapmgr, remove us here.
+			// We have been (re-)moved to mapmgr, remove us here.
 			GlobalSessions.erase(it2);
 		}
 	}
@@ -857,7 +857,7 @@ std::string World::GenerateName(uint32 type)
 
 void World::DeleteGlobalSession(WorldSession *GlobalSession)
 {
-	//If it's a GM, remove him from GM session map
+	// If it's a GM, remove him from GM session map
 	if(GlobalSession->HasGMPermissions())
 	{
 		gmList_lock.AcquireWriteLock();
@@ -1924,11 +1924,11 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 				case RACE_NIGHTELF:
 				case RACE_DRAENEI:
 					{
-						inf->team=0;
+						inf->team = 0;
 					}break;
 				default:
 					{
-						inf->team=1;
+						inf->team = 1;
 					}break;
 			}
 
@@ -1975,7 +1975,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			}
 
 			ss << ")";
-			//Execute the query
+			// Execute the query
 			CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 
 			// Add playerinfo to the objectmgr
@@ -1987,14 +1987,13 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playeritem>::iterator vtr = itr->second.begin(); vtr != itr->second.end(); ++vtr)
 				{
-					//Generate a new item guid
+					// Generate a new item guid
 					uint32 new_item_guid = objmgr.GenerateLowGuid(HIGHGUID_TYPE_ITEM);
 
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
-
 					ss << "INSERT INTO playeritems VALUES(";
 					ss << new_guid << ","
 						<< new_item_guid << ","
@@ -2012,7 +2011,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr).containerslot << ","
 						<< (*vtr).slot << ",'"
 						<< (*vtr).enchantments << "')";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2023,7 +2022,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerskill>::iterator vtr1 = itr1->second.begin(); vtr1 != itr1->second.end(); ++vtr1)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2033,7 +2032,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr1).type << ","
 						<< (*vtr1).currentlvl << ","
 						<< (*vtr1).maxlvl << " )";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2044,7 +2043,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerquest>::iterator vtr2 = itr2->second.begin(); vtr2 != itr2->second.end(); ++vtr2)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2062,7 +2061,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr2).mob_kill3 << ","
 						<< (*vtr2).mob_kill4 << ","
 						<< (*vtr2).slain << ")";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2073,7 +2072,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerglyph>::iterator vtr3 = itr3->second.begin(); vtr3 != itr3->second.end(); ++vtr3)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2097,7 +2096,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playertalent>::iterator vtr4 = itr4->second.begin(); vtr4 != itr4->second.end(); ++vtr4)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
@@ -2106,7 +2105,7 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 						<< (*vtr4).spec << ","
 						<< (*vtr4).tid << ","
 						<< (*vtr4).rank << " )";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
@@ -2117,19 +2116,19 @@ void World::PollCharacterInsertQueue(DatabaseConnection * con)
 			{
 				for(vector<insert_playerspell>::iterator vtr5 = itr5->second.begin(); vtr5 != itr5->second.end(); ++vtr5)
 				{
-					//empty our query string
+					// empty our query string
 					ss.rdbuf()->str("");
 
 					// Build query
 					ss << "INSERT INTO playerspells VALUES(";
 					ss << new_guid << ","
 						<< (*vtr5).spellid << " )";
-					//Execute query
+					// Execute query
 					CharacterDatabase.FWaitExecute(ss.str().c_str(),con);
 				}
 			}
 
-			//empty our query string
+			// empty our query string
 			ss.rdbuf()->str("");
 		} while(result->NextRow());
 		has_results = true;

@@ -550,7 +550,7 @@ Player::~Player ( )
 	m_objectTypeId = TYPEID_UNUSED;
 
 	if(m_playerInfo)
-		m_playerInfo->m_loggedInPlayer=NULL;
+		m_playerInfo->m_loggedInPlayer = NULL;
 
 	if( !delayedPackets.empty() )
 	{
@@ -1256,7 +1256,7 @@ void Player::_EventCharmAttack()
 	Unit* pVictim = NULL;
 	if(!IsInWorld())
 	{
-		m_CurrentCharm=NULL;
+		m_CurrentCharm = NULL;
 		sEventMgr.RemoveEvents(TO_PLAYER(this),EVENT_PLAYER_CHARM_ATTACK);
 		return;
 	}
@@ -5696,7 +5696,7 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 			this->UnPossess();
 		if(m_currentSpell)
 			m_currentSpell->cancel();	   // cancel the spell
-		m_CurrentCharm=NULL;
+		m_CurrentCharm = NULL;
 
 		if( p->m_temp_summon&&p->GetTypeId() == TYPEID_UNIT )
 			TO_CREATURE( p )->SafeDelete();

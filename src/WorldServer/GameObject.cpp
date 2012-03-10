@@ -10,17 +10,17 @@ GameObject::GameObject(uint64 guid)
 	m_objectTypeId = TYPEID_GAMEOBJECT;
 	m_valuesCount = GAMEOBJECT_END;
 	m_uint32Values = _fields;
-	memset(m_uint32Values, 0,(GAMEOBJECT_END)*sizeof(uint32));
+	memset(m_uint32Values, 0, (GAMEOBJECT_END)*sizeof(uint32));
 	m_updateMask.SetCount(GAMEOBJECT_END);
-	SetUInt32Value( OBJECT_FIELD_TYPE,TYPE_GAMEOBJECT|TYPE_OBJECT);
-	SetUInt64Value( OBJECT_FIELD_GUID,guid);
+	SetUInt32Value(OBJECT_FIELD_TYPE,TYPE_GAMEOBJECT|TYPE_OBJECT);
+	SetUInt64Value(OBJECT_FIELD_GUID,guid);
 	m_wowGuid.Init(GetGUID());
  
 	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
 
 	SetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 
-	counter=0;//not needed at all but to prevent errors that var was not inited, can be removed in release
+	counter = 0; // not needed at all but to prevent errors that var was not inited, can be removed in release
 
 	bannerslot = bannerauraslot = -1;
 
@@ -42,7 +42,7 @@ GameObject::GameObject(uint64 guid)
 	m_spawn = 0;
 	m_deleted = false;
 	mines_remaining = 1;
-	m_respawnCell=NULL;
+	m_respawnCell = NULL;
 	m_battleground = NULL;
 }
 
@@ -62,7 +62,7 @@ GameObject::~GameObject()
 			m_summoner = NULL;
 	}
 
-	if(m_respawnCell!=NULL)
+	if(m_respawnCell != NULL)
 		m_respawnCell->_respawnObjects.erase( TO_OBJECT(this) );
 
 	if (m_summonedGo && m_summoner)

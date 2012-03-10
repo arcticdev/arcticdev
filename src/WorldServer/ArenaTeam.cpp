@@ -145,7 +145,7 @@ bool ArenaTeam::AddMember(PlayerInfo * info)
 	m_members[m_memberCount++].Info = info;
 	SaveToDB();
 
-	if(plr!=NULL)
+	if(plr != NULL)
 	{
 		base_field = (m_type*7) + PLAYER_FIELD_ARENA_TEAM_INFO_1_1;
 		plr->SetUInt32Value(base_field, m_id);

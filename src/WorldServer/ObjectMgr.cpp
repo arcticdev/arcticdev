@@ -155,7 +155,7 @@ ObjectMgr::~ObjectMgr()
 	Log.Notice("ObjectMgr", "Deleting Player Information...");
 	for(HM_NAMESPACE::hash_map<uint32, PlayerInfo*>::iterator itr = m_playersinfo.begin(); itr != m_playersinfo.end(); ++itr)
 	{
-		itr->second->m_Group=NULL;
+		itr->second->m_Group = NULL;
 		free(itr->second->name);
 		delete itr->second;
 	}
@@ -240,7 +240,7 @@ void ObjectMgr::LoadAchievements()
 Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 {
 	GroupMap::iterator itr;
-	Group * ret=NULL;
+	Group * ret = NULL;
 	m_groupLock.AcquireReadLock();
 	for(itr = m_groups.begin(); itr != m_groups.end(); ++itr)
 	{
@@ -258,7 +258,7 @@ Group * ObjectMgr::GetGroupByLeader(Player* pPlayer)
 Group * ObjectMgr::GetGroupById(uint32 id)
 {
 	GroupMap::iterator itr;
-	Group * ret=NULL;
+	Group * ret = NULL;
 	m_groupLock.AcquireReadLock();
 	itr = m_groups.find(id);
 	if(itr!=m_groups.end())

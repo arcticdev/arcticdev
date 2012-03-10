@@ -541,7 +541,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 
 		if(_player->GetCurrentSpell() && _player->GetCurrentSpell()->i_caster==pItem)
 		{
-			_player->GetCurrentSpell()->i_caster=NULL;
+			_player->GetCurrentSpell()->i_caster = NULL;
 			_player->GetCurrentSpell()->cancel();
 		}
 
@@ -1139,8 +1139,8 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 	}
 
 	// ok our z and slot are set.
-	Item* oldItem= NULL;
-	Item* pItem=NULL;
+	Item* oldItem = NULL;
+	Item* pItem = NULL;
 	if(slot != INVENTORY_SLOT_NOT_SET)
 		oldItem = _player->GetItemInterface()->GetInventoryItem(bagslot, slot);
 

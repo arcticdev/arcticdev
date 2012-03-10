@@ -111,7 +111,7 @@ Creature::~Creature()
 			delete (*itr);
 		delete m_custom_waypoint_map;
 	}
-	if(m_respawnCell!=NULL)
+	if(m_respawnCell != NULL)
 		m_respawnCell->_respawnObjects.erase(this);
 }
 
@@ -127,7 +127,7 @@ void Creature::Update( uint32 p_time )
 	if(m_corpseEvent)
 	{
 		sEventMgr.RemoveEvents(this);
-		if(proto==NULL)
+		if(proto == NULL)
 			sEventMgr.AddEvent(TO_CREATURE(this), &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, 1000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 		else if (creature_info->Rank == ELITE_WORLDBOSS)
 			sEventMgr.AddEvent(TO_CREATURE(this), &Creature::OnRemoveCorpse, EVENT_CREATURE_REMOVE_CORPSE, TIME_CREATURE_REMOVE_BOSSCORPSE, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);

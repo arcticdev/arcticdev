@@ -881,7 +881,7 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 				case EFF_TARGET_SINGLE_PARTY:// Single Target Party Member
 				case EFF_TARGET_ALL_PARTY: // all Members of the targets party
 					{
-						Player* p=NULL;
+						Player* p = NULL;
 						if( p_caster != NULL )
 								p = p_caster;
 						else if( u_caster && u_caster->GetTypeId() == TYPEID_UNIT && TO_CREATURE( u_caster )->IsTotem() )

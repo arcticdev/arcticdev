@@ -60,7 +60,7 @@ bool TerrainMgr::LoadTerrainHeader()
 	{
 		/* file with no data */
 		fclose(FileDescriptor);
-		FileDescriptor=NULL;
+		FileDescriptor = NULL;
 		return false;
 	}
 
@@ -70,7 +70,7 @@ bool TerrainMgr::LoadTerrainHeader()
 	if(dread != TERRAIN_HEADER_SIZE)
 	{
 		fclose(FileDescriptor);
-		FileDescriptor=NULL;
+		FileDescriptor = NULL;
 		return false;
 	}
 

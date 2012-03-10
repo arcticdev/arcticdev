@@ -197,12 +197,12 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 					delete res;
 				}
 				else
-					info=NULL;
+					info = NULL;
 			}
 			else
-				info=NULL;
+				info = NULL;
 
-			if(info)  //PET INFO uint32 displayid,	uint32 level,		 uint32 familyid
+			if(info) // PET INFO uint32 displayid,  uint32 level,        uint32 familyid
 				data << uint32(info->Male_DisplayID) << uint32(10) << uint32(info->Family);
 			else
 				data << uint32(0) << uint32(0) << uint32(0);

@@ -52,7 +52,7 @@ WorldSocket::~WorldSocket()
 	if(mSession)
 	{
 		mSession->SetSocket(NULL);
-		mSession=NULL;
+		mSession = NULL;
 	}
 
 	if( m_fullAccountName != NULL )

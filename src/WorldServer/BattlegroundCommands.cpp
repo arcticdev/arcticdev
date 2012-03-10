@@ -74,12 +74,12 @@ bool ChatHandler::HandleSetBattlefieldStatusCommand(const char* args, WorldSessi
 bool ChatHandler::HandleBattlegroundExitCommand(const char* args, WorldSession* m_session)
 {
 	Player* plr = getSelectedChar(m_session, false);
-	if(plr==NULL)
+	if(plr == NULL)
 	{
 		if(m_session->GetPlayer()!= NULL)
 			plr = m_session->GetPlayer();
 	}
-	if(plr==NULL)
+	if(plr == NULL)
 		return true;
 
 	if(plr->m_bg && plr->IsInWorld())

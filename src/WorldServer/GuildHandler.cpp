@@ -182,7 +182,7 @@ void WorldSession::HandleGuildPromote(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr == NULL)
 		return;
 
 	_player->m_playerInfo->guild->PromoteGuildMember(dstplr, this);
@@ -202,7 +202,7 @@ void WorldSession::HandleGuildDemote(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr == NULL)
 		return;
 
 	_player->m_playerInfo->guild->DemoteGuildMember(dstplr, this);
@@ -233,7 +233,7 @@ void WorldSession::HandleGuildRemove(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr == NULL)
 		return;
 
 	_player->m_playerInfo->guild->RemoveGuildMember(dstplr, this);
@@ -270,7 +270,7 @@ void WorldSession::HandleGuildLeader(WorldPacket & recv_data)
 	}
 
 	PlayerInfo * dstplr = objmgr.GetPlayerInfoByName(name.c_str());
-	if(dstplr==NULL)
+	if(dstplr == NULL)
 		return;
 
 	if(dstplr->guild != _player->m_playerInfo->guild)
@@ -457,7 +457,7 @@ void WorldSession::HandleSaveGuildEmblem(WorldPacket & recv_data)
 	CHECK_GUID_EXISTS(guid);
 
 	recv_data >> emblemStyle >> emblemColor >> borderStyle >> borderColor >> backgroundColor;
-	if(pGuild==NULL)
+	if(pGuild == NULL)
 	{
 		data << uint32(ERR_GUILDEMBLEM_NOGUILD);
 		SendPacket(&data);
@@ -1060,11 +1060,11 @@ void WorldSession::HandleGuildBankModifyTab(WorldPacket & recv_data)
 	recv_data >> tabname;
 	recv_data >> tabicon;
 
-	if(_player->m_playerInfo->guild==NULL)
+	if(_player->m_playerInfo->guild == NULL)
 		return;
 
 	pTab = _player->m_playerInfo->guild->GetBankTab((uint32)slot);
-	if(pTab==NULL)
+	if(pTab == NULL)
 		return;
 
 	if(_player->m_playerInfo->guild->GetGuildLeader() != _player->GetLowGUID())
@@ -1139,7 +1139,7 @@ void WorldSession::HandleGuildBankWithdrawMoney(WorldPacket & recv_data)
 	recv_data >> guid;
 	recv_data >> money;
 
-	if(_player->m_playerInfo->guild==NULL)
+	if(_player->m_playerInfo->guild == NULL)
 		return;
 
 	_player->m_playerInfo->guild->WithdrawMoney(this, money);
@@ -1153,7 +1153,7 @@ void WorldSession::HandleGuildBankDepositMoney(WorldPacket & recv_data)
 	recv_data >> guid;
 	recv_data >> money;
 
-	if(_player->m_playerInfo->guild==NULL)
+	if(_player->m_playerInfo->guild == NULL)
 		return;
 
 	_player->m_playerInfo->guild->DepositMoney(this, money);
@@ -1170,7 +1170,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 	Guild * pGuild = _player->m_playerInfo->guild;
 	GuildMember * pMember = _player->m_playerInfo->guildMember;
 	
-	if(pGuild==NULL || pMember==NULL)
+	if(pGuild == NULL || pMember == NULL)
 		return;
 
 	recv_data >> guid >> source_isfrombank;
@@ -1350,7 +1350,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 
 		/* get tab */
 		pTab = pGuild->GetBankTab((uint32)dest_bank);
-		if(pTab==NULL)
+		if(pTab == NULL)
 			return;
 
 		/* check if we are auto assigning */
@@ -1365,7 +1365,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				}
 			}
 
-			if(dest_bankslot==0xff)
+			if(dest_bankslot == 0xff)
 			{
 				_player->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_BAG_FULL);
 				return;
@@ -1544,7 +1544,7 @@ void WorldSession::HandleGuildBankOpenVault(WorldPacket & recv_data)
 	GameObject* pObj;
 	uint64 guid;
 
-	if(!_player->IsInWorld() || _player->m_playerInfo->guild==NULL)
+	if(!_player->IsInWorld() || _player->m_playerInfo->guild == NULL)
 	{
 		Guild::SendGuildCommandResult(this, GUILD_CREATE_S, "", GUILD_PLAYER_NOT_IN_GUILD);
 		return;

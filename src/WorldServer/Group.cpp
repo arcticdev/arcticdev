@@ -161,7 +161,7 @@ bool Group::AddMember(PlayerInfo * info, int32 subgroupid /* =-1 */ )
 		else
 		{
 			m_groupLock.Release();
-			info->m_Group=NULL;
+			info->m_Group = NULL;
 			info->subGroup=-1;
 			return false;
 		}
@@ -474,7 +474,7 @@ void Group::RemovePlayer(PlayerInfo * info)
 	}
 	
 	m_groupLock.Acquire();
-	SubGroup *sg=NULL;
+	SubGroup *sg = NULL;
 	if(info->subGroup >= 0 && info->subGroup <= 8)
 		sg = m_SubGroups[info->subGroup];
 
@@ -704,7 +704,7 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 		return;
 	}
 
-	SubGroup *sg=NULL;
+	SubGroup *sg = NULL;
 	if(info->subGroup > 0)
 		sg = m_SubGroups[info->subGroup];
 
@@ -738,12 +738,12 @@ void Group::MovePlayer(PlayerInfo *info, uint8 subgroup)
 	if(!sg->AddPlayer(info))
 	{
 		RemovePlayer(info);
-		info->m_Group=NULL;
+		info->m_Group = NULL;
 	}
 	else
 	{
-		info->subGroup=(int8)sg->GetID();
-		info->m_Group=this;
+		info->subGroup = (int8)sg->GetID();
+		info->m_Group = this;
 	}
 
 	Update();
@@ -809,10 +809,10 @@ void Group::LoadFromDB(Field *fields)
 				continue;
 
 			AddMember(inf);
-			m_dirty=false;
+			m_dirty = false;
 		}
 	}
-	m_updateblock=false;
+	m_updateblock = false;
 }
 
 void Group::SaveToDB()
@@ -922,7 +922,7 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 
 	if(Flags & GROUP_UPDATE_FLAG_POSITION)
 	{
-		*data << int16(pPlayer->GetPositionX()) << int16(pPlayer->GetPositionY());			// wtf packed floats? O.o
+		*data << int16(pPlayer->GetPositionX()) << int16(pPlayer->GetPositionY()); // wtf packed floats? O.o
 		pPlayer->m_last_group_position = pPlayer->GetPosition();
 	}
 
@@ -940,7 +940,7 @@ void Group::UpdateOutOfRangePlayer(Player* pPlayer, uint32 Flags, bool Distribut
 		m_groupLock.Acquire();
 		for(uint32 i = 0; i < m_SubGroupCount; ++i)
 		{
-			if(m_SubGroups[i]==NULL)
+			if(m_SubGroups[i] == NULL)
 				continue;
 
 			for(GroupMembersSet::iterator itr = m_SubGroups[i]->GetGroupMembersBegin(); itr != m_SubGroups[i]->GetGroupMembersEnd();)

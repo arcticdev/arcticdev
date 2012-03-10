@@ -20,7 +20,7 @@ DynamicObject::DynamicObject(uint32 high, uint32 low)
 	m_floatValues[OBJECT_FIELD_SCALE_X] = 1;
 
 
-	m_parentSpell=NULL;
+	m_parentSpell = NULL;
 	m_aliveDuration = 0;
 	u_caster = NULL;
 	m_spellProto = 0;
@@ -46,7 +46,7 @@ DynamicObject::~DynamicObject()
 	if(m_caster && m_caster->dynObj == this )
 		m_caster->dynObj = NULL;
 
-	m_parentSpell=NULL;
+	m_parentSpell = NULL;
 	m_aliveDuration = 0;
 	u_caster = NULL;
 	m_spellProto = 0;

@@ -1664,7 +1664,7 @@ void MapMgr::EventRespawnVehicle(Vehicle* v, MapCell * p)
 	ObjectSet::iterator itr = p->_respawnObjects.find( v );
 	if(itr != p->_respawnObjects.end())
 	{
-		v->m_respawnCell=NULL;
+		v->m_respawnCell = NULL;
 		p->_respawnObjects.erase(itr);
 		v->OnRespawn(this);
 	}
@@ -1675,7 +1675,7 @@ void MapMgr::EventRespawnCreature(Creature* c, MapCell * p)
 	ObjectSet::iterator itr = p->_respawnObjects.find( c );
 	if(itr != p->_respawnObjects.end())
 	{
-		c->m_respawnCell=NULL;
+		c->m_respawnCell = NULL;
 		p->_respawnObjects.erase(itr);
 		c->OnRespawn(this);
 	}
@@ -1686,7 +1686,7 @@ void MapMgr::EventRespawnGameObject(GameObject* o, MapCell * c)
 	ObjectSet::iterator itr = c->_respawnObjects.find( o);
 	if(itr != c->_respawnObjects.end())
 	{
-		o->m_respawnCell=NULL;
+		o->m_respawnCell = NULL;
 		c->_respawnObjects.erase(itr);
 		o->Spawn(this);
 	}

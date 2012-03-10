@@ -458,7 +458,7 @@ void DayWatcherThread::update_arena()
 			if(orig_arenapoints != arenapoints)
 			{
 				plr = objmgr.GetPlayer(guid);
-				if(plr!=NULL)
+				if(plr != NULL)
 				{
 					plr->m_arenaPoints = arenapoints;
 

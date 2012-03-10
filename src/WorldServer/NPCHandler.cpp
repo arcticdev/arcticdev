@@ -172,7 +172,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 	Trainer *pTrainer = pCreature->GetTrainer();
 	if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
 
-	TrainerSpell* pSpell=NULL;
+	TrainerSpell* pSpell = NULL;
 	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); itr++)
 	{
 		if( ( itr->pCastRealSpell && itr->pCastRealSpell->Id == TeachingSpellID ) ||
@@ -493,8 +493,8 @@ void WorldSession::HandleGossipSelectOptionOpcode( WorldPacket & recv_data )
 	recv_data >> guid >> unk24 >> option;
 
 	DEBUG_LOG("WORLD","CMSG_GOSSIP_SELECT_OPTION Option %i Guid %.8X", option, guid );
-	GossipScript * Script=NULL;
-	Object* qst_giver=NULL;
+	GossipScript * Script = NULL;
+	Object* qst_giver = NULL;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
 
 	if(guidtype==HIGHGUID_TYPE_UNIT)

@@ -3690,7 +3690,7 @@ void Spell::SpellEffectSendEvent(uint32 i) //Send Event
 	// Item - Cleansing Vial DND
 	case 29297: // Empty the vial near the Bones of Aggonar to cleanse the waters of their demonic taint.
 		{
-			QuestLogEntry *en=NULL;
+			QuestLogEntry *en = NULL;
 			en = p_caster->GetQuestLogForEntry(9427);
 			if(en== NULL)
 				return;
@@ -6412,7 +6412,7 @@ void Spell::SpellEffectDisenchant(uint32 i)
 		it->m_looted = true;
 	}
 	if(it==i_caster)
-		i_caster=NULL;
+		i_caster = NULL;
 }
 void Spell::SpellEffectInebriate(uint32 i) // lets get drunk!
 {
@@ -6466,7 +6466,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	else
 	{
 		p_caster->GetItemInterface()->SafeFullRemoveItemByGuid(itemTarget->GetGUID());
-		itemTarget=NULL;
+		itemTarget = NULL;
 	}
 }
 
@@ -7128,7 +7128,7 @@ void Spell::SpellEffectTranformItem(uint32 i)
 		return;
 	}
 
-	i_caster=NULL;
+	i_caster = NULL;
 
 	Item* it = objmgr.CreateItem(itemid,owner);
 	it->SetDurability(dur);

@@ -127,8 +127,8 @@ void WordFilter::Load(const char * szTableName)
 		}
 		else
 		{
-			pMatch->pCompiledIgnoreExpression=NULL;
-			pMatch->pCompiledIgnoreExpressionOptions=NULL;
+			pMatch->pCompiledIgnoreExpression = NULL;
+			pMatch->pCompiledIgnoreExpressionOptions = NULL;
 		}
 
 		pMatch->iType = pResult->Fetch()[2].GetUInt32();

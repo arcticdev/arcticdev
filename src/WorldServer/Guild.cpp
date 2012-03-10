@@ -9,21 +9,21 @@
 Guild::Guild()
 {
 	m_commandLogging=true;
-	m_guildId=0;
+	m_guildId = 0;
 	m_guildLeader = 0;
-	m_guildName=(char*)"Goose";
-	m_guildInfo=NULL;
-	m_motd=NULL;
-	m_backgroundColor=0;
-	m_emblemColor=0;
-	m_emblemStyle=0;
-	m_borderColor=0;
-	m_borderStyle=0;
-	m_creationTimeStamp=0;
-	m_bankBalance =0;
-	m_bankTabCount=0;
-	creationDay=creationMonth=creationYear=0;
-	m_hiLogId=1;
+	m_guildName = (char*)"Goose";
+	m_guildInfo = NULL;
+	m_motd = NULL;
+	m_backgroundColor = 0;
+	m_emblemColor = 0;
+	m_emblemStyle = 0;
+	m_borderColor = 0;
+	m_borderStyle = 0;
+	m_creationTimeStamp = 0;
+	m_bankBalance = 0;
+	m_bankTabCount = 0;
+	creationDay = creationMonth=creationYear = 0;
+	m_hiLogId = 1;
 	memset(m_ranks, 0, sizeof(GuildRank*)*MAX_GUILD_RANKS);
 }
 
@@ -447,7 +447,7 @@ bool Guild::LoadFromDB(Field * f)
 	// load ranks
 	uint32 j;
 	QueryResult * result = CharacterDatabase.Query("SELECT * FROM guild_ranks WHERE guildId = %u ORDER BY rankId ASC", m_guildId);
-	if(result==NULL)
+	if(result == NULL)
 		return false;
 
 	uint32 sid = 0;
@@ -485,7 +485,7 @@ bool Guild::LoadFromDB(Field * f)
 
 	// load members
 	result = CharacterDatabase.Query("SELECT * FROM guild_data WHERE guildid = %u", m_guildId);
-	if(result==NULL)
+	if(result == NULL)
 		return false;
 
 	do 
@@ -506,7 +506,7 @@ bool Guild::LoadFromDB(Field * f)
 		}
 
 		gm->pRank = m_ranks[f3[2].GetUInt32()];
-		if(gm->pRank==NULL)
+		if(gm->pRank == NULL)
 			gm->pRank=FindLowestRank();
 		gm->pPlayer->guild=this;
 		gm->pPlayer->guildRank=gm->pRank;
@@ -736,10 +736,10 @@ void Guild::AddGuildMember(PlayerInfo * pMember, WorldSession * pClient, int32 F
 	else
 		r = (ForcedRank<0) ? FindLowestRank() : m_ranks[ForcedRank];
 
-	if(r==NULL)
-		r=FindLowestRank();
+	if(r == NULL)
+		r = FindLowestRank();
 
-	if(r==NULL)
+	if(r == NULL)
 	{
 		// shouldnt happen
 		m_lock.Release();
@@ -836,9 +836,9 @@ void Guild::RemoveGuildMember(PlayerInfo * pMember, WorldSession * pClient)
 
 	m_lock.Release();
 
-	pMember->guildRank=NULL;
-	pMember->guild=NULL;
-	pMember->guildMember=NULL;
+	pMember->guildRank = NULL;
+	pMember->guild = NULL;
+	pMember->guildMember = NULL;
 
 	if(pMember->m_loggedInPlayer)
 	{
@@ -962,9 +962,9 @@ void Guild::Disband()
 	m_lock.Acquire();
 	for(GuildMemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
-		itr->first->guild=NULL;
-		itr->first->guildRank=NULL;
-		itr->first->guildMember=NULL;
+		itr->first->guild = NULL;
+		itr->first->guildRank = NULL;
+		itr->first->guildMember = NULL;
 		if(itr->first->m_loggedInPlayer != NULL)
 		{
 			itr->first->m_loggedInPlayer->SetGuildId(0);
@@ -995,7 +995,7 @@ void Guild::ChangeGuildMaster(PlayerInfo * pNewMaster, WorldSession * pClient)
 
 	m_lock.Acquire();
 	GuildRank * newRank = FindHighestRank();
-	if(newRank==NULL)
+	if(newRank == NULL)
 	{
 		m_lock.Release();
 		return;
@@ -1192,7 +1192,7 @@ void Guild::SendGuildRoster(WorldSession * pClient)
 		pPlayer = itr->second->pPlayer->m_loggedInPlayer;
 
 		data << itr->first->guid;
-		data << uint32(0);			// highguid
+		data << uint32(0); // highguid
 		data << uint8( (pPlayer!=NULL) ? 1 : 0 );
 		data << itr->first->name;
 		data << itr->second->pRank->iId;
@@ -1287,8 +1287,8 @@ void Guild::BuyBankTab(WorldSession * pClient)
 	for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
 		pTab->pSlots[i] = NULL;
 	
-	pTab->szTabName=NULL;
-	pTab->szTabIcon=NULL;
+	pTab->szTabName = NULL;
+	pTab->szTabIcon = NULL;
 
 	m_bankTabs.push_back(pTab);
 	m_bankTabCount++;
@@ -1300,9 +1300,9 @@ void Guild::BuyBankTab(WorldSession * pClient)
 
 uint32 GuildMember::CalculateAllowedItemWithdraws(uint32 tab)
 {
-	if(pRank->iTabPermissions[tab].iStacksPerDay == -1)		// Unlimited
+	if(pRank->iTabPermissions[tab].iStacksPerDay == -1) // Unlimited
 		return 0xFFFFFFFF;
-	if(pRank->iTabPermissions[tab].iStacksPerDay == 0)		// none
+	if(pRank->iTabPermissions[tab].iStacksPerDay == 0)  // none
 		return 0;
 
 	if((UNIXTIME - uLastItemWithdrawReset[tab]) >= TIME_DAY)
@@ -1398,7 +1398,7 @@ void Guild::WithdrawMoney(WorldSession * pClient, uint32 uAmount)
 {
 	PlayerInfo * pPlayer = pClient->GetPlayer()->m_playerInfo;
 	GuildMember * pMember = pClient->GetPlayer()->m_playerInfo->guildMember;
-	if(pMember==NULL)
+	if(pMember == NULL)
 		return;
 
 	if(uAmount == 0)

@@ -9,7 +9,7 @@
 AIInterface::AIInterface()
 {
 	m_ChainAgroSet = NULL;
-	m_waypoints=NULL;
+	m_waypoints = NULL;
 	m_canMove = true;
 	m_destinationX = m_destinationY = m_destinationZ = 0;
 	m_nextPosX = m_nextPosY = m_nextPosZ = 0;
@@ -528,7 +528,7 @@ void AIInterface::Update(uint32 p_time)
 				)
 			{
 				//we set no target and see if we managed to fid a new one
-				m_nextTarget=NULL;
+				m_nextTarget = NULL;
 				//something happend to our target, pick another one
 				pSpell->GenerateTargets(&targets);
 				if(targets.m_targetMask & TARGET_FLAG_UNIT)
@@ -2846,13 +2846,13 @@ uint32 AIInterface::getThreatByPtr(Unit* obj)
 	return 0;
 }
 
-//should return a valid target
+// should return a valid target
 Unit* AIInterface::GetMostHated()
 {
-	Unit* ResultUnit=NULL;
+	Unit* ResultUnit = NULL;
 
-	//override mosthated with taunted target. Basic combat checks are made for it.
-	//What happens if we can't see tauntedby unit ?
+	// override mosthated with taunted target. Basic combat checks are made for it.
+	// What happens if we can't see tauntedby unit ?
 	ResultUnit = getTauntedBy();
 	if(ResultUnit)
 		return ResultUnit;
@@ -3245,11 +3245,11 @@ void AIInterface::Event_Summon_Elemental(uint32 summon_duration, uint32 TotemEnt
 	//Event_Summon_EE_totem(GetDuration(), 15352, NATURE_DAMAGE);
 	//Event_Summon_FE_totem(GetDuration(), 15438, FIRE_DAMAGE);
 
-	if(m_Unit==NULL || Slot > 6)
+	if(m_Unit == NULL || Slot > 6)
 		return;
 
 	m_totemspelltimer = 0xEFFFFFFF;
-	Creature * ourslave= NULL;
+	Creature * ourslave = NULL;
 
 	ourslave = TO_CREATURE(m_Unit->CreateTemporaryGuardian(TotemEntry,summon_duration,float(-M_PI*2), 0,Slot));
 	if(ourslave != NULL)
