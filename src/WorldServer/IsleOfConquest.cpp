@@ -458,19 +458,6 @@ void IsleOfConquest::CaptureControlPoint(uint32 Id, uint32 Team)
 	m_mapMgr->GetStateManager().UpdateWorldState(AssaultFields[Id][Team], 0);
 	m_mapMgr->GetStateManager().UpdateWorldState(OwnedFields[Id][Team], 1);
 
-	// resource update event. :)
-/*	if(m_capturedBases[Team]==1)
-	{
-		// first
-		sEventMgr.AddEvent(TO_IOC(this),&IsleOfConquest::EventUpdateResources, (uint32)Team, EVENT_IOC_RESOURCES_UPDATE_TEAM_0+Team, ResourceUpdateIntervals[1], 0,
-			EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	}
-	else
-	{
-		// not first
-		event_ModifyTime(EVENT_IOC_RESOURCES_UPDATE_TEAM_0+Team, ResourceUpdateIntervals[m_capturedBases[Team]]);
-	}*/
-	
 	if(Id == 5)
 		Updateworkshop(Team);
 }

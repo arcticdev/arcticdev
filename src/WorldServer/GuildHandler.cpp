@@ -37,55 +37,54 @@ void WorldSession::HandleInviteToGuild(WorldPacket & recv_data)
 	std::string inviteeName;
 	recv_data >> inviteeName;
 
-	Player* plyr = objmgr.GetPlayer( inviteeName.c_str() , false);
-	Guild *pGuild = _player->m_playerInfo->guild;
-	
+	Player* plyr = objmgr.GetPlayer(inviteeName.c_str() , false);
+	Guild* pGuild = _player->m_playerInfo->guild;
+
 	if(!plyr)
 	{
-		Guild::SendGuildCommandResult(this, GUILD_INVITE_S,inviteeName.c_str(),GUILD_PLAYER_NOT_FOUND);
+		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, inviteeName.c_str(), GUILD_PLAYER_NOT_FOUND);
 		return;
 	}
 	else if(!pGuild)
 	{
-		Guild::SendGuildCommandResult(this, GUILD_CREATE_S,"",GUILD_PLAYER_NOT_IN_GUILD);
+		Guild::SendGuildCommandResult(this, GUILD_CREATE_S, "", GUILD_PLAYER_NOT_IN_GUILD);
 		return;
 	}
 
-	if( plyr->GetGuildId() )
+	if(plyr->GetGuildId())
 	{
-		Guild::SendGuildCommandResult(this, GUILD_INVITE_S,plyr->GetName(),ALREADY_IN_GUILD);
+		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, plyr->GetName(), ALREADY_IN_GUILD);
 		return;
 	}
-	else if( plyr->GetGuildInvitersGuid())
+	else if(plyr->GetGuildInvitersGuid())
 	{
-		Guild::SendGuildCommandResult(this, GUILD_INVITE_S,plyr->GetName(),ALREADY_INVITED_TO_GUILD);
+		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, plyr->GetName(), ALREADY_INVITED_TO_GUILD);
 		return;
 	}
 	else if(!_player->m_playerInfo->guildRank->CanPerformCommand(GR_RIGHT_INVITE))
 	{
-		Guild::SendGuildCommandResult(this, GUILD_INVITE_S,"",GUILD_PERMISSIONS);
+		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, "", GUILD_PERMISSIONS);
 		return;
 	}
-	else if(plyr->GetTeam()!=_player->GetTeam() && _player->GetSession()->GetPermissionCount() == 0 && !sWorld.cross_faction_world)
+	else if(plyr->GetTeam() != _player->GetTeam() && _player->GetSession()->GetPermissionCount() == 0 && !sWorld.cross_faction_world)
 	{
-		Guild::SendGuildCommandResult(this, GUILD_INVITE_S,"",GUILD_NOT_ALLIED);
+		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, "", GUILD_NOT_ALLIED);
 		return;
 	}
 	else if(pGuild->GetNumMembers() >= MAX_GUILD_MEMBERS)
 	{
 		// We can't handle >= 500 members, or WoW will #132. I don't have the proper error code, so just throw the internal one.
-		Guild::SendGuildCommandResult(this, GUILD_INVITE_S,"",GUILD_INTERNAL);
+		Guild::SendGuildCommandResult(this, GUILD_INVITE_S, "", GUILD_INTERNAL);
 		return;
 	}
 	Guild::SendGuildCommandResult(this, GUILD_INVITE_S,inviteeName.c_str(),GUILD_U_HAVE_INVITED);
-	//41
-  
+
 	WorldPacket data(SMSG_GUILD_INVITE, 100);
 	data << _player->GetName();
 	data << pGuild->GetGuildName();
 	plyr->GetSession()->SendPacket(&data);
 
-	plyr->SetGuildInvitersGuid( _player->GetLowGUID() );	
+	plyr->SetGuildInvitersGuid(_player->GetLowGUID());
 }
 
 void WorldSession::HandleGuildAccept(WorldPacket & recv_data)
@@ -1675,7 +1674,7 @@ void Guild::SendGuildBank(WorldSession * pClient, GuildBankTab * pTab, int8 upda
 
 			data << uint8(0);
 
-			data << uint32(0);		// enchant count
+			data << uint32(0); // enchant count
 			//		slot
 			//		id
 		}
@@ -1722,7 +1721,8 @@ void WorldSession::HandleGuildGetFullPermissions(WorldPacket & recv_data)
 	data << pRank->iGoldLimitPerDay;
 	data << uint8(_player->GetGuild()->GetBankTabCount());
 
-	for(i = 0; i < MAX_GUILD_BANK_TABS; ++i) {
+	for(i = 0; i < MAX_GUILD_BANK_TABS; ++i)
+	{
 		data << pRank->iTabPermissions[i].iFlags;
 		data << pRank->iTabPermissions[i].iStacksPerDay;
 	}

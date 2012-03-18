@@ -3444,7 +3444,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 
 				Lock *lock = dbcLock.LookupEntry( itemTarget->GetProto()->LockId );
 				if(!lock) return;
-				for(int i=0;i<5;i++)
+				for(int i = 0; i < 5; i++)
 					if(lock->locktype[i] == 2 && lock->minlockskill[i] && lockskill >= lock->minlockskill[i])
 					{
 						v = lock->minlockskill[i];
@@ -3463,7 +3463,7 @@ void Spell::SpellEffectOpenLock(uint32 i) // Open Lock
 				if( lock == NULL )
 					return;
 
-				for(int i=0;i<5;i++)
+				for(int i = 0; i < 5; i++)
 				{
 					if(lock->locktype[i] == 2 && lock->minlockskill[i] && lockskill >= lock->minlockskill[i])
 					{

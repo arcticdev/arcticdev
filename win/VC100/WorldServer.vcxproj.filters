@@ -467,7 +467,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\WorldServer\Packets.h" />
     <ClInclude Include="..\..\src\WorldServer\Master.h">
       <Filter>Launcher</Filter>
     </ClInclude>
@@ -742,6 +741,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\Const.h">
       <Filter>PreCompiled</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Packets.h">
+      <Filter>Networking, Handlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

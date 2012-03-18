@@ -305,13 +305,14 @@ Unit::~Unit()
 
 void Unit::Init()
 {
+	Object::Init();
+
 	m_aiInterface = new AIInterface();
 	m_aiInterface->Init(TO_UNIT(this), AITYPE_AGRO, MOVEMENTTYPE_NONE);
 
 	CombatStatus.SetUnit(TO_UNIT(this));
 	SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER );
 
-	Object::Init();
 }
 
 void Unit::Destructor()
@@ -2644,8 +2645,11 @@ double Unit::GetResistanceReducion(Unit* pVictim, uint32 school, float armorRedu
 		double RResist = resistance + float((pVictim->getLevel() > getLevel()) ? (pVictim->getLevel() - getLevel()) * 5 : 0) - PowerCostPctMod[school];
 		reduction = RResist / (double)(getLevel() * 5) * 0.75f;
 	}
-	if(reduction > 0.75) reduction = 0.75;
-	else if(reduction < 0) reduction = 0;
+	if(reduction > 0.75)
+		reduction = 0.75;
+	else
+	if(reduction < 0)
+		reduction = 0;
 
 	return reduction;
 }
