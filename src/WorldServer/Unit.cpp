@@ -4989,7 +4989,7 @@ void Unit::SendChatMessage(uint8 type, uint32 lang, const char *msg)
 	data << type;
 	data << lang;
 	data << GetGUID();
-	data << uint32(0);			// new in 2.1.0
+	data << uint32(0); // new in 2.1.0
 	data << uint32(UnitNameLength);
 	data << ci->Name;
 	data << uint64(0);
@@ -5038,7 +5038,7 @@ void Unit::ClearInRangeSet()
 	Object::ClearInRangeSet();
 }
 
-//Events
+// Events
 void Unit::EventAddEmote(EmoteType emote, uint32 time)
 {
 	m_oldEmote = GetUInt32Value(UNIT_NPC_EMOTESTATE);
@@ -5125,13 +5125,10 @@ void Unit::CalcDamage()
 		r = BaseDamage[1]*mult+delta+bonus;
 		SetFloatValue(UNIT_FIELD_MAXDAMAGE, r > 0 ? ( IsPet() ? r * 1.1f : r ) : 0 );
 
-	//	SetFloatValue(UNIT_FIELD_MINRANGEDDAMAGE,BaseRangedDamage[0]*mult+delta);
-	//	SetFloatValue(UNIT_FIELD_MAXRANGEDDAMAGE,BaseRangedDamage[1]*mult+delta);
-
 	}
 }
 
-//returns absorbed dmg
+// returns absorbed dmg
 uint32 Unit::ManaShieldAbsorb(uint32 dmg, SpellEntry* sp)
 {
 	if(!m_manashieldamt || !m_manaShieldSpell)
@@ -5141,7 +5138,6 @@ uint32 Unit::ManaShieldAbsorb(uint32 dmg, SpellEntry* sp)
 		return 0;
 
 	uint32 mana = GetUInt32Value(UNIT_FIELD_POWER1);
-	//int32 effectbonus = SM_PEffectBonus ? SM_PEffectBonus[16] : 0;
 
 	int32 potential = (mana*50)/((100));
 	if(potential>m_manashieldamt)
@@ -5175,26 +5171,6 @@ uint32 Unit::ManaShieldAbsorb(uint32 dmg, SpellEntry* sp)
 	return potential;
 }
 
-// grep: Remove any AA spells that aren't owned by this player.
-//		 Otherwise, if he logs out and in and joins another group,
-//		 he'll apply it to them.
-/*
-void Unit::RemoveAllAreaAuras()
-{
-	AuraList::iterator itr,it1;
-	for(itr = m_auras.begin();itr!=m_auras.end();)
-	{
-		it1 = itr++;
-		if(((*it1)->m_spellProto->Effect[0] == SPELL_EFFECT_APPLY_AREA_AURA ||
-			(*it1)->m_spellProto->Effect[1] == SPELL_EFFECT_APPLY_AREA_AURA ||
-			(*it1)->m_spellProto->Effect[2] == SPELL_EFFECT_APPLY_AREA_AURA) && (*it1)->GetCaster() != this)
-		{
-			(*it1)->Remove();
-			m_auras.erase(it1);
-		}
-	}
-}
-*/
 uint32 Unit::AbsorbDamage( Object* Attacker, uint32 School, uint32* dmg, SpellEntry * pSpell )
 {
 	if( dmg == NULL || Attacker == NULL  || School > 6 )
@@ -5226,16 +5202,15 @@ uint32 Unit::AbsorbDamage( Object* Attacker, uint32 School, uint32* dmg, SpellEn
 				}
 			}
 
-			RemoveAura((*j)->spellid); //,(*j)->caster);
-			if(!*dmg)//absorbed all dmg
+			if(!*dmg) // absorbed all dmg
 				break;
 		}
-		else //absorb full dmg
+		else // absorb full dmg
 		{
 			abs += *dmg;
 			reflect_pct += (*i)->reflect_pct;
 			(*i)->amt -= *dmg;
-			*dmg=0;
+			*dmg = 0;
 			break;
 		}
 	}

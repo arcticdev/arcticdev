@@ -22,7 +22,7 @@ LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262
 	// do nothing
 	last_ping = last_pong = (uint32)UNIXTIME;
 	remaining = opcode = 0;
-	_id=0;
+	_id = 0;
 	latency = 0;
 	use_crypto = false;
 	authenticated = 0;
@@ -78,7 +78,8 @@ void LogonCommClientSocket::OnRead()
 
 void LogonCommClientSocket::HandlePacket(WorldPacket & recvData)
 {
-	static logonpacket_handler Handlers[RMSG_COUNT] = {
+	static logonpacket_handler Handlers[RMSG_COUNT] =
+	{
 		NULL,												// RMSG_NULL
 		NULL,												// RCMSG_REGISTER_REALM
 		&LogonCommClientSocket::HandleRegister,				// RSMSG_REALM_REGISTERED
@@ -282,7 +283,7 @@ void LogonCommClientSocket::HandleRequestAccountMapping(WorldPacket & recvData)
 	}
 
 	ByteBuffer uncompressed(40000 * 5 + 8);
-	//uint32 Count = 0;
+	// uint32 Count = 0;
 	uint32 Remaining = (uint32)mapping_to_send.size();
 	itr = mapping_to_send.begin();
 	for(;;)
@@ -394,72 +395,48 @@ void LogonCommClientSocket::HandleServerPing(WorldPacket &recvData)
 }
 
 #else
-/*
-void LogonCommHandler::LogonDatabaseReloadAccounts()
-{
 
-}
-
-void LogonCommHandler::LogonDatabaseSQLExecute(const char* str, ...)
-{
-
-}
-*/
 void LogonCommHandler::Account_SetBanned(const char * account, uint32 banned, const char* reason)
 {
-
 }
 
 void LogonCommHandler::Account_SetGM(const char * account, const char * flags)
 {
-
 }
 
 void LogonCommHandler::Account_SetMute(const char * account, uint32 muted)
 {
-
 }
 
 void LogonCommHandler::IPBan_Add(const char * ip, uint32 duration)
 {
-
 }
 
 void LogonCommHandler::IPBan_Remove(const char *ip)
 {
-
 }
 void LogonCommHandler::TestConsoleLogon(std::string &username, std::string &password, uint32 requestnum)
 {
-
 }
 
 void LogonCommHandler::Startup()
 {
-
 }
 
 void LogonCommHandler::UpdateAccountCount(uint32 account_id, uint8 add)
 {
-
 }
 
 void LogonCommHandler::UpdateSockets()
 {
-
 }
 
 LogonCommHandler::LogonCommHandler()
 {
-
 }
 
 LogonCommHandler::~LogonCommHandler()
 {
-
 }
 
 #endif
-
-
-

@@ -335,7 +335,6 @@ typedef set<WorldSession*> SessionSet;
 // The maximum level attainable, period, regardless of flags on your account.
 #define MAXIMUM_ATTAINABLE_LEVEL 80
 
-
 class SERVER_DECL World : public Singleton<World>, public EventableObject
 {
 public:
@@ -451,7 +450,7 @@ public:
 	uint32 GetTeachingSpell(uint32 NormalSpellId)
 	{
 		map<uint32,uint32>::iterator i = TeachingSpellMap.find(NormalSpellId);
-		if(i!=TeachingSpellMap.end())
+		if(i != TeachingSpellMap.end())
 			return i->second;
 		return 0;
 	}
@@ -533,10 +532,20 @@ public:
 	bool display_free_items;
 
 	// Enable/Disable specific battlegrounds/arenas
-	bool av_disabled;
-	bool wsg_disabled;
-	bool eots_disabled;
-	bool ab_disabled;
+	bool wg_enabled;
+
+	bool av_enabled;
+	uint32 av_minplrs;
+	bool ab_enabled;
+	uint32 ab_minplrs;
+	bool wsg_enabled;
+	uint32 wsg_minplrs;
+	bool eots_enabled;
+	uint32 eots_minplrs;
+	bool sota_enabled;
+	uint32 sota_minplrs;
+	bool ioc_enabled;
+	uint32 ioc_minplrs;
 
 	// Level Caps
 	uint32 LevelCap;

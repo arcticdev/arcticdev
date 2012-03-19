@@ -537,7 +537,7 @@ bool World::SetInitialWorldSettings()
 	tl.wait();
 	// sLocalizationMgr.Reload(false);
 
-	CommandTableStorage::getSingleton().Load();
+	sComTableStore.Load();
 	Log.Notice("WordFilter", "Loading...");
 
 	g_characterNameFilter = new WordFilter();
@@ -1108,8 +1108,8 @@ void TaskList::spawn()
 		SYSTEM_INFO s;
 		GetSystemInfo(&s);
 		threadcount = s.dwNumberOfProcessors * 2;
-		if(threadcount>8)
-			threadcount=8;
+		if(threadcount > 8)
+			threadcount = 8;
 #endif
 	}
 	else
@@ -1219,6 +1219,37 @@ void World::Rehash(bool load)
 
 	StartLevel = Config.MainConfig.GetIntDefault("Server", "StartLevel", 1);
 	StartGold = Config.MainConfig.GetIntDefault("Server", "StartGold", 1);
+
+	//////////////////////////////////////////////////////////////////////////
+	// Battlegrounds                                                        //
+	//////////////////////////////////////////////////////////////////////////
+
+	// Wintergrasp
+	wg_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_WG", false);
+
+	// Alterac Valley
+	av_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_AV", true);
+	av_minplrs = Config.MainConfig.GetIntDefault("Battlegrounds", "MinPlayers_AV", 20);
+
+	// Warsong Gulch
+	wsg_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_WSG", true);
+	wsg_minplrs = Config.MainConfig.GetIntDefault("Battlegrounds", "MinPlayers_WSG", 5);
+
+	// Arathi Basin
+	ab_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_AB", true);
+	ab_minplrs = Config.MainConfig.GetIntDefault("Battlegrounds", "MinPlayers_AB", 7);
+
+	// Eye of the Storm
+	eots_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_EOTS", true);
+	eots_minplrs = Config.MainConfig.GetIntDefault("Battlegrounds", "MinPlayers_EOTS", 7);
+
+	// Strand of the Ancients
+	sota_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_SOTA", true);
+	sota_minplrs = Config.MainConfig.GetIntDefault("Battlegrounds", "MinPlayers_SOTA", 15);
+
+	// Isle of Conquest
+	ioc_enabled = Config.MainConfig.GetBoolDefault("Battlegrounds", "Enable_IOC", true);
+	ioc_minplrs = Config.MainConfig.GetIntDefault("Battlegrounds", "MinPlayers_IOC", 15);
 
 	// load regeneration rates.
 	setRate(RATE_HEALTH,Config.MainConfig.GetFloatDefault("Rates", "Health",1));

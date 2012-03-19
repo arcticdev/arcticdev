@@ -543,6 +543,7 @@ protected:
 	bool HandleEnableAH(const char *args, WorldSession *m_session); 
 	bool HandleDisableAH(const char *args, WorldSession *m_session); 
 
-}; 
+};
 
+#define sComTableStore CommandTableStorage::getSingleton()
 #define sChatHandler ChatHandler::getSingleton()

@@ -599,13 +599,13 @@ void CommandTableStorage::Init()
 ChatHandler::ChatHandler()
 {
 	new CommandTableStorage;
-	CommandTableStorage::getSingleton().Init();
+	sComTableStore.Init();
 	SkillNameManager = new SkillNameMgr;
 }
 
 ChatHandler::~ChatHandler()
 {
-	CommandTableStorage::getSingleton().Dealloc();
+	sComTableStore.Dealloc();
 	delete CommandTableStorage::getSingletonPtr();
 	delete SkillNameManager;
 }
@@ -745,7 +745,7 @@ int ChatHandler::ParseCommands(const char* text, WorldSession *session)
 
 	text++;
 
-	if(!ExecuteCommandInTable(CommandTableStorage::getSingleton().Get(), text, session))
+	if(!ExecuteCommandInTable(sComTableStore.Get(), text, session))
 	{
 		SystemMessage(session, "There is no such command, or you do not have access to it.");
 	}

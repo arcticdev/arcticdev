@@ -86,49 +86,49 @@ int32 GetBattlegroundTypeFromCreature(Creature* pCreature)
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Arathi Basin") != string::npos )
 		return BATTLEGROUND_ARATHI_BASIN;
 
-	//Arena
+	// Arena
 	if( string(pCreature->GetCreatureInfo()->Name).find("Arena") != string::npos )
 		return BATTLEGROUND_ARENA_2V2;
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Arena") != string::npos )
 		return BATTLEGROUND_ARENA_2V2;
 
-	//Alterac Valley
+	// Alterac Valley
 	if( string(pCreature->GetCreatureInfo()->Name).find("Alterac Valley") != string::npos )
 		return BATTLEGROUND_ALTERAC_VALLEY;
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Alterac Valley") != string::npos )
 		return BATTLEGROUND_ALTERAC_VALLEY;
 
-	//Eye of the Storm
+	// Eye of the Storm
 	if( string(pCreature->GetCreatureInfo()->Name).find("Eye of the Storm") != string::npos )
 		return BATTLEGROUND_EYE_OF_THE_STORM;
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Eye of the Storm") != string::npos )
 		return BATTLEGROUND_EYE_OF_THE_STORM;
 
-	//Isle os Conquest
+	// Isle os Conquest
 	if( string(pCreature->GetCreatureInfo()->Name).find("Isle of Conquest") != string::npos )
 		return BATTLEGROUND_ISLE_OF_CONQUEST;
 
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Isle of Conquest") != string::npos )
 		return BATTLEGROUND_ISLE_OF_CONQUEST;
 
-	//Strand of the Ancients
+	// Strand of the Ancients
 	if( string(pCreature->GetCreatureInfo()->SubName).find("Strand of the Ancients") != string::npos )
 		return BATTLEGROUND_STRAND_OF_THE_ANCIENTS;
 
 	else if( string(pCreature->GetCreatureInfo()->Name).find("Strand of the Ancients") != string::npos )
 		return BATTLEGROUND_STRAND_OF_THE_ANCIENTS;
 
-	//Warsong Gulch
+	// Warsong Gulch
 	if( string(pCreature->GetCreatureInfo()->Name).find("Warsong Gulch") != string::npos )
 		return BATTLEGROUND_WARSONG_GULCH;
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Warsong Gulch") != string::npos )
 		return BATTLEGROUND_WARSONG_GULCH;
 
-	//General Battlemasters
+	// General Battlemasters
 	if( string(pCreature->GetCreatureInfo()->Name).find("Battlemaster") != string::npos )
-		return BATTLEGROUND_ALL_BATTLEGROUND;
+		return BATTLEGROUND_RANDOM;
 	else if( string(pCreature->GetCreatureInfo()->SubName).find("Battlemaster") != string::npos )
-		return BATTLEGROUND_ALL_BATTLEGROUND;
+		return BATTLEGROUND_RANDOM;
 
 	return -1;
 }

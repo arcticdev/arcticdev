@@ -331,7 +331,7 @@ void AuctionHouse::SendOwnerListPacket(Player* plr, WorldPacket * packet)
 	uint32 count = 0;
 
 	WorldPacket data(SMSG_AUCTION_OWNER_LIST_RESULT, 1024);
-	data << uint32(0);										  // Placeholder
+	data << uint32(0); // Placeholder
 
 	Auction * auct;
 	auctionLock.AcquireReadLock();
@@ -465,9 +465,9 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	CHECK_INWORLD_RETURN;
 
 	uint64 guid, item;
-	uint32 unk, unk2, bid, buyout, etime;	// etime is in minutes
+	uint32 unk, count, bid, buyout, etime;	// etime is in minutes
 
-	recv_data >> guid >> unk >> item >> unk2;
+	recv_data >> guid >> unk >> item >> count;
 	recv_data >> bid >> buyout >> etime;
 
 	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));

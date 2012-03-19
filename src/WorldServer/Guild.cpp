@@ -1097,7 +1097,8 @@ void Guild::SendGuildLog(WorldSession * pClient)
 
 	data << uint8(m_log.size() >= 25 ? 25 : m_log.size());
 	m_lock.Acquire();
-	for(itr = m_log.begin(); itr != m_log.end(); itr++) {
+	for(itr = m_log.begin(); itr != m_log.end(); itr++)
+	{
 		data << uint8((*itr)->iEvent);
 		switch((*itr)->iEvent)
 		{

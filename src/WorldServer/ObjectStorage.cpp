@@ -753,9 +753,9 @@ bool Storage_ReloadTable(const char * TableName)
 		ZoneGuardStorage.Reload();
 	else if(!stricmp(TableName, "command_overrides"))	// Command Overrides
 	{
-		CommandTableStorage::getSingleton().Dealloc();
-		CommandTableStorage::getSingleton().Init();
-		CommandTableStorage::getSingleton().Load();
+		sComTableStore.Dealloc();
+		sComTableStore.Init();
+		sComTableStore.Load();
 	}
 	else
 		return false;

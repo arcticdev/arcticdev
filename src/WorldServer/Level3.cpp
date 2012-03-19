@@ -1275,8 +1275,9 @@ bool ChatHandler::HandleFlySpeedCheatCommand(const char* args, WorldSession* m_s
 
 bool ChatHandler::HandleModifyLevelCommand(const char* args, WorldSession* m_session)
 {
-	Player* plr = getSelectedChar(m_session, true);
-	if(plr == 0) return true;
+	Player* plr = getSelectedChar(m_session, false);
+	if(plr == 0)
+		return true;
 
 	uint32 Level = args ? atol(args) : 0;
 	if(Level == 0 || Level > sWorld.GetMaxLevel(plr))
