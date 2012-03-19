@@ -5,6 +5,7 @@
  */
 
 #include "StdAfx.h"
+
 GameObject::GameObject(uint64 guid)
 {
 	m_objectTypeId = TYPEID_GAMEOBJECT;
@@ -16,7 +17,7 @@ GameObject::GameObject(uint64 guid)
 	SetUInt64Value(OBJECT_FIELD_GUID,guid);
 	m_wowGuid.Init(GetGUID());
  
-	SetFloatValue( OBJECT_FIELD_SCALE_X, 1);//info->Size  );
+	SetFloatValue( OBJECT_FIELD_SCALE_X, 1); // info->Size  );
 
 	SetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_ANIMPROGRESS, 100);
 
@@ -486,7 +487,7 @@ void GameObject::UseFishingNode(Player* player)
 	if( Rand(((player->_GetSkillLineCurrent( SKILL_FISHING, true ) - minskill) * 100) / maxskill) )
 	{
 		lootmgr.FillFishingLoot( &m_loot, zone );
-		player->SendLoot( GetGUID(), LOOT_FISHING );
+		player->SendLoot( GetGUID(), player->GetMapId(), LOOT_FISHING );
 		EndFishing( player, false );
 	}
 	else // Failed
@@ -505,9 +506,9 @@ void GameObject::EndFishing(Player* player, bool abort )
 	{
 		if(abort)   // abort becouse of a reason
 		{
-			//FIXME: here 'failed' should appear over progress bar
+			// FIXME: here 'failed' should appear over progress bar
 			spell->SendChannelUpdate(0);
-			//spell->cancel();
+			// spell->cancel();
 			spell->finish();
 		}
 		else		// spell ended

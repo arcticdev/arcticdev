@@ -56,7 +56,7 @@ void WorldSession::HandleDisableAutoAddMembers(WorldPacket& recvPacket)
 void WorldSession::HandleMsgLookingForGroup(WorldPacket& recvPacket)
 {
 	/* this is looking for more */
-	uint32 LfgType,LfgDungeonId,unk1;
+	uint32 LfgType, LfgDungeonId, unk1;
 	recvPacket >> LfgType >> LfgDungeonId >> unk1;
 	
 	if(LfgDungeonId > MAX_DUNGEONS)

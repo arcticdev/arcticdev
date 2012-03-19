@@ -1346,7 +1346,7 @@ enum SpellEffects
     SPELL_EFFECT_LANGUAGE,                  //    39
     SPELL_EFFECT_DUAL_WIELD,                //    40
     SPELL_EFFECT_SUMMON_WILD,               //    41
-    SPELL_EFFECT_MEGA_JUMP,					//    42
+    SPELL_EFFECT_MEGA_JUMP,                 //    42
     SPELL_EFFECT_TELEPORT_UNITS_FACE_CASTER,//    43
     SPELL_EFFECT_SKILL_STEP,                //    44
     SPELL_EFFECT_UNDEFINED_45,              //    45
@@ -1392,8 +1392,8 @@ enum SpellEffects
     SPELL_EFFECT_STUCK,                     //    84
     SPELL_EFFECT_SUMMON_PLAYER,             //    85
     SPELL_EFFECT_ACTIVATE_OBJECT,           //    86
-	SPELL_EFFECT_WMO_DAMAGE,				//    87
-	SPELL_EFFECT_WMO_REPAIR,				//    88
+    SPELL_EFFECT_WMO_DAMAGE,                //    87
+    SPELL_EFFECT_WMO_REPAIR,                //    88
     SPELL_EFFECT_SUMMON_TOTEM_SLOT3,        //    89
     SPELL_EFFECT_SUMMON_TOTEM_SLOT4,        //    90
     SPELL_EFFECT_THREAT_ALL,                //    91
@@ -1449,26 +1449,28 @@ enum SpellEffects
     SPELL_EFFECT_UNKNOWN20,                 //    141
     SPELL_EFFECT_TRIGGER_SPELL_WITH_VALUE,	//    142
     SPELL_EFFECT_UNKNOWN23,                 //    143
-	SPELL_EFFECT_UNKNOWN24,                 //    144
-	SPELL_EFFECT_UNKNOWN25,                 //    145
-	SPELL_EFFECT_UNKNOWN26,                 //    146
-	SPELL_EFFECT_UNKNOWN27,                 //    147
-	SPELL_EFFECT_UNKNOWN28,                 //    148
-	SPELL_EFFECT_UNKNOWN29,                 //    149
-	SPELL_EFFECT_UNKNOWN30,                 //    150
+    SPELL_EFFECT_UNKNOWN24,                 //    144
+    SPELL_EFFECT_UNKNOWN25,                 //    145
+    SPELL_EFFECT_UNKNOWN26,                 //    146
+    SPELL_EFFECT_UNKNOWN27,                 //    147
+    SPELL_EFFECT_UNKNOWN28,                 //    148
+    SPELL_EFFECT_UNKNOWN29,                 //    149
+    SPELL_EFFECT_UNKNOWN30,                 //    150
     SPELL_EFFECT_TRIGGER_SPELL_2,           //    151
-	SPELL_EFFECT_UNKNOWN32,                 //    152
-	SPELL_EFFECT_UNKNOWN33,                 //    153
-	SPELL_EFFECT_UNKNOWN34,                 //    154
-	SPELL_EFFECT_UNKNOWN35,                 //    155
-	SPELL_EFFECT_UNKNOWN36,                 //    156
-	SPELL_EFFECT_UNKNOWN37,                 //    157
-	SPELL_EFFECT_MILLING,	                //    158
-	SPELL_EFFECT_UNKNOWN39,                 //    159
-	SPELL_EFFECT_UNKNOWN40,                 //    160
-	SPELL_EFFECT_SET_TALENT_SPECS_COUNT,    //    161
-	SPELL_EFFECT_ACTIVATE_TALENT_SPEC,      //    162
-    TOTAL_SPELL_EFFECTS,                    //    163
+    SPELL_EFFECT_UNKNOWN32,                 //    152
+    SPELL_EFFECT_UNKNOWN33,                 //    153
+    SPELL_EFFECT_UNKNOWN34,                 //    154
+    SPELL_EFFECT_UNKNOWN35,                 //    155
+    SPELL_EFFECT_UNKNOWN36,                 //    156
+    SPELL_EFFECT_UNKNOWN37,                 //    157
+    SPELL_EFFECT_MILLING,                   //    158
+    SPELL_EFFECT_UNKNOWN39,                 //    159
+    SPELL_EFFECT_UNKNOWN40,                 //    160
+    SPELL_EFFECT_SET_TALENT_SPECS_COUNT,    //    161
+    SPELL_EFFECT_ACTIVATE_TALENT_SPEC,      //    162
+    SPELL_EFFECT_UNKNOWN41,                 //    163
+    SPELL_EFFECT_UNKNOWN42,                 //    164
+    TOTAL_SPELL_EFFECTS                     //    165
 };
 
 // target type flags

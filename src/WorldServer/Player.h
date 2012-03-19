@@ -878,7 +878,7 @@ public:
 	void SetSpellTargetType(uint32 Type, Unit* target);
 	void SendMeetingStoneQueue(uint32 DungeonId, uint8 Status);
 
-	void AddToWorld();
+	void AddToWorld(bool loggingin = false);
 	void AddToWorld(MapMgr* pMapMgr);
 	void RemoveFromWorld();
 
@@ -886,7 +886,7 @@ public:
 
 	void Update( uint32 time );
 
-    void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
+	void BuildFlagUpdateForNonGroupSet(uint32 index, uint32 flag);
 	std::string m_afk_reason;
 	void SetAFKReason(std::string reason) { m_afk_reason = reason; };
 	ARCTIC_INLINE const char* GetName() { return m_name.c_str(); }
@@ -902,7 +902,7 @@ public:
     /************************************************************************/
     ARCTIC_INLINE TaxiPath*    GetTaxiPath() { return m_CurrentTaxiPath; }
     ARCTIC_INLINE bool         GetTaxiState() { return m_onTaxi; }
-	const uint32&		GetTaximask( uint8 index ) const { ASSERT(index < MAX_TAXI); return m_taximask[index]; }
+    const uint32&       GetTaximask( uint8 index ) const { ASSERT(index < MAX_TAXI); return m_taximask[index]; }
     void                LoadTaxiMask(const char* data);
     void                TaxiStart(TaxiPath* path, uint32 modelid, uint32 start_node);
     void                JumpToEndTaxiNode(TaxiPath * path);
@@ -912,25 +912,25 @@ public:
     ARCTIC_INLINE void         SetTaxiState    (bool state) { m_onTaxi = state; }
     ARCTIC_INLINE void         SetTaximask     (uint8 index, uint32 value ) { m_taximask[index] = value; }
     ARCTIC_INLINE void         SetTaxiPath     (TaxiPath *path) { m_CurrentTaxiPath = path; }
-    ARCTIC_INLINE void         SetTaxiPos()	{m_taxi_pos_x = m_position.x; m_taxi_pos_y = m_position.y; m_taxi_pos_z = m_position.z;}
-    ARCTIC_INLINE void         UnSetTaxiPos()	{m_taxi_pos_x = 0; m_taxi_pos_y = 0; m_taxi_pos_z = 0; }
+    ARCTIC_INLINE void         SetTaxiPos()    {m_taxi_pos_x = m_position.x; m_taxi_pos_y = m_position.y; m_taxi_pos_z = m_position.z;}
+    ARCTIC_INLINE void         UnSetTaxiPos()  {m_taxi_pos_x = 0; m_taxi_pos_y = 0; m_taxi_pos_z = 0; }
 
-	// Taxi related variables
-	vector<TaxiPath*>   m_taxiPaths;
+    // Taxi related variables
+    vector<TaxiPath*>   m_taxiPaths;
     TaxiPath*           m_CurrentTaxiPath;
     uint32              taxi_model_id;
-	uint32              lastNode;
+    uint32              lastNode;
     uint32              m_taxi_ride_time;
     uint32              m_taximask[12];
     float               m_taxi_pos_x;
     float               m_taxi_pos_y;
     float               m_taxi_pos_z;
     bool                m_onTaxi;
-	uint32				m_taxiMapChangeNode;
+    uint32              m_taxiMapChangeNode;
 
-    /************************************************************************/
-    /* Quests                                                               */
-    /************************************************************************/
+	/************************************************************************/
+	/* Quests                                                               */
+	/************************************************************************/
 	bool HasQuests()
 	{
 		for(int i = 0; i < 25; ++i)
@@ -1225,6 +1225,7 @@ public:
 				return itr->first;
 		return NULL;
 	}
+
 	/*if we charmed or simply summoned a pet, this function should get called*/
 	void EventSummonPet(Pet* new_pet);
 	/*if pet/charm died or whatever happned we should call this function*/
@@ -1233,6 +1234,7 @@ public:
 	/************************************************************************/
 	/* Item Interface                                                       */
 	/************************************************************************/
+
 	ARCTIC_INLINE ItemInterface* GetItemInterface() { return m_ItemInterface; } // Player Inventory Item storage
 	ARCTIC_INLINE void         ApplyItemMods(Item* item, int8 slot, bool apply,bool justdrokedown=false) {  _ApplyItemMods(item, slot, apply,justdrokedown); }
 	// item interface variables
@@ -1245,13 +1247,15 @@ public:
 	/************************************************************************/
 	/* Loot                                                                 */
 	/************************************************************************/
+
 	ARCTIC_INLINE const uint64& GetLootGUID() const { return m_lootGuid; }
-	ARCTIC_INLINE void         SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
-	void                SendLoot(uint64 guid,uint8 loot_type);
+	ARCTIC_INLINE void SetLootGUID(const uint64 &guid) { m_lootGuid = guid; }
+	void SendLoot(uint64 guid, uint32 mapid, uint8 loot_type);
+
 	// loot variables
-	uint64              m_lootGuid;
-	uint64              m_currentLoot;
-	bool                m_insigniaTaken;
+	uint64 m_lootGuid;
+	uint64 m_currentLoot;
+	bool   m_insigniaTaken;
 
 	/************************************************************************/
 	/* World Session                                                        */
@@ -1651,13 +1655,14 @@ public:
 	uint8 LfgType[3];
 	uint16 LfmDungeonId;
 	uint8 LfmType;
+	uint32 roleflags;
 	bool m_Autojoin;
 	bool m_AutoAddMem;
 	void StopMirrorTimer(uint32 Type);
 	BGScore m_bgScore;
 	uint32 m_bgTeam;
 	void UpdateChanceFields();
-	//Honor Variables
+	// Honor Variables
 	time_t m_fallDisabledUntil;
 	uint32 m_honorToday;
 	uint32 m_honorYesterday;
