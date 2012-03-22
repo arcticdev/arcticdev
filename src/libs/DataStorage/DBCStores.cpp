@@ -10,7 +10,6 @@
 
 SERVER_DECL DBCStorage<AreaTriggerEntry> dbcAreaTrigger;
 SERVER_DECL DBCStorage<AreaGroup> dbcAreaGroup;
-SERVER_DECL DBCStorage<CharTitlesEntry> dbcCharTitlesEntry;
 SERVER_DECL DBCStorage<GemPropertyEntry> dbcGemProperty;
 SERVER_DECL DBCStorage<GlyphPropertyEntry> dbcGlyphProperty;
 SERVER_DECL DBCStorage<ItemSetEntry> dbcItemSet;
@@ -75,7 +74,6 @@ SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
 const char* SummonPropertiesfmt = "uuuuuu";
 const char* AreaTriggerFormat = "uuffffffff";
 const char* AreaGroupFormat="niiiiiii";
-const char* CharTitlesEntryfmt = "usxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxu";
 const char* ItemSetFormat = "usxxxxxxxxxxxxxxxuuuuuuuuuuuxxxxxxxuuuuuuuuuuuuuuuuuu";
 const char* LockFormat = "uuuuuuxxxuuuuuxxxuuuuuxxxxxxxxxxx";
 const char* EmoteEntryFormat = "uxuuuuxuxuxxxxxxxxx";
@@ -189,7 +187,6 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/BarberShopStyle.dbc", barbershopstyleFormat, true, dbcBarberShopStyle, true);
 
 	LOAD_DBC("DBC/ChatChannels.dbc", chatchannelformat, true, dbcChatChannels, true);
-	LOAD_DBC("DBC/CharTitles.dbc", CharTitlesEntryfmt, true, dbcCharTitlesEntry, false);
 	LOAD_DBC("DBC/ChrClasses.dbc", charclassFormat, true, dbcCharClass, true);
 	LOAD_DBC("DBC/ChrRaces.dbc", charraceFormat, true, dbcCharRace, true);
 	LOAD_DBC("DBC/CreatureDisplayInfo.dbc", creaturedisplayFormat, true, dbcCreatureDisplayInfo, true);
@@ -250,8 +247,10 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/VehicleSeat.dbc", vehicleseatentryFormat, true, dbcVehicleSeat, true);
 
 	LOAD_DBC("DBC/WorldMapOverlay.dbc", WorldMapOverlayfmt, true, dbcWorldMapOverlay, true);
-	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false );
+
+	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
+
 	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
 
 	return true;
@@ -267,7 +266,6 @@ void FreeDBCs()
 {
 	dbcAreaTrigger.Cleanup();
 	dbcAreaGroup.Cleanup();
-	dbcCharTitlesEntry.Cleanup();
 	dbcGemProperty.Cleanup();
 	dbcGlyphProperty.Cleanup();
 	dbcItemSet.Cleanup();

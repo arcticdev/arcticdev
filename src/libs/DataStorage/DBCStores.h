@@ -359,9 +359,9 @@ struct AchievementCriteriaEntry
 		// ACHIEVEMENT_CRITERIA_TYPE_NUMBER_OF_MOUNTS = 75
 		struct
 		{
-            uint32  skillLine;                              // 3
-            uint32  spellCount;                             // 4
-        } learn_skilline_spell;
+			uint32  skillLine;                              // 3
+			uint32  spellCount;                             // 4
+		} learn_skilline_spell;
 
 		// ACHIEVEMENT_CRITERIA_TYPE_WIN_DUEL = 76
 		struct
@@ -433,12 +433,12 @@ struct AchievementCriteriaEntry
 		} raw;
 	};
 	char* name;
-    //char*  name[16];                                      // 9-24
-    //uint32 name_flags;                                    // 25
-    uint32  completionFlag;                                 // 26
-    uint32  groupFlag;                                      // 27
-    uint32  timeLimit;                                      // 29 time limit in seconds
-    //uint32 unk1;                                          // 30
+	//char*  name[16];                                      // 9-24
+	//uint32 name_flags;                                    // 25
+	uint32  completionFlag;                                 // 26
+	uint32  groupFlag;                                      // 27
+	uint32  timeLimit;                                      // 29 time limit in seconds
+	//uint32 unk1;                                          // 30
 };
 
 struct AreaTriggerEntry
@@ -471,18 +471,6 @@ struct BankSlotPrice
 {
 	uint32 Id;
 	uint32 Price;
-};
-
-struct CharTitlesEntry
-{
-    uint32  ID;                                             // 0, title ids
-    //uint32      unk1;                                     // 1 flags?
-    char*         name;                                     // 2 title name
-	//char*       name2[15];								// 3-17, unused
-                                                            // 18 string flag, unused
-    //char*       name2[16];                                // 19-34, unused
-                                                            // 35 string flag, unused
-    uint32  bit_index;                                      // 36 used in PLAYER_CHOSEN_TITLE and 1<<index in PLAYER__FIELD_KNOWN_TITLES
 };
 
 struct ItemSetEntry
@@ -552,21 +540,21 @@ struct skilllinespell //SkillLineAbility.dbc
 struct EnchantEntry
 {
     uint32 Id;			//1
-	//uint32 charges;	//2
+    //uint32 charges;	//2
     uint32 type[3];		//3-5
     int32 min[3];		//6-8 //for compat, in practice min==max
     int32 max[3];		//9-11
     uint32 spell[3];	//12-14
     char* Name;			//15
-	//char* NameAlt[15]	//16-31
+    //char* NameAlt[15]	//16-31
     //uint32 NameFlags;	//32
     uint32 visual;		//33
     uint32 EnchantGroups; //34
     uint32 GemEntry;	//35
     uint32 unk7;		//36 Gem Related
-	//uint32 requiredSkill;	//37
+    //uint32 requiredSkill;	//37
     //uint32 requiredSkillValue;	//38
-	//								//39
+    //								//39
 };
 
 struct GemPropertyEntry{
@@ -663,9 +651,9 @@ struct SpellEntry
 	uint32 CasterAuraStateNot;              //19
 	uint32 TargetAuraStateNot;              //20
 	uint32 casterAuraSpell;                 //21
-    uint32 targetAuraSpell;                 //22
-    uint32 excludeCasterAuraSpell;          //23
-    uint32 excludeTargetAuraSpell;          //24
+	uint32 targetAuraSpell;                 //22
+	uint32 excludeCasterAuraSpell;          //23
+	uint32 excludeTargetAuraSpell;          //24
 	uint32 CastingTimeIndex;                //25
 	uint32 RecoveryTime;                    //26
 	uint32 CategoryRecoveryTime;            //27
@@ -747,28 +735,28 @@ struct SpellEntry
 	int32 AreaGroupId;						//227  //look up area by index in areagroup.dbc
 	uint32 School;							//228
 	uint32 runeCostID;                      //229
-    //uint32 spellMissileID;                //230 not used
+	//uint32 spellMissileID;                //230 not used
 	uint32  PowerDisplayId;					//231 Related to PowerDisplay.dbc
 
     /// CUSTOM: these fields are used for the modifications made in the world.cpp
     uint32 DiminishStatus;                  //
     uint32 proc_interval;                   //!!! CUSTOM, <Fill description for variable>
-	float ProcsPerMinute;                   //!!! CUSTOM, number of procs per minute
+    float ProcsPerMinute;                   //!!! CUSTOM, number of procs per minute
     uint32 buffIndexType;					//!!! CUSTOM, <Fill description for variable>
     uint32 c_is_flags;						//!!! CUSTOM, store spell checks in a static way : isdamageind,ishealing
     uint32 buffType;                        //!!! CUSTOM, these are related to creating a item through a spell
     uint32 RankNumber;                      //!!! CUSTOM, this protects players from having >1 rank of a spell
     uint32 NameHash;                        //!!! CUSTOM, related to custom spells, summon spell quest related spells
-	float base_range_or_radius;				//!!! CUSTOM, needed for aoe spells most of the time
+    float base_range_or_radius;				//!!! CUSTOM, needed for aoe spells most of the time
     float base_range_or_radius_sqr;         //!!! CUSTOM, needed for aoe spells most of the time
-	uint32 talent_tree;						//!!! CUSTOM,
-	bool is_melee_spell;					//!!! CUSTOM,
-	bool is_ranged_spell;					//!!! CUSTOM,
-	bool spell_can_crit;					//!!! CUSTOM,
-	uint32 ThreatForSpell;
+    uint32 talent_tree;						//!!! CUSTOM,
+    bool is_melee_spell;					//!!! CUSTOM,
+    bool is_ranged_spell;					//!!! CUSTOM,
+    bool spell_can_crit;					//!!! CUSTOM,
+    uint32 ThreatForSpell;
 
-	// love me or hate me, all "In a cone in front of the caster" spells don't necessarily mean "in front"
-	float cone_width;
+    // love me or hate me, all "In a cone in front of the caster" spells don't necessarily mean "in front"
+    float cone_width;
 
 	//Spell Coefficient
 	uint32 spell_coef_flags;                //!!! CUSTOM, store flags for spell coefficient calculations
@@ -812,10 +800,10 @@ struct ItemExtendedCostEntry
     uint32 costid;
     uint32 honor;
     uint32 arena;
-	//uint32 unk;
+    //uint32 unk;
     uint32 item[5];
     uint32 count[5];
-	uint32 personalrating;
+    uint32 personalrating;
 };
 
 struct TalentEntry
@@ -830,7 +818,7 @@ struct TalentEntry
     //uint32  unk1[2];
     uint32  DependsOnRank;
     //uint32  unk2[4];
-	uint32  DependsOnSpell;	//21
+    uint32  DependsOnSpell;	//21
 };
 
 struct TalentTabEntry
@@ -892,9 +880,9 @@ struct SpellRange
     uint32 ID;
     float minRange;
     float maxRange;
-	uint32 type;
-	char *longname;
-	char *name;
+    uint32 type;
+    char *longname;
+    char *name;
 };
 
 struct SpellDuration
@@ -987,7 +975,7 @@ struct FactionTemplateDBC
 {
     uint32 ID;
     uint32 Faction;
-	uint32 FactionFlags;
+    uint32 FactionFlags;
     //uint32 FactionGroup; unused
     uint32 Mask;
     uint32 FriendlyMask;
@@ -1136,7 +1124,7 @@ struct CharClassEntry
     //char* string2[16];									// 39-54 unused
                                                             // 55 string flag, unused
                                                             // 56, unused
-	uint32  spellfamily;                                    // 57
+    uint32  spellfamily;                                    // 57
                                                             // 58, unused
     uint32  CinematicSequence;                              // 59 id from CinematicSequences.dbc
 };
@@ -1212,7 +1200,7 @@ struct BarberShopStyleEntry
 {
     uint32  id;												// 0
     uint32  type;											// 1 value 0 -> hair, value 2 -> facialhair
-	char* name;												// 2 string hairstyle name
+    char* name;												// 2 string hairstyle name
     //char*   name[15];										// 3-17 name of hair style
     //uint32  name_flags;									// 18
     //uint32  unk_name[16];									// 19-34, all empty
@@ -1255,7 +1243,7 @@ struct DurabilityCostsEntry
 struct SpellShapeshiftForm
 {
     uint32 id;
-	uint32 spells[7];
+    uint32 spells[7];
 };
 
 struct VehicleEntry

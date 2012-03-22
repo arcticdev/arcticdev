@@ -137,9 +137,8 @@ enum EOTS_TOWER
     EOTS_TOWER_DRAENEI         = 3,
 };
 
-enum EOTS_TOWER
+enum EOTS_BANNER
 {
-
     EOTS_BANNER_NEUTRAL        = 184382,
     EOTS_BANNER_ALLIANCE       = 184381,
     EOTS_BANNER_HORDE          = 184380,
