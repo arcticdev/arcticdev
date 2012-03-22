@@ -2358,14 +2358,14 @@ bool ChatHandler::HandleForceRenameCommand(const char * args, WorldSession * m_s
 
 	string tmp = string(args);
 	PlayerInfo * pi = objmgr.GetPlayerInfoByName(tmp.c_str());
-	if(pi == 0)
+	if(pi == NULL)
 	{
 		RedSystemMessage(m_session, "Player with that name not found.");
 		return true;
 	}
 
 	Player* plr = objmgr.GetPlayer((uint32)pi->guid);
-	if(plr == 0)
+	if(plr == NULL)
 	{
 		CharacterDatabase.Execute("UPDATE characters SET forced_rename_pending = 1 WHERE guid = %u", (uint32)pi->guid);
 	}
