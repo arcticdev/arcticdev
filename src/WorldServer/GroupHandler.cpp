@@ -276,7 +276,7 @@ void WorldSession::HandleGroupDisbandOpcode( WorldPacket & recv_data )
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-///This function handles CMSG_LOOT_METHOD:
+// This function handles CMSG_LOOT_METHOD:
 //////////////////////////////////////////////////////////////////////////////////////////
 void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 {
@@ -296,7 +296,10 @@ void WorldSession::HandleLootMethodOpcode( WorldPacket & recv_data )
 
 	Group* pGroup = _player->GetGroup();
 	if( pGroup != NULL)
+	{
+		Player* pLooter = objmgr.GetPlayer(uint32(lootMaster)) ? objmgr.GetPlayer(uint32(lootMaster)) : _player;
 		pGroup->SetLooter( _player, lootMethod, threshold );
+	}
 }
 
 void WorldSession::HandleMinimapPingOpcode( WorldPacket & recv_data )
@@ -343,7 +346,24 @@ void WorldSession::HandleSetPlayerIconOpcode(WorldPacket& recv_data)
 	{
 		recv_data >> guid;
 		if(icon > 7)
-			return;			// whhopes,buffer overflow :p
+			icon = 7; // whoops, buffer overflow :p 
+
+		// Null last icon 
+		for(uint8 i = 0; i < 8; ++i) 
+		{ 
+			if( pGroup->m_targetIcons[i] == guid ) 
+			{ 
+				WorldPacket data(MSG_RAID_TARGET_UPDATE, 10); 
+				data << uint8(0); 
+				data << uint64(0); 
+				data << uint8(i); 
+				data << uint64(0); 
+				pGroup->SendPacketToAll(&data); 
+
+				pGroup->m_targetIcons[i] = 0; 
+				break; 
+			} 
+		} 
 
 		// setting icon
 		WorldPacket data(MSG_RAID_TARGET_UPDATE, 10);

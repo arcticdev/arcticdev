@@ -825,8 +825,8 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 						{
 							if(GetHealthPct() > 30)
 								continue;
-							//heal value depends on the rank of parent spell
-							//maybe we should use CalculateEffect(uint32 i) to gain SM benefits
+							// heal value depends on the rank of parent spell
+							// maybe we should use CalculateEffect(uint32 i) to gain SM benefits
 							int32 value = 0;
 							int32 basePoints = ospinfo->EffectBasePoints[0]+1;//+(getLevel()*basePointsPerLevel);
 							int32 randomPoints = ospinfo->EffectDieSides[0];
