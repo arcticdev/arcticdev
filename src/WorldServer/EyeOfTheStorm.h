@@ -42,7 +42,7 @@ public:
 	// returns true if that team won
 	bool GivePoints(uint32 team, uint32 points);
 
-	void RespawnCPFlag(uint32 i, uint32 id);		// 0 = Neutral, <0 = Leaning towards alliance, >0 Leaning towards horde
+	void RespawnCPFlag(uint32 i, uint32 id); // 0 = Neutral, <0 = Leaning towards alliance, >0 Leaning towards horde
 
 	bool HookSlowLockOpen( GameObject* pGo, Player* pPlayer, Spell* pSpell);
 	void DropFlag(Player* plr);
@@ -68,6 +68,8 @@ protected:
 
 	GameObject* m_CPStatusGO[EOTS_TOWER_COUNT];
 	GameObject* m_CPBanner[EOTS_TOWER_COUNT];
+	GameObject* m_CPBanner2[EOTS_TOWER_COUNT];
+	GameObject* m_CPBanner3[EOTS_TOWER_COUNT];
 	GameObject* m_bubbles[2];
 	GameObject* m_EOTSbuffs[4];
 
