@@ -186,6 +186,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 
 			sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
 			sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+			SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 
 			m_mainLock.Acquire();
 			/* add the marks of honor to all players */
@@ -205,7 +206,6 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 						(*itr)->m_bgScore.BonusHonor += m_CompleteHonor;
 						HonorHandler::AddHonorPointsToPlayer((*itr), m_CompleteHonor);
 						(*itr)->CastSpell((*itr), loser_spell, true);
-						SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 					}
 					else
 					{
@@ -214,7 +214,6 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 						(*itr)->CastSpell((*itr), winner_spell, true);
 						uint32 diff = abs(int32(m_scores[i] - m_scores[i ? 0 : 1]));
 						(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
-						SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 					}
 				}
 			}

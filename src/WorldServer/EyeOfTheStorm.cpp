@@ -969,6 +969,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 		sEventMgr.RemoveEvents(this);
 		sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 
 		/* add the marks of honor to all players */
 		m_mainLock.Acquire();
@@ -989,7 +990,6 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				{
 					(*itr)->m_bgScore.BonusHonor += 2*m_bonusHonor;
 					HonorHandler::AddHonorPointsToPlayer( (*itr), 2*m_bonusHonor );
-					SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 				}
 				else
 				{
@@ -997,7 +997,6 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					HonorHandler::AddHonorPointsToPlayer( (*itr), m_bonusHonor );
 					uint32 diff = abs((int32)(m_points[i] - m_points[i ? 0 : 1]));
 					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
-					SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 				}
 
 				Item* pReward;
