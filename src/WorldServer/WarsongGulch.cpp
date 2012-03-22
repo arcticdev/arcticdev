@@ -193,7 +193,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);
 			for(uint32 i = 0; i < 2; ++i)
 			{
-				for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+				for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				{
 					(*itr)->Root();
 
@@ -226,7 +226,6 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 
 		UpdatePvPData();
 	}
-
 }
 
 void WarsongGulch::DropFlag(Player* plr)
@@ -234,7 +233,7 @@ void WarsongGulch::DropFlag(Player* plr)
 	if(!plr->m_bgHasFlag || m_dropFlags[plr->GetTeam()]->IsInWorld())
 		return;
 
-	plr->m_bgHasFlag = false;	// don't want to get here second time when doing RemoveAura
+	plr->m_bgHasFlag = false; // don't want to get here second time when doing RemoveAura
 
 	plr->RemoveAura(23333+(plr->GetTeam() * 2));
 

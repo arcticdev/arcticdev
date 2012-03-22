@@ -854,15 +854,13 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 	if(m_ended || !m_started)
 		return false;
 
-	//printf("EOTS: Give team %u %u points.\n", team, points);
-
 	m_points[team] += points;
 
 	if( m_points[team] >= m_resourceRewards[team] )
 	{
 		m_resourceRewards[team] += m_resToGainBH;
 
-		for(set<Player*  >::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
+		for(set<Player*>::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
 		{
 			Player* plr = (*itx);
 			if(!plr) continue;
@@ -1017,7 +1015,7 @@ void EyeOfTheStorm::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}

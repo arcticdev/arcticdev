@@ -95,11 +95,11 @@ void HonorHandler::OnPlayerKilledUnit( Player* pPlayer, Unit* pVictim )
 			// hackfix for battlegrounds (since the gorups there are disabled, we need to do this manually)
 			vector<Player*  > toadd;
 			uint32 t = pPlayer->m_bgTeam;
-			toadd.reserve(15);		// shouldnt have more than this
+			toadd.reserve(15); // shouldnt have more than this
 			pPlayer->m_bg->Lock();
 			set<Player*  > * s = &pPlayer->m_bg->m_players[t];
 
-			for(set<Player*  >::iterator itr = s->begin(); itr != s->end(); itr++)
+			for(set<Player*>::iterator itr = s->begin(); itr != s->end(); itr++)
 			{
 				if((*itr) == pPlayer || (*itr)->isInRange(pPlayer,40.0f))
 					toadd.push_back(*itr);

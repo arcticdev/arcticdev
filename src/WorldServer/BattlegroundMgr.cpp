@@ -1409,7 +1409,7 @@ void CBattleground::DistributePacketToAll(WorldPacket * packet)
 		if( !m_players[i].size() )
 			continue;
 
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 			(*itr)->GetSession()->SendPacket(packet);
 	}
 	m_mainLock.Release();
@@ -1423,7 +1423,7 @@ void CBattleground::DistributePacketToTeam(WorldPacket * packet, uint32 Team)
 		m_mainLock.Release();
 		return;
 	}
-	for(set<Player*  >::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); itr++)
+	for(set<Player*>::iterator itr = m_players[Team].begin(); itr != m_players[Team].end(); itr++)
 		(*itr)->GetSession()->SendPacket(packet);
 	m_mainLock.Release();
 }
@@ -2094,7 +2094,7 @@ void CBattleground::QueueAtNearestSpiritGuide(Player* plr, Creature* old)
 
 void CBattleground::GiveHonorToTeam(uint32 team, uint32 amt)
 {
-	for(set<Player*  >::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
+	for(set<Player*>::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
 	{
 		Player* plr = (*itx);
 		if(!plr) continue;

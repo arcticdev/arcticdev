@@ -377,10 +377,10 @@ void IsleOfConquest::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_ioccontrolPoints[Id]->PushToWorld(m_mapMgr);
 	}
 
-	if(gi_aura==NULL)
+	if(gi_aura == NULL)
 	{
 		// remove it if it exists
-		if(m_ioccontrolPointAuras[Id]!=NULL && m_ioccontrolPointAuras[Id]->IsInWorld())
+		if(m_ioccontrolPointAuras[Id] != NULL && m_ioccontrolPointAuras[Id]->IsInWorld())
 			m_ioccontrolPointAuras[Id]->RemoveFromWorld(false);
 			
 		return;
@@ -815,18 +815,13 @@ LocationVector IsleOfConquest::GetStartingCoords(uint32 Team)
 
 void IsleOfConquest::OnStart()
 {
-	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
+	for(uint32 i = 0; i < 2; ++i)
+	{
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
-
-	// open gates
-	/*for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
-	{
-		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
-		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
-	}*/
 
 	/* correct? - burlex */
 	PlaySoundToAll(SOUND_BATTLEGROUND_BEGIN);
@@ -838,7 +833,7 @@ void IsleOfConquest::OnStart()
 void IsleOfConquest::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 {
 	// add some money
-	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f;			// fix this later
+	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f; // fix this later
 	gold *= sWorld.getRate(RATE_MONEY);
 
 	// set it
@@ -914,7 +909,7 @@ void IsleOfConquest::Finish(uint32 losingTeam)
 	SpellEntry * loser_spell = dbcSpell.LookupEntry(24954);
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
 			(*itr)->Root();
 
