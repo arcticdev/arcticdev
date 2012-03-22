@@ -70,6 +70,7 @@ Arena::~Arena()
 		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
 		{
 			m_buffs[i]->Destructor();
+			m_buffs[i] = NULL;
 		}
 	}
 

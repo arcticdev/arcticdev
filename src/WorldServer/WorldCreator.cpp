@@ -22,10 +22,8 @@ void InstanceMgr::Load(TaskList * l)
 {
 	new FormationMgr;
 	new WorldStateTemplateManager;
-	QueryResult *result;
-
 	sWorldStateTemplateManager.LoadFromDB();
-
+	QueryResult *result;
 	// Create all non-instance type maps.
 	result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
 	if( result )
@@ -74,7 +72,7 @@ void InstanceMgr::Load(TaskList * l)
 		if(m_maps[mapinfo->mapid] == NULL)
 			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, mapinfo->mapid)));
 
-		if( mapinfo->flags != 1 && mapinfo->cooldown == 0) // Transport maps have 0 update_distance since you don't load into them ;)
+		if( mapinfo->flags != 1 && mapinfo->cooldown == 0) //Transport maps have 0 update_distance since you don't load into them ;)
 		{
 			Log.Warning("InstanceMgr", "Your worldmap_info has no cooldown for map %u.", itr->Get()->mapid);
 			itr->Get()->cooldown = TIME_MINUTE * 30;
@@ -101,7 +99,7 @@ void InstanceMgr::Shutdown()
 	{
 		if(m_instances[i] != NULL)
 		{
-			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); itr++)
+			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); ++itr)
 			{
 				if(itr->second->m_mapMgr)
 					itr->second->m_mapMgr->KillThread();
@@ -110,7 +108,7 @@ void InstanceMgr::Shutdown()
 			}
 
 			delete m_instances[i];
-			m_instances[i] = NULL;
+			m_instances[i]=NULL;
 		}
 
 		if(m_singleMaps[i] != NULL)
@@ -125,7 +123,7 @@ void InstanceMgr::Shutdown()
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i] = NULL;
+			m_maps[i]=NULL;
 		}
 	}
 
@@ -156,6 +154,14 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 	if(inf->type == INSTANCE_PVP)
 		return INSTANCE_ABORT_NOT_FOUND;
 
+	if(map->israid()) // check that heroic mode is available if the player has requested it.
+	{
+		if(plr->iRaidType > 1 && inf->type != INSTANCE_MULTIMODE)
+			return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
+	}
+	else if(plr->iInstanceType && inf->type != INSTANCE_MULTIMODE)
+		return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
+
 	//do we need addition raid/heroic checks?
 	Group * pGroup = plr->GetGroup() ;
 	if( !plr->triggerpass_cheat )
@@ -164,13 +170,6 @@ uint32 InstanceMgr::PreTeleport(uint32 mapid, Player* plr, uint32 instanceid)
 		if( pGroup == NULL && (inf->type == INSTANCE_RAID || inf->type == INSTANCE_MULTIMODE))
 			return INSTANCE_ABORT_NOT_IN_RAID_GROUP;
 
-		if(map->israid()) // check that heroic mode is available if the player has requested it.
-		{
-			if(plr->iRaidType > 1 && inf->type != INSTANCE_MULTIMODE)
-				return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
-		}
-		else if(plr->iInstanceType && inf->type != INSTANCE_MULTIMODE)
-			return INSTANCE_ABORT_HEROIC_MODE_NOT_AVAILABLE;
 
 		//and has the required level
 		if( plr->getLevel() < 80)
@@ -371,9 +370,7 @@ MapMgr* InstanceMgr::GetMapMgr(uint32 mapId)
 
 MapMgr* InstanceMgr::GetInstance(Object* obj)
 {
-
 	Player* plr = NULL;
-	Instance * in = NULL;
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap = NULL;
 	MapInfo * inf = NULL;
@@ -396,58 +393,55 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 		instancemap = m_instances[obj->GetMapId()];
 		if(instancemap != NULL)
 		{
-			// check our instance_id, which we saved before in Player::_Relocate
-			uint32 plr_instanceID = obj->GetInstanceID();
-			itr = instancemap->find(plr_instanceID);
+			// check our saved instance id. see if its valid, and if we can join before trying to find one.
+			itr = instancemap->find(obj->GetInstanceID());
 			if(itr != instancemap->end())
 			{
-				in = itr->second;
-				if(in)
+				if(itr->second)
 				{
-					//we have an instance,but can we enter it?
-					uint8 owns =  PlayerOwnsInstance( in, plr );
+					// we have an instance,but can we enter it?
+					uint8 owns =  PlayerOwnsInstance( itr->second, plr );
 					if( owns >= OWNER_CHECK_OK )
 					{
-						//wakeup call for saved instances
-						if(in->m_mapMgr == NULL)
-							in->m_mapMgr = _CreateInstance(in);
+						// wakeup call for saved instances
+						if(itr->second->m_mapMgr == NULL)
+							itr->second->m_mapMgr = _CreateInstance(itr->second);
 
-						if(owns == OWNER_CHECK_SAVED_OK && !in->m_mapMgr->HasPlayers())
+						if(owns == OWNER_CHECK_SAVED_OK && !itr->second->m_mapMgr->HasPlayers())
 						{	
 							if(plr->GetGroup())
-								in->m_creatorGroup = plr->GetGroupID();
+								itr->second->m_creatorGroup = plr->GetGroupID();
 						}
 						m_mapLock.Release();
-						return in->m_mapMgr;
+						return itr->second->m_mapMgr;
 					}
 				}
 			}
 
-
+			
 			// iterate over our instances, and see if any of them are owned/joinable by him.
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
-				in = itr->second;
-				itr++;
+				++itr;
 
 				// Is this our instance?
-				uint8 owns = PlayerOwnsInstance(in, plr);
+				uint8 owns = PlayerOwnsInstance(itr->second, plr);
 				if(owns >= OWNER_CHECK_OK )
 				{
 					//wakeup call for saved instances
-					if(in->m_mapMgr == NULL)
-						in->m_mapMgr = _CreateInstance(in);
+					if(itr->second->m_mapMgr == NULL)
+						itr->second->m_mapMgr = _CreateInstance(itr->second);
 
-					if(owns == OWNER_CHECK_SAVED_OK && !in->m_mapMgr->HasPlayers())
+					if(owns == OWNER_CHECK_SAVED_OK && !itr->second->m_mapMgr->HasPlayers())
 					{	
 						if(plr->GetGroup())
-							in->m_creatorGroup = plr->GetGroupID();
+							itr->second->m_creatorGroup = plr->GetGroupID();
 					}
 					m_mapLock.Release();
-					return in->m_mapMgr;
+					return itr->second->m_mapMgr;
 				}
 				else
-					DEBUG_LOG("InstanceMgr","Check failed %s",plr->GetName());
+					DEBUG_LOG("InstanceMgr","Check failed %s", plr->GetName());
 			}
 		}
 
@@ -551,8 +545,7 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 
 	Log.Notice("InstanceMgr", "Creating continent %s.", m_maps[mapid]->GetName());
 
-	MapMgr* ret = NULL;
-	ret = (new MapMgr(m_maps[mapid], mapid, instanceid));
+	MapMgr* ret(new MapMgr(m_maps[mapid], mapid, instanceid));
 	ret->Init();
 
 	// start its thread
@@ -565,9 +558,12 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 
 MapMgr* InstanceMgr::_CreateInstance(Instance * in)
 {
-	ASSERT(in->m_mapMgr==NULL);
+	ASSERT(in->m_mapMgr == NULL);
 
-	Log.Notice("InstanceMgr", "Creating instance %u (%s)", in->m_instanceId, m_maps[in->m_mapId]->GetName());
+	if(!dbcMap.LookupEntry(in->m_mapId))
+		return NULL;
+
+	Log.Notice("InstanceMgr", "Creating %s %u (%s)", dbcMap.LookupEntry(in->m_mapId)->israid() ? "Raid" : "Instance", in->m_instanceId, m_maps[in->m_mapId]->GetName());
 
 	// we don't have to check for world map info here, since the instance wouldn't have been saved if it didn't have any.
 	in->m_mapMgr = (new MapMgr(m_maps[in->m_mapId], in->m_mapId, in->m_instanceId));
@@ -616,9 +612,7 @@ void InstanceMgr::_CreateMap(uint32 mapid)
 	if( mapid >= NUM_MAPS )
 		return;
 
-	MapInfo * inf = NULL;
-
-	inf = WorldMapInfoStorage.LookupEntry(mapid);
+	MapInfo* inf = WorldMapInfoStorage.LookupEntry(mapid);
 	if(inf==NULL || m_maps[mapid]!=NULL)
 		return;
 #ifdef CLUSTERING
@@ -718,9 +712,9 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 				for(itr = instancemap->begin(); itr != instancemap->end();)
 				{
 					in = itr->second;
-					itr++;
+					++itr;
 
-					if(in->m_mapMgr==NULL)
+					if(in->m_mapMgr == NULL)
 						continue;
 
 					BuildStats(in->m_mapMgr, m_file, in, in->m_mapInfo);
@@ -733,9 +727,9 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 
 void InstanceMgr::_LoadInstances()
 {
-	MapInfo * inf;
-	Instance * in;
-	QueryResult * result;
+	MapInfo* inf;
+	Instance* in;
+	QueryResult* result;
 
 	// clear any instances that have expired.
 	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
@@ -863,12 +857,15 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 						continue;
 					}
 
-					// <mapid> has been reset.
-					data << uint32(in->m_mapId);
-					plr->GetSession()->SendPacket(&data);
-
 					// destroy the instance
-					_DeleteInstance(in, true);
+					bool destroyed = _DeleteInstance(in, true);
+
+					if(destroyed)
+					{
+						// <mapid> has been reset.
+						data << uint32(in->m_mapId);
+						plr->GetSession()->SendPacket(&data);
+					}
 				}
 			}
 		}
@@ -893,7 +890,7 @@ void InstanceMgr::ResetHeroicInstances()
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				itr++;
+				++itr;
 
 				if(in->m_mapInfo->type != INSTANCE_RAID)
 				{
@@ -933,7 +930,6 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 			in->m_mapMgr->InstanceShutdown();
 	}
 
-
 	// remove the instance from the large map.
 	instancemap = m_instances[in->m_mapId];
 	if(instancemap)
@@ -948,13 +944,16 @@ bool InstanceMgr::_DeleteInstance(Instance * in, bool ForcePlayersOut)
 
 	// delete the instance pointer.
 	delete in;
+	in = NULL;
 	m_mapLock.Release();
-	
 	return true;
 }
 
 void Instance::DeleteFromDB()
 {
+	// cleanup all the corpses on this map
+	CharacterDatabase.Execute("DELETE FROM corpses WHERE instanceid = %u", m_instanceId);
+
 	// delete from the database
 	CharacterDatabase.Execute("DELETE FROM instances WHERE id = %u", m_instanceId);
 }
@@ -976,7 +975,7 @@ void InstanceMgr::CheckForExpiredInstances()
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				itr++;
+				++itr;
 
 				// use a "soft" delete here.
 				if(in->m_mapInfo->type != INSTANCE_NONRAID && HasInstanceExpired(in))
@@ -1007,7 +1006,7 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player* plr)
 				for(itr = instancemap->begin(); itr != instancemap->end();)
 				{
 					in = itr->second;
-					itr++;
+					++itr;
 
 					if( in->m_mapInfo->type == INSTANCE_NONRAID && PlayerOwnsInstance(in, plr))
 					{
@@ -1020,7 +1019,6 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player* plr)
 						data.Initialize(SMSG_UPDATE_INSTANCE_OWNERSHIP);
 						data << uint32(0x01);
 						plr->GetSession()->SendPacket(&data);
-
 						break; //next mapid
 					}
 				}
@@ -1135,7 +1133,7 @@ void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player* pPlayer)
 			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
 				in = itr->second;
-				itr++;
+				++itr;
 
 				bool eject = false;
 
@@ -1160,7 +1158,7 @@ void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player* pPlayer)
 						data << uint32(60000) << uint32(1);
 						pPlayer->GetSession()->SendPacket(&data);
 						pPlayer->raidgrouponlysent=true;
-
+	
 						sEventMgr.AddEvent(pPlayer, &Player::EjectFromInstance, EVENT_PLAYER_EJECT_FROM_INSTANCE, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 						m_mapLock.Release();
@@ -1286,7 +1284,7 @@ FormationMgr::FormationMgr()
 	if(res)
 	{
 		Formation *f ;
-		do
+		do 
 		{
 			f = new Formation;
 			f->fol = res->Fetch()[1].GetUInt32();
@@ -1301,6 +1299,6 @@ FormationMgr::FormationMgr()
 FormationMgr::~FormationMgr()
 {
 	FormationMap::iterator itr;
-	for(itr = m_formations.begin(); itr != m_formations.end(); itr++)
+	for(itr = m_formations.begin(); itr != m_formations.end(); ++itr)
 		delete itr->second;
 }

@@ -85,6 +85,7 @@ WarsongGulch::~WarsongGulch()
 		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
 		{
 			m_buffs[i]->Destructor();
+			m_buffs[i] = NULL;
 		}
 	}
 	for (uint8 i = 0; i < 2; i++)

@@ -2629,26 +2629,24 @@ void Aura::SpellAuraDummy(bool apply)
 			spell->SetUnitTarget( m_target );
 			spell->Heal( mod->m_baseAmount );
 			spell->Destructor();
-			//pCaster->Heal( m_target, m_spellProto->Id, mod->m_amount );
-
-			//
+			spell = NULL;
 		}break;
 
 
-	case 2584:			// Area spirit healer aura for BG's
+	case 2584: // Area spirit healer aura for BG's
 		{
-			if( !m_target->IsPlayer() || apply )		// already applied in opcode handler
+			if( !m_target->IsPlayer() || apply ) // already applied in opcode handler
 				return;
 
 			uint64 crtguid = TO_PLAYER(m_target)->m_areaSpiritHealer_guid;
 			Creature* pCreature = TO_PLAYER(m_target)->IsInWorld() ? TO_PLAYER(m_target)->GetMapMgr()->GetCreature(GET_LOWGUID_PART(crtguid)) : NULL;
-			if(pCreature==NULL || TO_PLAYER(m_target)->m_bg==NULL)
+			if(pCreature == NULL || TO_PLAYER(m_target)->m_bg == NULL)
 				return;
 
 			TO_PLAYER(m_target)->m_bg->RemovePlayerFromResurrect(TO_PLAYER(m_target),pCreature);
 		}break;
 
-	case 17007: //Druid:Leader of the Pack
+	case 17007: // Druid: Leader of the Pack
 		{
 			if( !m_target->IsPlayer() )
 				return;
@@ -2659,7 +2657,7 @@ void Aura::SpellAuraDummy(bool apply)
 				TO_PLAYER(m_target)->RemoveShapeShiftSpell( 24932 );
 		}break;
 
-	case 48411: //Master ShapeShifter
+	case 48411: // Master ShapeShifter
 	case 48412:
 		{
 			if( !m_target->IsPlayer() )

@@ -143,6 +143,7 @@ Item* ItemInterface::SafeAddItem(uint32 ItemId, uint8 ContainerSlot, uint8 slot)
 		else
 		{
 			pItem->Destructor();
+			pItem = NULL;
 		}
 	}
 	else
@@ -156,6 +157,7 @@ Item* ItemInterface::SafeAddItem(uint32 ItemId, uint8 ContainerSlot, uint8 slot)
 		else
 		{
 			pItem->Destructor();
+			pItem = NULL;
 		}
 	}
 	return NULL;
@@ -660,6 +662,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(uint8 ContainerSlot, uint8 slot)
 
 			pItem->DeleteFromDB();
 			pItem->Destructor();
+			pItem = NULL;
 		}
 	}
 	else

@@ -1147,6 +1147,7 @@ void Spell::cancel()
 					{
 						dynObj->RemoveFromWorld(true);
 						dynObj->Destructor();
+						dynObj = NULL;
 
 					}
 				}
@@ -4340,6 +4341,7 @@ void Spell::CreateItem(uint32 itemId)
 		if(!result)
 		{
 			newItem->Destructor();
+			newItem = NULL;
 			return;
 		}
 

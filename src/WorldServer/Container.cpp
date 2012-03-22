@@ -249,6 +249,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 	}
 	pItem->DeleteFromDB();
 	pItem->Destructor();
+	pItem = NULL;
 
 	return true;
 }

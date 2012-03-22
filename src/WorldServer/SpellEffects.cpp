@@ -5036,7 +5036,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 						uint32 ticks = float2int32(actdur * 0.003f);
 
 						SpellEntry* spellInfo = dbcSpell.LookupEntryForced( 53353 );
-						Spell* sp=new Spell( p_caster, spellInfo, true, NULL );
+						Spell* sp = new Spell( p_caster, spellInfo, true, NULL );
 						sp->forced_basepoints[0] = float2int32(((sting_proto->EffectBasePoints[0] / 5) * ticks) * 0.4f);
 						SpellCastTargets tgt;
 						tgt.m_unitTarget = GetUnitTarget()->GetGUID();
@@ -5047,7 +5047,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 						uint32 ticks = float2int32(actdur * 0.002f);
 
 						SpellEntry* spellInfo = dbcSpell.LookupEntryForced( 53358 );
-						Spell* sp=new Spell( p_caster, spellInfo, true, NULL );
+						Spell* sp = new Spell( p_caster, spellInfo, true, NULL );
 						sp->forced_basepoints[0] = float2int32(((GetUnitTarget()->GetUInt32Value(UNIT_FIELD_MAXPOWER1) * 0.04f) * ((16 / 4) * ticks)) * 0.6f);
 						SpellCastTargets tgt;
 						tgt.m_unitTarget = p_caster->GetGUID();
@@ -5493,7 +5493,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 23831:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
@@ -5517,23 +5517,23 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( casted_spell_id )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				sp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				sp->forced_basepoints[0] = p_caster->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = NULL;
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				sp->forced_basepoints[0] = unitTarget->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
@@ -5544,7 +5544,7 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 	case 23832:
 		{
 			if( p_caster == NULL || unitTarget == NULL)
-				return; //can't imagine how this talent got to anybody else then a player casted on pet
+				return; // can't imagine how this talent got to anybody else then a player casted on pet
 			uint32 casted_spell_id = 0 ;
 			uint32 inc_resist_by_level = 0 ;
 			uint32 inc_resist_by_level_spell = 0 ;
@@ -5568,11 +5568,11 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( casted_spell_id )
 			{
-				//for self
+				// for self
 				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = NULL;
 				sp = new Spell(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
@@ -5580,12 +5580,12 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( inc_resist_by_level_spell )
 			{
-				//for self
-				Spell* sp=new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				// for self
+				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				sp->forced_basepoints[0] = p_caster->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				sp = NULL;
 				sp = new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				sp->forced_basepoints[0] = unitTarget->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
@@ -5619,23 +5619,23 @@ void Spell::SpellEffectScriptEffect(uint32 i) // Script Effect
 			}
 			if( casted_spell_id )
 			{
-				//for self
-				Spell* sp=new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
+				// for self
+				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				Spell* Petsp=new Spell(  unitTarget, dbcSpell.LookupEntry( casted_spell_id ), true, NULL );
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
 				Petsp->prepare( &tgt1 );
 			}
 			if( inc_resist_by_level_spell )
 			{
-				//for self
-				Spell* sp=new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
+				// for self
+				Spell* sp = new Spell( p_caster, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				sp->forced_basepoints[0] = p_caster->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt( p_caster->GetGUID() );
 				sp->prepare( &tgt );
-				//for pet
+				// for pet
 				Spell* Petsp=new Spell( unitTarget, dbcSpell.LookupEntry( inc_resist_by_level_spell ), true, NULL );
 				Petsp->forced_basepoints[0] = unitTarget->GetUInt32Value( UNIT_FIELD_LEVEL ) * inc_resist_by_level / 100;
 				SpellCastTargets tgt1( unitTarget->GetGUID() );
@@ -6458,7 +6458,7 @@ void Spell::SpellEffectFeedPet(uint32 i)  // Feed Pet
 	tgt.m_unitTarget = pPet->GetGUID();
 	sp->prepare(&tgt);
 
-	if(itemTarget->GetUInt32Value(ITEM_FIELD_STACK_COUNT)>1)
+	if(itemTarget->GetUInt32Value(ITEM_FIELD_STACK_COUNT) > 1)
 	{
 		itemTarget->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, -1);
 		itemTarget->m_isDirty = true;
@@ -6662,7 +6662,7 @@ void Spell::SpellEffectDestroyAllTotems(uint32 i)
 
 void Spell::SpellEffectSummonDemonOld(uint32 i)
 {
-	if(p_caster == NULL ) //p_caster->getClass() != WARLOCK ) //summoning a demon shouldn't be warlock only, see spells 25005, 24934, 24810 etc etc
+	if(p_caster == NULL ) // p_caster->getClass() != WARLOCK ) // summoning a demon shouldn't be warlock only, see spells 25005, 24934, 24810 etc etc
 		return;
 	Pet* pPet = NULL;
 	pPet = p_caster->GetSummon();
@@ -6675,19 +6675,18 @@ void Spell::SpellEffectSummonDemonOld(uint32 i)
 	CreatureInfo *ci = CreatureNameStorage.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 	if(ci)
 	{
-
 		pPet = objmgr.CreatePet();
 		pPet->SetInstanceID(p_caster->GetInstanceID());
 		pPet->CreateAsSummon(m_spellInfo->EffectMiscValue[i], ci, NULL, p_caster, m_spellInfo, 1, 300000);
 	}
-	//Create Enslave Aura if its inferno spell
+	// Create Enslave Aura if its inferno spell
 	if(m_spellInfo->Id == 1122)
 	{
 		SpellEntry *spellInfo = dbcSpell.LookupEntry(11726);
 
 		Spell* sp(new Spell(TO_OBJECT(pPet),spellInfo,true,NULL));
 		SpellCastTargets tgt;
-		tgt.m_unitTarget=pPet->GetGUID();
+		tgt.m_unitTarget = pPet->GetGUID();
 		sp->prepare(&tgt);
 	}
 }
@@ -7526,6 +7525,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 			p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 		else
 			newItem->Destructor();
+			newItem = NULL;
 
 		if(skill != NULL)
 			DetermineSkillUp(skill->skilline);

@@ -125,11 +125,13 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 void MapScriptInterface::DeleteCreature(Creature* ptr)
 {
 	ptr->Destructor();
+	ptr = NULL;
 }
 
 void MapScriptInterface::DeleteGameObject(GameObject* ptr)
 {
 	ptr->Destructor();
+	ptr = NULL;
 }
 
 WayPoint * StructFactory::CreateWaypoint()

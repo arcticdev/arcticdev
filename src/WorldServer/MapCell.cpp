@@ -100,6 +100,7 @@ void MapCell::RemoveObjects()
 					_mapmgr->_reusable_guids_vehicle.push_back( pObject->GetUIdFromGUID() );
 					TO_VEHICLE(pObject)->m_respawnCell = NULL;
 					TO_VEHICLE(pObject)->Destructor();
+					pObject = NULL;
 				}
 				else if( !pObject->IsPet() )
 				{
@@ -113,6 +114,7 @@ void MapCell::RemoveObjects()
 		{
 			TO_GAMEOBJECT(pObject)->m_respawnCell = NULL;
 			TO_GAMEOBJECT(pObject)->Destructor();
+			pObject = NULL;
 		}break;
 		default:
 			pObject->Destructor();
@@ -151,6 +153,7 @@ void MapCell::RemoveObjects()
 			obj->RemoveFromWorld( true );
 
 		obj->Destructor();
+		obj = NULL;
 	}
 
 	_playerCount = 0;
@@ -201,6 +204,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 					else
 					{
 						v->Destructor();
+						v = NULL;
 					}
 				}
 				else
@@ -227,6 +231,7 @@ void MapCell::LoadObjects(CellSpawns * sp)
 					else
 					{
 						c->Destructor();
+						c = NULL;
 					}
 				}
 			}

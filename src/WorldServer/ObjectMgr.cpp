@@ -615,6 +615,7 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 		if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
 		{
 			pCorpse->Destructor();
+			pCorpse = NULL;
 			continue;
 		}
 
@@ -646,8 +647,6 @@ Corpse* ObjectMgr::GetCorpseByOwner(uint32 ownerguid)
 		}
 	}
 	_corpseslock.Release();
-
-
 	return rv;
 }
 
@@ -1243,6 +1242,7 @@ void ObjectMgr::LoadCorpses(MapMgr* mgr)
 			if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
 			{
 				pCorpse->Destructor();
+				pCorpse = NULL;
 				continue;
 			}
 
@@ -1263,6 +1263,7 @@ void ObjectMgr::CorpseAddEventDespawn(Corpse* pCorpse)
 	if(!pCorpse->IsInWorld())
 	{
 		pCorpse->Destructor();
+		pCorpse = NULL;
 	}
 	else
 		sEventMgr.AddEvent(pCorpse->GetMapMgr(), &MapMgr::EventCorpseDespawn, pCorpse->GetGUID(), EVENT_CORPSE_DESPAWN, 600000, 1,0);
@@ -1276,6 +1277,7 @@ void ObjectMgr::DespawnCorpse(uint64 Guid)
 
 	pCorpse->Despawn();
 	pCorpse->Destructor();
+	pCorpse = NULL;
 }
 
 void ObjectMgr::CorpseCollectorUnload()
@@ -1290,6 +1292,7 @@ void ObjectMgr::CorpseCollectorUnload()
 			c->RemoveFromWorld(false);
 
 		c->Destructor();
+		c = NULL;
 	}
 	m_corpses.clear();
 	_corpseslock.Release();
@@ -2712,210 +2715,210 @@ void ObjectMgr::LoadPetLevelupSpellMap()
 
 			switch(sk->skilline)
 			{
-				case SKILL_PET_IMP:
+			case SKILL_PET_IMP:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_IMP][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_VOIDWALKER:
+			case SKILL_PET_VOIDWALKER:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_VOIDWALKER][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_SUCCUBUS:
+			case SKILL_PET_SUCCUBUS:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_SUCCUBUS][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_FELHUNTER:
+			case SKILL_PET_FELHUNTER:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_FELHUNTER][sp->spellLevel] = sk->spell;
 				}break;
-				case SKILL_PET_FELGUARD:
+			case SKILL_PET_FELGUARD:
 				{
 					mPetLevelupSpellMap[FAMILY_FAKE_FELGUARD][sp->spellLevel] = sk->spell;
 				}break;
-				case SPELL_HASH_GROWL:
+			case SPELL_HASH_GROWL:
 				{
 					mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel] = sk->spell;
 				}break;
-				case SPELL_HASH_COWER:
+			case SPELL_HASH_COWER:
 				{
 					mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel] = sk->spell;
 				}break;
 			}
 			switch(creatureFamily->ID)
 			{
-				case FAMILY_BAT:
+			case FAMILY_BAT:
 				{
-					if(sk->skilline !=	SKILL_PET_BAT)
+					if(sk->skilline != SKILL_PET_BAT)
 						continue;
 				}break;
-				case FAMILY_BEAR:
+			case FAMILY_BEAR:
 				{
-					if(sk->skilline !=	SKILL_PET_BEAR)
+					if(sk->skilline != SKILL_PET_BEAR)
 						continue;
 				}break;
-				case FAMILY_BIRD_OF_PREY:
+			case FAMILY_BIRD_OF_PREY:
 				{
-					if(sk->skilline !=	SKILL_PET_OWL)
+					if(sk->skilline != SKILL_PET_OWL)
 						continue;
 				}break;
-				case FAMILY_BOAR:
+			case FAMILY_BOAR:
 				{
 					if(sk->skilline	!= SKILL_PET_BOAR)
 						continue;
 				}break;
-				case FAMILY_CARRION_BIRD:
+			case FAMILY_CARRION_BIRD:
 				{
-					if(sk->skilline !=	SKILL_PET_CARRION_BIRD)
+					if(sk->skilline != SKILL_PET_CARRION_BIRD)
 						continue;
 				}break;
-				case FAMILY_CAT:
+			case FAMILY_CAT:
 				{
-					if(sk->skilline !=	SKILL_PET_CAT)
+					if(sk->skilline != SKILL_PET_CAT)
 						continue;
 				}break;
-				case FAMILY_CHIMAERA:
+			case FAMILY_CHIMAERA:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_CHIMAERA)
+					if(sk->skilline != SKILL_PET_EXOTIC_CHIMAERA)
 						continue;
 				}break;
-				case FAMILY_CORE_HOUND:
+			case FAMILY_CORE_HOUND:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_CORE_HOUND)
+					if(sk->skilline != SKILL_PET_EXOTIC_CORE_HOUND)
 						continue;
 				}break;
-				case FAMILY_CRAB:
+			case FAMILY_CRAB:
 				{
-					if(sk->skilline !=	SKILL_PET_CRAB)
+					if(sk->skilline != SKILL_PET_CRAB)
 						continue;
 				}break;
-				case FAMILY_CROCILISK:
+			case FAMILY_CROCILISK:
 				{
-					if(sk->skilline !=	SKILL_PET_CROCILISK)
+					if(sk->skilline != SKILL_PET_CROCILISK)
 						continue;
 				}break;
-				case FAMILY_DEVILSAUR:
+			case FAMILY_DEVILSAUR:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_DEVILSAUR)
+					if(sk->skilline != SKILL_PET_EXOTIC_DEVILSAUR)
 						continue;
 				}break;
-				case FAMILY_DRAGONHAWK:
+			case FAMILY_DRAGONHAWK:
 				{
-					if(sk->skilline !=	SKILL_PET_DRAGONHAWK)
+					if(sk->skilline != SKILL_PET_DRAGONHAWK)
 						continue;
 				}break;
-				case FAMILY_GORILLA:
+			case FAMILY_GORILLA:
 				{
-					if(sk->skilline !=	SKILL_PET_GORILLA)
+					if(sk->skilline != SKILL_PET_GORILLA)
 						continue;
 				}break;
-				case FAMILY_HYENA:
+			case FAMILY_HYENA:
 				{
-					if(sk->skilline !=	SKILL_PET_HYENA)
+					if(sk->skilline != SKILL_PET_HYENA)
 						continue;
 				}break;
-				case FAMILY_MOTH:
+			case FAMILY_MOTH:
 				{
-					if(sk->skilline !=	SKILL_PET_MOTH)
+					if(sk->skilline != SKILL_PET_MOTH)
 						continue;
 				}break;
-				case FAMILY_NETHER_RAY:
+			case FAMILY_NETHER_RAY:
 				{
-					if(sk->skilline !=	SKILL_PET_NETHER_RAY)
+					if(sk->skilline != SKILL_PET_NETHER_RAY)
 						continue;
 				}break;
-				case FAMILY_RAPTOR:
+			case FAMILY_RAPTOR:
 				{
-					if(sk->skilline !=	SKILL_PET_RAPTOR)
+					if(sk->skilline != SKILL_PET_RAPTOR)
 						continue;
 				}break;
-				case FAMILY_RAVAGER:
+			case FAMILY_RAVAGER:
 				{
-					if(sk->skilline !=	SKILL_PET_RAVAGER)
+					if(sk->skilline != SKILL_PET_RAVAGER)
 						continue;
 				}break;
-				case FAMILY_RHINO:
+			case FAMILY_RHINO:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_RHINO)
+					if(sk->skilline != SKILL_PET_EXOTIC_RHINO)
 						continue;
 				}break;
-				case FAMILY_SCORPID:
+			case FAMILY_SCORPID:
 				{
-					if(sk->skilline !=	SKILL_PET_SCORPID)
+					if(sk->skilline != SKILL_PET_SCORPID)
 						continue;
 				}break;
-				case FAMILY_SERPENT:
+			case FAMILY_SERPENT:
 				{
-					if(sk->skilline !=	SKILL_PET_SERPENT)
+					if(sk->skilline != SKILL_PET_SERPENT)
 						continue;
 				}break;
-				case FAMILY_SILITHID:
+			case FAMILY_SILITHID:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_SILITHID)
+					if(sk->skilline != SKILL_PET_EXOTIC_SILITHID)
 						continue;
 				}break;
-				case FAMILY_SPIDER:
+			case FAMILY_SPIDER:
 				{
-					if(sk->skilline !=	SKILL_PET_SPIDER)
+					if(sk->skilline != SKILL_PET_SPIDER)
 						continue;
 				}break;
-				case FAMILY_SPIRIT_BEAST:
+			case FAMILY_SPIRIT_BEAST:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_SPIRIT_BEAST)
+					if(sk->skilline != SKILL_PET_EXOTIC_SPIRIT_BEAST)
 						continue;
 				}break;
-				case FAMILY_SPOREBAT:
+			case FAMILY_SPOREBAT:
 				{
-					if(sk->skilline !=	SKILL_PET_SPOREBAT)
+					if(sk->skilline != SKILL_PET_SPOREBAT)
 						continue;
 				}break;
-				case FAMILY_TALLSTRIDER:
+			case FAMILY_TALLSTRIDER:
 				{
-					if(sk->skilline !=	SKILL_PET_TALLSTRIDER)
+					if(sk->skilline != SKILL_PET_TALLSTRIDER)
 						continue;
 				}break;
-				case FAMILY_TURTLE:
+			case FAMILY_TURTLE:
 				{
-					if(sk->skilline !=	SKILL_PET_TURTLE)
+					if(sk->skilline != SKILL_PET_TURTLE)
 						continue;
 				}break;
-				case FAMILY_WARP_STALKER:
+			case FAMILY_WARP_STALKER:
 				{
-					if(sk->skilline !=	SKILL_PET_WARP_STALKER)
+					if(sk->skilline != SKILL_PET_WARP_STALKER)
 						continue;
 				}break;
-				case FAMILY_WASP:
+			case FAMILY_WASP:
 				{
-					if(sk->skilline !=	SKILL_PET_WASP)
+					if(sk->skilline != SKILL_PET_WASP)
 						continue;
 				}break;
-				case FAMILY_WIND_SERPENT:
+			case FAMILY_WIND_SERPENT:
 				{
-					if(sk->skilline !=	SKILL_PET_WIND_SERPENT)
+					if(sk->skilline != SKILL_PET_WIND_SERPENT)
 						continue;
 				}break;
-				case FAMILY_WOLF:
+			case FAMILY_WOLF:
 				{
-					if(sk->skilline !=	SKILL_PET_WOLF)
+					if(sk->skilline != SKILL_PET_WOLF)
 						continue;
 				}break;
-				case FAMILY_WORM:
+			case FAMILY_WORM:
 				{
-					if(sk->skilline !=	SKILL_PET_EXOTIC_WORM)
+					if(sk->skilline != SKILL_PET_EXOTIC_WORM)
 						continue;
 				}break;
-				default:
+			default:
 				{
 					Log.Error("ObjectMgr",	"Unhandled creature	family %u",	creatureFamily->ID);
 				}break;
 			}
-			mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel]	=	sk->spell;
+			mPetLevelupSpellMap[creatureFamily->ID][sp->spellLevel]	= sk->spell;
 			count++;
 		}
 	}
-	Log.Notice("ObjectMgr", "%u Pet LevelUp Spells loaded.",	count);
+	Log.Notice("ObjectMgr", "%u Pet LevelUp Spells loaded.", count);
 }
 
-PetLevelupSpellSet const* ObjectMgr::GetPetLevelupSpellList(uint32 petFamily)	const
+PetLevelupSpellSet const* ObjectMgr::GetPetLevelupSpellList(uint32 petFamily) const
 {
 	PetLevelupSpellMap::const_iterator itr = mPetLevelupSpellMap.find(petFamily);
 	if(itr != mPetLevelupSpellMap.end())

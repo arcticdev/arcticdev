@@ -321,6 +321,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 						_mapmgr->_reusable_guids_vehicle.push_back( pObject->GetUIdFromGUID() );
 						TO_VEHICLE(pObject)->m_respawnCell = NULL;
 						TO_VEHICLE(pObject)->Destructor();
+						pObject = NULL;
 						_respawnObjects.erase(pObject);
 					}
 					else if( !pObject->IsPet() )
@@ -342,6 +343,7 @@ void MapCell::RemoveEventIdObjects(uint8 eventToRemove)
 				{
 					TO_GAMEOBJECT(pObject)->m_respawnCell = NULL;
 					TO_GAMEOBJECT(pObject)->Destructor();
+					pObject = NULL;
 					_respawnObjects.erase(pObject);
 				}break;
 			}

@@ -547,6 +547,7 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 
 		pItem->DeleteFromDB();
 		pItem->Destructor();
+		pItem = NULL;
 	}
 }
 
@@ -1187,10 +1188,10 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 		{
 			pItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, count_per_stack);
 			pItem->m_isDirty = true;
-//			OUT_DEBUG( "SUPADBG bagslot=%u, slot=%u" , bagslot, slot );
 			if(!_player->GetItemInterface()->SafeAddItem(pItem, bagslot, slot))
 			{
 				pItem->Destructor();
+				pItem = NULL;
 				return;
 			}
 		}

@@ -136,17 +136,22 @@ MapMgr::~MapMgr()
 		{
 		case HIGHGUID_TYPE_VEHICLE:
 			TO_VEHICLE(pObject)->Destructor();
+			pObject = NULL;
 			break;
+
 		case HIGHGUID_TYPE_UNIT:
 			TO_CREATURE(pObject)->Destructor();
+			pObject = NULL;
 			break;
 
 		case HIGHGUID_TYPE_GAMEOBJECT:
 			TO_GAMEOBJECT(pObject)->Destructor();
+			pObject = NULL;
 			break;
+
 		default:
 			pObject->Destructor();
-
+			pObject = NULL;
 		}
 	}
 	_mapWideStaticObjects.clear();
@@ -162,6 +167,7 @@ MapMgr::~MapMgr()
 			pCorpse->RemoveFromWorld(false);
 
 		pCorpse->Destructor();
+		pCorpse = NULL;
 	}
 	m_corpses.clear();
 
@@ -1609,6 +1615,7 @@ void MapMgr::EventCorpseDespawn(uint64 guid)
 
 	pCorpse->Despawn();
 	pCorpse->Destructor();
+	pCorpse = NULL;
 }
 
 void MapMgr::TeleportPlayers()
@@ -1642,6 +1649,7 @@ void MapMgr::TeleportPlayers()
 			else
 			{
 				ptr->Destructor();
+				ptr = NULL;
 				m_PlayerStorage.erase(__player_iterator);
 			}
 		}

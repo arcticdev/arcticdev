@@ -977,9 +977,8 @@ void World::UpdateQueuedSessions(uint32 diff)
 		uint32 Position = 1;
 		while(iter != mQueuedSessions.end())
 		{
-			WorldSocket *tmpSocket = *iter;
+			(*iter)->UpdateQueuePosition(Position++);
 			++iter;
-			tmpSocket->UpdateQueuePosition(Position++);
 		}
 		queueMutex.Release();
 	}
