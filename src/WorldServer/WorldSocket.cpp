@@ -280,10 +280,9 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 		GMFlags.assign(ForcedPermissions->c_str());
 
 	DEBUG_LOG( "WorldSocket","Received information packet from logon: `%s` ID %u (request %u)", AccountName.c_str(), AccountID, mRequestID);
-//	sLog.outColor(TNORMAL, "\n");
 
 	mRequestID = 0;
-	//Pull the session key.
+	// Pull the session key.
 
 	BigNumber BNK;
 	recvData.read(K, 40);

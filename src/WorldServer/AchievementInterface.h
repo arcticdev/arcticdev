@@ -11,7 +11,6 @@
 struct AchievementData
 {
 	uint32 id;
-	string criteriaprogress;
 	bool completed;
 	uint32 date;
 	uint32 groupid;

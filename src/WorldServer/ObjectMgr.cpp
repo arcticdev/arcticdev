@@ -1533,7 +1533,7 @@ void ObjectMgr::LoadTrainers()
 
 			tr->SpellCount = (uint32)tr->Spells.size();
 
-			//and now we insert it to our lookup table
+			// and now we insert it to our lookup table
 			if(!tr->SpellCount)
 			{
 				if(tr->UIMessage)
@@ -2928,7 +2928,7 @@ bool ObjectMgr::CheckDeclinedNames( std::wstring mainpart, DeclinedName const& n
 	for(int i = 0; i < MAX_DECLINED_NAME_CASES; ++i)
 	{
 		std::wstring wname;
-		if(mainpart!=GetMainPartOfName(wname))
+		if(mainpart != GetMainPartOfName(wname))
 			return false;
 	}
 	return true;

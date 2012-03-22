@@ -4402,8 +4402,8 @@ void Spell::Heal(int32 amount)
 	if( p_caster != NULL )
 		p_caster->last_heal_spell=m_spellInfo;
 
-    //self healing shouldn't flag himself
-	if(p_caster != NULL&& playerTarget && p_caster != playerTarget)
+    // self healing shouldn't flag himself
+	if(p_caster != NULL && playerTarget && p_caster != playerTarget)
 	{
 		// Healing a flagged target will flag you.
 		if(playerTarget->IsPvPFlagged())
