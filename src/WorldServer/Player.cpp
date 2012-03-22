@@ -2123,8 +2123,8 @@ void Player::InitVisibleUpdateBits()
 	Player::m_visibleUpdateMask.SetBit(PLAYER_GUILDRANK);
 	Player::m_visibleUpdateMask.SetBit(UNIT_FIELD_BYTES_2);
 
-	for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i += 4)
-		Player::m_visibleUpdateMask.SetBit(i);
+    for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i += 4)
+        Player::m_visibleUpdateMask.SetBit(i);
 
     for(uint16 i = 0; i < EQUIPMENT_SLOT_END; ++i)
     {
@@ -2134,9 +2134,10 @@ void Player::InitVisibleUpdateBits()
         Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENTRYID + offset);
         // enchant
         Player::m_visibleUpdateMask.SetBit(PLAYER_VISIBLE_ITEM_1_ENCHANTMENT + offset);
+        offset = NULL; // Nullify
     }
 
-	Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
+    Player::m_visibleUpdateMask.SetBit(PLAYER_CHOSEN_TITLE);
 }
 
 void Player::DestroyForPlayer( Player* target ) const
@@ -2729,8 +2730,8 @@ void Player::RemovePendingPlayer()
 {
 	if(m_session)
 	{
-		uint8 respons = 0x42;		// CHAR_LOGIN_NO_CHARACTER
-		m_session->OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &respons);
+		uint8 response = CHAR_LOGIN_NO_CHARACTER;
+		m_session->OutPacket(SMSG_CHARACTER_LOGIN_FAILED, 1, &response);
 		m_session->m_loggingInPlayer = NULL;
 	}
 
@@ -2757,19 +2758,19 @@ bool Player::LoadFromDB(uint32 guid)
 	q->AddQuery("SELECT character_guid FROM social_friends WHERE friend_guid = %u", guid);
 	q->AddQuery("SELECT ignore_guid FROM social_ignores WHERE character_guid = %u", guid);
 
-	//Achievements
+	// Achievements
 	q->AddQuery("SELECT * from achievements WHERE player = %u", guid);
 
-	//skills
+	// skills
 	q->AddQuery("SELECT * FROM playerskills WHERE player_guid = %u AND type <> %u ORDER BY skill_id ASC, currentlvl DESC", guid,SKILL_TYPE_LANGUAGE ); //load skill, skip languages
 
-	//pet action bar
+	// pet action bar
 	q->AddQuery("SELECT * FROM playerpetactionbar WHERE ownerguid=%u ORDER BY petnumber", guid);
 
-	//Talents
+	// Talents
 	q->AddQuery("SELECT spec, tid, rank FROM playertalents WHERE guid = %u", guid);
 
-	//Glyphs
+	// Glyphs
 	q->AddQuery("SELECT * FROM playerglyphs WHERE guid = %u", guid);
 
 	//Spells
@@ -2787,7 +2788,6 @@ bool Player::LoadFromDB(uint32 guid)
 void Player::LoadFromDBProc(QueryResultVector & results)
 {
 	uint32 field_index = 2;
-#define get_next_field fields[field_index++]
 
 	// set playerinfo
 	m_playerInfo = objmgr.GetPlayerInfo(GetLowGUID());
@@ -2827,6 +2827,8 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 		RemovePendingPlayer();
 		return;
 	}
+
+#define get_next_field fields[field_index++]
 
 	// Load name
 	m_name = get_next_field.GetString();
