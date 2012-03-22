@@ -10,45 +10,45 @@
 // Fire Locations
 //////////////////////////////////////////////////////////////////////////
 
-const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
-
-	{		// Aid Station
+const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] =
+{
+	{	// Aid Station
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stormpike Graveyard
+	{	// Stormpike Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stonehearth Graveyard
+	{	// Stonehearth Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Snowfall graveyard
+	{	// Snowfall graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// coldtooth mine
+	{	// coldtooth mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// irondeep mine
+	{	// irondeep mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood gy
+	{	// iceblood gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf gy
+	{	// frostwolf gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf relief
+	{	// frostwolf relief
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar nth
+	{	// dun baldar nth
 		{ 667.917297f, -137.020660f, 63.645058f, 1.094849f },
 		{ 680.675903f, -125.554802f, 63.666199f, 0.089540f },
 		{ 685.923828f, -148.394562f, 56.618328f, 1.138047f },
@@ -59,7 +59,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar sth
+	{	// dun baldar sth
 		{ 568.422852f, -83.935478f, 51.942871f, 2.324003f },
 		{ 547.981018f, -93.095024f, 51.942841f, 0.898504f },
 		{ 549.647034f, -80.551971f, 44.820171f, 2.858073f },
@@ -70,7 +70,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// icewing
+	{	// icewing
 		{ 198.799316f, -361.116241f, 56.391476f, 5.363494f },
 		{ 217.211273f, -375.348236f, 56.368317f, 0.494023f },
 		{ 200.838547f, -362.912231f, 49.267738f, 2.708846f },
@@ -81,7 +81,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// stonehearth
+	{	// stonehearth
 		{ -162.115128f, -458.521393f, 40.389114f, 5.921130f },
 		{ -146.283035f, -451.985413f, 40.392101f, 1.593585f },
 		{ -154.911880f, -440.288513f, 33.280674f, 3.392147f },
@@ -92,7 +92,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood
+	{	// iceblood
 		{ -569.760010f, -263.288513f, 75.008682f, 2.104091f },
 		{ -570.742493f, -271.907837f, 74.988449f, 3.238992f },
 		{ -578.531372f, -253.600327f, 74.959206f, 0.647177f },
@@ -105,7 +105,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// tower point
+	{	// tower point
 		{ -769.523010f, -358.549561f, 68.635841f, 3.853180f },
 		{ -762.504395f, -362.904480f, 68.543678f, 5.730278f },
 		{ -761.258606f, -360.407471f, 72.666672f, 1.618719f },
@@ -118,7 +118,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// east frostwolf
+	{	// east frostwolf
 		{ -1304.755249f, -322.213409f, 91.419922f, 5.141234f },
 		{ -1304.633057f, -310.950684f, 91.677505f, 0.746931f },
 		{ -1301.672974f, -309.800598f, 95.747795f, 3.586145f },
@@ -131,7 +131,7 @@ const AVSpawnLocation g_fireLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// west frostwolf
+	{	// west frostwolf
 		{ -1299.614014f, -263.684998f, 114.151276f, 4.944896f },
 		{ -1297.918335f, -269.959930f, 114.151276f, 4.772108f },
 		{ -1304.088379f, -272.878387f, 114.098404f, 5.200147f },
@@ -167,67 +167,66 @@ z: 6.667575
 o: 2.295235
 */
 
-static uint32 g_unitWaypoints[4][2] = {
-	{  },
-};
+static uint32 g_unitWaypoints[4][2] = { {  }, };
 
 //////////////////////////////////////////////////////////////////////////
 // Initial Guard Locations
 //////////////////////////////////////////////////////////////////////////
 
-const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
+const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] =
+{
 
-	{		// Aid Station
+	{	// Aid Station
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stormpike Graveyard
+	{	// Stormpike Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Stonehearth Graveyard
+	{	// Stonehearth Graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// Snowfall graveyard
+	{	// Snowfall graveyard
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// coldtooth mine
+	{	// coldtooth mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// irondeep mine
+	{	// irondeep mine
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood gy
+	{	// iceblood gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf gy
+	{	// frostwolf gy
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// frostwolf relief
+	{	// frostwolf relief
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar nth
+	{	// dun baldar nth
 		{ 672.141296f, -120.239807f, 64.147659f, 2.379753f },
 		{ 664.585083f, -126.076088f, 64.120972f, 2.768524f },
 		{ 661.464905f, -137.339371f, 64.216965f, 3.436112f },
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// dun baldar sth
+	{	// dun baldar sth
 		{ 564.124146f, -71.107430f, 52.488060f, 1.300614f },
 		{ 571.863770f, -77.084518f, 52.367657f, 0.295303f },
 		{ 574.969543f, -90.801270f, 52.412132f, 5.910901f },
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// icewing
+	{	// icewing
 		{ 222.674530f, -378.605408f, 57.147060f, 5.577111f },
 		{ 210.093506f, -384.971558f, 56.793076f, 4.595366f },
 		{ 199.602188f, -380.995575f, 56.864891f, 3.754991f },
@@ -237,7 +236,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// stonehearth
+	{	// stonehearth
 		{ -139.692780f, -445.390533f, 40.982857f, 0.527005f },
 		{ -140.723969f, -457.597168f, 40.862610f, 5.643875f },
 		{ -148.143784f, -464.959808f, 40.933720f, 5.639948f },
@@ -247,7 +246,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// iceblood
+	{	// iceblood
 		{ -568.816711f, -255.542038f, 75.008690f, 1.025736f },
 		{ -580.106445f, -264.803497f, 74.931145f, 3.931711f },
 		{ -572.966248f, -271.499786f, 74.933746f, 4.198746f },
@@ -255,7 +254,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// tower point
+	{	// tower point
 		{ -760.347595f, -358.281586f, 90.885597f, 0.358147f },
 		{ -759.719116f, -367.059113f, 90.826775f, 5.722414f },
 		{ -768.441956f, -372.756653f, 90.933365f, 4.991992f },
@@ -264,7 +263,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// east frostwolf
+	{	// east frostwolf
 		{ -1297.069092f, -309.338623f, 113.769043f, 1.002180f },
 		{ -1293.462036f, -316.529602f, 113.774048f, 0.067557f },
 		{ -1298.062256f, -326.274994f, 113.820679f, 5.015566f },
@@ -274,7 +273,7 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 		{ 0.0f, 0.0f, 0.0f },
 	},
 
-	{		// west frostwolf
+	{	// west frostwolf
 		{ -1299.964233f, -275.591461f, 114.055862f, 1.241742f },
 		{ -1306.900757f, -268.969574f, 114.055481f, 3.464420f },
 		{ -1305.109375f, -261.103363f, 114.068550f, 2.298103f },
@@ -289,7 +288,8 @@ const AVSpawnLocation g_initalGuardLocations[AV_NUM_CONTROL_POINTS][30] = {
 //////////////////////////////////////////////////////////////////////////
 
 struct AVHomeNPC { uint32 id_a; uint32 id_h; float a_x; float a_y; float a_z; float a_o; float h_x; float h_y; float h_z; float h_o; };
-const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] = {
+const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] =
+{
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stormpike aid station
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stormpike graveyard
 	{ 0, 0, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },																		// stonehearth graveyard
@@ -313,11 +313,11 @@ const AVHomeNPC g_HomeNpcInfo[AV_NUM_CONTROL_POINTS] = {
 // Control Point Templates
 //////////////////////////////////////////////////////////////////////////
 
-static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
-	
+static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] =
+{
 	// name,						GY?		cap?	graveyard location
 	{ "Stormpike Aid Station",		true,	true,	{ 634.607971f, 47.408627f, 69.890488f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION														ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	639.184326f,	-31.640333f,	46.202557f,		1.3546723f,		0.9025853f,		-0.4305111f },
@@ -349,7 +349,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,						GY?		cap?	graveyard location
 	{ "Stormpike Graveyard",		true,	true,	{ 675.970947f, -373.707336f, 29.780785f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	670.904175f, -294.181641f, 30.283506f, 4.232887f,		0.4067366f, 0.9135454f },
@@ -381,7 +381,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,						GY?		cap?	graveyard location
 	{ "Stonehearth Graveyard",		true,	true,	{ 73.869370f, -495.597656f, 48.740143f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	78.367012f, -404.769928f, 47.051014f, 4.350670f,		0.2672384f, 0.9636304f	},
@@ -413,7 +413,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Snowfall Graveyard",		true,	true,	{ -161.472916f, 34.797512f, 77.191841f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	180418,		179286,		179284,		179287,		179285 },	-202.571854f, -112.612862f, 78.489014f, 1.666146f,		0.9366722f, 0.3502073f	},
@@ -445,7 +445,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Coldtooth Mine",			false,	true,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
@@ -477,7 +477,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Irondeep Mine",			false,	true,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			0,			0,			0,			0 },		0.0f, 0.0f, 0.0f, 0.0f,									0.0f, 0.0f	},
@@ -509,7 +509,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Iceblood Graveyard",		true,	true,	{ -531.067627f, -405.459778f, 49.552971f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	-611.891113f, -395.925751f, 60.798248f, 3.193738f,		0.9135455f, -0.4067366f	},
@@ -541,7 +541,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Frostwolf Graveyard",	true,	true,	{ -1088.008545f, -248.774918f, 57.680843f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	-1082.267578f, -344.454590f, 55.272388f, 1.579743f,		0.9025853f, -0.4305111f	},
@@ -573,7 +573,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Frostwolf Relief Hut",	true,	true,	{ -1500.063599f, -333.146393f, 101.133186f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	179286,		179286,		179284,		179287,		179285 },	-1401.263550f, -309.601624f, 89.412560f, 3.538534f,		0.4067366f, 0.9135454f	},
@@ -605,7 +605,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "North Dun Baldar Bunker",false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	673.361877f, -144.169357f, 63.651852f, 0.969958f,		0.2672384f, 0.9636304f	},
@@ -637,7 +637,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "South Dun Baldar Bunker",false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	552.990234f, -77.527374f, 51.926868f, 3.5410520f,		0.9366722f, 0.3502073f	},
@@ -669,7 +669,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Icewing Bunker",			false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	201.845840f, -358.886963f, 56.370701f, 5.403111f,		0.9135455f, -0.4067366f	},
@@ -701,7 +701,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Stonehearth Bunker",		false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,		179284,		179287,			0 },	-151.776291f, -439.776245f, 40.381840f, 4.319230f,		0.9025853f, -0.4305111f	},
@@ -733,7 +733,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Iceblood Tower",			false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{	0,			179286,			0,		179287,		179285 },	-572.502869f, -262.418365f, 75.008713f, 5.483192f,		0.4067366f, 0.9135454f	},
@@ -765,7 +765,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "Tower Point",			false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,			0,		179287,		179285 },	-767.986511f, -363.091064f, 90.894920f, 4.265791f,		0.2672384f, 0.9636304f	},
@@ -797,7 +797,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "East Frostwolf Tower",	false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,			0,		179287,		179285 },	-1302.814453f, -315.957458f, 113.867195f, 1.956738f,	0.9366722f, 0.3502073f	},
@@ -829,7 +829,7 @@ static AVNodeTemplate g_nodeTemplates[AV_NUM_CONTROL_POINTS] = {
 
 	// name,					GY?		cap?	graveyard location
 	{ "West Frostwolf Tower",	false,	false,	{ 0.0f, 0.0f, 0.0f },
-		
+
 		// control point definition, ids, position vector, rotations
 			//	NEUTRAL		A-ASS		A-CON		H-ASS		H-CON		POSITION												ROTATION
 		{	{		0,		179286,			0,		179287,		179285 },	-1296.913818f, -266.521271f, 114.151245f, 3.336680f,	0.9135455f, -0.4067366f	},
@@ -958,7 +958,7 @@ void AVNode::Assault(Player* plr)
 	if( m_destroyed )
 		return;
 
-	// are we returning the node to us? 
+	// are we returning the node to us?
 	if( ( plr->GetTeam() == 0 && m_lastState == AV_NODE_STATE_ALLIANCE_CONTROLLED ) ||
 		( plr->GetTeam() == 1 && m_lastState == AV_NODE_STATE_HORDE_CONTROLLED ) )
 	{
@@ -990,7 +990,7 @@ void AVNode::Assault(Player* plr)
 		// send message
 		m_bg->SendChatMessage(CHAT_MSG_BG_SYSTEM_ALLIANCE + plr->GetTeam(), 0, "%s claims the %s! If left unchallenged, the %s will control it!", plr->GetName(), m_template->m_name,
 			plr->GetTeam() ? "Horde" : "Alliance");
-		
+
 		plr->m_bgScore.MiscData[BG_SCORE_AV_GRAVEYARDS_ASSAULTED]++;
 	}
 	else
@@ -1166,9 +1166,9 @@ void AVNode::Spawn()
 	if( m_state == AV_NODE_STATE_ALLIANCE_CONTROLLED || m_state == AV_NODE_STATE_HORDE_CONTROLLED )
 	{
 		OUT_DEBUG("AVNode::Spawn(%s) : despawning guards", m_template->m_name);
-		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); itr++)
+		for(vector<Creature*>::iterator itr = m_guards.begin(); itr != m_guards.end(); ++itr)
 			(*itr)->Despawn(0, 0);
-		
+
 		m_guards.clear();
 
 		// spawn guards if needed
@@ -1225,7 +1225,7 @@ void AVNode::Spawn()
 			OUT_DEBUG("AVNode::Spawn(%s) : spawning spirit guide", m_template->m_name);
 
 			// spawn new spirit guide
-			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y, 
+			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y,
 				m_template->m_graveyardLocation.z, m_template->m_graveyardLocation.z, 0);
 
 			// add
@@ -1236,7 +1236,7 @@ void AVNode::Spawn()
 			OUT_DEBUG("AVNode::Spawn(%s) : spawning spirit guide", m_template->m_name);
 
 			// spawn new spirit guide
-			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y, 
+			m_spiritGuide = m_bg->SpawnSpiritGuide(m_template->m_graveyardLocation.x, m_template->m_graveyardLocation.y,
 				m_template->m_graveyardLocation.z, m_template->m_graveyardLocation.z, 1);
 
 			// add
@@ -1490,7 +1490,7 @@ void AlteracValley::OnCreate()
 				sm.CreateWorldState(g_nodeTemplates[i].m_worldStateFields[j], 0);
 		}
 	}
-	
+
 	for(uint32 x = 0; x < AV_NUM_CONTROL_POINTS; ++x)
 		m_nodes[x] = new AVNode(TO_ALTERACVALLEY(this), &g_nodeTemplates[x], x);
 
@@ -1510,13 +1510,13 @@ void AlteracValley::OnCreate()
 void AlteracValley::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	// open gates
-	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -1531,7 +1531,7 @@ void AlteracValley::OnStart()
 }
 
 void AlteracValley::OnAddPlayer(Player* plr)
-{	
+{
 	if(!m_started)
 		plr->CastSpell(plr, BG_PREPARATION, true);
 
@@ -1609,7 +1609,7 @@ void AlteracValley::HookOnUnitKill(Player* plr, Unit* pVictim)
 
 	WorldStateManager &sm = m_mapMgr->GetStateManager();
 
-	if(pVictim->GetEntry() == AV_NPC_GENERAL_VANNDAR_STORMPIKE) 
+	if(pVictim->GetEntry() == AV_NPC_GENERAL_VANNDAR_STORMPIKE)
 	{
 		Herald("The Stormpike General is dead!");
 		RemoveReinforcements( 0, AV_NUM_REINFORCEMENTS );
@@ -1645,26 +1645,30 @@ void AlteracValley::Finish(uint32 losingTeam)
 	sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 	/* add the marks of honor to all players */
+	SpellEntry * winner_spell = dbcSpell.LookupEntry(24955);
+	SpellEntry * loser_spell = dbcSpell.LookupEntry(24954);
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		uint32 diff = abs((int32)(m_reinforcements[i] - m_reinforcements[i ? 0 : 1]));
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->Root();
 
 			if( (*itr)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_AFK) )
 				continue;
 
-			uint32 item_count = (i == m_losingteam) ? 1 : 3;
-			uint8 slot = (*itr)->GetItemInterface()->GetInventorySlotById(20560);
-			if(slot != ITEM_NO_SLOT_AVAILABLE)
-				item_count += (*itr)->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, slot)->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
-			HonorHandler::UpdateCurrencyItem((*itr), 20560, item_count);
-
-			if(i != m_losingteam)
-				(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground((*itr)->GetMapId(), diff, (getMSTime() - m_startTime)/1000, this);
+			if(i == losingTeam)
+			{
+				(*itr)->CastSpell((*itr), loser_spell, true);
+				SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
+			}
+			else
+			{
+				(*itr)->CastSpell((*itr), winner_spell, true);
+				uint32 diff = abs((int32)(m_reinforcements[i] - m_reinforcements[i ? 0 : 1]));
+				(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+				SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
+			}
 		}
-
 		if (m_LiveCaptain[i])
 		{
 			GiveHonorToTeam(i, m_bonusHonor * 2);
@@ -1676,11 +1680,11 @@ void AlteracValley::Finish(uint32 losingTeam)
 			// skip non-graveyards
 			if( !m_nodes[x]->m_template->m_isGraveyard && !m_nodes[x]->m_destroyed &&
 				( (i == 0 && m_nodes[x]->m_template->m_defaultState == AV_NODE_STATE_ALLIANCE_CONTROLLED) ||
-				(i == 1 && m_nodes[x]->m_template->m_defaultState == AV_NODE_STATE_HORDE_CONTROLLED) ) )
+				  (i == 1 && m_nodes[x]->m_template->m_defaultState == AV_NODE_STATE_HORDE_CONTROLLED) ) )
 				towerSaved++;
 		}
 		if ( towerSaved > 0 )
-			GiveHonorToTeam(i, m_bonusHonor * 2 * towerSaved);
+		  GiveHonorToTeam(i, m_bonusHonor * 2 * towerSaved);
 		if (m_isWeekend)
 		{
 			GiveHonorToTeam(i, m_bonusHonor * 4);
@@ -1702,12 +1706,12 @@ struct AVLoot
 };
 
 const static AVLoot g_avLoot[] = {
-	
+
 	// Alliance Loot
 	{ 17306,	0,		100.0f, 1, 1 },			// Stormpike Soldier's Blood
 	{ 17326,	0,		80.0, 1, 1 },				// Stormpike Soldier's Meat
 
-	// Horde Loot	
+	// Horde Loot
 	{ 17423,	1,		50.0f, 1, 1 },			// Crystal Cluster
 
 	// Global loot
@@ -1795,11 +1799,11 @@ void AlteracValley::Herald(const char *format, ...)
 	m_mapMgr->SendPacketToPlayers(ZONE_MASK_ALL, FACTION_MASK_ALL, &data);
 }
 
-void AlteracValley::HookOnShadowSight() 
+void AlteracValley::HookOnShadowSight()
 {
 }
 
-void AlteracValley::SetIsWeekend(bool isweekend) 
+void AlteracValley::SetIsWeekend(bool isweekend)
 {
 	m_isWeekend = isweekend;
 }

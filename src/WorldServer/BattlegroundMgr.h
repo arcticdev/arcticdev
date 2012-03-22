@@ -134,7 +134,7 @@ class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>,
 
 	/* Max Id */
 	uint32 m_maxBattlegroundId;
-	
+
 	/* Queue System */
 	// Instance Id -> list<Player guid> [ BattlegroundType ] (instance 0 - first available)
 	list<uint32> m_queuedPlayers[BATTLEGROUND_NUM_TYPES][MAX_LEVEL_GROUP];

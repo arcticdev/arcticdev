@@ -11,121 +11,127 @@
 #define RESOURCES_WINVAL 1600
 #define RESOURCES_TO_GAIN_BH 200
 #define BASE_BH_GAIN 14
-uint32 buffentrys[3] = {180380,180362,180146};
 
+uint32 buffentrys[3] = {180380,180362,180146};
 
 /* AB Battleground Data */
 
-	static float GraveyardLocations[AB_NUM_CONTROL_POINTS][3] = {
-		{ 1201.869507f, 1163.130615f, -56.285969f },												// STABLES
-		{ 834.726379f, 784.978699f, -57.081944f },													// FARM
-		{ 1016.588318f, 955.184692f, -42.828693f },													// BLACKSMITH
-		{ 1211.523682f, 781.556946f, -82.709511f },													// MINE
-		{ 772.755676f, 1213.113770f, 15.797392f },													// LUMBERMILL
-	};
+static float GraveyardLocations[AB_NUM_CONTROL_POINTS][3] =
+{
+	{ 1201.869507f, 1163.130615f, -56.285969f },												// STABLES
+	{ 834.726379f, 784.978699f, -57.081944f },													// FARM
+	{ 1016.588318f, 955.184692f, -42.828693f },													// BLACKSMITH
+	{ 1211.523682f, 781.556946f, -82.709511f },													// MINE
+	{ 772.755676f, 1213.113770f, 15.797392f },													// LUMBERMILL
+};
 
-	static float NoBaseGYLocations[2][3] = {
-		{ 1354.699951f, 1270.270020f, -11.129100f },												// ALLIANCE
-		{ 713.710022f, 638.364014f, -10.599900f },													// HORDE
-	};
+static float NoBaseGYLocations[2][3] =
+{
+	{ 1354.699951f, 1270.270020f, -11.129100f },												// ALLIANCE
+	{ 713.710022f, 638.364014f, -10.599900f },													// HORDE
+};
 
-	static const char * ControlPointNames[AB_NUM_CONTROL_POINTS] = {
-		"Stable",																					// STABLE
-		"Farm",																						// FARM
-		"Blacksmith",																				// BLACKSMITH
-		"Mine",																						// MINE
-		"Lumber Mill",																				// LUMBERMILL
-	};
+static const char * ControlPointNames[AB_NUM_CONTROL_POINTS] =
+{
+	"Stable",																					// STABLE
+	"Farm",																						// FARM
+	"Blacksmith",																				// BLACKSMITH
+	"Mine",																						// MINE
+	"Lumber Mill",																				// LUMBERMILL
+};
 
-	static uint32 ControlPointGoIds[AB_NUM_CONTROL_POINTS][AB_NUM_SPAWN_TYPES] = {
-		  // NEUTRAL    ALLIANCE-ATTACK    HORDE-ATTACK    ALLIANCE-CONTROLLED    HORDE_CONTROLLED
-		{ 180087,       180085,            180086,         180076,                180078 },			// STABLE	
-		{ 180089,       180085,            180086,         180076,                180078 },			// FARM
-		{ 180088,       180085,            180086,         180076,                180078 },			// BLACKSMITH
-		{ 180091,       180085,            180086,         180076,                180078 },			// MINE
-		{ 180090,       180085,            180086,         180076,                180078 },			// LUMBERMILL
-	};
+static uint32 ControlPointGoIds[AB_NUM_CONTROL_POINTS][AB_NUM_SPAWN_TYPES] =
+{
+	// NEUTRAL    ALLIANCE-ATTACK    HORDE-ATTACK    ALLIANCE-CONTROLLED    HORDE_CONTROLLED
+	{ 180087,       180085,            180086,         180076,                180078 },			// STABLE
+	{ 180089,       180085,            180086,         180076,                180078 },			// FARM
+	{ 180088,       180085,            180086,         180076,                180078 },			// BLACKSMITH
+	{ 180091,       180085,            180086,         180076,                180078 },			// MINE
+	{ 180090,       180085,            180086,         180076,                180078 },			// LUMBERMILL
+};
 
-	static float ControlPointCoordinates[AB_NUM_CONTROL_POINTS][4] = {
-		{ 1166.779541f, 1200.147583f, -56.701763f, -2.251474f },									// STABLE
-		{ 806.2484741f, 874.2167358f, -55.9936981f, 0.8377580f },									// FARM
-		{ 977.0503540f, 1046.5208740f, -44.8276138f, 0.5410520f },									// BLACKSMITH
-		{ 1146.9224854f, 848.1899414f, -110.9200210f, 2.4260077f },									// MINE
-		{ 856.141907f, 1148.902100f, 11.184692f, -2.303835f },										// LUMBERMILL
-	};
+static float ControlPointCoordinates[AB_NUM_CONTROL_POINTS][4] =
+{
+	{ 1166.779541f, 1200.147583f, -56.701763f, -2.251474f },									// STABLE
+	{ 806.2484741f, 874.2167358f, -55.9936981f, 0.8377580f },									// FARM
+	{ 977.0503540f, 1046.5208740f, -44.8276138f, 0.5410520f },									// BLACKSMITH
+	{ 1146.9224854f, 848.1899414f, -110.9200210f, 2.4260077f },									// MINE
+	{ 856.141907f, 1148.902100f, 11.184692f, -2.303835f },										// LUMBERMILL
+};
 
-	static float ControlPointRotations[AB_NUM_CONTROL_POINTS][2] = {
-		{ 0.9025853f, -0.4305111f },																// STABLE
-		{ 0.4067366f, 0.9135454f },																	// FARM
-		{ 0.2672384f, 0.9636304f },																	// BLACKSMITH
-		{ 0.9366722f, 0.3502073f },																	// MINE
-		{ 0.9135455f, -0.4067366f },																// LUMBERMILL
-	};
+static float ControlPointRotations[AB_NUM_CONTROL_POINTS][2] =
+{
+	{ 0.9025853f, -0.4305111f },																// STABLE
+	{ 0.4067366f, 0.9135454f },																	// FARM
+	{ 0.2672384f, 0.9636304f },																	// BLACKSMITH
+	{ 0.9366722f, 0.3502073f },																	// MINE
+	{ 0.9135455f, -0.4067366f },																// LUMBERMILL
+};
 
-	static float BuffCoordinates[AB_NUM_CONTROL_POINTS][4] = {
-		{ 1185.56616210938f, 1184.62854003906f, -56.3632850646973f, 2.30383467674255f },			// STABLE
-		{ 990.113098144531f, 1008.73028564453f, -42.6032752990723f, 0.820304811000824f },			// FARM
-		{ 816.906799f, 842.339844f, -56.538746f, 3.272740f },										// BLACKSMITH
-		{ 808.846252441406f, 1185.41748046875f, 11.9216051101685f, -0.663225054740906f },			// MINE
-		{ 1147.09057617188f, 816.836242675781f, -98.3989562988281f, -0.226892784237862f },			// LUMBERMILL
-	};
+static float BuffCoordinates[AB_NUM_CONTROL_POINTS][4] =
+{
+	{ 1185.56616210938f, 1184.62854003906f, -56.3632850646973f, 2.30383467674255f },			// STABLE
+	{ 990.113098144531f, 1008.73028564453f, -42.6032752990723f, 0.820304811000824f },			// FARM
+	{ 816.906799f, 842.339844f, -56.538746f, 3.272740f },										// BLACKSMITH
+	{ 808.846252441406f, 1185.41748046875f, 11.9216051101685f, -0.663225054740906f },			// MINE
+	{ 1147.09057617188f, 816.836242675781f, -98.3989562988281f, -0.226892784237862f },			// LUMBERMILL
+};
 
-	static float BuffRotations[AB_NUM_CONTROL_POINTS][2] = {
-		{ 0.913545489311218f, 0.406736612319946f },													// STABLE
-		{ 0.39874908328056f, 0.917060077190399f },													// FARM
-		{ 0.913545489311218f, 0.406736612319946f },													// BLACKSMITH
-		{ 0.325568109750748f, -0.945518612861633f },												// MINE
-		{ 0.113203197717667f, -0.993571877479553f },												// LUMBERMILL
-	};
+static float BuffRotations[AB_NUM_CONTROL_POINTS][2] =
+{
+	{ 0.913545489311218f, 0.406736612319946f },													// STABLE
+	{ 0.39874908328056f, 0.917060077190399f },													// FARM
+	{ 0.913545489311218f, 0.406736612319946f },													// BLACKSMITH
+	{ 0.325568109750748f, -0.945518612861633f },												// MINE
+	{ 0.113203197717667f, -0.993571877479553f },												// LUMBERMILL
+};
 
-	static uint32 AssaultFields[AB_NUM_CONTROL_POINTS][2] = {
-		{ WORLDSTATE_AB_CAPTURING_STABLES_ALLIANCE, WORLDSTATE_AB_CAPTURING_STABLES_HORDE },		// STABLE
-		{ WORLDSTATE_AB_CAPTURING_FARM_ALLIANCE, WORLDSTATE_AB_CAPTURING_FARM_HORDE },				// FARM
-		{ WORLDSTATE_AB_CAPTURING_BLACKSMITH_ALLIANCE, WORLDSTATE_AB_CAPTURING_BLACKSMITH_HORDE },	// BLACKSMITH
-		{ WORLDSTATE_AB_CAPTURING_GOLDMINE_ALLIANCE, WORLDSTATE_AB_CAPTURING_GOLDMINE_HORDE },		// MINE
-		{ WORLDSTATE_AB_CAPTURING_LUMBERMILL_ALLIANCE, WORLDSTATE_AB_CAPTURING_LUMBERMILL_HORDE },	// LUMBERMILL
-	};
+static uint32 AssaultFields[AB_NUM_CONTROL_POINTS][2] =
+{
+	{ WORLDSTATE_AB_CAPTURING_STABLES_ALLIANCE, WORLDSTATE_AB_CAPTURING_STABLES_HORDE },		// STABLE
+	{ WORLDSTATE_AB_CAPTURING_FARM_ALLIANCE, WORLDSTATE_AB_CAPTURING_FARM_HORDE },				// FARM
+	{ WORLDSTATE_AB_CAPTURING_BLACKSMITH_ALLIANCE, WORLDSTATE_AB_CAPTURING_BLACKSMITH_HORDE },	// BLACKSMITH
+	{ WORLDSTATE_AB_CAPTURING_GOLDMINE_ALLIANCE, WORLDSTATE_AB_CAPTURING_GOLDMINE_HORDE },		// MINE
+	{ WORLDSTATE_AB_CAPTURING_LUMBERMILL_ALLIANCE, WORLDSTATE_AB_CAPTURING_LUMBERMILL_HORDE },	// LUMBERMILL
+};
 
-	static uint32 OwnedFields[AB_NUM_CONTROL_POINTS][2] = {
-		{ WORLDSTATE_AB_CAPTURED_STABLES_ALLIANCE, WORLDSTATE_AB_CAPTURED_STABLES_HORDE },			// STABLE
-		{ WORLDSTATE_AB_CAPTURED_FARM_ALLIANCE, WORLDSTATE_AB_CAPTURED_FARM_HORDE },				// FARM
-		{ WORLDSTATE_AB_CAPTURED_BLACKSMITH_ALLIANCE, WORLDSTATE_AB_CAPTURED_BLACKSMITH_HORDE },	// BLACKSMITH
-		{ WORLDSTATE_AB_CAPTURED_GOLDMINE_ALLIANCE, WORLDSTATE_AB_CAPTURED_GOLDMINE_HORDE },		// MINE
-		{ WORLDSTATE_AB_CAPTURED_LUMBERMILL_ALLIANCE, WORLDSTATE_AB_CAPTURED_LUMBERMILL_HORDE },	// LUMBERMILL
-	};
+static uint32 OwnedFields[AB_NUM_CONTROL_POINTS][2] =
+{
+	{ WORLDSTATE_AB_CAPTURED_STABLES_ALLIANCE, WORLDSTATE_AB_CAPTURED_STABLES_HORDE },			// STABLE
+	{ WORLDSTATE_AB_CAPTURED_FARM_ALLIANCE, WORLDSTATE_AB_CAPTURED_FARM_HORDE },				// FARM
+	{ WORLDSTATE_AB_CAPTURED_BLACKSMITH_ALLIANCE, WORLDSTATE_AB_CAPTURED_BLACKSMITH_HORDE },	// BLACKSMITH
+	{ WORLDSTATE_AB_CAPTURED_GOLDMINE_ALLIANCE, WORLDSTATE_AB_CAPTURED_GOLDMINE_HORDE },		// MINE
+	{ WORLDSTATE_AB_CAPTURED_LUMBERMILL_ALLIANCE, WORLDSTATE_AB_CAPTURED_LUMBERMILL_HORDE },	// LUMBERMILL
+};
 
-	static uint32 NeutralFields[AB_NUM_CONTROL_POINTS] = {
-		WORLDSTATE_AB_SHOW_STABLE_ICON,
-		WORLDSTATE_AB_SHOW_FARM_ICON,
-		WORLDSTATE_AB_SHOW_BACKSMITH_ICON,
-		WORLDSTATE_AB_SHOW_GOLDMINE_ICON,
-		WORLDSTATE_AB_SHOW_LUMBERMILL_ICON,
-	};
+static uint32 NeutralFields[AB_NUM_CONTROL_POINTS] =
+{
+	WORLDSTATE_AB_SHOW_STABLE_ICON,
+	WORLDSTATE_AB_SHOW_FARM_ICON,
+	WORLDSTATE_AB_SHOW_BACKSMITH_ICON,
+	WORLDSTATE_AB_SHOW_GOLDMINE_ICON,
+	WORLDSTATE_AB_SHOW_LUMBERMILL_ICON,
+};
 
-	static uint32 ResourceUpdateIntervals[6] = {
-		0,
-		12000,
-		9000,
-		6000,
-		3000,
-		1000,
-	};
+static uint32 ResourceUpdateIntervals[6] =
+{
+	0,
+	12000,
+	9000,
+	6000,
+	3000,
+	1000,
+};
 
-	static uint32 PointBonusPerUpdate[6] = {
-		0,
-		10,
-		10,
-		10,
-		10,
-		30,
-	};
-
-/*								<10 <20 <30 <40 <50 <60 <70 70  80
-static int resHonorTable[9] = { 0,  0,  4,  7,  11, 19, 20, 20, 30 };
-static int winHonorTable[9] = { 0,  0,  4,  7,  11, 19, 20, 20, 30 };
-
-static uint32 resourcesToGainBH = 330;
-*/
+static uint32 PointBonusPerUpdate[6] =
+{
+	0,
+	10,
+	10,
+	10,
+	10,
+	30,
+};
 
 /* End BG Data */
 
@@ -196,7 +202,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 			break;
 
 		default:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 35);		// neutral
+			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 35); // neutral
 			break;
 		}
 
@@ -227,7 +233,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 			break;
 
 		default:
-			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 35);		// neutral
+			m_controlPoints[Id]->SetUInt32Value(GAMEOBJECT_FACTION, 35); // neutral
 			break;
 		}
 
@@ -235,12 +241,12 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPoints[Id]->PushToWorld(m_mapMgr);
 	}
 
-	if(gi_aura == NULL)
+	if(gi_aura==NULL)
 	{
 		// remove it if it exists
-		if(m_controlPointAuras[Id] != NULL && m_controlPointAuras[Id]->IsInWorld())
+		if(m_controlPointAuras[Id]!=NULL && m_controlPointAuras[Id]->IsInWorld())
 			m_controlPointAuras[Id]->RemoveFromWorld(false);
-			
+
 		return;
 	}
 
@@ -266,7 +272,7 @@ void ArathiBasin::SpawnControlPoint(uint32 Id, uint32 Type)
 		m_controlPointAuras[Id]->SetUInt32Value(GAMEOBJECT_DISPLAYID, gi_aura->DisplayID);
 		m_controlPointAuras[Id]->SetInfo(gi_aura);
 		m_controlPointAuras[Id]->PushToWorld(m_mapMgr);
-	}	
+	}
 }
 
 void ArathiBasin::OnCreate()
@@ -318,61 +324,61 @@ void ArathiBasin::OnCreate()
 	sm.CreateWorldState(0x745, 0x02); // unknown
 
 	// Icon stuff for on the map
-	sm.CreateWorldState(WORLDSTATE_AB_SHOW_BACKSMITH_ICON, 			 0x01);
-	sm.CreateWorldState(WORLDSTATE_AB_SHOW_FARM_ICON, 				  0x01);
-	sm.CreateWorldState(WORLDSTATE_AB_SHOW_LUMBERMILL_ICON, 			0x01);
-	sm.CreateWorldState(WORLDSTATE_AB_SHOW_GOLDMINE_ICON, 			 0x01);
-	sm.CreateWorldState(WORLDSTATE_AB_SHOW_STABLE_ICON, 			0x01);
+	sm.CreateWorldState(WORLDSTATE_AB_SHOW_BACKSMITH_ICON, 0x01);
+	sm.CreateWorldState(WORLDSTATE_AB_SHOW_FARM_ICON, 0x01);
+	sm.CreateWorldState(WORLDSTATE_AB_SHOW_LUMBERMILL_ICON, 0x01);
+	sm.CreateWorldState(WORLDSTATE_AB_SHOW_GOLDMINE_ICON, 0x01);
+	sm.CreateWorldState(WORLDSTATE_AB_SHOW_STABLE_ICON, 0x01);
 
 	// LumberMill
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_LUMBERMILL_HORDE, 	   0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_LUMBERMILL_ALLIANCE, 	0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_LUMBERMILL_HORDE, 		0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_LUMBERMILL_ALLIANCE, 	 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_LUMBERMILL_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_LUMBERMILL_ALLIANCE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_LUMBERMILL_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_LUMBERMILL_ALLIANCE, 0x00);
 
 	// GoldMine
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_GOLDMINE_HORDE, 		 0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_GOLDMINE_ALLIANCE, 	  0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_GOLDMINE_HORDE, 		  0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_GOLDMINE_ALLIANCE, 	   0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_GOLDMINE_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_GOLDMINE_ALLIANCE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_GOLDMINE_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_GOLDMINE_ALLIANCE, 0x00);
 
 	// BlackSmith
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_BLACKSMITH_HORDE, 	   0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_BLACKSMITH_ALLIANCE, 	0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_BLACKSMITH_HORDE, 		0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_BLACKSMITH_ALLIANCE, 	 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_BLACKSMITH_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_BLACKSMITH_ALLIANCE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_BLACKSMITH_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_BLACKSMITH_ALLIANCE, 0x00);
 
-	sm.CreateWorldState(WORLDSTATE_AB_MAX_SCORE, 						RESOURCES_WINVAL);
-	sm.CreateWorldState(WORLDSTATE_AB_ALLIANCE_CAPTUREBASE, 			 0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_HORDE_CAPTUREBASE, 				0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_HORDE_RESOURCES, 				  0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_ALLIANCE_RESOURCES, 			   0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_MAX_SCORE, RESOURCES_WINVAL);
+	sm.CreateWorldState(WORLDSTATE_AB_ALLIANCE_CAPTUREBASE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_HORDE_CAPTUREBASE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_HORDE_RESOURCES, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_ALLIANCE_RESOURCES, 0x00);
 
 	// Farm
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_FARM_ALLIANCE, 		 0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_FARM_HORDE, 			 0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_FARM_HORDE, 			  0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_FARM_ALLIANCE, 		   0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_FARM_ALLIANCE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_FARM_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_FARM_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_FARM_ALLIANCE, 0x00);
 
 	// Stables
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_STABLES_HORDE, 		  0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_STABLES_ALLIANCE, 	   0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_STABLES_HORDE, 		   0x00);
-	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_STABLES_ALLIANCE, 		0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_STABLES_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURING_STABLES_ALLIANCE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_STABLES_HORDE, 0x00);
+	sm.CreateWorldState(WORLDSTATE_AB_CAPTURED_STABLES_ALLIANCE, 0x00);
 }
 
 void ArathiBasin::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
 		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	// open gates
-	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(list< GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -519,34 +525,33 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 		sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
 
 		/* add the marks of honor to all players */
+		SpellEntry * winner_spell = dbcSpell.LookupEntry(24953);
+		SpellEntry * loser_spell = dbcSpell.LookupEntry(24952);
 		for(uint32 i = 0; i < 2; ++i)
 		{
-			uint32 diff = abs((int32)(m_resources[i] - m_resources[i ? 0 : 1]));
-			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
 				(*itr)->Root();
 
 				if( (*itr)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_AFK) )
 					continue;
 
-				uint32 item_count = (i == m_losingteam) ? 1 : 3;
-				uint8 slot = (*itr)->GetItemInterface()->GetInventorySlotById(20559);
-				if(slot != ITEM_NO_SLOT_AVAILABLE)
-					item_count += (*itr)->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, slot)->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
-				HonorHandler::UpdateCurrencyItem((*itr), 20559, item_count);
-				if(i != m_losingteam)
+				if(i == m_losingteam)
 				{
-					(*itr)->m_bgScore.BonusHonor += 2*m_bonusHonor;
-					HonorHandler::AddHonorPointsToPlayer((*itr), 2*m_bonusHonor);
+					(*itr)->CastSpell((*itr), loser_spell, true);
+					(*itr)->m_bgScore.BonusHonor += m_bonusHonor;
+					HonorHandler::AddHonorPointsToPlayer((*itr), m_bonusHonor);
+					SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 				}
 				else
 				{
-					(*itr)->m_bgScore.BonusHonor += m_bonusHonor;
-					HonorHandler::AddHonorPointsToPlayer((*itr), m_bonusHonor);
+					(*itr)->CastSpell((*itr), winner_spell, true);
+					(*itr)->m_bgScore.BonusHonor += 2*m_bonusHonor;
+					HonorHandler::AddHonorPointsToPlayer((*itr), 2*m_bonusHonor);
+					uint32 diff = abs((int32)(m_resources[i] - m_resources[i ? 0 : 1]));
+					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+					SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 				}
-
-				if(i != m_losingteam)
-					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground((*itr)->GetMapId(), diff, (getMSTime() - m_startTime)/1000, this);
 			}
 		}
 	}
@@ -617,27 +622,27 @@ void ArathiBasin::HookOnAreaTrigger(Player* plr, uint32 id)
 	int32 buffslot = -1;
 	switch(id)
 	{
-	case 3866:			// stables
-		buffslot=AB_BUFF_STABLES;
+	case 3866: // stables
+		buffslot = AB_BUFF_STABLES;
 		break;
 
-	case 3867:			// farm
-		buffslot=AB_BUFF_FARM;		
+	case 3867: // farm
+		buffslot = AB_BUFF_FARM;
 		break;
 
-	case 3870:			// blacksmith
-		buffslot=AB_BUFF_BLACKSMITH;
+	case 3870: // blacksmith
+		buffslot = AB_BUFF_BLACKSMITH;
 		break;
 
-	case 3869:			// mine
-		buffslot=AB_BUFF_MINE;
+	case 3869: // mine
+		buffslot = AB_BUFF_MINE;
 		break;
 
-	case 3868:			// lumbermill
-		buffslot=AB_BUFF_LUMBERMILL;
+	case 3868: // lumbermill
+		buffslot = AB_BUFF_LUMBERMILL;
 		break;
 
-	case 3948:			// alliance/horde exits
+	case 3948: // alliance/horde exits
 	case 3949:
 		{
 			RemovePlayer(plr,false);
@@ -650,8 +655,8 @@ void ArathiBasin::HookOnAreaTrigger(Player* plr, uint32 id)
 		break;
 	}
 
-	if(plr->isDead())		// dont apply to dead players... :P
-		return;	
+	if(plr->isDead()) // dont apply to dead players... :P
+		return;
 
 	uint32 x = (uint32)buffslot;
 	if(m_buffs[x] && m_buffs[x]->IsInWorld())
@@ -712,7 +717,7 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 	if(m_basesAssaultedBy[Id] != (int32)Team)
 		return;
 
-	
+
 	m_basesLastOwnedBy[Id] = Team;
 
 	m_flagIsVirgin[Id] = false;
@@ -734,7 +739,7 @@ void ArathiBasin::CaptureControlPoint(uint32 Id, uint32 Team)
 	// send the chat message/sounds out
 	PlaySoundToAll(Team ? SOUND_HORDE_SCORES : SOUND_ALLIANCE_SCORES);
 	SendChatMessage(Team ? CHAT_MSG_BG_SYSTEM_HORDE : CHAT_MSG_BG_SYSTEM_ALLIANCE, 0, "The %s has taken the %s!", Team ? "Horde" : "Alliance", ControlPointNames[Id]);
-	
+
 	// update the overhead display on the clients (world states)
 	m_capturedBases[Team]++;
 	m_mapMgr->GetStateManager().UpdateWorldState(Team ? WORLDSTATE_AB_HORDE_CAPTUREBASE : WORLDSTATE_AB_ALLIANCE_CAPTUREBASE, m_capturedBases[Team]);
@@ -850,7 +855,7 @@ void ArathiBasin::AssaultControlPoint(Player* pPlayer, uint32 Id)
 		sEventMgr.RemoveEvents(this, EVENT_AB_CAPTURE_CP_1 + Id);
 
 		// no need to remove the spawn, SpawnControlPoint will do this.
-	} 
+	}
 
 	m_basesAssaultedBy[Id] = Team;
 
@@ -858,8 +863,7 @@ void ArathiBasin::AssaultControlPoint(Player* pPlayer, uint32 Id)
 	SpawnControlPoint(Id, Team ? AB_SPAWN_TYPE_HORDE_ASSAULT : AB_SPAWN_TYPE_ALLIANCE_ASSAULT);
 
 	// send out the chat message and sound
-	SendChatMessage(Team ? CHAT_MSG_BG_SYSTEM_HORDE : CHAT_MSG_BG_SYSTEM_ALLIANCE, pPlayer->GetGUID(), "$N claims the %s! If left unchallenged, the %s will control it in 1 minute!", ControlPointNames[Id],
-		Team ? "Horde" : "Alliance");
+	SendChatMessage(Team ? CHAT_MSG_BG_SYSTEM_HORDE : CHAT_MSG_BG_SYSTEM_ALLIANCE, pPlayer->GetGUID(), "$N claims the %s! If left unchallenged, the %s will control it in 1 minute!", ControlPointNames[Id], Team ? "Horde" : "Alliance");
 
 	// guessed
 	PlaySoundToAll(Team ? SOUND_ALLIANCE_CAPTURE : SOUND_HORDE_CAPTURE);
@@ -894,18 +898,18 @@ bool ArathiBasin::HookSlowLockOpen( GameObject* pGo, Player* pPlayer, Spell* pSp
 void ArathiBasin::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 {
 	// add some money
-	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f;			// fix this later
+	float gold = ((float(plr->getLevel()) / 2.5f)+1) * 100.0f; // fix this later
 	gold *= sWorld.getRate(RATE_MONEY);
 
 	// set it
 	pCorpse->m_loot.gold = float2int32(gold);
 }
 
-void ArathiBasin::HookOnShadowSight() 
+void ArathiBasin::HookOnShadowSight()
 {
 }
 
-void ArathiBasin::SetIsWeekend(bool isweekend) 
+void ArathiBasin::SetIsWeekend(bool isweekend)
 {
 	m_isWeekend = isweekend;
 	if (isweekend)

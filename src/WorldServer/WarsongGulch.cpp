@@ -170,7 +170,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 			m_homeFlags[plr->GetTeam()]->PushToWorld(m_mapMgr);
 
 		/* give each player on that team a bonus according to flagHonorTable */
-		for(set< Player* >::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); itr++)
+		for(set< Player*>::iterator itr = m_players[plr->GetTeam()].begin(); itr != m_players[plr->GetTeam()].end(); ++itr)
 		{
 			(*itr)->m_bgScore.BonusHonor += m_FlagCaptureHonor;
 			HonorHandler::AddHonorPointsToPlayer((*itr), m_FlagCaptureHonor);
@@ -189,32 +189,32 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 
 			m_mainLock.Acquire();
 			/* add the marks of honor to all players */
+			SpellEntry * winner_spell = dbcSpell.LookupEntry(24951);
+			SpellEntry * loser_spell = dbcSpell.LookupEntry(24950);
 			for(uint32 i = 0; i < 2; ++i)
 			{
-				for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+				for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				{
 					(*itr)->Root();
 
 					if( (*itr)->HasFlag(PLAYER_FLAGS, PLAYER_FLAG_AFK) )
 						continue;
 
-					uint32 item_count = (i == m_losingteam) ? 1 : 3;
-					uint8 slot = (*itr)->GetItemInterface()->GetInventorySlotById(20558);
-					if(slot != ITEM_NO_SLOT_AVAILABLE)
-						item_count += (*itr)->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, slot)->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
-					HonorHandler::UpdateCurrencyItem((*itr), 20558, item_count);
-
 					if(i == m_losingteam)
 					{
 						(*itr)->m_bgScore.BonusHonor += m_CompleteHonor;
 						HonorHandler::AddHonorPointsToPlayer((*itr), m_CompleteHonor);
+						(*itr)->CastSpell((*itr), loser_spell, true);
+						SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 					}
 					else
 					{
 						(*itr)->m_bgScore.BonusHonor += m_CompleteHonor + m_WinHonor;
 						HonorHandler::AddHonorPointsToPlayer((*itr), m_CompleteHonor + m_WinHonor);
+						(*itr)->CastSpell((*itr), winner_spell, true);
 						uint32 diff = abs(int32(m_scores[i] - m_scores[i ? 0 : 1]));
 						(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+						SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 					}
 				}
 			}
@@ -450,7 +450,7 @@ bool WarsongGulch::HookHandleRepop(Player* plr)
 
 void WarsongGulch::SpawnBuff(uint32 x)
 {
-    switch(x)
+	switch(x)
 	{
 	case 0:
 		m_buffs[x] = SpawnGameObject(179871, 1449.9296875f, 1470.70971679688f, 342.634552001953f, -1.64060950279236f, 0, 114, 1);
@@ -554,13 +554,13 @@ void WarsongGulch::OnCreate()
 void WarsongGulch::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i) {
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++) {
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr) {
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
 	}
 
 	/* open the gates */
-	for(list<GameObject* >::iterator itr = m_gates.begin(); itr != m_gates.end(); itr++)
+	for(list<GameObject*>::iterator itr = m_gates.begin(); itr != m_gates.end(); ++itr)
 	{
 		(*itr)->SetUInt32Value(GAMEOBJECT_FLAGS, 64);
 		(*itr)->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 0);
@@ -610,5 +610,3 @@ void WarsongGulch::SetIsWeekend(bool isweekend)
 		m_CompleteHonor = 2*HonorHandler::CalculateHonorPointsFormula(m_lgroup*10,m_lgroup*10);
 	}
 }
-
-

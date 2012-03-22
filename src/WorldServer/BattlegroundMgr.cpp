@@ -232,7 +232,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 	if ( m_session->GetPlayer()->HasActiveAura(BG_DESERTER) && !m_session->HasGMPermissions() )
 	{
-		m_session->GetPlayer()->GetSession()->SendNotification("You have been marked as a Deserter.");
+		m_session->SendNotification("You have been marked as a Deserter.");
 		return;
 	}
 
@@ -337,7 +337,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 void ErasePlayerFromList(uint32 guid, list<uint32>* l)
 {
-	for(list<uint32>::iterator itr = l->begin(); itr != l->end(); itr++)
+	for(list<uint32>::iterator itr = l->begin(); itr != l->end(); ++itr)
 	{
 		if((*itr) == guid)
 		{
@@ -912,7 +912,7 @@ CBattleground::~CBattleground()
 	for(uint32 i = 0; i < 2; ++i)
 	{
 		PlayerInfo *inf;
-		for(uint32 j = 0; j < m_groups[i]->GetSubGroupCount(); ++j) 
+		for(uint32 j = 0; j < m_groups[i]->GetSubGroupCount(); ++j)
 		{
 			for(GroupMembersSet::iterator itr = m_groups[i]->GetSubGroup(j)->GetGroupMembersBegin(); itr != m_groups[i]->GetSubGroup(j)->GetGroupMembersEnd();)
 			{
@@ -1013,7 +1013,7 @@ void CBattleground::BuildPvPUpdateDataPacket(WorldPacket * data)
 
 			if( (*itr)->m_isGmInvisible && bs->DamageDone < (500*(*itr)->getLevel()))
 				continue; // We have about about 20k
-				
+
 			*data << bs->KillingBlows;
 
 			if(IsArena())
@@ -1573,7 +1573,7 @@ void CBattleground::RemovePlayer(Player* plr, bool logout)
 		plr->SetUInt32Value(UNIT_FIELD_HEALTH, plr->GetUInt32Value(UNIT_FIELD_MAXHEALTH));
 		plr->ResurrectPlayer(NULL);
 	}
-	
+
 	/* teleport out */
 	if(!logout)
 	{
@@ -1655,22 +1655,22 @@ void CBattleground::EventCountdown()
 	if(m_countdownStage == 1)
 	{
 		m_countdownStage = 2;
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "One minute until the battle for %s begins!", GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The battle for %s begins in 2 minutes.", GetName() );
 	}
 	else if(m_countdownStage == 2)
 	{
 		m_countdownStage = 3;
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "Thirty seconds until the battle for %s begins!", GetName() );
-		sEventMgr.ModifyEventTimeAndTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 15000);
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The battle for %s begins in 1 minute.", GetName() );
+		sEventMgr.ModifyEventTimeAndTimeLeft(this, EVENT_BATTLEGROUND_COUNTDOWN, 30000);
 	}
 	else if(m_countdownStage == 3)
 	{
 		m_countdownStage = 4;
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "Fifteen seconds until the battle for %s begins!", GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The battle for %s begins in 30 seconds. Prepare yourselves!", GetName() );
 	}
 	else
 	{
-		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "The battle for %s has begun!", GetName() );
+		SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "Let the battle for %s begin!", GetName() );
 		sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_COUNTDOWN);
 		Start();
 	}
@@ -1696,7 +1696,7 @@ void CBattleground::Close()
 		for(itr = m_players[i].begin(); itr != m_players[i].end();)
 		{
 			plr = *itr;
-			itr++;
+			++itr;
 			RemovePlayer(plr, false);
 		}
 
@@ -1706,7 +1706,7 @@ void CBattleground::Close()
 			++it2;
 			plr = objmgr.GetPlayer(guid);
 
-			if(plr != NULL)
+			if(plr!=NULL)
 				RemovePendingPlayer(plr);
 			else
 				m_pendPlayers[i].erase(guid);
@@ -1843,12 +1843,12 @@ void CBattleground::EventResurrectPlayers()
 	WorldPacket data(50);
 	for(i = m_resurrectMap.begin(); i != m_resurrectMap.end(); ++i)
 	{
-		for(itr = i->second.begin(); itr != i->second.end(); itr++)
+		for(itr = i->second.begin(); itr != i->second.end(); ++itr)
 		{
 			plr = m_mapMgr->GetPlayer(*itr);
 			if(plr && plr->isDead())
 			{
-                data.Initialize(SMSG_SPELL_START);
+				data.Initialize(SMSG_SPELL_START);
 				data << plr->GetNewGUID() << plr->GetNewGUID() << uint32(RESURRECT_SPELL) << uint8(0) << uint16(0) << uint32(0) << uint16(2) << plr->GetGUID();
 				plr->SendMessageToSet(&data, true);
 
@@ -1924,18 +1924,18 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 				break;
 
 			case BATTLEGROUND_ARENA_3V3:
-				maxplayers = 3;
+				maxplayers=3;
 				teamType = ARENA_TEAM_TYPE_3V3;
 				break;
 
 			case BATTLEGROUND_ARENA_5V5:
-				maxplayers = 5;
+				maxplayers=5;
 				teamType = ARENA_TEAM_TYPE_5V5;
 				break;
 
 			case BATTLEGROUND_ARENA_2V2:
 			default:
-				maxplayers = 2;
+				maxplayers=2;
 				teamType = ARENA_TEAM_TYPE_2V2;
 				break;
 			}
@@ -2068,7 +2068,7 @@ void CBattleground::QueueAtNearestSpiritGuide(Player* plr, Creature* old)
 	set<uint32> *closest = NULL;
 	m_lock.Acquire();
 	map<Creature*, set<uint32> >::iterator itr = m_resurrectMap.begin();
-	for(; itr != m_resurrectMap.end(); itr++)
+	for(; itr != m_resurrectMap.end(); ++itr)
 	{
 		if( itr->first == old )
 			continue;

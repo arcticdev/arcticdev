@@ -297,7 +297,7 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player* plr, uint32 id)
 	* 1 towers controlled = 75 points
 	* 2 towers controlled = 85 points
 	* 3 towers controlled = 100 points
-	* 4 towers controlled = 500 points 
+	* 4 towers controlled = 500 points
 	*/
 
 	// 25 is guessed
@@ -316,16 +316,16 @@ void EyeOfTheStorm::HookOnAreaTrigger(Player* plr, uint32 id)
 		m_mapMgr->GetStateManager().UpdateWorldState( WORLDSTATE_EOTS_FLAG_NEUTRAL_DISPLAY, 1 );
 	}
 	// else bg ended
-	
+
 	plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
 }
 
 void EyeOfTheStorm::HookOnPlayerDeath(Player* plr)
 {
-		
+
 	if(plr->m_bgHasFlag)
 		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
-	
+
 	plr->m_bgHasFlag = false;
 	plr->m_bgScore.Deaths++;
 	UpdatePvPData();
@@ -399,7 +399,7 @@ void EyeOfTheStorm::OnRemovePlayer(Player* plr)
 		plr->RemoveAura( EOTS_NETHERWING_FLAG_SPELL );
 		//DropFlag( plr );
 	}
-	
+
 	if(!m_started)
 		plr->RemoveAura(BG_PREPARATION);
 }
@@ -414,9 +414,9 @@ void EyeOfTheStorm::DropFlag(Player* plr)
 	plr->CastSpell(plr, BG_RECENTLY_DROPPED_FLAG, true);
 
 	/*
-	* let's apply the same rules as wsg, reallocate guid, 
-	* reposition, spawn.
-	*/
+	 * let's apply the same rules as wsg, reallocate guid,
+	 * reposition, spawn.
+	 */
 
 	m_dropFlag->SetNewGuid(m_mapMgr->GenerateGameobjectGuid());
 	m_dropFlag->SetPosition( plr->GetPosition() );
@@ -500,20 +500,20 @@ void EyeOfTheStorm::OnCreate()
 	sm.CreateWorldState(WORLDSTATE_EOTS_HORDE_BASES, 0);
 
 	sm.CreateWorldState(WORLDSTATE_EOTS_PVP_CAPTURE_BAR_DISPLAY, 0);
-	sm.CreateWorldState(WORLDSTATE_EOTS_PVP_CAPTURE_BAR_VALUE, 0);	
+	sm.CreateWorldState(WORLDSTATE_EOTS_PVP_CAPTURE_BAR_VALUE, 0);
 
 	sm.CreateWorldState(WORLDSTATE_EOTS_DRAENEI_RUINS_HORDE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_DRAENEI_RUINS_ALLIANCE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_DRAENEI_RUINS_NETURAL_DISPLAY, 1);
-	
+
 	sm.CreateWorldState(WORLDSTATE_EOTS_MAGE_TOWER_ALLIANCE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_MAGE_TOWER_HORDE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_MAGE_TOWER_NETURAL_DISPLAY, 1);
-	
+
 	sm.CreateWorldState(WORLDSTATE_EOTS_FELREAVER_RUINS_HORDE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_FELREAVER_RUINS_ALLIANCE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_FELREAVER_RUINS_NETURAL_DISPLAY, 1);
-	
+
 	sm.CreateWorldState(WORLDSTATE_EOTS_BLOODELF_TOWER_HORDE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_BLOODELF_TOWER_ALLIANCE_DISPLAY, 0);
 	sm.CreateWorldState(WORLDSTATE_EOTS_BLOODELF_TOWER_NEUTRAL_DISPLAY, 1);
@@ -606,8 +606,8 @@ void EyeOfTheStorm::UpdateCPs()
 	//   the value of the map is a timestamp of the last update, to avoid cpu time wasted
 	//   doing lookups of objects that have already been updated
 
-	unordered_set<Player*>::iterator itr;
-	unordered_set<Player*>::iterator itrend;
+	unordered_set<Player*  >::iterator itr;
+	unordered_set<Player*  >::iterator itrend;
 	map<uint32,uint32>::iterator it2, it3;
 	uint32 timeptr = (uint32)UNIXTIME;
 	bool in_range;
@@ -621,8 +621,8 @@ void EyeOfTheStorm::UpdateCPs()
 		itrend = m_CPStatusGO[i]->GetInRangePlayerSetEnd();
 		plrcounts[0] = plrcounts[1] = 0;
 
-		for(; itr != itrend; itr++)
-		{ 
+		for(; itr != itrend; ++itr)
+		{
 			if( !(*itr)->IsPvPFlagged() || (*itr)->InStealth() || (*itr)->m_invisible || (*itr)->SchoolImmunityList[0] || (*itr)->m_bgFlagIneligible )
 				is_valid = false;
 			else
@@ -719,7 +719,7 @@ void EyeOfTheStorm::UpdateCPs()
 			if( m_CPBanner[i] && m_CPBanner[i]->GetEntry() != EOTS_BANNER_NEUTRAL )
 			{
 				// has to be below or equal to 50, or above/equal
-				if( ( m_CPBanner[i]->GetEntry() == EOTS_BANNER_ALLIANCE && m_CPStatus[i] <= 50 ) || 
+				if( ( m_CPBanner[i]->GetEntry() == EOTS_BANNER_ALLIANCE && m_CPStatus[i] <= 50 ) ||
 					( m_CPBanner[i]->GetEntry() == EOTS_BANNER_HORDE && m_CPStatus[i] >= 50 ) )
 				{
 					if( m_CPBanner[i] && m_CPBanner[i]->GetEntry() == EOTS_BANNER_ALLIANCE )
@@ -738,7 +738,7 @@ void EyeOfTheStorm::UpdateCPs()
 						if( m_towerCount[1] < 0 )
 							m_towerCount[1] = 0;
 
-						
+
 						m_mapMgr->GetStateManager().UpdateWorldState( WORLDSTATE_EOTS_HORDE_BASES, m_towerCount[1] );
 					}
 
@@ -801,7 +801,7 @@ void EyeOfTheStorm::UpdateCPs()
 			if( delta > 25 )
 				delta = 25;
 
-			
+
 			m_CPStatus[i] -= delta;
 			if( m_CPStatus[i] > 100 )
 				m_CPStatus[i] = 100;
@@ -823,7 +823,7 @@ void EyeOfTheStorm::GeneratePoints()
 	* 1 tower controlled = 1 point/tick (0.5 points per second)
 	* 2 towers controlled = 2 points/tick (1 point per second)
 	* 3 towers controlled = 5 points/tick (2.5 points per second)
-	* 4 towers controlled = 10 points/tick (5 points per second) 
+	* 4 towers controlled = 10 points/tick (5 points per second)
 
 	*/
 	uint32 pointspertick[5] = { 0, 1, 2, 5, 10 };
@@ -888,7 +888,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 		for(uint32 i = 0; i < 2; ++i)
 		{
-			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
 				(*itr)->Root();
 
@@ -902,6 +902,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 				{
 					(*itr)->m_bgScore.BonusHonor += 2*m_bonusHonor;
 					HonorHandler::AddHonorPointsToPlayer( (*itr), 2*m_bonusHonor );
+					SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 				}
 				else
 				{
@@ -909,12 +910,41 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					HonorHandler::AddHonorPointsToPlayer( (*itr), m_bonusHonor );
 					uint32 diff = abs((int32)(m_points[i] - m_points[i ? 0 : 1]));
 					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+					SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This battleground will close in 2 minutes.");
 				}
 
-				uint8 slot = (*itr)->GetItemInterface()->GetInventorySlotById(EOTS_MARK_ID);
-				if(slot != ITEM_NO_SLOT_AVAILABLE)
-					item_count += (*itr)->GetItemInterface()->GetInventoryItem(INVENTORY_SLOT_NOT_SET, slot)->GetUInt32Value( ITEM_FIELD_STACK_COUNT );
-				HonorHandler::UpdateCurrencyItem((*itr), EOTS_MARK_ID, item_count);
+				Item* pReward;
+				SlotResult res;
+				if( ( pReward = (*itr)->GetItemInterface()->FindItemLessMax(EOTS_MARK_ID, item_count, false) ) == NULL )
+				{
+					res = (*itr)->GetItemInterface()->FindFreeInventorySlot( ItemPrototypeStorage.LookupEntry(EOTS_MARK_ID) );
+					if( !res.Result )
+					{
+						(*itr)->BroadcastMessage("Could not add EOTS mark. Make sure you have room in your inventory.");
+						continue;
+					}
+
+					pReward = objmgr.CreateItem(EOTS_MARK_ID, (*itr));
+					pReward->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count);
+					pReward->m_isDirty = true;
+					if( !(*itr)->GetItemInterface()->SafeAddItem(pReward, res.ContainerSlot, res.Slot) )
+					{
+						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot(pReward) )
+						{
+							pReward->Destructor();
+						}
+					}
+					(*itr)->GetSession()->SendItemPushResult(pReward,true,false,true,false,res.ContainerSlot,res.Slot, item_count);
+				}
+				else
+				{
+					pReward->m_isDirty = true;
+					pReward->ModUnsigned32Value(ITEM_FIELD_STACK_COUNT, item_count);
+
+					res.ContainerSlot = (*itr)->GetItemInterface()->GetBagSlotByGuid(pReward->GetGUID());
+					res.Slot = -1;
+					(*itr)->GetSession()->SendItemPushResult(pReward,true,false,true,true,res.ContainerSlot,res.Slot, item_count);
+				}
 			}
 		}
 		UpdatePvPData();
@@ -978,7 +1008,7 @@ void EyeOfTheStorm::SpawnBuff(uint32 x)
 
 LocationVector EyeOfTheStorm::GetStartingCoords(uint32 Team)
 {
-	return LocationVector( EOTSStartLocations[Team][0], 
+	return LocationVector( EOTSStartLocations[Team][0],
 		EOTSStartLocations[Team][1],
 		EOTSStartLocations[Team][2] );
 }
@@ -987,7 +1017,7 @@ void EyeOfTheStorm::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); itr++)
+		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 		{
 			(*itr)->RemoveAura(BG_PREPARATION);
 		}
@@ -996,7 +1026,7 @@ void EyeOfTheStorm::OnStart()
 	uint32 i;
 
 	/* start the events */
-	sEventMgr.AddEvent(TO_EYEOFTHESTORM(this), &EyeOfTheStorm::GeneratePoints, EVENT_EOTS_GIVE_POINTS, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(TO_EYEOFTHESTORM(this), &EyeOfTheStorm::GeneratePoints, EVENT_EOTS_GIVE_POINTS, 1600, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 	sEventMgr.AddEvent(TO_EYEOFTHESTORM(this), &EyeOfTheStorm::UpdateCPs, EVENT_EOTS_CHECK_CAPTURE_POINT_STATUS, 5000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	/* spirit guides */
@@ -1024,11 +1054,11 @@ void EyeOfTheStorm::HookGenerateLoot(Player* plr, Corpse* pCorpse)
 	pCorpse->m_loot.gold = float2int32(gold);
 }
 
-void EyeOfTheStorm::HookOnShadowSight() 
+void EyeOfTheStorm::HookOnShadowSight()
 {
 }
 
-void EyeOfTheStorm::SetIsWeekend(bool isweekend) 
+void EyeOfTheStorm::SetIsWeekend(bool isweekend)
 {
 	m_isWeekend = isweekend;
 	if (isweekend)

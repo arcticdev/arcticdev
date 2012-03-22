@@ -89,7 +89,7 @@ void Arena::OnAddPlayer(Player* plr)
 		return;
 
 	// remove all buffs (exclude talents, include flasks)
-	for(uint32 x = 0; x < MAX_AURAS; x++)
+	for(uint32 x = 0 ; x < MAX_AURAS; x++)
 	{
 		if(plr->m_auras[x])
 		{
@@ -498,12 +498,13 @@ void Arena::Finish()
 	sEventMgr.RemoveEvents(this, EVENT_BATTLEGROUND_CLOSE);
 	sEventMgr.RemoveEvents(this, EVENT_ARENA_SHADOW_SIGHT);
 	sEventMgr.AddEvent(TO_CBATTLEGROUND(this), &CBattleground::Close, EVENT_BATTLEGROUND_CLOSE, 120000, 1,0);
+	SendChatMessage( CHAT_MSG_BG_SYSTEM_NEUTRAL, 0, "|cffffff00This arena will close in 2 minutes.");
 
-	for(int i = 0; i < 2; i++)
+	for(int i = 0; i < 2; ++i)
 	{
 		bool victorious = (i != m_losingteam);
 		set<Player*  >::iterator itr = m_players[i].begin();
-		for(; itr != m_players[i].end(); itr++)
+		for(; itr != m_players[i].end(); ++itr)
 		{
 			Player* plr = (Player* )(*itr);
 			plr->Root();
@@ -574,11 +575,11 @@ LocationVector Arena::GetStartingCoords(uint32 Team)
 		/* The Ring of Valor */
 	case 618:
 		{
-			//temp workaround
+			// temp workaround
 			if(Team)
 				return LocationVector(763.56f, -274.0f, 28.27f/*3.55f*/);
 			else
-				return LocationVector(763.93f, -295.01f, 28.27f/*3.55f*/);
+				return LocationVector(763.93f, -295.01f, 30.0f/*3.55f*/);
 		}break;
 	}
 
