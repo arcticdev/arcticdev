@@ -289,7 +289,7 @@ bool ChatHandler::HandleAppearCommand(const char* args, WorldSession *m_session)
 		return false;
 
 	Player* chr = objmgr.GetPlayer(args, false);
-	if (chr)
+	if(chr && chr->IsInWorld())
 	{
 		char buf[256];
 		if( chr->IsBeingTeleported() ) {
