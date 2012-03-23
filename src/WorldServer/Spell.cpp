@@ -3640,9 +3640,9 @@ uint8 Spell::CanCast(bool tolerate)
 					}
 				}
 
-				if( m_spellInfo->EffectApplyAuraName[0] == 2)//mind control
+				if( m_spellInfo->EffectApplyAuraName[0] == 2) // mind control
 				{
-					if( m_spellInfo->EffectBasePoints[0])//got level req;
+					if( m_spellInfo->EffectBasePoints[0]) // got level req;
 					{
 						if((int32)target->getLevel() > m_spellInfo->EffectBasePoints[0]+1 + int32(p_caster->getLevel() - m_spellInfo->spellLevel))
 							return SPELL_FAILED_HIGHLEVEL;
@@ -3659,7 +3659,7 @@ uint8 Spell::CanCast(bool tolerate)
 			// scripted spell stuff
 			switch(m_spellInfo->Id)
 			{
-				case 603: //curse of doom, can't be casted on players
+				case 603: // curse of doom, can't be casted on players
 				case 30910:
 				case 47867:
 				{
@@ -3675,23 +3675,23 @@ uint8 Spell::CanCast(bool tolerate)
 
 				// disable spell
 				case 25997: // Eye for an Eye
-				case 38554: //Absorb Eye of Grillok
+				case 38554: // Absorb Eye of Grillok
 				{
 					// do not allow spell to be cast
 					return SPELL_FAILED_SPELL_UNAVAILABLE;
 				}break;
 
-				//These spells are NPC only.
-				case 25166: //Call Glyphs of Warding
-				case 38892: //Shadow Bolt
-				case 40536: //Chain Lightning
-				case 41078: //Shadow Blast
+				// These spells are NPC only.
+				case 25166: // Call Glyphs of Warding
+				case 38892: // Shadow Bolt
+				case 40536: // Chain Lightning
+				case 41078: // Shadow Blast
 				{
 					if(u_caster->IsPlayer())
 						return SPELL_FAILED_BAD_TARGETS;
 				}break;
 
-				case 982: //Revive Pet
+				case 982: // Revive Pet
 				{
 					Pet* pPet = p_caster->GetSummon();
 					if(pPet && !pPet->isDead())
@@ -3726,27 +3726,14 @@ uint8 Spell::CanCast(bool tolerate)
 				if(target->IsUnit() && (TO_CREATURE(target)->Skinned) )
 					return SPELL_FAILED_TARGET_UNSKINNABLE;
 
-			// pet's owner stuff
-			/*if (m_spellInfo->EffectImplicitTargetA[0] == 27 ||
-				m_spellInfo->EffectImplicitTargetA[1] == 27 ||
-				m_spellInfo->EffectImplicitTargetA[2] == 27)
-			{
-				if (!target->IsPlayer())
-					return SPELL_FAILED_TARGET_NOT_PLAYER; //if you are there something is very wrong
-			}*/
-
 			// target 39 is fishing, all fishing spells are handled
-			if( m_spellInfo->EffectImplicitTargetA[0] == 39 )//||
-			 //m_spellInfo->EffectImplicitTargetA[1] == 39 ||
-			 //m_spellInfo->EffectImplicitTargetA[2] == 39)
+			if( m_spellInfo->EffectImplicitTargetA[0] == 39 )
 			{
 				uint32 entry = m_spellInfo->EffectMiscValue[0];
 				if(entry == GO_FISHING_BOBBER)
 				{
-					//uint32 mapid = p_caster->GetMapId();
-					float px=u_caster->GetPositionX();
-					float py=u_caster->GetPositionY();
-					//float pz=u_caster->GetPositionZ();
+					float px = u_caster->GetPositionX();
+					float py = u_caster->GetPositionY();
 					float orient = m_caster->GetOrientation();
 					float posx = 0,posy = 0,posz = 0;
 					float co = cos(orient);
@@ -3754,12 +3741,10 @@ uint8 Spell::CanCast(bool tolerate)
 					MapMgr* map = m_caster->GetMapMgr();
 
 					float r;
-					for(r=20; r>10; r--)
+					for(r = 20; r > 10; r--)
 					{
 						posx = px + r * co;
 						posy = py + r * si;
-						/*if(!(map->GetWaterType(posx,posy) & 1))//water
-							continue;*/
 						posz = map->GetWaterHeight(posx,posy);
 						if(posz > map->GetLandHeight(posx,posy))//water
 							break;
@@ -3776,11 +3761,11 @@ uint8 Spell::CanCast(bool tolerate)
 
 			if( p_caster != NULL )
 			{
-				if( m_spellInfo->NameHash == SPELL_HASH_GOUGE )// Gouge
+				if( m_spellInfo->NameHash == SPELL_HASH_GOUGE ) // Gouge
 					if(!target->isInFront(p_caster))
 						return SPELL_FAILED_NOT_INFRONT;
 
-				if( m_spellInfo->Category==1131)//Hammer of wrath, requires target to have 20- % of hp
+				if( m_spellInfo->Category==1131) // Hammer of wrath, requires target to have 20- % of hp
 				{
 					if(target->GetUInt32Value(UNIT_FIELD_HEALTH) == 0)
 						return SPELL_FAILED_BAD_TARGETS;
@@ -3788,7 +3773,7 @@ uint8 Spell::CanCast(bool tolerate)
 					if(target->GetUInt32Value(UNIT_FIELD_MAXHEALTH)/target->GetUInt32Value(UNIT_FIELD_HEALTH)<5)
 						 return SPELL_FAILED_BAD_TARGETS;
 				}
-				else if( m_spellInfo->Category == 672)//Conflagrate, requires immolation spell on victim
+				else if( m_spellInfo->Category == 672) // Conflagrate, requires immolation spell on victim
 				{
 					if(!target->HasAuraVisual(46))
 						return SPELL_FAILED_BAD_TARGETS;

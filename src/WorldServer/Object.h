@@ -156,14 +156,12 @@ public:
 	typedef unordered_set<Object*> InRangeSet;
 	typedef std::map<string, void*> ExtensionSet;
 
-	virtual ~Object ( );
-	virtual void Destructor();
+	virtual ~Object();
 	virtual void Init();
 
 	virtual void Update ( uint32 time ) { }
 	// True if object exists in world
- 
-	
+
 	ARCTIC_INLINE bool IsInWorld() { return m_mapMgr != NULL; }
 	virtual void AddToWorld();
 	virtual void AddToWorld(MapMgr* pMapMgr);

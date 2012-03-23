@@ -187,22 +187,22 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 		{
 			if(pPMapinfo != NULL && !(pPMapinfo->type == INSTANCE_NULL || pPMapinfo->type == INSTANCE_PVP))
 			{
-				data << uint8(0x01); //show ?
+				data << uint8(0x01); // show ?
 				data << pCorpse->GetMapId(); // mapid (that tombstones shown on)
 				data << pCorpse->GetPositionX();
 				data << pCorpse->GetPositionY();
 				data << pCorpse->GetPositionZ();
-				data << pCorpse->GetMapId(); //instance mapid (needs to be same as mapid to be able to recover corpse)
+				data << pCorpse->GetMapId(); // instance mapid (needs to be same as mapid to be able to recover corpse)
 				SendPacket(&data);
 			}
 			else
 			{
-				data << uint8(0x01); //show ?
+				data << uint8(0x01); // show ?
 				data << pPMapinfo->repopmapid; // mapid (that tombstones shown on)
 				data << pPMapinfo->repopx;
 				data << pPMapinfo->repopy;
 				data << pPMapinfo->repopz;
-				data << pCorpse->GetMapId(); //instance mapid (needs to be same as mapid to be able to recover corpse)
+				data << pCorpse->GetMapId(); // instance mapid (needs to be same as mapid to be able to recover corpse)
 				data << uint32(0); // 3.2.2
 				SendPacket(&data);
 			}
@@ -211,12 +211,12 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket &recv_data)
 		{
 
 			data.Initialize(MSG_CORPSE_QUERY);
-			data << uint8(0x01); //show ?
+			data << uint8(0x01); // show ?
 			data << pCorpse->GetMapId(); // mapid (that tombstones shown on)
 			data << pCorpse->GetPositionX();
 			data << pCorpse->GetPositionY();
 			data << pCorpse->GetPositionZ();
-			data << pCorpse->GetMapId(); //instance mapid (needs to be same as mapid to be able to recover corpse)
+			data << pCorpse->GetMapId(); // instance mapid (needs to be same as mapid to be able to recover corpse)
 			data << uint32(0); // 3.2.2
 			SendPacket(&data);
 

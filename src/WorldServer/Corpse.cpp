@@ -41,7 +41,6 @@ void Corpse::Destructor()
 	delete this;
 }
 
-
 void Corpse::Create( Player* owner, uint32 mapid, float x, float y, float z, float ang )
 {
 	Object::_Create( mapid, x, y, z, ang);

@@ -4421,9 +4421,9 @@ void Aura::SpellAuraModIncreaseHealth(bool apply)
 			m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH,amt);
 		else
 		{
-			if((int32)m_target->GetUInt32Value(UNIT_FIELD_HEALTH)>-amt)//watch it on remove value is negative
+			if((int32)m_target->GetUInt32Value(UNIT_FIELD_HEALTH)>-amt) // watch it on remove value is negative
 				m_target->ModUnsigned32Value(UNIT_FIELD_HEALTH,amt);
-			else m_target->SetUInt32Value(UNIT_FIELD_HEALTH,1); //do not kill player but do strip him good
+			else m_target->SetUInt32Value(UNIT_FIELD_HEALTH,1); // do not kill player but do strip him good
 		}
 		TO_PLAYER( m_target )->SetHealthFromSpell(TO_PLAYER( m_target )->GetHealthFromSpell() + amt);
 		TO_PLAYER( m_target )->UpdateStats();

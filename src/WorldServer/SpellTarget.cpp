@@ -829,7 +829,7 @@ void Spell::SpellTargetChainTargeting(uint32 i, uint32 j)
 			for(itr = pGroup->GetGroupMembersBegin();
 				itr != pGroup->GetGroupMembersEnd(); itr++)
 			{
-				if(!(*itr)->m_loggedInPlayer || (*itr)->m_loggedInPlayer==u_caster || (*itr)->m_loggedInPlayer->GetUInt32Value(UNIT_FIELD_HEALTH) == (*itr)->m_loggedInPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH))
+				if(!(*itr)->m_loggedInPlayer || (*itr)->m_loggedInPlayer == u_caster || (*itr)->m_loggedInPlayer->GetUInt32Value(UNIT_FIELD_HEALTH) == (*itr)->m_loggedInPlayer->GetUInt32Value(UNIT_FIELD_MAXHEALTH))
 					continue;
 				if(IsInrange(u_caster->GetPositionX(),u_caster->GetPositionY(),u_caster->GetPositionZ(),(*itr)->m_loggedInPlayer, range))
 				{

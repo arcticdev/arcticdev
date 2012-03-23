@@ -2308,6 +2308,11 @@ void WorldSession::HandleGameobjReportUseOpCode( WorldPacket& recv_data )
 	uint64 guid;
 	recv_data >> guid;
 	GameObject* gameobj = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
+	if(gameobj != NULL)
+	{
+		if(gameobj->CanActivate())
+			sQuestMgr.OnGameObjectActivate(_player, gameobj);
+	}
 }
 
 void WorldSession::HandleReadyForAccountDataTimes(WorldPacket& recv_data)
