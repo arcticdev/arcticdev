@@ -228,9 +228,6 @@ public:
 	void LoadAllCells();
 	ARCTIC_INLINE size_t GetPlayerCount() { return m_PlayerStorage.size(); }
 
-	void DespawnEvent(uint8 eventToRemove);
-	void SpawnEvent(uint8 eventId);
-
 	void _PerformObjectDuties();
 	uint32 mLoopCounter;
 	uint32 lastGameobjectUpdate;

@@ -15,7 +15,7 @@ class TerrainMgr;
 
 struct Formation;
 
-typedef struct EventIdInfo
+typedef struct
 {
 	uint8  eventid;
 	uint8  eventchangesflag;
@@ -26,9 +26,9 @@ typedef struct EventIdInfo
 	uint32 eventitem3;
 }EventIdInfo;
 
-typedef struct CreatureSpawn
+typedef struct
 {
-	uint32	id;//spawn ID
+	uint32	id; // spawn ID
 	uint32	entry;
 	float	x;
 	float	y;
@@ -43,7 +43,7 @@ typedef struct CreatureSpawn
 	uint32 bytes1;
 	uint32 bytes2;
 	uint32 emote_state;
-	//uint32 respawnNpcLink;
+	// uint32 respawnNpcLink;
 	uint16 channel_spell;
 	uint32 channel_target_go;
 	uint32 channel_target_creature;
@@ -51,13 +51,11 @@ typedef struct CreatureSpawn
 	uint32 MountedDisplayID;
 	int32 phase;
 	uint32 vehicle;
-	uint8 eventid;
-	EventIdInfo * eventinfo;
 }CreatureSpawn;
 
-typedef struct GOSpawn
+typedef struct
 {
-	uint32	id;//spawn ID
+	uint32	id; // spawn ID
 	uint32	entry;
 	float	x;
 	float	y;
@@ -69,12 +67,10 @@ typedef struct GOSpawn
 	float	facing;
 	uint32	flags;
 	uint32	state;
-	uint32 MountDisplayID;
+	uint32  MountDisplayID;
 	uint32	faction;
-	float scale;
-	int32 phase;
-	uint8 eventid;
-	EventIdInfo * eventinfo;
+	float   scale;
+	int32   phase;
 } GOSpawn;
 
 typedef std::vector<CreatureSpawn*> CreatureSpawnList;

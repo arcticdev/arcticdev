@@ -320,7 +320,6 @@
     <ClCompile Include="..\..\src\WorldServer\Guild.cpp" />
     <ClCompile Include="..\..\src\WorldServer\GuildHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\HonorHandler.cpp" />
-    <ClCompile Include="..\..\src\WorldServer\EventsSystem.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Item.cpp" />
     <ClCompile Include="..\..\src\WorldServer\ItemHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\ItemInterface.cpp" />

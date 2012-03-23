@@ -19,8 +19,6 @@ DayWatcherThread::DayWatcherThread()
 {
 	m_threadRunning = true;
 	m_dirty = false;
-	m_creatureEventSpawnMaps.clear();
-	m_gameobjectEventSpawnMaps.clear();
 }
 
 DayWatcherThread::~DayWatcherThread()
@@ -87,7 +85,6 @@ void DayWatcherThread::load_settings()
 	else
 		last_eventid_time = 0;
 
-	LoadEventIdSettings();
 }
 
 void DayWatcherThread::set_tm_pointers()
@@ -157,15 +154,13 @@ bool DayWatcherThread::run()
 #ifdef WIN32
 	m_abortEvent = CreateEvent(NULL, NULL, FALSE, NULL);
 #else
-
 	struct timeval now;
 	struct timespec tv;
 
 	pthread_mutex_init(&abortmutex,NULL);
 	pthread_cond_init(&abortcond,NULL);
 #endif
-	uint32 interv = 120000;//Daywatcher check interval (in ms), must be >> 30secs !
-	uint32 counter = 0;
+	uint32 interv = 120000; // Daywatcher check interval (in ms), must be >> 30secs !
 
 	while(m_threadRunning)
 	{
@@ -177,10 +172,7 @@ bool DayWatcherThread::run()
 			update_arena();
 
 		if(has_timeout_expired(&local_currenttime, &local_last_daily_reset_time, DAILY))
-		{
 			update_daily();
-			runEvents = true;
-		}
 
 		// reset will occur daily between 07:59:00 CET and 08:01:30 CET (players inside will get 60 sec countdown)
 		// 8AM = 25200s
@@ -194,146 +186,6 @@ bool DayWatcherThread::run()
 		if(m_heroic_reset && umod > 25140 + (interv/1000) + 30 )
 			m_heroic_reset = false;
 
-		if(has_timeout_expired(&local_currenttime, &local_last_eventid_time, HOURLY))
-		{
-			Log.Notice("DayWatcherThread", "Running Hourly In Game Events checks...");
-			for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
-			{
-				if(!(*itr)->eventbyhour)
-					continue;
-
-				if((*itr)->isactive)
-				{
-					if((*itr)->lastactivated && !CheckHourlyEvent(&local_currenttime, (*itr)->starthour, (*itr)->endhour))
-					{
-						(*itr)->isactive = false;
-						SpawnEventId((*itr)->eventId, false);
-						update_event_settings((*itr)->eventId,0);
-					}
-					else
-					{
-						if((*itr)->lastactivated && _firstrun[0])
-						{
-							if(!SpawnEventId((*itr)->eventId))
-									break;
-						}
-						if(!(*itr)->lastactivated)
-						{
-						time_t activated = (*itr)->lastactivated = UNIXTIME;
-						update_event_settings((*itr)->eventId, activated);
-						runEvents = true;
-						}
-						continue;
-					}
-				}
-				else
-				{
-					if(CheckHourlyEvent(&local_currenttime, (*itr)->starthour, (*itr)->endhour))
-					{
-						if(!SpawnEventId((*itr)->eventId))
-							break;
-
-						(*itr)->isactive = true;
-						time_t activated = (*itr)->lastactivated = UNIXTIME;
-						update_event_settings((*itr)->eventId, activated);
-						continue;
-					}
-				}
-			}
-			_firstrun[0] = false;
-			last_eventid_time = UNIXTIME;
-			dupe_tm_pointer(localtime(&last_eventid_time), &local_last_eventid_time);
-			m_dirty = true;
-		}
-
-		if(runEvents = true) // We run checks every 2 minutes.
-		{
-			if(_loaded)
-			{
-				runEvents = false;
-				bool monthexpired = false;
-				counter++;
-				/* If we used sWorld.SpamWaitTime, we would do counter == (sWorld.SpamWaitTime/2 + 3)
-				This would be say 30 minutes in config, so 30/2 = 15 + 2 = 17 and we set counter to 2
-				every time so 17 - 2 = 15 so 15x2 for every two minutes = 30 minutes timings.*/
-				if(counter <= 2) // First ticks
-				{
-					Log.Notice("DayWatcherThread", "Running In Game Events checks...");
-				}
-				if(counter == 17/*15 + 2*/) // Tick every 30 minutes and reset.
-				{
-					Log.Notice("DayWatcherThread", "Running In Game Events checks...");
-					counter = 2;
-				}
-
-				for(EventsList::iterator itr = m_eventIdList.begin(); itr != m_eventIdList.end(); itr++)
-				{
-					if((*itr)->eventbyhour)
-						continue;
-
-					if((*itr)->isactive)
-					{
-						if((*itr)->lastactivated && has_eventid_expired((*itr)->activedays, (*itr)->lastactivated))
-						{
-							(*itr)->isactive = false;
-							SpawnEventId((*itr)->eventId, false);
-							update_event_settings((*itr)->eventId,0);
-						}
-						else
-						{
-							if((*itr)->lastactivated && _firstrun[1])
-							{
-								if(!SpawnEventId((*itr)->eventId))
-										break;
-							}
-
-							if(!(*itr)->lastactivated)
-							{
-							time_t activated = (*itr)->lastactivated = UNIXTIME;
-							update_event_settings((*itr)->eventId, activated);
-							runEvents = true;
-							}
-							continue;
-						}
-					}
-					else
-					{
-						if((*itr)->monthnumber)
-						{
-							if(has_eventid_timeout_expired(&local_currenttime, ((*itr)->monthnumber - 1), MONTHLY))
-							{
-								if(!(*itr)->daynumber)
-								{
-									if(!SpawnEventId((*itr)->eventId))
-											break;
-									(*itr)->isactive = true;
-									time_t activated = (*itr)->lastactivated = UNIXTIME;
-									update_event_settings((*itr)->eventId, activated);
-									continue;
-								}
-								monthexpired = true;
-							}
-						}
-						if(monthexpired && (*itr)->daynumber && has_eventid_timeout_expired(&local_currenttime, (*itr)->daynumber, DAILY))
-						{
-							monthexpired = false;
-							time_t activated = (*itr)->lastactivated = UNIXTIME;
-							update_event_settings((*itr)->eventId, activated);
-							continue;
-						}
-						if((*itr)->daynumber && !(*itr)->monthnumber && has_eventid_timeout_expired(&local_currenttime, (*itr)->daynumber, DAILY))
-						{
-							if(!SpawnEventId((*itr)->eventId))
-								break;
-							(*itr)->isactive = true;
-							time_t activated = (*itr)->lastactivated = UNIXTIME;
-							update_event_settings((*itr)->eventId, activated);
-						}
-					}
-				}
-				_firstrun[1] = false;
-			}
-		}
 		if(m_dirty)
 			update_settings();
 

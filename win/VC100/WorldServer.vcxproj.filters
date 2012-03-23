@@ -432,9 +432,6 @@
     <ClCompile Include="..\..\src\WorldServer\ClusterInterface.cpp">
       <Filter>Cluster</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\WorldServer\EventsSystem.cpp">
-      <Filter>EventableObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\WorldServer\WorldSocketCluster.cpp">
       <Filter>Cluster</Filter>
     </ClCompile>

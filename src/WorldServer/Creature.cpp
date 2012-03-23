@@ -296,14 +296,13 @@ void Creature::SaveToDB()
 		<< m_position.z << ","
 		<< m_position.o << ","
 		<< m_aiInterface->getMoveType() << ","
-		<< 0 << "," //Uses random display from proto. Setting a displayid manualy will override proto lookup
+		<< 0 << "," // Uses random display from proto. Setting a displayid manualy will override proto lookup
 		<< m_uint32Values[UNIT_FIELD_FACTIONTEMPLATE] << ","
 		<< m_uint32Values[UNIT_FIELD_FLAGS] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_0] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_1] << ","
 		<< m_uint32Values[UNIT_FIELD_BYTES_2] << ","
 		<< m_uint32Values[UNIT_NPC_EMOTESTATE] << ",";
-		/*<< ((this->m_spawn ? m_spawn->respawnNpcLink : uint32(0))) << ",";*/
 
 	if(m_spawn)
 		ss << m_spawn->channel_spell << "," << m_spawn->channel_target_go << "," << m_spawn->channel_target_creature << ",";
@@ -311,13 +310,14 @@ void Creature::SaveToDB()
 		ss << "0,0,0,";
 
 	ss << uint32(GetStandState()) << "," << ( m_spawn ? m_spawn->MountedDisplayID : original_MountedDisplayID ) << "," << m_phaseMode << ",";
-	ss << (IsVehicle() ? TO_VEHICLE(this)->GetVehicleEntry() : 0) << "," << (m_spawn ? m_spawn->eventid : 0) << ")";
+	ss << (IsVehicle() ? TO_VEHICLE(this)->GetVehicleEntry() : 0) << ")";
 	WorldDatabase.Execute(ss.str().c_str());
 }
 
 void Creature::SaveToFile(std::stringstream & name)
 {
-/*	FILE * OutFile;
+/*
+	FILE * OutFile;
 
 	OutFile = fopen(name.str().c_str(), "wb");
 	if (!OutFile) return;
@@ -347,7 +347,8 @@ void Creature::SaveToFile(std::stringstream & name)
 
 	ss << "' )";
 	fwrite(ss.str().c_str(),1,ss.str().size(),OutFile);
-	fclose(OutFile);*/
+	fclose(OutFile);
+*/
 }
 
 void Creature::LoadScript()
