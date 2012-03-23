@@ -12,8 +12,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MiscScripts", "..\src\scrip
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "QuestScripts", "..\src\scripts\projects\VC100\Quest2010.vcxproj", "{1A080CA7-D19A-4129-972C-89E816E6DEC0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EventsScripts", "..\src\scripts\projects\VC100\EventsScripts2010.vcxproj", "{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RaidsScripts", "..\src\scripts\projects\VC100\RaidsScripts2010.vcxproj", "{7134C1B1-BC76-4D48-8256-4FBCADAAE3EB}"
 EndProject
 Global
@@ -68,14 +66,6 @@ Global
 		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|Win32.Build.0 = Release|Win32
 		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|x64.ActiveCfg = Release|x64
 		{1A080CA7-D19A-4129-972C-89E816E6DEC0}.Release|x64.Build.0 = Release|x64
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Debug|Win32.Build.0 = Debug|Win32
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Debug|x64.ActiveCfg = Debug|x64
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Debug|x64.Build.0 = Debug|x64
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Release|Win32.ActiveCfg = Release|Win32
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Release|Win32.Build.0 = Release|Win32
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Release|x64.ActiveCfg = Release|x64
-		{FAA6A79F-079F-428F-80CC-D8D2F8E841BE}.Release|x64.Build.0 = Release|x64
 		{7134C1B1-BC76-4D48-8256-4FBCADAAE3EB}.Debug|Win32.ActiveCfg = Debug|Win32
 		{7134C1B1-BC76-4D48-8256-4FBCADAAE3EB}.Debug|Win32.Build.0 = Debug|Win32
 		{7134C1B1-BC76-4D48-8256-4FBCADAAE3EB}.Debug|x64.ActiveCfg = Debug|x64
