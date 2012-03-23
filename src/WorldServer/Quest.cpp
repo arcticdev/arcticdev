@@ -396,8 +396,7 @@ void QuestLogEntry::UpdatePlayerFields()
 
 void QuestLogEntry::SendQuestComplete()
 {
-	WorldPacket data(4);
-	data.SetOpcode(SMSG_QUESTUPDATE_COMPLETE);
+	WorldPacket data(SMSG_QUESTUPDATE_COMPLETE, 4);
 	data << m_quest->id;
 	m_plr->GetSession()->SendPacket(&data);
 	CALL_QUESTSCRIPT_EVENT(this, OnQuestComplete)(m_plr, this);

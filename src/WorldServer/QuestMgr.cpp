@@ -565,7 +565,7 @@ void QuestMgr::BuildQuestList(WorldPacket *data, Object* qst_giver, Player* plr,
 
 void QuestMgr::BuildQuestUpdateAddItem(WorldPacket* data, uint32 itemid, uint32 count)
 {
-	data->Initialize(SMSG_QUESTUPDATE_ADD_ITEM);
+	data->Initialize(SMSG_QUESTUPDATE_ADD_ITEM_OBSOLETE);
 	*data << itemid << count;
 }
 
@@ -866,7 +866,7 @@ void QuestMgr::OnPlayerItemPickup(Player* plr, Item* item)
 					if(pcount < qle->GetQuest()->required_itemcount[j])
 					{
 						WorldPacket data(8);
-						data.SetOpcode(SMSG_QUESTUPDATE_ADD_ITEM);
+						data.SetOpcode(SMSG_QUESTUPDATE_ADD_ITEM_OBSOLETE);
 						data << qle->GetQuest()->required_item[j] << uint32(1);
 						plr->GetSession()->SendPacket(&data);
 						if(qle->CanBeFinished())
