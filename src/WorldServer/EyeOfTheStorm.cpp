@@ -200,7 +200,9 @@ EyeOfTheStorm::~EyeOfTheStorm()
 			m_EOTSbuffs[i]->m_battleground = NULL;
 			if( !m_EOTSbuffs[i]->IsInWorld() )
 			{
-				m_EOTSbuffs[i]->Destructor();
+				delete m_EOTSbuffs[i];
+				m_EOTSbuffs[i] = NULL;
+				
 			}
 		}
 	}
@@ -1016,7 +1018,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					{
 						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot(pReward) )
 						{
-							pReward->Destructor();
+							delete pReward;
 							pReward = NULL;
 						}
 					}
@@ -1123,7 +1125,8 @@ void EyeOfTheStorm::OnStart()
 	for( i = 0; i < 2; ++i )
 	{
 		m_bubbles[i]->RemoveFromWorld(false);
-		m_bubbles[i]->Destructor();
+		delete m_bubbles[i];
+		m_bubbles[i] = NULL;
 	}
 
 	m_started = true;

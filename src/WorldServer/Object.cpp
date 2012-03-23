@@ -1933,7 +1933,8 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 						data << dObj->GetGUID();
 						dObj->SendMessageToSet(&data, false);
 						dObj->RemoveFromWorld(true);
-						dObj->Destructor();
+						delete dObj;
+						dObj = NULL;
 					}
 				}
 				if(spl->m_spellInfo->ChannelInterruptFlags == 48140) spl->cancel();

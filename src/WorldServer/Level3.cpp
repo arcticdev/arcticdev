@@ -1069,7 +1069,8 @@ bool ChatHandler::HandleAddItemSetCommand(const char* args, WorldSession* m_sess
 		if(!chr->GetItemInterface()->AddItemToFreeSlot(itm))
 		{
 			m_session->SendNotification("No free slots left!");
-			itm->Destructor();
+			delete itm;
+			itm = NULL;
 			return true;
 		} else {
 			//SystemMessage(m_session, "Added item: %s [%u]", (*itr)->Name1, (*itr)->ItemId);
@@ -1181,7 +1182,7 @@ bool ChatHandler::HandleShowCheatsCommand(const char* args, WorldSession* m_sess
 
 bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 {
-	WorldPacket fly(835, 13);
+	WorldPacket fly(SMSG_MOVE_SET_CAN_FLY, 13);
 
 	Player* chr = getSelectedChar(m_session);
 
@@ -1198,7 +1199,7 @@ bool ChatHandler::HandleFlyCommand(const char* args, WorldSession* m_session)
 
 bool ChatHandler::HandleLandCommand(const char* args, WorldSession* m_session)
 {
-	WorldPacket fly(836, 13);
+	WorldPacket fly(SMSG_MOVE_UNSET_CAN_FLY, 13);
 
 	Player* chr = getSelectedChar(m_session);
 

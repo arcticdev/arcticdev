@@ -103,7 +103,8 @@ void WorldSession::HandleSplitOpcode(WorldPacket& recv_data)
 			if(!result)
 			{
 				printf("HandleBuyItemInSlot: Error while adding item to dstslot");
-				i2->Destructor();
+				delete i2;
+				i2 = NULL;
 			}
 		}
 		else
@@ -303,12 +304,12 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				printf("HandleSwapItem: Error while adding item to dstslot\n");
 				if (!_player->GetItemInterface()->SafeAddItem(SrcItem, SrcInvSlot, SrcSlot))
 				{
-					SrcItem->Destructor();
+					delete SrcItem;
 					SrcItem = NULL;
 				}
 				if (DstItem && !_player->GetItemInterface()->SafeAddItem(DstItem, DstInvSlot, DstSlot))
 				{
-					DstItem->Destructor();
+					delete DstItem;
 					DstItem = NULL;
 				}
 				return;
@@ -323,11 +324,13 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				printf("HandleSwapItem: Error while adding item to srcslot\n");
 				if (SrcItem && !_player->GetItemInterface()->SafeAddItem(SrcItem, SrcInvSlot, SrcSlot))
 				{
-					SrcItem->Destructor();
+					delete SrcItem;
+					SrcItem = NULL;
 				}
 				if (!_player->GetItemInterface()->SafeAddItem(DstItem, DstInvSlot, DstSlot))
 				{
-					DstItem->Destructor();
+					delete DstItem;
+					DstItem = NULL;
 				}
 				return;
 			}
@@ -539,14 +542,14 @@ void WorldSession::HandleDestroyItemOpcode( WorldPacket & recv_data )
 		if(!pItem)
 			return;
 
-		if(_player->GetCurrentSpell() && _player->GetCurrentSpell()->i_caster==pItem)
+		if(_player->GetCurrentSpell() && _player->GetCurrentSpell()->i_caster == pItem)
 		{
 			_player->GetCurrentSpell()->i_caster = NULL;
 			_player->GetCurrentSpell()->cancel();
 		}
 
 		pItem->DeleteFromDB();
-		pItem->Destructor();
+		delete pItem;
 		pItem = NULL;
 	}
 }
@@ -558,7 +561,7 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 	WorldPacket data;
 
 	AddItemResult result;
-	int8 SrcInvSlot, SrcSlot, error=0;
+	int8 SrcInvSlot, SrcSlot, error = 0;
 
 	if(!GetPlayer())
 		return;
@@ -617,12 +620,13 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 				offhandweapon = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false);
 				if( offhandweapon == NULL )
-					return;		// should never happen
+					return; // should never happen
 
 				if( !_player->GetItemInterface()->SafeAddItem(offhandweapon, result.ContainerSlot, result.Slot) )
 					if( !_player->GetItemInterface()->AddItemToFreeSlot(offhandweapon) )		// shouldn't happen either.
 					{
-						offhandweapon->Destructor();
+						delete offhandweapon;
+						offhandweapon = NULL;
 					}
 			}
 		}
@@ -643,12 +647,13 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 
 				mainhandweapon = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_MAINHAND, false);
 				if( mainhandweapon == NULL )
-					return;		// should never happen
+					return; // should never happen
 
 				if( !_player->GetItemInterface()->SafeAddItem(mainhandweapon, result.ContainerSlot, result.Slot) )
-					if( !_player->GetItemInterface()->AddItemToFreeSlot(mainhandweapon) )		// shouldn't happen either.
+					if( !_player->GetItemInterface()->AddItemToFreeSlot(mainhandweapon) ) // shouldn't happen either.
 					{
-						mainhandweapon->Destructor();
+						delete mainhandweapon;
+						mainhandweapon = NULL;
 					}
 			}
 		}
@@ -687,14 +692,16 @@ void WorldSession::HandleAutoEquipItemOpcode( WorldPacket & recv_data )
 			if(!result)
 			{
 				printf("HandleAutoEquip: Error while adding item to SrcSlot");
-				oitem->Destructor();
+				delete oitem;
+				oitem = NULL;
 			}
 		}
 		result = _player->GetItemInterface()->SafeAddItem(eitem, INVENTORY_SLOT_NOT_SET, Slot);
 		if(!result)
 		{
 			printf("HandleAutoEquip: Error while adding item to Slot");
-			eitem->Destructor();
+			delete eitem;
+			eitem = NULL;
 		}
 
 	}
@@ -886,7 +893,8 @@ void WorldSession::HandleBuyBackOpcode( WorldPacket & recv_data )
 			if(!result)
 			{
 				printf("HandleBuyBack: Error while adding item to free slot");
-				it->Destructor();
+				delete it;
+				it = NULL;
 			}
 		}
 		else
@@ -1190,7 +1198,7 @@ void WorldSession::HandleBuyItemInSlotOpcode( WorldPacket & recv_data ) // drag 
 			pItem->m_isDirty = true;
 			if(!_player->GetItemInterface()->SafeAddItem(pItem, bagslot, slot))
 			{
-				pItem->Destructor();
+				delete pItem;
 				pItem = NULL;
 				return;
 			}
@@ -1324,7 +1332,8 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 			result = _player->GetItemInterface()->SafeAddItem(itm, INVENTORY_SLOT_NOT_SET, slotresult.Slot);
 			if(!result)
 			{
-				itm->Destructor();
+				delete itm;
+				itm = NULL; 
 			}
 			else
 				SendItemPushResult(itm, false, true, false, true, INVENTORY_SLOT_NOT_SET, slotresult.Result, amount*item.amount);
@@ -1335,7 +1344,8 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 			{
 				if( !TO_CONTAINER(bag)->AddItem(slotresult.Slot, itm) )
 				{
-					itm->Destructor();
+					delete itm;
+					itm = NULL; 
 				}
 				else
 					SendItemPushResult(itm, false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1);
@@ -1493,7 +1503,8 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 					if(!result)
 					{
 						printf("HandleAutoStoreBagItem: Error while adding item to newslot");
-						srcitem->Destructor();
+						delete srcitem;
+						srcitem = NULL;
 						return;
 					}
 				}
@@ -1532,7 +1543,8 @@ void WorldSession::HandleAutoStoreBagItemOpcode( WorldPacket & recv_data )
 							if(!result)
 							{
 								printf("HandleBuyItemInSlot: Error while adding item to newslot");
-								srcitem->Destructor();
+								delete srcitem;
+								srcitem = NULL;
 								return;
 							}
 						}
@@ -1773,7 +1785,8 @@ void WorldSession::HandleAutoBankItemOpcode(WorldPacket &recvPacket)
 			OUT_DEBUG("[ERROR]AutoBankItem: Error while adding item to bank bag!\n");
             if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
 			{
-				eitem->Destructor();
+				delete eitem;
+				eitem = NULL;
 			}
 		}
 	}
@@ -1785,9 +1798,7 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 2);
 	OUT_DEBUG("WORLD: CMSG_AUTOSTORE_BANK_ITEM");
 
-	//WorldPacket data;
-
-	int8 SrcInvSlot, SrcSlot;//, error=0, slot=-1, specialbagslot=-1;
+	int8 SrcInvSlot, SrcSlot; // error=0, slot=-1, specialbagslot=-1;
 
 	if(!GetPlayer())
 		return;
@@ -1819,7 +1830,8 @@ void WorldSession::HandleAutoStoreBankItemOpcode(WorldPacket &recvPacket)
 			OUT_DEBUG("[ERROR]AutoStoreBankItem: Error while adding item from one of the bank bags to the player bag!\n");
 			if( !_player->GetItemInterface()->SafeAddItem(eitem, SrcInvSlot, SrcSlot) )
 			{
-				eitem->Destructor();
+				delete eitem;
+				eitem = NULL;
 			}
 		}
 		_player->SaveToDB(false);
@@ -1878,35 +1890,36 @@ void WorldSession::HandleInsertGemOpcode(WorldPacket &recvPacket)
 				ColorMatch=false;
 		}
 
-		if(gemguid)//add or replace gem
+		if(gemguid) // add or replace gem
 		{
 			Item* it=_player->GetItemInterface()->SafeRemoveAndRetreiveItemByGuid(gemguid,true);
 			if(!it)
 				continue;
 
 			gp = dbcGemProperty.LookupEntry(it->GetProto()->GemProperties);
-			it->Destructor();
+			delete it;
+			it = NULL;
 
 			if(!gp)
 				continue;
 			if(!(gp->SocketMask & TargetItem->GetProto()->Sockets[i].SocketColor))
-				ColorMatch=false;
+				ColorMatch = false;
 
 			if(!gp->EnchantmentID)//this is ok in few cases
 				continue;
 
-			if(EI)//replace gem
+			if(EI) // replace gem
 				TargetItem->RemoveEnchantment(2+i);//remove previous
-			else//add gem
+			else // add gem
 				FilledSlots++;
 
 			Enchantment = dbcEnchant.LookupEntry(gp->EnchantmentID);
 			if(Enchantment)
-				TargetItem->AddEnchantment(Enchantment, 0, true,apply,false,2+i);
+				TargetItem->AddEnchantment(Enchantment, 0, true, apply, false, 2+i);
 		}
 	}
 
-	//Add color match bonus
+	// Add color match bonus
 	if(TargetItem->GetProto()->SocketBonus)
 	{
 		if(ColorMatch && (FilledSlots==TargetItem->GetSocketsCount()))

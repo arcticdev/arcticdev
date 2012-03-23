@@ -2452,7 +2452,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 					//our hapiness is that we did not store the aura mod amount so we have to recalc it
 					Spell* spell = new Spell( m_caster, taura->GetSpellProto(), false, NULL );
 					uint32 healamount = spell->CalculateEffect( 1, unitTarget );
-					spell->Destructor();
+					delete spell;
 					spell = NULL;
 					new_dmg = healamount * 18 / amplitude;
 
@@ -2478,7 +2478,7 @@ void Spell::SpellEffectHeal(uint32 i) // Heal
 						//our hapiness is that we did not store the aura mod amount so we have to recalc it
 						Spell* spell = new Spell( m_caster, taura->GetSpellProto(), false, NULL );
 						uint32 healamount = spell->CalculateEffect( 0, unitTarget );
-						spell->Destructor();
+						delete spell;
 						spell = NULL;
 						new_dmg = healamount * 12 / amplitude;
 
@@ -4453,14 +4453,14 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 				}
 				else
 				{
-					newItem->Destructor();
+					delete newItem;
 					newItem = NULL;
 				}
 				DetermineSkillUp(SKILL_ENCHANTING);
 			}
 			else
 			{
-				//scale item_count down if total stack will be more than 20
+				// scale item_count down if total stack will be more than 20
 				if(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20)
 				{
 					uint32 item_count_filled;
@@ -4480,7 +4480,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 						newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
 						if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 						{
-							newItem->Destructor();
+							delete newItem;
 							newItem = NULL;
 							item_count = item_count_filled;
 						}
@@ -6511,11 +6511,11 @@ void Spell::SpellEffectSummonObjectSlot(uint32 i)
 			if( GoSummon->IsInWorld() )
 				GoSummon->RemoveFromWorld(true);
 
-			GoSummon->Destructor();
+			delete GoSummon;
 			GoSummon = NULL;
 		}
 	}
-	//create a new GoSummon
+	// create a new GoSummon
 	GoSummon = u_caster->GetMapMgr()->CreateGameObject( goi->ID );
 	if(GoSummon == NULL)
 		return;
@@ -7096,7 +7096,7 @@ void Spell::SpellEffectResurrectNew(uint32 i)
 
 	if(playerTarget->isAlive() || !playerTarget->IsInWorld())
 		return;
-	//resurr
+	// resurr
 	playerTarget->resurrector = p_caster->GetLowGUID();
 	playerTarget->m_resurrectHealth = damage;
 	playerTarget->m_resurrectMana = m_spellInfo->EffectMiscValue[i];
@@ -7131,14 +7131,13 @@ void Spell::SpellEffectTranformItem(uint32 i)
 
 	Item* it = objmgr.CreateItem(itemid,owner);
 	it->SetDurability(dur);
-	// additem
 
-	   // additem
+	// additem
 	result2 = owner->GetItemInterface()->AddItemToFreeSlot(it);
 	if(!result2) // should never get here
 	{
 		owner->GetItemInterface()->BuildInventoryChangeError(NULL, NULL,INV_ERR_BAG_FULL);
-		it->Destructor();
+		delete it;
 		it = NULL;
 	}
 }
@@ -7524,7 +7523,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 		if(p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 			p_caster->GetSession()->SendItemPushResult(newItem,true,false,true,true,slotresult.ContainerSlot,slotresult.Slot,item_count);
 		else
-			newItem->Destructor();
+			delete newItem;
 			newItem = NULL;
 
 		if(skill != NULL)
@@ -7532,7 +7531,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 	}
 	else
 	{
-		//scale item_count down if total stack will be more than 20
+		// scale item_count down if total stack will be more than 20
 		if(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + item_count > 20)
 		{
 			uint32 item_count_filled;
@@ -7552,7 +7551,7 @@ void Spell::SpellEffectCreateRandomItem(uint32 i) // Create Random Item
 				newItem->SetUInt32Value(ITEM_FIELD_STACK_COUNT, item_count - item_count_filled);
 				if(!p_caster->GetItemInterface()->SafeAddItem(newItem,slotresult.ContainerSlot, slotresult.Slot))
 				{
-					newItem->Destructor();
+					delete newItem;
 					newItem = NULL;
 					item_count = item_count_filled;
 				}

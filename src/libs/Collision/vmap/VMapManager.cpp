@@ -260,7 +260,6 @@ namespace VMAP
 		return(result);
 	}
 
-
 	//=========================================================
 
 	void VMapManager::unloadMap(unsigned int pMapId, int x, int y)

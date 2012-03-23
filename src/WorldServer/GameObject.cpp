@@ -90,11 +90,6 @@ void GameObject::Init()
 	Object::Init();
 }
 
-void GameObject::Destructor()
-{
-	delete this;
-}
-
 bool GameObject::CreateFromProto(uint32 entry,uint32 mapid, float x, float y, float z, float ang, float orientation1, float orientation2, float orientation3, float orientation4)
 {
 	pInfo= GameObjectNameStorage.LookupEntry(entry);
@@ -665,7 +660,7 @@ void GameObject::_Expire()
 	if(IsInWorld())
 		RemoveFromWorld(true);
 
-	Destructor();
+	delete this;
 }
 
 void GameObject::ExpireAndDelete(uint32 delay)

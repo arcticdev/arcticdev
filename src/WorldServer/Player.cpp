@@ -917,14 +917,16 @@ void Player::EquipInit(PlayerCreateInfo *EquipInfo)
 				{
 					if( !GetItemInterface()->SafeAddItem(item, INVENTORY_SLOT_NOT_SET, (*is).slot) )
 					{
-						item->Destructor();
+						delete item;
+						item = NULL;
 					}
 				}
 				else
 				{
 					if( !GetItemInterface()->AddItemToFreeSlot(item) )
 					{
-						item->Destructor();
+						delete item;
+						item = NULL;
 					}
 				}
 			}
@@ -3774,7 +3776,8 @@ void Player::RemoveFromWorld()
 				{
 					m_SummonedObject->RemoveFromWorld(true);
 				}
-				m_SummonedObject->Destructor();
+				delete m_SummonedObject;
+				m_SummonedObject = NULL;
 			}
 		}
 		m_SummonedObject = NULL;
@@ -6526,7 +6529,7 @@ void Player::ResetTitansGrip()
 		if(titanGrip != NULL)
 		offhand = GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(INVENTORY_SLOT_NOT_SET, EQUIPMENT_SLOT_OFFHAND, false);
 		if( offhand == NULL )
-			return;     // should never happen
+			return; // should never happen
 		SlotResult result = GetItemInterface()->FindFreeInventorySlot(offhand->GetProto());
 		if( !result.Result )
 		{
@@ -6535,13 +6538,17 @@ void Player::ResetTitansGrip()
 			offhand->SetOwner( NULL );
 			offhand->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
 			sMailSystem.DeliverMessage(MAILTYPE_NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetUInt32Value(OBJECT_FIELD_GUID), 1, true);
-			offhand->Destructor();
+			delete offhand;
+			offhand = NULL;
 		}
 		else if( !GetItemInterface()->SafeAddItem(offhand, result.ContainerSlot, result.Slot) )
-			if( !GetItemInterface()->AddItemToFreeSlot(offhand) )   // shouldn't happen either.
+		{
+			if( !GetItemInterface()->AddItemToFreeSlot(offhand) ) // shouldn't happen either.
 			{
-				offhand->Destructor();
+				delete offhand;
+				offhand = NULL;
 			}
+		}
 	}
 }
 
@@ -8360,7 +8367,7 @@ void Player::EndDuel(uint8 WinCondition)
 	if( arbiter != NULL )
 	{
 		arbiter->RemoveFromWorld( true );
-		arbiter->Destructor();
+		delete arbiter;
 		arbiter = NULL;
 	}
 

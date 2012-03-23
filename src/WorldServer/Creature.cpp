@@ -90,11 +90,6 @@ void Creature::Init()
 	Unit::Init();
 }
 
-void Creature::Destructor()
-{
-	delete this;
-}
-
 Creature::~Creature()
 {
 	sEventMgr.RemoveEvents(this);
@@ -151,7 +146,7 @@ void Creature::Remove()
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
 
-	Destructor();
+	delete this;
 }
 
 void Creature::OnRemoveCorpse()

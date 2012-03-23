@@ -275,7 +275,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 						cn->m_canFlee = true;
 						if(sp->floatMisc1)
 							cn->m_fleeHealth = sp->floatMisc1;
-						else //if left to zero, start running inmeadetely
+						else // if left to zero, start running inmeadetely
 							cn->m_fleeHealth = 100.0f;
 
 						if(sp->Misc2)

@@ -67,9 +67,9 @@ Arena::~Arena()
 	for(i = 0; i < 2; ++i)
 	{
 		// buffs may not be spawned, so delete them if they're not
-		if(m_buffs[i] && m_buffs[i]->IsInWorld()==false)
+		if(m_buffs[i] && m_buffs[i]->IsInWorld() == false)
 		{
-			m_buffs[i]->Destructor();
+			delete m_buffs[i];
 			m_buffs[i] = NULL;
 		}
 	}

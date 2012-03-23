@@ -374,7 +374,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	{
 		// Player not create (race/class problem?)
 		pNewChar->ok_to_remove = true;
-		pNewChar->Destructor();
+		delete pNewChar;
 		pNewChar = NULL;
 		return;
 	}
@@ -409,7 +409,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	objmgr.AddPlayerInfo(pn);
 
 	pNewChar->ok_to_remove = true;
-	pNewChar->Destructor();
+	delete pNewChar;
 	pNewChar = NULL;
 
 	// CHAR_CREATE_SUCCESS

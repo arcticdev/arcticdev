@@ -66,7 +66,6 @@ public:
     friend class DummySpellHandler;
     Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
-    void Destructor();
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -142,7 +141,7 @@ public:
 
 	SpellEntry* m_spellInfo;
 	uint32 pSpellId;
-	SpellEntry *ProcedOnSpell; //some spells need to know the origins of the proc too
+	SpellEntry *ProcedOnSpell; // some spells need to know the origins of the proc too
 	SpellCastTargets m_targets;
 
 	void CreateItem(uint32 itemId);
@@ -272,7 +271,7 @@ public:
 	void SpellTargetSingleTargetEnemy(uint32 i, uint32 j);
 	void SpellTargetCustomAreaOfEffect(uint32 i, uint32 j);
 	void SpellTargetAreaOfEffect(uint32 i, uint32 j);
-	void SpellTargetLandUnderCaster(uint32 i, uint32 j); /// I don't think this is the correct name for this one
+	void SpellTargetLandUnderCaster(uint32 i, uint32 j); // I don't think this is the correct name for this one
 	void SpellTargetAllPartyMembersRangeNR(uint32 i, uint32 j);
 	void SpellTargetSingleTargetFriend(uint32 i, uint32 j);
 	void SpellTargetAoE(uint32 i, uint32 j); // something special
@@ -338,7 +337,7 @@ public:
 	uint32 GetDuration()
 	{
 		if(bDurSet)return Dur;
-		bDurSet=true;
+		bDurSet = true;
 		int32 c_dur = 0;
 
 		if(m_spellInfo->DurationIndex)
@@ -346,8 +345,8 @@ public:
 			SpellDuration *sd=dbcSpellDuration.LookupEntry(m_spellInfo->DurationIndex);
 			if(sd)
 			{
-				//check for negative and 0 durations.
-				//duration affected by level
+				// check for negative and 0 durations.
+				// duration affected by level
 				if((int32)sd->Duration1 < 0 && sd->Duration2 && u_caster)
 				{
 					this->Dur = uint32(((int32)sd->Duration1 + (sd->Duration2 * u_caster->getLevel())));
@@ -364,17 +363,17 @@ public:
 				{
 					this->Dur = sd->Duration1;
 				}
-				//combo point lolerCopter? ;P
+				// combo point lolerCopter? ;P
 				if(p_caster)  
 				{
 					uint32 cp=p_caster->m_comboPoints;
 					if(cp)
 					{
-						uint32 bonus=(cp*(sd->Duration3-sd->Duration1))/5;
+						uint32 bonus = (cp*(sd->Duration3-sd->Duration1))/5;
 						if(bonus)
 						{
-							this->Dur+=bonus;
-							m_requiresCP=true;
+							this->Dur += bonus;
+							m_requiresCP = true;
 						}
 					}
 				}
@@ -412,12 +411,12 @@ public:
 			}
 			else
 			{
-				this->Dur = (uint32)-1;
+				this->Dur = uint32(-1);
 			}
 		}
 		else
 		{
-			 this->Dur = (uint32)-1;
+			 this->Dur = uint32(-1);
 		}
 
 		return this->Dur;

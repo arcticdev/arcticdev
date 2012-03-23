@@ -519,7 +519,7 @@ public:
 	{
 		if(IsInWorld())
 			RemoveFromWorld(true);
-		Destructor();
+		delete this;
 	}
 
 	ARCTIC_INLINE size_t GetInRangeOppFactCount() { return m_oppFactsInRange.size(); }

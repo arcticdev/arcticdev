@@ -257,15 +257,10 @@ Spell::~Spell()
 	m_reflectedParent = NULL;
 }
 
-void Spell::Destructor()
-{
-	delete this;
-}
-
-//i might forget conditions here. Feel free to add them
+// i might forget conditions here. Feel free to add them
 bool Spell::IsStealthSpell()
 {
-	//check if aura name is some stealth aura
+	// check if aura name is some stealth aura
 	if( m_spellInfo->EffectApplyAuraName[0] == 16 ||
 		m_spellInfo->EffectApplyAuraName[1] == 16 ||
 		m_spellInfo->EffectApplyAuraName[2] == 16 )
@@ -273,10 +268,10 @@ bool Spell::IsStealthSpell()
 	return false;
 }
 
-//i might forget conditions here. Feel free to add them
+// i might forget conditions here. Feel free to add them
 bool Spell::IsInvisibilitySpell()
 {
-	//check if aura name is some invisibility aura
+	// check if aura name is some invisibility aura
 	if( m_spellInfo->EffectApplyAuraName[0] == 18 ||
 		m_spellInfo->EffectApplyAuraName[1] == 18 ||
 		m_spellInfo->EffectApplyAuraName[2] == 18 )
@@ -292,17 +287,17 @@ void Spell::FillSpecifiedTargetsInArea( float srcx, float srcy, float srcz, uint
 // for the moment we do invisible targets
 void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range, uint32 specification)
 {
-	//TargetsList *tmpMap=&m_targetUnits[i];
-    //InStealth()
+	// TargetsList *tmpMap=&m_targetUnits[i];
+    // InStealth()
     float r = range * range;
-	//uint8 did_hit_result;
+	// uint8 did_hit_result;
     for(unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
     {
         // don't add objects that are not units and that are dead
         if( !( (*itr)->IsUnit() ) || ! TO_UNIT( *itr )->isAlive())
             continue;
 
-        //TO_UNIT(*itr)->InStealth()
+        // TO_UNIT(*itr)->InStealth()
         if( m_spellInfo->TargetCreatureType)
         {
             if((*itr)->GetTypeId()!= TYPEID_UNIT)
@@ -322,11 +317,11 @@ void Spell::FillSpecifiedTargetsInArea(uint32 i,float srcx,float srcy,float srcz
                 }
 
             }
-            else //cast from GO
+            else // cast from GO
             {
                 if(g_caster && g_caster->GetUInt32Value(OBJECT_FIELD_CREATED_BY) && g_caster->m_summoner)
                 {
-                    //trap, check not to attack owner and friendly
+                    // trap, check not to attack owner and friendly
                     if(isAttackable(g_caster->m_summoner,TO_UNIT(*itr),!(m_spellInfo->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED)))
                         _AddTarget((TO_UNIT(*itr)), i);
                 }
@@ -351,12 +346,12 @@ void Spell::FillAllTargetsInArea(float srcx,float srcy,float srcz,uint32 ind)
 	FillAllTargetsInArea(ind,srcx,srcy,srcz,GetDBCCastTime(ind));
 }
 
-/// We fill all the targets in the area, including the stealth ed one's
+// We fill all the targets in the area, including the stealth ed one's
 void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, float range)
 {
-	//TargetsList *tmpMap=&m_targetUnits[i];
+	// TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range*range;
-	//uint8 did_hit_result;
+	// uint8 did_hit_result;
 	for( unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !( (*itr)->IsUnit() ) || ! TO_UNIT(*itr)->isAlive() || ( (*itr)->GetTypeId()==TYPEID_UNIT && TO_CREATURE(*itr)->IsTotem() ) || !(*itr)->PhasedCanInteract(m_caster))
@@ -379,11 +374,11 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 					_AddTarget((TO_UNIT(*itr)), i);
 				}
 			}
-			else //cast from GO
+			else // cast from GO
 			{
 				if( g_caster != NULL && g_caster->GetUInt32Value( OBJECT_FIELD_CREATED_BY ) && g_caster->m_summoner != NULL )
 				{
-					//trap, check not to attack owner and friendly
+					// trap, check not to attack owner and friendly
 					if( isAttackable( g_caster->m_summoner, TO_UNIT(*itr), !(m_spellInfo->c_is_flags & SPELL_FLAG_IS_TARGETINGSTEALTHED) ) )
 						_AddTarget((TO_UNIT(*itr)), i);
 				}
@@ -400,9 +395,9 @@ void Spell::FillAllTargetsInArea(uint32 i,float srcx,float srcy,float srcz, floa
 // We fill all the targets in the area, including the stealth ed one's
 void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz, float range )
 {
-	//TargetsList *tmpMap=&m_targetUnits[i];
+	// TargetsList *tmpMap=&m_targetUnits[i];
 	float r = range * range;
-	//uint8 did_hit_result;
+	// uint8 did_hit_result;
 	for( unordered_set<Object*>::iterator itr = m_caster->GetInRangeSetBegin(); itr != m_caster->GetInRangeSetEnd(); ++itr )
 	{
 		if( !((*itr)->IsUnit()) || !TO_UNIT(*itr)->isAlive() || !(*itr)->PhasedCanInteract(m_caster))
@@ -426,11 +421,11 @@ void Spell::FillAllFriendlyInArea( uint32 i, float srcx, float srcy, float srcz,
 					_AddTarget((TO_UNIT(*itr)), i);
 				}
 			}
-			else //cast from GO
+			else // cast from GO
 			{
 				if( g_caster != NULL && g_caster->GetUInt32Value( OBJECT_FIELD_CREATED_BY ) && g_caster->m_summoner != NULL )
 				{
-					//trap, check not to attack owner and friendly
+					// trap, check not to attack owner and friendly
 					if( isFriendly( g_caster->m_summoner, TO_UNIT(*itr) ) )
 						_AddTargetForced((*itr)->GetGUID(), i);
 				}
@@ -1146,7 +1141,7 @@ void Spell::cancel()
 					if(dynObj)
 					{
 						dynObj->RemoveFromWorld(true);
-						dynObj->Destructor();
+						delete dynObj;
 						dynObj = NULL;
 
 					}
@@ -1158,7 +1153,7 @@ void Spell::cancel()
 						p_caster->GetSummonedObject()->RemoveFromWorld(true);
 					// for now..
 					ASSERT(p_caster->GetSummonedObject()->GetTypeId() == TYPEID_GAMEOBJECT);
-					p_caster->GetSummonedObject()->Destructor();
+					delete p_caster->GetSummonedObject();
 					p_caster->SetSummonedObject(NULL);
 				}
 				if (m_timer > 0)
@@ -1929,7 +1924,7 @@ void Spell::finish()
 		if( m_ForceConsumption || ( cancastresult == SPELL_CANCAST_OK && !GetSpellFailed() ) )
 			RemoveItems();
 	}
-	Destructor();
+	delete this;;
 }
 
 void Spell::SendCastResult(uint8 result)
@@ -4325,7 +4320,7 @@ void Spell::CreateItem(uint32 itemId)
 		AddItemResult result = pUnit->GetItemInterface()->SafeAddItem(newItem, slotresult.ContainerSlot, slotresult.Slot);
 		if(!result)
 		{
-			newItem->Destructor();
+			delete newItem;
 			newItem = NULL;
 			return;
 		}

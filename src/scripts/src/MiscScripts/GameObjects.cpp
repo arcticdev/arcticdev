@@ -31,50 +31,6 @@ public:
 	}
 };
 
-/*--------------------------------------------------------------------------------------------------------*/
-
-class OrbOfTransLocUC : public GameObjectAIScript
-{
-public:
-	OrbOfTransLocUC(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbOfTransLocUC(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		if(pPlayer->getRace() == RACE_TAUREN || pPlayer->getRace() == RACE_TROLL || pPlayer->getRace() == RACE_ORC || pPlayer->getRace() == RACE_UNDEAD_PLAYER || pPlayer->getRace() == RACE_BLOODELF )
-		{
-			pPlayer->SafeTeleport(530, 0, 10021.254883f, -7014.893066f, 49.717690f, 4.00532f);		 // teleports to Silvermoon
-		}
-		else
-		{
-			pPlayer->BroadcastMessage("You are not alowed to use this orb");
-		}
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
-class OrbOfTransLocSILVM : public GameObjectAIScript
-{
-public:
-	OrbOfTransLocSILVM(GameObject* goinstance) : GameObjectAIScript(goinstance) {}
-	static GameObjectAIScript *Create(GameObject* GO) { return new OrbOfTransLocSILVM(GO); }
-
-	void OnActivate(Player* pPlayer)
-	{
-		if( pPlayer->getRace() == RACE_TAUREN || pPlayer->getRace() == RACE_TROLL || pPlayer->getRace() == RACE_ORC || pPlayer->getRace() == RACE_UNDEAD_PLAYER || pPlayer->getRace() == RACE_BLOODELF )
-		{
-			pPlayer->SafeTeleport(0, 0, 1805.823975f, 334.009796f, 70.397469f, 4.724170f);		 // teleports to UC
-		}
-		else
-		{
-			pPlayer->BroadcastMessage("You are not alowed to use this orb");
-		}
-	}
-};
-
-/*--------------------------------------------------------------------------------------------------------*/
-
 class FalconTowerUpper : public GameObjectAIScript
 {
 public:
@@ -1281,8 +1237,6 @@ public:
 void SetupGoHandlers(ScriptMgr * mgr)
 {
 	mgr->register_gameobject_script(179879, &OrbOfCommand::Create);
-	mgr->register_gameobject_script(184503, &OrbOfTransLocUC::Create);
-	mgr->register_gameobject_script(184502, &OrbOfTransLocSILVM::Create);
 	mgr->register_gameobject_script(184500, &FalconTowerUpper::Create);
 	mgr->register_gameobject_script(184501, &FalconTowerLower::Create);
 	mgr->register_gameobject_script(182543, &FirewingPointOrb1::Create);
@@ -1301,9 +1255,9 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(113791, &Corrupt_Minor_Manifestation_Water_Object::Create);
 	mgr->register_gameobject_script(181699, &Telathion_the_Impure_Object::Create);
 	mgr->register_gameobject_script(104593, &UlagTheCleaver::Create);
-	mgr->register_gameobject_script(1571, &DustySpellbooks::Create);
+	mgr->register_gameobject_script(1571,   &DustySpellbooks::Create);
 
-	mgr->register_gameobject_script(13873, &CatFigurine::Create);
+	mgr->register_gameobject_script(13873,  &CatFigurine::Create);
 	mgr->register_gameobject_script(184383, &EthereumTransponderZeta::Create);
 	mgr->register_gameobject_script(183146, &BringMetheEgg::Create);
 	mgr->register_gameobject_script(183147, &MysteriousEgg::Create);
@@ -1319,7 +1273,7 @@ void SetupGoHandlers(ScriptMgr * mgr)
 	mgr->register_gameobject_script(181730, &ProphecyofAkida::Create);
 	mgr->register_gameobject_script(181988, &Razormaw::Create);
 	mgr->register_gameobject_script(169294, &TabletoftheSeven::Create);
-	mgr->register_gameobject_script(20447, &TestofEndurance::Create);
+	mgr->register_gameobject_script(20447,  &TestofEndurance::Create);
 	mgr->register_gameobject_script(184999, &TheFallenExarch::Create);
 	mgr->register_gameobject_script(184725, &TheFinalCode::Create);
 	mgr->register_gameobject_script(180672, &TheRootofAllEvil::Create);

@@ -119,7 +119,8 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		}
 		else
 		{
-			item->Destructor();
+			delete item;
+			item = NULL;
 		}
 	}
 	else
@@ -127,11 +128,11 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		add->SetCount(add->GetUInt32Value(ITEM_FIELD_STACK_COUNT) + amt);
 		add->m_isDirty = true;
 
-		sQuestMgr.OnPlayerItemPickup(GetPlayer(),add);
+		sQuestMgr.OnPlayerItemPickup(GetPlayer(), add);
 		_player->GetSession()->SendItemPushResult(add, false, true, true, false, _player->GetItemInterface()->GetBagSlotByGuid(add->GetGUID()), 0xFFFFFFFF, amt);
 	}
 
-	//in case of ffa_loot update only the player who recives it.
+	// in case of ffa_loot update only the player who recives it.
 	if (!pLootObj->m_loot.items.at(lootSlot).ffa_loot)
 	{
 		pLootObj->m_loot.items.at(lootSlot).iItemsCount = 0;
@@ -323,7 +324,8 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 			    {
 				    pGO->RemoveFromWorld(true);
 			    }
-			    pGO->Destructor();
+			    delete pGO;
+				pGO = NULL;
             }break;
         case GAMEOBJECT_TYPE_CHEST:
             {
@@ -1909,7 +1911,8 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-		item->Destructor();
+		delete item;
+		item = NULL;
 	}
 
 	pLoot->items.at(slotid).iItemsCount = 0;
@@ -1945,11 +1948,11 @@ void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 	|------------------------------------------------|----------------|
 	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
 	|------------------------------------------------|----------------|
-	|11 4D 0B 00 BD 06 01 F0 00 00 00 00 02		  |.M...........   |
+	|11 4D 0B 00 BD 06 01 F0 00 00 00 00 02          |.M...........   |
 	-------------------------------------------------------------------
 
 	uint64 creatureguid
-	uint21 slotid
+	uint32 slotid
 	uint8  choice
 
 	*/

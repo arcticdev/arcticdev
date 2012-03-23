@@ -614,7 +614,7 @@ Corpse* ObjectMgr::LoadCorpse(uint32 guid)
 		pCorpse->LoadValues( fields[7].GetString());
 		if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
 		{
-			pCorpse->Destructor();
+			delete pCorpse;
 			pCorpse = NULL;
 			continue;
 		}
@@ -1241,7 +1241,7 @@ void ObjectMgr::LoadCorpses(MapMgr* mgr)
 			pCorpse->LoadValues( fields[8].GetString());
 			if(pCorpse->GetUInt32Value(CORPSE_FIELD_DISPLAY_ID) == 0)
 			{
-				pCorpse->Destructor();
+				delete pCorpse;
 				pCorpse = NULL;
 				continue;
 			}
@@ -1262,7 +1262,7 @@ void ObjectMgr::CorpseAddEventDespawn(Corpse* pCorpse)
 {
 	if(!pCorpse->IsInWorld())
 	{
-		pCorpse->Destructor();
+		delete pCorpse;
 		pCorpse = NULL;
 	}
 	else
@@ -1286,13 +1286,20 @@ void ObjectMgr::CorpseCollectorUnload()
 	_corpseslock.Acquire();
 	for (itr = m_corpses.begin(); itr != m_corpses.end();)
 	{
-		Corpse* c =itr->second;
+		Corpse* c = itr->second;
 		++itr;
-		if(c->IsInWorld())
-			c->RemoveFromWorld(false);
-
-		c->Destructor();
-		c = NULL;
+		if(c->IsVehicle()) 
+		{ 
+			TO_VEHICLE(c)->SafeDelete();
+		} 
+		else 
+		{ 
+			if(c->IsInWorld()) 
+				c->RemoveFromWorld(false); 
+				RemoveCorpse(c); 
+				delete c; 
+				c = NULL; 
+		} 
 	}
 	m_corpses.clear();
 	_corpseslock.Release();

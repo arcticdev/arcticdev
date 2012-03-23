@@ -692,7 +692,8 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 			}
 			else
 			{
-				item->Destructor();
+				delete item;
+				item = NULL;
 			}
 		}
 	}
@@ -710,7 +711,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
     OutPacket(SMSG_GOSSIP_COMPLETE, 0, NULL);
 
 
-	//Animate and send the spell too
+	// Animate and send the spell too
 	Spell* BindSpell = (new Spell(pCreature, dbcSpell.LookupEntry( BIND_SPELL_ID ), false, NULL));
 	SpellCastTargets targets;
 	targets.m_unitTarget = GetPlayer()->GetGUID();

@@ -185,9 +185,10 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 	unit->RemoveFromWorld(false,true);
 
 	if(unit->IsVehicle())
-		TO_VEHICLE(unit)->Destructor();
+		delete TO_VEHICLE(unit);
 	else
-		unit->Destructor();
+		delete unit;
+		unit = NULL;
 
 	return true;
 }
@@ -445,7 +446,8 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 	if(!sp)
 	{
 		RedSystemMessage(m_session, "Spell failed creation!");
-		sp->Destructor();
+		delete sp;
+		sp = NULL;
 		return false;
 	}
 
@@ -678,7 +680,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		}
 	}
 	GObj->Despawn(0);
-	GObj->Destructor();
+	delete GObj;
 	GObj = NULL;
 
 	m_session->GetPlayer()->m_GM_SelectedGO = NULL;

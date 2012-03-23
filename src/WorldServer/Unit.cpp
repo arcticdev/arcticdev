@@ -316,11 +316,6 @@ void Unit::Init()
 
 }
 
-void Unit::Destructor()
-{
-	delete this;
-}
-
 void Unit::SetDiminishTimer(uint32 index)
 {
 	assert(index < DIMINISH_GROUPS);

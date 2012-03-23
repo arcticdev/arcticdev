@@ -807,7 +807,8 @@ void LootRoll::Finalize()
 		}
 		else
 		{
-			item->Destructor();
+			delete item;
+			item = NULL;
 		}
 	}
 	else

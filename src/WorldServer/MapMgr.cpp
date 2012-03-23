@@ -135,22 +135,20 @@ MapMgr::~MapMgr()
 		switch(pObject->GetTypeFromGUID())
 		{
 		case HIGHGUID_TYPE_VEHICLE:
-			TO_VEHICLE(pObject)->Destructor();
+			delete TO_VEHICLE(pObject);
 			pObject = NULL;
 			break;
-
 		case HIGHGUID_TYPE_UNIT:
-			TO_CREATURE(pObject)->Destructor();
+			delete TO_CREATURE(pObject);
 			pObject = NULL;
 			break;
 
 		case HIGHGUID_TYPE_GAMEOBJECT:
-			TO_GAMEOBJECT(pObject)->Destructor();
+			delete TO_GAMEOBJECT(pObject);
 			pObject = NULL;
 			break;
-
 		default:
-			pObject->Destructor();
+			delete pObject;
 			pObject = NULL;
 		}
 	}
@@ -166,7 +164,7 @@ MapMgr::~MapMgr()
 		if(pCorpse->IsInWorld())
 			pCorpse->RemoveFromWorld(false);
 
-		pCorpse->Destructor();
+		delete pCorpse;
 		pCorpse = NULL;
 	}
 	m_corpses.clear();
@@ -1614,7 +1612,7 @@ void MapMgr::EventCorpseDespawn(uint64 guid)
 		return;
 
 	pCorpse->Despawn();
-	pCorpse->Destructor();
+	delete pCorpse;
 	pCorpse = NULL;
 }
 

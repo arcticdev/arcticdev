@@ -37,18 +37,14 @@ Container::~Container()
 	for(uint32 i = 0; i < m_itemProto->ContainerSlots; i++)
 	{
 		if(m_Slot[i] && m_Slot[i]->GetOwner() == m_owner)
-			m_Slot[i]->Destructor();
+			delete m_Slot[i];
+			m_Slot[i] = NULL;
 	}
-}
-
-void Container::Destructor()
-{
-	delete this;
 }
 
 void Container::LoadFromDB( Field*fields )
 {
-	uint32 itemid=fields[2].GetUInt32();
+	uint32 itemid = fields[2].GetUInt32();
 	m_itemProto = ItemPrototypeStorage.LookupEntry( itemid );
 
 	ASSERT(m_itemProto);
@@ -248,7 +244,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 		pItem->RemoveFromWorld();
 	}
 	pItem->DeleteFromDB();
-	pItem->Destructor();
+	delete pItem;
 	pItem = NULL;
 
 	return true;

@@ -92,7 +92,6 @@ class Transporter : public GameObject
 public:
 	Transporter(uint64 guid);
 	~Transporter();
-	virtual void Destructor();
 
 	bool CreateAsTransporter(uint32 EntryID, const char* Name);
 	void UpdatePosition();

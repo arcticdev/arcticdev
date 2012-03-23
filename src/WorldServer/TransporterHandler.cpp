@@ -392,13 +392,9 @@ Transporter::~Transporter()
 			delete TO_CREATURE( itr->second )->m_transportPosition;
 			TO_CREATURE( itr->second )->m_TransporterGUID = NULL;
 		}
-		itr->second->Destructor();
+		delete itr->second;
+		itr->second = NULL;
 	}
-}
-
-void Transporter::Destructor()
-{
-	delete this;
 }
 
 void ObjectMgr::LoadTransporters()
@@ -420,7 +416,7 @@ void ObjectMgr::LoadTransporters()
 		if(!pTransporter->CreateAsTransporter(entry, ""))
 		{
 			Log.Warning("ObjectMgr","Skipped invalid transporterid %d.", entry);
-			pTransporter->Destructor();
+			delete pTransporter;
 			pTransporter = NULL;
 		}
 		else
