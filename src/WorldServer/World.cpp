@@ -509,8 +509,8 @@ bool World::SetInitialWorldSettings()
 	{
 		MAKE_TASK(ObjectMgr, LoadCreatureWaypoints);
 	}
-	MAKE_TASK(ObjectMgr, LoadTrainers);
-	MAKE_TASK(ObjectMgr, LoadTotemSpells);
+	MAKE_TASK(ObjectMgr,  LoadTrainers);
+	MAKE_TASK(ObjectMgr,  LoadTotemSpells);
 	MAKE_TASK(ObjectMgr,  LoadSpellOverride);
 	MAKE_TASK(ObjectMgr,  LoadVendors);
 	MAKE_TASK(ObjectMgr,  LoadAIThreatToSpellId);
@@ -520,15 +520,15 @@ bool World::SetInitialWorldSettings()
 	MAKE_TASK(AddonMgr,   LoadFromDB);
 	MAKE_TASK(ObjectMgr,  SetHighestGuids);
 	MAKE_TASK(ObjectMgr,  LoadReputationModifiers);
-	MAKE_TASK(ObjectMgr, LoadMonsterSay);
-	MAKE_TASK(WeatherMgr,LoadFromDB);
-	MAKE_TASK(ObjectMgr, LoadGroups);
+	MAKE_TASK(ObjectMgr,  LoadMonsterSay);
+	MAKE_TASK(WeatherMgr, LoadFromDB);
+	MAKE_TASK(ObjectMgr,  LoadGroups);
 
-	MAKE_TASK(ObjectMgr, LoadExtraCreatureProtoStuff);
-	MAKE_TASK(ObjectMgr, LoadExtraItemStuff);
-	MAKE_TASK(QuestMgr,  LoadExtraQuestStuff);
-	MAKE_TASK(ObjectMgr, LoadArenaTeams);
-	MAKE_TASK(ObjectMgr, LoadProfessionDiscoveries);
+	MAKE_TASK(ObjectMgr,  LoadExtraCreatureProtoStuff);
+	MAKE_TASK(ObjectMgr,  LoadExtraItemStuff);
+	MAKE_TASK(QuestMgr,   LoadExtraQuestStuff);
+	MAKE_TASK(ObjectMgr,  LoadArenaTeams);
+	MAKE_TASK(ObjectMgr,  LoadProfessionDiscoveries);
 	MAKE_TASK(ObjectMgr,  LoadQuestPOI);
 
 #undef MAKE_TASK
