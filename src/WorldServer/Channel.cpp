@@ -54,7 +54,7 @@ Channel::Channel(const char * name, uint32 team, uint32 type_id, uint32 id)
 		m_announce = false;
 
 		m_flags |= 0x10;			// general flag
-		// flags (0x01 = custom?, 0x04 = trade?, 0x20 = city?, 0x40 = lfg?, , 0x80 = voice?,		
+		// flags (0x01 = custom?, 0x04 = trade?, 0x20 = city?, 0x40 = lfg?, , 0x80 = voice?,
 
 		if( pDBC->flags & 0x08 )
 			m_flags |= 0x08;		// trade
@@ -125,7 +125,7 @@ void Channel::AttemptJoin(Player* plr, const char * password)
 		data << uint8(CHANNEL_NOTIFY_FLAG_JOINED) << m_name << plr->GetGUID();
 		SendToAll(&data, NULL);
 	}
-	
+
 	data.clear();
 	if( m_flags & 0x40 && !plr->GetSession()->HasFlag( ACCOUNT_FLAG_NO_AUTOJOIN ) )
 		data << uint8(CHANNEL_NOTIFY_FLAG_YOUJOINED) << m_name << uint8(0x1A) << uint32(0) << uint32(0);
@@ -151,7 +151,7 @@ void Channel::Part(Player* plr, bool silent)
 		m_lock.Release();
 		return;
 	}
-    
+
 	flags = itr->second;
 	m_members.erase(itr);
 
@@ -163,13 +163,9 @@ void Channel::Part(Player* plr, bool silent)
 		SetOwner(NULL, NULL);
 	}
 
-	if(plr->GetSession() && plr->GetSession()->IsLoggingOut())
+	if(!silent)
 	{
-
-	}
-	else
-	{
-		if( !silent )
+		if(plr->GetSession() && plr->GetSession()->IsLoggingOut())
 		{
 			data << uint8(CHANNEL_NOTIFY_FLAG_YOULEFT) << m_name << m_typeId << uint32(0) << uint8(0);
 			plr->GetSession()->SendPacket(&data);
@@ -187,12 +183,12 @@ void Channel::Part(Player* plr, bool silent)
     if(m_members.size() == 0 )
     {
         m_lock.Release();
-		channelmgr.RemoveChannel(this);
+        channelmgr.RemoveChannel(this);
     }
-	else
-		m_lock.Release();
+    else
+        m_lock.Release();
 #else
-	m_lock.Release();
+    m_lock.Release();
 #endif
 }
 
@@ -229,7 +225,7 @@ void Channel::SetOwner(Player* oldpl, Player* plr)
 				// remove the old owner
 				oldflags2 = itr->second;
 				itr->second &= ~CHANNEL_FLAG_OWNER;
-				data << uint8(CHANNEL_NOTIFY_FLAG_MODE_CHG) << m_name << itr->first->GetGUID() << uint8(oldflags2) << uint8(itr->second);				
+				data << uint8(CHANNEL_NOTIFY_FLAG_MODE_CHG) << m_name << itr->first->GetGUID() << uint8(oldflags2) << uint8(itr->second);
 				SendToAll(&data);
 			}
 			else
@@ -240,7 +236,7 @@ void Channel::SetOwner(Player* oldpl, Player* plr)
 					oldflags = itr->second;
 					itr->second |= CHANNEL_FLAG_OWNER;
 				}
-			}				
+			}
 		}
 	}
 	else
@@ -252,7 +248,7 @@ void Channel::SetOwner(Player* oldpl, Player* plr)
 				// remove the old owner
 				oldflags2 = itr->second;
 				itr->second &= ~CHANNEL_FLAG_OWNER;
-				data << uint8(CHANNEL_NOTIFY_FLAG_MODE_CHG) << m_name << itr->first->GetGUID() << uint8(oldflags2) << uint8(itr->second);	
+				data << uint8(CHANNEL_NOTIFY_FLAG_MODE_CHG) << m_name << itr->first->GetGUID() << uint8(oldflags2) << uint8(itr->second);
 				SendToAll(&data);
 			}
 			else
@@ -263,7 +259,7 @@ void Channel::SetOwner(Player* oldpl, Player* plr)
 					oldflags = itr->second;
 					itr->second |= CHANNEL_FLAG_OWNER;
 				}
-			}				
+			}
 		}
 	}
 
@@ -353,7 +349,7 @@ void Channel::Say(Player* plr, const char * message, Player* for_gm_client, bool
 		{
 			data << uint8(CHANNEL_NOTIFY_FLAG_YOUCANTSPEAK) << m_name;
 			plr->GetSession()->SendPacket(&data);
-			return;	
+			return;
 		}
 	}
 
@@ -722,7 +718,7 @@ void Channel::Password(Player* plr, const char * pass)
 
 	m_password = string(pass);
 	data << uint8(CHANNEL_NOTIFY_FLAG_SETPASS) << m_name << plr->GetGUID();
-	SendToAll(&data);	
+	SendToAll(&data);
 }
 
 void Channel::List(Player* plr)
@@ -821,7 +817,7 @@ void Channel::SendToAll(WorldPacket * data)
 void Channel::SendToAll(WorldPacket * data, Player* plr)
 {
 	Guard guard(m_lock);
-	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++) 
+	for(MemberMap::iterator itr = m_members.begin(); itr != m_members.end(); itr++)
 	{
 		if ( itr->first != plr && itr->first->GetSession() )
 			itr->first->GetSession()->SendPacket(data);

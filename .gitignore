@@ -48,7 +48,6 @@ build
 *.bin
 *.so
 *.pidb
-*.res
 *.codeanalysis
 *.aps
 *.ipch
