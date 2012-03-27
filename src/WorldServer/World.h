@@ -219,7 +219,9 @@ struct MapInfo
 	float update_distance;
 	uint32 checkpoint_id;
 	bool collision;
-//	bool cluster_loads_map;		//When the clustering is active
+	uint32 phasehorde; 
+	uint32 phasealliance;
+	// bool cluster_loads_map; // When the clustering is active
 
 	bool HasFlag(uint32 flag)
 	{

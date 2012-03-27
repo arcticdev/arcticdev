@@ -8972,7 +8972,15 @@ void Player::OnWorldPortAck()
 		if(isDead() && pPMapinfo->type != INSTANCE_NULL && pPMapinfo->type != INSTANCE_PVP)
 			ResurrectPlayer(NULL);
 
-		if(pPMapinfo->HasFlag(WMI_INSTANCE_WELCOME) && GetMapMgr())
+		if(pPMapinfo->phasehorde != 0 || pPMapinfo->phasealliance != 0)
+		{
+			if(GetTeam)
+				SetPhase(pPMapinfo->phasehorde);
+			else
+				SetPhase( pPMapinfo->phasealliance);
+		}
+
+		if(pPMapinfo->HasFlag(WMI_INSTANCE_WELCOME) && GetMapMgr()) 
 		{
 			std::string welcome_msg;
 			welcome_msg = "Welcome to ";
