@@ -156,6 +156,7 @@ class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand * _TitleCommandTable;
 
 	ChatCommand * GetSubCommandTable(const char * name);
+
 public:
 	void Init();
 	void Dealloc();

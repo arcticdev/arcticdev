@@ -91,7 +91,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	if(  msg.find("|c") != string::npos && msg.find("|H") == string::npos )
+	if(msg.find("|c") != string::npos && msg.find("|H") == string::npos )
 	{
 			return;
 	}
@@ -103,6 +103,15 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	case CHAT_MSG_YELL:
 	case CHAT_MSG_WHISPER:
 	case CHAT_MSG_CHANNEL:
+	case CHAT_MSG_PARTY:
+	case CHAT_MSG_PARTY_LEADER:
+	case CHAT_MSG_BATTLEGROUND:
+	case CHAT_MSG_BATTLEGROUND_LEADER:
+	case CHAT_MSG_RAID:
+	case CHAT_MSG_RAID_WARNING:
+	case CHAT_MSG_RAID_LEADER:
+	case CHAT_MSG_GUILD:
+	case CHAT_MSG_OFFICER:
 		{
 			if( m_muted && m_muted >= (uint32)UNIXTIME )
 			{

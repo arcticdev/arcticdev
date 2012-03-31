@@ -259,7 +259,7 @@ public:
 	void execute();
 };
 
-struct CharacterLoaderThread : public ThreadContext
+struct CharacterLoaderThread : public Singleton<CharacterLoaderThread>, public ThreadContext
 {
 #ifdef WIN32
 	HANDLE hEvent;
@@ -659,3 +659,4 @@ public:
 };
 
 #define sWorld World::getSingleton()
+#define sCLT CharacterLoaderThread::getSingleton()

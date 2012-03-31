@@ -925,15 +925,15 @@ void Spell::GenerateTargets(SpellCastTargets *store_buff)
 				case EFF_TARGET_TOTEM_AIR:
 				case EFF_TARGET_TOTEM_FIRE:// Totem
 					{
-						if( p_caster != NULL )
+						if( u_caster != NULL )
 						{
 							SummonPropertiesEntry* summonprop = dbcSummonProps.LookupEntryForced( m_spellInfo->EffectMiscValueB[i] );
 							if(!summonprop)
 								return;
 							uint32 slot = summonprop->slot;
 
-							if(p_caster->m_SummonSlots[slot] != NULL)
-								store_buff->m_unitTarget = p_caster->m_SummonSlots[slot]->GetGUID();
+							if(u_caster->m_SummonSlots[slot] != NULL)
+								store_buff->m_unitTarget = u_caster->m_SummonSlots[slot]->GetGUID();
 						}
 					}break;
 				case 61:{ // targets with the same group/raid and the same class
@@ -989,19 +989,19 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 	}
 
 	uint8 forced_cancast_failure = 0;
-	if( p_caster != NULL )
+	if( u_caster != NULL )
 	{
 		if( GetGameObjectTarget() || GetSpellProto()->Id == 21651)
 		{
-			if( p_caster->InStealth() )
+			if( u_caster->InStealth() )
 			{
-				p_caster->RemoveAura( p_caster->m_stealth );
+				u_caster->RemoveAura( u_caster->m_stealth );
 			}
 
 			if( (GetSpellProto()->Effect[0] == SPELL_EFFECT_OPEN_LOCK ||
 				GetSpellProto()->Effect[1] == SPELL_EFFECT_OPEN_LOCK ||
 				GetSpellProto()->Effect[2] == SPELL_EFFECT_OPEN_LOCK) &&
-				p_caster->m_bgFlagIneligible)
+				p_caster != NULL && p_caster->m_bgFlagIneligible)
 			{
 				forced_cancast_failure = SPELL_FAILED_BAD_TARGETS;
 			}
@@ -1070,8 +1070,8 @@ uint8 Spell::prepare( SpellCastTargets * targets )
 		{
 			SendCastResult(SPELL_FAILED_NO_POWER);
 			// in case we're out of sync
-			if( p_caster )
-				p_caster->SendPowerUpdate();
+			if( u_caster )
+				u_caster->SendPowerUpdate();
 
 			return SPELL_FAILED_NO_POWER;
 		}
@@ -1292,7 +1292,7 @@ void Spell::cast(bool check)
 			}
 
 
-			if( p_caster )
+			if( p_caster != NULL )
 			{
 				if( m_spellInfo->NameHash == SPELL_HASH_SLAM)
 				{
@@ -1323,7 +1323,7 @@ void Spell::cast(bool check)
 			{
 				WorldPacket data(SMSG_SPELL_COOLDOWN, 14);
 				data << m_spellInfo->Id;
-				data << p_caster->GetNewGUID();
+				data << m_caster->GetNewGUID();
 				data << uint32(m_spellInfo->RecoveryTime ? m_spellInfo->RecoveryTime : 2300);
 				p_caster->GetSession()->SendPacket(&data);
 			}
@@ -1540,13 +1540,13 @@ void Spell::cast(bool check)
 		{
 		case SPELL_HASH_FIREBALL:
 			{
-				if( p_caster )
-					p_caster->RemoveAura( 57761 );
+				if( u_caster )
+					u_caster->RemoveAura( 57761 );
 			}break;
 		case SPELL_HASH_PYROBLAST:
 			{
-				if( p_caster )
-					p_caster->RemoveAura( 48108 );
+				if( u_caster )
+					u_caster->RemoveAura( 48108 );
 			}break;
 		case SPELL_HASH_GLYPH_OF_ICE_BLOCK:
 			{
@@ -1563,12 +1563,12 @@ void Spell::cast(bool check)
 			}break;
 		case SPELL_HASH_GLYPH_OF_ICY_VEINS:
 			{
-				if( p_caster && p_caster->HasDummyAura(SPELL_HASH_GLYPH_OF_ICY_VEINS) )
+				if( u_caster && u_caster->HasDummyAura(SPELL_HASH_GLYPH_OF_ICY_VEINS) )
 				{
 					Aura* pAura = NULL;
 					for(uint32 i = MAX_POSITIVE_AURAS; i < MAX_AURAS; ++i)
 					{
-						pAura = p_caster->m_auras[i];
+						pAura = u_caster->m_auras[i];
 						if( pAura != NULL && !pAura->IsPositive() )
 						{
 							for(uint32 j = 0; j < 3; ++j)
@@ -1576,7 +1576,7 @@ void Spell::cast(bool check)
 								if( pAura->GetSpellProto()->EffectApplyAuraName[j] == SPELL_AURA_MOD_DECREASE_SPEED ||
 									pAura->GetSpellProto()->EffectApplyAuraName[j] == SPELL_AURA_MOD_CASTING_SPEED )
 								{
-									p_caster->RemoveAuraBySlot(i);
+									u_caster->RemoveAuraBySlot(i);
 									break;
 								}
 							}
@@ -1586,11 +1586,11 @@ void Spell::cast(bool check)
 			}break;
 		case SPELL_HASH_HAND_OF_FREEDOM:
 			{
-				if( p_caster && p_caster->HasDummyAura(SPELL_HASH_DIVINE_PURPOSE) )
+				if( u_caster && u_caster->HasDummyAura(SPELL_HASH_DIVINE_PURPOSE) )
 				{
-					if( Rand( p_caster->GetDummyAura(SPELL_HASH_DIVINE_PURPOSE)->RankNumber * 50 ) )
+					if( Rand( u_caster->GetDummyAura(SPELL_HASH_DIVINE_PURPOSE)->RankNumber * 50 ) )
 					{
-						Unit* u_target = p_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
+						Unit* u_target = u_caster->GetMapMgr()->GetUnit(m_targets.m_unitTarget);
 						if( u_target )
 						{
 							Aura* pAura;
@@ -1603,7 +1603,7 @@ void Spell::cast(bool check)
 									{
 										if( Spell::GetMechanic(pAura->GetSpellProto()) == MECHANIC_STUNNED )
 										{
-											p_caster->RemoveAuraBySlot(i);
+											u_caster->RemoveAuraBySlot(i);
 											break;
 										}
 									}
@@ -2064,15 +2064,15 @@ void Spell::SendSpellStart()
 
 	m_targets.write( data );
 
-	if (cast_flags & SPELL_START_FLAGS_POWER_UPDATE) //send new mana
+	if(cast_flags & SPELL_START_FLAGS_POWER_UPDATE) // send new mana
 		data << uint32( u_caster ? u_caster->GetUInt32Value(UNIT_FIELD_POWER1 + u_caster->GetPowerType()) : 0);
-	if (cast_flags & SPELL_START_FLAGS_RUNE_UPDATE) //send new runes
+	if((p_caster != NULL) &&cast_flags & SPELL_START_FLAGS_RUNE_UPDATE) // send new runes
 	{
 		SpellRuneCostEntry * runecost = dbcSpellRuneCost.LookupEntry(m_spellInfo->runeCostID);
 		uint8 theoretical = p_caster->TheoreticalUseRunes(runecost->bloodRuneCost, runecost->frostRuneCost, runecost->unholyRuneCost);
 		data << p_caster->m_runemask << theoretical;
 
-		for (uint8 i=0; i<6; ++i)
+		for (uint8 i = 0; i < 6; ++i)
 		{
 			if ((1 << i) & p_caster->m_runemask)
 				if (!((1 << i) & theoretical))
@@ -2123,7 +2123,7 @@ void Spell::SendSpellStart()
 			data << ip->DisplayInfoID << ip->InventoryType;
 	}
 
-	m_caster->SendMessageToSet( &data, true );
+	m_caster->SendMessageToSet( &data, (m_caster->IsPlayer() ? true : false) );
 }
 
 void Spell::SendSpellGo()
@@ -2235,7 +2235,7 @@ void Spell::SendSpellGo()
 	if( ip != NULL)
 		data << ip->DisplayInfoID << ip->InventoryType;
 
-	m_caster->SendMessageToSet( &data, true );
+	m_caster->SendMessageToSet( &data, (m_caster->IsPlayer() ? true : false) );
 }
 
 void Spell::writeSpellGoTargets( WorldPacket * data )
@@ -4654,8 +4654,10 @@ void Spell::DetermineSkillUp(uint32 skillid,uint32 targetlevel, uint32 multiplic
 
 void Spell::DetermineSkillUp(uint32 skillid)
 {
-	//This code is wrong for creating items and disenchanting.
-	if(!p_caster)return;
+	// This code is wrong for creating items and disenchanting.
+	if(!p_caster)
+		return;
+
 	float chance = 0.0f;
 	skilllinespell* skill = objmgr.GetSpellSkill(m_spellInfo->Id);
 	if( skill != NULL && TO_PLAYER( m_caster )->_HasSkillLine( skill->skilline ) )

@@ -6,9 +6,8 @@
 
 #include "StdAfx.h"
 
+initialiseSingleton( CharacterLoaderThread );
 initialiseSingleton( World );
-
-CharacterLoaderThread* ctl = NULL;
 
 float World::m_movementCompressThreshold;
 float World::m_movementCompressThresholdCreatures;
@@ -527,8 +526,7 @@ bool World::SetInitialWorldSettings()
 		Log.Notice("World", "Backgrounding loot loading...");
 
 		// loot background loading in a lower priority thread.
-		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadDelayedLoot),
-			BTE_PRIORITY_LOW));
+		ThreadPool.ExecuteTask(new BasicTaskExecutor(new CallbackP0<LootMgr>(LootMgr::getSingletonPtr(), &LootMgr::LoadDelayedLoot), BTE_PRIORITY_LOW));
 	}
 	else
 	{
@@ -542,12 +540,11 @@ bool World::SetInitialWorldSettings()
 #endif
 
 	Log.Notice("World", "Starting BattlegroundManager...");
-	CBattlegroundManager* BattlegroundMgr(new CBattlegroundManager);
-	BattlegroundMgr->Init();
+	new CBattlegroundManager;
+	BattlegroundManager.Init();
 
 	Log.Notice("World", "Starting CharacterLoaderThread...");
-	ctl = new CharacterLoaderThread();
-	ThreadPool.ExecuteTask( ctl );
+	ThreadPool.ExecuteTask(new CharacterLoaderThread()); 
 
 #ifdef ENABLE_COMPRESSED_MOVEMENT
 	Log.Notice("World", "Starting MovementCompressorThread...");

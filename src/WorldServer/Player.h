@@ -444,90 +444,8 @@ static const uint32 TalentTreesPerClass[CLASS_DRUID+1][3] =
 // Dodge ( class base ) - UNUSED, Warrior, Paladin, Hunter, Rogue,   Priest, Death Knight, Shaman, Mage, Warlock, UNUSED, Druid
 const float baseDodge[12] = { 0.0f, 3.4636f, 3.2685f, -5.45f, -0.5900f, 3.1830f, 3.4636f, 1.6750f, 3.4575f, 2.0350f, 0.0f, 4.951f };
 
-// Dodge ( class ratio ) - UNUSED, Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, UNUSED, Druid
-// TODO: get proper ratios for all levels, we only have values for level 70 currently
-const float dodgeRatio[80][12] = {
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 1
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 2
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 3
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 4
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 5
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 6
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 7
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 8
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 9
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 10
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 11
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 12
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 13
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 14
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 15
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 16
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 17
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 18
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 19
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 20
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 21
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 22
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 23
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 24
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 25
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 26
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 27
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 28
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 29
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 30
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 31
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 32
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 33
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 34
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 35
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 36
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 37
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 38
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 39
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 40
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 41
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 42
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 43
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 44
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 45
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 46
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 47
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 48
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 49
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 50
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 51
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 52
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 53										 { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 54
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 55
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 56
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 57
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 58
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 59
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 60
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 61
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 62
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 63
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 64
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 65
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 66
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 67
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 68
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 69
-{ 0.0f, 30.0f, 25.0f, 25.0f, 20.0f, 25.0f, 25.0f, 25.0f, 25.0f, 25.0f, 0.0f, 14.7059f },// Level 70
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 71
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 72
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 73
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 74
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 75
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 76
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 77
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 78
-{ 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f },// Level 79
-{ 0.0f, 73.5294f, 52.0833f, 75.1879f, 41.4937f, 52.0833f, 73.5294f, 52.0833f, 51.282f, 52.0833f, 0.0f, 41.6666f } // Level 80
-};
+// Dodge ( class Cap )		UNUSED	War	Paladin	hunter	rogue	priest	DK	Shaman	Mage	Lock UNUSED	Druid
+const float DodgeCap[12] = { 0.0f, 84.8f, 59.9f, 86.2f, 47.8f, 59.9f, 84.7f, 59.9f, 58.8f, 59.9f, 0.0f, 47.8f };
 
 /*
 Exalted	        1,000	 Access to racial mounts. Capped at 999.7
@@ -846,7 +764,6 @@ protected:
 	void _UpdateSkillFields();
 
 	SkillMap m_skills;
-
 
 	// COOLDOWNS
 	PlayerCooldownMap m_cooldownMap[NUM_COOLDOWN_TYPES];
@@ -1341,6 +1258,8 @@ public:
 
 	float GetSkillUpChance(uint32 id);
 	float SpellCrtiticalStrikeRatingBonus;
+	float CalculateCritFromAgilForClassAndLevel(uint32 _class, uint32 _level);
+	float CalculateDefenseFromAgilForClassAndLevel(uint32 _class, uint32 _level);
 	float SpellHasteRatingBonus;
 	void UpdateAttackSpeed();
 	void UpdateChances();
@@ -1348,39 +1267,40 @@ public:
 	void UpdateHit(int32 hit);
 
 	bool canCast(SpellEntry *m_spellInfo);
-	ARCTIC_INLINE float GetBlockFromSpell() { return m_blockfromspell; }
-	ARCTIC_INLINE float GetSpellCritFromSpell() { return m_spellcritfromspell; }
-	ARCTIC_INLINE float GetHitFromMeleeSpell() { return m_hitfrommeleespell; }
-	ARCTIC_INLINE float GetHitFromSpell() { return m_hitfromspell; }
-	ARCTIC_INLINE float GetParryFromSpell() { return m_parryfromspell; }
-	ARCTIC_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
+
 	void SetBlockFromSpell(float value) { m_blockfromspell = value; }
 	void SetSpellCritFromSpell(float value) { m_spellcritfromspell = value; }
 	void SetParryFromSpell(float value) { m_parryfromspell = value; }
 	void SetDodgeFromSpell(float value) { m_dodgefromspell = value; }
 	void SetHitFromMeleeSpell(float value) { m_hitfrommeleespell = value; }
 	void SetHitFromSpell(float value) { m_hitfromspell = value; }
-	ARCTIC_INLINE int32 GetHealthFromSpell() { return m_healthfromspell; }
-	ARCTIC_INLINE uint32 GetManaFromSpell() { return m_manafromspell; }
+	void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
 	void SetHealthFromSpell(int32 value) { m_healthfromspell = value;}
 	void SetManaFromSpell(uint32 value) { m_manafromspell = value;}
-	uint32 CalcTalentResetCost(uint32 resetnum);
 	void SendTalentResetConfirm();
 	void SendPetUntrainConfirm();
 	void SendDualTalentConfirm();
+
 	uint32 GetTalentResetTimes() { return m_talentresettimes; }
-	ARCTIC_INLINE void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
-	void SetPlayerStatus(uint8 pStatus) { m_status = pStatus; }
+	uint32 CalcTalentResetCost(uint32 resetnum);
+
 	ARCTIC_INLINE uint8 GetPlayerStatus() { return m_status; }
+	ARCTIC_INLINE uint8 GetShapeShift() { return GetByte(UNIT_FIELD_BYTES_2,3); }
+	ARCTIC_INLINE int32 GetHealthFromSpell() { return m_healthfromspell; }
+	ARCTIC_INLINE uint32 GetManaFromSpell() { return m_manafromspell; }
+	ARCTIC_INLINE void SetTalentResetTimes(uint32 value) { m_talentresettimes = value; }
+	ARCTIC_INLINE float GetBlockFromSpell() { return m_blockfromspell; }
+	ARCTIC_INLINE float GetSpellCritFromSpell() { return m_spellcritfromspell; }
+	ARCTIC_INLINE float GetHitFromMeleeSpell() { return m_hitfrommeleespell; }
+	ARCTIC_INLINE float GetHitFromSpell() { return m_hitfromspell; }
+	ARCTIC_INLINE float GetParryFromSpell() { return m_parryfromspell; }
+	ARCTIC_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
+	
 	const float& GetBindPositionX( ) const { return m_bind_pos_x; }
 	const float& GetBindPositionY( ) const { return m_bind_pos_y; }
 	const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
 	const uint32& GetBindMapId( ) const { return m_bind_mapid; }
 	const uint32& GetBindZoneId( ) const { return m_bind_zoneid; }
-	ARCTIC_INLINE uint8 GetShapeShift()
-	{
-		return GetByte(UNIT_FIELD_BYTES_2,3);
-	}
 
 	void delayAttackTimer(int32 delay)
 	{
@@ -1397,11 +1317,11 @@ public:
 	AIInterface* waypointunit;
 
 	uint32 m_nextSave;
-	//Tutorials
+	// Tutorials
 	uint32 GetTutorialInt(uint32 intId );
 	void SetTutorialInt(uint32 intId, uint32 value);
-	//Base stats calculations
-	//void CalcBaseStats();
+	// Base stats calculations
+	// void CalcBaseStats();
 	// Rest
 	uint32 SubtractRestXP(uint32 amount);
 	void AddCalculatedRestXP(uint32 seconds);
@@ -1519,7 +1439,7 @@ public:
 	uint32 BaseResistanceModPctNeg[7];
 	uint32 ResistanceModPctPos[7];
 	uint32 ResistanceModPctNeg[7];
-	float m_resist_critical[2];//when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
+	float m_resist_critical[2]; // when we are a victim we can have talents to decrease chance for critical hit. This is a negative value and it's added to critchances
 	float m_resist_hit[3]; // 0 = melee; 1= ranged; 2=spells
 	float SpellDmgDoneByAttribute[5][7];
 	float SpellHealDoneByAttribute[5][7];
@@ -1528,7 +1448,7 @@ public:
 
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;
-	uint32 m_casted_amount[7]; //Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
+	uint32 m_casted_amount[7]; // Last casted spells amounts. Need for some spells. Like Ignite etc. DOesn't count HoTs and DoTs. Only directs
 
 	uint32 FlatStatModPos[5];
 	uint32 FlatStatModNeg[5];
@@ -1536,7 +1456,7 @@ public:
 	uint32 StatModPctNeg[5];
 	uint32 TotalStatModPctPos[5];
 	uint32 TotalStatModPctNeg[5];
-	int32 IncreaseDamageByType[12]; //mod dmg by creature type
+	int32 IncreaseDamageByType[12]; // mod dmg by creature type
 	float IncreaseDamageByTypePCT[12];
 	float IncreaseCricticalByTypePCT[12];
 	int32 DetectedRange;
@@ -1627,7 +1547,7 @@ public:
 	// speedhack buster!
 	LocationVector						m_lastHeartbeatPosition;
 	float								m_lastHeartbeatV; // velocity
-	uint32								m_startMoveTime;	// time
+	uint32								m_startMoveTime; // time
 	uint32								m_lastMovementPacketTimestamp;
 	int32								m_heartbeatDisable;
 	uint32								m_lastMoveTime;
@@ -1648,7 +1568,6 @@ public:
 	ARCTIC_INLINE uint32 GetAreaID() { return m_AreaID; }
 	void SetAreaID(uint32 area) { m_AreaID = area; m_areaDBC = dbcArea.LookupEntryForced(m_AreaID); }
 	ARCTIC_INLINE AreaTable *GetAreaDBC() { return m_areaDBC; }
-
 
 	std::string Lfgcomment;
 	uint16 LfgDungeonId[3];

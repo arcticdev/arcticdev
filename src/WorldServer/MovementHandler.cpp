@@ -523,18 +523,22 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 					toDamage = _player->m_CurrentVehicle;
 
 				if( _player->m_CurrentVehicle && _player->m_CurrentVehicle->GetControllingUnit() != _player )
-					return; // don't allow any player but the 'driver' to send for fall damage, or we could get duplicate fall dmg
+				{
+					// don't allow any player but the 'driver' to send for fall damage, or we could get duplicate fall dmg
+				}
+				else
+				{
+					uint32 health_loss = float2int32( float( toDamage->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
 
-				uint32 health_loss = float2int32( float( toDamage->GetUInt32Value( UNIT_FIELD_MAXHEALTH ) * ( ( falldistance - 12 ) * 0.017 ) ) );
+					if( health_loss >= toDamage->GetUInt32Value( UNIT_FIELD_HEALTH ) )
+						health_loss = toDamage->GetUInt32Value( UNIT_FIELD_HEALTH );
 
-				if( health_loss >= toDamage->GetUInt32Value( UNIT_FIELD_HEALTH ) )
-					health_loss = toDamage->GetUInt32Value( UNIT_FIELD_HEALTH );
+					if( toDamage == _player )
+						_player->SendEnvironmentalDamageLog( toDamage->GetGUID(), DAMAGE_FALL, health_loss );
+					toDamage->DealDamage( toDamage, health_loss, 0, 0, 0 );
 
-				if( toDamage == _player )
-					_player->SendEnvironmentalDamageLog( toDamage->GetGUID(), DAMAGE_FALL, health_loss );
-				toDamage->DealDamage( toDamage, health_loss, 0, 0, 0 );
-
-				toDamage->RemoveStealth(); // Fall Damage will cause stealthed units to lose stealth.
+					toDamage->RemoveStealth(); // Fall Damage will cause stealthed units to lose stealth.
+				}
 			}
 			_player->z_axisposition = 0.0f;
 		}
@@ -546,7 +550,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		case MSG_MOVE_FALL_LAND:
 			m_isFalling = false;
 		}
-
+		
 		if(!m_isFalling)
 			_player->z_axisposition = _player->movement_info.z;
 	}
@@ -591,6 +595,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 				_player->DelaySpeedHack(5000);
 			}
 			_player->m_TransporterUnk = _player->movement_info.transTime;
+			if( _player->m_transportPosition )
+				delete _player->m_transportPosition;
 			_player->m_transportPosition = new LocationVector( _player->movement_info.transX, _player->movement_info.transY, _player->movement_info.transZ, _player->movement_info.transO);
 		}
 		/*float x = _player->movement_info.x - _player->movement_info.transX;
@@ -621,7 +627,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		_player->m_CurrentCharm->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation);
 	else
 	{
-		if(!_player->m_CurrentTransporter)
+		if(!_player->m_CurrentTransporter) 
 		{
 			if( !_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, _player->movement_info.orientation) )
 			{
@@ -631,10 +637,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		}
 		else
 		{
-			_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z,
+			_player->SetPosition(_player->movement_info.x, _player->movement_info.y, _player->movement_info.z, 
 				_player->movement_info.orientation + _player->movement_info.transO, false);
 		}
-	}
+	}	
 
 	if(  !(_player->movement_info.flags & MOVEFLAG_MOTION_MASK) )
 	{
@@ -668,15 +674,17 @@ void WorldSession::HandleMoveTimeSkippedOpcode( WorldPacket & recv_data )
 {
 	WoWGuid wguid;
 	uint32 time_dif;
+	WorldPacket data(MSG_MOVE_TIME_SKIPPED, 16);
+
 	recv_data >> wguid;
 	recv_data >> time_dif;
+
 	uint64 guid = wguid.GetOldGuid();
 
 	// Ignore updates for not us
 	if( guid != _player->GetGUID() )
 		return;
 
-	WorldPacket data(MSG_MOVE_TIME_SKIPPED, 16);
 	// send to other players
 	data << _player->GetNewGUID();
 	data << time_dif;

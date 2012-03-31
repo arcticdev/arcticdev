@@ -1672,7 +1672,7 @@ void WorldSession::HandleInspectOpcode( WorldPacket & recv_data )
 	WorldPacket data(SMSG_INSPECT_TALENT, 1000);
 	data << player->GetNewGUID();
 	player->BuildPlayerTalentsInfo(&data, false);
-    SendPacket( &data );
+	SendPacket( &data );
 
 	// build items inspect part. could be sent separately as SMSG_INSPECT
 	uint32 slotUsedMask = 0;
@@ -1790,10 +1790,10 @@ void WorldSession::HandleRandomRollOpcode(WorldPacket &recv_data)
 	data << roll << _player->GetGUID();
 
 	// send to set
-    if(_player->InGroup())
+	if(_player->InGroup())
 		_player->GetGroup()->SendPacketToAll(&data);
 	else
-	    GetPlayer()->SendMessageToSet(&data, true, true);
+		GetPlayer()->SendMessageToSet(&data, true, true);
 }
 
 void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
@@ -1806,20 +1806,23 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 
 	Creature* pCreature = NULL;
 	Loot *pLoot = NULL;
-	/* struct:
-	{CLIENT} Packet: (0x02A3) CMSG_LOOT_MASTER_GIVE PacketSize = 17
-	|------------------------------------------------|----------------|
-	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-	|------------------------------------------------|----------------|
-	|39 23 05 00 81 02 27 F0 01 7B FC 02 00 00 00 00 |9#....'..{......|
-	|00											  |.			   |
-	-------------------------------------------------------------------
 
-		uint64 creatureguid
-		uint8  slotid
-		uint64 target_playerguid
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// struct:
+	//
+	// {CLIENT} Packet: (0x02A3) CMSG_LOOT_MASTER_GIVE PacketSize = 17
+	// |------------------------------------------------|----------------|
+	// |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
+	// |------------------------------------------------|----------------|
+	// |39 23 05 00 81 02 27 F0 01 7B FC 02 00 00 00 00 |9#....'..{......|
+	// |00                                              |.               |
+	// -------------------------------------------------------------------
+	//
+	// uint64 creatureguid
+	// uint8  slotid
+	// uint64 target_playerguid
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
-	*/
 	uint64 creatureguid, target_playerguid;
 	uint8 slotid;
 	recv_data >> creatureguid >> slotid >> target_playerguid;
@@ -1847,8 +1850,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 
 	if (slotid >= pLoot->items.size())
 	{
-		OUT_DEBUG("AutoLootItem: Player %s might be using a hack! (slot %d, size %d)",
-						GetPlayer()->GetName(), slotid, pLoot->items.size());
+		OUT_DEBUG("AutoLootItem: Player %s might be using a hack! (slot %d, size %d)", GetPlayer()->GetName(), slotid, pLoot->items.size());
 		return;
 	}
 
@@ -1856,7 +1858,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 
 	if (!pLoot->items.at(slotid).ffa_loot)
 	{
-		if (!amt)//Test for party loot
+		if (!amt) // Test for party loot
 		{
 			GetPlayer()->GetItemInterface()->BuildInventoryChangeError(NULL, NULL,INV_ERR_ALREADY_LOOTED);
 			return;
@@ -1864,7 +1866,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-		//make sure this player can still loot it in case of ffa_loot
+		// make sure this player can still loot it in case of ffa_loot
 		LooterSet::iterator itr = pLoot->items.at(slotid).has_looted.find(player->GetLowGUID());
 
 		if (pLoot->items.at(slotid).has_looted.end() != itr)
@@ -1942,20 +1944,22 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 void WorldSession::HandleLootRollOpcode(WorldPacket& recv_data)
 {
 	CHECK_INWORLD_RETURN;
-	/* struct:
 
-	{CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
-	|------------------------------------------------|----------------|
-	|00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
-	|------------------------------------------------|----------------|
-	|11 4D 0B 00 BD 06 01 F0 00 00 00 00 02          |.M...........   |
-	-------------------------------------------------------------------
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// struct:
+	//
+	// {CLIENT} Packet: (0x02A0) CMSG_LOOT_ROLL PacketSize = 13
+	// |------------------------------------------------|----------------|
+	// |00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F |0123456789ABCDEF|
+	// |------------------------------------------------|----------------|
+	// |11 4D 0B 00 BD 06 01 F0 00 00 00 00 02          |.M...........   |
+	// -------------------------------------------------------------------
+	//
+	// uint64 creatureguid
+	// uint32 slotid
+	// uint8  choice
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 
-	uint64 creatureguid
-	uint32 slotid
-	uint8  choice
-
-	*/
 	uint64 creatureguid;
 	uint32 slotid;
 	uint8 choice;
@@ -2134,21 +2138,21 @@ void WorldSession::HandleToggleHelmOpcode(WorldPacket &recv_data)
 
 void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 {
-    uint32 data;
-    recv_data >> data;
+	uint32 data;
+	recv_data >> data;
 
-    if(_player->GetGroup() && _player->IsGroupLeader())
-    {
-        WorldPacket pData;
-        pData.Initialize(MSG_SET_DUNGEON_DIFFICULTY);
-        pData << data;
+	if(_player->GetGroup() && _player->IsGroupLeader())
+	{
+		WorldPacket pData;
+		pData.Initialize(MSG_SET_DUNGEON_DIFFICULTY);
+		pData << data;
 
-        _player->iInstanceType = data;
-        sInstanceMgr.ResetSavedInstances(_player);
+		_player->iInstanceType = data;
+		sInstanceMgr.ResetSavedInstances(_player);
 
-        Group * m_Group = _player->GetGroup();
+		Group * m_Group = _player->GetGroup();
 
-        m_Group->Lock();
+		m_Group->Lock();
 
 		for(uint32 i = 0; i < m_Group->GetSubGroupCount(); ++i)
 		{
@@ -2156,18 +2160,18 @@ void WorldSession::HandleDungeonDifficultyOpcode(WorldPacket& recv_data)
 			{
 				if((*itr)->m_loggedInPlayer)
 				{
-                    (*itr)->m_loggedInPlayer->iInstanceType = data;
+					(*itr)->m_loggedInPlayer->iInstanceType = data;
 					(*itr)->m_loggedInPlayer->GetSession()->SendPacket(&pData);
 				}
 			}
 		}
 		m_Group->Unlock();
-    }
-    else if(!_player->GetGroup())
-    {
-        _player->iInstanceType = data;
-        sInstanceMgr.ResetSavedInstances(_player);
-    }
+	}
+	else if(!_player->GetGroup())
+	{
+		_player->iInstanceType = data;
+		sInstanceMgr.ResetSavedInstances(_player);
+	}
 }
 
 void WorldSession::HandleRaidDifficultyOpcode(WorldPacket& recv_data)

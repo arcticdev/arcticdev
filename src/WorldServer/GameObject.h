@@ -138,13 +138,13 @@ public:
 	void Spawn( MapMgr* m);
 	void Despawn(uint32 time);
 
-	//void _EnvironmentalDamageUpdate();
+	// void _EnvironmentalDamageUpdate();
 	void UpdateTrapState();
 	// Serialization
 	void SaveToDB();
 	void SaveToFile(std::stringstream & name);
-	//bool LoadFromDB(uint32 guid);
-	//void LoadFromDB(GameObjectTemplate *t);
+	// bool LoadFromDB(uint32 guid);
+	// void LoadFromDB(GameObjectTemplate *t);
 	void DeleteFromDB();
 	void EventCloseDoor();
 	uint64 m_rotation;
@@ -185,7 +185,7 @@ public:
 			return false;
 	};
 
-	/// Quest data
+	// Quest data
 	std::list<QuestRelation *>* m_quests;
 
 	uint32 *m_ritualmembers;
@@ -198,8 +198,8 @@ public:
 	float range;
 	uint8 checkrate;
 	uint16 counter;
-	int32 charges;//used for type==22,to limit number of usages.
-	bool invisible;//invisible
+	int32 charges; // used for type==22,to limit number of usages.
+	bool invisible; // invisible
 	uint8 invisibilityFlag;
 	Unit* m_summoner;
 	int8 bannerslot;
@@ -210,7 +210,7 @@ public:
 
 	ARCTIC_INLINE GameObjectAIScript* GetScript() { return myScript; }
 
-	void TrapSearchTarget();	// Traps need to find targets faster :P
+	void TrapSearchTarget(); // Traps need to find targets faster :P
 
 	ARCTIC_INLINE bool HasAI() { return spell != 0; }
 	GOSpawn * m_spawn;
@@ -238,7 +238,7 @@ public:
 	void SetState(uint8 state);
 	uint8 GetState();
 
-	//Destructable Building
+	// Destructable Building
 	uint32 Health;
 	void TakeDamage(uint32 ammount);
 	void Rebuild();
@@ -250,8 +250,5 @@ protected:
 	GameObjectInfo *pInfo;
 	GameObjectAIScript * myScript;
 	uint32 _fields[GAMEOBJECT_END];
-	uint32 mines_remaining; //used for mining to mark times it can be mined
-
+	uint32 mines_remaining; // used for mining to mark times it can be mined
 };
-
-#pragma once
