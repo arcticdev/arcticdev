@@ -161,9 +161,9 @@ void WintergraspInternal::SendInitWorldStates(Player* plr)
 					if((plr->GetAreaID() == WINTERGRASP) || (plr->GetZoneId() == WINTERGRASP))
 						plr->GetSession()->SendPacket(&data);
 				}
+				plr = NULL;
 			}
 		}
-		plr = NULL;
 	}
 }
 
