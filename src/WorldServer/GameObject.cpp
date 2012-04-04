@@ -772,8 +772,8 @@ uint8 GameObject::GetState()
 	return GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_STATE);
 }
 
-//Destructable Buildings
-void GameObject::TakeDamage(uint32 ammount)
+// Destructable Buildings
+void GameObject::TakeDamage(uint32 ammount, Object* mcaster, Object* pcaster, uint32 spellid)
 {
 	DestructibleModelDataEntry* disp = dbcDestructibleModelData.LookupEntry(pInfo->Unknown9);
 
@@ -798,7 +798,7 @@ void GameObject::TakeDamage(uint32 ammount)
 
 			sHookInterface.OnDestroyBuilding(this);
 		}
-		else if(Health <= ((pInfo->SpellFocus + pInfo->sound5)*0.6)/* && Health >= ((pInfo->SpellFocus + pInfo->sound5)*0.3)*/)
+		else if(Health <= ((pInfo->SpellFocus + pInfo->sound5)*0.6))
 		{
 			if(GetUInt32Value(GAMEOBJECT_DISPLAYID) != disp->GetDisplayId(0))
 			{
@@ -806,11 +806,6 @@ void GameObject::TakeDamage(uint32 ammount)
 			}
 			sHookInterface.OnDamageBuilding(TO_GAMEOBJECT(this));
 		}
-		/*else if(Health <= ((pInfo->SpellFocus + pInfo->sound5)*0.3) && Health > 0)
-		{
-			SetUInt32Value(GAMEOBJECT_DISPLAYID, disp->GetDisplayId(4)); // smoke
-			sHookInterface.OnDamageBuilding(TO_GAMEOBJECT(this));
-		}*/
 	}
 	else if(!HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED) && !HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DESTROYED))
 	{
