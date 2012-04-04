@@ -194,13 +194,13 @@ public:
 	ARCTIC_INLINE float  GetWaterHeight(float x, float y) { return GetBaseMap()->GetWaterHeight(x, y); }
 	ARCTIC_INLINE uint8  GetWaterType(float x, float y) { return GetBaseMap()->GetWaterType(x, y); }
 	ARCTIC_INLINE uint8  GetWalkableState(float x, float y) { return GetBaseMap()->GetWalkableState(x, y); }
-	ARCTIC_INLINE uint16 GetAreaID(float x, float y, float z =0)
+	ARCTIC_INLINE uint16 GetAreaID(float x, float y, float z = 0)
 	{
 		uint16 aid = GetBaseMap()->GetAreaID(x, y);
 		if(GetMapId() == 571)
 		{
-			//dirty fix for Dalaran sanctuary
-			if( z > 500.0f && (aid == 4551 || aid == 4553 || aid == 4556 || aid == 2817))
+			// dirty fix for Dalaran sanctuary
+			if( z > 500.0f && (aid == 4551 || aid == 4553 || aid == 4556 || aid == 2817) )
 				return 4395;
 		}
 		return aid;

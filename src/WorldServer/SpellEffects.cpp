@@ -293,12 +293,12 @@ void Spell::SpellEffectInstantKill(uint32 i)
 		}break;
 	case 33974: //Power Burn for each Point consumed mana (Effect1) target get damage(Effect3) no better idea :P
 		{
-			unitTarget->GetPowerType() == POWER_TYPE_RAGE ? m_caster->DealDamage(unitTarget, m_spellInfo->EffectBasePoints[0], 0, spellId, false) : m_caster->DealDamage(unitTarget, m_spellInfo->EffectBasePoints[1], 0, spellId, false);
+			unitTarget->GetPowerType() == POWER_TYPE_RAGE ? m_caster->DealDamage(unitTarget, m_spellInfo->EffectBasePoints[0], 0, 0, spellId) : m_caster->DealDamage(unitTarget, m_spellInfo->EffectBasePoints[1], 0, 0, spellId);
 			return;
 		}break;
 	case 36484: //Mana Burn same like Power Burn
 		{
-			m_caster->DealDamage(unitTarget, m_spellInfo->EffectBasePoints[0], 0, spellId, false);
+			m_caster->DealDamage(unitTarget, m_spellInfo->EffectBasePoints[0], 0, 0, spellId);
 			return;
 		}break;
 	case 37056: //Kill Legion Hold Infernals
@@ -770,9 +770,9 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 
 	switch(spellId)
 	{
-	/*****************************************
-	 *	Class Spells
-	 *****************************************/
+	/************************************************************************/
+	/*	CLASS SPELLS                                                        */
+	/************************************************************************/
 	case 49576:
 		{
 			if( p_caster == NULL || unitTarget == NULL )
@@ -781,7 +781,6 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 			// Move Effect
 			unitTarget->CastSpellAoF( p_caster->GetPositionX(), p_caster->GetPositionY(), p_caster->GetPositionZ(), dbcSpell.LookupEntryForced(49575), true);
 			p_caster->CastSpell( unitTarget, 51399, true ); // Taunt Effect
-			p_caster->DealDamage(unitTarget,1,0,0,49576);
 		}break;
 
 	/************************************************************************/
@@ -828,7 +827,7 @@ void Spell::SpellEffectDummy(uint32 i) // Dummy(Scripted events)
 	case 25234:
 	case 25236:
 	case 47470:
-	case 47471:// Execute
+	case 47471: // Execute
 		{
 			if( u_caster == NULL|| !u_caster->IsInWorld() || !unitTarget || !unitTarget->IsInWorld() || !m_spellInfo)
 				return;
@@ -5802,8 +5801,36 @@ void Spell::SpellEffectActivateObject(uint32 i) // Activate Object
 
 void Spell::SpellEffectWMODamage(uint32 i)
 {
-	if(gameObjTarget && gameObjTarget->GetInfo()->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
-		gameObjTarget->TakeDamage(uint32(damage));
+	Object* controller = NULL;
+
+	if(v_caster)
+		controller = v_caster;
+	else
+		controller = p_caster;
+
+	Unit* unttarget = NULL;
+	GameObject* gobjtarget = NULL;
+
+	if(m_targetList.size() > 1)
+	{
+		for(SpellTargetList::iterator itr = m_targetList.begin(); itr != m_targetList.end(); ++itr)
+		{
+			switch(GET_TYPE_FROM_GUID((*itr).Guid))
+			{
+			case HIGHGUID_TYPE_GAMEOBJECT:
+				{
+					gobjtarget = m_caster->GetMapMgr()->GetGameObject(uint32((*itr).Guid));
+					if(gobjtarget && gobjtarget->GetInfo() && gobjtarget->GetInfo()->Type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+						gobjtarget->TakeDamage(uint32(damage), m_caster, controller, m_spellInfo->Id);
+				}break;
+			case HIGHGUID_TYPE_UNIT:
+				{
+					unttarget = m_caster->GetMapMgr()->GetUnit((*itr).Guid);
+					controller->DealDamage(unttarget, damage, 0, 0, m_spellInfo->Id);
+				}break;
+			}
+		}
+	}
 }
 
 void Spell::SpellEffectWMORepair(uint32 i)

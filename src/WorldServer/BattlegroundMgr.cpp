@@ -1706,7 +1706,7 @@ void CBattleground::Close()
 			++it2;
 			plr = objmgr.GetPlayer(guid);
 
-			if(plr!=NULL)
+			if(plr != NULL)
 				RemovePendingPlayer(plr);
 			else
 				m_pendPlayers[i].erase(guid);

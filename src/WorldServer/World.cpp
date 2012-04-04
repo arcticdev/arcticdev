@@ -520,6 +520,11 @@ bool World::SetInitialWorldSettings()
 	new AuctionMgr;
 	sAuctionMgr.LoadAuctionHouses();
 
+	if(wg_enabled)
+	{
+		ThreadPool.ExecuteTask( new WintergraspInternal() );
+	}
+
 	m_queueUpdateTimer = mQueueUpdateInterval;
 	if(Config.MainConfig.GetBoolDefault("Startup", "BackgroundLootLoading", true))
 	{

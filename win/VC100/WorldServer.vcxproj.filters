@@ -58,9 +58,6 @@
     <Filter Include="EventableObject\Object\Item">
       <UniqueIdentifier>{25c6d339-6024-4238-bde0-95b0e7f20326}</UniqueIdentifier>
     </Filter>
-    <Filter Include="EventableObject\Object\ObjectContainer">
-      <UniqueIdentifier>{1ce76e94-2a70-4c09-ae0d-342d60447ced}</UniqueIdentifier>
-    </Filter>
     <Filter Include="EventableObject\Object\Unit">
       <UniqueIdentifier>{149d2816-4b58-47b3-93c6-2f83afa99dac}</UniqueIdentifier>
     </Filter>
@@ -462,6 +459,12 @@
     <ClCompile Include="..\..\src\WorldServer\VoiceChatHandler.cpp">
       <Filter>Networking, Handlers\Handlers</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\Wintergrasp.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\WorldServer\WintergraspInternal.cpp">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\WorldServer\Master.h">
@@ -741,6 +744,12 @@
     </ClInclude>
     <ClInclude Include="..\..\src\WorldServer\Packets.h">
       <Filter>Networking, Handlers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\WintergraspInternal.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\WorldServer\Wintergrasp.h">
+      <Filter>EventableObject\CBattlegrounds, CBattlegroundManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

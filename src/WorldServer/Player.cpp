@@ -8061,6 +8061,10 @@ void Player::ForceAreaUpdate()
 		// parent id actually would be a better name
 		if( m_areaDBC->ZoneId && m_zoneId != m_areaDBC->ZoneId )
 			m_zoneId = m_areaDBC->ZoneId;
+	} 
+	if(m_AreaID == 4197 && sWorld.wg_enabled) 
+	{
+		// Insert into WG. 
 	}
 }
 

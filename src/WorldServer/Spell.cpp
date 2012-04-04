@@ -1421,7 +1421,7 @@ void Spell::cast(bool check)
 			if (m_targets.m_targetMask & TARGET_FLAG_TRADE_ITEM)
 			{
 				Player* plr = p_caster->GetTradeTarget();
-				if(plr!=NULL)
+				if(plr != NULL)
 					itemTarget = plr->getTradeItem((uint32)m_targets.m_itemTarget);
 			} else
 			if (m_targets.m_targetMask & TARGET_FLAG_ITEM)

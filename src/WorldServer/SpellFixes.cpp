@@ -56,15 +56,15 @@ void CreateDummySpell(uint32 id)
 	sp->Attributes = 384;
 	sp->AttributesEx = 268435456;
 	sp->Flags3 = 4;
-	sp->CastingTimeIndex=1;
-	sp->procChance=75;
-	sp->rangeIndex=13;
+	sp->CastingTimeIndex = 1;
+	sp->procChance = 75;
+	sp->rangeIndex = 13;
 	sp->EquippedItemClass=uint32(-1);
-	sp->Effect[0]=SPELL_EFFECT_DUMMY;
-	sp->EffectImplicitTargetA[0]=25;
+	sp->Effect[0] = SPELL_EFFECT_DUMMY;
+	sp->EffectImplicitTargetA[0] = 25;
 	sp->NameHash=crc32((const unsigned char*)name.c_str(), (unsigned int)name.length());
-	sp->dmg_multiplier[0]=1.0f;
-	sp->StanceBarOrder=-1;
+	sp->dmg_multiplier[0] = 1.0f;
+	sp->StanceBarOrder = -1;
 	dbcSpell.SetRow(id,sp);
 	sWorld.dummyspells.push_back(sp);
 }
@@ -123,7 +123,7 @@ void _DumpClassSpells(FILE *f, uint32 _class)
 	SpellEntry *sp;
 
 	fprintf(f, "\t{ ");
-	for(uint32 x=0; x < (uint32)dbcSpell.GetNumRows(); x++)
+	for(uint32 x = 0; x < (uint32)dbcSpell.GetNumRows(); x++)
 	{
 		sp = dbcSpell.LookupRow(x);
 		if (sp->talent_tree == 0 && GetSpellClass(sp) == _class)

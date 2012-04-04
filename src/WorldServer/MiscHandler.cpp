@@ -1385,7 +1385,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				for(i = 0; i < goinfo->SpellFocus; i++)
 				{
 					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
-					if(plr!=NULL)
+					if(plr != NULL)
 					{
 						plr->SetChannelSpellTargetGUID(0);
 						plr->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);

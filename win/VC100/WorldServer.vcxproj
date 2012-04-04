@@ -301,6 +301,8 @@
     <ClCompile Include="..\..\src\WorldServer\ChatHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\ClusterInterface.cpp" />
     <ClCompile Include="..\..\src\WorldServer\CollideInterface.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\Wintergrasp.cpp" />
+    <ClCompile Include="..\..\src\WorldServer\WintergraspInternal.cpp" />
     <ClCompile Include="..\..\src\WorldServer\CombatHandler.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Container.cpp" />
     <ClCompile Include="..\..\src\WorldServer\Corpse.cpp" />
@@ -421,6 +423,8 @@
     <ClInclude Include="..\..\src\WorldServer\ClassSpells.h" />
     <ClInclude Include="..\..\src\WorldServer\ClusterInterface.h" />
     <ClInclude Include="..\..\src\WorldServer\CollideInterface.h" />
+    <ClInclude Include="..\..\src\WorldServer\Wintergrasp.h" />
+    <ClInclude Include="..\..\src\WorldServer\WintergraspInternal.h" />
     <ClInclude Include="..\..\src\WorldServer\Const.h" />
     <ClInclude Include="..\..\src\WorldServer\Container.h" />
     <ClInclude Include="..\..\src\WorldServer\Corpse.h" />
