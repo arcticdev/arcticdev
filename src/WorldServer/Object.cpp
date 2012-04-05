@@ -93,16 +93,28 @@ void Object::Init()
 void Object::SetPhase(int32 phase)
 {
 	m_phaseMode = phase;
+
+	WorldPacket data(SMSG_SET_PHASE_SHIFT, 9);
+	data << GetNewGUID() << uint8(m_phaseMode);
+	SendMessageToSet(&data, (IsPlayer() ? true : false));
 }
 
 void Object::EnablePhase(int32 phaseMode)
 {
 	m_phaseMode |= phaseMode;
+
+	WorldPacket data(SMSG_SET_PHASE_SHIFT, 9);
+	data << GetNewGUID() << uint8(m_phaseMode);
+	SendMessageToSet(&data, (IsPlayer() ? true : false));
 }
 
 void Object::DisablePhase(int32 phaseMode)
 {
 	m_phaseMode &= ~phaseMode;
+
+	WorldPacket data(SMSG_SET_PHASE_SHIFT, 9);
+	data << GetNewGUID() << uint8(m_phaseMode);
+	SendMessageToSet(&data, (IsPlayer() ? true : false));
 }
 
 void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
@@ -221,10 +233,10 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 	return 1;
 }
 
-//That is dirty fix it actually creates update of 1 field with
-//the given value ignoring existing changes in fields and so on
-//usefull if we want update this field for certain players
-//NOTE: it does not change fields. This is also very fast method
+// That is dirty fix it actually creates update of 1 field with
+// the given value ignoring existing changes in fields and so on
+// usefull if we want update this field for certain players
+// NOTE: it does not change fields. This is also very fast method
 WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 {
 	// uint64 guidfields = GetGUID();
@@ -234,7 +246,7 @@ WorldPacket *Object::BuildFieldUpdatePacket( uint32 index,uint32 value)
 
 	*packet << (uint32)1;//number of update/create blocks
 
-	*packet << (uint8) UPDATETYPE_VALUES;		// update type == update
+	*packet << (uint8) UPDATETYPE_VALUES; // update type == update
 	*packet << GetNewGUID();
 
 	uint32 mBlocks = index/32+1;

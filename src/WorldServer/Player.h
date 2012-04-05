@@ -1295,7 +1295,7 @@ public:
 	ARCTIC_INLINE float GetHitFromSpell() { return m_hitfromspell; }
 	ARCTIC_INLINE float GetParryFromSpell() { return m_parryfromspell; }
 	ARCTIC_INLINE float GetDodgeFromSpell() { return m_dodgefromspell; }
-	
+
 	const float& GetBindPositionX( ) const { return m_bind_pos_x; }
 	const float& GetBindPositionY( ) const { return m_bind_pos_y; }
 	const float& GetBindPositionZ( ) const { return m_bind_pos_z; }
@@ -1393,6 +1393,7 @@ public:
 	// Battlegrounds xD
 	CBattleground* m_bg;
 	CBattleground* m_pendingBattleground[3];
+	Wintergrasp* WinterGrasp;
 	uint32 m_bgSlot;
 	bool m_bgRatedQueue;
 	uint32 m_bgEntryPointMap;
@@ -1445,6 +1446,8 @@ public:
 	float SpellHealDoneByAttribute[5][7];
 	uint32 m_modphyscritdmgPCT;
 	uint32 m_RootedCritChanceBonus; // Class Script Override: Shatter
+	uint32 m_Illumination_amount; // Class Script Override: Illumination
+	float Damageshield_amount; // Damage Shield
 
 	uint32 m_ModInterrMRegenPCT;
 	int32 m_ModInterrMRegen;

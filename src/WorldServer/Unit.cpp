@@ -12,7 +12,7 @@ Unit::Unit()
 	m_attackTimer = 0;
 	m_attackTimer_1 = 0;
 	m_duelWield = false;
-	
+
 	memset(&movement_info, 0, sizeof(MovementInfo));
 	memset(movement_packet, 0, sizeof(movement_packet));
 	movement_info.FallTime = 0;
@@ -1244,7 +1244,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 								Spell* spell = new Spell(TO_UNIT(this), spellInfo ,true, NULL);
 								spell->forced_basepoints[0] = ospinfo->EffectBasePoints[0] + 1;
 								spell->ProcedOnSpell = CastingSpell;
-								spell->pSpellId=origId;
+								spell->pSpellId = origId;
 								spell->prepare(&targets);
 								continue;
 							}break;
@@ -2226,7 +2226,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 
 								dmg_overwrite = float2int32(GetSpellBaseCost(CastingSpell) * 0.6f);
 							}break;
-						//Fiery Payback
+						// Fiery Payback
 						case 44440:
 						case 44441:
 							{
@@ -2302,11 +2302,11 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 									}
 								}
 							}break;
-						case 63685:// Frozen Power - Freeze
+						case 63685: // Frozen Power - Freeze
 							{
 								uint32 minDistance = spe->EffectBasePoints[0] + 1;
 								if(!victim || GetDistanceSq(victim) < minDistance * minDistance)
-									continue;	// victim not far enough
+									continue; // victim not far enough
 							}break;
 						case 63375: // Improved Stormstrike
 							{
@@ -2316,7 +2316,7 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				}
 				if(spellId==17364 || spellId==32175 || spellId==32176) // Stormstrike fix
 					continue;
-				if(spellId==22858 && isInBack(victim)) //retatliation needs target to be not in front. Can be casted by creatures too
+				if(spellId==22858 && isInBack(victim)) // retatliation needs target to be not in front. Can be casted by creatures too
 					continue;
 
 				if( CastingSpell && spellId == 54370 )
@@ -2349,9 +2349,9 @@ uint32 Unit::HandleProc( uint32 flag, Unit* victim, SpellEntry* CastingSpell, ui
 				spell = (new Spell(TO_UNIT( this ), spellInfo ,true, NULL));
 				spell->forced_basepoints[0] = dmg_overwrite;
 				spell->ProcedOnSpell = CastingSpell;
-				spell->pSpellId=origId;
+				spell->pSpellId = origId;
 				spell->prepare(&targets);
-			}//not always we have a spell to cast
+			} // not always we have a spell to cast
 		}
 	}
 

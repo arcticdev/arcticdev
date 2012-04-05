@@ -7132,21 +7132,21 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 	if(m_caster == NULL || !m_caster->IsPlayer())
 		return;
 
-	//misc value is spell to add
-	//spell familyname && grouprelation
+	// misc value is spell to add
+	// spell familyname && grouprelation
 
 	Player* plr = TO_PLAYER(m_caster);
 
-	//Adding bonus to effect
+	// Adding bonus to effect
 	switch(mod->m_miscValue)
 	{
 		case 4919:
-		case 4920:	//Molten Fury
+		case 4920: // Molten Fury
 			{
 				if(m_target)
 					TO_PLAYER( m_target )->m_moltenFuryDamageIncreasePct += (apply) ? mod->m_amount : -mod->m_amount;
 			}break;
-			//----Shatter---
+			// ----Shatter----
 			// Increases crit chance against rooted targets by (Rank * 10)%.
 		case 849:
 		case 910:
@@ -7159,10 +7159,7 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 				if (mod->m_miscValue==849)
 					val = (apply) ? 10 : -10;
 				TO_PLAYER( m_target )->m_RootedCritChanceBonus += val;
-			}
-			break;
-// ----?
-		case 3736:
+			}break;
 		case 4415:
 		case 4418:
 		case 4554:
@@ -7172,95 +7169,93 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 		case 5147:
 		case 5148:
 			{
-			if(apply)
-			{
-				OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
-				if( itermap == objmgr.mOverrideIdMap.end() )
-					return;
-
-				std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
-
-				SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.find((*itrSE)->Id);
-
-				if(itr != plr->mSpellOverrideMap.end())
+				if(apply)
 				{
-					ScriptOverrideList::iterator itrSO;
-					for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
+					OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
+					if( itermap == objmgr.mOverrideIdMap.end() )
+						return;
+
+					std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
+
+					SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.find((*itrSE)->Id);
+
+					if(itr != plr->mSpellOverrideMap.end())
 					{
-						if((*itrSO)->id == (uint32)mod->m_miscValue)
+						ScriptOverrideList::iterator itrSO;
+						for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
 						{
-							if((int32)(*itrSO)->damage > mod->m_amount)
+							if((*itrSO)->id == (uint32)mod->m_miscValue)
 							{
-								(*itrSO)->damage = mod->m_amount;
+								if((int32)(*itrSO)->damage > mod->m_amount)
+								{
+									(*itrSO)->damage = mod->m_amount;
+								}
+								return;
 							}
-							return;
+						}
+						classScriptOverride *cso = new classScriptOverride;
+						cso->aura = 0;
+						cso->damage = mod->m_amount;
+						cso->effect = 0;
+						cso->id = mod->m_miscValue;
+						itr->second->push_back(cso);
+					}
+					else
+					{
+						classScriptOverride *cso = new classScriptOverride;
+						cso->aura = 0;
+						cso->damage = mod->m_amount;
+						cso->effect = 0;
+						cso->id = mod->m_miscValue;
+						ScriptOverrideList *lst = new ScriptOverrideList();
+						lst->push_back(cso);
+
+						for(;itrSE != itermap->second->end(); ++itrSE)
+						{
+							plr->mSpellOverrideMap.insert( SpellOverrideMap::value_type( (*itrSE)->Id, lst) );
 						}
 					}
-					classScriptOverride *cso = new classScriptOverride;
-					cso->aura = 0;
-					cso->damage = mod->m_amount;
-					cso->effect = 0;
-					cso->id = mod->m_miscValue;
-					itr->second->push_back(cso);
 				}
 				else
 				{
-					classScriptOverride *cso = new classScriptOverride;
-					cso->aura = 0;
-					cso->damage = mod->m_amount;
-					cso->effect = 0;
-					cso->id = mod->m_miscValue;
-					ScriptOverrideList *lst = new ScriptOverrideList();
-					lst->push_back(cso);
-
-					for(;itrSE != itermap->second->end(); ++itrSE)
+					OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
+					SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.begin(), itr2;
+					while(itr != plr->mSpellOverrideMap.end())
 					{
-						plr->mSpellOverrideMap.insert( SpellOverrideMap::value_type( (*itrSE)->Id, lst) );
-					}
-				}
-			}
-			else
-			{
-				OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
-				SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.begin(), itr2;
-				while(itr != plr->mSpellOverrideMap.end())
-				{
-					std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
-					for(;itrSE != itermap->second->end(); ++itrSE)
-					{
-						if(itr->first == (*itrSE)->Id)
+						std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
+						for(;itrSE != itermap->second->end(); ++itrSE)
 						{
-							itr2 = itr++;
-							plr->mSpellOverrideMap.erase(itr2);
-							break;
+							if(itr->first == (*itrSE)->Id)
+							{
+								itr2 = itr++;
+								plr->mSpellOverrideMap.erase(itr2);
+								break;
+							}
 						}
+						// Check if the loop above got to the end, if so it means the item wasn't found
+						// and the itr wasn't incremented so increment it now.
+						if(itrSE == itermap->second->end())
+							itr++;
 					}
-					// Check if the loop above got to the end, if so it means the item wasn't found
-					// and the itr wasn't incremented so increment it now.
-					if(itrSE == itermap->second->end())      itr++;
 				}
-			}
-		}break;
-/*		case 19421: //hunter : Improved Hunter's Mark
-		case 19422:
-		case 19423:
-		case 19424:
-		case 19425:
-			{
-				//this shoul actually add a new functionality to the spell and not override it. There is a lot to decode and to be done here
-			}break;*/
+			}break;
 		case 4992: // Warlock: Soul Siphon
 		case 4993:
 			{
-				if(m_target) {
-					if( apply )
-						m_target->m_soulSiphon.max+= mod->m_amount;
-					else
-						m_target->m_soulSiphon.max-= mod->m_amount;
+				if(m_target != NULL)
+				{
+					m_target->m_soulSiphon.max += (apply ? mod->m_amount : -mod->m_amount);
 				}
 			}break;
-	default:
-		OUT_DEBUG("Unknown override report to devs: %u", mod->m_miscValue);
+		case 2689: // Illumination
+			{
+				if(m_target != NULL && m_target->IsPlayer())
+				{
+					TO_PLAYER(m_target)->m_Illumination_amount += (apply ? mod->m_amount : -mod->m_amount);
+				}
+			}break;
+		default:
+			OUT_DEBUG("[report to devs] Unknown override %u in spell %u", mod->m_miscValue, GetSpellId());
 	};
 }
 

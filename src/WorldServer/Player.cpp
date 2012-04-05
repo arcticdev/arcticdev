@@ -351,21 +351,17 @@ void Player::Init()
 	trigger_on_stun_chance = 100;
 	m_modphyscritdmgPCT = 0;
 	m_RootedCritChanceBonus = 0;
+	m_Illumination_amount = 0;
 
 	for(i = 0; i < 6; i++)
 		m_runes[i] = baseRunes[i];
-
-	ok_to_remove = false;
-	trigger_on_stun = 0;
-	trigger_on_stun_chance = 100;
-	m_modphyscritdmgPCT = 0;
-	m_RootedCritChanceBonus = 0;
 
 	m_ModInterrMRegenPCT = 0;
 	m_ModInterrMRegen = 0;
 	m_rap_mod_pct = 0;
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
+	Damageshield_amount = 0.0f;
 	m_summoner = 0;
 	m_summonInstanceId = 0;
 	m_summonMapId = 0;
@@ -452,6 +448,8 @@ void Player::Init()
 
 	for(i = 0; i < 21; i++)
 		m_WeaponSubClassDamagePct[i] = 1.0f;
+
+	WinterGrasp = NULL;
 
 	Unit::Init();
 
@@ -8061,10 +8059,10 @@ void Player::ForceAreaUpdate()
 		// parent id actually would be a better name
 		if( m_areaDBC->ZoneId && m_zoneId != m_areaDBC->ZoneId )
 			m_zoneId = m_areaDBC->ZoneId;
-	} 
-	if(m_AreaID == 4197 && sWorld.wg_enabled) 
+	}
+	if((m_AreaID == WINTERGRASP || (m_areaDBC != NULL && m_areaDBC->ZoneId == WINTERGRASP)) && sWorld.wg_enabled)
 	{
-		// Insert into WG. 
+		// Insert into WG.
 	}
 }
 
@@ -8487,8 +8485,10 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	CalculateBaseStats();
 
 	// Set health / mana
-	SetUInt32Value(UNIT_FIELD_HEALTH,GetUInt32Value(UNIT_FIELD_MAXHEALTH));
-	SetUInt32Value(UNIT_FIELD_POWER1,GetUInt32Value(UNIT_FIELD_MAXPOWER1));
+	SetUInt32Value(UNIT_FIELD_MAXHEALTH, Info->HP);
+	SetUInt32Value(UNIT_FIELD_HEALTH, Info->HP);
+	SetUInt32Value(UNIT_FIELD_MAXPOWER1, Info->Mana);
+	SetUInt32Value(UNIT_FIELD_POWER1, Info->Mana);
 
 	int32 Talents = Level - PreviousLevel;
 	if(PreviousLevel < 9)
@@ -8498,14 +8498,19 @@ void Player::ApplyLevelInfo(LevelInfo* Info, uint32 Level)
 	else if(Level >= 10)
 		ModUnsigned32Value(PLAYER_CHARACTER_POINTS1, Talents);
 
+	// Set base fields
+	SetUInt32Value(UNIT_FIELD_BASE_HEALTH, Info->BaseHP);
+	SetUInt32Value(UNIT_FIELD_BASE_MANA, Info->BaseMana);
+
 	_UpdateMaxSkillCounts();
 	UpdateStats();
-	//UpdateChances();
+
 	if (m_playerInfo)
 		m_playerInfo->lastLevel = Level;
 
 	GetAchievementInterface()->HandleAchievementCriteriaLevelUp( getLevel() );
 	InitGlyphsForLevel();
+	smsg_TalentsInfo(false);
 
 	OUT_DEBUG("Player %s set parameters to level %u", GetName(), Level);
 }
@@ -9031,7 +9036,7 @@ void Player::OnWorldPortAck()
 				SetPhase(pPMapinfo->phasealliance);
 		}
 
-		if(pPMapinfo->HasFlag(WMI_INSTANCE_WELCOME) && GetMapMgr()) 
+		if(pPMapinfo->HasFlag(WMI_INSTANCE_WELCOME) && GetMapMgr())
 		{
 			std::string welcome_msg;
 			welcome_msg = "Welcome to ";
@@ -10507,12 +10512,12 @@ void Player::EjectFromInstance()
 		if(SafeTeleport(m_bgEntryPointMap, m_bgEntryPointInstance, m_bgEntryPointX, m_bgEntryPointY, m_bgEntryPointZ, m_bgEntryPointO))
 			return;
 	}
-	MapInfo* map = WorldMapInfoStorage.LookupEntry(mapid); 
+	MapInfo* map = WorldMapInfoStorage.LookupEntry(mapid);
 
-	if(map) 
-		if(map->repopmapid && !IS_INSTANCE(map->repopmapid)) 
-			if(map->repopx && map->repopy && map->repopz) 
-				if(SafeTeleport(map->repopmapid, 0, map->repopx, map->repopy, map->repopz, 0)) // Should be nearest graveyard. 
+	if(map)
+		if(map->repopmapid && !IS_INSTANCE(map->repopmapid))
+			if(map->repopx && map->repopy && map->repopz)
+				if(SafeTeleport(map->repopmapid, 0, map->repopx, map->repopy, map->repopz, 0)) // Should be nearest graveyard.
 					return;
 
 	SafeTeleport(m_bind_mapid, 0, m_bind_pos_x, m_bind_pos_y, m_bind_pos_z, 0);

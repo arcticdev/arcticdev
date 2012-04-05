@@ -20,6 +20,7 @@ Wintergrasp::Wintergrasp(WintergraspInternal* WGI, MapMgr* mgr) : Internal(*WGI)
 		if((plr->GetAreaID() == WINTERGRASP) || (plr->GetZoneId() == WINTERGRASP))
 		{
 			WGPlayers.insert(plr);
+			plr->WinterGrasp = this;
 			++playercount[2]; // Total
 			++playercount[plr->GetTeam()];
 		}
