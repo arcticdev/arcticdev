@@ -2904,9 +2904,7 @@ bool Object::PhasedCanInteract(Object* pObj)
 
 	// Hack for Acherus: Horde/Alliance can't see each other!
 	if( pObjI && pObjII && GetMapId() == 609 && pObjI->GetTeam() != pObjII->GetTeam() )
-	{
 		return false;
-	}
 
 	return ret;
 }
@@ -2915,7 +2913,7 @@ bool Object::PhasedCanInteract(Object* pObj)
 int32 Object::GetSpellBaseCost(SpellEntry *sp)
 {
 	float cost;
-	if( sp->ManaCostPercentage && IsUnit() )//Percentage spells cost % of !!!BASE!!! mana
+	if( sp->ManaCostPercentage && IsUnit() ) // Percentage spells cost % of !!!BASE!!! mana
 	{
 		if( sp->powerType==POWER_TYPE_MANA)
 			cost = GetUInt32Value(UNIT_FIELD_BASE_MANA) * (sp->ManaCostPercentage / 100.0f);
@@ -2923,9 +2921,7 @@ int32 Object::GetSpellBaseCost(SpellEntry *sp)
 			cost = GetUInt32Value(UNIT_FIELD_BASE_HEALTH) * (sp->ManaCostPercentage / 100.0f);
 	}
 	else
-	{
 		cost = (float)sp->manaCost;
-	}
 
 	return float2int32(cost); // Truncate zeh decimals!
 }

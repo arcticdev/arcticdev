@@ -5042,15 +5042,15 @@ void Player::UpdateChances()
 
 	SetFloatValue( PLAYER_BLOCK_PERCENTAGE, max( 0.0f, min( tmp, 95.0f ) )  );
 
-	//parry
+	// parry
 	tmp = 5.0f + CalcRating( PLAYER_RATING_MODIFIER_PARRY ) + GetParryFromSpell();
 	if(pClass == CLASS_DEATHKNIGHT) // DK gets 1/4 of strength as parry rating
 		tmp += CalcPercentForRating(PLAYER_RATING_MODIFIER_PARRY, GetUInt32Value(UNIT_FIELD_STAT0) / 4);
 	tmp += defence_contribution;
 
-	SetFloatValue( PLAYER_PARRY_PERCENTAGE, std::max( 5.0f, std::min( tmp, 95.0f ) ) ); //let us not use negative parry. Some spells decrease it
+	SetFloatValue( PLAYER_PARRY_PERCENTAGE, std::max( 5.0f, std::min( tmp, 95.0f ) ) ); // let us not use negative parry. Some spells decrease it
 
-	//critical
+	// critical
 	map< uint32, WeaponModifier >::iterator itr = tocritchance.begin();
 	Item* tItemRanged = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_RANGED );
 	Item* tItemMelee = GetItemInterface()->GetInventoryItem( EQUIPMENT_SLOT_MAINHAND );
@@ -5347,14 +5347,17 @@ void Player::UpdateStats()
 		SpellHasteRatingBonus = cast_speed;
 	}
 
-	////////////////////RATINGS STUFF//////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// RATINGS STUFF                                                        //
+	//////////////////////////////////////////////////////////////////////////
 
 	// Shield Block
 	Item* shield = GetItemInterface()->GetInventoryItem(EQUIPMENT_SLOT_OFFHAND);
 	if( shield != NULL && shield->GetProto()->InventoryType == INVTYPE_SHIELD )
 	{
 		float block_multiplier = ( 100.0f + float( m_modblockabsorbvalue ) ) / 100.0f;
-		if( block_multiplier < 1.0f )block_multiplier = 1.0f;
+		if( block_multiplier < 1.0f )
+			block_multiplier = 1.0f;
 
 		int32 blockable_damage = float2int32( float( shield->GetProto()->Block ) +( float( m_modblockvaluefromspells + GetUInt32Value( PLAYER_RATING_MODIFIER_BLOCK ) ) * block_multiplier ) + ( ( float( str ) / 2.0f ) ) );
 		SetUInt32Value( PLAYER_SHIELD_BLOCK, blockable_damage );

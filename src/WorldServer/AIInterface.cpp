@@ -118,7 +118,9 @@ void AIInterface::Init(Unit* un, AIType at, MovementType mt)
 AIInterface::~AIInterface()
 {
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
-		delete (*itr);
+
+	if(*itr) 
+		delete (*itr); 
 	m_spells.clear();
 
 	if( m_ChainAgroSet && m_Unit->IsCreature() )
@@ -2742,35 +2744,32 @@ AI_Spell *AIInterface::getSpell()
 		}
 		else
 		{
-			//start searching the list for a suitable spell.
+			// start searching the list for a suitable spell.
 			for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
 			{
 				sp = (*itr);
 
-				//don't waste our time if we already have spell in priority
+				// don't waste our time if we already have spell in priority
 				if (def_spell && def_spell->spellType > sp->spellType)
 					continue;
 
 				// Wtf?? There should be only spells on the list
 				if(sp->agent != AGENT_SPELL)
-				{
-					//Log.Warning("AI_Agent","Agent entry %u is loaded, but not valid",sp->agent);
 					continue;
-				}
 
 				// skip when max proccount reached.
 				if((sp->procCount && sp->procCounter >= sp->procCount ))
 					continue;
 
-				//skip when still cooling down.
+				// skip when still cooling down.
 				if(sp->cooldown && sp->cooldowntime > nowtime )
 					continue;
 
-				//skip if proc change not met.
+				// skip if proc change not met.
 				if(sp->procChance < 100 && !Rand(sp->procChance))
 					continue;
 
-				//checks by spell type
+				// checks by spell type
 				switch (sp->spellType)
 				{
 				case STYPE_DEBUFF:
@@ -2794,7 +2793,7 @@ AI_Spell *AIInterface::getSpell()
 							continue;
 					}break;
 				}
-				//success
+				// success
 				def_spell = sp;
 			}
 		}

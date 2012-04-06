@@ -90,17 +90,17 @@ const char* talenttabentryFormat = "uxxxxxxxxxxxxxxxxxxxuxux";
 const char* spellcasttimeFormat = "uuxx";
 const char* spellradiusFormat = "ufxf";
 const char* spellrangeFormat =
-	"u"					// Id
-	"f"					// MinRange
+	"u" // Id
+	"f" // MinRange
 	"x"
-	"f"					// MaxRange
+	"f" // MaxRange
 	"x"
 	"u"
 	"sxxxxxxxxxxxxxxxx"
 	"sxxxxxxxxxxxxxxxx";
 
-const char* WorldMapOverlayfmt="uxuxxxxxxxxxxxxxx";
-const char* SpellRuneCostfmt="uuuuu";
+const char* WorldMapOverlayfmt = "uxuxxxxxxxxxxxxxx";
+const char* SpellRuneCostfmt = "uuuuu";
 const char* spelldurationFormat = "uuuu";
 const char* randompropsFormat = "usuuuxxxxxxxxxxxxxxxxxxx";
 const char* areatableFormat = "uuuuuxxxuxusxxxxxxxxxxxxxxxxuxxxxxxx";
@@ -135,13 +135,12 @@ const char* mapentryFormat =
 	"x"					// 64 normalReqText
 	"u";				// 65 Max players
 
-
 const char* itemrandomsuffixformat = "usxxxxxxxxxxxxxxxxxuuuuuuuuuu";
 const char* chatchannelformat = "uuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char* durabilityqualityFormat = "uf";
 const char* durabilitycostsFormat = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char* bankslotpriceformat = "uu";
-const char* barbershopstyleFormat="nusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
+const char* barbershopstyleFormat = "nusxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxuuu";
 const char* gtfloatformat = "f";
 const char* spellshapeshiftformformat = "uxxxxxxxxxxxxxxxxxxxxxxxxxxxuuuuuuu";
 
@@ -149,7 +148,7 @@ const char* vehicleseatentryFormat = "uuuffffffffffuuuuuufffffffuuufffuuuuuuuffu
 const char* vehicleentryFormat = "uuffffuuuuuuuufffffffffffffffssssfufuxxx";
 
 const char* achievementfmt="niixsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxiixixxxxxxxxxxxxxxxxxxxx";
-const char* achievementCriteriafmt="niiiiiiiisxxxxxxxxxxxxxxxxiixix";
+const char* achievementCriteriafmt = "niiiiiiiisxxxxxxxxxxxxxxxxiixix";
 const char* AreaPOIFormat = "nuuuuuuuuuuufffuxuxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxux";
 const char* currencyTypesFormat = "xuxu";
 const char* questxpformat = "uxuuuuuuuux";
@@ -175,12 +174,12 @@ bool LoadRSDBCs()
 
 bool LoadDBCs()
 {
-	LOAD_DBC("DBC/Achievement.dbc", achievementfmt,true, dbcAchievement,true);
-	LOAD_DBC("DBC/Achievement_Criteria.dbc", achievementCriteriafmt,true,dbcAchievementCriteria,true);
+	LOAD_DBC("DBC/Achievement.dbc", achievementfmt, true, dbcAchievement,true);
+	LOAD_DBC("DBC/Achievement_Criteria.dbc", achievementCriteriafmt, true, dbcAchievementCriteria,true);
 	LOAD_DBC("DBC/AreaGroup.dbc", AreaGroupFormat, true, dbcAreaGroup, true);
 	LOAD_DBC("DBC/AreaTable.dbc", areatableFormat, true, dbcArea, true);
 	LOAD_DBC("DBC/AreaTrigger.dbc", AreaTriggerFormat, true, dbcAreaTrigger, false);
-	LOAD_DBC("DBC/AreaPOI.dbc",AreaPOIFormat,true,dbcAreaPOI,false);
+	LOAD_DBC("DBC/AreaPOI.dbc",AreaPOIFormat,true, dbcAreaPOI, false);
 	LOAD_DBC("DBC/AuctionHouse.dbc", auctionhousedbcFormat, true, dbcAuctionHouse, false);
 
 	LOAD_DBC("DBC/BankBagSlotPrices.dbc", bankslotpriceformat, true, dbcBankSlotPrices, false);
@@ -196,6 +195,7 @@ bool LoadDBCs()
 
 	LOAD_DBC("DBC/DurabilityQuality.dbc", durabilityqualityFormat, true, dbcDurabilityQuality, false);
 	LOAD_DBC("DBC/DurabilityCosts.dbc", durabilitycostsFormat, true, dbcDurabilityCosts, false);
+	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
 
 	LOAD_DBC("DBC/EmotesText.dbc", EmoteEntryFormat, true, dbcEmoteEntry, false);
 
@@ -250,8 +250,6 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/WMOAreaTable.dbc", wmoareaformat, true, dbcWMOAreaTable, false );
 
 	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
-
-	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
 
 	return true;
 }
