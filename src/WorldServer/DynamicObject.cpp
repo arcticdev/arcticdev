@@ -101,7 +101,7 @@ void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, floa
 	m_position.x = x;
 	m_position.y = y;
 	m_position.z = z;
-	m_uint32Values[DYNAMICOBJECT_CASTTIME] = (uint32)UNIXTIME;
+	m_uint32Values[DYNAMICOBJECT_CASTTIME] = uint32(UNIXTIME);
 
 	m_aliveDuration = duration;
 	m_faction = caster->m_faction;

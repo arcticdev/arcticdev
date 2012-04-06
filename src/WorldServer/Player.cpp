@@ -162,7 +162,7 @@ void Player::Init()
 	m_afk_reason = "";
 	m_playedtime[0] = 0;
 	m_playedtime[1] = 0;
-	m_playedtime[2] = (uint32)UNIXTIME;
+	m_playedtime[2] = uint32(UNIXTIME);
 
 	m_AllowAreaTriggerPort  = true;
 
@@ -1079,7 +1079,7 @@ void Player::Update( uint32 p_time )
 	if(m_session->_latency >= sWorld.LatencyKickMax)
 	{
 	if(LatencyKickTimer == 0)
-		LatencyKickTimer = (uint32)UNIXTIME + (sWorld.LatencyTimer * 1000);
+		LatencyKickTimer = uint32(UNIXTIME) + (sWorld.LatencyTimer * 1000);
 
 	if(p_time >= LatencyKickTimer)
 	{
@@ -2161,7 +2161,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		m_uint32Values[PLAYER_CHARACTER_POINTS2]=2;
 
 	//Calc played times
-	uint32 playedt = (uint32)UNIXTIME - m_playedtime[2];
+	uint32 playedt = uint32(UNIXTIME) - m_playedtime[2];
 	m_playedtime[0] += playedt;
 	m_playedtime[1] += playedt;
 	m_playedtime[2] += playedt;
@@ -2258,7 +2258,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	<< m_banned << ", '"
 	<< CharacterDatabase.EscapeString(m_banreason) << "', "
-	<< (uint32)UNIXTIME << ",";
+	<< uint32(UNIXTIME) << ",";
 
 	//online state
 	if(GetSession()->_loggingOut || bNewCharacter)
@@ -2822,7 +2822,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 
 	uint32 banned = fields[33].GetUInt32();
-	if(banned && (banned < 100 || banned > (uint32)UNIXTIME))
+	if(banned && (banned < 100 || banned > uint32(UNIXTIME)))
 	{
 		RemovePendingPlayer();
 		return;
@@ -3333,9 +3333,9 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	else
 		_AddLanguages(false);
 
-	OnlineTime	= (uint32)UNIXTIME;
+	OnlineTime	= uint32(UNIXTIME);
 	if(GetGuildId())
-		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, (uint32)UNIXTIME);
+		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, uint32(UNIXTIME));
 
 	m_talentActiveSpec = get_next_field.GetUInt32();
 	m_talentSpecsCount = get_next_field.GetUInt32();
@@ -11008,12 +11008,12 @@ void Player::_SavePlayerCooldowns(QueryBuffer * buf)
 			if( buf != NULL )
 			{
 				buf->AddQuery( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", m_uint32Values[OBJECT_FIELD_GUID],
-					i, itr2->first, seconds + (uint32)UNIXTIME, itr2->second.SpellId, itr2->second.ItemId );
+					i, itr2->first, seconds + uint32(UNIXTIME), itr2->second.SpellId, itr2->second.ItemId );
 			}
 			else
 			{
 				CharacterDatabase.Execute( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", m_uint32Values[OBJECT_FIELD_GUID],
-					i, itr2->first, seconds + (uint32)UNIXTIME, itr2->second.SpellId, itr2->second.ItemId );
+					i, itr2->first, seconds + uint32(UNIXTIME), itr2->second.SpellId, itr2->second.ItemId );
 			}
 		}
 	}
@@ -11049,10 +11049,10 @@ void Player::_LoadPlayerCooldowns(QueryResult * result)
 		// remember the cooldowns were saved in unix timestamp format for the reasons outlined above,
 		// so restore them back to mstime upon loading
 
-		if( (uint32)UNIXTIME > rtime )
+		if( uint32(UNIXTIME) > rtime )
 			continue;
 
-		rtime -= (uint32)UNIXTIME;
+		rtime -= uint32(UNIXTIME);
 
 		if( rtime < 10 )
 			continue;

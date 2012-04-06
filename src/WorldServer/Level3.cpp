@@ -370,18 +370,18 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 		string escaped_reason = CharacterDatabase.EscapeString(string(pReason));
 
 		CharacterDatabase.Execute("UPDATE characters SET banned = %u, banReason = '%s' WHERE guid = %u",
-			BanTime ? BanTime+(uint32)UNIXTIME : 1, escaped_reason.c_str(), pInfo->guid);
+			BanTime ? BanTime+uint32(UNIXTIME) : 1, escaped_reason.c_str(), pInfo->guid);
 	}
 	else
 	{
 		SystemMessage(m_session, "Banning player '%s' ingame for '%s'.", pCharacter, pReason);
 		string sReason = string(pReason);
-		uint32 uBanTime = BanTime ? BanTime+(uint32)UNIXTIME : 1;
+		uint32 uBanTime = BanTime ? BanTime+uint32(UNIXTIME) : 1;
 		pPlayer->SetBanned(uBanTime, sReason);
 		pInfo = pPlayer->m_playerInfo;
 	}
 
-	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? ConvertTimeStampToDataTime(BanTime+(uint32)UNIXTIME).c_str() : "Never");
+	SystemMessage(m_session, "This ban is due to expire %s%s.", BanTime ? "on " : "", BanTime ? ConvertTimeStampToDataTime(BanTime+uint32(UNIXTIME)).c_str() : "Never");
 	if(pPlayer)
 	{
 		SystemMessage(m_session, "Kicking %s.", pPlayer->GetName());
@@ -392,7 +392,7 @@ bool ChatHandler::HandleBanCharacterCommand(const char* args, WorldSession *m_se
 	if( sWorld.m_banTable && pInfo )
 	{
 		CharacterDatabase.Execute("INSERT INTO %s VALUES('%s', '%s', %u, %u, '%s')", sWorld.m_banTable,
-			m_session->GetPlayer()->GetName(), pInfo->name, (uint32)UNIXTIME, (uint32)UNIXTIME + BanTime, CharacterDatabase.EscapeString(string(pReason)).c_str() );
+			m_session->GetPlayer()->GetName(), pInfo->name, uint32(UNIXTIME), uint32(UNIXTIME) + BanTime, CharacterDatabase.EscapeString(string(pReason)).c_str() );
 	}
 	return true;
 }
@@ -849,20 +849,15 @@ bool ChatHandler::HandleAccountBannedCommand(const char * args, WorldSession * m
 	if( timeperiod < 0 )
 		return false;
 
-	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
+	uint32 banned = (timeperiod ? uint32(UNIXTIME)+timeperiod : 1);
 
-	/*stringstream my_sql;
-	my_sql << "UPDATE accounts SET banned = " << banned << " WHERE login = '" << CharacterDatabase.EscapeString(string(pAccount)) << "'";
-
-	sLogonCommHandler.LogonDatabaseSQLExecute(my_sql.str().c_str());
-	sLogonCommHandler.LogonDatabaseReloadAccounts();*/
 	sLogonCommHandler.Account_SetBanned(pAccount, banned, pReason);
 
 	GreenSystemMessage(m_session, "Account '%s' has been banned %s%s. The change will be effective immediately.", pAccount,
-		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
+		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+uint32(UNIXTIME)).c_str() : "");
 
 	sWorld.DisconnectUsersWithAccount(pAccount, m_session);
-	sGMLog.writefromsession(m_session, "banned account %s until %s for %s", pAccount, timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "permanant", pReason);
+	sGMLog.writefromsession(m_session, "banned account %s until %s for %s", pAccount, timeperiod ? ConvertTimeStampToDataTime(timeperiod+uint32(UNIXTIME)).c_str() : "permanant", pReason);
 	return true;
 }
 
@@ -881,15 +876,15 @@ bool ChatHandler::HandleAccountMuteCommand(const char * args, WorldSession * m_s
 	if(timeperiod <= 0)
 		return false;
 
-	uint32 banned = (uint32)UNIXTIME+timeperiod;
+	uint32 banned = uint32(UNIXTIME)+timeperiod;
 
 	sLogonCommHandler.Account_SetMute( pAccount, banned );
 
-	string tsstr = ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME);
+	string tsstr = ConvertTimeStampToDataTime(timeperiod+uint32(UNIXTIME));
 	GreenSystemMessage(m_session, "Account '%s' has been muted until %s. The change will be effective immediately.", pAccount,
 		tsstr.c_str());
 
-	sGMLog.writefromsession(m_session, "mutex account %s until %s", pAccount, ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str());
+	sGMLog.writefromsession(m_session, "mutex account %s until %s", pAccount, ConvertTimeStampToDataTime(timeperiod+uint32(UNIXTIME)).c_str());
 
 	WorldSession * pSession = sWorld.FindSessionByName(pAccount);
 	if( pSession != NULL )
@@ -3113,7 +3108,7 @@ bool ChatHandler::HandleMultiMuteCommand(const char *args, WorldSession *m_sessi
 	if( timespan <= 0 )
 		return false;
 
-	string tsstr = ConvertTimeStampToDataTime((uint32)timespan+(uint32)UNIXTIME);
+	string tsstr = ConvertTimeStampToDataTime((uint32)timespan+uint32(UNIXTIME));
 	uint32 i;
 	char msg[200];
 
@@ -3127,8 +3122,8 @@ bool ChatHandler::HandleMultiMuteCommand(const char *args, WorldSession *m_sessi
 		}
 
 		pPlayer->GetSession()->SystemMessage("Your voice has been muted until %s by a GM. Until this time, you will not be able to speak in any form. Reason: %s", tsstr.c_str(), reason);
-		sLogonCommHandler.Account_SetMute(pPlayer->GetSession()->GetAccountNameS(), (uint32)timespan + (uint32)UNIXTIME);
-		sGMLog.writefromsession(m_session, "muted account %s until %s", pPlayer->GetSession()->GetAccountNameS(), ConvertTimeStampToDataTime((uint32)timespan+(uint32)UNIXTIME).c_str());
+		sLogonCommHandler.Account_SetMute(pPlayer->GetSession()->GetAccountNameS(), (uint32)timespan + uint32(UNIXTIME));
+		sGMLog.writefromsession(m_session, "muted account %s until %s", pPlayer->GetSession()->GetAccountNameS(), ConvertTimeStampToDataTime((uint32)timespan+uint32(UNIXTIME)).c_str());
 
 		snprintf(msg, 200, "%s%s was muted by %s (%s)", MSG_COLOR_WHITE, pPlayer->GetName(), m_session->GetPlayer()->GetName(), reason);
 		sWorld.SendWorldText(msg, NULL);
@@ -3175,7 +3170,7 @@ bool ChatHandler::HandleMultiBanCommand(const char *args, WorldSession *m_sessio
 	if( timespan <= 0 )
 		return false;
 
-	string tsstr = ConvertTimeStampToDataTime((uint32)timespan+(uint32)UNIXTIME);
+	string tsstr = ConvertTimeStampToDataTime((uint32)timespan+uint32(UNIXTIME));
 	uint32 i;
 	char msg[200];
 
@@ -3189,7 +3184,7 @@ bool ChatHandler::HandleMultiBanCommand(const char *args, WorldSession *m_sessio
 		}
 
 		pPlayer->GetSession()->SystemMessage("Your have been character banned until %s by a GM. Until this time, you will not be able login on this character. Reason was: %s", tsstr.c_str(), reason);
-		pPlayer->SetBanned((uint32)timespan+(uint32)UNIXTIME, real_args[0]);
+		pPlayer->SetBanned((uint32)timespan+uint32(UNIXTIME), real_args[0]);
 		pPlayer->Kick(15000);
 		sGMLog.writefromsession(m_session, "banned player %s until %s for %s", pPlayer->GetName(), ConvertTimeStampToDataTime((uint32)timespan+(uint32)UNIXTIME).c_str(), reason);
 
@@ -3211,7 +3206,7 @@ bool ChatHandler::HandleMultiAccountBanCommand(const char *args, WorldSession *m
 	if( timespan <= 0 )
 		return false;
 
-	string tsstr = ConvertTimeStampToDataTime((uint32)timespan+(uint32)UNIXTIME);
+	string tsstr = ConvertTimeStampToDataTime((uint32)timespan+uint32(UNIXTIME));
 	uint32 i;
 	char msg[200];
 
@@ -3225,8 +3220,8 @@ bool ChatHandler::HandleMultiAccountBanCommand(const char *args, WorldSession *m
 		}
 
 		pPlayer->GetSession()->SystemMessage("Your have been account banned until %s by a GM. Until this time, you will not be able to log in on this account. Reason: %s", tsstr.c_str(), reason);
-		sLogonCommHandler.Account_SetBanned(pPlayer->GetSession()->GetAccountNameS(), (uint32)timespan + (uint32)UNIXTIME, reason);
-		sGMLog.writefromsession(m_session, "banned account %s until %s", pPlayer->GetSession()->GetAccountNameS(), ConvertTimeStampToDataTime((uint32)timespan+(uint32)UNIXTIME).c_str());
+		sLogonCommHandler.Account_SetBanned(pPlayer->GetSession()->GetAccountNameS(), (uint32)timespan + uint32(UNIXTIME), reason);
+		sGMLog.writefromsession(m_session, "banned account %s until %s", pPlayer->GetSession()->GetAccountNameS(), ConvertTimeStampToDataTime((uint32)timespan+uint32(UNIXTIME)).c_str());
 
 		snprintf(msg, 200, "%s%s was account banned by %s (%s)", MSG_COLOR_WHITE, pPlayer->GetName(), m_session->GetPlayer()->GetName(), reason);
 		sWorld.SendWorldText(msg, NULL);

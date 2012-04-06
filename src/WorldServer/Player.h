@@ -1045,7 +1045,7 @@ public:
 	{
 		if(m_banned)
 		{
-			if(m_banned < 100 || (uint32)UNIXTIME < m_banned)
+			if(m_banned < 100 || uint32(UNIXTIME) < m_banned)
 				return true;
 		}
 		return false;

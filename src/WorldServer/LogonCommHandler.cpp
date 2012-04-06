@@ -152,7 +152,7 @@ void LogonCommHandler::Connect(LogonServer * server)
 
 	++ReConCounter;
 	Log.Notice("LogonCommClient", "Connecting on `%s:%u, attempt %u`", server->Address.c_str(), server->Port, ReConCounter );
-	server->RetryTime = (uint32)UNIXTIME + 10;
+	server->RetryTime = uint32(UNIXTIME) + 10;
 	server->Registered = false;
 	LogonCommClientSocket * conn = ConnectToLogon(server->Address, server->Port);
 	logons[server] = conn;
@@ -162,11 +162,11 @@ void LogonCommHandler::Connect(LogonServer * server)
 		return;
 	}
 	Log.Notice("LogonCommClient", "Authenticating...");
-	uint32 tt = (uint32)UNIXTIME + 10;
+	uint32 tt = uint32(UNIXTIME) + 10;
 	conn->SendChallenge();
 	while(!conn->authenticated)
 	{
-		if((uint32)UNIXTIME >= tt || bServerShutdown)
+		if(uint32(UNIXTIME) >= tt || bServerShutdown)
 		{
 			Log.Notice("LogonCommClient", "Authentication timed out.");
 			conn->_id = 0;
@@ -197,13 +197,13 @@ void LogonCommHandler::Connect(LogonServer * server)
 
 	RequestAddition(conn);
 
-	uint32 st = (uint32)UNIXTIME + 10;
+	uint32 st = uint32(UNIXTIME) + 10;
 
 	// Wait for register ACK
 	while(server->Registered == false)
 	{
 		// Don't wait more than.. like 10 seconds for a registration
-		if((uint32)UNIXTIME >= st)
+		if(uint32(UNIXTIME) >= st)
 		{
 			Log.Notice("LogonCommClient", "Realm registration timed out.");
 			conn->_id = 0;
@@ -246,7 +246,7 @@ void LogonCommHandler::UpdateSockets()
 
 	map<LogonServer*, LogonCommClientSocket*>::iterator itr = logons.begin();
 	LogonCommClientSocket * cs = NULL;
-	uint32 t = (uint32)UNIXTIME;
+	uint32 t = uint32(UNIXTIME);
 	for(; itr != logons.end(); itr++)
 	{
 		cs = itr->second;

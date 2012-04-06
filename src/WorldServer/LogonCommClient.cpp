@@ -20,7 +20,7 @@ ARCTIC_INLINE static void swap32(uint32* p) { *p = ((*p >> 24 & 0xff)) | ((*p >>
 LogonCommClientSocket::LogonCommClientSocket(SOCKET fd) : Socket(fd, 724288, 262444)
 {
 	// do nothing
-	last_ping = last_pong = (uint32)UNIXTIME;
+	last_ping = last_pong = uint32(UNIXTIME);
 	remaining = opcode = 0;
 	_id = 0;
 	latency = 0;
@@ -149,7 +149,7 @@ void LogonCommClientSocket::HandleSessionInfo(WorldPacket & recvData)
 void LogonCommClientSocket::HandlePong(WorldPacket & recvData)
 {
 	latency = getMSTime() - pingtime;
-	last_pong = (uint32)UNIXTIME;
+	last_pong = uint32(UNIXTIME);
 }
 
 void LogonCommClientSocket::SendPing()
@@ -158,7 +158,7 @@ void LogonCommClientSocket::SendPing()
 	WorldPacket data(RCMSG_PING, 4);
 	SendPacket(&data,false);
 
-	last_ping = (uint32)UNIXTIME;
+	last_ping = uint32(UNIXTIME);
 }
 
 void LogonCommClientSocket::SendPacket(WorldPacket * data, bool no_crypto)

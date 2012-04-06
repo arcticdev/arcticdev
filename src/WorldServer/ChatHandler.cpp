@@ -111,9 +111,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 	case CHAT_MSG_GUILD:
 	case CHAT_MSG_OFFICER:
 		{
-			if( m_muted && m_muted >= (uint32)UNIXTIME )
+			if( m_muted && m_muted >= uint32(UNIXTIME) )
 			{
-				SystemMessage("Your voice is currently muted by a moderator. This will expire in %s.", ConvertTimeStampToString(m_muted - (uint32)UNIXTIME).c_str());
+				SystemMessage("Your voice is currently muted by a moderator. This will expire in %s.", ConvertTimeStampToString(m_muted - uint32(UNIXTIME)).c_str());
 				return;
 			}
 		}break;
@@ -135,7 +135,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 				if( sWorld.flood_mute_after_flood )
 				{
 					_player->BroadcastMessage("You have been muted for %u seconds for spamming.", sWorld.flood_mute_after_flood );
-					m_muted = (uint32)UNIXTIME + sWorld.flood_mute_after_flood;
+					m_muted = uint32(UNIXTIME) + sWorld.flood_mute_after_flood;
 					return;
 				}
 
@@ -150,7 +150,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 		{
 			if( !stricmp(m_repeatMessage.c_str(), msg.c_str()) )
 			{
-				if( ((uint32)UNIXTIME - m_repeatTime) < sWorld.flood_message_time )
+				if( (uint32(UNIXTIME) - m_repeatTime) < sWorld.flood_message_time )
 				{
 					_player->BroadcastMessage("Your message has triggered serverside flood protection. Please don't repeat yourself.");
 					return;
@@ -158,7 +158,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			}
 
 			m_repeatMessage = msg;
-			m_repeatTime = (uint32)UNIXTIME;
+			m_repeatTime = uint32(UNIXTIME);
 		}
 
 		if( sWorld.flood_caps_pct > 0.0f )
@@ -473,9 +473,9 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 	recv_data >> unk;
 	recv_data >> guid;
 
-	if( m_muted && m_muted >= (uint32)UNIXTIME )
+	if( m_muted && m_muted >= uint32(UNIXTIME) )
 	{
-		SystemMessage("Your voice is currently muted by a moderator. This will expire in %s.", ConvertTimeStampToString(m_muted - (uint32)UNIXTIME).c_str());
+		SystemMessage("Your voice is currently muted by a moderator. This will expire in %s.", ConvertTimeStampToString(m_muted - uint32(UNIXTIME)).c_str());
 		return;
 	}
 
@@ -495,7 +495,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 				if( sWorld.flood_mute_after_flood )
 				{
 					_player->BroadcastMessage("You have been muted for %u seconds for spamming.", sWorld.flood_mute_after_flood );
-					m_muted = (uint32)UNIXTIME + sWorld.flood_mute_after_flood;
+					m_muted = uint32(UNIXTIME) + sWorld.flood_mute_after_flood;
 					return;
 				}
 
@@ -511,14 +511,14 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 			// fuck you /crying newbs, go QQ somewhere else
 			if( m_repeatEmoteId == text_emote )
 			{
-				if( ((uint32)UNIXTIME - m_repeatEmoteTime) < sWorld.flood_message_time )
+				if( (uint32(UNIXTIME) - m_repeatEmoteTime) < sWorld.flood_message_time )
 				{
 					_player->BroadcastMessage("Your message has triggered serverside flood protection. Please don't repeat yourself.");
 					return;
 				}
 			}
 
-			m_repeatEmoteTime = (uint32)UNIXTIME;
+			m_repeatEmoteTime = uint32(UNIXTIME);
 			m_repeatEmoteId = text_emote;
 		}
 	}

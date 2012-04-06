@@ -393,7 +393,7 @@ public:
 	void SendMessageToGMs(WorldSession *self, const char * text, ...);
 
 	ARCTIC_INLINE void SetStartTime(uint32 val) { m_StartTime = val; }
-	ARCTIC_INLINE uint32 GetUptime(void) { return (uint32)UNIXTIME - m_StartTime; }
+	ARCTIC_INLINE uint32 GetUptime(void) { return uint32(UNIXTIME) - m_StartTime; }
 	ARCTIC_INLINE uint32 GetStartTime(void) { return m_StartTime; }
 	std::string GetUptimeString();
 

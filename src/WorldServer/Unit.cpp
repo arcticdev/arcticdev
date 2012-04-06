@@ -6473,8 +6473,8 @@ void CombatStatusHandler::RemoveAttackTarget(Unit* pTarget)
 		}
 		else
 		{
-			uint32 new_t = (uint32)UNIXTIME + COMBAT_TIMEOUT_IN_SECONDS;
-			//printf("Setting attack target "I64FMT" on "I64FMT" to time out after 5 seconds.\n", pTarget->GetGUID(), m_Unit->GetGUID());
+			uint32 new_t = uint32(UNIXTIME) + COMBAT_TIMEOUT_IN_SECONDS;
+
 			if( itr->second < new_t )
 				itr->second = new_t;
 		}
@@ -6495,7 +6495,7 @@ void CombatStatusHandler::OnDamageDealt(Unit* pTarget, uint32 damage)
 		return;		// don't reset the combat timer when out of range.
 
 	AttackTMap::iterator itr = m_attackTargets.find(pTarget->GetGUID());
-	uint32 new_t = (uint32)UNIXTIME + COMBAT_TIMEOUT_IN_SECONDS;
+	uint32 new_t = uint32(UNIXTIME) + COMBAT_TIMEOUT_IN_SECONDS;
 	if(itr != m_attackTargets.end())
 	{
 		if( itr->second < new_t )
@@ -6521,7 +6521,7 @@ void CombatStatusHandler::OnDamageDealt(Unit* pTarget, uint32 damage)
 
 void CombatStatusHandler::UpdateTargets()
 {
-	uint32 mytm = (uint32)UNIXTIME;
+	uint32 mytm = uint32(UNIXTIME);
 	AttackTMap::iterator itr = m_attackTargets.begin();
 	AttackTMap::iterator it2 = m_attackTargets.begin();
 	Unit* pUnit;

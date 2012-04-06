@@ -317,7 +317,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 	plr->m_bgIsQueued[queueSlot] = true;
 	plr->m_bgQueueInstanceId[queueSlot] = instance;
 	plr->m_bgQueueType[queueSlot] = bgtype;
-	plr->m_bgQueueTime[queueSlot] = (uint32)UNIXTIME;
+	plr->m_bgQueueTime[queueSlot] = uint32(UNIXTIME);
 
 	/* Set battleground entry point */
 	plr->m_bgEntryPointX = plr->GetPositionX();
@@ -889,8 +889,8 @@ CBattleground::CBattleground( MapMgr* mgr, uint32 id, uint32 levelgroup, uint32 
 	m_ended = false;
 	m_started = false;
 	m_losingteam = 0xff;
-	m_startTime = (uint32)UNIXTIME;
-	m_lastResurrect = (uint32)UNIXTIME;
+	m_startTime = uint32(UNIXTIME);
+	m_lastResurrect = uint32(UNIXTIME);
 
 	/* create raid groups */
 	for(uint32 i = 0; i < 2; ++i)
@@ -1679,7 +1679,7 @@ void CBattleground::EventCountdown()
 void CBattleground::Start()
 {
 	OnStart();
-	m_startTime = (uint32)UNIXTIME;
+	m_startTime = uint32(UNIXTIME);
 }
 
 void CBattleground::Close()
@@ -1867,7 +1867,7 @@ void CBattleground::EventResurrectPlayers()
 		}
 		i->second.clear();
 	}
-	m_lastResurrect = (uint32)UNIXTIME;
+	m_lastResurrect = uint32(UNIXTIME);
 	m_mainLock.Release();
 }
 
@@ -2005,7 +2005,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 					(*itx)->m_loggedInPlayer->m_bgIsQueued[0] = true;
 					(*itx)->m_loggedInPlayer->m_bgQueueInstanceId[0] = 0;
 					(*itx)->m_loggedInPlayer->m_bgQueueType[0] = BattlegroundType;
-					(*itx)->m_loggedInPlayer->m_bgQueueTime[0] = (uint32)UNIXTIME;
+					(*itx)->m_loggedInPlayer->m_bgQueueTime[0] = uint32(UNIXTIME);
 					(*itx)->m_loggedInPlayer->GetSession()->SendPacket(&data);
 					(*itx)->m_loggedInPlayer->m_bgEntryPointX=(*itx)->m_loggedInPlayer->GetPositionX();
 					(*itx)->m_loggedInPlayer->m_bgEntryPointY=(*itx)->m_loggedInPlayer->GetPositionY();
@@ -2042,7 +2042,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 	plr->m_bgQueueInstanceId[0] = 0;
 	plr->m_bgQueueType[0] = BattlegroundType;
 	plr->m_bgRatedQueue = false;
-	plr->m_bgQueueTime[0] = (uint32)UNIXTIME;
+	plr->m_bgQueueTime[0] = uint32(UNIXTIME);
 	SendBattlegroundQueueStatus( plr, 0);
 
 	/* Set battleground entry point */

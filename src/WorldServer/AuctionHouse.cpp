@@ -76,7 +76,7 @@ void AuctionHouse::UpdateAuctions()
 	auctionLock.AcquireReadLock();
 	removalLock.Acquire();
 
-	uint32 t = (uint32)UNIXTIME;
+	uint32 t = uint32(UNIXTIME);
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	Auction * auct;
 	for(; itr != auctions.end();)
@@ -522,7 +522,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	// Create auction
 	Auction * auct = new Auction;
 	auct->BuyoutPrice = buyout;
-	auct->ExpiryTime = (uint32)UNIXTIME + (etime * 60);
+	auct->ExpiryTime = uint32(UNIXTIME) + (etime * 60);
 	auct->HighestBid = bid;
 	auct->HighestBidder = 0;	// hm
 	auct->Id = sAuctionMgr.GenerateAuctionId();

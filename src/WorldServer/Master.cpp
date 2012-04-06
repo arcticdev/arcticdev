@@ -242,7 +242,7 @@ bool Master::Run(int argc, char ** argv)
 	}
 
 	g_bufferPool.Init();
-	sWorld.SetStartTime((uint32)UNIXTIME);
+	sWorld.SetStartTime(uint32(UNIXTIME));
 
 	WorldRunnable * wr = new WorldRunnable();
 	ThreadPool.ExecuteTask(wr);
@@ -355,7 +355,7 @@ bool Master::Run(int argc, char ** argv)
 	};
 
 	// begin server shutdown
-	Log.Notice("Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( (uint32)UNIXTIME).c_str());
+	Log.Notice("Shutdown", "Initiated at %s", ConvertTimeStampToDataTime( uint32(UNIXTIME)).c_str());
 	bServerShutdown = true;
 
 	_UnhookSignals();

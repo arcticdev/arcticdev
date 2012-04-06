@@ -2203,7 +2203,7 @@ string World::GetUptimeString()
 
 void World::UpdateShutdownStatus()
 {
-	uint32 time_left = ((uint32)UNIXTIME > m_shutdownTime) ? 0 : m_shutdownTime - (uint32)UNIXTIME;
+	uint32 time_left = (uint32(UNIXTIME) > m_shutdownTime) ? 0 : m_shutdownTime - uint32(UNIXTIME);
 	uint32 time_period = 1;
 
 	if( time_left && m_shutdownTime )
@@ -2226,10 +2226,10 @@ void World::UpdateShutdownStatus()
 		}
 
 		// time to send a new packet?
-		if( ( (uint32)UNIXTIME - m_shutdownLastTime ) >= time_period )
+		if( ( uint32(UNIXTIME) - m_shutdownLastTime ) >= time_period )
 		{
 			// send message
-			m_shutdownLastTime = (uint32)UNIXTIME;
+			m_shutdownLastTime = uint32(UNIXTIME);
 
 			WorldPacket data(SMSG_SERVER_MESSAGE, 200);
 			if( m_shutdownType == SERVER_SHUTDOWN_TYPE_RESTART )
@@ -2279,7 +2279,7 @@ void World::QueueShutdown(uint32 delay, uint32 type)
 {
 	// set parameters
 	m_shutdownLastTime = 0;
-	m_shutdownTime = (uint32)UNIXTIME + delay;
+	m_shutdownTime = uint32(UNIXTIME) + delay;
 	m_shutdownType = type;
 
 	// add event

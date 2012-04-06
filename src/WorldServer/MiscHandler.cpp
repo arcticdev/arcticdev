@@ -473,10 +473,10 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	bool cname;
 	uint32 i;
 
-	if( ((uint32)UNIXTIME - m_lastWhoTime) < 10 && !GetPlayer()->bGMTagOn )
+	if( (uint32(UNIXTIME) - m_lastWhoTime) < 10 && !GetPlayer()->bGMTagOn )
 		return;
 
-	m_lastWhoTime = (uint32)UNIXTIME;
+	m_lastWhoTime = uint32(UNIXTIME);
 	recv_data >> min_level >> max_level;
 	recv_data >> chatname >> unkstr >> race_mask >> class_mask;
 	recv_data >> zone_count;
@@ -1603,7 +1603,7 @@ void WorldSession::HandlePlayedTimeOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
-	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
+	uint32 playedt = uint32(UNIXTIME) - _player->m_playedtime[2];
 	uint8 displayinui = 0;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2300,7 +2300,7 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
 	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
-	data << (uint32)UNIXTIME;
+	data << uint32(UNIXTIME);
 	SendPacket(&data);
 }
 

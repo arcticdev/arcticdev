@@ -41,7 +41,7 @@ void WorldSession::HandleNameQueryOpcode( WorldPacket & recv_data )
 //////////////////////////////////////////////////////////////
 void WorldSession::HandleQueryTimeOpcode( WorldPacket & recv_data )
 {
-	uint32 t = (uint32)UNIXTIME;
+	uint32 t = uint32(UNIXTIME);
 	OutPacket(SMSG_QUERY_TIME_RESPONSE, 4, &t);
 }
 

@@ -865,7 +865,7 @@ void Group::SaveToDB()
 	for(uint32 i = 0; i < fillers; ++i)
 		ss << "0,0,0,0,0,";
 
-	ss << (uint32)UNIXTIME << ")";
+	ss << uint32(UNIXTIME) << ")";
 	CharacterDatabase.Execute(ss.str().c_str());
 }
 
