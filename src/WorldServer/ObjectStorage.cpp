@@ -25,7 +25,7 @@ const char * gFishingFormat                   = "uuu";
 const char * gGameObjectNameFormat            = "uuusuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gGraveyardFormat                 = "uffffuuuux";
 const char * gItemPageFormat                  = "usu";
-const char * gItemPrototypeFormat             = "uuuussssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuu";
+const char * gItemPrototypeFormat             = "uuuussssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuffuffuuuuuuuuuufuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuusuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gNpcTextFormat                   = "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
 const char * gQuestFormat                     = "uuuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuc";
 const char * gTeleportCoordFormat             = "uxuffff";
@@ -271,7 +271,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 					case AGENT_FLEE:
 					{
-						// % health 
+						// % health
 						cn->m_canFlee = true;
 						if(sp->floatMisc1)
 							cn->m_fleeHealth = sp->floatMisc1;
@@ -332,7 +332,7 @@ void ObjectMgr::LoadExtraItemStuff()
 	{
 		Field *f = result->Fetch();
 		do
-		{		
+		{
 			foodItems.insert( make_pair( f[0].GetUInt32(), f[1].GetUInt32() ) );
 		}
 		while(result->NextRow());
@@ -360,7 +360,7 @@ void ObjectMgr::LoadExtraItemStuff()
 			std::list<ItemPrototype*>* l;
 			if(itr == mItemSets.end())
 			{
-				l = new std::list<ItemPrototype*>;				
+				l = new std::list<ItemPrototype*>;
 				mItemSets.insert( ItemSetContentMap::value_type( pItemPrototype->ItemSet, l) );
 			} else {
 				l = itr->second;
@@ -374,14 +374,22 @@ void ObjectMgr::LoadExtraItemStuff()
 		for(uint32 j = 0; j < pItemPrototype->lowercase_name.length(); ++j)
 			pItemPrototype->lowercase_name[j] = tolower(pItemPrototype->lowercase_name[j]);
 
-		//load item_pet_food_type from extra table
+		// load item_pet_food_type from extra table
 		uint32 ft = 0;
 		map<uint32,uint32>::iterator iter = foodItems.find(pItemPrototype->ItemId);
 		if(iter != foodItems.end())
 			ft = iter->second;
-		pItemPrototype->FoodType = ft ;
+		pItemPrototype->FoodType = ft;
 
-		pItemPrototype->gossip_script = NULL;
+		if(!pItemPrototype->gossip_script) // rehashing stuff.
+			pItemPrototype->gossip_script = NULL;
+		if(pItemPrototype->ScalingStatsEntry > 0 && pItemPrototype->Class == ITEM_CLASS_ARMOR)
+		{
+			uint32 osubclass = pItemPrototype->SubClass;
+			pItemPrototype->DummySubClass = (osubclass > 2 ? (osubclass - 1) : osubclass);
+		}
+		else
+			pItemPrototype->DummySubClass = 0;
 
 		// forced pet entries
 		switch( pItemPrototype->ItemId )

@@ -1817,7 +1817,10 @@ uint8 ItemInterface::CanEquipItemInSlot(uint8 DstInvSlot, uint8 slot, ItemProtot
 		if(proto->Class == ITEM_CLASS_ARMOR)
 		{
 
-			if(!(m_pOwner->GetArmorProficiency()&(((uint32)(1))<<proto->SubClass)))
+			uint32 fakeclass = (proto->DummySubClass ? ((GetOwner() && GetOwner()->getLevel() < 40) ?
+			proto->DummySubClass : proto->SubClass) : proto->SubClass);
+
+			if(!(m_pOwner->GetArmorProficiency()&(((uint32)(1))<<fakeclass)))
 				return INV_ERR_NO_REQUIRED_PROFICIENCY;
 
 		}

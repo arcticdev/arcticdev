@@ -128,7 +128,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 	if(!GetPlayer())
 		return;
-	
+
 	recv_data >> DstInvSlot >> DstSlot >> SrcInvSlot >> SrcSlot;
 
 	OUT_DEBUG("ITEM: swap, DstInvSlot %i DstSlot %i SrcInvSlot %i SrcSlot %i", DstInvSlot, DstSlot, SrcInvSlot, SrcSlot);
@@ -141,7 +141,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 
 	if( ( DstInvSlot <= 0 && DstSlot < 0 ) || DstInvSlot < -1 )
 		return;
-	
+
 	if( ( SrcInvSlot <= 0 && SrcSlot < 0 ) || SrcInvSlot < -1 )
 		return;
 
@@ -218,7 +218,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 					_player->GetItemInterface()->BuildInventoryChangeError(SrcItem, DstItem, error);
 					return;
 				}
-			} 
+			}
 		}
 		else
 		{
@@ -289,7 +289,7 @@ void WorldSession::HandleSwapItemOpcode(WorldPacket& recv_data)
 				}
 			}
 		}
-	   
+
 		if(SrcItem)
 			SrcItem = _player->GetItemInterface()->SafeRemoveAndRetreiveItemFromSlot(SrcInvSlot,SrcSlot, false);
 
@@ -732,7 +732,12 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 
 	data << itemProto->ItemId;
 	data << itemProto->Class;
-	data << itemProto->SubClass;
+
+	if(_player->getLevel() < 40)
+		data << (itemProto->DummySubClass ? itemProto->DummySubClass : itemProto->SubClass);
+	else
+		data << itemProto->SubClass;
+
 	data << itemProto->unknown_bc;
 	 data << /*(li ? li->Name : */itemProto->Name1/*)*/;
 
@@ -764,8 +769,8 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
 		data << itemProto->Stats[i].Type;
 		data << itemProto->Stats[i].Value;
 	}
-	data << uint32(0);								// 3.0.2 related to scaling stats
-	data << uint32(0);								// 3.0.2 related to scaling stats
+	data << uint32(itemProto->ScalingStatsEntry);
+	data << uint32(itemProto->ScalingStatsFlag);
 	for(i = 0; i < 2; i++)
 	{
 		data << itemProto->Damage[i].Min;
@@ -1333,7 +1338,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 			if(!result)
 			{
 				delete itm;
-				itm = NULL; 
+				itm = NULL;
 			}
 			else
 				SendItemPushResult(itm, false, true, false, true, INVENTORY_SLOT_NOT_SET, slotresult.Result, amount*item.amount);
@@ -1345,7 +1350,7 @@ void WorldSession::HandleBuyItemOpcode( WorldPacket & recv_data ) // right-click
 				if( !TO_CONTAINER(bag)->AddItem(slotresult.Slot, itm) )
 				{
 					delete itm;
-					itm = NULL; 
+					itm = NULL;
 				}
 				else
 					SendItemPushResult(itm, false, true, false, true, slotresult.ContainerSlot, slotresult.Result, 1);

@@ -601,7 +601,8 @@ enum SOCKET_GEM_COLOR
 };
 
 #pragma pack(push,1)
-struct SocketInfo {
+struct SocketInfo
+{
 	uint32 SocketColor;
 	uint32 Unk;
 };
@@ -661,6 +662,8 @@ struct ItemPrototype
 	uint32 MaxCount;
 	uint32 ContainerSlots;
 	ItemStat Stats[10];
+	uint32 ScalingStatsEntry;
+	uint32 ScalingStatsFlag;
 	ItemDamage Damage[2];
 	uint32 Armor;
 	uint32 HolyRes;
@@ -697,10 +700,11 @@ struct ItemPrototype
 	int32 DisenchantReqSkill;
 	uint32 ArmorDamageModifier;
 
-	string lowercase_name;	// used in auctions
-	uint32 FoodType;		//pet food type
-	GossipScript * gossip_script;
+	string lowercase_name;         // used in auctions
+	uint32 FoodType;               //pet food type
+	GossipScript* gossip_script;
 	int32 ForcedPetId;
+	uint32 DummySubClass;
 
 	string ConstructItemLink(uint32 random_prop, uint32 random_suffix, uint32 stack);
 	bool ValidateItemLink(const char *szLink);
@@ -711,6 +715,6 @@ typedef struct
 {
 	uint32 setid;
 	uint32 itemscount;
-	//Spell* spell[8];
+	// Spell* spell[8];
 }ItemSet;
 #pragma pack(pop)
