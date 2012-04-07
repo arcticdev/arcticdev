@@ -4150,7 +4150,7 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 				continue;
 			ModifyBonuses( proto->Stats[i].Type, apply ? val : -val );
 		}
-
+	}
 	// Damage
 	if( proto->Damage[0].Min )
 	{

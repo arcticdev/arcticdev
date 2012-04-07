@@ -1860,6 +1860,8 @@ extern SERVER_DECL DBCStorage<VehicleEntry> dbcVehicle;
 extern SERVER_DECL DBCStorage<VehicleSeatEntry> dbcVehicleSeat;
 extern SERVER_DECL DBCStorage<WorldMapOverlayEntry> dbcWorldMapOverlay;
 extern SERVER_DECL DBCStorage<SummonPropertiesEntry> dbcSummonProps;
+extern SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
+extern SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 extern SERVER_DECL DBCStorage<AreaPOIEntry> dbcAreaPOI;
 extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
