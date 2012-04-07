@@ -242,10 +242,10 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 				spellid = 0;
 				break;
 			}
-		   
-			if(!spellid) 
+
+			if(!spellid)
 				spellid = spellInfo->Id;
-			
+
 			if(!_player->m_onAutoShot)
 			{
 				_player->m_AutoShotTarget = _player->GetSelection();
@@ -257,7 +257,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 					return;
 				}
 				SpellEntry *sp = dbcSpell.LookupEntry(spellid);
-			
+
 				_player->m_AutoShotSpell = sp;
 				_player->m_AutoShotDuration = duration;
 				//This will fix fast clicks
@@ -332,8 +332,11 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
 
 	if(spellId == 33763 || spellId == 48450 || spellId == 48451) // Prevents Lifebloom exploit
 		return;
-	
-	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; ++x)
+
+	if(spellInfo->Attributes & ATTRIBUTES_CANT_CANCEL)
+		return;
+
+	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; x++)
 	{
 		if(_player->m_auras[x] && _player->m_auras[x]->IsPositive() && _player->m_auras[x]->GetSpellId() == spellId)
 			_player->RemoveAuraBySlot(x);
@@ -350,7 +353,7 @@ void WorldSession::HandleCancelChannellingOpcode( WorldPacket& recvPacket)
 	if(!plyr)
 		return;
 	if(plyr->m_currentSpell)
-	{		
+	{
 		plyr->m_currentSpell->cancel();
 	}
 }

@@ -729,9 +729,9 @@ void World::SendInstanceMessage(WorldPacket *packet, uint32 instanceid, WorldSes
 
 void World::SendWorldText(const char* text, WorldSession *self)
 {
-    uint32 textLen = (uint32)strlen((char*)text) + 1;
+	uint32 textLen = (uint32)strlen((char*)text) + 1;
 
-    WorldPacket data(textLen + 40);
+	WorldPacket data(textLen + 40);
 
 	data.Initialize(SMSG_MESSAGECHAT);
 	data << uint8(CHAT_MSG_SYSTEM);
@@ -747,7 +747,6 @@ void World::SendWorldText(const char* text, WorldSession *self)
 
 	SendGlobalMessage(&data, self);
 
-	sLog.outString("> %s", text);
 }
 
 void World::SendWorldWideScreenText(const char *text, WorldSession *self)

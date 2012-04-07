@@ -696,36 +696,36 @@ enum procFlags
     PROC_ON_PHYSICAL_ATTACK_VICTIM  = 0x20,
     PROC_ON_RANGED_ATTACK           = 0x40,
     PROC_ON_RANGED_CRIT_ATTACK      = 0x80,
-//    PROC_ON_UNK_DAMAGE_VICTIM       = 0x80,//seems to be on ranged dmg victim 99% sure('each melee or ranged attack' -> flag =680 (dec))
+    // PROC_ON_UNK_DAMAGE_VICTIM    = 0x80, // seems to be on ranged dmg victim 99% sure('each melee or ranged attack' -> flag =680 (dec))
     PROC_ON_PHYSICAL_ATTACK         = 0x100,
     PROC_ON_MELEE_ATTACK_VICTIM     = 0x200,
-//    PROC_ON_ANY_ACTION              = 0x400,
+    // PROC_ON_ANY_ACTION           = 0x400,
     PROC_ON_SPELL_LAND              = 0x400,
-//    PROC_UNK_DEFILLED               = 0x800,
+    // PROC_UNK_DEFILLED            = 0x800,
     PROC_ON_RANGED_CRIT_ATTACK_VICTIM = 0x800,
     PROC_ON_CRIT_ATTACK             = 0x1000,
     PROC_ON_RANGED_ATTACK_VICTIM    = 0x2000,
-//    PROC_ANYTIME                    = 0x4000,
-    PROC_ON_DISPEL_AURA_VICTIM		= 0x4000,
-//    PROC_UNK2_DEFILLED              = 0x8000,
-	PROC_ON_SPELL_LAND_VICTIM       = 0x8000,//custom flag. PROC only when spell landed on victim
+    // PROC_ANYTIME                 = 0x4000,
+    PROC_ON_DISPEL_AURA_VICTIM      = 0x4000,
+    //  PROC_UNK2_DEFILLED              = 0x8000,
+    PROC_ON_SPELL_LAND_VICTIM       = 0x8000,//custom flag. PROC only when spell landed on victim
     PROC_ON_CAST_SPECIFIC_SPELL     = 0x10000,
     PROC_ON_SPELL_HIT_VICTIM        = 0x20000,
     PROC_ON_SPELL_CRIT_HIT_VICTIM   = 0x40000,
-//    PROC_ON_UNK2_DAMAGE_VICTIM      = 0x80000,
-    PROC_ON_TARGET_DIE		        = 0x80000,
+    // PROC_ON_UNK2_DAMAGE_VICTIM   = 0x80000,
+    PROC_ON_TARGET_DIE              = 0x80000,
     PROC_ON_ANY_DAMAGE_VICTIM       = 0x100000,
-	PROC_ON_TRAP_TRIGGER            = 0x200000, //triggers on trap activation)
+    PROC_ON_TRAP_TRIGGER            = 0x200000, //triggers on trap activation)
     PROC_ON_AUTO_SHOT_HIT           = 0x400000,
     PROC_ON_ABSORB                  = 0x800000,
-	PROC_ON_FULL_RESIST		        = 0x1000000,//added it as custom, maybe already exists in another form ?
+    PROC_ON_FULL_RESIST             = 0x1000000,//added it as custom, maybe already exists in another form ?
     PROC_ON_DODGE_VICTIM            = 0x2000000,//added it as custom, maybe already exists in another form ?
     PROC_ON_DIE                     = 0x4000000,//added it as custom, maybe already exists in another form ?
     PROC_REMOVEONUSE                = 0x8000000,//remove prochcharge only when it is used
-    PROC_MISC		                = 0x10000000,// depending on destination, flag can be freely used (spell cant visit strike function)
+    PROC_MISC                       = 0x10000000,// depending on destination, flag can be freely used (spell cant visit strike function)
     PROC_ON_BLOCK_VICTIM            = 0x20000000,//added it as custom, maybe already exists in another form ?
     PROC_ON_SPELL_CRIT_HIT          = 0x40000000,//added it as custom, maybe already exists in another form ?
-    PROC_TARGET_SELF               = 0x80000000,//our custom flag to decide if proc target is self or victim
+    PROC_TARGET_SELF                = 0x80000000,//our custom flag to decide if proc target is self or victim
 };
 
 enum CastInterruptFlags
@@ -761,7 +761,7 @@ enum SpellGoFlags
 	SPELL_GO_FLAGS_UNKNOWN14			= 0x00004000,
 	SPELL_GO_FLAGS_UNKNOWN15			= 0x00008000,
 	SPELL_GO_FLAGS_UNKNOWN16			= 0x00010000,
-    SPELL_GO_FLAGS_UNKNOWN17			= 0x00020000,
+	SPELL_GO_FLAGS_UNKNOWN17			= 0x00020000,
 	SPELL_GO_FLAGS_UNKNOWN18			= 0x00040000,
 	SPELL_GO_FLAGS_UNKNOWN19			= 0x00080000,
 	SPELL_GO_FLAGS_UNKNOWN20			= 0x00100000,
@@ -842,18 +842,19 @@ enum Attributes
 	ATTRIBUTES_UNK								= 0x10000,
 	ATTRIBUTES_REQ_STEALTH						= 0x20000,
 	ATTRIBUTES_UNK20							= 0x40000,//it's not : must be behind
-	ATTRIBUTES_UNK21							= 0x80000,
+	ATTRIBUTES_CANCAST_WHILE_SITTING			= 0x80000,
 	ATTRIBUTES_STOP_ATTACK						= 0x100000,//switch off auto attack on use. Maim,Gouge,Disengage,Polymorph etc
-	ATTRIBUTES_CANT_BE_DPB				    	= 0x200000,//can't be dodged, blocked, parried
+	ATTRIBUTES_CANT_BE_DPB						= 0x200000,//can't be dodged, blocked, parried
 	ATTRIBUTES_UNK24							= 0x400000, // related to ranged
 	ATTRIBUTES_UNK25							= 0x800000,
 	ATTRIBUTES_MOUNT_CASTABLE					= 0x1000000, //castable on mounts
-	ATTRIBUTES_TRIGGER_COOLDOWN			        = 0x2000000, //also requires atributes ex = 32 ?
+	ATTRIBUTES_TRIGGER_COOLDOWN					= 0x2000000, //also requires atributes ex = 32 ?
 	ATTRIBUTES_UNK28							= 0x4000000,
 	ATTRIBUTES_UNK29							= 0x8000000,
 	ATTRIBUTES_REQ_OOC							= 0x10000000, //     ATTRIBUTES_REQ_OUT_OF_COMBAT
-    ATTRIBUTES_IGNORE_INVULNERABILITY           = 0x20000000, //debuffs that can't be removed by any spell and spells that can't be resisted in any case
+	ATTRIBUTES_IGNORE_INVULNERABILITY			= 0x20000000, //debuffs that can't be removed by any spell and spells that can't be resisted in any case
 	ATTRIBUTES_UNK32							= 0x40000000, // seems like IS_DIMINISHING but some spells not there (f.e. Gouge)
+	ATTRIBUTES_CANT_CANCEL						= 0x80000000,
 };
 
 enum AttributesEx
