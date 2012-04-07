@@ -4085,14 +4085,71 @@ void Player::_ApplyItemMods(Item* item, int8 slot, bool apply, bool justdrokedow
 		CalcResistance(RESISTANCE_ARCANE);
 	}
 
-	// Stats
-	for( int i = 0; i < 10; ++i )
+	if(proto->ScalingStatsEntry != 0) // This item is an Heirloom, we need to calculate it differently.
 	{
-		int32 val = proto->Stats[i].Value;
-		if( val == 0 )
-			continue;
-		ModifyBonuses( proto->Stats[i].Type, apply ? val : -val );
+		ScalingStatDistributionEntry *ssdrow = dbcScalingStatDistribution.LookupEntry( proto->ScalingStatsEntry );
+		ScalingStatValuesEntry *ssvrow = dbcScalingStatValues.LookupEntry(getLevel() < 81 ? getLevel() : 80);
+
+		int i = 0;
+		int32 StatValue;
+
+		for(i = 0; ssdrow->StatMod[i] != -1; i++)
+		{
+			uint32 StatType = ssdrow->StatMod[i];
+			StatValue = (ssdrow->Modifier[i]*GetscalestatSpellBonus(ssvrow))/10000;
+			ModifyBonuses(StatType, (apply ? StatValue : -StatValue));
+		}
+
+		if((proto->ScalingStatsFlag & 32768) && i < 10)
+		{
+			StatValue = (ssdrow->Modifier[i]*GetscalestatSpellBonus(ssvrow))/10000;
+			ModifyBonuses(SPELL_POWER, (apply ? StatValue : -StatValue));
+		}
+
+		int32 scaledarmorval = GetscalestatArmorMod(ssvrow, proto->ScalingStatsFlag);
+		BaseResistance[0] += (apply ? scaledarmorval : -scaledarmorval);
+		CalcResistance(0);
+
+		uint32 scaleddps = GetscalestatDPSMod(ssvrow, proto->ScalingStatsFlag);
+		float dpsmod = 1.0;
+
+		if (proto->ScalingStatsFlag & 0x1400)
+			dpsmod = 0.2f;
+		else
+			dpsmod = 0.3f;
+
+		float scaledmindmg = (scaleddps - (scaleddps * dpsmod)) * (proto->Delay/1000);
+		float scaledmaxdmg = (scaleddps * (dpsmod+1.0f)) * (proto->Delay/1000);
+
+		if( proto->InventoryType == INVTYPE_RANGED || proto->InventoryType == INVTYPE_RANGEDRIGHT || proto->InventoryType == INVTYPE_THROWN )
+		{
+			BaseRangedDamage[0] += apply ? scaledmindmg : -scaledmindmg;
+			BaseRangedDamage[1] += apply ? scaledmaxdmg : -scaledmaxdmg;
+		}
+		else
+		{
+			if( slot == EQUIPMENT_SLOT_OFFHAND )
+			{
+				BaseOffhandDamage[0] = apply ? scaledmindmg : 0;
+				BaseOffhandDamage[1] = apply ? scaledmaxdmg : 0;
+			}
+			else
+			{
+				BaseDamage[0] = apply ? scaledmindmg : 0;
+				BaseDamage[1] = apply ? scaledmaxdmg : 0;
+			}
+		}
 	}
+	else // Normal items...
+	{
+		// Stats
+		for( int i = 0; i < 10; ++i )
+		{
+			int32 val = proto->Stats[i].Value;
+			if( val == 0 )
+				continue;
+			ModifyBonuses( proto->Stats[i].Type, apply ? val : -val );
+		}
 
 	// Damage
 	if( proto->Damage[0].Min )
@@ -5746,8 +5803,10 @@ void Player::OnRemoveInRangeObject(Object* pObj)
 		}
 		else
 			this->UnPossess();
+
 		if(m_currentSpell)
 			m_currentSpell->cancel(); // cancel the spell
+
 		m_CurrentCharm = NULL;
 
 		if( p->m_temp_summon&&p->GetTypeId() == TYPEID_UNIT )

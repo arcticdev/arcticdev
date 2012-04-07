@@ -3253,6 +3253,10 @@ void Spell::SpellEffectWeapon(uint32 i)
 		{
 			skill = SKILL_BLOCK;
 		}break;
+	case 3386:  // spears
+		{
+			skill = SKILL_SPEARS;
+		}break;
 	default:
 		{
 			skill = 0;

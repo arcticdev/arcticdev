@@ -2362,12 +2362,10 @@ void Spell::SendChannelUpdate(uint32 time)
 	m_caster->SendMessageToSet(&data, (m_caster->IsPlayer() ? true : false));
 }
 
-void Spell::SendChannelStart(uint32 duration)
+void Spell::SendChannelStart(int32 duration)
 {
 	if (m_caster->GetTypeId() != TYPEID_GAMEOBJECT)
 	{
-		// Send Channel Start
-		/*WorldPacket data(MSG_CHANNEL_START, 22);*/
 		uint8 buf[30];
 		StackPacket data(MSG_CHANNEL_START, buf, 30);
 		data << m_caster->GetNewGUID();
@@ -2381,19 +2379,6 @@ void Spell::SendChannelStart(uint32 duration)
 	if( u_caster != NULL )
 		u_caster->SetUInt32Value(UNIT_CHANNEL_SPELL,m_spellInfo->Id);
 
-	/*
-	Unit target = objmgr.GetCreature( TO_PLAYER( m_caster )->GetSelection());
-	if(!target)
-		target = objmgr.GetObject<Player>( TO_PLAYER( m_caster )->GetSelection());
-	if(!target)
-		return;
-
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT,target->GetGUIDLow());
-	m_caster->SetUInt32Value(UNIT_FIELD_CHANNEL_OBJECT+1,target->GetGUIDHigh());
-	//disabled it can be not only creature but GO as well
-	//and GO is not selectable, so this method will not work
-	//these fields must be filled @ place of call
-	*/
 }
 
 void Spell::SendResurrectRequest(Player* target)
@@ -2407,14 +2392,14 @@ void Spell::SendResurrectRequest(Player* target)
 
 bool Spell::HasPower()
 {
-	//trainers can always cast
+	// trainers can always cast
 	if( u_caster != NULL && u_caster->HasFlag(UNIT_NPC_FLAGS,UNIT_NPC_FLAG_TRAINER) )
 		return true;
-	//Powercheaters too
+	// Powercheaters too
 	if(p_caster && p_caster->PowerCheat)
 		return true;
-	//Seems to be an issue since 3.0.9, as many elixers/potions got powertype 4
-	//Haven't found any items taking power, so guess it's safe to skip them.
+	// Seems to be an issue since 3.0.9, as many elixers/potions got powertype 4
+	// Haven't found any items taking power, so guess it's safe to skip them.
 	if(i_caster)
 		return true;
 
@@ -2422,7 +2407,7 @@ bool Spell::HasPower()
 	switch(m_spellInfo->powerType)
 	{
 	case POWER_TYPE_HEALTH:	{ powerField = UNIT_FIELD_HEALTH; }break;
-	case POWER_TYPE_MANA:	{ powerField = UNIT_FIELD_POWER1; m_usesMana=true; }break;
+	case POWER_TYPE_MANA:	{ powerField = UNIT_FIELD_POWER1; m_usesMana = true; }break;
 	case POWER_TYPE_RAGE:	{ powerField = UNIT_FIELD_POWER2; }break;
 	case POWER_TYPE_FOCUS:	{ powerField = UNIT_FIELD_POWER3; }break;
 	case POWER_TYPE_ENERGY:	{ powerField = UNIT_FIELD_POWER4; }break;
@@ -2436,12 +2421,13 @@ bool Spell::HasPower()
 			}
 			return true;
 		}
-	case POWER_TYPE_RUNIC:	{ powerField = UNIT_FIELD_POWER7; }break;
-	default:{
-		DEBUG_LOG("Spell","unknown power type %d", m_spellInfo->powerType);
-		// we should'nt be here to return
-		return false;
-			}break;
+	case POWER_TYPE_RUNIC: { powerField = UNIT_FIELD_POWER7; }break;
+	default:
+		{
+			DEBUG_LOG("Spell","unknown power type %d", m_spellInfo->powerType);
+			// we should'nt be here to return
+			return false;
+		}break;
 	}
 
 	int32 currentPower = m_caster->GetUInt32Value(powerField);

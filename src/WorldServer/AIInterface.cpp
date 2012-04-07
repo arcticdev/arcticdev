@@ -120,7 +120,8 @@ AIInterface::~AIInterface()
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
 
 	if(*itr) 
-		delete (*itr); 
+		delete (*itr);
+
 	m_spells.clear();
 
 	if( m_ChainAgroSet && m_Unit->IsCreature() )
@@ -3236,15 +3237,12 @@ void AIInterface::ResetProcCounts()
 {
 	for(list<AI_Spell*>::iterator itr = m_spells.begin(); itr != m_spells.end(); itr++)
 		if((*itr)->procCount)
-			(*itr)->procCounter=0;
+			(*itr)->procCounter = 0;
 }
 
-//we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
+// we only cast once a spell and we will set his health and resistances. Note that this can be made with db too !
 void AIInterface::Event_Summon_Elemental(uint32 summon_duration, uint32 TotemEntry, int32 ResistanceType, uint8 Slot)
 {
-	//Event_Summon_EE_totem(GetDuration(), 15352, NATURE_DAMAGE);
-	//Event_Summon_FE_totem(GetDuration(), 15438, FIRE_DAMAGE);
-
 	if(m_Unit == NULL || Slot > 6)
 		return;
 

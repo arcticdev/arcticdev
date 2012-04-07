@@ -25,11 +25,11 @@ public:
 	void OnRemoveInRangeObject(Object* pObj);
 	void Remove();
 
-	//Accessors
-	void SetAliveDuration(uint32 dur){m_aliveDuration = dur;};
+	// Accessors
+	void SetAliveDuration(int32 dur){ m_aliveDuration = dur; };
 
 protected:
-	
+
 	SpellEntry * m_spellProto;
 	Unit* u_caster;
 	Player* p_caster;
@@ -37,8 +37,8 @@ protected:
 	GameObject* g_caster;
 	Spell* m_parentSpell;
 	DynamicObjectList targets;
-	
-	uint32 m_aliveDuration;
+
+	int32 m_aliveDuration;
 	uint32 _fields[DYNAMICOBJECT_END];
 	FactionRangeList  m_inRangeOppFactions;
 };

@@ -70,6 +70,8 @@ SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 SERVER_DECL DBCStorage<QuestXP> dbcQuestXP;
 SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
+SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
+SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
 
 const char* SummonPropertiesfmt = "uuuuuu";
 const char* AreaTriggerFormat = "uuffffffff";
@@ -154,6 +156,21 @@ const char* currencyTypesFormat = "xuxu";
 const char* questxpformat = "uxuuuuuuuux";
 const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxu";
 const char* DestructibleModelDataFormat = "uxxuxxxuxxxuxxxuxxx";
+const char* scalingstatdistributionformat =
+	"u" // ID
+	"iiiiiiiiii" // Stat Mod
+	"uuuuuuuuuu" // Modifier
+	"u"; // Max Level
+
+const char* scalingstatvaluesformat =
+	"x" // Id
+	"u" // Level
+	"uuuu" // ScalingStatD modifier
+	"uuuu" // Armor Mod
+	"uuuuuu" // DPS mod
+	"u" // Spell Power
+	"uux" // Multipliers
+	"uuuu"; // Armor Type[level]
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -162,7 +179,7 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 	return l.Load(filename, format, ind, loadstrs);
 }
 
-#define LOAD_DBC(filename, format, ind, stor, strings) if(!loader_stub(filename, format, ind, stor, strings)) { return false; } 
+#define LOAD_DBC(filename, format, ind, stor, strings) if(!loader_stub(filename, format, ind, stor, strings)) { return false; }
 
 bool LoadRSDBCs()
 {
@@ -236,6 +253,8 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/SpellRuneCost.dbc", SpellRuneCostfmt, true, dbcSpellRuneCost, false);
 	LOAD_DBC("DBC/SpellShapeshiftForm.dbc", spellshapeshiftformformat, true, dbcSpellShapeshiftForm, false);
 	LOAD_DBC("DBC/SummonProperties.dbc", SummonPropertiesfmt, true, dbcSummonProps, false);
+	LOAD_DBC("DBC/ScalingStatDistribution.dbc", scalingstatdistributionformat, true, dbcScalingStatDistribution, false);
+	LOAD_DBC("DBC/ScalingStatValues.dbc", scalingstatvaluesformat, true, dbcScalingStatValues, false);
 
 	LOAD_DBC("DBC/Talent.dbc", talententryFormat, true, dbcTalent, false);
 	LOAD_DBC("DBC/TalentTab.dbc", talenttabentryFormat, true, dbcTalentTab, false);
@@ -324,4 +343,6 @@ void FreeDBCs()
 	dbcQuestXP.Cleanup();
 	dbcWMOAreaTable.Cleanup();
 	dbcDestructibleModelData.Cleanup();
+	dbcScalingStatDistribution.Cleanup();
+	dbcScalingStatValues.Cleanup();
 }

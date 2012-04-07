@@ -726,11 +726,11 @@ struct SpellEntry
 	uint32 MaxTargets;                      //215
 	uint32 Spell_Dmg_Type;                  //216   dmg_class Integer      0=None, 1=Magic, 2=Melee, 3=Ranged
 	uint32 PreventionType;                  //217   0,1,2 related to Spell_Dmg_Type I think
-	int32 StanceBarOrder;                   //218   related to paladin aura's 
+	int32 StanceBarOrder;                   //218   related to paladin aura's
 	float dmg_multiplier[3];                //219 - 221   if the name is correct I dono
 	uint32 MinFactionID;                    //222   only one spellid:6994 has this value = 369 UNUSED
 	uint32 MinReputation;                   //223   only one spellid:6994 has this value = 4 UNUSED
-	uint32 RequiredAuraVision;              //224  3 spells 1 or 2   
+	uint32 RequiredAuraVision;              //224  3 spells 1 or 2
 	uint32 TotemCategory[2];				//225-226
 	int32 AreaGroupId;						//227  //look up area by index in areagroup.dbc
 	uint32 School;							//228
@@ -1137,7 +1137,7 @@ struct CreatureDisplayInfo
 	//uint32 unk4;
 	float Scale;
 	//uint32 unk6;
-	//char* name;	//FilenName? 
+	//char* name;	//FilenName?
 	//uint32 unk8;
 	//uint32 unk9;
 	//uint32 unk10;
@@ -1185,7 +1185,7 @@ struct MapEntry
 	uint32 addon;			// 0-original maps, 1-tbc addon, 2-wotlk addon
 	uint32 maxPlayers;		// max players
 
-	bool israid() { return map_type == 2; } 
+	bool israid() { return map_type == 2; }
 };
 
 struct ItemRandomSuffixEntry
@@ -1196,19 +1196,41 @@ struct ItemRandomSuffixEntry
 	uint32 prefixes[5];
 };
 
+struct ScalingStatDistributionEntry
+{
+	uint32 Id;                                              // 0
+	int32  StatMod[10];                                     // 1-10
+	uint32 Modifier[10];                                    // 11-20
+	uint32 MaxLevel;                                        // 21
+};
+
+struct ScalingStatValuesEntry
+{
+	// uint32  Id;                                          // 0
+	uint32 Level;                                           // 1
+	uint32 ssdMultiplier[4];                                // 2-5 Multiplier for ScalingStatDistribution
+	uint32 armorMod[4];                                     // 6-9 Armor for level
+	uint32 dpsMod[6];                                       // 10-15 DPS mod for level
+	uint32 spellBonus;                                      // 16 spell power for level
+	uint32 ssdMultiplier2;                                  // 17 there's data from 3.1 dbc ssdMultiplier[3]
+	uint32 ssdMultiplier3;                                  // 18 3.3
+	// uint32 unk2;                                         // 19 unk, probably also Armor for level (flag 0x80000?)
+	uint32 armorMod2[4];                                    // 20-23 Low Armor for level
+};
+
 struct BarberShopStyleEntry
 {
-    uint32  id;												// 0
-    uint32  type;											// 1 value 0 -> hair, value 2 -> facialhair
+    uint32 id;												// 0
+    uint32 type;											// 1 value 0 -> hair, value 2 -> facialhair
     char* name;												// 2 string hairstyle name
-    //char*   name[15];										// 3-17 name of hair style
-    //uint32  name_flags;									// 18
-    //uint32  unk_name[16];									// 19-34, all empty
-    //uint32  unk_flags;									// 35
-    //float   unk3;											// 36 values 1 and 0,75
-    uint32  race;											// 37 race
-    uint32  gender;											// 38 0 male, 1 female
-    uint32  hair_id;										// 39 Hair ID
+    // char* name[15];										// 3-17 name of hair style
+    // uint32 name_flags;									// 18
+    // uint32 unk_name[16];									// 19-34, all empty
+    // uint32 unk_flags;									// 35
+    // float unk3;											// 36 values 1 and 0,75
+    uint32 race;											// 37 race
+    uint32 gender;											// 38 0 male, 1 female
+    uint32 hair_id;											// 39 Hair ID
 };
 
 struct gtFloat
@@ -1402,24 +1424,96 @@ ARCTIC_INLINE float GetDBCCastTime(SpellRadius *radius)
 {
     return radius->Radius;
 }
+
 ARCTIC_INLINE uint32 GetCastTime(SpellCastTime *time)
 {
     return time->CastTime;
 }
+
 ARCTIC_INLINE float GetMaxRange(SpellRange *range)
 {
     return range->maxRange;
 }
+
 ARCTIC_INLINE float GetMinRange(SpellRange *range)
 {
     return range->minRange;
 }
+
 ARCTIC_INLINE uint32 GetDuration(SpellDuration *dur)
 {
     return dur->Duration1;
 }
+ARCTIC_INLINE uint32 GetscalestatMultiplier(ScalingStatValuesEntry *ssvrow, uint32 flags)
+{
+	if(flags & 0x4001F)
+	{
+		if(flags & 0x00000001)
+			return ssvrow->ssdMultiplier[0];
+		if(flags & 0x00000002)
+			return ssvrow->ssdMultiplier[1];
+		if(flags & 0x00000004)
+			return ssvrow->ssdMultiplier[2];
+		if(flags & 0x00000008)
+			return ssvrow->ssdMultiplier2;
+		if(flags & 0x00000010)
+			return ssvrow->ssdMultiplier[3];
+		if(flags & 0x00040000)
+			return ssvrow->ssdMultiplier3;
+	}
+	return 0;
+}
 
-#define SAFE_DBC_CODE_RETURNS			/* undefine this to make out of range/nulls return null. */
+ARCTIC_INLINE uint32 GetscalestatArmorMod(ScalingStatValuesEntry *ssvrow, uint32 flags)
+{
+	if(flags & 0x00F001E0)
+	{
+		if(flags & 0x00000020)
+			return ssvrow->armorMod[0];
+		if(flags & 0x00000040)
+			return ssvrow->armorMod[1];
+		if(flags & 0x00000080)
+			return ssvrow->armorMod[2];
+		if(flags & 0x00000100)
+			return ssvrow->armorMod[3];
+		if(flags & 0x00100000)
+			return ssvrow->armorMod2[0];
+		if(flags & 0x00200000)
+			return ssvrow->armorMod2[1];
+		if(flags & 0x00400000)
+			return ssvrow->armorMod2[2];
+		if(flags & 0x00800000)
+			return ssvrow->armorMod2[3];
+	}
+	return 0;
+}
+
+ARCTIC_INLINE uint32 GetscalestatDPSMod(ScalingStatValuesEntry *ssvrow, uint32 flags)
+{
+	if(flags & 0x7E00)
+	{
+		if(flags & 0x00000200)
+			return ssvrow->dpsMod[0];
+		if(flags & 0x00000400)
+			return ssvrow->dpsMod[1];
+		if(flags & 0x00000800)
+			return ssvrow->dpsMod[2];
+		if(flags & 0x00001000)
+			return ssvrow->dpsMod[3];
+		if(flags & 0x00002000)
+			return ssvrow->dpsMod[4];
+		if(flags & 0x00004000)  // not used?
+			return ssvrow->dpsMod[5];
+	}
+	return 0;
+}
+
+ARCTIC_INLINE uint32 GetscalestatSpellBonus(ScalingStatValuesEntry *ssvrow)
+{
+	return ssvrow->spellBonus;
+}
+
+#define SAFE_DBC_CODE_RETURNS /* undefine this to make out of range/nulls return null. */
 
 template<class T>
 class SERVER_DECL DBCStorage
@@ -1434,7 +1528,7 @@ class SERVER_DECL DBCStorage
 	char * m_stringData;
 
 public:
-	
+
 	DBCStorage()
 	{
 		m_heapBlock = NULL;
@@ -1456,19 +1550,19 @@ public:
 		if(m_heapBlock)
 		{
 			delete[] m_heapBlock;
-			//free(m_heapBlock);
+			// free(m_heapBlock);
 			m_heapBlock = NULL;
 		}
 		if(m_entries)
 		{
 			delete[] m_entries;
-			//free(m_entries);
+			// free(m_entries);
 			m_entries = NULL;
 		}
 		if( m_stringData != NULL )
 		{
 			delete[] m_stringData;
-			//free(m_stringData);
+			// free(m_stringData);
 			m_stringData = NULL;
 		}
 	}
