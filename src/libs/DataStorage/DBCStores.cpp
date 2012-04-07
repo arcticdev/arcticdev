@@ -101,7 +101,7 @@ const char* spellrangeFormat =
 
 const char* WorldMapOverlayfmt = "uxuxxxxxxxxxxxxxx";
 const char* SpellRuneCostfmt = "uuuuu";
-const char* spelldurationFormat = "uuuu";
+const char* spelldurationFormat = "uiii";
 const char* randompropsFormat = "usuuuxxxxxxxxxxxxxxxxxxx";
 const char* areatableFormat = "uuuuuxxxuxusxxxxxxxxxxxxxxxxuxxxxxxx";
 const char* factiontemplatedbcFormat = "uuuuuuuuuuuuuu";

@@ -5813,17 +5813,15 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			pTarget->EventAttackStop();
 			pTarget->SetFlag( UNIT_FIELD_FLAGS_2, 1 );
 			pTarget->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_FEIGN_DEATH );
-			//pTarget->SetFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_DEAD );
 			pTarget->SetFlag( UNIT_DYNAMIC_FLAGS, U_DYN_FLAG_DEAD );
-			//pTarget->SetUInt32Value( UNIT_NPC_EMOTESTATE, EMOTE_STATE_DEAD );
 
 			data.SetOpcode( SMSG_START_MIRROR_TIMER );
-			data << uint32( 2 );		// type
-			data << uint32( GetDuration() );
-			data << uint32( GetDuration() );
+			data << uint32( 2 ); // type
+			data << int32( GetDuration() );
+			data << int32( GetDuration() );
 			data << uint32( 0xFFFFFFFF );
 			data << uint8( 0 );
-			data << uint32( m_spellProto->Id );		// ???
+			data << uint32( m_spellProto->Id ); // ???
 			pTarget->GetSession()->SendPacket( &data );
 
 			data.Initialize(0x03BE);
@@ -5831,7 +5829,7 @@ void Aura::SpellAuraFeignDeath(bool apply)
 			unordered_set<Object*>::iterator itr,itr2;
 			Object* pObject = NULL;
 
-			//now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
+			// now get rid of mobs agro. pTarget->CombatStatus.AttackersForgetHate() - this works only for already attacking mobs
 			for(itr = pTarget->GetInRangeSetBegin(); itr != pTarget->GetInRangeSetEnd();)
 			{
 				itr2 = itr;
