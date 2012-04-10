@@ -866,19 +866,19 @@ void Aura::RemoveIfNecessary()
 
 void Aura::ApplyModifiers( bool apply )
 {
-	if(!m_applied && !apply)	// Don't want to unapply modifiers if they haven't been applied
+	if(!m_applied && !apply) // Don't want to unapply modifiers if they haven't been applied
 		return;
 
 	m_applied = apply;
 	if( apply && m_spellProto->CasterAuraState && m_target && !(m_target->GetUInt32Value(UNIT_FIELD_AURASTATE) & (uint32(1) << (m_spellProto->CasterAuraState - 1) ) ) )
 	{
-		//printf("Unable to apply due to lacking aura state %u\n", m_spellProto->CasterAuraState);
+		// printf("Unable to apply due to lacking aura state %u\n", m_spellProto->CasterAuraState);
 		m_applied = false;
 		return;
 	}
 	if( apply && m_spellProto->CasterAuraStateNot && m_target && m_target->GetUInt32Value(UNIT_FIELD_AURASTATE) & (uint32(1) << (m_spellProto->CasterAuraStateNot - 1) ) )
 	{
-		//printf("Unable to apply due to having aura state %u\n", m_spellProto->CasterAuraStateNot);
+		// printf("Unable to apply due to having aura state %u\n", m_spellProto->CasterAuraStateNot);
 		m_applied = false;
 		return;
 	}
@@ -886,8 +886,6 @@ void Aura::ApplyModifiers( bool apply )
 	for( uint32 x = 0; x < m_modcount; x++ )
 	{
 		mod = &m_modList[x];
-		DEBUG_LOG( "Aura","Applying Modifiers target = %u , Spell Aura id = %u, SpellId  = %u, i = %u, apply = %s, duration = %u, damage = %d",
-					m_target->GetLowGUID(),mod->m_type, m_spellProto->Id, mod->i, apply ? "true" : "false",GetDuration(),mod->m_amount);
 
 		if(mod->m_type<TOTAL_SPELL_AURAS)
 		{
@@ -900,9 +898,9 @@ void Aura::ApplyModifiers( bool apply )
 
 	if(GetSpellProto()->procFlags)
 	{
-		for(uint32 x=0; x<3; x++)
+		for(uint32 x = 0; x < 3; x++)
 			if(GetSpellProto()->EffectApplyAuraName[x] == SPELL_AURA_PROC_TRIGGER_SPELL||GetSpellId()==974||GetSpellId()==32593||GetSpellId()==32594)
-				return;//already have proc for this aura
+				return; // already have proc for this aura
 
 		Unit * m_caster = GetUnitCaster();
 		if(apply)
@@ -912,7 +910,7 @@ void Aura::ApplyModifiers( bool apply )
 			pts.origId = GetSpellId();
 			pts.caster = m_casterGuid;
 			pts.spellId = 0;
-			for(uint32 x=0; x<3; x++)
+			for(uint32 x = 0; x < 3; x++)
 			{
 				if(GetSpellProto()->EffectTriggerSpell[x] != 0)
 				{
@@ -929,10 +927,7 @@ void Aura::ApplyModifiers( bool apply )
 			pts.LastTrigger = 0;
 			pts.ProcType = 0;
 			pts.weapon_damage_type = 0;
-			/*
-			pts.SpellClassMask[0] = GetSpellProto()->EffectSpellClassMask[mod->i][0];
-			pts.SpellClassMask[1] = GetSpellProto()->EffectSpellClassMask[mod->i][1];
-			pts.SpellClassMask[2] = GetSpellProto()->EffectSpellClassMask[mod->i][2];*/
+
 			pts.deleted = false;
 			m_target->m_procSpells.push_front(pts);
 		}
@@ -1267,7 +1262,6 @@ void Aura::EventRelocateRandomTarget()
 	}
 
 	TO_PLAYER(m_caster)->SafeTeleport( pTarget->GetMapId(), pTarget->GetInstanceID(), new_x, new_y, new_z, pTarget->GetOrientation() );
-	// void Unit::Strike( Unit pVictim, uint32 weapon_damage_type, SpellEntry* ability, int32 add_damage, int32 pct_dmg_mod, uint32 exclusive_damage, bool disable_proc, bool skip_hit_check )
 	TO_PLAYER(m_caster)->Strike( pTarget, MELEE, NULL, 0, 0, 0, false, false, true );
 	TO_PLAYER(m_caster)->Strike( pTarget, OFFHAND, NULL, 0, 0, 0, false, false, true );
 }
@@ -1276,7 +1270,7 @@ void Aura::EventUpdatePlayerAA(float r)
 {
 	if(m_auraSlot > MAX_AURAS+MAX_PASSIVE_AURAS)
 	{
-		//this event is no longer valid, remove it.
+		// this event is no longer valid, remove it.
 		sEventMgr.RemoveEvents(this);
 		Log.Error("Aura","Encountered an illegal EventUpdatePlayerAAura, removing it from event-holder.");
 		return;
@@ -1366,7 +1360,7 @@ void Aura::EventUpdatePlayerAA(float r)
 							(*itr)->m_loggedInPlayer->GetInstanceID() == plr->GetInstanceID() && (*itr)->m_loggedInPlayer->isAlive())
 						{
 							Aura* aura = NULL;
-							//aura->AddMod(mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
+							// aura->AddMod(mod->m_type, mod->m_amount, mod->m_miscValue, mod->i);
 							for(i = 0; i < 3; ++i)
 							{
 								/* is this an area aura modifier? */
@@ -1374,7 +1368,7 @@ void Aura::EventUpdatePlayerAA(float r)
 								{
 									if(!aura)
 									{
-										//Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
+										// Aura::Aura( SpellEntry* proto, int32 duration, Object* caster, Unit* target )
 										aura = new Aura(m_spellProto, -1, m_caster, (*itr)->m_loggedInPlayer);
 										aura->m_areaAura = true;
 									}
@@ -1394,7 +1388,7 @@ void Aura::EventUpdatePlayerAA(float r)
 			plr->GetGroup()->Unlock();
 		}
 	}
-	//heavy
+	// heavy
 	else if( areatargets & AA_TARGET_ALLFRIENDLY )
 	{
 		Unit* target;

@@ -4698,28 +4698,26 @@ void Spell::SpellEffectSummonObject(uint32 i)
 		if( go == NULL )
 			return;
 
-		if( m_spellInfo->EffectImplicitTargetA[i] == EFF_TARGET_SIMPLE_AOE )
+		if( m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION )
 		{
-			if( !go->CreateFromProto(entry, mapid, m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f) )
-				return;
+			px = m_targets.m_destX;
+			py = m_targets.m_destY;
+			pz = m_targets.m_destZ;
 		}
-		else
-		{
-			if( !go->CreateFromProto(entry, mapid, posx, posy, pz, orient, 0.0f, 0.0f, 0.0f, 0.0f) )
-				return;
-		}
+		if( !go->CreateFromProto(entry, mapid, posx, posy, pz, orient, 0.0f, 0.0f, 0.0f, 0.0f) ) 
+			return; 
 
 		go->SetInstanceID(m_caster->GetInstanceID());
 		go->SetByte(GAMEOBJECT_BYTES_1,GAMEOBJECT_BYTES_STATE, 1);
 		go->SetUInt64Value(OBJECT_FIELD_CREATED_BY, m_caster->GetGUID());
 		go->PushToWorld(m_caster->GetMapMgr());
 		go->ExpireAndDelete(GetDuration());
-		if(entry ==17032)//this is a portal
+		if(entry ==17032) // this is a portal
 		{
-			//enable it for party only
+			// enable it for party only
 			go->SetByte(GAMEOBJECT_BYTES_1, 0, 0);
 
-			//disable by default
+			// disable by default
 			WorldPacket *pkt = go->BuildFieldUpdatePacket(GAMEOBJECT_BYTES_1, 1);
 			SubGroup * pGroup = p_caster->GetGroup() ? p_caster->GetGroup()->GetSubGroup(p_caster->GetSubGroup()) : NULL;
 
@@ -4782,7 +4780,8 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 	Enchantment = dbcEnchant.LookupEntry(m_spellInfo->EffectMiscValue[i]);
 	if(Enchantment == NULL )
 		return;
-	//Start Scroll Creation
+
+	// Start Scroll Creation
 	if( itemTarget->GetEntry() == 38682 || itemTarget->GetEntry() == 39349 || itemTarget->GetEntry() == 37602 || itemTarget->GetEntry() == 39350 || itemTarget->GetEntry() == 43145 || itemTarget->GetEntry() == 43146 )
 	{
 		Item* newItem = NULL;
@@ -4878,8 +4877,8 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 			}
 		}
 	}
-	//End of Scroll Creation
-	//remove Vellum
+	// End of Scroll Creation
+	// remove Vellum
 	if( itemTarget->GetEntry() == 38682 || itemTarget->GetEntry() == 39349 || itemTarget->GetEntry() == 37602 || itemTarget->GetEntry() == 39350 || itemTarget->GetEntry() == 43145 || itemTarget->GetEntry() == 43146 )
 	{
 		p_caster->GetItemInterface()->RemoveItemAmt(itemTarget->GetEntry(),1);
@@ -4888,7 +4887,7 @@ void Spell::SpellEffectEnchantItem(uint32 i) // Enchant Item Permanent
 	if(p_caster->GetSession()->GetPermissionCount() > 0)
 		sGMLog.writefromsession(p_caster->GetSession(), "enchanted item for %s", itemTarget->GetOwner()->GetName());
 
-	//remove other perm enchantment that was enchanted by profession
+	// remove other perm enchantment that was enchanted by profession
 	itemTarget->RemoveProfessionEnchant();
 	int32 Slot = itemTarget->AddEnchantment(Enchantment, 0, true, true, false, 0);
 	if(Slot < 0)
@@ -4964,7 +4963,7 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	Creature* tame = NULL;
 	tame = ((unitTarget->GetTypeId() == TYPEID_UNIT) ? TO_CREATURE(unitTarget) : NULL);
 
-	if(tame== NULL )
+	if(tame == NULL )
 		return;
 
 	uint8 result = SPELL_CANCAST_OK;
@@ -4998,8 +4997,8 @@ void Spell::SpellEffectTameCreature(uint32 i)
 	Pet* pPet = objmgr.CreatePet();
 	pPet->SetInstanceID(p_caster->GetInstanceID());
 	pPet->CreateAsSummon(tame->GetEntry(), tame->GetCreatureInfo(), tame, p_caster, NULL, 2, 0);
-	//tame->SafeDelete();
-	//delete tame;
+	// tame->SafeDelete();
+	// delete tame;
 	tame->Despawn(0,tame->proto? tame->proto->RespawnTime:0);
 }
 
