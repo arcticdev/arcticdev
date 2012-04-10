@@ -17,7 +17,7 @@
 
 //===========================================================
 
-#define MAX_MAPS 750
+#define MAX_MAPS 800
 #define DIR_FILENAME_EXTENSION ".vmdir"
 #define MAX_CAN_FALL_DISTANCE 10.0
 #define FILENAMEBUFFER_SIZE 500
