@@ -127,7 +127,7 @@ void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
 
 uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 {
-	DEBUG_LOG("Object","Building update block for Player");
+	OUT_DEBUG("Object","Building update block for Player");
 	uint16 flags = 0;
 	uint32 flags2 = 0;
 
@@ -147,26 +147,22 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		{
 			flags = 0x0010;
 		}break;
-
-		// player/unit: 0x0070 (except self)
+		
+	// player/unit: 0x68 (except self)
 	case TYPEID_UNIT:
-		{
-			flags = 0x0070;
-		}break;
-
 	case TYPEID_PLAYER:
 		{
 			flags = 0x0070;
 		}break;
 
-		// gameobjects and dynamicobjects
+	// gameobject/dynamicobject
 	case TYPEID_GAMEOBJECT:
 		{
 			flags = 0x0350;//200|100|40|10
 
 			switch(GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID))
 			{
-				case GAMEOBJECT_TYPE_MO_TRANSPORT:
+				case GAMEOBJECT_TYPE_MO_TRANSPORT:  
 					{
 						if(GetTypeFromGUID() != HIGHGUID_TYPE_TRANSPORTER)
 							return 0;   // bad transporter
@@ -190,18 +186,16 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		}break;
 
 	case TYPEID_DYNAMICOBJECT:
-		{
-			flags = 0x0048;
-		}break;
+		flags = 0x0150;
+		break;
 
 	case TYPEID_CORPSE:
-		{
-			flags = 0x0148;
-		}break;
+		flags = 0x0150;
+		break;
 	}
 
 	if(GetTypeFromGUID() == HIGHGUID_TYPE_VEHICLE)
-		flags |= 0x00E0;
+		flags |= 0x0080;
 
 	if(target == this)
 	{
