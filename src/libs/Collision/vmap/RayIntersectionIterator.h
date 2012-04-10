@@ -7,8 +7,8 @@
 #ifndef _RAYINTERSECTIONITERATOR_H
 #define _RAYINTERSECTIONITERATOR_H
 
-#include <Collision/g3dlite/G3D/CollisionDetection.h>
-#include <Collision/g3dlite/G3D/AABox.h>
+#include "../g3dlite/G3D/CollisionDetection.h"
+#include "../g3dlite/G3D/AABox.h"
 
 #include "NodeValueAccess.h"
 
@@ -22,6 +22,7 @@ The collision detection is modified to return true, if we are inside an object.
 
 namespace VMAP
 {
+
 	class MyCollisionDetection
 	{
 		public:
