@@ -22,8 +22,10 @@ void InstanceMgr::Load(TaskList * l)
 {
 	new FormationMgr;
 	new WorldStateTemplateManager;
-	sWorldStateTemplateManager.LoadFromDB();
 	QueryResult *result;
+
+	sWorldStateTemplateManager.LoadFromDB();
+
 	// Create all non-instance type maps.
 	result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
 	if( result )
@@ -40,7 +42,7 @@ void InstanceMgr::Load(TaskList * l)
 	{
 		do 
 		{
-			if(WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL)
+			if( !WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) )
 				continue;
 
 			if( result->Fetch()[0].GetUInt32() >= NUM_MAPS )
@@ -61,18 +63,19 @@ void InstanceMgr::Load(TaskList * l)
 	StorageContainerIterator<MapInfo> * itr = WorldMapInfoStorage.MakeIterator();
 	while(!itr->AtEnd())
 	{
-		MapInfo* mapinfo = itr->Get();
-		if( mapinfo->mapid >= NUM_MAPS )
+		if( itr->Get()->mapid >= NUM_MAPS )
 		{
-			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", mapinfo->mapid );
+			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", itr->Get()->mapid );
 			itr->Inc();
 			continue;
 		}
 
-		if(m_maps[mapinfo->mapid] == NULL)
-			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, mapinfo->mapid)));
+		if(m_maps[itr->Get()->mapid] == NULL)
+		{
+			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, itr->Get()->mapid)));
+		}
 
-		if( mapinfo->flags != 1 && mapinfo->cooldown == 0) //Transport maps have 0 update_distance since you don't load into them ;)
+		if( itr->Get()->flags != 1 && itr->Get()->cooldown == 0 ) //Transport maps have 0 update_distance since you don't load into them ;)
 		{
 			Log.Warning("InstanceMgr", "Your worldmap_info has no cooldown for map %u.", itr->Get()->mapid);
 			itr->Get()->cooldown = TIME_MINUTE * 30;
@@ -123,7 +126,7 @@ void InstanceMgr::Shutdown()
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i] = NULL;
+			m_maps[i]=NULL;
 		}
 	}
 
@@ -420,10 +423,8 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 
 			
 			// iterate over our instances, and see if any of them are owned/joinable by him.
-			for(itr = instancemap->begin(); itr != instancemap->end();)
+			for(itr = instancemap->begin(); itr != instancemap->end(); ++itr)
 			{
-				++itr;
-
 				// Is this our instance?
 				uint8 owns = PlayerOwnsInstance(itr->second, plr);
 				if(owns >= OWNER_CHECK_OK )
@@ -537,9 +538,7 @@ MapMgr* InstanceMgr::GetInstance(uint32 MapId, uint32 InstanceId)
 
 MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 {
-	MapInfo * inf = NULL;
-	inf = WorldMapInfoStorage.LookupEntry(mapid);
-
+	MapInfo* inf = WorldMapInfoStorage.LookupEntry(mapid);
 	ASSERT(inf != NULL && inf->type == INSTANCE_NULL);
 	ASSERT(mapid < NUM_MAPS && m_maps[mapid] != NULL);
 
@@ -554,18 +553,28 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 	// assign pointer
 	m_singleMaps[mapid] = ret;
 
-	if(sWorld.Collision && ret->IsCollisionEnabled()) 
-	{ 
-		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid); 
-		ret->collisionloaded = false; 
-		for(uint32 x = 0; x < _sizeX; ++x)
-		{ 
-			for(uint32 y = 0; y < _sizeY; ++y) 
-				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y)) 
-					ret->collisionloaded = true; 
-		} 
-		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (ret->collisionloaded == true ? "Successfully" : "Unsuccessfully")); 
-	} 
+	if(ret->IsCollisionEnabled())
+	{
+		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid);
+		Log.Notice("NavmeshMgr", "Map %03u has Navmesh enabled.", mapid);
+		bool mmapsloaded = false;
+		bool collisionloaded = false;
+		for(uint32 x = 0; x < TilesCount; ++x)
+		{
+			for(uint32 y = 0; y < TilesCount; ++y)
+			{
+				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y))
+				{
+					collisionloaded = true;
+					if(sWorld.UseMmaps)
+						if(ret->LoadNavMesh(x, y))
+							mmapsloaded = true;
+				}
+			}
+		}
+		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (collisionloaded == true ? "Successfully" : "Unsuccessfully"));
+		Log.Notice("NavmeshMgr", "Map %03u Navmesh loaded %s!", mapid, (mmapsloaded == true ? "Successfully" : "Unsuccessfully"));
+	}
 	return ret;
 }
 
@@ -624,9 +633,8 @@ void InstanceMgr::_CreateMap(uint32 mapid)
 {
 	if( mapid >= NUM_MAPS )
 		return;
-
 	MapInfo* inf = WorldMapInfoStorage.LookupEntry(mapid);
-	if(inf==NULL || m_maps[mapid]!=NULL)
+	if(!inf || m_maps[mapid])
 		return;
 #ifdef CLUSTERING
 	if(!inf->cluster_loads_map)
@@ -727,7 +735,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 					in = itr->second;
 					++itr;
 
-					if(in->m_mapMgr == NULL)
+					if(in->m_mapMgr==NULL)
 						continue;
 
 					BuildStats(in->m_mapMgr, m_file, in, in->m_mapInfo);
@@ -883,7 +891,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 			}
 		}
 	}
-	m_mapLock.Release();
+    m_mapLock.Release();	
 }
 
 void InstanceMgr::ResetHeroicInstances()

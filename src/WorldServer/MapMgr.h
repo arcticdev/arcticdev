@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "Pathfinding/Detour/DetourNavMesh.h"
+
 class MapCell;
 class Map;
 class Object;
@@ -22,18 +24,18 @@ class CBattleground;
 class Instance;
 class InstanceScript;
 
-typedef unordered_set<Object*> ObjectSet;
-typedef unordered_set<Object*> UpdateQueue;
-typedef unordered_set<Player*> PUpdateQueue;
-typedef unordered_set<Player*> PlayerSet;
-typedef HM_NAMESPACE::hash_map<uint32, Object*> StorageMap;
+typedef unordered_set<Object* > ObjectSet;
+typedef unordered_set<Object* > UpdateQueue;
+typedef unordered_set<Player*  > PUpdateQueue;
+typedef unordered_set<Player*  > PlayerSet;
+typedef HM_NAMESPACE::hash_map<uint32, Object* > StorageMap;
 typedef unordered_set<uint64> CombatProgressMap;
 typedef unordered_set<Vehicle*> VehicleSet;
 typedef unordered_set<Creature*> CreatureSet;
-typedef unordered_set<GameObject*> GameObjectSet;
+typedef unordered_set<GameObject* > GameObjectSet;
 typedef HM_NAMESPACE::hash_map<uint32, Vehicle*> VehicleSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, GameObject*> GameObjectSqlIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, GameObject* > GameObjectSqlIdMap;
 
 #define MAX_TRANSPORTERS_PER_MAP 25
 
@@ -50,7 +52,8 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 	friend class MapScriptInterface;
 
 public:
-	// This will be done in regular way soon
+	//This will be done in regular way soon
+
 	Mutex m_objectinsertlock;
 	ObjectSet m_objectinsertpool;
 	void AddObject(Object*);
@@ -82,7 +85,7 @@ public:
 
 	uint32 m_VehicleArraySize;
 	uint32 m_VehicleHighGuid;
-	HM_NAMESPACE::unordered_map<const uint32,Vehicle*> m_VehicleStorage;
+	HM_NAMESPACE::hash_map<const uint32,Vehicle*> m_VehicleStorage;
 	Vehicle* CreateVehicle(uint32 entry);
 
 	__inline Vehicle* GetVehicle(const uint32 guid)
@@ -96,7 +99,7 @@ public:
 
 	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
-	HM_NAMESPACE::unordered_map<const uint32,Creature*> m_CreatureStorage;
+	HM_NAMESPACE::hash_map<const uint32,Creature*> m_CreatureStorage;
 	Creature* CreateCreature(uint32 entry);
 
 	__inline Creature* GetCreature(const uint32 guid)
@@ -160,7 +163,10 @@ public:
 	}
 	ARCTIC_INLINE bool IsCombatInProgress()
 	{
-		// if all players are out, list should be empty.
+		// temporary disabled until AI updates list correctly.
+		return false;
+
+		//if all players are out, list should be empty.
 		if(!HasPlayers())
 			_combatProgress.clear();
 		return (_combatProgress.size() > 0);
@@ -179,7 +185,6 @@ public:
 	MapMgr(Map *map, uint32 mapid, uint32 instanceid);
 	~MapMgr();
 	void Init();
-	void Destructor();
 
 	void PushObject(Object* obj);
 	void PushStaticObject(Object* obj);
@@ -247,6 +252,9 @@ public:
 	void SendMessageToCellPlayers(Object* obj, WorldPacket * packet, uint32 cell_radius = 2);
 	void SendChatMessageToCellPlayers(Object* obj, WorldPacket * packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession * originator);
 
+	bool LoadNavMesh(uint32 x, uint32 y);
+	LocationVector getNextPositionOnPathToLocation(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz);
+
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();
 	void HookOnAreaTrigger(Player* plr, uint32 id);
@@ -261,14 +269,18 @@ public:
 	// kill the worker thread only
 	void KillThread()
 	{
-		pInstance = NULL;
+		pInstance=NULL;
 		thread_kill_only = true;
 		Terminate();
 		while(thread_running)
+		{
 			Sleep(100);
+		}
 	}
 
 protected:
+	dtNavMesh *m_navMesh[64][64];
+
 	// Collect and send updates to clients
 	void _UpdateObjects();
 
@@ -283,7 +295,6 @@ private:
 public:
 	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)
 	float m_UpdateDistance;
-	bool collisionloaded;
 
 private:
 	/* Map Information */
@@ -294,7 +305,7 @@ private:
 	MapScriptInterface * ScriptInterface;
 
 	/* Update System */
-	FastMutex m_updateMutex; // use a user-mode mutex for extra speed
+	FastMutex m_updateMutex;		// use a user-mode mutex for extra speed
 	UpdateQueue _updates;
 	PUpdateQueue _processQueue;
 
@@ -311,7 +322,7 @@ public:
 	VehicleSet activeVehicles;
 	EventableObjectHolder eventHolder;
 	CBattleground* m_battleground;
-	unordered_set<Corpse*> m_corpses;
+	unordered_set<Corpse* > m_corpses;
 	VehicleSqlIdMap _sqlids_vehicles;
 	CreatureSqlIdMap _sqlids_creatures;
 	GameObjectSqlIdMap _sqlids_gameobjects;
@@ -336,13 +347,13 @@ public:
 	ByteBuffer m_compressionBuffer;
 
 public:
+
 	// get!
 	ARCTIC_INLINE WorldStateManager& GetStateManager() { return *m_stateManager; }
 
 	// send packet functions for state manager
 	void SendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, WorldPacket *pData);
 	void SendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, StackPacket *pData);
-	void EventSendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, WorldPacket *pData);
 	void SendPvPCaptureMessage(int32 iZoneMask, uint32 ZoneId, const char * Format, ...);
 
 	// auras :< (world pvp)
@@ -359,7 +370,7 @@ public:
 	VehicleSet::iterator __vehicle_iterator;
 	CreatureSet::iterator __creature_iterator;
 	GameObjectSet::iterator __gameobject_iterator;
-
+	
 	SessionSet::iterator __session_iterator_1;
 	SessionSet::iterator __session_iterator_2;
 

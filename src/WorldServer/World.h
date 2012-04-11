@@ -475,6 +475,8 @@ public:
 
 	string MapPath;
 	string vMapPath;
+	string MMapPath; 
+	bool UseMmaps;
 	bool UnloadMapFiles;
 	bool BreathingEnabled;
 	bool SpeedhackProtection;

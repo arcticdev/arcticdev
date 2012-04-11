@@ -21,7 +21,9 @@
 #include <map>
 #include <sstream>
 #include <string>
-//#include <fstream>
+#include <fstream> 
+#include <iosfwd> 
+#include <search.h> 
 
 #include "../libs/AuthCodes.h"
 #include "../libs/Common.h"
@@ -38,6 +40,10 @@
 
 #include "../libs/Collision/vmap/IVMapManager.h"
 #include "../libs/Collision/vmap/VMapManager.h"
+#include "../libs/Pathfinding/InputGeom.h" 
+#include "../libs/Pathfinding/Recast/Recast.h" 
+#include "../libs/Pathfinding/Detour/DetourNavMesh.h" 
+#include "../libs/Pathfinding/Detour/DetourNavMeshBuilder.h"
 
 #include "../../dep/vc/include/zlib.h"
 

@@ -75,6 +75,9 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 		SetCollision(false);
 
 	mInstanceScript = NULL;
+	for(uint i = 0; i < 64; ++i)
+		for(uint h = 0; h < 64; ++h)
+			m_navMesh[i][h] = NULL;
 }
 
 void MapMgr::Init()
@@ -82,12 +85,6 @@ void MapMgr::Init()
 	m_stateManager = new WorldStateManager(this);
 	// Create script interface
 	ScriptInterface = new MapScriptInterface( this );
-}
-
-// call me to break the circular reference, perform cleanup
-void MapMgr::Destructor()
-{
-	delete this;
 }
 
 MapMgr::~MapMgr()
@@ -106,7 +103,7 @@ MapMgr::~MapMgr()
 	// Remove objects
 	if(_cells)
 	{
-		for (uint32 i = 0; i < _sizeX; i++)
+		for (uint32 i = 0; i < _sizeX; ++i)
 		{
 			if(_cells[i] != 0)
 			{
@@ -149,13 +146,13 @@ MapMgr::~MapMgr()
 			break;
 		default:
 			delete pObject;
-			pObject = NULL;
 		}
+		pObject = NULL;
 	}
 	_mapWideStaticObjects.clear();
 
 	Corpse* pCorpse;
-	for(unordered_set<Corpse*>::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
+	for(unordered_set<Corpse* >::iterator itr = m_corpses.begin(); itr != m_corpses.end(); ++itr)
 	{
 		pCorpse = *itr;
 		if(!pCorpse)
@@ -1393,7 +1390,7 @@ bool MapMgr::Do()
 		return false;
 
 	// delete ourselves
-	Destructor();
+	delete this;
 
 	// already deleted, so the threadpool doesn't have to.
 	return false;
@@ -1405,7 +1402,7 @@ void MapMgr::BeginInstanceExpireCountdown()
 
 	// so players getting removed don't overwrite us
 	forced_expire = true;
-
+	
 	// send our sexy packet
 	data << uint32(60000) << uint32(1);
 
@@ -1646,7 +1643,7 @@ void MapMgr::TeleportPlayers()
 				ptr->GetSession()->LogoutPlayer(false);
 			else
 			{
-				ptr->Destructor();
+				delete ptr;
 				ptr = NULL;
 				m_PlayerStorage.erase(__player_iterator);
 			}
@@ -1659,7 +1656,7 @@ void MapMgr::UnloadCell(uint32 x,uint32 y)
 	MapCell * c = GetCell(x,y);
 	if(c == NULL || c->HasPlayers() || _CellActive(x,y) || !c->IsUnloadPending()) return;
 
-	DEBUG_LOG("MapMgr","Unloading Cell [%d][%d] on map %d (instance %d)...",
+	DEBUG_LOG("MapMgr","Unloading Cell [%d][%d] on map %d (instance %d)...", 
 		x,y,_mapId,m_instanceID);
 
 	c->Unload();
@@ -1670,7 +1667,7 @@ void MapMgr::EventRespawnVehicle(Vehicle* v, MapCell * p)
 	ObjectSet::iterator itr = p->_respawnObjects.find( v );
 	if(itr != p->_respawnObjects.end())
 	{
-		v->m_respawnCell = NULL;
+		v->m_respawnCell=NULL;
 		p->_respawnObjects.erase(itr);
 		v->OnRespawn(this);
 	}
@@ -1681,9 +1678,11 @@ void MapMgr::EventRespawnCreature(Creature* c, MapCell * p)
 	ObjectSet::iterator itr = p->_respawnObjects.find( c );
 	if(itr != p->_respawnObjects.end())
 	{
-		c->m_respawnCell = NULL;
+		c->m_respawnCell=NULL;
 		p->_respawnObjects.erase(itr);
 		c->OnRespawn(this);
+		//if(c->GetAIInterface())
+		//	c->GetAIInterface()->OnRespawn(c);
 	}
 }
 
@@ -1692,7 +1691,7 @@ void MapMgr::EventRespawnGameObject(GameObject* o, MapCell * c)
 	ObjectSet::iterator itr = c->_respawnObjects.find( o);
 	if(itr != c->_respawnObjects.end())
 	{
-		o->m_respawnCell = NULL;
+		o->m_respawnCell=NULL;
 		c->_respawnObjects.erase(itr);
 		o->Spawn(this);
 	}
@@ -1849,9 +1848,8 @@ Creature* MapMgr::CreateCreature(uint32 entry)
 
 GameObject* MapMgr::CreateGameObject(uint32 entry)
 {
-	//Validate the entry
-	GameObjectInfo *goi = NULL;
-	goi = GameObjectNameStorage.LookupEntry( entry );
+	// Validate the entry
+	GameObjectInfo *goi = GameObjectNameStorage.LookupEntry( entry );
 	if( goi == NULL )
 	{
 		Log.Warning("MapMgr", "Skipping CreateGameObject for entry %u due to incomplete database.", entry);
@@ -1904,15 +1902,9 @@ void MapMgr::SendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, StackPacke
 	}
 }
 
-void MapMgr::EventSendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, WorldPacket *pData)
-{
-	SendPacketToPlayers(iZoneMask, iFactionMask, pData);
-}
-
 void MapMgr::SendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, WorldPacket *pData)
 {
 	// Update all players on map.
-
 	Player * ptr = NULL;
 	PlayerStorageMap::iterator itr1 = m_PlayerStorage.begin();
 	for(itr1 = m_PlayerStorage.begin(); itr1 != m_PlayerStorage.end();)
@@ -1987,7 +1979,7 @@ void MapMgr::CastSpellOnPlayers(int32 iFactionMask, uint32 uSpellId)
 				continue;
 
 			if(sp != NULL)
-				sEventMgr.AddEvent(TO_UNIT(ptr), &Unit::EventCastSpell, TO_UNIT(__player_iterator->second), sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+				sEventMgr.AddEvent(TO_UNIT(ptr), &Unit::EventCastSpell, TO_UNIT(__player_iterator->second), sp, EVENT_AURA_APPLY, 250, 1,EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT); 
 		}
 	}
 }
@@ -2031,4 +2023,86 @@ void MapMgr::CallScriptUpdate()
 {
 	ASSERT( mInstanceScript );
 	mInstanceScript->UpdateEvent();
+}
+
+bool MapMgr::LoadNavMesh(uint32 x, uint32 y)
+{
+	if(m_navMesh[x][y])
+		return false; // Already exists
+
+	// map file name
+	uint32 len = uint32(sizeof(sWorld.MMapPath)+strlen("/%03u%02u%02u.mmap")+1);
+	char *tmp = new char[len];
+	snprintf(tmp, len, (char *)(sWorld.MMapPath+"/%03u%02u%02u.mmap").c_str(), _mapId, x, y);
+
+	// woot no need for generation here: lets just load navmesh itself!
+	ifstream pieflavor( tmp, ofstream::binary );
+	if( pieflavor )
+	{
+		pieflavor.seekg(0,std::ifstream::end);
+		int navDataSize = pieflavor.tellg();
+		pieflavor.seekg(0);
+		unsigned char *navData = new unsigned char[navDataSize];
+		pieflavor.read((char*) (navData),navDataSize);
+		pieflavor.close();
+		m_navMesh[x][y] = new dtNavMesh;
+		if(m_navMesh == NULL)
+		{
+			delete [] navData;
+			return false;
+		}
+		if(!m_navMesh[x][y]->init(navData, navDataSize, true, 2048))
+		{
+			delete [] navData;
+			return false;
+		}
+	}
+	else
+	{
+		delete[] tmp;
+		return false;
+	}
+	delete[] tmp;
+	return true;
+}
+
+LocationVector MapMgr::getNextPositionOnPathToLocation(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz)
+{
+	//convert to nav coords.
+	float startPos[3] = { starty, startz, startx };
+	float endPos[3] = { endy, endz, endx };
+	float mPolyPickingExtents[3] = { 2.00f, 4.00f, 2.00f };
+	dtQueryFilter* mPathFilter = new dtQueryFilter();
+	int gx = 32 - (startx/533.333333f);
+	int gy = 32 - (starty/533.333333f);
+	LocationVector pos;
+	pos.x = endx;
+	pos.y = endy;
+	pos.z = endz;
+	dtNavMesh* myNavMesh = m_navMesh[gx][gy];
+	if (myNavMesh)
+	{
+		dtPolyRef mStartRef = myNavMesh->findNearestPoly(startPos,mPolyPickingExtents,mPathFilter,0); // this maybe should be saved on mob for later
+		dtPolyRef mEndRef = myNavMesh->findNearestPoly(endPos,mPolyPickingExtents,mPathFilter,0); // saved on player? probably waste since player moves to much
+		if (mStartRef != 0 && mEndRef != 0)
+		{
+			dtPolyRef mPathResults[50];
+			int mNumPathResults = myNavMesh->findPath(mStartRef, mEndRef,startPos, endPos, mPathFilter ,mPathResults,50);//TODO: CHANGE ME
+			if(mNumPathResults <= 0)
+				return pos;
+
+			float actualpath[3*20];
+			unsigned char* flags = 0;
+			dtPolyRef* polyrefs = 0;
+			int mNumPathPoints = m_navMesh[gx][gy]->findStraightPath(startPos, endPos,mPathResults, mNumPathResults, actualpath, flags, polyrefs,20);
+			if (mNumPathPoints < 3)
+				return pos;
+
+			pos.x = actualpath[5]; //0 3 6
+			pos.y = actualpath[3]; //1 4 7
+			pos.z = actualpath[4]; //2 5 8
+			return pos;
+		}
+	}
+	return pos;
 }
