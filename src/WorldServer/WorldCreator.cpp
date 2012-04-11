@@ -40,7 +40,7 @@ void InstanceMgr::Load(TaskList * l)
 	result = WorldDatabase.Query("SELECT DISTINCT Map FROM creature_spawns");
 	if(result)
 	{
-		do 
+		do
 		{
 			if( !WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) )
 				continue;
@@ -411,7 +411,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 							itr->second->m_mapMgr = _CreateInstance(itr->second);
 
 						if(owns == OWNER_CHECK_SAVED_OK && !itr->second->m_mapMgr->HasPlayers())
-						{	
+						{
 							if(plr->GetGroup())
 								itr->second->m_creatorGroup = plr->GetGroupID();
 						}
@@ -421,7 +421,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 				}
 			}
 
-			
+
 			// iterate over our instances, and see if any of them are owned/joinable by him.
 			for(itr = instancemap->begin(); itr != instancemap->end(); ++itr)
 			{
@@ -434,7 +434,7 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 						itr->second->m_mapMgr = _CreateInstance(itr->second);
 
 					if(owns == OWNER_CHECK_SAVED_OK && !itr->second->m_mapMgr->HasPlayers())
-					{	
+					{
 						if(plr->GetGroup())
 							itr->second->m_creatorGroup = plr->GetGroupID();
 					}
@@ -566,14 +566,20 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y))
 				{
 					collisionloaded = true;
-					if(sWorld.UseMmaps)
+					if(ret->IsPathfindingEnabled())
 						if(ret->LoadNavMesh(x, y))
 							mmapsloaded = true;
 				}
 			}
 		}
 		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (collisionloaded == true ? "Successfully" : "Unsuccessfully"));
-		Log.Notice("NavmeshMgr", "Map %03u Navmesh loaded %s!", mapid, (mmapsloaded == true ? "Successfully" : "Unsuccessfully"));
+
+		if(collisionloaded != true)
+			ret->SetCollision(false);
+		if(ret->IsPathfindingEnabled())
+			Log.Notice("NavmeshMgr", "Map %03u Navmesh loaded %s!", mapid, (mmapsloaded == true ? "Successfully" : "Unsuccessfully"));
+		if(mmapsloaded == false)
+			ret->SetPathfinding(false);
 	}
 	return ret;
 }
@@ -719,7 +725,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
 	Instance * in;
-	
+
 	m_mapLock.Acquire();
 	for(i = 0; i < NUM_MAPS; ++i)
 	{
@@ -755,14 +761,14 @@ void InstanceMgr::_LoadInstances()
 	// clear any instances that have expired.
 	Log.Notice("InstanceMgr", "Deleting Expired Instances...");
 	CharacterDatabase.WaitExecute("DELETE FROM instances WHERE expiration <= %u", UNIXTIME);
-	
+
 	// load saved instances
 	result = CharacterDatabase.Query("SELECT * FROM instances");
 	Log.Notice("InstanceMgr", "Loading %u saved instance(s)." , result ? result->GetRowCount() : 0);
 
 	if(result)
 	{
-		do 
+		do
 		{
 			inf = WorldMapInfoStorage.LookupEntry(result->Fetch()[1].GetUInt32());
 			if(inf == NULL || result->Fetch()[1].GetUInt32() >= NUM_MAPS)
@@ -891,7 +897,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 			}
 		}
 	}
-    m_mapLock.Release();	
+    m_mapLock.Release();
 }
 
 void InstanceMgr::ResetHeroicInstances()
@@ -1179,7 +1185,7 @@ void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player* pPlayer)
 						data << uint32(60000) << uint32(1);
 						pPlayer->GetSession()->SendPacket(&data);
 						pPlayer->raidgrouponlysent=true;
-	
+
 						sEventMgr.AddEvent(pPlayer, &Player::EjectFromInstance, EVENT_PLAYER_EJECT_FROM_INSTANCE, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 						m_mapLock.Release();
@@ -1305,7 +1311,7 @@ FormationMgr::FormationMgr()
 	if(res)
 	{
 		Formation *f ;
-		do 
+		do
 		{
 			f = new Formation;
 			f->fol = res->Fetch()[1].GetUInt32();

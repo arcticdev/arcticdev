@@ -23,7 +23,7 @@ const static ItemProf prof[22] =
 {
 	{4, 2}, {4, 4}, {4, 8}, {4, 16}, {4, 64},
 	{2, 1}, {2, 2}, {2, 4}, {2, 8},  {2, 16},
-	{2, 32}, {2, 64}, {2, 128}, {2, 256}, {2, 1024}, 
+	{2, 32}, {2, 64}, {2, 128}, {2, 256}, {2, 1024},
 	{2, 8192}, {2, 32768}, {2, 65536}, {2, 131072},
 	{2, 262144}, {2, 524288}, {2, 1048576}
 };
@@ -63,7 +63,7 @@ const static uint32 weap_skills[21] =
 	SKILL_WANDS,
 	SKILL_FISHING
 };
-                                      
+
 const static float pricemod[9] =
 {
 	1.0f,		// HATED
@@ -133,7 +133,7 @@ public:
 	void SetOwner( Player* owner );
 
 	ARCTIC_INLINE bool IsContainer(){ return ( m_objectTypeId == TYPEID_CONTAINER ) ? true : false; }
-	
+
 	// DB Serialization
 	void LoadFromDB( Field *fields, Player* plr, bool light );
 	void SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer* buf );
@@ -184,7 +184,7 @@ public:
 
 	// Removes an enchantment from the item.
 	void RemoveEnchantment( uint32 EnchantmentSlot );
-	
+
 	// Removes related temporary enchants
 	void RemoveRelatedEnchants( EnchantEntry* newEnchant );
 
@@ -229,7 +229,7 @@ public:
 	ARCTIC_INLINE uint32 GetDurabilityMax() { return GetUInt32Value( ITEM_FIELD_MAXDURABILITY ); }
 	ARCTIC_INLINE bool IsAmmoBag() { return (m_itemProto->Class == ITEM_CLASS_QUIVER); }
 	void AccountBind() { SetFlag(ITEM_FIELD_FLAGS, ITEM_FLAG_BINDONACC); }
-	
+
 	void RemoveFromWorld();
 
 	bool locked;
@@ -260,6 +260,9 @@ public:
 
 	uint32 wrapped_item_id;
 
+	uint32 GetItemTextId() { return itemtextid; };
+	void SetItemTextId(uint32 id) { itemtextid = id; };
+
 protected:
 
 	ItemPrototype* m_itemProto;
@@ -268,6 +271,7 @@ protected:
 	Player* m_owner; // let's not bother the manager with unneeded requests
 	uint32 random_prop;
 	uint32 random_suffix;
+	uint32 itemtextid;
 };
 
 uint32 GetSkillByProto( uint32, uint32 );

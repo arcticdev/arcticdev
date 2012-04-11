@@ -23,9 +23,9 @@ class Battleground;
 enum Rates
 {
 	RATE_HEALTH = 0,
-	RATE_POWER1,	
-	RATE_POWER2,	
-	RATE_POWER3,	
+	RATE_POWER1,
+	RATE_POWER2,
+	RATE_POWER3,
 	RATE_DROP0, // separate rates for each quality level
 	RATE_DROP1,
 	RATE_DROP2,
@@ -48,7 +48,7 @@ enum Rates
 	RATE_ARENAPOINTMULTIPLIER5X,
 	RATE_EOTS_CAPTURERATE,
 	MAX_RATES
-};		
+};
 
 enum IntRates
 {
@@ -219,7 +219,8 @@ struct MapInfo
 	float update_distance;
 	uint32 checkpoint_id;
 	bool collision;
-	uint32 phasehorde; 
+	bool pathfinding;
+	uint32 phasehorde;
 	uint32 phasealliance;
 	// bool cluster_loads_map; // When the clustering is active
 
@@ -412,7 +413,7 @@ public:
 	{
 		return regen_values[index];
 	}
-	
+
 	ARCTIC_INLINE uint32 getIntRate(int index)
 	{
 		return int_rates[index];
@@ -475,7 +476,7 @@ public:
 
 	string MapPath;
 	string vMapPath;
-	string MMapPath; 
+	string MMapPath;
 	bool UseMmaps;
 	bool UnloadMapFiles;
 	bool BreathingEnabled;
@@ -611,7 +612,7 @@ protected:
 	bool m_allowMovement;
 	bool m_gmTicketSystem;
 	std::string m_motd;
-   
+
     uint32 realmtype;
 
 	time_t m_gameTime;

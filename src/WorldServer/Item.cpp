@@ -6,12 +6,13 @@
 
 #include "StdAfx.h"
 
-Item::Item()//this is called when constructing as container
+Item::Item() // this is called when constructing as container
 {
 	m_itemProto = NULL;
 	m_owner = NULL;
 	locked = false;
 	wrapped_item_id = 0;
+	itemtextid = 0;
 
 	Enchantments.clear();
 }
@@ -141,7 +142,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	else if( random_suffix )
 		SetRandomSuffix( random_suffix );
 
-	SetUInt32Value( ITEM_FIELD_ITEM_TEXT_ID, fields[11].GetUInt32() );
+	SetItemTextId(fields[11].GetUInt32());
 
 	SetUInt32Value( ITEM_FIELD_MAXDURABILITY, m_itemProto->MaxDurability );
 	SetUInt32Value( ITEM_FIELD_DURABILITY, fields[12].GetUInt32() );
@@ -292,7 +293,7 @@ void Item::SaveToDB( int8 containerslot, int8 slot, bool firstsave, QueryBuffer*
 	ss << GetChargesLeft() << ",";
 	ss << GetUInt32Value(ITEM_FIELD_FLAGS) << ",";
 	ss << random_prop << ", " << random_suffix << ", ";
-	ss << GetUInt32Value(ITEM_FIELD_ITEM_TEXT_ID) << ",";
+	ss << GetItemTextId() << ",";
 	ss << GetUInt32Value(ITEM_FIELD_DURABILITY) << ",";
 	ss << static_cast<int>(containerslot) << ",";
 	ss << static_cast<int>(slot) << ",'";

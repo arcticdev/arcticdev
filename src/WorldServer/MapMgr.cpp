@@ -69,10 +69,15 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 	_reusable_guids_creature.clear();
 	_reusable_guids_vehicle.clear();
 
-	if (sWorld.Collision && GetMapInfo()->collision)
+	if(sWorld.Collision && GetMapInfo()->collision)
 		SetCollision(true);
+		if(sWorld.UseMmaps && GetMapInfo()->pathfinding)
+			SetPathfinding(true);
 	else
+	{
 		SetCollision(false);
+		SetPathfinding(false);
+	}
 
 	mInstanceScript = NULL;
 	for(uint i = 0; i < 64; ++i)
@@ -83,8 +88,7 @@ MapMgr::MapMgr(Map *map, uint32 mapId, uint32 instanceid) : CellHandler<MapCell>
 void MapMgr::Init()
 {
 	m_stateManager = new WorldStateManager(this);
-	// Create script interface
-	ScriptInterface = new MapScriptInterface( this );
+	ScriptInterface = new MapScriptInterface(this); // Create script interface
 }
 
 MapMgr::~MapMgr()

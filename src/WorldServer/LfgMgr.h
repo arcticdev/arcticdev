@@ -6,7 +6,7 @@
 
 #pragma once
 
-enum LFGTypes 
+enum LFGTypes
 {
 	LFG_NONE = 0,
 	LFG_DUNGEON = 1,
@@ -27,13 +27,13 @@ enum LFGTypes
 class LfgMatch;
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
-public:	
-	
-	typedef list<Player*  > LfgPlayerList;
+public:
+
+	typedef list<Player*> LfgPlayerList;
 
 	LfgMgr();
 	~LfgMgr();
-	
+
 	bool AttemptLfgJoin(Player* pl, uint32 LfgDungeonId);
 	void SetPlayerInLFGqueue(Player* pl,uint32 LfgDungeonId);
 	void SetPlayerInLfmList(Player* pl, uint32 LfgDungeonId);
@@ -45,9 +45,9 @@ public:
 	void EventMatchTimeout(LfgMatch * pMatch);
 
 	int32 event_GetInstanceId() { return -1; }
-	
+
 protected:
-	
+
 	LfgPlayerList m_lookingForGroup[MAX_DUNGEONS];
 	LfgPlayerList m_lookingForMore[MAX_DUNGEONS];
 	Mutex m_lock;
@@ -56,8 +56,8 @@ protected:
 class LfgMatch
 {
 public:
-	set<Player*  > PendingPlayers;
-	set<Player*  > AcceptedPlayers;
+	set<Player*> PendingPlayers;
+	set<Player*> AcceptedPlayers;
 	Mutex lock;
 	uint32 DungeonId;
     Group * pGroup;

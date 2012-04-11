@@ -229,6 +229,9 @@ public:
 	ARCTIC_INLINE void SetCollision(bool enable) { collision = enable; }
 	ARCTIC_INLINE bool IsCollisionEnabled() { return collision; }
 
+	ARCTIC_INLINE void SetPathfinding(bool enable) { pathfinding = enable; }
+	ARCTIC_INLINE bool IsPathfindingEnabled() { return pathfinding; }
+
 	ARCTIC_INLINE MapScriptInterface * GetInterface() { return ScriptInterface; }
 	virtual int32 event_GetInstanceID() { return m_instanceID; }
 
@@ -298,6 +301,7 @@ public:
 private:
 	/* Map Information */
 	bool collision;
+	bool pathfinding;
 	MapInfo *pMapInfo;
 	uint32 m_instanceID;
 
@@ -369,7 +373,7 @@ public:
 	VehicleSet::iterator __vehicle_iterator;
 	CreatureSet::iterator __creature_iterator;
 	GameObjectSet::iterator __gameobject_iterator;
-	
+
 	SessionSet::iterator __session_iterator_1;
 	SessionSet::iterator __session_iterator_2;
 
