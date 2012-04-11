@@ -45,7 +45,7 @@ void MapCell::RemoveObject(Object* obj)
 }
 
 void MapCell::SetActivity(bool state)
-{	
+{
 	if(!_active && state)
 	{
 		// Move all objects to active set.
@@ -76,7 +76,7 @@ void MapCell::SetActivity(bool state)
 			CollideInterface.DeactivateTile(_mapmgr->GetMapId(), _x/8, _y/8);
 	}
 
-	_active = state; 
+	_active = state;
 
 }
 void MapCell::RemoveObjects()
@@ -90,7 +90,7 @@ void MapCell::RemoveObjects()
 		pObject = *itr;
 		if(!pObject)
 			continue;
-		
+
 		switch(pObject->GetTypeId())
 		{
 		case TYPEID_UNIT:
@@ -105,7 +105,7 @@ void MapCell::RemoveObjects()
 				else if( !pObject->IsPet() )
 				{
 					_mapmgr->_reusable_guids_creature.push_back( pObject->GetUIdFromGUID() );
-					TO_CREATURE(pObject)->m_respawnCell=NULL;
+					TO_CREATURE(pObject)->m_respawnCell = NULL;
 					delete TO_CREATURE(pObject);
 					pObject = NULL;
 				}
