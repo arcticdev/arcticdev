@@ -262,6 +262,7 @@ enum AiEvents
 	EVENT_WANDER,
 	EVENT_UNWANDER,
 	EVENT_UNITDIED,
+	EVENT_UNITRESPAWN,
 };
 
 enum MapMgrTimers

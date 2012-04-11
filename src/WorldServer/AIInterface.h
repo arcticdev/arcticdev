@@ -8,7 +8,7 @@
 
 #include "AchievementDefines.h"
 
-#define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400/*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
+#define UNIT_MOVEMENT_INTERPOLATE_INTERVAL 400 /*750*/ // ms smoother server/client side moving vs less cpu/ less b/w
 #define TARGET_UPDATE_INTERVAL 600 // ms
 #define PLAYER_SIZE 1.5f
 
@@ -149,6 +149,7 @@ class SERVER_DECL AIInterface
 		// Event Handler
 		void HandleEvent(uint32 event, Unit* pUnit, uint32 misc1);
 		void OnDeath(Object* pKiller);
+		void OnRespawn(Unit* unit); // We don't really need the unit anymore.
 		void AttackReaction( Unit* pUnit, uint32 damage_dealt, uint32 spellId = 0);
 		bool HealReaction(Unit* caster, Unit* victim, uint32 amount, SpellEntry * sp);
 		void Event_Summon_Elemental(uint32 summon_duration, uint32 TotemEntry, int32 ResistanceType, uint8 Slot);
@@ -240,7 +241,7 @@ class SERVER_DECL AIInterface
 			{
 				m_Unit->SetTargetGUID(m_nextTarget->GetGUID());
 #ifdef ENABLE_GRACEFULL_HIT
-				have_graceful_hit=false;
+				have_graceful_hit = false;
 #endif
 			}
 			else m_Unit->SetTargetGUID(0);

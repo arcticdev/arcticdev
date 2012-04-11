@@ -758,7 +758,7 @@ enum INVIS_FLAG
 	INVIS_FLAG_TOTAL
 };
 
-enum FIELD_PADDING//Since this field isnt used you can expand it for you needs
+enum FIELD_PADDING // Since this field isnt used you can expand it for you needs
 {
 	PADDING_NONE
 };
@@ -860,7 +860,7 @@ public:
 
 	void OnDamageDealt(Unit* pTarget, uint32 damage);					// this is what puts the other person in combat.
 	void WeHealed(Unit* pHealTarget);									// called when a player heals another player, regardless of combat state.
-	void RemoveAttackTarget(Unit* pTarget);							// means our DoT expired.
+	void RemoveAttackTarget(Unit* pTarget);							    // means our DoT expired.
 	void ForceRemoveAttacker(const uint64& guid);						// when target is invalid pointer
 
 	void UpdateFlag();													// detects if we have changed combat state (in/out), and applies the flag.
@@ -932,12 +932,12 @@ public:
 		m_duelWield = enabled;
 	}
 
-	/// State flags are server-only flags to help me know when to do stuff, like die, or attack
+	// State flags are server-only flags to help me know when to do stuff, like die, or attack
 	ARCTIC_INLINE void addStateFlag(uint32 f) { m_state |= f; };
 	ARCTIC_INLINE bool hasStateFlag(uint32 f) { return (m_state & f ? true : false); }
 	ARCTIC_INLINE void clearStateFlag(uint32 f) { m_state &= ~f; };
 
-	/// Stats
+	// Stats
 	ARCTIC_INLINE uint32 getLevel() { return m_uint32Values[ UNIT_FIELD_LEVEL ]; };
 	ARCTIC_INLINE uint8 getRace() { return GetByte(UNIT_FIELD_BYTES_0,0); }
 	ARCTIC_INLINE uint8 getClass() { return GetByte(UNIT_FIELD_BYTES_0,1); }

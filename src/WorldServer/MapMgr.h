@@ -24,23 +24,23 @@ class CBattleground;
 class Instance;
 class InstanceScript;
 
-typedef unordered_set<Object* > ObjectSet;
-typedef unordered_set<Object* > UpdateQueue;
-typedef unordered_set<Player*  > PUpdateQueue;
-typedef unordered_set<Player*  > PlayerSet;
-typedef HM_NAMESPACE::hash_map<uint32, Object* > StorageMap;
+typedef unordered_set<Object*> ObjectSet;
+typedef unordered_set<Object*> UpdateQueue;
+typedef unordered_set<Player*> PUpdateQueue;
+typedef unordered_set<Player*> PlayerSet;
+typedef HM_NAMESPACE::hash_map<uint32, Object*> StorageMap;
 typedef unordered_set<uint64> CombatProgressMap;
 typedef unordered_set<Vehicle*> VehicleSet;
 typedef unordered_set<Creature*> CreatureSet;
 typedef unordered_set<GameObject* > GameObjectSet;
 typedef HM_NAMESPACE::hash_map<uint32, Vehicle*> VehicleSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, GameObject* > GameObjectSqlIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, GameObject*> GameObjectSqlIdMap;
 
 #define MAX_TRANSPORTERS_PER_MAP 25
+#define RESERVE_EXPAND_SIZE 1024
 
 class Transporter;
-#define RESERVE_EXPAND_SIZE 1024
 
 #define CALL_INSTANCE_SCRIPT_EVENT( Mgr, Func ) if ( Mgr != NULL && Mgr->GetScript() != NULL ) Mgr->GetScript()->Func
 
@@ -52,8 +52,7 @@ class SERVER_DECL MapMgr : public CellHandler <MapCell>, public EventableObject,
 	friend class MapScriptInterface;
 
 public:
-	//This will be done in regular way soon
-
+	// This will be done in regular way soon
 	Mutex m_objectinsertlock;
 	ObjectSet m_objectinsertpool;
 	void AddObject(Object*);
@@ -305,7 +304,7 @@ private:
 	MapScriptInterface * ScriptInterface;
 
 	/* Update System */
-	FastMutex m_updateMutex;		// use a user-mode mutex for extra speed
+	FastMutex m_updateMutex; // use a user-mode mutex for extra speed
 	UpdateQueue _updates;
 	PUpdateQueue _processQueue;
 

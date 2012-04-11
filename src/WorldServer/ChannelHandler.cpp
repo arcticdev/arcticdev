@@ -13,7 +13,7 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 	CHECK_PACKET_SIZE(recvPacket, 1);
 	string channelname,pass;
 	uint32 dbc_id = 0;
-	uint16 crap;		// crap = some sort of channel type?
+	uint16 crap; // crap = some sort of channel type?
 	uint32 i;
 	Channel * chn;
 
@@ -31,7 +31,7 @@ void WorldSession::HandleChannelJoin(WorldPacket& recvPacket)
 		}
 
 		if(i == 3)
-			return;		// don't join lfg
+			return; // don't join lfg
 	}
 
 	if( sWorld.GmClientChannel.size() && !stricmp(sWorld.GmClientChannel.c_str(), channelname.c_str()) && !GetPermissionCount())

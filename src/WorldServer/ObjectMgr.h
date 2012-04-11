@@ -195,6 +195,7 @@ enum MONSTER_SAY_EVENTS
 	MONSTER_SAY_EVENT_ON_COMBAT_STOP	= 3,
 	MONSTER_SAY_EVENT_ON_DAMAGE_TAKEN	= 4,
 	MONSTER_SAY_EVENT_ON_DIED			= 5,
+	MONSTER_SAY_EVENT_ON_SPAWN			= 6,
 	NUM_MONSTER_SAY_EVENTS,
 };
 
@@ -202,23 +203,23 @@ enum AREATABLE_FLAGS
 {
 	AREA_UNK1				= 0x8,
 	AREA_UNK2				= 0x10,
-	AREA_CITY_AREA          = 0x20,
-	AREA_NEUTRAL_AREA       = 0x40,
-	AREA_PVP_ARENA          = 0x80,
-	AREA_CITY               = 0x200,
+	AREA_CITY_AREA			= 0x20,
+	AREA_NEUTRAL_AREA		= 0x40,
+	AREA_PVP_ARENA			= 0x80,
+	AREA_CITY				= 0x200,
 	AREA_FLYING_PERMITTED	= 0x400,
-	AREA_SANCTUARY          = 0x800,
-	AREA_ISLAND             = 0x1000,
+	AREA_SANCTUARY			= 0x800,
+	AREA_ISLAND				= 0x1000,
 	AREA_UNK4				= 0x4000,
-	AREA_PVP_OBJECTIVE_AREA = 0x8000,
+	AREA_PVP_OBJECTIVE_AREA	= 0x8000,
 };
 
 enum AREATABLE_CATEGORY
 {
-    AREAC_CONTESTED          = 0,
-    AREAC_ALLIANCE_TERRITORY = 2,
-    AREAC_HORDE_TERRITORY    = 4,
-    AREAC_SANCTUARY          = 6,
+	AREAC_CONTESTED          = 0,
+	AREAC_ALLIANCE_TERRITORY = 2,
+	AREAC_HORDE_TERRITORY    = 4,
+	AREAC_SANCTUARY          = 6,
 };
 
 #define MAX_PREDEFINED_NEXTLEVELXP 80
@@ -245,7 +246,6 @@ public:
 	void SendTo(Player* Plr);
 	GossipMenuItem GetItem(uint32 Id);
 	ARCTIC_INLINE void SetTextID(uint32 TID) { TextId = TID; }
-
 
 protected:
 	uint32 TextId;
@@ -300,7 +300,7 @@ public:
 	{
 		delete [] Signatures;
 	}
-	
+
 	void SaveToDB();
 	void Destroy(); // When item is deleted.
 
@@ -313,9 +313,9 @@ public:
 	ARCTIC_INLINE bool IsFull() { return (SignatureCount == Slots); }
 };
 
-typedef std::map<uint32, std::list<SpellEntry*>* >            OverrideIdMap;
-typedef HM_NAMESPACE::hash_map<uint32, Player*  >             PlayerStorageMap;
-typedef std::list<GM_Ticket*>                                 GmTicketList;
+typedef std::map<uint32, std::list<SpellEntry*>* >   OverrideIdMap;
+typedef HM_NAMESPACE::hash_map<uint32, Player*  >    PlayerStorageMap;
+typedef std::list<GM_Ticket*>                        GmTicketList;
 
 #ifndef WIN32
 #ifndef TRHAX
@@ -376,10 +376,10 @@ public:
 	void LoadCreatureWaypoints();
 
 	// other objects
-    
+
     // Set typedef's
-	typedef std::set<AchievementCriteriaEntry*>							AchievementCriteriaSet;
-	
+    typedef std::set<AchievementCriteriaEntry*>							AchievementCriteriaSet;
+
     // HashMap typedef's
     typedef HM_NAMESPACE::hash_map<uint64, Item* >						ItemMap;
 	typedef HM_NAMESPACE::hash_map<uint32, CorpseData*>					CorpseCollectorMap;
@@ -394,7 +394,7 @@ public:
     typedef HM_NAMESPACE::hash_map<uint32, ReputationModifier*>			ReputationModMap;
     typedef HM_NAMESPACE::hash_map<uint32, Corpse* >					CorpseMap;
 	typedef HM_NAMESPACE::hash_map<uint32, Group*>						GroupMap;
-    
+
     // Map typedef's
     typedef std::map<uint32, LevelInfo*>                                LevelMap;
 	typedef std::map<pair<uint32, uint32>, LevelMap* >                  LevelInfoMap;
@@ -413,7 +413,7 @@ public:
 
 	Player* GetPlayer(const char* name, bool caseSensitive = true);
 	Player* GetPlayer(uint32 guid);
-	
+
 	CorpseMap m_corpses;
 	Mutex _corpseslock;
 	Mutex m_corpseguidlock;
@@ -423,10 +423,10 @@ public:
 
 	Mutex m_achievementLock;
 	AchievementCriteriaMap m_achievementCriteriaMap;
-	
+
 	Item* CreateItem(uint32 entry,Player* owner);
 	Item* LoadItem(uint64 guid);
-  
+
 	// Groups
 	Group * GetGroupByLeader(Player* pPlayer);
 	Group * GetGroupById(uint32 id);
@@ -478,8 +478,8 @@ public:
 	void AddGuild(Guild *pGuild);
 	uint32 GetTotalGuildCount();
 	bool RemoveGuild(uint32 guildId);
-	Guild* GetGuild(uint32 guildId);  
-	Guild* GetGuildByLeaderGuid(uint64 leaderGuid);  
+	Guild* GetGuild(uint32 guildId);
+	Guild* GetGuildByLeaderGuid(uint64 leaderGuid);
 	Guild* GetGuildByGuildName(std::string guildName);
 
 	map<uint32,set<Quest*>*> ZoneToQuestMap;
@@ -533,7 +533,7 @@ public:
 	PlayerStorageMap _players;
 	RWLock _playerslock;
 	uint32 m_hiPlayerGuid;
-	
+
 	void AddPlayer(Player* p); // add it to global storage
 	void RemovePlayer(Player* p);
 
@@ -572,11 +572,11 @@ public:
 	void SetHighestGuids();
 	uint32 GenerateLowGuid(uint32 guidhigh);
 	uint32 GenerateMailID();
-	
+
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
     void AddTransport(Transporter* pTransporter);
-   
+
 	void LoadTrainers();
 	Trainer* GetTrainer(uint32 Entry);
 
@@ -586,7 +586,7 @@ public:
 	void LoadRandomItemCreation();
 	void LoadRandomCardCreation();
 	void LoadScrollCreation();
-	void CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, Player* Plr); 
+	void CreateGossipMenuForPlayer(GossipMenu** Location, uint64 Guid, uint32 TextID, Player* Plr);
 
 	LevelInfo * GetLevelInfo(uint32 Race, uint32 Class, uint32 Level);
 	void GenerateLevelUpInfo();
@@ -680,7 +680,7 @@ protected:
 	HM_NAMESPACE::hash_map<uint32, InstanceReputationModifier*> m_reputation_instance;
 
 	HM_NAMESPACE::hash_map<uint32, Charter*> m_charters[NUM_CHARTER_TYPES];
-	
+
 	set<uint32> m_disabled_spells;
 
 	uint32 TransportersCount;
@@ -695,7 +695,10 @@ protected:
 
 	uint32 m_hiGameObjectSpawnId;
 
-	///// Object Tables ////
+	//////////////////////////////////////////////////////////////////////////
+	// Object Tables                                                        //
+	//////////////////////////////////////////////////////////////////////////
+
 	// These tables are modified as creatures are created and destroyed in the world
 
 	// Group List

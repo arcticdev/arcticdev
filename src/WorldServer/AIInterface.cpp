@@ -105,8 +105,8 @@ void AIInterface::Init(Unit* un, AIType at, MovementType mt)
 
 	m_Unit = un;
 
-	m_walkSpeed = m_Unit->m_walkSpeed*0.001f;//move distance per ms time
-	m_runSpeed = m_Unit->m_runSpeed*0.001f;//move distance per ms time
+	m_walkSpeed = m_Unit->m_walkSpeed*0.001f; // move distance per ms time
+	m_runSpeed = m_Unit->m_runSpeed*0.001f; // move distance per ms time
 	m_flySpeed = m_Unit->m_flySpeed * 0.001f;
 
 	m_sourceX = un->GetPositionX();
@@ -149,8 +149,8 @@ void AIInterface::Init(Unit* un, AIType at, MovementType mt, Unit* owner)
 	m_Unit = un;
 	m_PetOwner = owner;
 
-	m_walkSpeed = m_Unit->m_walkSpeed*0.001f;//move distance per ms time
-	m_runSpeed = m_Unit->m_runSpeed*0.001f;//move/ms
+	m_walkSpeed = m_Unit->m_walkSpeed*0.001f; // move distance per ms time
+	m_runSpeed = m_Unit->m_runSpeed*0.001f; // move/ms
 	m_flySpeed = m_Unit->m_flySpeed*0.001f;
 	m_sourceX = un->GetPositionX();
 	m_sourceY = un->GetPositionY();
@@ -197,7 +197,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				m_returnY = m_Unit->GetPositionY();
 				m_returnZ = m_Unit->GetPositionZ();
 
-				m_moveRun = true; //run to the target
+				m_moveRun = true; // run to the target
 
 				// dismount if mounted
 				m_Unit->Dismount();
@@ -218,7 +218,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					m_ChainAgroSet->EventEnterCombat( pUnit );
 				}
 
-				//Mark raid as combat in progress if it concerns a boss
+				// Mark raid as combat in progress if it concerns a boss
 				if(pUnit->GetMapMgr() && pUnit->GetMapMgr()->GetMapInfo() && pUnit->GetMapMgr()->GetMapInfo()->type == INSTANCE_RAID)
 				{
 					if(m_Unit->GetTypeId() == TYPEID_UNIT && m_Unit->m_loadedFromDB )
@@ -267,8 +267,8 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 					}
 				}
 
-				//reset ProcCount
-				//ResetProcCounts();
+				// reset ProcCount
+				// ResetProcCounts();
 				m_moveRun = true;
 				m_aiTargets.clear();
 				m_fleeTimer = 0;
@@ -409,7 +409,6 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 				m_WanderTimer = 0;
 
-				//CALL_SCRIPT_EVENT(m_Unit, OnWander)(pUnit, 0); FIXME
 				m_AIState = STATE_WANDER;
 				StopMovement(1);
 
@@ -441,7 +440,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 		}
 	}
 
-	//Should be able to do this stuff even when evading
+	// Should be able to do this stuff even when evading
 	switch(event)
 	{
 		case EVENT_UNITDIED:
@@ -483,7 +482,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 			SetNextTarget(NULL);
 
-			//reset waypoint to 1
+			// reset waypoint to 1
 			m_currentWaypoint = 1;
 
 			// There isn't any need to do any attacker checks here, as
@@ -491,7 +490,7 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 
 			if(cr != NULL && !m_Unit->IsPet())
 			{
-				//only save creature which exist in db (don't want to save 0 values in db)
+				// only save creature which exist in db (don't want to save 0 values in db)
 				if( m_Unit->m_loadedFromDB && cr->m_spawn != NULL )
 				{
 					MapMgr* GMap = m_Unit->GetMapMgr();
@@ -502,6 +501,16 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 						GMap->pInstance->SaveToDB();
 					}
 				}
+			}
+		}break;
+
+	case EVENT_UNITRESPAWN:
+		{
+			// send the message
+			if( cr != NULL )
+			{
+				if( cr->has_combat_text )
+					objmgr.HandleMonsterSayEvent( cr, MONSTER_SAY_EVENT_ON_SPAWN );
 			}
 		}break;
 	}
@@ -1268,6 +1277,11 @@ void AIInterface::OnDeath(Object* pKiller)
 		HandleEvent(EVENT_UNITDIED, TO_UNIT(pKiller), 0);
 	else
 		HandleEvent(EVENT_UNITDIED, m_Unit, 0);
+}
+
+void AIInterface::OnRespawn(Unit* unit)
+{
+	HandleEvent(EVENT_UNITRESPAWN, unit, 0);
 }
 
 Unit* AIInterface::FindTarget()

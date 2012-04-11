@@ -89,7 +89,7 @@ void MapMgr::Init()
 
 MapMgr::~MapMgr()
 {
-	SetThreadName("thread_proc");//free the name
+	SetThreadName("thread_proc"); // free the name
 
 	sEventMgr.RemoveEvents(this);
 	sEventMgr.RemoveEventHolder(m_instanceID);
@@ -508,8 +508,7 @@ void MapMgr::RemoveObject(Object* obj, bool free_guid)
 	if(!obj->GetMapCell())
 	{
 		/* set the map cell correctly */
-		if(obj->GetPositionX() >= _maxX || obj->GetPositionX() <= _minY ||
-			obj->GetPositionY() >= _maxY || obj->GetPositionY() <= _minY)
+		if(obj->GetPositionX() >= _maxX || obj->GetPositionX() <= _minY || obj->GetPositionY() >= _maxY || obj->GetPositionY() <= _minY)
 		{
 			// do nothing
 		}
@@ -1066,7 +1065,6 @@ void MapMgr::UpdateCellActivity(uint32 x, uint32 y, int radius)
 			}
 		}
 	}
-
 }
 
 void MapMgr::AddForcedCell(MapCell * c)
@@ -1660,8 +1658,8 @@ void MapMgr::EventRespawnCreature(Creature* c, MapCell * p)
 		c->m_respawnCell = NULL;
 		p->_respawnObjects.erase(itr);
 		c->OnRespawn(this);
-		//if(c->GetAIInterface())
-		//	c->GetAIInterface()->OnRespawn(c);
+		if(c->GetAIInterface())
+			c->GetAIInterface()->OnRespawn(c);
 	}
 }
 
