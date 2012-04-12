@@ -21,9 +21,9 @@
 #include <map>
 #include <sstream>
 #include <string>
-#include <fstream> 
-#include <iosfwd> 
-#include <search.h> 
+#include <fstream>
+#include <iosfwd>
+#include <search.h>
 
 #include "../libs/AuthCodes.h"
 #include "../libs/Common.h"
@@ -40,9 +40,9 @@
 
 #include "../libs/Collision/vmap/IVMapManager.h"
 #include "../libs/Collision/vmap/VMapManager.h"
-#include "../libs/Pathfinding/InputGeom.h" 
-#include "../libs/Pathfinding/Recast/Recast.h" 
-#include "../libs/Pathfinding/Detour/DetourNavMesh.h" 
+#include "../libs/Pathfinding/InputGeom.h"
+#include "../libs/Pathfinding/Recast/Recast.h"
+#include "../libs/Pathfinding/Detour/DetourNavMesh.h"
 #include "../libs/Pathfinding/Detour/DetourNavMeshBuilder.h"
 
 #include "../../dep/vc/include/zlib.h"
@@ -126,8 +126,9 @@
 #include "WorldStateManager.h"
 #include "MapMgr.h"
 #include "MapScriptInterface.h"
-#include "DayWatcherThread.h" 
-#include "WintergraspInternal.h" 
+#include "DayWatcherThread.h"
+#include "WintergraspInternal.h"
+#include "Wintergrasp.h"
 #include "Player.h"
 #include "faction.h"
 #include "Skill.h"
@@ -139,7 +140,6 @@
 #include "TaxiMgr.h"
 #include "TransporterHandler.h"
 #include "WarsongGulch.h"
-#include "Wintergrasp.h"
 #include "WeatherMgr.h"
 #include "ItemInterface.h"
 #include "Stats.h"

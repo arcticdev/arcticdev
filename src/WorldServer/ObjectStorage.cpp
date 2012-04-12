@@ -379,10 +379,10 @@ void ObjectMgr::LoadExtraItemStuff()
 		map<uint32,uint32>::iterator iter = foodItems.find(pItemPrototype->ItemId);
 		if(iter != foodItems.end())
 			ft = iter->second;
-		pItemPrototype->FoodType = ft;
 
-		if(!pItemPrototype->gossip_script) // rehashing stuff.
-			pItemPrototype->gossip_script = NULL;
+		pItemPrototype->FoodType = ft;
+		pItemPrototype->gossip_script = NULL;
+
 		if(pItemPrototype->ScalingStatsEntry > 0 && pItemPrototype->Class == ITEM_CLASS_ARMOR)
 		{
 			uint32 osubclass = pItemPrototype->SubClass;

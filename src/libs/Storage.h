@@ -11,7 +11,7 @@
 #endif
 
 // pooled allocations
-// #define STORAGE_ALLOCATION_POOLS 1
+//#define STORAGE_ALLOCATION_POOLS 1
 #define STORAGE_ARRAY_MAX 200000
 
 #ifdef STORAGE_ALLOCATION_POOLS
@@ -111,7 +111,7 @@ public:
 		if(Max < _max)
 			return; // no need to realloc
 
-        T ** a = new T*[Max];
+		T ** a = new T*[Max];
 		memset(a,0,sizeof(T*)*Max);
 		memcpy(a, _array, sizeof(T*) * _max);
 		delete [] _array;
@@ -319,7 +319,7 @@ public:
 	void Clear()
 	{
 		typename HM_NAMESPACE::hash_map<uint32, T*>::iterator itr = _map.begin();
-		for(; itr != _map.end(); itr++)
+		for(; itr != _map.end(); ++itr)
 			delete itr->second;
 		_map.clear();
 	}
@@ -392,7 +392,7 @@ public:
 	/* Gets the next element, or if we reached the end sets it to 0 */
 	void GetNextElement()
 	{
-		itr++;
+		++itr;
 		if(itr == Source->_map.end())
 			StorageContainerIterator<T>::Set(0);
 		else
@@ -495,7 +495,7 @@ public:
 		{
 			switch(*p)
 			{
-			case 's': // string is the only one we have to actually do anything for here
+			case 's':		// string is the only one we have to actually do anything for here
 					free((*(char**)structpointer));
 					structpointer += sizeof(char*);
 				break;
@@ -526,7 +526,7 @@ public:
 	~SQLStorage() {}
 
 	/* Loads the block using the format string. */
-	ARCTIC_INLINE void LoadBlock(Field * fields, T * Allocated)
+	ARCTIC_INLINE void LoadBlock(Field * fields, T * Allocated, bool reload = false )
 	{
 		char * p = Storage<T, StorageType>::_formatString;
 		char * structpointer = (char*)Allocated;
@@ -534,42 +534,48 @@ public:
 		Field * f = fields;
 		for(; *p != 0; ++p, ++f)
 		{
-            switch(*p)
+			switch(*p)
 			{
 			case 'b':	// Boolean
-				*(bool*)&structpointer[offset] = f->GetBool();
-				offset += sizeof(bool);
-				break;
+				{
+					*(bool*)&structpointer[offset] = f->GetBool();
+					offset += sizeof(bool);
+				}break;
 
 			case 'c':	// Char
-				*(uint8*)&structpointer[offset] = f->GetUInt8();
-				offset += sizeof(uint8);
-				break;
+				{
+					*(uint8*)&structpointer[offset] = f->GetUInt8();
+					offset += sizeof(uint8);
+				}break;
 
 			case 'h':	// Short
-				*(uint16*)&structpointer[offset] = f->GetUInt16();
-				offset += sizeof(uint16);
-				break;
+				{
+					*(uint16*)&structpointer[offset] = f->GetUInt16();
+					offset += sizeof(uint16);
+				}break;
 
 			case 'u':	// Unsigned integer
-				*(uint32*)&structpointer[offset] = f->GetUInt32();
-				offset += sizeof(uint32);
-				break;
+				{
+					*(uint32*)&structpointer[offset] = f->GetUInt32();
+					offset += sizeof(uint32);
+				}break;
 
 			case 'i':	// Signed integer
-				*(int32*)&structpointer[offset] = f->GetInt32();
-				offset += sizeof(int32);
-				break;
+				{
+					*(int32*)&structpointer[offset] = f->GetInt32();
+					offset += sizeof(int32);
+				}break;
 
 			case 'f':	// Float
-				*(float*)&structpointer[offset] = f->GetFloat();
-				offset += sizeof(float);
-				break;
+				{
+					*(float*)&structpointer[offset] = f->GetFloat();
+					offset += sizeof(float);
+				}break;
 
 			case 's':	// Null-terminated string
 				{
-				*(char**)&structpointer[offset] = strdup(f->GetString());
-				offset += sizeof(char*);
+					*(char**)&structpointer[offset] = strdup(f->GetString());
+					offset += sizeof(char*);
 				}break;
 
 			case 'x':	// Skip
@@ -661,7 +667,7 @@ public:
 				Max = result->Fetch()[0].GetUInt32() + 1;
 				if(Max > STORAGE_ARRAY_MAX)
 				{
-					Log.Warning("Storage", "The table, '%s', has been limited to maximum of %u entries. Any entry higher than %u will be discarted.",
+					Log.Error("Storage", "The table, '%s', has been limited to maximum of %u entries. Any entry higher than %u will be discarted.",
 						IndexName, STORAGE_ARRAY_MAX, Max );
 
 					Max = STORAGE_ARRAY_MAX;
@@ -682,7 +688,7 @@ public:
 		{
 			if(result->GetFieldCount() > cols)
 			{
-				Log.Warning("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
+				Log.Error("Storage", "Invalid format in %s (%u/%u), loading anyway because we have enough data\n", IndexName, (unsigned int)cols, (unsigned int)result->GetFieldCount());
 			}
 			else
 			{
@@ -748,7 +754,7 @@ public:
 			Entry = fields[0].GetUInt32();
 			Allocated = Storage<T, StorageType>::_storage.LookupEntryAllocate(Entry);
 			if(Allocated)
-				LoadBlock(fields, Allocated);
+				LoadBlock(fields, Allocated, true);
 
 		} while(result->NextRow());
 		delete result;

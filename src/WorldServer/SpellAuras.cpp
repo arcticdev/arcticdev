@@ -1021,7 +1021,7 @@ void Aura::BuildAuraUpdate()
 
     if(stack == 0)
     {
-		data << uint32(0);
+        data << uint32(0);
         m_target->SendMessageToSet(&data, true);
         return;
     }
@@ -1032,14 +1032,14 @@ void Aura::BuildAuraUpdate()
 	else if( !IsPositive() && !(flags & AFLAG_NEGATIVE))
 		flags |= AFLAG_NEGATIVE;
 
-    data << flags;
+    data << uint8(flags);
 
-	data << (uint8) stack;
+    data << uint8(stack);
 
     if(!(flags & AFLAG_NOT_GUID))
     {
         FastGUIDPack(data, GetCasterGUID());
-	}
+    }
 
 	if( flags & AFLAG_HAS_DURATION )
 	{

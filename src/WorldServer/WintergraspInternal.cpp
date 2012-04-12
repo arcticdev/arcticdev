@@ -18,10 +18,14 @@ static pthread_mutex_t abortmutex;
 WintergraspInternal::WintergraspInternal() : WGMgr(*(sInstanceMgr.GetMapMgr(571)))
 {
 	m_threadRunning = true;
-	m_dirty = false;
-	WGcounter = 0;
 	SetWGTimer((6*60000)*3);
 	m_wintergrasp = 0;
+	WG = NULL;
+	WG_started = false;
+	defendingteam = 2;
+	winnerteam = 2;
+	forcestart_WG = false;
+	WGCounter = 0;
 }
 
 WintergraspInternal::~WintergraspInternal()
@@ -31,28 +35,6 @@ WintergraspInternal::~WintergraspInternal()
 void WintergraspInternal::terminate()
 {
 	m_threadRunning = false;
-}
-
-void WintergraspInternal::set_tm_pointers()
-{
-	dupe_tm_pointer(localtime(&last_wintergrasp_time), &local_last_wintergrasp_time);
-}
-
-void WintergraspInternal::LoadWintergraspSettings()
-{
-	QueryResult* result = CharacterDatabase.Query("SELECT setting_value FROM server_settings WHERE setting_id = \"last_wintergrasp_time\"");
-	if(result)
-	{
-		last_wintergrasp_time = result->Fetch()[0].GetUInt32();
-		delete result;
-	}
-	else
-		last_wintergrasp_time = 0;
-}
-
-void WintergraspInternal::UpdateWintergraspSettings()
-{
-	CharacterDatabase.Execute("REPLACE INTO server_settings VALUES(\"last_wintergrasp_time\", %u)", last_wintergrasp_time);
 }
 
 void WintergraspInternal::dupe_tm_pointer(tm * returnvalue, tm * mypointer)
@@ -74,43 +56,40 @@ bool WintergraspInternal::has_timeout_expired(tm * now_time, tm * last_time)
 bool WintergraspInternal::run()
 {
 	SetThreadName("WGInternal");
-
-	LoadWintergraspSettings();
 	currenttime = UNIXTIME;
 	dupe_tm_pointer(localtime(&currenttime), &local_currenttime);
 	last_countertime = UNIXTIME;
 	dupe_tm_pointer(localtime(&last_countertime), &local_last_countertime);
+	m_timer = 180000; // 3 hours. TODO: sWorld.WintergraspHourInterval*60*1000
+	uint32 counter = 0;
 
 	Log.Notice("WintergraspInternal", "Wintergrasp Handler Initiated.");
 
 	while(m_threadRunning)
 	{
-		if(has_timeout_expired(&local_currenttime, &local_last_countertime))
+		if(has_timeout_expired(&local_currenttime, &local_last_countertime) || forcestart_WG == true)
 		{
-			++WGcounter;
+			++counter;
 
-			if(WGcounter >= 3/*3 hours*/)
+			if(counter >= 3/*3 hours*/ || forcestart_WG == true) // TODO: sWorld.WintergraspHourInterval
 			{
 				Log.Notice("WintergraspInternal", "Wintergrasp function called.");
 				if(m_wintergrasp == 0)
 				{
+					StartWintergrasp();
+					++WGCounter;
 					Log.Notice("WintergraspInternal", "Starting Wintergrasp.");
 					WG = Wintergrasp::Create(this, &WGMgr);
 				}
-				last_wintergrasp_time = UNIXTIME;
-				dupe_tm_pointer(localtime(&last_wintergrasp_time), &local_last_wintergrasp_time);
-				WGcounter = 0; // Reset our timer.
-				m_dirty = true;
+				counter = 0; // Reset our timer.
+				forcestart_WG = false;
 			}
 			else
-				Log.Notice("WintergraspInternal", "Wintergrasp counter at %u/3", WGcounter);
+				Log.Notice("WintergraspInternal", "Wintergrasp counter at %u/3", counter);
 
 			last_countertime = UNIXTIME;
 			dupe_tm_pointer(localtime(&last_countertime), &local_last_countertime);
 		}
-
-		if(m_dirty)
-			UpdateWintergraspSettings();
 	}
 	return false;
 }
@@ -124,7 +103,7 @@ void WintergraspInternal::SendInitWorldStates(Player* plr)
 	data << uint16(4+5+(WG ? 4 : 0));
 
 	data << uint32(3803) << uint32(defendingteam == ALLIANCE ? 1 : 0);
-	data << uint32(3802) << uint32(defendingteam != ALLIANCE ? 1 : 0);
+	data << uint32(3802) << uint32(defendingteam == HORDE ? 1 : 0);
 	data << uint32(3801) << uint32(WG_started ? 0 : 1);
 	data << uint32(3710) << uint32(WG_started ? 1 : 0);
 
@@ -139,7 +118,7 @@ void WintergraspInternal::SendInitWorldStates(Player* plr)
 		data << uint32(H_MAXVEH_WORLDSTATE) << uint32(WG->GetNumWorkshops(HORDE)*4);
 	}
 
-	if(plr)
+	if(plr != NULL)
 		plr->GetSession()->SendPacket(&data);
 	else
 	{
@@ -148,7 +127,10 @@ void WintergraspInternal::SendInitWorldStates(Player* plr)
 			if(WG->WGPlayers.size())
 			{
 				for(WintergraspPlayerSet::iterator itr = WG->WGPlayers.begin(); itr != WG->WGPlayers.end(); ++itr)
-					(*itr)->GetSession()->SendPacket(&data);
+				{
+					WorldPacket* data2 = &data;
+					(*itr)->GetSession()->SendPacket(data2);
+				}
 			}
 		}
 		else
@@ -159,7 +141,10 @@ void WintergraspInternal::SendInitWorldStates(Player* plr)
 				{
 					plr = itr->second;
 					if((plr->GetAreaID() == WINTERGRASP) || (plr->GetZoneId() == WINTERGRASP))
-						plr->GetSession()->SendPacket(&data);
+					{
+						WorldPacket* data2 = &data;
+						plr->GetSession()->SendPacket(data2);
+					}
 				}
 				plr = NULL;
 			}
