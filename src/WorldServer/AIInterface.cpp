@@ -848,7 +848,7 @@ void AIInterface::_UpdateCombat(uint32 p_time)
 					agent = AGENT_MELEE;
 			}
 		}
-		//check if we can do range attacks
+		// check if we can do range attacks
 		if(agent == AGENT_RANGED || agent == AGENT_MELEE)
 		{
 			if(m_canRangedAttack)

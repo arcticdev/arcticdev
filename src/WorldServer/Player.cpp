@@ -9833,11 +9833,12 @@ void Player::removeSoulStone()
 		}break;
 	}
 	this->RemoveAura(sSoulStone);
-	this->SoulStone = this->SoulStoneReceiver = 0; //just incase
+	this->SoulStone = this->SoulStoneReceiver = 0; // just incase
 }
 
 void Player::SoftDisconnect()
 {
+	// basic, but it stops crashes ^^
 	m_session->Disconnect();
 }
 
@@ -9847,7 +9848,7 @@ void Player::SetNoseLevel()
 	switch (getRace())
 	{
 		case RACE_HUMAN:
-		// female
+			// female
 			if (getGender()) m_noseLevel = 1.72f;
 			// male
 			else m_noseLevel = 1.78f;

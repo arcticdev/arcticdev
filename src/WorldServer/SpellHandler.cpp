@@ -10,7 +10,7 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 {
 	CHECK_INWORLD_RETURN;
 
-	Player* p_User = GetPlayer();
+	Player* _player = GetPlayer();
 	DEBUG_LOG("WORLD","Received use Item packet, data length = %i",recvPacket.size());
 	//can't use items while dead.
 	if(_player->getDeathState()==CORPSE)
@@ -24,9 +24,9 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 	recvPacket >> tmp1 >> slot >> cn >> dummyid >> item_guid >> glyphIndex >> unk;
 	Item* tmpItem = NULL;
-	tmpItem = p_User->GetItemInterface()->GetInventoryItem(tmp1,slot);
+	tmpItem = _player->GetItemInterface()->GetInventoryItem(tmp1,slot);
 	if (!tmpItem)
-		tmpItem = p_User->GetItemInterface()->GetInventoryItem(slot);
+		tmpItem = _player->GetItemInterface()->GetInventoryItem(slot);
 	if (!tmpItem)
 		return;
 	ItemPrototype *itemProto = tmpItem->GetProto();
@@ -80,14 +80,14 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
 
 	if (spellInfo->AuraInterruptFlags & AURA_INTERRUPT_ON_STAND_UP)
 	{
-		if (p_User->CombatStatus.IsInCombat() || p_User->IsMounted())
+		if (_player->CombatStatus.IsInCombat() || _player->IsMounted())
 		{
 			_player->GetItemInterface()->BuildInventoryChangeError(tmpItem,NULL,INV_ERR_CANT_DO_IN_COMBAT);
 			return;
 		}
 
-		if(p_User->GetStandState()!=STANDSTATE_SIT)
-			p_User->SetStandState(STANDSTATE_SIT);
+		if(_player->GetStandState()!=STANDSTATE_SIT)
+			_player->SetStandState(STANDSTATE_SIT);
 	}
 
 	if(itemProto->RequiredLevel)
@@ -250,7 +250,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			{
 				_player->m_AutoShotTarget = _player->GetSelection();
 				uint32 duration = _player->GetUInt32Value(UNIT_FIELD_RANGEDATTACKTIME);
-				SpellCastTargets targets(recvPacket,GetPlayer()->GetGUID());
+				SpellCastTargets targets(recvPacket, GetPlayer()->GetGUID());
 				if(!targets.m_unitTarget)
 				{
 					sLog.outString( "Cancelling auto-shot cast because targets.m_unitTarget is null!" );
@@ -287,7 +287,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 		}
 
 		// some anticheat stuff
-		if( spellInfo->self_cast_only )
+		if( spellInfo->self_cast_only /*== true */)
 		{
 			if( targets.m_unitTarget && targets.m_unitTarget != _player->GetGUID() )
 			{
@@ -302,9 +302,6 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 			Unit* pUnit = GetPlayer()->GetMapMgr()->GetUnit( targets.m_unitTarget );
 			if( pUnit && pUnit != GetPlayer() && !isAttackable( GetPlayer(), pUnit, false ) && !pUnit->IsInRangeOppFactSet(GetPlayer()) && !pUnit->CombatStatus.DidDamageTo(GetPlayer()->GetGUID()))
 			{
-				//GetPlayer()->BroadcastMessage("Faction exploit detected. You will be disconnected in 5 seconds.");
-				//GetPlayer()->Kick(5000);
-				// Just cancel the cast
 				_player->SendCastResult(spellInfo->Id, SPELL_FAILED_BAD_TARGETS, cn, 0);
 				return;
 			}
@@ -332,9 +329,6 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
 
 	if(spellId == 33763 || spellId == 48450 || spellId == 48451) // Prevents Lifebloom exploit
 		return;
-
-	//if(spellInfo->Attributes & ATTRIBUTES_CANT_CANCEL)
-	//	return;
 
 	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; x++)
 	{
@@ -365,6 +359,8 @@ void WorldSession::HandleCancelAutoRepeatSpellOpcode(WorldPacket& recv_data)
 
 void WorldSession::HandleCharmForceCastSpell(WorldPacket & recvPacket)
 {
+	CHECK_INWORLD_RETURN
+
 	DEBUG_LOG( "WORLD"," got CMSG_PET_CAST_SPELL." );
 	uint64 guid;
 	uint32 spellid;
