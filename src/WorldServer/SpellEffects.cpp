@@ -3249,11 +3249,11 @@ void Spell::SpellEffectWeapon(uint32 i)
 			skill = SKILL_DODGE;
 			spell = SPELL_ATTACK;
 		}break;
-	case 9125:   // Generic Block Spell
+	case 9125: // Generic Block Spell
 		{
 			skill = SKILL_BLOCK;
 		}break;
-	case 3386:  // spears
+	case 3386: // spears
 		{
 			skill = SKILL_SPEARS;
 		}break;
