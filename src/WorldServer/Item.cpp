@@ -111,7 +111,7 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );
 	m_owner = plr;
 
-	wrapped_item_id=fields[3].GetUInt32();
+	wrapped_item_id = fields[3].GetUInt32();
 	m_uint32Values[ITEM_FIELD_GIFTCREATOR] = fields[4].GetUInt32();
 	m_uint32Values[ITEM_FIELD_CREATOR] = fields[5].GetUInt32();
 
@@ -165,20 +165,6 @@ void Item::LoadFromDB(Field* fields, Player* plr, bool light )
 			if( entry && entry->Id == enchant_id )
 			{
 				AddEnchantment( entry, time_left, ( time_left == 0 ), false, false, enchslot );
-				//(enchslot != 2) ? false : true, false);
-			}
-			else
-			{
-				/*
-				EnchantEntry *pEnchant = new EnchantEntry;
-				memset(pEnchant,0,sizeof(EnchantEntry));
-
-				pEnchant->Id = enchant_id;
-				if(enchslot != 2)
-					AddEnchantment(pEnchant,0,true, false);
-				else
-					AddEnchantment(pEnchant,0,false,false);
-				*/
 			}
 		}
 	}

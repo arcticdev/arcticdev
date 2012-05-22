@@ -42,8 +42,6 @@ build
 !.gitignore
 *.idb
 *.svn
-*.lib
-*.dll
 *.o
 *.bin
 *.so
@@ -55,6 +53,8 @@ build
 *.i
 *.cfg
 *.cmd
+#*.lib
+#*.dll
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h

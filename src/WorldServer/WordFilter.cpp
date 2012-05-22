@@ -5,8 +5,9 @@
  */
 
 #include "StdAfx.h"
+
 extern "C" {
-#include "../../../dep/vc/include/pcre.h"
+#include "../../dep/vc/include/pcre.h"
 };
 
 #define REPLACE_FILTER 1
@@ -26,7 +27,7 @@ WordFilter::~WordFilter()
 	for(i = 0; i < m_filterCount; i++)
 	{
 		p = m_filters[i];
-		if(p==NULL)
+		if(p == NULL)
 			continue;
 
 		if(p->szMatch)
@@ -136,7 +137,7 @@ void WordFilter::Load(const char * szTableName)
 	} while (pResult->NextRow());
 	delete pResult;
 
-	if(lItems.size()==0)
+	if(lItems.size() == 0)
 		return;
 
 	m_filters = new WordFilterMatch*[lItems.size()];
@@ -157,7 +158,8 @@ bool WordFilter::Parse(string& sMessage, bool bAllowReplace /* = true */)
 	WordFilterMatch * pFilter;
 	const char * szInput = sMessage.c_str();
 	size_t iLen = sMessage.length();
-	//char
+
+	// char
 
 	for(i = 0; i < m_filterCount; i++)
 	{

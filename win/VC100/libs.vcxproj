@@ -62,14 +62,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Win32_Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Win32_Release\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Win32_Release_x64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Win32_Release_x64\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Win32_Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Win32_Debug\</IntDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Win32_Debug_x64\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Win32_Debug_x64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\libs_Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Release_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\libs_Release_x64\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\libs_Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Debug_x64\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\libs_Debug_x64\</IntDir>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
@@ -102,7 +102,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_Win32_Release/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Release/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -116,7 +116,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Lib>
-      <OutputFile>.\libs_Win32_Release\libs.lib</OutputFile>
+      <OutputFile>.\libs_Release\libs.lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
     </Lib>
     <PostBuildEvent>
@@ -143,7 +143,7 @@
       <FloatingPointModel>Precise</FloatingPointModel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_Win32_Release_x64/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Release_x64/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -177,7 +177,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_Win32_Debug/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Debug/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -213,7 +213,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <PrecompiledHeaderOutputFile>.\libs_Win32_Debug_x64/libs.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\libs_Debug_x64/libs.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <ProgramDataBaseFileName>$(IntDir)</ProgramDataBaseFileName>
@@ -272,23 +272,23 @@
     <ClCompile Include="..\..\src\libs\Network\SocketMgrWin32.cpp" />
     <ClCompile Include="..\..\src\libs\Network\SocketOpsWin32.cpp" />
     <ClCompile Include="..\..\src\libs\Network\SocketWin32.cpp" />
-    <ClCompile Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNode.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\InputGeom.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\MeshLoaderObj.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\Recast.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastArea.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastContour.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastFilter.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastLog.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastMesh.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastMeshDetail.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastRasterization.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastRegion.cpp" /> 
-    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.cpp" /> 
+    <ClCompile Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNode.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\InputGeom.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\MeshLoaderObj.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\Recast.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastArea.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastContour.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastFilter.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastLog.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastMesh.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastMeshDetail.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastRasterization.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastRegion.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.cpp" />
     <ClCompile Include="..\..\src\libs\Threading\Mutex.cpp" />
     <ClCompile Include="..\..\src\libs\Threading\ThreadPool.cpp" />
     <ClCompile Include="..\..\src\libs\Getopt.cpp" />
@@ -368,16 +368,16 @@
     <ClInclude Include="..\..\src\libs\Network\SocketDefines.h" />
     <ClInclude Include="..\..\src\libs\Network\SocketMgrWin32.h" />
     <ClInclude Include="..\..\src\libs\Network\SocketOps.h" />
-    <ClInclude Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNode.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\InputGeom.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\MeshLoaderObj.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\Recast.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastLog.h" /> 
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.h" /> 
+    <ClInclude Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNode.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\InputGeom.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\MeshLoaderObj.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\Recast.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastLog.h" />
+    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.h" />
     <ClInclude Include="..\..\src\libs\Threading\Condition.h" />
     <ClInclude Include="..\..\src\libs\CThreads.h" />
     <ClInclude Include="..\..\src\libs\Threading\Guard.h" />
