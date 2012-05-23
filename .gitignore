@@ -53,8 +53,8 @@ build
 *.i
 *.cfg
 *.cmd
-#*.lib
-#*.dll
+*.lib
+*.dll
 /contrib/doc/latex
 /contrib/doc/html
 /src/libs/revision.h
