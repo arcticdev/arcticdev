@@ -101,6 +101,10 @@ struct BGScore
 #define AV_CONTROLED_STORMPIKE_AID_STATION_ALLIANCE	0x52D //1 -> alliance controled
 #define AV_CONTROLED_STONEHEART_GRAVE_ALLIANCE		0x516 //1 -> alliance controled
 
+#define MAX_LEVEL_GROUP 9
+#define LEVEL_GROUP_RATED_ARENA 8
+#define BG_ANTI_CHEAT 1
+
 static inline uint32 GetLevelGrouping(uint32 level)
 {
 	if(level < 10)
@@ -122,9 +126,6 @@ static inline uint32 GetLevelGrouping(uint32 level)
 	else
 		return 8;
 }
-#define MAX_LEVEL_GROUP 9
-#define LEVEL_GROUP_RATED_ARENA 8
-#define BG_ANTI_CHEAT 1
 
 class SERVER_DECL CBattlegroundManager : public Singleton<CBattlegroundManager>, public EventableObject
 {

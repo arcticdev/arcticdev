@@ -86,4 +86,3 @@ public:
 	void HandleAchievementCriteriaDeath();
 	void HandleAchievementCriteriaDeathAtMap(uint32 mapId);
 };
-

@@ -217,7 +217,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 	uint64 guid;
 	uint32 bgtype;
 	uint32 instance;
-	uint8 joinasgroup; //0x01 = Group and 0x00 = Player
+	uint8 joinasgroup; // 0x01 = Group and 0x00 = Player
 
 	Player* plr = m_session->GetPlayer();
 	uint32 pguid = plr->GetLowGUID();
@@ -227,7 +227,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 	if(bgtype >= BATTLEGROUND_NUM_TYPES || GetBGMapID(bgtype) == 0)
 	{
 		m_session->Disconnect();
-		return;		// cheater!
+		return; // cheater!
 	}
 
 	if ( m_session->GetPlayer()->HasActiveAura(BG_DESERTER) && !m_session->HasGMPermissions() )
@@ -245,7 +245,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 
 	if( joinasgroup && m_session->GetPlayer()->GetGroup() == NULL )
 	{
-		//Correct? is there any message here at blizz?
+		// Correct? is there any message here at blizz?
 		sChatHandler.RedSystemMessage( m_session, "You are not in a Group." );
 		return;
 	}
@@ -313,7 +313,7 @@ void CBattlegroundManager::HandleBattlegroundJoin(WorldSession * m_session, Worl
 		return;
 	}
 
-	//Log.Notice("BattlegroundManager", "Chose queue slot %u for HandleBattlegroundJoin", queueSlot);
+	// Log.Notice("BattlegroundManager", "Chose queue slot %u for HandleBattlegroundJoin", queueSlot);
 	plr->m_bgIsQueued[queueSlot] = true;
 	plr->m_bgQueueInstanceId[queueSlot] = instance;
 	plr->m_bgQueueType[queueSlot] = bgtype;
@@ -352,8 +352,8 @@ uint32 CBattlegroundManager::GetArenaGroupQInfo(Group * group, int type, uint32 
 	ArenaTeam *team;
 	ArenaTeamMember *atm;
 	Player* plr;
-	uint32 count=0;
-	uint32 rating=0;
+	uint32 count = 0;
+	uint32 rating = 0;
 
 	if (group == NULL || group->GetLeader() == NULL) return 0;
 
@@ -438,7 +438,7 @@ int CBattlegroundManager::CreateArenaType(int type, Group * group1, Group * grou
 		m_instanceLock.Release();
 		return -1;
 	}
-	ar->rated_match=true;
+	ar->rated_match = true;
 
 	AddGroupToArena(ar, group1, 0);
 	AddGroupToArena(ar, group2, 1);
@@ -476,12 +476,12 @@ void CBattlegroundManager::AddPlayerToBgTeam(CBattleground* bg, deque<Player*  >
 
 void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 {
-	deque<Player*  > tempPlayerVec[2];
+	deque<Player*> tempPlayerVec[2];
 	uint32 i,j,k;
 	Player* plr;
 	CBattleground* bg;
 	list<uint32>::iterator it3, it4;
-	//vector<Player*  >::iterator it6;
+	// vector<Player*>::iterator it6;
 	map<uint32, CBattleground* >::iterator iitr;
 	Arena* arena;
 	int32 team;
@@ -529,9 +529,9 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					if(iitr == m_instances[i].end())
 					{
 						// queue no longer valid
-						//plr->GetSession()->SystemMessage("Your queue on battleground instance id %u is no longer valid. Reason: Instance Deleted.", plr->m_bgQueueInstanceId[queueSlot]);
+						// plr->GetSession()->SystemMessage("Your queue on battleground instance id %u is no longer valid. Reason: Instance Deleted.", plr->m_bgQueueInstanceId[queueSlot]);
 						plr->RemoveFromBattlegroundQueue(queueSlot);
-						//m_queuedPlayers[i][j].erase(it4);
+						// m_queuedPlayers[i][j].erase(it4);
 						SendBattlegroundQueueStatus(plr, queueSlot);
 						continue;
 					}
@@ -570,7 +570,7 @@ void CBattlegroundManager::EventQueueUpdate(bool forceStart)
 					{
 						plr = *tempPlayerVec[0].begin();
 						tempPlayerVec[0].pop_front();
-						plr->m_bgTeam=team;
+						plr->m_bgTeam = team;
 						arena->AddPlayer(plr, team);
 						ErasePlayerFromList(plr->GetLowGUID(), &m_queuedPlayers[i][j]);
 						team = arena->GetFreeTeam();
