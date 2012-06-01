@@ -469,7 +469,7 @@ void EyeOfTheStorm::DropFlag(Player* plr)
 	m_dropFlag->PushToWorld( m_mapMgr );
 	m_flagHolder = 0;
 
-	sEventMgr.AddEvent( TO_EYEOFTHESTORM(this), &EyeOfTheStorm::EventResetFlag, EVENT_EOTS_RESET_FLAG, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
+	sEventMgr.AddEvent( this, &EyeOfTheStorm::EventResetFlag, EVENT_EOTS_RESET_FLAG, 60000, 1, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT );
 }
 
 void EyeOfTheStorm::EventResetFlag()
@@ -1106,28 +1106,21 @@ void EyeOfTheStorm::OnStart()
 	for(uint32 i = 0; i < 2; ++i)
 	{
 		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-		{
 			(*itr)->RemoveAura(BG_PREPARATION);
-		}
+
+		m_bubbles[i]->RemoveFromWorld(false);
+		delete m_bubbles[i];
+		m_bubbles[i] = NULL;
+
 	}
 
-	uint32 i;
-
 	/* start the events */
-	sEventMgr.AddEvent(TO_EYEOFTHESTORM(this), &EyeOfTheStorm::GeneratePoints, EVENT_EOTS_GIVE_POINTS, 1600, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
-	sEventMgr.AddEvent(TO_EYEOFTHESTORM(this), &EyeOfTheStorm::UpdateCPs, EVENT_EOTS_CHECK_CAPTURE_POINT_STATUS, 5000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(this, &EyeOfTheStorm::GeneratePoints, EVENT_EOTS_GIVE_POINTS, 2000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
+	sEventMgr.AddEvent(this, &EyeOfTheStorm::UpdateCPs, EVENT_EOTS_CHECK_CAPTURE_POINT_STATUS, 5000, 0, EVENT_FLAG_DO_NOT_EXECUTE_IN_WORLD_CONTEXT);
 
 	/* spirit guides */
 	AddSpiritGuide(SpawnSpiritGuide( EOTSStartLocations[0][0], EOTSStartLocations[0][1], EOTSStartLocations[0][2], 0, 0 ));
 	AddSpiritGuide(SpawnSpiritGuide( EOTSStartLocations[1][0], EOTSStartLocations[1][1], EOTSStartLocations[1][2], 0, 1 ));
-
-	/* remove the bubbles */
-	for( i = 0; i < 2; ++i )
-	{
-		m_bubbles[i]->RemoveFromWorld(false);
-		delete m_bubbles[i];
-		m_bubbles[i] = NULL;
-	}
 
 	m_started = true;
 	PlaySoundToAll(SOUND_BATTLEGROUND_BEGIN);

@@ -2057,7 +2057,7 @@ void CBattlegroundManager::HandleArenaJoin(WorldSession * m_session, uint32 Batt
 
 bool CBattleground::CanPlayerJoin(Player* plr)
 {
-	return ( plr->bGMTagOn || HasFreeSlots(plr->m_bgTeam)&&(GetLevelGrouping(plr->getLevel())==GetLevelGroup())&&(!plr->HasAura(BG_DESERTER)));
+	return ( plr->bGMTagOn || HasFreeSlots( plr->m_bgTeam ) && ( GetLevelGrouping( plr->getLevel() ) == GetLevelGroup() ) && ( !plr->HasAura( BG_DESERTER ) ) );
 }
 
 void CBattleground::QueueAtNearestSpiritGuide(Player* plr, Creature* old)
