@@ -184,16 +184,16 @@ void World::AddSession(WorldSession* s)
 		return;
 	ASSERT(s);
 
-	//add this session to the big session map
+	// add this session to the big session map
 	m_sessionlock.AcquireWriteLock();
 	m_sessions[s->GetAccountId()] = s;
 	m_sessionlock.ReleaseWriteLock();
 
-	//check max online counter, update when necessary
+	// check max online counter, update when necessary
 	if(m_sessions.size() >  PeakSessionCount)
 		PeakSessionCount = (uint32)m_sessions.size();
 
-	//If it's a GM, add to GM session map
+	// If it's a GM, add to GM session map
 	if(s->HasGMPermissions())
 	{
 		gmList_lock.AcquireWriteLock();
@@ -233,7 +233,7 @@ bool BasicTaskExecutor::run()
 			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL );
 			break;
 
-		default:		// BTW_PRIORITY_MED
+		default: // BTW_PRIORITY_MED
 			::SetThreadPriority( ::GetCurrentThread(), THREAD_PRIORITY_NORMAL );
 			break;
 	}
@@ -249,7 +249,7 @@ bool BasicTaskExecutor::run()
 		param.sched_priority = 10;
 		break;
 
-	default:		// BTW_PRIORITY_MED
+	default: // BTW_PRIORITY_MED
 		param.sched_priority = 5;
 		break;
 	}
@@ -307,7 +307,7 @@ void PreStartQueries()
 
 bool World::SetInitialWorldSettings()
 {
-	//Perform pre-starting queries on World- and Character-DataBase
+	// Perform pre-starting queries on World- and Character-DataBase
 	PreStartQueries();
 	CharacterDatabase.WaitExecute("UPDATE characters SET online = 0 WHERE online = 1");
 

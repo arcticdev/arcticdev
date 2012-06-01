@@ -482,7 +482,7 @@ bool Master::_StartDB()
 
 	if(result == false)
 	{
-		OUT_DEBUG( "sql: One or more parameters were missing from WorldDatabase directive." );
+		OUT_DEBUG( "ArcticDev: One or more parameters were missing from ..conf/WorldServer.conf directive." );
 		return false;
 	}
 
@@ -626,7 +626,7 @@ void OnCrash( bool Terminate )
 	
 	// beep
 	//printf("\x7");
-	
+
 	// Terminate Entire Application
 	if( Terminate )
 	{

@@ -431,7 +431,7 @@ bool Master::_StartDB()
 
 	if(result == false)
 	{
-		OUT_DEBUG( "SQL: One or more parameters were missing from WorldDatabase directive." );
+		OUT_DEBUG( "ArcticDev: One or more parameters were missing from ..conf/WorldServer.conf directive." );
 		return false;
 	}
 
@@ -452,7 +452,7 @@ bool Master::_StartDB()
 
 	if(result == false)
 	{
-		OUT_DEBUG( "SQL: One or more parameters were missing from Database directive." );
+		OUT_DEBUG( "ArcticDev: One or more parameters were missing from ..conf/WorldServer.conf directive." );
 		return false;
 	}
 

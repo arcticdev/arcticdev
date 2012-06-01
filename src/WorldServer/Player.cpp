@@ -5403,7 +5403,9 @@ void Player::UpdateStats()
 		SetFloatValue(UNIT_FIELD_POWER_REGEN_INTERRUPTED_FLAT_MODIFIER, amt * m_ModInterrMRegenPCT / 100.0f + m_ModInterrMRegen / 5.0f);
 	}
 
-	/////////////////////RATINGS STUFF/////////////////
+	//////////////////////////////////////////////////////////////////////////
+	// RATINGS STUFF                                                        //
+	//////////////////////////////////////////////////////////////////////////
 
 	float cast_speed = CalcRating( PLAYER_RATING_MODIFIER_SPELL_HASTE );
 	if( cast_speed != SpellHasteRatingBonus )
@@ -10695,19 +10697,19 @@ void Player::EventSummonPet( Pet* new_pet )
 			spell->prepare(&targets);
 		}
 	}
-	//there are talents that stop working after you gain pet
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	// there are talents that stop working after you gain pet
+	for(uint32 x = 0; x < MAX_AURAS+MAX_PASSIVE_AURAS; x++)
 		if(m_auras[x] != NULL && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_ON_PET)
 			RemoveAuraBySlot(x);
-	//pet should inherit some of the talents from caster
-	//new_pet->InheritSMMods(); //not required yet. We cast full spell to have visual effect too
+	// pet should inherit some of the talents from caster
+	// new_pet->InheritSMMods(); //not required yet. We cast full spell to have visual effect too
 }
 
-//if pet/charm died or whatever happened we should call this function
-//!! note function might get called multiple times :P
+// pet/charm died or whatever happened we should call this function
+// note function might get called multiple times :P
 void Player::EventDismissPet()
 {
-	for(uint32 x=0;x<MAX_AURAS+MAX_PASSIVE_AURAS;x++)
+	for(uint32 x = 0; x < MAX_AURAS+MAX_PASSIVE_AURAS; x++)
 		if(m_auras[x]!= NULL && m_auras[x]->GetSpellProto()->c_is_flags & SPELL_FLAG_IS_EXPIREING_WITH_PET)
 			RemoveAuraBySlot(x);
 }
@@ -10718,7 +10720,7 @@ CMovementCompressorThread *MovementCompressor;
 
 void Player::AppendMovementData(uint32 op, uint32 sz, const uint8* data)
 {
-	//printf("AppendMovementData(%u, %u, 0x%.8X)\n", op, sz, data);
+	// printf("AppendMovementData(%u, %u, 0x%.8X)\n", op, sz, data);
 	m_movementBufferLock.Acquire();
 	m_movementBuffer << uint8(sz + 2);
 	m_movementBuffer << uint16(op);
@@ -10770,7 +10772,7 @@ void Player::EventDumpCompressedMovement()
 	if(size >= 40000 && rate < 6)
 		rate = 6;
 	if(size <= 100)
-		rate = 0;			// don't bother compressing packet smaller than this, zlib doesnt really handle them well
+		rate = 0; // don't bother compressing packet smaller than this, zlib doesnt really handle them well
 
 	// set up stream
 	z_stream stream;
@@ -10794,8 +10796,7 @@ void Player::EventDumpCompressedMovement()
 	stream.avail_in  = size;
 
 	// call the actual process
-	if(deflate(&stream, Z_NO_FLUSH) != Z_OK ||
-		stream.avail_in != 0)
+	if(deflate(&stream, Z_NO_FLUSH) != Z_OK || stream.avail_in != 0)
 	{
 		sLog.outError("deflate failed.");
 		delete [] buffer;
@@ -10826,7 +10827,7 @@ void Player::EventDumpCompressedMovement()
 
 	// send it
 	m_session->OutPacket(763, (uint16)stream.total_out + 4, buffer);
-	//printf("Compressed move compressed from %u bytes to %u bytes.\n", m_movementBuffer.size(), stream.total_out + 4);
+	// printf("Compressed move compressed from %u bytes to %u bytes.\n", m_movementBuffer.size(), stream.total_out + 4);
 
 	// cleanup memory
 	delete [] buffer;
@@ -10937,7 +10938,7 @@ void Player::Cooldown_AddStart(SpellEntry * pSpell)
 
 	if( pSpell->StartRecoveryCategory && pSpell->StartRecoveryCategory != 133 )		// if we have a different cool category to the actual spell category - only used by few spells
 		_Cooldown_Add( COOLDOWN_TYPE_CATEGORY, pSpell->StartRecoveryCategory, mstime + atime, pSpell->Id, 0 );
-	else									// no category, so it's a gcd
+	else // no category, so it's a gcd
 	{
 		m_globalCooldown = mstime + atime;
 	}
