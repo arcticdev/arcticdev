@@ -825,15 +825,6 @@ void Item::EventRemoveEnchantment( uint32 Slot )
 
 int32 Item::FindFreeEnchantSlot( EnchantEntry* Enchantment, uint32 random_type )
 {
-	//if(!Enchantment) return -1;
-
-   /* uint32 Slot = Enchantment->type ? 3 : 0;
-	for(uint32 Index = ITEM_FIELD_ENCHANTMENT_09; Index < ITEM_FIELD_ENCHANTMENT_32; Index += 3)
-	{
-		if(m_uint32Values[Index] == 0) return Slot;
-		++Slot;
-	}*/
-
 	uint32 GemSlotsReserve = GetSocketsCount();
 	if( GetProto()->SocketBonus )
 		GemSlotsReserve++;

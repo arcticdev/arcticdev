@@ -187,6 +187,23 @@
     <ClCompile Include="..\..\src\libs\DataStorage\DBC.cpp">
       <Filter>Database</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Detour\DetourNode.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\InputGeom.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\MeshLoaderObj.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\Recast.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastArea.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastContour.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastFilter.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastLog.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastMesh.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastMeshDetail.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastRasterization.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastRegion.cpp" />
+    <ClCompile Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\libs\Auth\BigNumber.h">
@@ -478,79 +495,28 @@
     <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.h">
       <Filter>Pathfinding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastContour.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastFilter.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastLog.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastLog.h">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastMesh.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastMeshDetail.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastRasterization.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastRegion.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastTimer.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\RecastArea.cpp">
       <Filter>Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\Recast\Recast.h">
       <Filter>Pathfinding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Recast\Recast.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNode.h">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNode.cpp">
       <Filter>Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.h">
       <Filter>Pathfinding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMeshBuilder.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.h">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourNavMesh.cpp">
       <Filter>Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.h">
       <Filter>Pathfinding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\Detour\DetourCommon.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.h">
       <Filter>Pathfinding</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\ChunkyTriMesh.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\InputGeom.h">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\InputGeom.cpp">
-      <Filter>Pathfinding</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\libs\Pathfinding\MeshLoaderObj.cpp">
       <Filter>Pathfinding</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\libs\Pathfinding\MeshLoaderObj.h">

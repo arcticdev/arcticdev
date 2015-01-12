@@ -4904,29 +4904,6 @@ uint32 GetDiminishingGroup(uint32 NameHash)
 	case SPELL_HASH_HEX:
 		grp = 12;
 		break;
-
-
-		/*case SPELL_HASH_BANISH:					// Banish
-		grp = 19;
-		break;
-
-		case SPELL_HASH_FREEZING_TRAP_EFFECT:	// Freezing Trap Effect
-		grp = 20;
-		break;
-
-		case SPELL_HASH_SCARE_BEAST:			// Scare Beast
-		grp = 21;
-		break;
-
-		case SPELL_HASH_ENSLAVE_DEMON:			// Enslave Demon
-		grp = 22;
-		break;
-		case SPELL_HASH_SLEEP:					// Sleep
-		grp = 23;
-		break;
-		case SPELL_HASH_RIPOSTE:
-		grp = 24;
-		break;*/
 	}
 	uint32 ret;
 	if( pve )

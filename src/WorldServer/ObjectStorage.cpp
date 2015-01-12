@@ -747,34 +747,33 @@ bool LoadAdditionalTable(const char * TableName, const char * SecondName)
 
 bool Storage_ReloadTable(const char * TableName)
 {
-	// bur: mah god this is ugly :P
-	if(!stricmp(TableName, "items"))					// Items
+	if(!stricmp(TableName, "items"))						// Items
 		ItemPrototypeStorage.Reload();
-	else if(!stricmp(TableName, "creature_proto"))		// Creature Proto
+	else if(!stricmp(TableName, "creature_proto"))			// Creature Proto
 		CreatureProtoStorage.Reload();
-	else if(!stricmp(TableName, "creature_names"))		// Creature Names
+	else if(!stricmp(TableName, "creature_names"))			// Creature Names
 		CreatureNameStorage.Reload();
-	else if(!stricmp(TableName, "gameobject_names"))	// GO Names
+	else if(!stricmp(TableName, "gameobject_names"))		// GO Names
 		GameObjectNameStorage.Reload();
-	else if(!stricmp(TableName, "areatriggers"))		// Areatriggers
+	else if(!stricmp(TableName, "areatriggers"))			// Areatriggers
 		AreaTriggerStorage.Reload();
-	else if(!stricmp(TableName, "itempages"))			// Item Pages
+	else if(!stricmp(TableName, "itempages"))				// Item Pages
 		ItemPageStorage.Reload();
-	else if(!stricmp(TableName, "quests"))				// Quests
+	else if(!stricmp(TableName, "quests"))					// Quests
 		QuestStorage.Reload();
-	else if(!stricmp(TableName, "npc_text"))			// NPC Text Storage
+	else if(!stricmp(TableName, "npc_text"))				// NPC Text Storage
 		NpcTextStorage.Reload();
-	else if(!stricmp(TableName, "fishing"))				// Fishing Zones
+	else if(!stricmp(TableName, "fishing"))					// Fishing Zones
 		FishingZoneStorage.Reload();
-	else if(!stricmp(TableName, "teleport_coords"))		// Teleport coords
+	else if(!stricmp(TableName, "teleport_coords"))			// Teleport coords
 		TeleportCoordStorage.Reload();
-	else if(!stricmp(TableName, "graveyards"))			// Graveyards
+	else if(!stricmp(TableName, "graveyards"))				// Graveyards
 		GraveyardStorage.Reload();
-	else if(!stricmp(TableName, "worldmap_info"))		// WorldMapInfo without cluster
+	else if(!stricmp(TableName, "worldmap_info"))			// WorldMapInfo without cluster
 		WorldMapInfoStorage.Reload();
 	else if(!stricmp(TableName, "zoneguards"))
 		ZoneGuardStorage.Reload();
-	else if(!stricmp(TableName, "command_overrides"))	// Command Overrides
+	else if(!stricmp(TableName, "command_overrides"))		// Command Overrides
 	{
 		sComTableStore.Dealloc();
 		sComTableStore.Init();

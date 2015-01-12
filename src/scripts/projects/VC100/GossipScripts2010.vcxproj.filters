@@ -38,9 +38,6 @@
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Tanaris.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\GossipScripts\Gossip_Teldrassil.cpp">
-      <Filter>Scripts</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\GossipScripts\Gossip_Theramore.cpp">
       <Filter>Scripts</Filter>
     </ClCompile>

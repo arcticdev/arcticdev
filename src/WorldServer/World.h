@@ -613,7 +613,7 @@ protected:
 	bool m_gmTicketSystem;
 	std::string m_motd;
 
-    uint32 realmtype;
+	uint32 realmtype;
 
 	time_t m_gameTime;
 	time_t m_lastTick;

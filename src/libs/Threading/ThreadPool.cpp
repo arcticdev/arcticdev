@@ -123,12 +123,12 @@ void CThreadPool::Startup(uint8 ThreadCount)
 
 void CThreadPool::ShowStats()
 {
-	DEBUG_LOG("ThreadPool", "================== ThreadPool Status ===================");
-	DEBUG_LOG("ThreadPool", "Active Threads: %u", m_activeThreads.size());
-	DEBUG_LOG("ThreadPool", "Suspended Threads: %u", m_freeThreads.size());
-	DEBUG_LOG("ThreadPool", "Requested-To-Freed Ratio: %.3f%% (%u/%u)", float( float(_threadsRequestedSinceLastCheck+1) / float(_threadsExitedSinceLastCheck+1) * 100.0f ), _threadsRequestedSinceLastCheck, _threadsExitedSinceLastCheck);
-	DEBUG_LOG("ThreadPool", "Eaten Count: %d (negative is bad!)", _threadsEaten);
-	DEBUG_LOG("ThreadPool", "========================================================");
+	// DEBUG_LOG("ThreadPool", "================== ThreadPool Status ===================");
+	// DEBUG_LOG("ThreadPool", "Active Threads: %u", m_activeThreads.size());
+	// DEBUG_LOG("ThreadPool", "Suspended Threads: %u", m_freeThreads.size());
+	// DEBUG_LOG("ThreadPool", "Requested-To-Freed Ratio: %.3f%% (%u/%u)", float( float(_threadsRequestedSinceLastCheck+1) / float(_threadsExitedSinceLastCheck+1) * 100.0f ), _threadsRequestedSinceLastCheck, _threadsExitedSinceLastCheck);
+	// DEBUG_LOG("ThreadPool", "Eaten Count: %d (negative is bad!)", _threadsEaten);
+	// DEBUG_LOG("ThreadPool", "========================================================");
 }
 
 void CThreadPool::IntegrityCheck(uint8 ThreadCount)

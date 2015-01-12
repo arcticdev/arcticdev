@@ -860,7 +860,9 @@ public:
 
 	void OnDamageDealt(Unit* pTarget, uint32 damage);					// this is what puts the other person in combat.
 	void WeHealed(Unit* pHealTarget);									// called when a player heals another player, regardless of combat state.
-	void RemoveAttackTarget(Unit* pTarget);							    // means our DoT expired.
+
+	void RemoveAttackTarget(Unit* pTarget);								// means our DoT expired.
+
 	void ForceRemoveAttacker(const uint64& guid);						// when target is invalid pointer
 
 	void UpdateFlag();													// detects if we have changed combat state (in/out), and applies the flag.

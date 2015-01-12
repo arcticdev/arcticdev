@@ -978,7 +978,6 @@ bool ChatHandler::HandleWPHideCommand(const char* args, WorldSession *m_session)
 bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_session)
 {
 	Creature* cr = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
-
 	if(!cr)
 	{
 		SystemMessage(m_session, "You should select a creature.");
@@ -1033,7 +1032,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		float x = cr->GetPositionX()+ran*sin(ang);
 		float y = cr->GetPositionY()+ran*cos(ang);
 		float z = cr->GetMapMgr()->GetBaseMap()->GetLandHeight(x,y);
-
+		 
 		WayPoint* wp = new WayPoint;
 		wp->id = (uint32)cr->GetAIInterface()->GetWayPointsCount()+1;
 		wp->x = x;
@@ -1054,6 +1053,7 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		wp->backwardSpellToCast = 0;
 		wp->forwardSayText = "";
 		wp->backwardSayText = "";
+		
 		cr->GetAIInterface()->addWayPoint(wp);
 	}
 
@@ -1063,16 +1063,15 @@ bool ChatHandler::HandleGenerateWaypoints(const char* args, WorldSession * m_ses
 		cr->GetAIInterface()->m_moveType = 1;
 		WorldDatabase.Execute("UPDATE creature_spawns SET movetype = 1 WHERE id = %u", cr->GetSQL_id());
 	}
-
 	m_session->GetPlayer()->waypointunit = cr->GetAIInterface();
 	cr->GetAIInterface()->showWayPoints(m_session->GetPlayer(),cr->GetAIInterface()->m_WayPointsShowBackwards);
+	
 	return true;
 }
 
 bool ChatHandler::HandleSaveWaypoints(const char* args, WorldSession * m_session)
 {
-	Creature* cr =
-		m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
+	Creature* cr = m_session->GetPlayer()->GetMapMgr()->GetCreature(GET_LOWGUID_PART(m_session->GetPlayer()->GetSelection()));
 	if(!cr)return false;
 	if(!cr->GetSQL_id())
 		return false;

@@ -575,7 +575,7 @@ public:
 
 	void LoadTransporters();
 	void ProcessGameobjectQuests();
-    void AddTransport(Transporter* pTransporter);
+	void AddTransport(Transporter* pTransporter);
 
 	void LoadTrainers();
 	Trainer* GetTrainer(uint32 Entry);

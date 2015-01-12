@@ -154,7 +154,8 @@ void ScriptMgr::LoadScripts()
 		Log.Success("ScriptMgr","Done loading script engines...");
 	}
 #else
-	/* Loading system for *nix */
+
+	// Loading system for *nix
 	struct dirent ** list;
 	int filecount = scandir(PREFIX "/lib/", &list, 0, 0);
 	uint32 count = 0;

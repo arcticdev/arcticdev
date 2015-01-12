@@ -324,11 +324,9 @@ void Object::DestroyForPlayer(Player* target) const
 	target->GetSession()->SendPacket( &data );
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//Build the Movement Data portion of the update packet
+// Build the Movement Data portion of the update packet
 // Fills the data with this object's movement/speed info
 // TODO: rewrite this stuff, document unknown fields and flags
-///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 uint32 TimeStamp();
 
@@ -621,7 +619,7 @@ void Object::_BuildValuesUpdate(ByteBuffer * data, UpdateMask *updateMask, Playe
 	WPAssert( updateMask && updateMask->GetCount() == m_valuesCount );
 	uint32 bc;
 	uint32 values_count;
-	if( m_valuesCount > ( 2 * 0x20 ) )//if number of blocks > 2->  unit and player+item container
+	if( m_valuesCount > ( 2 * 0x20 ) ) // if number of blocks > 2->  unit and player+item container
 	{
 		bc = updateMask->GetUpdateBlockCount();
 		values_count = (uint32)min( bc * 32, m_valuesCount );

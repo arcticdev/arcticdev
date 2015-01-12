@@ -5464,7 +5464,7 @@ void Player::AddCalculatedRestXP(uint32 seconds)
 	// Thanks to the comforts of a warm bed and a hearty meal, players who rest or log out at an Inn will
 	// accumulate rest credit four times faster than players logged off outside of an Inn or City.
 	// Players who log out anywhere else in the world will earn rest credit four times slower.
-	// http://www.worldofwarcraft.com/info/basics/resting.html
+	// http://us.battle.net/wow/en/game/guide/
 
 	// Define xp for a full bar ( = 20 bubbles)
 	uint32 xp_to_lvl = uint32(lvlinfo->XPToNextLevel);

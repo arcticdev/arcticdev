@@ -482,7 +482,8 @@ bool Master::_StartDB()
 
 	if(result == false)
 	{
-		OUT_DEBUG( "ArcticDev: One or more parameters were missing from ..conf/WorldServer.conf directive." );
+		OUT_DEBUG( "Mysql: One or more parameters were missing from WorldDatabase directive." );
+
 		return false;
 	}
 

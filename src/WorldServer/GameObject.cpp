@@ -773,61 +773,51 @@ uint8 GameObject::GetState()
 }
 
 // Destructable Buildings
-void GameObject::TakeDamage(uint32 ammount, Object* mcaster, Object* pcaster, uint32 spellid)
+void GameObject::TakeDamage(uint32 amount, Object* mcaster, Object* pcaster, uint32 spellid)
 {
-	DestructibleModelDataEntry* disp = dbcDestructibleModelData.LookupEntry(pInfo->Unknown9);
-
+	printf("Gameobject Target Found\n");
 	if(pInfo->Type != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
 		return;
 
-	if (Health <= 0)
+	if(HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED)) // Already destroyed
 		return;
 
-	if(Health > ammount)
-		Health -= ammount;
-	else if(Health < ammount)
+	if(Health > amount)
+		Health -= amount;
+	else
 		Health = 0;
 
-	if(HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED) && !HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DESTROYED))
+	if(HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED))
 	{
-		if(Health <= 0)
+		if(Health == 0)
 		{
 			RemoveFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED);
 			SetFlag(GAMEOBJECT_FLAGS,GO_FLAG_DESTROYED);
-			SetUInt32Value(GAMEOBJECT_DISPLAYID, disp->GetDisplayId(1)); // destroyed
-
-			sHookInterface.OnDestroyBuilding(this);
-		}
-		else if(Health <= ((pInfo->SpellFocus + pInfo->sound5)*0.6))
-		{
-			if(GetUInt32Value(GAMEOBJECT_DISPLAYID) != disp->GetDisplayId(0))
-			{
-				SetUInt32Value(GAMEOBJECT_DISPLAYID, disp->GetDisplayId(0)); // damaged
-			}
-			sHookInterface.OnDamageBuilding(TO_GAMEOBJECT(this));
-		}
-	}
-	else if(!HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED) && !HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DESTROYED))
-	{
-		if(Health <= pInfo->sound5 && Health > (pInfo->sound5)*0.6)
-		{
-			SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED);
-			sHookInterface.OnDamageBuilding(TO_GAMEOBJECT(this));
-		}
-		else if(Health <= ((pInfo->sound5)*0.6) && Health > 0 /*&& Health >= (pInfo->sound5)*0.3*/)
-		{
-			SetFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED);
-			SetUInt32Value(GAMEOBJECT_DISPLAYID, disp->GetDisplayId(0)); // damaged
-			sHookInterface.OnDamageBuilding(this);
-		}
-		else if(Health <= 0)
-		{
-			SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
-			SetUInt32Value(GAMEOBJECT_DISPLAYID, disp->GetDisplayId(1)); // destroyed
-
+			DestructibleModelDataEntry * display = dbcDestructibleModelDataEntry.LookupEntry( pInfo->Unknown9 );
+			SetUInt32Value(GAMEOBJECT_DISPLAYID,display->GetDisplayId(3));
 			sHookInterface.OnDestroyBuilding(TO_GAMEOBJECT(this));
 		}
 	}
+	else if(!HasFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED))
+	{
+		if(Health <= pInfo->sound5)
+		{
+			if(Health == 0)
+				Health = 1;
+			SetFlag(GAMEOBJECT_FLAGS,GO_FLAG_DAMAGED);
+			DestructibleModelDataEntry * display = dbcDestructibleModelDataEntry.LookupEntry( pInfo->Unknown9 );
+			SetUInt32Value(GAMEOBJECT_DISPLAYID,display->GetDisplayId(1));
+			sHookInterface.OnDamageBuilding(TO_GAMEOBJECT(this));
+		}
+	}
+
+	WorldPacket data(SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 20);
+	data << GetNewGUID(); 
+	data << mcaster->GetNewGUID();
+	data << pcaster->GetNewGUID();
+	data << uint32(amount) << spellid;
+	mcaster->SendMessageToSet(&data, (mcaster->IsPlayer() ? true : false));
+	SetByte(GAMEOBJECT_BYTES_1, 3, Health);
 }
 
 void GameObject::Rebuild()

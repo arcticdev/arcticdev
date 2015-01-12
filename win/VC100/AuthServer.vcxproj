@@ -28,18 +28,22 @@
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -147,7 +151,7 @@
     <Link>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;libeay32.lib;dbghelp.lib;zlib.lib;pcre.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)AuthServer.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\dep\vc\lib_vc_100\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\dep\vc\lib_vc_100\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)AuthServer.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -235,7 +239,7 @@
     <Link>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;libeay32.lib;dbghelp.lib;zlib.lib;pcre.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)AuthServer.exe</OutputFile>
-      <AdditionalLibraryDirectories>..\..\dep\vc\lib_vc_100\amd64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\dep\vc\lib_vc_100\lib64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)AuthServer.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>

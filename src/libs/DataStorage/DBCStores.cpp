@@ -72,6 +72,7 @@ SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
 SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
 SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
+SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelDataEntry; 
 
 const char* SummonPropertiesfmt = "uuuuuu";
 const char* AreaTriggerFormat = "uuffffffff";
@@ -181,14 +182,6 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 
 #define LOAD_DBC(filename, format, ind, stor, strings) if(!loader_stub(filename, format, ind, stor, strings)) { return false; }
 
-bool LoadRSDBCs()
-{
-	LOAD_DBC("DBC/AreaTable.dbc", areatableFormat, true, dbcArea, true);
-	LOAD_DBC("DBC/ChatChannels.dbc", chatchannelformat, true, dbcChatChannels, true);
-
-	return true;
-}
-
 bool LoadDBCs()
 {
 	LOAD_DBC("DBC/Achievement.dbc", achievementfmt, true, dbcAchievement,true);
@@ -213,6 +206,7 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/DurabilityQuality.dbc", durabilityqualityFormat, true, dbcDurabilityQuality, false);
 	LOAD_DBC("DBC/DurabilityCosts.dbc", durabilitycostsFormat, true, dbcDurabilityCosts, false);
 	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
+	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelDataEntry, false);
 
 	LOAD_DBC("DBC/EmotesText.dbc", EmoteEntryFormat, true, dbcEmoteEntry, false);
 
@@ -273,12 +267,7 @@ bool LoadDBCs()
 	return true;
 }
 
-void FreeRSDBCs()
-{
-	dbcArea.Cleanup();
-	dbcChatChannels.Cleanup();
-}
-
+/*
 void FreeDBCs()
 {
 	dbcAreaTrigger.Cleanup();
@@ -346,3 +335,4 @@ void FreeDBCs()
 	dbcScalingStatDistribution.Cleanup();
 	dbcScalingStatValues.Cleanup();
 }
+*/

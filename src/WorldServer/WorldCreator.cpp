@@ -421,7 +421,6 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 				}
 			}
 
-
 			// iterate over our instances, and see if any of them are owned/joinable by him.
 			for(itr = instancemap->begin(); itr != instancemap->end(); ++itr)
 			{
@@ -553,35 +552,19 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 	// assign pointer
 	m_singleMaps[mapid] = ret;
 
-	if(ret->IsCollisionEnabled())
+	if(sWorld.Collision && ret->IsCollisionEnabled()) 
 	{
-		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid);
-		if(ret->IsPathfindingEnabled())
-			Log.Notice("NavmeshMgr", "Map %03u has Navmesh enabled.", mapid);
-		bool mmapsloaded = false;
-		bool collisionloaded = false;
-		for(uint32 x = 0; x < TilesCount; ++x)
-		{
-			for(uint32 y = 0; y < TilesCount; ++y)
-			{
-				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y))
-				{
-					collisionloaded = true;
-					if(ret->IsPathfindingEnabled())
-						if(ret->LoadNavMesh(x, y))
-							mmapsloaded = true;
-				}
-			}
-		}
-		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (collisionloaded == true ? "Successfully" : "Unsuccessfully"));
+		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid); 
+		ret->collisionloaded = false; 
+		for(uint32 x = 0; x < _sizeX; ++x)
+		{ 
+			for(uint32 y = 0; y < _sizeY; ++y) 
+				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y)) 
+					ret->collisionloaded = true; 
+		} 
+		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (ret->collisionloaded == true ? "Successfully" : "Unsuccessfully")); 
+	} 
 
-		if(collisionloaded != true)
-			ret->SetCollision(false);
-		if(ret->IsPathfindingEnabled())
-			Log.Notice("NavmeshMgr", "Map %03u Navmesh loaded %s!", mapid, (mmapsloaded == true ? "Successfully" : "Unsuccessfully"));
-		if(mmapsloaded == false)
-			ret->SetPathfinding(false);
-	}
 	return ret;
 }
 
@@ -640,8 +623,11 @@ void InstanceMgr::_CreateMap(uint32 mapid)
 {
 	if( mapid >= NUM_MAPS )
 		return;
+	
 	MapInfo* inf = WorldMapInfoStorage.LookupEntry(mapid);
-	if(!inf || m_maps[mapid])
+
+	if(inf == NULL || m_maps[mapid] != NULL)
+
 		return;
 #ifdef CLUSTERING
 	if(!inf->cluster_loads_map)

@@ -97,7 +97,7 @@ World::~World()
 	Log.Notice("WorldLog", "~WorldLog()");
 	delete WorldLog::getSingletonPtr();
 
-	Log.Notice("ObjectMgr", "~ObjectMgr()");
+	// Log.Notice("ObjectMgr", "~ObjectMgr()");
 	delete ObjectMgr::getSingletonPtr();
 
 	Log.Notice("LootMgr", "~LootMgr()");
@@ -140,8 +140,8 @@ World::~World()
 	for(list<SpellEntry*>::iterator itr = dummyspells.begin(); itr != dummyspells.end(); itr++)
 		delete *itr;
 
-	Log.Notice("DBCs", "FreeDBCs()");
-	FreeDBCs();
+	//Log.Notice("DBCs", "FreeDBCs()");
+	//FreeDBCs();
 }
 
 WorldSession* World::FindSession(uint32 id)
@@ -814,6 +814,7 @@ void World::DeleteGlobalSession(WorldSession *GlobalSession)
 	// delete us
 	GlobalSession->Delete();
 }
+
 uint32 World::AddQueuedSocket(WorldSocket* Socket)
 {
 	// Since we have multiple socket threads, better guard for this one,

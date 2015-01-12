@@ -28,7 +28,6 @@ class LfgMatch;
 class LfgMgr : public Singleton < LfgMgr >, EventableObject
 {
 public:
-
 	typedef list<Player*> LfgPlayerList;
 
 	LfgMgr();

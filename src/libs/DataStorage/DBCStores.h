@@ -1300,7 +1300,7 @@ struct VehicleEntry
 	uint32 m_uiLocomotionType; // 34
 	float m_msslTrgtImpactTexRadius; // 35
 	uint32 m_uiSeatIndicatorType; // 36
-	// 37, new in 3.1
+	uint32  m_powerType;
 	// 38, new in 3.1
 	// 39, new in 3.1
 };
@@ -1843,7 +1843,7 @@ extern SERVER_DECL DBCStorage<ChatChannelDBC> dbcChatChannels;
 extern SERVER_DECL DBCStorage<DurabilityCostsEntry> dbcDurabilityCosts;
 extern SERVER_DECL DBCStorage<DurabilityQualityEntry> dbcDurabilityQuality;
 extern SERVER_DECL DBCStorage<BankSlotPrice> dbcBankSlotPrices;
-extern SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices; //uses same structure as Bank
+extern SERVER_DECL DBCStorage<BankSlotPrice> dbcStableSlotPrices;
 extern SERVER_DECL DBCStorage<BarberShopStyleEntry> dbcBarberShopStyle;
 extern SERVER_DECL DBCStorage<gtFloat> dbcBarberShopPrices;
 extern SERVER_DECL DBCStorage<gtFloat> dbcMeleeCrit;
@@ -1866,9 +1866,9 @@ extern SERVER_DECL DBCStorage<AreaPOIEntry> dbcAreaPOI;
 extern SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 extern SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 extern SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
+extern SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelDataEntry;
 
 bool LoadDBCs();
-bool LoadRSDBCs();
-void FreeRSDBCs();
-void FreeDBCs();
+//void FreeRSDBCs();
+//void FreeDBCs();
 
