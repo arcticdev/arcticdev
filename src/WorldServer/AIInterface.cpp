@@ -1296,7 +1296,7 @@ Unit* AIInterface::FindTarget()
 	float crange;
 	float z_diff;
 
-	unordered_set<Object* >::iterator itr, it2;
+	unordered_set<Object*>::iterator itr, it2;
 	Object* pObj;
 	Unit* pUnit;
 	float dist;
@@ -1505,7 +1505,7 @@ bool AIInterface::FindFriends(float dist)
 	bool result = false;
 	TargetMap::iterator it;
 
-	unordered_set<Object* >::iterator itr;
+	unordered_set<Object*>::iterator itr;
 	Unit* pUnit;
 
 	for( itr = m_Unit->GetInRangeSetBegin(); itr != m_Unit->GetInRangeSetEnd(); ++itr )

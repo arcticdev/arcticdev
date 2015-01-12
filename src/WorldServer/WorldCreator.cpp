@@ -11,8 +11,8 @@ SERVER_DECL InstanceMgr sInstanceMgr;
 
 InstanceMgr::InstanceMgr()
 {
-	memset(m_maps, 0, sizeof(Map*)* NUM_MAPS);
-	memset(m_instances, 0, sizeof(InstanceMap*) * NUM_MAPS);
+	memset(m_maps, NULL, sizeof(Map*)* NUM_MAPS);
+	memset(m_instances, NULL, sizeof(InstanceMap*) * NUM_MAPS);
 
 	for(uint32 i = 0; i < NUM_MAPS; ++i)
 		m_singleMaps[i] = NULL;
@@ -98,11 +98,11 @@ void InstanceMgr::Shutdown()
 {
 	uint32 i;
 	InstanceMap::iterator itr;
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		if(m_instances[i] != NULL)
 		{
-			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); ++itr)
+			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); itr++)
 			{
 				if(itr->second->m_mapMgr)
 					itr->second->m_mapMgr->KillThread();
@@ -552,18 +552,8 @@ MapMgr* InstanceMgr::_CreateInstance(uint32 mapid, uint32 instanceid)
 	// assign pointer
 	m_singleMaps[mapid] = ret;
 
-	if(sWorld.Collision && ret->IsCollisionEnabled()) 
-	{
-		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid); 
-		ret->collisionloaded = false; 
-		for(uint32 x = 0; x < _sizeX; ++x)
-		{ 
-			for(uint32 y = 0; y < _sizeY; ++y) 
-				if(CollisionMgr->loadMap(sWorld.vMapPath.c_str(), mapid, x, y)) 
-					ret->collisionloaded = true; 
-		} 
-		Log.Notice("CollisionMgr", "Map %03u Collision loaded %s!", mapid, (ret->collisionloaded == true ? "Successfully" : "Unsuccessfully")); 
-	} 
+	if(ret->IsCollisionEnabled())
+		Log.Notice("CollisionMgr", "Map %03u has collision enabled.", mapid);
 
 	return ret;
 }
@@ -629,10 +619,6 @@ void InstanceMgr::_CreateMap(uint32 mapid)
 	if(inf == NULL || m_maps[mapid] != NULL)
 
 		return;
-#ifdef CLUSTERING
-	if(!inf->cluster_loads_map)
-		return;
-#endif
 
 	m_maps[mapid] = new Map(mapid, inf);
 	if(inf->type == INSTANCE_NULL)
@@ -712,9 +698,9 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 	InstanceMap::iterator itr;
 	InstanceMap * instancemap;
 	Instance * in;
-
+	
 	m_mapLock.Acquire();
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		if(m_singleMaps[i] != NULL)
 			BuildStats(m_singleMaps[i], m_file, NULL, m_singleMaps[i]->GetMapInfo());
@@ -840,7 +826,7 @@ void InstanceMgr::ResetSavedInstances(Player* plr)
 		return;
 
 	m_mapLock.Acquire();
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		if(m_instances[i] != NULL)
 		{
@@ -896,7 +882,7 @@ void InstanceMgr::ResetHeroicInstances()
 	uint32 i;
 
 	m_mapLock.Acquire();
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		instancemap = m_instances[i];
 		if(instancemap)
@@ -981,7 +967,7 @@ void InstanceMgr::CheckForExpiredInstances()
 	uint32 i;
 
 	m_mapLock.Acquire();
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		instancemap = m_instances[i];
 		if(instancemap)
@@ -1012,7 +998,7 @@ void InstanceMgr::BuildSavedInstancesForPlayer(Player* plr)
 	if(!plr->IsInWorld() || plr->GetMapMgr()->GetMapInfo()->type != INSTANCE_NULL)
 	{
 		m_mapLock.Acquire();
-		for(i = 0; i < NUM_MAPS; ++i)
+		for(i = 0; i < NUM_MAPS; i++)
 		{
 			if(m_instances[i] != NULL)
 			{
@@ -1055,7 +1041,7 @@ void InstanceMgr::BuildSavedRaidInstancesForPlayer(Player* plr)
 	uint32 counter = 0;
 
 	data << counter;
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		MapEntry* map = dbcMap.LookupEntry(i);
 		if(map)
@@ -1072,6 +1058,7 @@ void InstanceMgr::BuildSavedRaidInstancesForPlayer(Player* plr)
 					data << uint32(in->m_expiration - UNIXTIME);
 				else
 					data << uint32(0);
+
 				++counter;
 			}
 		}
@@ -1111,7 +1098,7 @@ void Instance::SaveToDB()
 		<< (uint32)m_creation << ","
 		<< (uint32)m_expiration << ",'";
 
-	for(itr3 = m_killedNpcs.begin(); itr3 != m_killedNpcs.end(); ++itr3)
+	for(itr3 = m_killedNpcs.begin(); itr3 != m_killedNpcs.end(); itr3++)
 		ss << (*itr3) << " ";
 
 	ss	<< "',"
@@ -1120,7 +1107,7 @@ void Instance::SaveToDB()
 		<< m_creatorGuid << ",'";
 
 	m_SavedLock.Acquire();
-	for(itr2 = m_SavedPlayers.begin(); itr2 != m_SavedPlayers.end(); ++itr2)
+	for(itr2 = m_SavedPlayers.begin(); itr2 != m_SavedPlayers.end(); itr2++)
 		ss << (*itr2) << " ";
 	m_SavedLock.Release();
 
@@ -1139,7 +1126,7 @@ void InstanceMgr::PlayerLeftGroup(Group * pGroup, Player* pPlayer)
 	uint32 i;
 
 	m_mapLock.Acquire();
-	for(i = 0; i < NUM_MAPS; ++i)
+	for(i = 0; i < NUM_MAPS; i++)
 	{
 		instancemap = m_instances[i];
 		if(instancemap)
@@ -1313,6 +1300,6 @@ FormationMgr::FormationMgr()
 FormationMgr::~FormationMgr()
 {
 	FormationMap::iterator itr;
-	for(itr = m_formations.begin(); itr != m_formations.end(); ++itr)
+	for(itr = m_formations.begin(); itr != m_formations.end(); itr++)
 		delete itr->second;
 }
