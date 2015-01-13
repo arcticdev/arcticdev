@@ -503,7 +503,6 @@ void AIInterface::HandleEvent(uint32 event, Unit* pUnit, uint32 misc1)
 				}
 			}
 		}break;
-
 	case EVENT_UNITRESPAWN:
 		{
 			// send the message

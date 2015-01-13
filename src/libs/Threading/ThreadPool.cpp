@@ -67,8 +67,7 @@ bool CThreadPool::ThreadExit(Thread * t)
 		printf("Thread %u duplicated with thread %u\n", (*itr)->ControlInterface.GetId(), t->ControlInterface.GetId());
 	}
 	m_freeThreads.insert(t);
-	
-	//DEBUG_LOG("ThreadPool", "Thread %u entered the free pool.", t->ControlInterface.GetId());
+
 	_mutex.Release();
 	return true;
 }
@@ -249,7 +248,6 @@ static unsigned long WINAPI thread_proc(void* param)
 	uint32 tid = t->ControlInterface.GetId();
 	bool ht = (t->ExecutionTarget != NULL);
 	t->SetupMutex.Release();
-	//DEBUG_LOG("ThreadPool", "Thread %u started.", t->ControlInterface.GetId());
 
 	for(;;)
 	{

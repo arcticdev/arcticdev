@@ -10,13 +10,13 @@ Target Server Type    : MYSQL
 Target Server Version : 50509
 File Encoding         : 65001
 
-Date: 2012-01-08 20:17:23
+Date: 2014-12-29 22:20:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `account_data`
+-- Table structure for account_data
 -- ----------------------------
 DROP TABLE IF EXISTS `account_data`;
 CREATE TABLE `account_data` (
@@ -35,76 +35,60 @@ CREATE TABLE `account_data` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of account_data
--- ----------------------------
-
--- ----------------------------
--- Table structure for `account_forced_permissions`
+-- Table structure for account_forced_permissions
 -- ----------------------------
 DROP TABLE IF EXISTS `account_forced_permissions`;
 CREATE TABLE `account_forced_permissions` (
-  `login` varchar(50) NOT NULL,
-  `permissions` varchar(100) NOT NULL,
+  `login` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `permissions` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`login`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of account_forced_permissions
--- ----------------------------
-
--- ----------------------------
--- Table structure for `achievements`
+-- Table structure for achievements
 -- ----------------------------
 DROP TABLE IF EXISTS `achievements`;
 CREATE TABLE `achievements` (
   `player` int(11) NOT NULL,
   `achievementid` int(11) NOT NULL DEFAULT '0',
-  `progress` varchar(256) DEFAULT NULL,
+  `progress` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `completed` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`player`,`achievementid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of achievements
--- ----------------------------
-
--- ----------------------------
--- Table structure for `arenateams`
+-- Table structure for arenateams
 -- ----------------------------
 DROP TABLE IF EXISTS `arenateams`;
 CREATE TABLE `arenateams` (
   `id` int(10) unsigned NOT NULL DEFAULT '0',
   `type` int(10) unsigned NOT NULL DEFAULT '0',
   `leader` int(10) unsigned NOT NULL DEFAULT '0',
-  `name` varchar(24) NOT NULL,
+  `name` varchar(24) COLLATE utf8_unicode_ci NOT NULL,
   `emblemstyle` int(10) unsigned NOT NULL DEFAULT '0',
   `emblemcolour` int(10) unsigned NOT NULL DEFAULT '0',
   `borderstyle` int(10) unsigned NOT NULL DEFAULT '0',
   `bordercolor` int(10) unsigned NOT NULL DEFAULT '0',
   `backgroundcolor` int(10) unsigned NOT NULL DEFAULT '0',
   `rating` int(10) unsigned NOT NULL DEFAULT '0',
-  `data` varchar(24) NOT NULL,
+  `data` varchar(24) COLLATE utf8_unicode_ci NOT NULL,
   `ranking` int(10) unsigned NOT NULL,
-  `player_data1` varchar(32) NOT NULL,
-  `player_data2` varchar(32) NOT NULL,
-  `player_data3` varchar(32) NOT NULL,
-  `player_data4` varchar(32) NOT NULL,
-  `player_data5` varchar(32) NOT NULL,
-  `player_data6` varchar(32) NOT NULL,
-  `player_data7` varchar(32) NOT NULL,
-  `player_data8` varchar(32) NOT NULL,
-  `player_data9` varchar(32) NOT NULL,
-  `player_data10` varchar(32) NOT NULL,
+  `player_data1` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data2` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data3` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data4` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data5` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data6` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data7` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data8` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data9` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `player_data10` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of arenateams
--- ----------------------------
-
--- ----------------------------
--- Table structure for `auctions`
+-- Table structure for auctions
 -- ----------------------------
 DROP TABLE IF EXISTS `auctions`;
 CREATE TABLE `auctions` (
@@ -122,38 +106,59 @@ CREATE TABLE `auctions` (
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of auctions
--- ----------------------------
-
--- ----------------------------
--- Table structure for `banned_names`
+-- Table structure for banned_names
 -- ----------------------------
 DROP TABLE IF EXISTS `banned_names`;
 CREATE TABLE `banned_names` (
-  `name` varchar(30) NOT NULL,
+  `name` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of banned_names
+-- Table structure for character_declinedname
 -- ----------------------------
+DROP TABLE IF EXISTS `character_declinedname`;
+CREATE TABLE `character_declinedname` (
+  `guid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
+  `genitive` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `dative` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `accusative` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `instrumental` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `prepositional` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`guid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Table structure for `characters`
+-- Table structure for character_pet_declinedname
+-- ----------------------------
+DROP TABLE IF EXISTS `character_pet_declinedname`;
+CREATE TABLE `character_pet_declinedname` (
+  `id` int(11) unsigned NOT NULL DEFAULT '0',
+  `owner` int(11) unsigned NOT NULL DEFAULT '0',
+  `genitive` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `dative` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `accusative` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `instrumental` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `prepositional` varchar(12) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Table structure for characters
 -- ----------------------------
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE `characters` (
   `guid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `acct` int(10) unsigned NOT NULL,
-  `name` varchar(21) NOT NULL DEFAULT '',
+  `name` varchar(21) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `race` tinyint(3) unsigned NOT NULL,
   `class` tinyint(3) unsigned NOT NULL,
   `gender` tinyint(3) unsigned NOT NULL,
   `custom_faction` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(3) unsigned NOT NULL,
   `xp` int(10) unsigned NOT NULL,
-  `exploration_data` longtext NOT NULL,
-  `skills` longtext NOT NULL,
+  `exploration_data` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `skills` longtext COLLATE utf8_unicode_ci NOT NULL,
   `watched_faction_index` bigint(30) NOT NULL DEFAULT '0',
   `selected_pvp_title` int(10) unsigned NOT NULL DEFAULT '0',
   `available_pvp_titles1` bigint(30) unsigned NOT NULL DEFAULT '0',
@@ -175,9 +180,9 @@ CREATE TABLE `characters` (
   `orientation` float NOT NULL DEFAULT '0',
   `mapId` int(10) unsigned NOT NULL DEFAULT '0',
   `zoneId` int(10) unsigned NOT NULL DEFAULT '0',
-  `taximask` longtext NOT NULL,
+  `taximask` longtext COLLATE utf8_unicode_ci NOT NULL,
   `banned` int(40) NOT NULL,
-  `banReason` varchar(50) NOT NULL,
+  `banReason` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
   `online` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `bindpositionX` float NOT NULL DEFAULT '0',
@@ -188,7 +193,7 @@ CREATE TABLE `characters` (
   `isResting` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `restState` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `restTime` int(10) unsigned NOT NULL DEFAULT '0',
-  `playedtime` longtext NOT NULL,
+  `playedtime` longtext COLLATE utf8_unicode_ci NOT NULL,
   `deathstate` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `TalentResetTimes` int(10) unsigned NOT NULL DEFAULT '0',
   `first_login` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -209,12 +214,12 @@ CREATE TABLE `characters` (
   `transporter_xdiff` float NOT NULL DEFAULT '0',
   `transporter_ydiff` float NOT NULL DEFAULT '0',
   `transporter_zdiff` float NOT NULL DEFAULT '0',
-  `deleted_spells` longtext NOT NULL,
-  `reputation` longtext NOT NULL,
-  `actions` longtext NOT NULL,
-  `auras` longtext NOT NULL,
-  `finished_quests` longtext NOT NULL,
-  `finished_daily_quests` longtext NOT NULL,
+  `deleted_spells` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `reputation` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `actions` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `auras` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `finished_quests` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `finished_daily_quests` longtext COLLATE utf8_unicode_ci NOT NULL,
   `honorRolloverTime` int(30) NOT NULL DEFAULT '0',
   `killsToday` int(10) unsigned NOT NULL DEFAULT '0',
   `killsYesterday` int(10) unsigned NOT NULL DEFAULT '0',
@@ -231,25 +236,21 @@ CREATE TABLE `characters` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2651 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of characters
--- ----------------------------
-
--- ----------------------------
--- Table structure for `characters_insert_queue`
+-- Table structure for characters_insert_queue
 -- ----------------------------
 DROP TABLE IF EXISTS `characters_insert_queue`;
 CREATE TABLE `characters_insert_queue` (
   `guid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `acct` int(10) unsigned NOT NULL,
-  `name` varchar(21) NOT NULL DEFAULT '',
+  `name` varchar(21) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `race` tinyint(3) unsigned NOT NULL,
   `class` tinyint(3) unsigned NOT NULL,
   `gender` tinyint(3) unsigned NOT NULL,
   `custom_faction` int(10) unsigned NOT NULL DEFAULT '0',
   `level` tinyint(3) unsigned NOT NULL,
   `xp` int(10) unsigned NOT NULL,
-  `exploration_data` longtext NOT NULL,
-  `skills` longtext NOT NULL,
+  `exploration_data` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `skills` longtext COLLATE utf8_unicode_ci NOT NULL,
   `watched_faction_index` bigint(30) NOT NULL DEFAULT '0',
   `selected_pvp_title` int(10) unsigned NOT NULL DEFAULT '0',
   `available_pvp_titles1` bigint(30) unsigned NOT NULL DEFAULT '0',
@@ -271,9 +272,9 @@ CREATE TABLE `characters_insert_queue` (
   `orientation` float NOT NULL DEFAULT '0',
   `mapId` int(10) unsigned NOT NULL DEFAULT '0',
   `zoneId` int(10) unsigned NOT NULL DEFAULT '0',
-  `taximask` longtext NOT NULL,
+  `taximask` longtext COLLATE utf8_unicode_ci NOT NULL,
   `banned` int(40) NOT NULL,
-  `banReason` varchar(50) NOT NULL,
+  `banReason` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
   `online` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `bindpositionX` float NOT NULL DEFAULT '0',
@@ -284,7 +285,7 @@ CREATE TABLE `characters_insert_queue` (
   `isResting` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `restState` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `restTime` int(10) unsigned NOT NULL DEFAULT '0',
-  `playedtime` longtext NOT NULL,
+  `playedtime` longtext COLLATE utf8_unicode_ci NOT NULL,
   `deathstate` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `TalentResetTimes` int(10) unsigned NOT NULL DEFAULT '0',
   `first_login` tinyint(3) unsigned NOT NULL DEFAULT '0',
@@ -305,13 +306,13 @@ CREATE TABLE `characters_insert_queue` (
   `transporter_xdiff` float NOT NULL DEFAULT '0',
   `transporter_ydiff` float NOT NULL DEFAULT '0',
   `transporter_zdiff` float NOT NULL DEFAULT '0',
-  `spells` longtext NOT NULL,
-  `deleted_spells` longtext NOT NULL,
-  `reputation` longtext NOT NULL,
-  `actions` longtext NOT NULL,
-  `auras` longtext NOT NULL,
-  `finished_quests` longtext NOT NULL,
-  `finished_daily_quests` longtext NOT NULL,
+  `spells` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `deleted_spells` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `reputation` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `actions` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `auras` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `finished_quests` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `finished_daily_quests` longtext COLLATE utf8_unicode_ci NOT NULL,
   `honorRolloverTime` int(30) NOT NULL DEFAULT '0',
   `killsToday` int(10) unsigned NOT NULL DEFAULT '0',
   `killsYesterday` int(10) unsigned NOT NULL DEFAULT '0',
@@ -320,61 +321,20 @@ CREATE TABLE `characters_insert_queue` (
   `honorYesterday` int(10) unsigned NOT NULL DEFAULT '0',
   `honorPoints` int(10) unsigned NOT NULL DEFAULT '0',
   `difficulty` int(10) unsigned NOT NULL DEFAULT '0',
-  `Glyphs` longtext NOT NULL,
+  `Glyphs` longtext COLLATE utf8_unicode_ci NOT NULL,
   `need_talent_reset` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of characters_insert_queue
--- ----------------------------
-
--- ----------------------------
--- Table structure for `character_declinedname`
--- ----------------------------
-DROP TABLE IF EXISTS `character_declinedname`;
-CREATE TABLE `character_declinedname` (
-  `guid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'Global Unique Identifier',
-  `genitive` varchar(12) NOT NULL DEFAULT '',
-  `dative` varchar(12) NOT NULL DEFAULT '',
-  `accusative` varchar(12) NOT NULL DEFAULT '',
-  `instrumental` varchar(12) NOT NULL DEFAULT '',
-  `prepositional` varchar(12) NOT NULL DEFAULT '',
-  PRIMARY KEY (`guid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of character_declinedname
--- ----------------------------
-
--- ----------------------------
--- Table structure for `character_pet_declinedname`
--- ----------------------------
-DROP TABLE IF EXISTS `character_pet_declinedname`;
-CREATE TABLE `character_pet_declinedname` (
-  `id` int(11) unsigned NOT NULL DEFAULT '0',
-  `owner` int(11) unsigned NOT NULL DEFAULT '0',
-  `genitive` varchar(12) NOT NULL DEFAULT '',
-  `dative` varchar(12) NOT NULL DEFAULT '',
-  `accusative` varchar(12) NOT NULL DEFAULT '',
-  `instrumental` varchar(12) NOT NULL DEFAULT '',
-  `prepositional` varchar(12) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of character_pet_declinedname
--- ----------------------------
-
--- ----------------------------
--- Table structure for `charters`
+-- Table structure for charters
 -- ----------------------------
 DROP TABLE IF EXISTS `charters`;
 CREATE TABLE `charters` (
   `charterId` int(10) unsigned NOT NULL,
   `chartertype` int(10) NOT NULL DEFAULT '0',
   `leaderGuid` int(20) unsigned NOT NULL DEFAULT '0',
-  `guildName` varchar(32) NOT NULL DEFAULT '',
+  `guildName` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `itemGuid` bigint(40) unsigned NOT NULL DEFAULT '0',
   `signer1` int(10) unsigned NOT NULL DEFAULT '0',
   `signer2` int(10) unsigned NOT NULL DEFAULT '0',
@@ -391,16 +351,12 @@ CREATE TABLE `charters` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of charters
--- ----------------------------
-
--- ----------------------------
--- Table structure for `clientaddons`
+-- Table structure for clientaddons
 -- ----------------------------
 DROP TABLE IF EXISTS `clientaddons`;
 CREATE TABLE `clientaddons` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
+  `name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `crc` bigint(50) DEFAULT NULL,
   `banned` int(1) NOT NULL DEFAULT '0',
   `showinlist` int(1) NOT NULL DEFAULT '0',
@@ -409,25 +365,17 @@ CREATE TABLE `clientaddons` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of clientaddons
--- ----------------------------
-
--- ----------------------------
--- Table structure for `command_overrides`
+-- Table structure for command_overrides
 -- ----------------------------
 DROP TABLE IF EXISTS `command_overrides`;
 CREATE TABLE `command_overrides` (
-  `command_name` varchar(100) NOT NULL,
-  `access_level` varchar(10) NOT NULL,
+  `command_name` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `access_level` varchar(10) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`command_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of command_overrides
--- ----------------------------
-
--- ----------------------------
--- Table structure for `corpses`
+-- Table structure for corpses
 -- ----------------------------
 DROP TABLE IF EXISTS `corpses`;
 CREATE TABLE `corpses` (
@@ -439,18 +387,14 @@ CREATE TABLE `corpses` (
   `zoneId` int(11) NOT NULL DEFAULT '38',
   `mapId` int(11) NOT NULL DEFAULT '0',
   `instanceId` int(11) NOT NULL DEFAULT '0',
-  `data` longtext NOT NULL,
+  `data` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`guid`),
   KEY `b` (`mapId`),
   KEY `c` (`instanceId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of corpses
--- ----------------------------
-
--- ----------------------------
--- Table structure for `events_settings`
+-- Table structure for events_settings
 -- ----------------------------
 DROP TABLE IF EXISTS `events_settings`;
 CREATE TABLE `events_settings` (
@@ -460,32 +404,24 @@ CREATE TABLE `events_settings` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of events_settings
--- ----------------------------
-
--- ----------------------------
--- Table structure for `gm_tickets`
+-- Table structure for gm_tickets
 -- ----------------------------
 DROP TABLE IF EXISTS `gm_tickets`;
 CREATE TABLE `gm_tickets` (
   `guid` int(6) NOT NULL DEFAULT '0',
-  `name` varchar(200) NOT NULL DEFAULT '',
+  `name` varchar(200) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `level` int(6) NOT NULL DEFAULT '0',
   `type` int(2) NOT NULL DEFAULT '0',
   `posX` float NOT NULL DEFAULT '0',
   `posY` float NOT NULL DEFAULT '0',
   `posZ` float NOT NULL DEFAULT '0',
-  `message` text NOT NULL,
-  `timestamp` text,
+  `message` text COLLATE utf8_unicode_ci NOT NULL,
+  `timestamp` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`guid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of gm_tickets
--- ----------------------------
-
--- ----------------------------
--- Table structure for `groups`
+-- Table structure for groups
 -- ----------------------------
 DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
@@ -544,38 +480,7 @@ CREATE TABLE `groups` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of groups
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guilds`
--- ----------------------------
-DROP TABLE IF EXISTS `guilds`;
-CREATE TABLE `guilds` (
-  `guildId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `guildName` varchar(32) NOT NULL DEFAULT '',
-  `leaderGuid` bigint(20) NOT NULL DEFAULT '0',
-  `emblemStyle` int(10) NOT NULL DEFAULT '0',
-  `emblemColor` int(10) NOT NULL DEFAULT '0',
-  `borderStyle` int(10) NOT NULL DEFAULT '0',
-  `borderColor` int(10) NOT NULL DEFAULT '0',
-  `backgroundColor` int(10) NOT NULL DEFAULT '0',
-  `guildInfo` varchar(1024) NOT NULL,
-  `motd` varchar(1024) NOT NULL,
-  `createdate` int(30) NOT NULL DEFAULT '0',
-  `bankTabCount` int(30) NOT NULL DEFAULT '0',
-  `bankBalance` int(30) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`guildId`),
-  UNIQUE KEY `guildName` (`guildName`),
-  UNIQUE KEY `leaderGuid` (`leaderGuid`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
--- Records of guilds
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_bankitems`
+-- Table structure for guild_bankitems
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_bankitems`;
 CREATE TABLE `guild_bankitems` (
@@ -590,11 +495,7 @@ CREATE TABLE `guild_bankitems` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of guild_bankitems
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_banklogs`
+-- Table structure for guild_banklogs
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_banklogs`;
 CREATE TABLE `guild_banklogs` (
@@ -612,37 +513,29 @@ CREATE TABLE `guild_banklogs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of guild_banklogs
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_banktabs`
+-- Table structure for guild_banktabs
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_banktabs`;
 CREATE TABLE `guild_banktabs` (
   `guildId` int(30) NOT NULL,
   `tabId` int(30) NOT NULL,
-  `tabName` varchar(200) NOT NULL,
-  `tabIcon` varchar(200) NOT NULL,
+  `tabName` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `tabIcon` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`guildId`,`tabId`),
   KEY `a` (`guildId`),
   KEY `b` (`tabId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of guild_banktabs
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_data`
+-- Table structure for guild_data
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_data`;
 CREATE TABLE `guild_data` (
   `guildid` int(30) NOT NULL,
   `playerid` int(30) NOT NULL,
   `guildRank` int(30) NOT NULL,
-  `publicNote` varchar(300) NOT NULL,
-  `officerNote` varchar(300) NOT NULL,
+  `publicNote` varchar(300) COLLATE utf8_unicode_ci NOT NULL,
+  `officerNote` varchar(300) COLLATE utf8_unicode_ci NOT NULL,
   `lastWithdrawReset` int(30) NOT NULL DEFAULT '0',
   `withdrawlsSinceLastReset` int(30) NOT NULL DEFAULT '0',
   `lastItemWithdrawReset0` int(30) NOT NULL DEFAULT '0',
@@ -664,11 +557,7 @@ CREATE TABLE `guild_data` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of guild_data
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_logs`
+-- Table structure for guild_logs
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_logs`;
 CREATE TABLE `guild_logs` (
@@ -683,17 +572,13 @@ CREATE TABLE `guild_logs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of guild_logs
--- ----------------------------
-
--- ----------------------------
--- Table structure for `guild_ranks`
+-- Table structure for guild_ranks
 -- ----------------------------
 DROP TABLE IF EXISTS `guild_ranks`;
 CREATE TABLE `guild_ranks` (
   `guildId` int(6) unsigned NOT NULL,
   `rankId` int(1) NOT NULL DEFAULT '0',
-  `rankName` varchar(255) NOT NULL DEFAULT '',
+  `rankName` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `rankRights` int(3) unsigned NOT NULL DEFAULT '0',
   `goldLimitPerDay` int(30) NOT NULL DEFAULT '0',
   `bankTabFlags0` int(30) NOT NULL DEFAULT '0',
@@ -712,11 +597,30 @@ CREATE TABLE `guild_ranks` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of guild_ranks
+-- Table structure for guilds
 -- ----------------------------
+DROP TABLE IF EXISTS `guilds`;
+CREATE TABLE `guilds` (
+  `guildId` bigint(20) NOT NULL AUTO_INCREMENT,
+  `guildName` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `leaderGuid` bigint(20) NOT NULL DEFAULT '0',
+  `emblemStyle` int(10) NOT NULL DEFAULT '0',
+  `emblemColor` int(10) NOT NULL DEFAULT '0',
+  `borderStyle` int(10) NOT NULL DEFAULT '0',
+  `borderColor` int(10) NOT NULL DEFAULT '0',
+  `backgroundColor` int(10) NOT NULL DEFAULT '0',
+  `guildInfo` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `motd` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
+  `createdate` int(30) NOT NULL DEFAULT '0',
+  `bankTabCount` int(30) NOT NULL DEFAULT '0',
+  `bankBalance` int(30) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`guildId`),
+  UNIQUE KEY `guildName` (`guildName`),
+  UNIQUE KEY `leaderGuid` (`leaderGuid`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Table structure for `instances`
+-- Table structure for instances
 -- ----------------------------
 DROP TABLE IF EXISTS `instances`;
 CREATE TABLE `instances` (
@@ -724,21 +628,17 @@ CREATE TABLE `instances` (
   `mapid` int(30) NOT NULL,
   `creation` int(30) NOT NULL,
   `expiration` int(30) NOT NULL,
-  `killed_npc_guids` text NOT NULL,
+  `killed_npc_guids` text COLLATE utf8_unicode_ci NOT NULL,
   `difficulty` int(30) NOT NULL,
   `creator_group` int(30) NOT NULL,
   `creator_guid` int(30) NOT NULL,
-  `active_members` text NOT NULL,
+  `active_members` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `a` (`mapid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of instances
--- ----------------------------
-
--- ----------------------------
--- Table structure for `mailbox`
+-- Table structure for mailbox
 -- ----------------------------
 DROP TABLE IF EXISTS `mailbox`;
 CREATE TABLE `mailbox` (
@@ -746,10 +646,10 @@ CREATE TABLE `mailbox` (
   `message_type` int(30) NOT NULL DEFAULT '0',
   `player_guid` int(30) NOT NULL DEFAULT '0',
   `sender_guid` int(30) NOT NULL DEFAULT '0',
-  `subject` varchar(255) NOT NULL DEFAULT '',
-  `body` varchar(4096) NOT NULL,
+  `subject` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `body` varchar(4096) COLLATE utf8_unicode_ci NOT NULL,
   `money` int(30) NOT NULL DEFAULT '0',
-  `attached_item_guids` varchar(200) NOT NULL DEFAULT '',
+  `attached_item_guids` varchar(200) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `cod` int(30) NOT NULL DEFAULT '0',
   `stationary` int(30) NOT NULL DEFAULT '0',
   `expiry_time` int(30) NOT NULL DEFAULT '0',
@@ -763,18 +663,14 @@ CREATE TABLE `mailbox` (
 ) ENGINE=MyISAM AUTO_INCREMENT=723 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of mailbox
--- ----------------------------
-
--- ----------------------------
--- Table structure for `mailbox_insert_queue`
+-- Table structure for mailbox_insert_queue
 -- ----------------------------
 DROP TABLE IF EXISTS `mailbox_insert_queue`;
 CREATE TABLE `mailbox_insert_queue` (
   `sender_guid` int(30) NOT NULL,
   `receiver_guid` int(30) NOT NULL,
-  `subject` varchar(200) NOT NULL,
-  `body` varchar(500) NOT NULL,
+  `subject` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `body` varchar(500) COLLATE utf8_unicode_ci NOT NULL,
   `stationary` int(30) NOT NULL,
   `money` int(30) NOT NULL,
   `item_id` int(30) NOT NULL,
@@ -782,11 +678,7 @@ CREATE TABLE `mailbox_insert_queue` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of mailbox_insert_queue
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playercooldowns`
+-- Table structure for playercooldowns
 -- ----------------------------
 DROP TABLE IF EXISTS `playercooldowns`;
 CREATE TABLE `playercooldowns` (
@@ -799,11 +691,7 @@ CREATE TABLE `playercooldowns` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playercooldowns
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerglyphs`
+-- Table structure for playerglyphs
 -- ----------------------------
 DROP TABLE IF EXISTS `playerglyphs`;
 CREATE TABLE `playerglyphs` (
@@ -819,11 +707,7 @@ CREATE TABLE `playerglyphs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Records of playerglyphs
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playeritems`
+-- Table structure for playeritems
 -- ----------------------------
 DROP TABLE IF EXISTS `playeritems`;
 CREATE TABLE `playeritems` (
@@ -842,18 +726,14 @@ CREATE TABLE `playeritems` (
   `durability` int(10) unsigned NOT NULL DEFAULT '0',
   `containerslot` int(11) DEFAULT '-1',
   `slot` int(10) NOT NULL DEFAULT '0',
-  `enchantments` longtext NOT NULL,
+  `enchantments` longtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`guid`),
   KEY `ownerguid` (`ownerguid`),
   KEY `itemtext` (`itemtext`)
-) ENGINE=MyISAM AUTO_INCREMENT=99837 CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=99837 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playeritems
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playeritems_insert_queue`
+-- Table structure for playeritems_insert_queue
 -- ----------------------------
 DROP TABLE IF EXISTS `playeritems_insert_queue`;
 CREATE TABLE `playeritems_insert_queue` (
@@ -877,11 +757,7 @@ CREATE TABLE `playeritems_insert_queue` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playeritems_insert_queue
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerpetactionbar`
+-- Table structure for playerpetactionbar
 -- ----------------------------
 DROP TABLE IF EXISTS `playerpetactionbar`;
 CREATE TABLE `playerpetactionbar` (
@@ -911,19 +787,15 @@ CREATE TABLE `playerpetactionbar` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerpetactionbar
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerpets`
+-- Table structure for playerpets
 -- ----------------------------
 DROP TABLE IF EXISTS `playerpets`;
 CREATE TABLE `playerpets` (
   `ownerguid` bigint(20) NOT NULL DEFAULT '0',
   `petnumber` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(21) NOT NULL DEFAULT '',
+  `name` varchar(21) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `entry` bigint(20) NOT NULL DEFAULT '0',
-  `fields` longtext NOT NULL,
+  `fields` longtext COLLATE utf8_unicode_ci NOT NULL,
   `xp` int(11) NOT NULL DEFAULT '0',
   `active` tinyint(1) NOT NULL DEFAULT '1',
   `level` int(11) NOT NULL DEFAULT '0',
@@ -934,11 +806,7 @@ CREATE TABLE `playerpets` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerpets
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerpetspells`
+-- Table structure for playerpetspells
 -- ----------------------------
 DROP TABLE IF EXISTS `playerpetspells`;
 CREATE TABLE `playerpetspells` (
@@ -951,11 +819,7 @@ CREATE TABLE `playerpetspells` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerpetspells
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerpettalents`
+-- Table structure for playerpettalents
 -- ----------------------------
 DROP TABLE IF EXISTS `playerpettalents`;
 CREATE TABLE `playerpettalents` (
@@ -968,11 +832,7 @@ CREATE TABLE `playerpettalents` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerpettalents
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerskills`
+-- Table structure for playerskills
 -- ----------------------------
 DROP TABLE IF EXISTS `playerskills`;
 CREATE TABLE `playerskills` (
@@ -985,11 +845,7 @@ CREATE TABLE `playerskills` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerskills
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerskills_insert_queue`
+-- Table structure for playerskills_insert_queue
 -- ----------------------------
 DROP TABLE IF EXISTS `playerskills_insert_queue`;
 CREATE TABLE `playerskills_insert_queue` (
@@ -1002,11 +858,7 @@ CREATE TABLE `playerskills_insert_queue` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerskills_insert_queue
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playerspells`
+-- Table structure for playerspells
 -- ----------------------------
 DROP TABLE IF EXISTS `playerspells`;
 CREATE TABLE `playerspells` (
@@ -1016,11 +868,7 @@ CREATE TABLE `playerspells` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playerspells
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playersummonspells`
+-- Table structure for playersummonspells
 -- ----------------------------
 DROP TABLE IF EXISTS `playersummonspells`;
 CREATE TABLE `playersummonspells` (
@@ -1031,11 +879,7 @@ CREATE TABLE `playersummonspells` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of playersummonspells
--- ----------------------------
-
--- ----------------------------
--- Table structure for `playertalents`
+-- Table structure for playertalents
 -- ----------------------------
 DROP TABLE IF EXISTS `playertalents`;
 CREATE TABLE `playertalents` (
@@ -1047,26 +891,18 @@ CREATE TABLE `playertalents` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
--- Records of playertalents
--- ----------------------------
-
--- ----------------------------
--- Table structure for `prestartqueries`
+-- Table structure for prestartqueries
 -- ----------------------------
 DROP TABLE IF EXISTS `prestartqueries`;
 CREATE TABLE `prestartqueries` (
-  `Query` varchar(1024) NOT NULL,
+  `Query` varchar(1024) COLLATE utf8_unicode_ci NOT NULL,
   `SingleShot` int(1) unsigned NOT NULL DEFAULT '1',
   `Seq` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`Seq`)
 ) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of prestartqueries
--- ----------------------------
-
--- ----------------------------
--- Table structure for `questlog`
+-- Table structure for questlog
 -- ----------------------------
 DROP TABLE IF EXISTS `questlog`;
 CREATE TABLE `questlog` (
@@ -1087,11 +923,7 @@ CREATE TABLE `questlog` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of questlog
--- ----------------------------
-
--- ----------------------------
--- Table structure for `questlog_insert_queue`
+-- Table structure for questlog_insert_queue
 -- ----------------------------
 DROP TABLE IF EXISTS `questlog_insert_queue`;
 CREATE TABLE `questlog_insert_queue` (
@@ -1112,46 +944,30 @@ CREATE TABLE `questlog_insert_queue` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of questlog_insert_queue
--- ----------------------------
-
--- ----------------------------
--- Table structure for `server_settings`
+-- Table structure for server_settings
 -- ----------------------------
 DROP TABLE IF EXISTS `server_settings`;
 CREATE TABLE `server_settings` (
-  `setting_id` varchar(200) NOT NULL,
+  `setting_id` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `setting_value` bigint(50) NOT NULL,
   PRIMARY KEY (`setting_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of server_settings
--- ----------------------------
-INSERT INTO `server_settings` VALUES ('expansionupdate', '4872394');
-INSERT INTO `server_settings` VALUES ('last_arena_update_time', '1325880094');
-INSERT INTO `server_settings` VALUES ('last_dailies_reset_time', '1325966432');
-INSERT INTO `server_settings` VALUES ('last_eventid_time', '1326038437');
-
--- ----------------------------
--- Table structure for `social_friends`
+-- Table structure for social_friends
 -- ----------------------------
 DROP TABLE IF EXISTS `social_friends`;
 CREATE TABLE `social_friends` (
   `character_guid` int(30) NOT NULL,
   `friend_guid` int(30) NOT NULL,
-  `note` varchar(100) NOT NULL,
+  `note` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`character_guid`,`friend_guid`),
   KEY `a` (`character_guid`),
   KEY `b` (`friend_guid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of social_friends
--- ----------------------------
-
--- ----------------------------
--- Table structure for `social_ignores`
+-- Table structure for social_ignores
 -- ----------------------------
 DROP TABLE IF EXISTS `social_ignores`;
 CREATE TABLE `social_ignores` (
@@ -1162,11 +978,7 @@ CREATE TABLE `social_ignores` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of social_ignores
--- ----------------------------
-
--- ----------------------------
--- Table structure for `tutorials`
+-- Table structure for tutorials
 -- ----------------------------
 DROP TABLE IF EXISTS `tutorials`;
 CREATE TABLE `tutorials` (
@@ -1183,19 +995,11 @@ CREATE TABLE `tutorials` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- ----------------------------
--- Records of tutorials
--- ----------------------------
-
--- ----------------------------
--- Table structure for `worldstate_save_data`
+-- Table structure for worldstate_save_data
 -- ----------------------------
 DROP TABLE IF EXISTS `worldstate_save_data`;
 CREATE TABLE `worldstate_save_data` (
-  `setting_id` varchar(50) NOT NULL,
-  `setting_value` varchar(200) NOT NULL,
+  `setting_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `setting_value` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`setting_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- ----------------------------
--- Records of worldstate_save_data
--- ----------------------------

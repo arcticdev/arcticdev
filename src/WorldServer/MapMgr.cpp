@@ -81,7 +81,6 @@ void MapMgr::Init()
 {
 	m_stateManager = new WorldStateManager(this);
 	ScriptInterface = new MapScriptInterface(this); // Create script interface
-	ScriptInterface = new MapScriptInterface( this );
 }
 
 // call me to break the circular reference, perform cleanup

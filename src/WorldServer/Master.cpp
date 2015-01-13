@@ -35,6 +35,7 @@ SERVER_DECL Database* Database_World;
 SessionLogWriter* GMCommand_Log;
 SessionLogWriter* Anticheat_Log;
 SessionLogWriter* Player_Log;
+extern CharacterLoaderThread * ctl;
 
 void Master::_OnSignal(int s)
 {
@@ -375,7 +376,8 @@ bool Master::Run(int argc, char ** argv)
 	}
 
 	Log.Notice("CharacterLoaderThread", "Exiting...");
-	sCLT.Terminate();
+	ctl->Terminate();
+	ctl = NULL;
 
 	sWorld.LogoutPlayers(); //(Also saves players).
 	CharacterDatabase.Execute("UPDATE characters SET online = 0");
@@ -427,7 +429,7 @@ bool Master::Run(int argc, char ** argv)
 	delete LogonCommHandler::getSingletonPtr();
 
 	Log.Notice("World", "~World()");
-	delete World::getSingletonPtr();
+	sWorld.Destructor();
 
 	sScriptMgr.UnloadScripts();
 	delete ScriptMgr::getSingletonPtr();

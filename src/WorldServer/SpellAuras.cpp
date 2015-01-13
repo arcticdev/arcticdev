@@ -7248,15 +7248,8 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 						m_target->m_soulSiphon.max-= mod->m_amount;
 				}
 			}break;
-		case 2689: // Illumination
-			{
-				if(m_target != NULL && m_target->IsPlayer())
-				{
-					TO_PLAYER(m_target)->m_Illumination_amount += (apply ? mod->m_amount : -mod->m_amount);
-				}
-			}break;
-		default:
-			OUT_DEBUG("[report to devs] Unknown override %u in spell %u", mod->m_miscValue, GetSpellId());
+	default:
+		OUT_DEBUG("Unknown override report to devs: %u", mod->m_miscValue);
 	};
 }
 

@@ -10,6 +10,8 @@
 #define snprintf _snprintf
 #endif
 
+#define MAX_MAPS 750
+
 namespace VMAP
 {
 	inline bool IsTileMap(unsigned int mapid)
@@ -44,6 +46,8 @@ namespace VMAP
 			break;
 		}
 	}
+
+	static MapTree * m_maps[MAX_MAPS];
 
 	//=========================================================
 
@@ -229,7 +233,7 @@ namespace VMAP
 		bool result = false;
 		std::string dirFileName;
 		if( pMapId >= MAX_MAPS )
-			return 0;
+			return false;
 
 		if( IsTileMap( pMapId ) )
 			dirFileName = getDirFileName( pMapId, x, y );
@@ -253,10 +257,8 @@ namespace VMAP
 				delete instanceTree;
 			}
 		}
-
-		return(result ? 1 : 0);
+		return(result);
 	}
-
 
 	//=========================================================
 
@@ -664,15 +666,15 @@ namespace VMAP
 				if( flags != 0 )
 				{
 					/* From WoWdev:
-					Flag	Meaning
-					0x1		Always set
-					0x4		Has vertex colors (MOCV chunk)
-					0x8		Outdoor
-					0x200	Has lights (MOLR chunk)
-					0x800	Has doodads (MODR chunk)
-					0x1000	Has water (MLIQ chunk)
-					0x2000	Indoor
-					0x40000	Show skybox
+					Flag 	Meaning
+					0x1 	Always set
+					0x4 	Has vertex colors (MOCV chunk)
+					0x8 	Outdoor
+					0x200 	Has lights (MOLR chunk)
+					0x800 	Has doodads (MODR chunk)
+					0x1000 	Has water (MLIQ chunk)
+					0x2000 	Indoor
+					0x40000 	Show skybox
 
 					**********************
 
@@ -740,15 +742,15 @@ namespace VMAP
 				if( flags != 0 )
 				{
 					/* From WoWdev:
-					Flag	Meaning
-					0x1		Always set
-					0x4		Has vertex colors (MOCV chunk)
-					0x8		Outdoor
-					0x200	Has lights (MOLR chunk)
-					0x800	Has doodads (MODR chunk)
-					0x1000	Has water (MLIQ chunk)
-					0x2000	Indoor
-					0x40000	Show skybox
+					Flag 	Meaning
+					0x1 	Always set
+					0x4 	Has vertex colors (MOCV chunk)
+					0x8 	Outdoor
+					0x200 	Has lights (MOLR chunk)
+					0x800 	Has doodads (MODR chunk)
+					0x1000 	Has water (MLIQ chunk)
+					0x2000 	Indoor
+					0x40000 	Show skybox
 
 					**********************
 

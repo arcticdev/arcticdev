@@ -6,8 +6,9 @@
 
 #include "StdAfx.h"
 
-initialiseSingleton( CharacterLoaderThread );
 initialiseSingleton( World );
+
+CharacterLoaderThread* ctl = NULL;
 
 float World::m_movementCompressThreshold;
 float World::m_movementCompressThresholdCreatures;
@@ -600,8 +601,8 @@ bool World::SetInitialWorldSettings()
 #endif
 
 	Log.Notice("World", "Starting BattlegroundManager...");
-	new CBattlegroundManager;
-	BattlegroundManager.Init();
+	CBattlegroundManager* BattlegroundMgr(new CBattlegroundManager);
+	BattlegroundMgr->Init();
 
 	Log.Notice("World", "Starting CharacterLoaderThread...");
 	ThreadPool.ExecuteTask(new CharacterLoaderThread()); 

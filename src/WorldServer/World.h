@@ -255,7 +255,7 @@ public:
 	void execute();
 };
 
-struct CharacterLoaderThread : public Singleton<CharacterLoaderThread>, public ThreadContext
+struct CharacterLoaderThread : public ThreadContext
 {
 #ifdef WIN32
 	HANDLE hEvent;

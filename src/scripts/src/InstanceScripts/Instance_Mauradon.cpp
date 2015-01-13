@@ -930,11 +930,11 @@ protected:
 
 void SetupMaraudon(ScriptMgr * mgr)
 {
-mgr->register_creature_script(12225, &CelebrasTheCursed::Create);
-mgr->register_creature_script(12236, &LordVyletongue::Create);
-mgr->register_creature_script(12237, &MeshlokTheHarvester::Create);
-mgr->register_creature_script(12201, &PrincessTheradras::Create);
-mgr->register_creature_script(12258, &Razorlash::Create);
-mgr->register_creature_script(13601, &TinkererGizlock::Create);
-mgr->register_creature_script(13282, &Noxxion::Create);
+	mgr->register_creature_script(12225, &CelebrasTheCursed::Create);
+	mgr->register_creature_script(12236, &LordVyletongue::Create);
+	mgr->register_creature_script(12237, &MeshlokTheHarvester::Create);
+	mgr->register_creature_script(12201, &PrincessTheradras::Create);
+	mgr->register_creature_script(12258, &Razorlash::Create);
+	mgr->register_creature_script(13601, &TinkererGizlock::Create);
+	mgr->register_creature_script(13282, &Noxxion::Create);
 }

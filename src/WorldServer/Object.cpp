@@ -151,8 +151,8 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 		{
 			flags = 0x0010;
 		}break;
-		
-	// player/unit: 0x68 (except self)
+
+	// player/unit: 0x0070 (except self)
 	case TYPEID_UNIT:
 	case TYPEID_PLAYER:
 		{

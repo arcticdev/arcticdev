@@ -70,9 +70,6 @@ SERVER_DECL DBCStorage<CurrencyTypesEntry> dbcCurrencyTypes;
 SERVER_DECL DBCStorage<QuestXP> dbcQuestXP;
 SERVER_DECL DBCStorage<WMOAreaTableEntry> dbcWMOAreaTable;
 SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelData;
-SERVER_DECL DBCStorage<ScalingStatDistributionEntry> dbcScalingStatDistribution;
-SERVER_DECL DBCStorage<ScalingStatValuesEntry> dbcScalingStatValues;
-SERVER_DECL DBCStorage<DestructibleModelDataEntry> dbcDestructibleModelDataEntry; 
 
 const char* SummonPropertiesfmt = "uuuuuu";
 const char* AreaTriggerFormat = "uuffffffff";
@@ -104,7 +101,7 @@ const char* spellrangeFormat =
 
 const char* WorldMapOverlayfmt = "uxuxxxxxxxxxxxxxx";
 const char* SpellRuneCostfmt = "uuuuu";
-const char* spelldurationFormat = "uiii";
+const char* spelldurationFormat = "uuuu";
 const char* randompropsFormat = "usuuuxxxxxxxxxxxxxxxxxxx";
 const char* areatableFormat = "uuuuuxxxuxusxxxxxxxxxxxxxxxxuxxxxxxx";
 const char* factiontemplatedbcFormat = "uuuuuuuuuuuuuu";
@@ -138,6 +135,7 @@ const char* mapentryFormat =
 	"x"					// 64 normalReqText
 	"u";				// 65 Max players
 
+
 const char* itemrandomsuffixformat = "usxxxxxxxxxxxxxxxxxuuuuuuuuuu";
 const char* chatchannelformat = "uuxsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char* durabilityqualityFormat = "uf";
@@ -157,21 +155,6 @@ const char* currencyTypesFormat = "xuxu";
 const char* questxpformat = "uxuuuuuuuux";
 const char* wmoareaformat = "uiiixxxxxuuxxxxxxxxxxxxxxxxu";
 const char* DestructibleModelDataFormat = "uxxuxxxuxxxuxxxuxxx";
-const char* scalingstatdistributionformat =
-	"u" // ID
-	"iiiiiiiiii" // Stat Mod
-	"uuuuuuuuuu" // Modifier
-	"u"; // Max Level
-
-const char* scalingstatvaluesformat =
-	"x" // Id
-	"u" // Level
-	"uuuu" // ScalingStatD modifier
-	"uuuu" // Armor Mod
-	"uuuuuu" // DPS mod
-	"u" // Spell Power
-	"uux" // Multipliers
-	"uuuu"; // Armor Type[level]
 
 template<class T>
 bool loader_stub(const char * filename, const char * format, bool ind, T& l, bool loadstrs)
@@ -180,7 +163,7 @@ bool loader_stub(const char * filename, const char * format, bool ind, T& l, boo
 	return l.Load(filename, format, ind, loadstrs);
 }
 
-#define LOAD_DBC(filename, format, ind, stor, strings) if(!loader_stub(filename, format, ind, stor, strings)) { return false; }
+#define LOAD_DBC(filename, format, ind, stor, strings) if(!loader_stub(filename, format, ind, stor, strings)) { return false; } 
 
 bool LoadDBCs()
 {
@@ -205,8 +188,6 @@ bool LoadDBCs()
 
 	LOAD_DBC("DBC/DurabilityQuality.dbc", durabilityqualityFormat, true, dbcDurabilityQuality, false);
 	LOAD_DBC("DBC/DurabilityCosts.dbc", durabilitycostsFormat, true, dbcDurabilityCosts, false);
-	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
-	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelDataEntry, false);
 
 	LOAD_DBC("DBC/EmotesText.dbc", EmoteEntryFormat, true, dbcEmoteEntry, false);
 
@@ -247,8 +228,6 @@ bool LoadDBCs()
 	LOAD_DBC("DBC/SpellRuneCost.dbc", SpellRuneCostfmt, true, dbcSpellRuneCost, false);
 	LOAD_DBC("DBC/SpellShapeshiftForm.dbc", spellshapeshiftformformat, true, dbcSpellShapeshiftForm, false);
 	LOAD_DBC("DBC/SummonProperties.dbc", SummonPropertiesfmt, true, dbcSummonProps, false);
-	LOAD_DBC("DBC/ScalingStatDistribution.dbc", scalingstatdistributionformat, true, dbcScalingStatDistribution, false);
-	LOAD_DBC("DBC/ScalingStatValues.dbc", scalingstatvaluesformat, true, dbcScalingStatValues, false);
 
 	LOAD_DBC("DBC/Talent.dbc", talententryFormat, true, dbcTalent, false);
 	LOAD_DBC("DBC/TalentTab.dbc", talenttabentryFormat, true, dbcTalentTab, false);
@@ -264,11 +243,12 @@ bool LoadDBCs()
 
 	LOAD_DBC("DBC/QuestXP.dbc", questxpformat, true, dbcQuestXP, false );
 
+	LOAD_DBC("DBC/DestructibleModelData.dbc", DestructibleModelDataFormat, true, dbcDestructibleModelData, false);
+
 	return true;
 }
 
-/*
-void FreeDBCs()
+/*void FreeDBCs()
 {
 	dbcAreaTrigger.Cleanup();
 	dbcAreaGroup.Cleanup();
@@ -334,5 +314,4 @@ void FreeDBCs()
 	dbcDestructibleModelData.Cleanup();
 	dbcScalingStatDistribution.Cleanup();
 	dbcScalingStatValues.Cleanup();
-}
-*/
+}*/

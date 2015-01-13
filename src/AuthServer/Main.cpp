@@ -315,7 +315,7 @@ void LogonServer::Run(int argc, char ** argv)
 		return;
 	}
 
-	Log.Success("System","Initializing Random Number Generators...");
+	Log.Notice("System","Initializing Random Number Generators...");
 
 	Log.Notice("Config", "Loading Config Files...");
 	if(!Rehash())

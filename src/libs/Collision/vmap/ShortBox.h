@@ -7,8 +7,8 @@
 #ifndef _SHORTBOX_H
 #define _SHORTBOX_H
 
-#include "../g3dlite/G3D/Vector3.h"
-#include "../g3dlite/G3D/AABox.h"
+#include <Collision/g3dlite/G3D/Vector3.h>
+#include <Collision/g3dlite/G3D/AABox.h>
 
 #include "ShortVector.h"
 

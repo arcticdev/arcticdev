@@ -495,7 +495,7 @@ public:
 		{
 			switch(*p)
 			{
-			case 's':		// string is the only one we have to actually do anything for here
+			case 's': // string is the only one we have to actually do anything for here
 					free((*(char**)structpointer));
 					structpointer += sizeof(char*);
 				break;
@@ -526,7 +526,7 @@ public:
 	~SQLStorage() {}
 
 	/* Loads the block using the format string. */
-	ARCTIC_INLINE void LoadBlock(Field * fields, T * Allocated, bool reload = false )
+	ARCTIC_INLINE void LoadBlock(Field * fields, T * Allocated)
 	{
 		char * p = Storage<T, StorageType>::_formatString;
 		char * structpointer = (char*)Allocated;
@@ -754,7 +754,7 @@ public:
 			Entry = fields[0].GetUInt32();
 			Allocated = Storage<T, StorageType>::_storage.LookupEntryAllocate(Entry);
 			if(Allocated)
-				LoadBlock(fields, Allocated, true);
+				LoadBlock(fields, Allocated);
 
 		} while(result->NextRow());
 		delete result;
