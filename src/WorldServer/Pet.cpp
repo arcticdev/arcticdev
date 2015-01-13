@@ -541,7 +541,7 @@ void Pet::InitializeMe(bool first)
 	proto=CreatureProtoStorage.LookupEntry(GetEntry());
 	m_Owner->SetSummonedUnitGUID(GetGUID());
 	SetUInt32Value(UNIT_FIELD_PETNUMBER, GetUIdFromGUID());
-	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, uint32(UNIXTIME));
+	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
 	myFamily = dbcCreatureFamily.LookupEntry(creature_info->Family);
 	SetPetDiet();
 	_setFaction();
@@ -1108,7 +1108,7 @@ void Pet::Rename(string NewName)
 	UpdatePetInfo(false);
 
 	// update timestamp to force a re-query
-	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, uint32(UNIXTIME));
+	SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, (uint32)UNIXTIME);
 }
 
 void Pet::ApplySummonLevelAbilities()

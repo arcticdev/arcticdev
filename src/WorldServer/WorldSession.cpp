@@ -104,7 +104,7 @@ int WorldSession::Update(uint32 InstanceID)
 		if(_player && _player->m_beingPushed) // check timeout
 		{
 			// Timeout client after 2 minutes, in case AddToWorld failed (f.e. client crash)
-			if( uint32(UNIXTIME) - m_lastPing > 120 )
+			if( (uint32)UNIXTIME - m_lastPing > 120 )
 			{
 				DEBUG_LOG("WorldSession","Removing InQueue player due to socket timeout.");
 				LogoutPlayer(true);
@@ -168,7 +168,7 @@ int WorldSession::Update(uint32 InstanceID)
 		if(_player && _player->m_beingPushed)
 		{
 			//Timeout client after 2 minutes, in case AddToWorld failed (f.e. client crash)
-			if( uint32(UNIXTIME) - m_lastPing > 120 )
+			if( (uint32)UNIXTIME - m_lastPing > 120 )
 			{
 				DEBUG_LOG("WorldSession","Removing InQueue player due to socket timeout.");
 				LogoutPlayer(true);
@@ -189,7 +189,7 @@ int WorldSession::Update(uint32 InstanceID)
 			LogoutPlayer(true);
 	}
 
-	if(m_lastPing + WORLDSOCKET_TIMEOUT < uint32(UNIXTIME))
+	if(m_lastPing + WORLDSOCKET_TIMEOUT < (uint32)UNIXTIME)
 	{
 		// Check if the player is in the process of being moved. We can't delete him
 		// if we are.
@@ -203,7 +203,7 @@ int WorldSession::Update(uint32 InstanceID)
 			_socket = NULL;
 		}
 
-		m_lastPing = uint32(UNIXTIME); // Prevent calling this code over and over.
+		m_lastPing = (uint32)UNIXTIME; // Prevent calling this code over and over.
 		if(!_logoutTime)
 			SetLogoutTimer(PLAYER_LOGOUT_DELAY);
 	}
@@ -365,7 +365,7 @@ void WorldSession::LogoutPlayer(bool Save)
 		}
 		_player->ObjUnlock();
 
-		delete _player;
+		_player->Destructor();
 		_player = NULL;
 
 		OutPacket(SMSG_LOGOUT_COMPLETE, 0, NULL);

@@ -185,10 +185,9 @@ bool ChatHandler::HandleDeleteCommand(const char* args, WorldSession *m_session)
 	unit->RemoveFromWorld(false,true);
 
 	if(unit->IsVehicle())
-		delete TO_VEHICLE(unit);
+		TO_VEHICLE(unit)->Destructor();
 	else
-		delete unit;
-		unit = NULL;
+		unit->Destructor();
 
 	return true;
 }
@@ -446,8 +445,7 @@ bool ChatHandler::HandleCastSpellCommand(const char* args, WorldSession *m_sessi
 	if(!sp)
 	{
 		RedSystemMessage(m_session, "Spell failed creation!");
-		delete sp;
-		sp = NULL;
+		sp->Destructor();
 		return false;
 	}
 
@@ -680,7 +678,7 @@ bool ChatHandler::HandleGODelete(const char *args, WorldSession *m_session)
 		}
 	}
 	GObj->Despawn(0);
-	delete GObj;
+	GObj->Destructor();
 	GObj = NULL;
 
 	m_session->GetPlayer()->m_GM_SelectedGO = NULL;
@@ -784,43 +782,43 @@ bool ChatHandler::HandleGOInfo(const char *args, WorldSession *m_session)
 
 	switch( GObj->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) )
 	{
-	case GAMEOBJECT_TYPE_DOOR:		  sstext << "Door";	break;
-	case GAMEOBJECT_TYPE_BUTTON:		sstext << "Button";	break;
-	case GAMEOBJECT_TYPE_QUESTGIVER:	sstext << "Quest Giver";	break;
-	case GAMEOBJECT_TYPE_CHEST:		 sstext << "Chest";	break;
-	case GAMEOBJECT_TYPE_BINDER:		sstext << "Binder";	break;
-	case GAMEOBJECT_TYPE_GENERIC:	   sstext << "Generic";	break;
-	case GAMEOBJECT_TYPE_TRAP:		  sstext << "Trap";	break;
-	case GAMEOBJECT_TYPE_CHAIR:		 sstext << "Chair";	break;
-	case GAMEOBJECT_TYPE_SPELL_FOCUS:   sstext << "Spell Focus";	break;
-	case GAMEOBJECT_TYPE_TEXT:		  sstext << "Text";	break;
-	case GAMEOBJECT_TYPE_GOOBER:		sstext << "Goober";	break;
-	case GAMEOBJECT_TYPE_TRANSPORT:	 sstext << "Transport";	break;
-	case GAMEOBJECT_TYPE_AREADAMAGE:	sstext << "Area Damage";	break;
-	case GAMEOBJECT_TYPE_CAMERA:		sstext << "Camera";	break;
-	case GAMEOBJECT_TYPE_MAP_OBJECT:	sstext << "Map Object";	break;
-	case GAMEOBJECT_TYPE_MO_TRANSPORT:  sstext << "Mo Transport";	break;
-	case GAMEOBJECT_TYPE_DUEL_ARBITER:  sstext << "Duel Arbiter";	break;
-	case GAMEOBJECT_TYPE_FISHINGNODE:   sstext << "Fishing Node";	break;
-	case GAMEOBJECT_TYPE_RITUAL:		sstext << "Ritual";	break;
-	case GAMEOBJECT_TYPE_MAILBOX:	   sstext << "Mailbox";	break;
-	case GAMEOBJECT_TYPE_AUCTIONHOUSE:  sstext << "Auction House";	break;
-	case GAMEOBJECT_TYPE_GUARDPOST:	 sstext << "Guard Post";	break;
-	case GAMEOBJECT_TYPE_SPELLCASTER:   sstext << "Spell Caster";	break;
-	case GAMEOBJECT_TYPE_MEETINGSTONE:  sstext << "Meeting Stone";	break;
-	case GAMEOBJECT_TYPE_FLAGSTAND:	 sstext << "Flag Stand";	break;
-	case GAMEOBJECT_TYPE_FISHINGHOLE:   sstext << "Fishing Hole";	break;
-	case GAMEOBJECT_TYPE_FLAGDROP:	  sstext << "Flag Drop";	break;
-	case GAMEOBJECT_TYPE_MINI_GAME:		sstext << "Mini Game";	break;
-	case GAMEOBJECT_TYPE_LOTTERY_KIOSK:	   sstext << "Lottery Kiosk";	break;
-	case GAMEOBJECT_TYPE_CAPTURE_POINT:  sstext << "Capture Point";	break;
-	case GAMEOBJECT_TYPE_AURA_GENERATOR:	 sstext << "Aura Generator";	break;
-	case GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY:   sstext << "Dungeon Difficulty";	break;
-	case GAMEOBJECT_TYPE_BARBER_CHAIR:  sstext << "Barber Chair";	break;
-	case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:	 sstext << "Destructible Building";	break;
-	case GAMEOBJECT_TYPE_GUILD_BANK:   sstext << "Guild Bank";	break;
-	case GAMEOBJECT_TYPE_TRAPDOOR:	  sstext << "Trapdoor";	break;
-	default:							sstext << "Unknown.";	break;
+	case GAMEOBJECT_TYPE_DOOR:					sstext << "Door";	break;
+	case GAMEOBJECT_TYPE_BUTTON:				sstext << "Button";	break;
+	case GAMEOBJECT_TYPE_QUESTGIVER:			sstext << "Quest Giver";	break;
+	case GAMEOBJECT_TYPE_CHEST:					sstext << "Chest";	break;
+	case GAMEOBJECT_TYPE_BINDER:				sstext << "Binder";	break;
+	case GAMEOBJECT_TYPE_GENERIC:				sstext << "Generic";	break;
+	case GAMEOBJECT_TYPE_TRAP:					sstext << "Trap";	break;
+	case GAMEOBJECT_TYPE_CHAIR:					sstext << "Chair";	break;
+	case GAMEOBJECT_TYPE_SPELL_FOCUS:			sstext << "Spell Focus";	break;
+	case GAMEOBJECT_TYPE_TEXT:					sstext << "Text";	break;
+	case GAMEOBJECT_TYPE_GOOBER:				sstext << "Goober";	break;
+	case GAMEOBJECT_TYPE_TRANSPORT:				sstext << "Transport";	break;
+	case GAMEOBJECT_TYPE_AREADAMAGE:			sstext << "Area Damage";	break;
+	case GAMEOBJECT_TYPE_CAMERA:				sstext << "Camera";	break;
+	case GAMEOBJECT_TYPE_MAP_OBJECT:			sstext << "Map Object";	break;
+	case GAMEOBJECT_TYPE_MO_TRANSPORT:			sstext << "Mo Transport";	break;
+	case GAMEOBJECT_TYPE_DUEL_ARBITER:			sstext << "Duel Arbiter";	break;
+	case GAMEOBJECT_TYPE_FISHINGNODE:			sstext << "Fishing Node";	break;
+	case GAMEOBJECT_TYPE_RITUAL:				sstext << "Ritual";	break;
+	case GAMEOBJECT_TYPE_MAILBOX:				sstext << "Mailbox";	break;
+	case GAMEOBJECT_TYPE_AUCTIONHOUSE:			sstext << "Auction House";	break;
+	case GAMEOBJECT_TYPE_GUARDPOST:				sstext << "Guard Post";	break;
+	case GAMEOBJECT_TYPE_SPELLCASTER:			sstext << "Spell Caster";	break;
+	case GAMEOBJECT_TYPE_MEETINGSTONE:			sstext << "Meeting Stone";	break;
+	case GAMEOBJECT_TYPE_FLAGSTAND:				sstext << "Flag Stand";	break;
+	case GAMEOBJECT_TYPE_FISHINGHOLE:			sstext << "Fishing Hole";	break;
+	case GAMEOBJECT_TYPE_FLAGDROP:				sstext << "Flag Drop";	break;
+	case GAMEOBJECT_TYPE_MINI_GAME:				sstext << "Mini Game";	break;
+	case GAMEOBJECT_TYPE_LOTTERY_KIOSK:			sstext << "Lottery Kiosk";	break;
+	case GAMEOBJECT_TYPE_CAPTURE_POINT:			sstext << "Capture Point";	break;
+	case GAMEOBJECT_TYPE_AURA_GENERATOR:		sstext << "Aura Generator";	break;
+	case GAMEOBJECT_TYPE_DUNGEON_DIFFICULTY:	sstext << "Dungeon Difficulty";	break;
+	case GAMEOBJECT_TYPE_BARBER_CHAIR:			sstext << "Barber Chair";	break;
+	case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:	sstext << "Destructible Building";	break;
+	case GAMEOBJECT_TYPE_GUILD_BANK:			sstext << "Guild Bank";	break;
+	case GAMEOBJECT_TYPE_TRAPDOOR:				sstext << "Trapdoor";	break;
+	default:									sstext << "Unknown.";	break;
 	}
 
 	sstext
@@ -908,6 +906,51 @@ bool ChatHandler::HandleGORebuild(const char* args, WorldSession* m_session)
 	}
 	go->Rebuild();
 	BlueSystemMessage(m_session, "Gameobject Rebuilt.");
+	return true;
+}
+
+bool ChatHandler::HandleGODestroy(const char* args, WorldSession* m_session)
+{
+	GameObject* go = m_session->GetPlayer()->m_GM_SelectedGO;
+	if( !go )
+	{
+		RedSystemMessage(m_session, "No selected GameObject...");
+		return true;
+	}
+	if(go->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+	{
+		RedSystemMessage(m_session, "You must select a Destructible gameobject!");
+		return true;
+	}
+	uint32 hp = go->Health;
+	go->TakeDamage(hp);		// Destroy it
+	BlueSystemMessage(m_session, "Gameobject Destroyed.");
+	return true;
+}
+
+bool ChatHandler::HandleGODamage(const char* args, WorldSession* m_session)
+{
+	GameObject* go = m_session->GetPlayer()->m_GM_SelectedGO;
+	if( !go )
+	{
+		RedSystemMessage(m_session, "No selected GameObject...");
+		return true;
+	}
+	if(go->GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID) != GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+	{
+		RedSystemMessage(m_session, "You must select a Destructible gameobject!");
+		return true;
+	}
+	if(!args)
+	{
+		RedSystemMessage(m_session, "Invalid syntax. Should be .gobject damage 1.0");
+		return false;
+	}
+	float damage = (float)atof(args);
+	if(!damage)
+		damage = 1;
+	go->TakeDamage(damage);		// Destroy it
+	BlueSystemMessage(m_session, "Gameobject Damaged %u .", damage);
 	return true;
 }
 
@@ -1123,23 +1166,6 @@ bool ChatHandler::HandleGOAnimProgress(const char * args, WorldSession * m_sessi
 
 bool ChatHandler::HandleGOExport(const char * args, WorldSession * m_session)
 {
-	/*if(!m_session->GetPlayer()->m_GM_SelectedGO)
-		return false;
-
-	std::stringstream name;
-	if (*args)
-	{
-		name << "GO_" << args << ".sql";
-	}
-	else
-	{
-		name << "GO_" << m_session->GetPlayer()->m_GM_SelectedGO->GetEntry() << ".sql";
-	}
-
-	m_session->GetPlayer()->m_GM_SelectedGO->SaveToFile(name);
-
-	BlueSystemMessage(m_session, "Go saved to: %s", name.str().c_str());*/
-
 	Creature* pCreature = getSelectedCreature(m_session, true);
 	if(!pCreature) return true;
 	WorldDatabase.WaitExecute("INSERT INTO creature_names_export SELECT * FROM creature_names WHERE entry = %u", pCreature->GetEntry());

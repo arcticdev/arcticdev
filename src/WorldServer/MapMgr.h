@@ -32,7 +32,7 @@ typedef HM_NAMESPACE::hash_map<uint32, Object*> StorageMap;
 typedef unordered_set<uint64> CombatProgressMap;
 typedef unordered_set<Vehicle*> VehicleSet;
 typedef unordered_set<Creature*> CreatureSet;
-typedef unordered_set<GameObject* > GameObjectSet;
+typedef unordered_set<GameObject*> GameObjectSet;
 typedef HM_NAMESPACE::hash_map<uint32, Vehicle*> VehicleSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, Creature*> CreatureSqlIdMap;
 typedef HM_NAMESPACE::hash_map<uint32, GameObject*> GameObjectSqlIdMap;
@@ -84,7 +84,7 @@ public:
 
 	uint32 m_VehicleArraySize;
 	uint32 m_VehicleHighGuid;
-	HM_NAMESPACE::hash_map<const uint32,Vehicle*> m_VehicleStorage;
+	HM_NAMESPACE::unordered_map<const uint32,Vehicle*> m_VehicleStorage;
 	Vehicle* CreateVehicle(uint32 entry);
 
 	__inline Vehicle* GetVehicle(const uint32 guid)
@@ -98,7 +98,7 @@ public:
 
 	uint32 m_CreatureArraySize;
 	uint32 m_CreatureHighGuid;
-	HM_NAMESPACE::hash_map<const uint32,Creature*> m_CreatureStorage;
+	HM_NAMESPACE::unordered_map<const uint32,Creature*> m_CreatureStorage;
 	Creature* CreateCreature(uint32 entry);
 
 	__inline Creature* GetCreature(const uint32 guid)
@@ -184,6 +184,7 @@ public:
 	MapMgr(Map *map, uint32 mapid, uint32 instanceid);
 	~MapMgr();
 	void Init();
+	void Destructor();
 
 	void PushObject(Object* obj);
 	void PushStaticObject(Object* obj);
@@ -229,9 +230,6 @@ public:
 	ARCTIC_INLINE void SetCollision(bool enable) { collision = enable; }
 	ARCTIC_INLINE bool IsCollisionEnabled() { return collision; }
 
-	ARCTIC_INLINE void SetPathfinding(bool enable) { pathfinding = enable; }
-	ARCTIC_INLINE bool IsPathfindingEnabled() { return pathfinding; }
-
 	ARCTIC_INLINE MapScriptInterface * GetInterface() { return ScriptInterface; }
 	virtual int32 event_GetInstanceID() { return m_instanceID; }
 
@@ -254,9 +252,6 @@ public:
 	void SendMessageToCellPlayers(Object* obj, WorldPacket * packet, uint32 cell_radius = 2);
 	void SendChatMessageToCellPlayers(Object* obj, WorldPacket * packet, uint32 cell_radius, uint32 langpos, int32 lang, WorldSession * originator);
 
-	bool LoadNavMesh(uint32 x, uint32 y);
-	LocationVector getNextPositionOnPathToLocation(const float startx, const float starty, const float startz, const float endx, const float endy, const float endz);
-
 	Instance * pInstance;
 	void BeginInstanceExpireCountdown();
 	void HookOnAreaTrigger(Player* plr, uint32 id);
@@ -271,17 +266,14 @@ public:
 	// kill the worker thread only
 	void KillThread()
 	{
-		pInstance=NULL;
+		pInstance = NULL;
 		thread_kill_only = true;
 		Terminate();
 		while(thread_running)
-		{
 			Sleep(100);
-		}
 	}
 
 protected:
-	dtNavMesh *m_navMesh[64][64];
 
 	// Collect and send updates to clients
 	void _UpdateObjects();
@@ -297,11 +289,11 @@ private:
 public:
 	// Distance a Player can "see" other objects and receive updates from them (!! ALREADY dist*dist !!)
 	float m_UpdateDistance;
+	bool collisionloaded;
 
 private:
 	/* Map Information */
 	bool collision;
-	bool pathfinding;
 	MapInfo *pMapInfo;
 	uint32 m_instanceID;
 
@@ -325,7 +317,7 @@ public:
 	VehicleSet activeVehicles;
 	EventableObjectHolder eventHolder;
 	CBattleground* m_battleground;
-	unordered_set<Corpse* > m_corpses;
+	unordered_set<Corpse*> m_corpses;
 	VehicleSqlIdMap _sqlids_vehicles;
 	CreatureSqlIdMap _sqlids_creatures;
 	GameObjectSqlIdMap _sqlids_gameobjects;
@@ -357,12 +349,14 @@ public:
 	// send packet functions for state manager
 	void SendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, WorldPacket *pData);
 	void SendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, StackPacket *pData);
+	void EventSendPacketToPlayers(int32 iZoneMask, int32 iFactionMask, WorldPacket *pData);
 	void SendPvPCaptureMessage(int32 iZoneMask, uint32 ZoneId, const char * Format, ...);
 
 	// auras :< (world pvp)
 	void RemoveAuraFromPlayers(int32 iFactionMask, uint32 uAuraId);
 	void RemovePositiveAuraFromPlayers(int32 iFactionMask, uint32 uAuraId);
 	void CastSpellOnPlayers(int32 iFactionMask, uint32 uSpellId);
+
 
 public:
 
@@ -383,5 +377,6 @@ public:
 	void CallScriptUpdate();
 
 protected:
+
 	InstanceScript* mInstanceScript;
 };

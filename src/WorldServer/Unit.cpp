@@ -313,6 +313,11 @@ void Unit::Init()
 	SetFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_REGENERATE_POWER );
 }
 
+void Unit::Destructor()
+{
+	delete this;
+}
+
 void Unit::SetDiminishTimer(uint32 index)
 {
 	assert(index < DIMINISH_GROUPS);
@@ -331,7 +336,6 @@ void Unit::Update( uint32 p_time )
 
 		//-----------------------POWER & HP REGENERATION-----------------
 		/* Please dont do temp fixes. Better report to me. Thx. Shady */
-
 		if( p_time >= m_H_regenTimer )
 			RegenerateHealth();
 		else
@@ -4543,7 +4547,7 @@ void Unit::RemoveAllAurasOfType(uint32 auratype)
 	}
 }
 
-bool Unit::SetAuraDuration(uint32 spellId,Unit* caster,int32 duration)
+bool Unit::SetAuraDuration(uint32 spellId,Unit* caster,uint32 duration)
 {
 	Aura* aur= NULL;
 	aur = FindAura(spellId,caster->GetGUID());
@@ -4556,7 +4560,7 @@ bool Unit::SetAuraDuration(uint32 spellId,Unit* caster,int32 duration)
 	return true;
 }
 
-bool Unit::SetAuraDuration(uint32 spellId, int32 duration)
+bool Unit::SetAuraDuration(uint32 spellId,uint32 duration)
 {
 	Aura* aur = NULL;
 	aur = FindAura(spellId, 0);
@@ -6473,7 +6477,7 @@ void CombatStatusHandler::RemoveAttackTarget(Unit* pTarget)
 		}
 		else
 		{
-			uint32 new_t = uint32(UNIXTIME) + COMBAT_TIMEOUT_IN_SECONDS;
+			uint32 new_t = (uint32)UNIXTIME + COMBAT_TIMEOUT_IN_SECONDS;
 
 			if( itr->second < new_t )
 				itr->second = new_t;
@@ -6495,7 +6499,7 @@ void CombatStatusHandler::OnDamageDealt(Unit* pTarget, uint32 damage)
 		return;		// don't reset the combat timer when out of range.
 
 	AttackTMap::iterator itr = m_attackTargets.find(pTarget->GetGUID());
-	uint32 new_t = uint32(UNIXTIME) + COMBAT_TIMEOUT_IN_SECONDS;
+	uint32 new_t = (uint32)UNIXTIME + COMBAT_TIMEOUT_IN_SECONDS;
 	if(itr != m_attackTargets.end())
 	{
 		if( itr->second < new_t )
@@ -6521,7 +6525,7 @@ void CombatStatusHandler::OnDamageDealt(Unit* pTarget, uint32 damage)
 
 void CombatStatusHandler::UpdateTargets()
 {
-	uint32 mytm = uint32(UNIXTIME);
+	uint32 mytm = (uint32)UNIXTIME;
 	AttackTMap::iterator itr = m_attackTargets.begin();
 	AttackTMap::iterator it2 = m_attackTargets.begin();
 	Unit* pUnit;

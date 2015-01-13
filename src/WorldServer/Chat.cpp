@@ -321,6 +321,8 @@ void CommandTableStorage::Init()
 		{ "info",                  'o', &ChatHandler::HandleGOInfo, "Gives you informations about selected GO", NULL, 0, 0, 0 },
 		{ "move",                  'g', &ChatHandler::HandleGOMove, "Moves gameobject to player xyz", NULL, 0, 0, 0 },
 		{ "rebuild",               'g', &ChatHandler::HandleGORebuild, "Rebuild the selected Destructible GameObject", NULL, 0, 0, 0 },
+		{ "destroy",               'g', &ChatHandler::HandleGODestroy, "Destroy the selected Destructible GameObject", NULL, 0, 0, 0 },
+		{ "damage",                'g', &ChatHandler::HandleGODamage, "Damage the selected Destructible GameObject", NULL, 0, 0, 0 },
 		{ "rotate",                'g', &ChatHandler::HandleGORotate, "Rotates gameobject x degrees", NULL, 0, 0, 0 },
 		{ "f_flags",               'g', NULL, "Flags", NULL, GAMEOBJECT_FLAGS, 0, 3 },
 		{ "f_dynflags",            'g', NULL, "Dynflags", NULL, GAMEOBJECT_DYNAMIC, 0, 3 },

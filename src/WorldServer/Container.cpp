@@ -37,9 +37,13 @@ Container::~Container()
 	for(uint32 i = 0; i < m_itemProto->ContainerSlots; i++)
 	{
 		if(m_Slot[i] && m_Slot[i]->GetOwner() == m_owner)
-			delete m_Slot[i];
-			m_Slot[i] = NULL;
+			m_Slot[i]->Destructor();
 	}
+}
+
+void Container::Destructor()
+{
+	delete this;
 }
 
 void Container::LoadFromDB( Field*fields )
@@ -244,7 +248,7 @@ bool Container::SafeFullRemoveItemFromSlot(int8 slot)
 		pItem->RemoveFromWorld();
 	}
 	pItem->DeleteFromDB();
-	delete pItem;
+	pItem->Destructor();
 	pItem = NULL;
 
 	return true;

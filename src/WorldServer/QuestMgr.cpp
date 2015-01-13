@@ -436,33 +436,26 @@ void QuestMgr::BuildRequestItems(WorldPacket *data, Quest* qst, Object* qst_give
 	*data << qst->quest_flags;
 	*data << qst->suggested_players;
 
-	*data << qst->required_money; // Required Money
+	*data << qst->required_money;		// Required Money
 
-	*data << uint32(6); // item count 
-	uint32 count = 0; 
+	// item count
+	*data << qst->count_required_item;
 	
 	// (loop for each item)
 	for(uint32 i = 0; i < 6; ++i)
 	{
 		if(qst->required_item[i])
 		{
-			if(qst->count_required_item == count) 
-				continue; // Overflow protector.
+			*data << qst->required_item[i];
+			*data << qst->required_itemcount[i];
 			it = ItemPrototypeStorage.LookupEntry(qst->required_item[i]);
-			if(it != NULL) 
-			{ 
-				*data << qst->required_item[i] << (qst->required_itemcount[i] ? qst->required_itemcount[i] : 1) << it->DisplayInfoID; 
-			} 
-			else 
-			{ 
-				OUT_DEBUG("Incorrect reward %u in quest %u", i, qst->id); 
-				*data << uint32(0) << uint32(0) << uint32(0); 
-			} 
-		count++; 
+			*data << (it ? it->DisplayInfoID : uint32(0));
 		}
 		else
 		{
-			*data << uint32(0) << uint32(0) << uint32(0);
+			*data << uint32(0);
+			*data << uint32(0);
+			*data << uint32(0);
 		}
 	}
 
@@ -1065,8 +1058,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 							{
-								delete itm;
-								itm = NULL;
+								itm->Destructor();
 							}
 						}
 					}
@@ -1105,8 +1097,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 						{
-							delete itm;
-							itm = NULL;
+							itm->Destructor();
 						}
 
 					}
@@ -1169,8 +1160,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 							itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_itemcount[i]));
 							if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 							{
-								delete itm;
-								itm = NULL;
+								itm->Destructor();
 							}
 						}
 					}
@@ -1209,8 +1199,7 @@ void QuestMgr::OnQuestFinished(Player* plr, Quest* qst, Object* qst_giver, uint3
 						itm->SetUInt32Value(ITEM_FIELD_STACK_COUNT, uint32(qst->reward_choiceitemcount[reward_slot]));
 						if( !plr->GetItemInterface()->SafeAddItem(itm,slotresult.ContainerSlot, slotresult.Slot) )
 						{
-							delete itm;
-							itm = NULL;
+							itm->Destructor();
 						}
 					}
 				}
@@ -1564,10 +1553,10 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 	if(qst_giver->GetTypeId() == TYPEID_GAMEOBJECT && !TO_GAMEOBJECT(qst_giver)->HasQuests())
 		return false;
 
+	WorldPacket data(1000);
 	uint32 questCount = sQuestMgr.ActiveQuestsCount(qst_giver, plr);
-	WorldPacket data(1000);	
 
-	if (questCount == 0) 
+	if (questCount == 0)
 	{
 		OUT_DEBUG("WORLD: Invalid NPC for CMSG_QUESTGIVER_HELLO.");
 		return false;
@@ -1588,7 +1577,7 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 				q_begin = TO_GAMEOBJECT(qst_giver)->QuestsBegin();
 				q_end   = TO_GAMEOBJECT(qst_giver)->QuestsEnd();
 			}
-		} 
+		}
 		else if(qst_giver->GetTypeId() == TYPEID_UNIT)
 		{
 			bValid = TO_CREATURE(qst_giver)->HasQuests();
@@ -1604,17 +1593,17 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 			OUT_DEBUG("QUESTS: Warning, invalid NPC "I64FMT" specified for OnActivateQuestGiver. TypeId: %d.", qst_giver->GetGUID(), qst_giver->GetTypeId());
 			return false;
 		}
-		
-		for(itr = q_begin; itr != q_end; itr++) 
+
+		for(itr = q_begin; itr != q_end; itr++)
 			if (sQuestMgr.CalcQuestStatus(qst_giver, plr, *itr) >= QMGR_QUEST_CHAT)
 				break;
 
 		if (sQuestMgr.CalcStatus(qst_giver, plr) < QMGR_QUEST_CHAT)
-			return false; 
+			return false;
 
 		ASSERT(itr != q_end);
 
-		uint8 status = sQuestMgr.CalcStatus(qst_giver, plr);
+		uint8 status = CalcStatus(qst_giver, plr);
 
 		if ((status == QMGR_QUEST_AVAILABLE) || (status == QMGR_QUEST_REPEATABLE) || (status == QMGR_QUEST_CHAT))
 		{
@@ -1636,7 +1625,7 @@ bool QuestMgr::OnActivateQuestGiver(Object* qst_giver, Player* plr)
 			DEBUG_LOG( "WORLD"," Sent SMSG_QUESTGIVER_REQUEST_ITEMS." );
 		}
 	}
-	else 
+	else
 	{
 		sQuestMgr.BuildQuestList(&data, qst_giver ,plr, plr->GetSession()->language);
 		plr->GetSession()->SendPacket(&data);

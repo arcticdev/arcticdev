@@ -19,7 +19,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 
 	recv_data >> guid;
 	uint32 guidtype = GET_TYPE_FROM_GUID(guid);
-	if(guidtype==HIGHGUID_TYPE_UNIT)
+	if(guidtype == HIGHGUID_TYPE_UNIT)
 	{
 		Creature* quest_giver = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(guid));
 		if(quest_giver)
@@ -33,7 +33,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 			return;
 		}
 	}
-	else if(guidtype==HIGHGUID_TYPE_ITEM)
+	else if(guidtype == HIGHGUID_TYPE_ITEM)
 	{
 		Item* quest_giver = GetPlayer()->GetItemInterface()->GetItemByGUID(guid);
 		if(quest_giver)
@@ -41,7 +41,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
 		else
 			return;
 	}
-	else if(guidtype==HIGHGUID_TYPE_GAMEOBJECT)
+	else if(guidtype == HIGHGUID_TYPE_GAMEOBJECT)
 	{
 		GameObject* quest_giver = _player->GetMapMgr()->GetGameObject(GET_LOWGUID_PART(guid));
 		if(quest_giver)
@@ -157,13 +157,13 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 	
 	if (!qst_giver)
 	{
-		OUT_DEBUG("WORLD: Invalid questgiver GUID.");
+		DEBUG_LOG( "WORLD","Invalid questgiver GUID.");
 		return;
 	}
 
 	if (!bValid)
 	{
-		OUT_DEBUG("WORLD: object is not a questgiver.");
+		DEBUG_LOG( "WORLD","Object is not a questgiver.");
 		return;
 	}
 
@@ -171,7 +171,7 @@ void WorldSession::HandleQuestGiverQueryQuestOpcode( WorldPacket & recv_data )
 	{
 		sQuestMgr.BuildQuestDetails(&data, qst, qst_giver, 1, language, _player);	 // 0 because we want goodbye to function
 		SendPacket(&data);
-		OUT_DEBUG( "WORLD: Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
+		DEBUG_LOG( "WORLD","Sent SMSG_QUESTGIVER_QUEST_DETAILS." );
 	}
 	else if (status == QMGR_QUEST_NOT_FINISHED || status == QMGR_QUEST_FINISHED)
 	{
@@ -313,8 +313,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			{
 				if(!_player->GetItemInterface()->AddItemToFreeSlot(item))
 				{
-					delete item;
-					item = NULL;
+					item->Destructor();
 				}
 				else
 					SendItemPushResult(item, false, true, false, true, _player->GetItemInterface()->LastSearchItemBagSlot(), _player->GetItemInterface()->LastSearchItemSlot(), 1);
@@ -330,8 +329,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode( WorldPacket & recv_data )
 			item->SetUInt32Value(ITEM_FIELD_STACK_COUNT, qst->srcitemcount ? qst->srcitemcount : 1);
 			if(!_player->GetItemInterface()->AddItemToFreeSlot(item))
 			{
-				delete item;
-				item = NULL;
+				item->Destructor();
 			}
 		}
 	}

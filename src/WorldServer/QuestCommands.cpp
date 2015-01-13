@@ -231,8 +231,7 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 							if(!plr->GetItemInterface()->AddItemToFreeSlot(item))
 							{
 								if(item)
-									delete item;
-									item = NULL;
+									item->Destructor();
 							}
 						}
 					}
@@ -246,8 +245,7 @@ bool ChatHandler::HandleQuestStartCommand(const char * args, WorldSession * m_se
 							if(!plr->GetItemInterface()->AddItemToFreeSlot(item))
 							{
 								if(item)
-									delete item;
-									item = NULL;
+									item->Destructor();
 							}
 						}
 					}

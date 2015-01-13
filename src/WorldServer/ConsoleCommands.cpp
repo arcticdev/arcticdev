@@ -32,7 +32,6 @@ bool HandleInfoCommand(BaseConsole * pConsole, int argc, const char * argv[])
 	pConsole->Write("======================================================================\r\n");
 	pConsole->Write("ArcTic Information: \r\n");
 	pConsole->Write("======================================================================\r\n");
-	// pConsole->Write("ArcTic Revision Information %s/%s-%s-%s\r\n", BUILD_REVISION, CONFIG, PLATFORM_TEXT, ARCH);
 	pConsole->Write("Server Uptime: %s\r\n", sWorld.GetUptimeString().c_str());
 	pConsole->Write("Current Players: %u (%d GMs, %d queued)\r\n", clientsNum, gm,  0);
 	pConsole->Write("Alliance Online: %u\r\n",sWorld.AlliancePlayers);
@@ -170,13 +169,13 @@ bool HandleBanAccountCommand(BaseConsole * pConsole, int argc, const char * argv
 	if(timeperiod < 0)
 		return false;
 
-	uint32 banned = (timeperiod ? uint32(UNIXTIME)+timeperiod : 1);
+	uint32 banned = (timeperiod ? (uint32)UNIXTIME+timeperiod : 1);
 
 	// apply instantly in db
 	sLogonCommHandler.Account_SetBanned(argv[1], banned, argv[3]);
 
 	pConsole->Write("Account '%s' has been banned %s%s. The change will be effective with the next reload cycle.\r\n", argv[1],
-		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+uint32(UNIXTIME)).c_str() : "");
+		timeperiod ? "until " : "forever", timeperiod ? ConvertTimeStampToDataTime(timeperiod+(uint32)UNIXTIME).c_str() : "");
 
 	return true;
 }

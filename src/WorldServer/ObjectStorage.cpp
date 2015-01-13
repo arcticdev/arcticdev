@@ -29,7 +29,7 @@ const char * gItemPrototypeFormat             = "uuuussssuuuuuuuuuuuuuuuuuuuuuuu
 const char * gNpcTextFormat                   = "ufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuufssuuuuuuu";
 const char * gQuestFormat                     = "uuuuuuuuuuuuuuuuuuuussssssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuc";
 const char * gTeleportCoordFormat             = "uxuffff";
-const char * gWorldMapInfoFormat              = "uuuuufffusuuuuuuuufub"; // The last bool(b) for Clustering +b
+const char * gWorldMapInfoFormat              = "uuuuufffusuuuuuufub"; // The last bool(b) for Clustering
 const char * gRandomItemCreationFormat        = "uuuu";
 const char * gRandomCardCreationFormat        = "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu";
 const char * gScrollCreationFormat            = "uu";
@@ -81,46 +81,45 @@ void ObjectMgr::LoadProfessionDiscoveries()
 
 void ObjectMgr::LoadExtraCreatureProtoStuff()
 {
+	StorageContainerIterator<CreatureProto> * itr = CreatureProtoStorage.MakeIterator();
 	CreatureProto * cn;
-	CreatureInfo * ci;
-	StorageContainerIterator<CreatureProto> * cpitr = CreatureProtoStorage.MakeIterator();
-	while(!cpitr->AtEnd())
+	while(!itr->AtEnd())
 	{
-		cn = cpitr->Get();
-		if(cn->aura_string)
+		cn = itr->Get();
+		if(itr->Get()->aura_string)
 		{
-			string auras = string(cn->aura_string);
+			string auras = string(itr->Get()->aura_string);
 			vector<string> aurs = StrSplit(auras, " ");
 			for(vector<string>::iterator it = aurs.begin(); it != aurs.end(); ++it)
 			{
 				uint32 id = atol((*it).c_str());
 				if(id)
-					cn->start_auras.insert( id );
+					itr->Get()->start_auras.insert( id );
 			}
 		}
 
-		if(!cn->MinHealth)
-			cn->MinHealth = 1;
-		if(!cn->MaxHealth)
-			cn->MaxHealth = 1;
-		if (cn->AttackType > SCHOOL_ARCANE)
-			cn->AttackType = SCHOOL_NORMAL;
+		if(!itr->Get()->MinHealth)
+			itr->Get()->MinHealth = 1;
+		if(!itr->Get()->MaxHealth)
+			itr->Get()->MaxHealth = 1;
+		if (itr->Get()->AttackType > SCHOOL_ARCANE)
+			itr->Get()->AttackType = SCHOOL_NORMAL;
 
 		cn->m_canFlee = cn->m_canRangedAttack = cn->m_canCallForHelp = false;
 		cn->m_fleeHealth = 0.0f;
-		// please.... m_fleeDuration is a uint32...
-		//cn->m_fleeDuration = 0.0f;
 		cn->m_fleeDuration = 0;
 
-		if(!cpitr->Inc())
+		if(!itr->Inc())
 			break;
 	}
-	cpitr->Destruct();
 
-	StorageContainerIterator<CreatureInfo> * ciitr = CreatureNameStorage.MakeIterator();
-	while(!ciitr->AtEnd())
+	itr->Destruct();
+
+	StorageContainerIterator<CreatureInfo> * itr2 = CreatureNameStorage.MakeIterator();
+	CreatureInfo * ci;
+	while(!itr2->AtEnd())
 	{
-		ci = ciitr->Get();
+		ci = itr2->Get();
 
 		ci->lowercase_name = string(ci->Name);
 		for(uint32 j = 0; j < ci->lowercase_name.length(); ++j)
@@ -128,39 +127,38 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 		ci->gossip_script = sScriptMgr.GetDefaultGossipScript();
 
-		if(!ciitr->Inc())
+		if(!itr2->Inc())
 			break;
 	}
-	ciitr->Destruct();
+	itr2->Destruct();
 
+	StorageContainerIterator<Quest> * itr3 = QuestStorage.MakeIterator();
+	Quest * qst;
+	while(!itr3->AtEnd())
 	{
-		StorageContainerIterator<Quest> * qitr = QuestStorage.MakeIterator();
-		while(!qitr->AtEnd())
-		{
-			qitr->Get()->pQuestScript = NULL;
+		qst = itr3->Get();
+		qst->pQuestScript = NULL;
 
-			if( !qitr->Inc() )
-				break;
-		}
-		qitr->Destruct();
+		if( !itr3->Inc() )
+			break;
 	}
+	itr3->Destruct();
 
 	// Load AI Agents
 	if(!Config.MainConfig.GetBoolDefault("Server", "LoadAIAgents", true))
-		return;
-
-	QueryResult * result = WorldDatabase.Query( "SELECT Entry,Type+0,Chance,MaxCount,Spell,SpellType+0,TargetType+0,CoolDown,floatMisc1,Misc2 FROM ai_agents" );
-	cn = NULL;
-
-	if( result != NULL )
 	{
-		AI_Spell *sp = NULL;
-		SpellEntry * spe = NULL;
-		uint32 entry = 0;
-		uint32 spellID = 0;
-		uint16 agent = 0;
-		uint32 counter = 0;
+		QueryResult * result = WorldDatabase.Query( "SELECT Entry,Type+0,Chance,MaxCount,Spell,SpellType+0,TargetType+0,CoolDown,floatMisc1,Misc2 FROM ai_agents" );
+		CreatureProto * cn = NULL;
+
+		if( result != NULL )
 		{
+			AI_Spell *sp = NULL;
+			SpellEntry * spe = NULL;
+			uint32 entry = 0;
+			uint32 spellID = 0;
+			uint16 agent = 0;
+			uint32 counter = 0;
+
 			do
 			{
 				sp = NULL;
@@ -184,7 +182,6 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 				spe = dbcSpell.LookupEntryForced(spellID);
 				if( spe == NULL )
 				{
-					WorldDatabase.Execute("DELETE FROM AI_Agents where entry = '%u' AND spell = '%u'", entry, spellID);
 					Log.Warning("AIAgent", "Agent skipped, NPC %u tried to add non-existing Spell %u.", fields[0].GetUInt32(), fields[4].GetUInt32());
 					continue;
 				}
@@ -271,18 +268,10 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 
 					case AGENT_FLEE:
 					{
-						// % health
+						// % health 
 						cn->m_canFlee = true;
-						if(sp->floatMisc1)
-							cn->m_fleeHealth = sp->floatMisc1;
-						else // if left to zero, start running inmeadetely
-							cn->m_fleeHealth = 100.0f;
-
-						if(sp->Misc2)
-							cn->m_fleeDuration = sp->Misc2;
-						else
-							cn->m_fleeDuration = 10000;
-
+						cn->m_fleeHealth = (sp->floatMisc1 ? sp->floatMisc1 : 100.0f);	//if left to zero, start running inmeadetely
+						cn->m_fleeDuration = (sp->Misc2 ? sp->Misc2 : 10000);
 						delete sp;
 						sp = NULL;
 						counter += 1;
@@ -291,11 +280,7 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					case AGENT_CALLFORHELP:
 					{
 						cn->m_canCallForHelp = true;
-						if(sp->floatMisc1)
-							cn->m_callForHelpHealth = sp->floatMisc1;
-						else
-							cn->m_callForHelpHealth = 0.2f;
-
+						cn->m_callForHelpHealth = (sp->floatMisc1 ? sp->floatMisc1 : 0.2f);
 						delete sp;
 						sp = NULL;
 						counter += 1;
@@ -314,14 +299,14 @@ void ObjectMgr::LoadExtraCreatureProtoStuff()
 					cn->spells.push_back(sp);
 				sp = NULL;
 			}while( result->NextRow() );
+			delete result;
+
+			if(counter)
+				Log.Notice("AIAgent","Loaded %u ai_agents from database",counter);
+			else
+				Log.Warning("AIAgent","No ai_agents found in database");
 		}
-		if(counter)
-			Log.Notice("AIAgent","Loaded %u ai_agents from database",counter);
-		else
-			Log.Warning("AIAgent","No ai_agents found in database");
 	}
-	if(result)
-		delete result;
 }
 
 void ObjectMgr::LoadExtraItemStuff()
@@ -379,17 +364,9 @@ void ObjectMgr::LoadExtraItemStuff()
 		map<uint32,uint32>::iterator iter = foodItems.find(pItemPrototype->ItemId);
 		if(iter != foodItems.end())
 			ft = iter->second;
+		pItemPrototype->FoodType = ft ;
 
-		pItemPrototype->FoodType = ft;
 		pItemPrototype->gossip_script = NULL;
-
-		if(pItemPrototype->ScalingStatsEntry > 0 && pItemPrototype->Class == ITEM_CLASS_ARMOR)
-		{
-			uint32 osubclass = pItemPrototype->SubClass;
-			pItemPrototype->DummySubClass = (osubclass > 2 ? (osubclass - 1) : osubclass);
-		}
-		else
-			pItemPrototype->DummySubClass = 0;
 
 		// forced pet entries
 		switch( pItemPrototype->ItemId )

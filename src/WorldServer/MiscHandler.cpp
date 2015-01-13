@@ -15,7 +15,7 @@ void WorldSession::HandleRepopRequestOpcode( WorldPacket & recv_data )
 	if(_player->m_CurrentVehicle)
 		_player->m_CurrentVehicle->RemovePassenger(_player);
 
-	  GetPlayer()->RepopRequestedPlayer();
+	GetPlayer()->RepopRequestedPlayer();
 }
 
 void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
@@ -119,8 +119,7 @@ void WorldSession::HandleAutostoreLootItemOpcode( WorldPacket & recv_data )
 		}
 		else
 		{
-			delete item;
-			item = NULL;
+			item->Destructor();
 		}
 	}
 	else
@@ -317,18 +316,17 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 
 		pGO->m_loot.looters.erase(_player->GetLowGUID());
         switch( pGO->GetByte(GAMEOBJECT_BYTES_1, 1) )
-        {
-        case GAMEOBJECT_TYPE_FISHINGNODE:
-            {
-		        if(pGO->IsInWorld())
-			    {
-				    pGO->RemoveFromWorld(true);
-			    }
-			    delete pGO;
-				pGO = NULL;
-            }break;
-        case GAMEOBJECT_TYPE_CHEST:
-            {
+		{
+		case GAMEOBJECT_TYPE_FISHINGNODE:
+			{
+				if(pGO->IsInWorld())
+				{
+					pGO->RemoveFromWorld(true);
+				}
+				pGO->Destructor();
+			}break;
+		case GAMEOBJECT_TYPE_CHEST:
+			{
                 pGO->m_loot.looters.erase( _player->GetLowGUID() );
                 //check for locktypes
 
@@ -361,11 +359,11 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 										return;
                                     }
                                     else
-                                    {
+									{
     									pGO->CalcMineRemaining( true );
 										pGO->Despawn( 600000 + ( RandomUInt( 180000 ) ) );
 										return;
-                                    }
+									}
                                 }
                                 else //other type of locks that i dont bother to split atm ;P
                                 {
@@ -410,7 +408,7 @@ void WorldSession::HandleLootReleaseOpcode( WorldPacket & recv_data )
 			        }
 
 
-			        pGO->Despawn(DespawnTime);
+					pGO->Despawn(DespawnTime);
 
                 }
             }
@@ -473,10 +471,10 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 	bool cname;
 	uint32 i;
 
-	if( (uint32(UNIXTIME) - m_lastWhoTime) < 10 && !GetPlayer()->bGMTagOn )
+	if( ((uint32)UNIXTIME - m_lastWhoTime) < 10 && !GetPlayer()->bGMTagOn )
 		return;
 
-	m_lastWhoTime = uint32(UNIXTIME);
+	m_lastWhoTime = (uint32)UNIXTIME;
 	recv_data >> min_level >> max_level;
 	recv_data >> chatname >> unkstr >> race_mask >> class_mask;
 	recv_data >> zone_count;
@@ -904,50 +902,43 @@ void WorldSession::HandleBugOpcode( WorldPacket & recv_data )
 	OUT_DEBUG( content.c_str( ) );
 }
 
-void WorldSession::HandleCorpseReclaimOpcode(WorldPacket& recv_data)
+void WorldSession::HandleCorpseReclaimOpcode(WorldPacket & recv_data)
 {
-	if(_player->isAlive())
-		return;
-
+	CHECK_INWORLD_RETURN
 	OUT_DEBUG("WORLD: Received CMSG_RECLAIM_CORPSE");
 
 	uint64 guid;
 	recv_data >> guid;
 
-	Corpse* pCorpse = objmgr.GetCorpse( uint32(guid) );
+	if(guid == 0)
+		return;
 
-	if( pCorpse == NULL )
-	{
-		QueryResult* result = CharacterDatabase.Query("SELECT * FROM corpses WHERE guid = %u AND mapId = %u",
-			guid, _player->GetMapId());
-		if(result == NULL)
-			return;
-		delete result;
-		pCorpse = _player->CreateCorpse();
-	}
+	Corpse* pCorpse = objmgr.GetCorpse((uint32)guid);
+	if(pCorpse == NULL)
+		return;
 
 	// Check that we're reviving from a corpse, and that corpse is associated with us.
 	if( pCorpse->GetUInt32Value( CORPSE_FIELD_OWNER ) != _player->GetLowGUID() && pCorpse->GetUInt32Value( CORPSE_FIELD_FLAGS ) == 5 )
 	{
-		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
+		WorldPacket data(SMSG_RESURRECT_FAILED, 4);
 		data << uint32(1); // this is a real guess!
 		SendPacket(&data);
 		return;
 	}
 
 	// Check we are actually in range of our corpse
-	if ( pCorpse->GetDistance2dSq( _player ) > CORPSE_MINIMUM_RECLAIM_RADIUS_SQ )
+	if(pCorpse->GetDistance2dSq(_player) > CORPSE_MINIMUM_RECLAIM_RADIUS_SQ)
 	{
-		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
+		WorldPacket data(SMSG_RESURRECT_FAILED, 4);
 		data << uint32(1);
 		SendPacket(&data);
 		return;
 	}
 
 	// Check death clock before resurrect they must wait for release to complete
-	if( pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME > time( NULL ) )
+	if(time(NULL) < pCorpse->GetDeathClock() + CORPSE_RECLAIM_TIME)
 	{
-		WorldPacket data( SMSG_RESURRECT_FAILED, 4 );
+		WorldPacket data(SMSG_RESURRECT_FAILED, 4);
 		data << uint32(1);
 		SendPacket(&data);
 		return;
@@ -1385,7 +1376,7 @@ void WorldSession::HandleGameObjectUse(WorldPacket & recv_data)
 				for(i = 0; i < goinfo->SpellFocus; i++)
 				{
 					plr = _player->GetMapMgr()->GetPlayer(obj->m_ritualmembers[i]);
-					if(plr != NULL)
+					if(plr!=NULL)
 					{
 						plr->SetChannelSpellTargetGUID(0);
 						plr->SetUInt32Value(UNIT_CHANNEL_SPELL, 0);
@@ -1603,7 +1594,7 @@ void WorldSession::HandlePlayedTimeOpcode(WorldPacket & recv_data)
 {
 	CHECK_INWORLD_RETURN;
 
-	uint32 playedt = uint32(UNIXTIME) - _player->m_playedtime[2];
+	uint32 playedt = (uint32)UNIXTIME - _player->m_playedtime[2];
 	uint8 displayinui = 0;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1913,8 +1904,7 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recv_data)
 	}
 	else
 	{
-		delete item;
-		item = NULL;
+		item->Destructor();
 	}
 
 	pLoot->items.at(slotid).iItemsCount = 0;
@@ -2300,7 +2290,7 @@ void WorldSession::HandleRemoveGlyph(WorldPacket & recv_data)
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
 	WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
-	data << uint32(UNIXTIME);
+	data << (uint32)UNIXTIME;
 	SendPacket(&data);
 }
 

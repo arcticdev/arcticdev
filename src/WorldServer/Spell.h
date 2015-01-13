@@ -66,6 +66,7 @@ public:
     friend class DummySpellHandler;
     Spell( Object* Caster, SpellEntry *info, bool triggered, Aura* aur);
     ~Spell();
+    void Destructor();
 
     // Fills specified targets at the area of effect
     void FillSpecifiedTargetsInArea(float srcx,float srcy,float srcz,uint32 ind, uint32 specification);
@@ -131,7 +132,7 @@ public:
 	void SendLogExecute(uint32 damage, uint64 & targetGuid);
 	void SendInterrupted(uint8 result);
 	void SendChannelUpdate(uint32 time);
-	void SendChannelStart(int32 duration);
+	void SendChannelStart(uint32 duration);
 	void SendResurrectRequest(Player* target);
 	static void SendHealSpellOnPlayer(Object* caster, Object* target, uint32 dmg, bool critical, uint32 overheal, uint32 spellid);
 	static void SendHealManaSpellOnPlayer(Object* caster, Object* target, uint32 dmg, uint32 powertype, uint32 spellid);
@@ -347,7 +348,7 @@ public:
 			{
 				// check for negative and 0 durations.
 				// duration affected by level
-				if((int32)sd->Duration1 < 1 && sd->Duration2 > 0 && u_caster)
+				if((int32)sd->Duration1 < 0 && sd->Duration2 && u_caster)
 				{
 					this->Dur = uint32(((int32)sd->Duration1 + (sd->Duration2 * u_caster->getLevel())));
 					if((int32)this->Dur > 0 && sd->Duration3 > 0 && (int32)this->Dur > (int32)sd->Duration3)
@@ -364,7 +365,7 @@ public:
 					this->Dur = sd->Duration1;
 				}
 				// combo point lolerCopter? ;P
-				if(p_caster)
+				if(p_caster)  
 				{
 					uint32 cp=p_caster->m_comboPoints;
 					if(cp)
@@ -534,8 +535,8 @@ public:
 	// Returns true if spellEffect's effectNum effect affects testSpell based on EffectSpellClassMask
 	ARCTIC_INLINE static bool EffectAffectsSpell(SpellEntry* spellEffect, uint32 effectNum, SpellEntry* testSpell)
 	{
-		return (testSpell->SpellGroupType[0] && (spellEffect->EffectSpellClassMask[effectNum][0] & testSpell->SpellGroupType[0]) ||
-			testSpell->SpellGroupType[1] && (spellEffect->EffectSpellClassMask[effectNum][1] & testSpell->SpellGroupType[1]) ||
+		return (testSpell->SpellGroupType[0] && (spellEffect->EffectSpellClassMask[effectNum][0] & testSpell->SpellGroupType[0]) || 
+			testSpell->SpellGroupType[1] && (spellEffect->EffectSpellClassMask[effectNum][1] & testSpell->SpellGroupType[1]) || 
 			testSpell->SpellGroupType[2] && (spellEffect->EffectSpellClassMask[effectNum][2] & testSpell->SpellGroupType[2]));
 	}
 

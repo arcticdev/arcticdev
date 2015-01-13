@@ -555,7 +555,7 @@ void AIInterface::Update(uint32 p_time)
 			}
 			else
 			{
-				delete pSpell;
+				pSpell->Destructor();
 				pSpell = NULL;
 			}
 		}
@@ -2114,8 +2114,7 @@ bool AIInterface::showWayPoints(Player* pPlayer, bool Backwards)
 			pPlayer->GetSession()->SendPacket( &data1 );
 
 			// Cleanup
-			delete pWayPoint;
-			pWayPoint = NULL;
+			pWayPoint->Destructor();
 		}
 	}
 	return true;

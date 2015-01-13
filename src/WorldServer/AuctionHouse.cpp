@@ -76,7 +76,7 @@ void AuctionHouse::UpdateAuctions()
 	auctionLock.AcquireReadLock();
 	removalLock.Acquire();
 
-	uint32 t = uint32(UNIXTIME);
+	uint32 t = (uint32)UNIXTIME;
 	HM_NAMESPACE::hash_map<uint32, Auction*>::iterator itr = auctions.begin();
 	Auction * auct;
 	for(; itr != auctions.end();)
@@ -203,7 +203,7 @@ void AuctionHouse::RemoveAuction(Auction * auct)
 	itemLock.ReleaseWriteLock();
 
 	// Destroy the item from memory (it still remains in the db)
-	delete auct->pItem;
+	auct->pItem->Destructor();
 	auct->pItem = NULL;
 
 	// Finally destroy the auction instance.
@@ -522,7 +522,7 @@ void WorldSession::HandleAuctionSellItem( WorldPacket & recv_data )
 	// Create auction
 	Auction * auct = new Auction;
 	auct->BuyoutPrice = buyout;
-	auct->ExpiryTime = uint32(UNIXTIME) + (etime * 60);
+	auct->ExpiryTime = (uint32)UNIXTIME + (etime * 60);
 	auct->HighestBid = bid;
 	auct->HighestBidder = 0;	// hm
 	auct->Id = sAuctionMgr.GenerateAuctionId();

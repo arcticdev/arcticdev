@@ -22,10 +22,8 @@ void InstanceMgr::Load(TaskList * l)
 {
 	new FormationMgr;
 	new WorldStateTemplateManager;
-	QueryResult *result;
-
 	sWorldStateTemplateManager.LoadFromDB();
-
+	QueryResult *result;
 	// Create all non-instance type maps.
 	result = CharacterDatabase.Query( "SELECT MAX(id) FROM instances" );
 	if( result )
@@ -42,7 +40,7 @@ void InstanceMgr::Load(TaskList * l)
 	{
 		do 
 		{
-			if( !WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) )
+			if(WorldMapInfoStorage.LookupEntry(result->Fetch()[0].GetUInt32()) == NULL)
 				continue;
 
 			if( result->Fetch()[0].GetUInt32() >= NUM_MAPS )
@@ -63,19 +61,18 @@ void InstanceMgr::Load(TaskList * l)
 	StorageContainerIterator<MapInfo> * itr = WorldMapInfoStorage.MakeIterator();
 	while(!itr->AtEnd())
 	{
-		if( itr->Get()->mapid >= NUM_MAPS )
+		MapInfo* mapinfo = itr->Get();
+		if( mapinfo->mapid >= NUM_MAPS )
 		{
-			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", itr->Get()->mapid );
+			Log.Warning("InstanceMgr", "One or more of your worldmap_info rows specifies an invalid map: %u", mapinfo->mapid );
 			itr->Inc();
 			continue;
 		}
 
-		if(m_maps[itr->Get()->mapid] == NULL)
-		{
-			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, itr->Get()->mapid)));
-		}
+		if(m_maps[mapinfo->mapid] == NULL)
+			l->AddTask(new Task(new CallbackP1<InstanceMgr,uint32>(this, &InstanceMgr::_CreateMap, mapinfo->mapid)));
 
-		if( itr->Get()->flags != 1 && itr->Get()->cooldown == 0 ) //Transport maps have 0 update_distance since you don't load into them ;)
+		if( mapinfo->flags != 1 && mapinfo->cooldown == 0) //Transport maps have 0 update_distance since you don't load into them ;)
 		{
 			Log.Warning("InstanceMgr", "Your worldmap_info has no cooldown for map %u.", itr->Get()->mapid);
 			itr->Get()->cooldown = TIME_MINUTE * 30;
@@ -102,7 +99,7 @@ void InstanceMgr::Shutdown()
 	{
 		if(m_instances[i] != NULL)
 		{
-			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); itr++)
+			for(itr = m_instances[i]->begin(); itr != m_instances[i]->end(); ++itr)
 			{
 				if(itr->second->m_mapMgr)
 					itr->second->m_mapMgr->KillThread();
@@ -118,7 +115,7 @@ void InstanceMgr::Shutdown()
 		{
 			MapMgr* ptr = m_singleMaps[i];
 			ptr->KillThread();
-			delete ptr;
+			ptr->Destructor();
 			ptr = NULL;
 			m_singleMaps[i] = NULL; // and it dies :)
 		}
@@ -126,7 +123,7 @@ void InstanceMgr::Shutdown()
 		if(m_maps[i] != NULL)
 		{
 			delete m_maps[i];
-			m_maps[i]=NULL;
+			m_maps[i] = NULL;
 		}
 	}
 
@@ -422,8 +419,10 @@ MapMgr* InstanceMgr::GetInstance(Object* obj)
 			}
 
 			// iterate over our instances, and see if any of them are owned/joinable by him.
-			for(itr = instancemap->begin(); itr != instancemap->end(); ++itr)
+			for(itr = instancemap->begin(); itr != instancemap->end();)
 			{
+				++itr;
+
 				// Is this our instance?
 				uint8 owns = PlayerOwnsInstance(itr->second, plr);
 				if(owns >= OWNER_CHECK_OK )
@@ -714,7 +713,7 @@ void InstanceMgr::BuildXMLStats(char * m_file)
 					in = itr->second;
 					++itr;
 
-					if(in->m_mapMgr==NULL)
+					if(in->m_mapMgr == NULL)
 						continue;
 
 					BuildStats(in->m_mapMgr, m_file, in, in->m_mapInfo);

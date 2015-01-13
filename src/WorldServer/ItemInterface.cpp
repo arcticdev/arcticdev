@@ -31,8 +31,7 @@ ItemInterface::~ItemInterface()
 	for(uint32 i = 0; i < MAX_INVENTORY_SLOT; i++)
 	{
 		if( m_pItems[i] != NULL && m_pItems[i]->GetOwner() == m_pOwner )
-			delete m_pItems[i];
-			m_pItems[i] = NULL;
+			m_pItems[i]->Destructor();
 	}
 
 	for (uint32 i = 0; i < MAX_BUYBACK_SLOT; i++)
@@ -143,7 +142,7 @@ Item* ItemInterface::SafeAddItem(uint32 ItemId, uint8 ContainerSlot, uint8 slot)
 		}
 		else
 		{
-			delete pItem;
+			pItem->Destructor();
 			pItem = NULL;
 		}
 	}
@@ -157,7 +156,7 @@ Item* ItemInterface::SafeAddItem(uint32 ItemId, uint8 ContainerSlot, uint8 slot)
 		}
 		else
 		{
-			delete pItem;
+			pItem->Destructor();
 			pItem = NULL;
 		}
 	}
@@ -662,7 +661,7 @@ bool ItemInterface::SafeFullRemoveItemFromSlot(uint8 ContainerSlot, uint8 slot)
 			}
 
 			pItem->DeleteFromDB();
-			delete pItem;
+			pItem->Destructor();
 			pItem = NULL;
 		}
 	}
@@ -1817,10 +1816,7 @@ uint8 ItemInterface::CanEquipItemInSlot(uint8 DstInvSlot, uint8 slot, ItemProtot
 		if(proto->Class == ITEM_CLASS_ARMOR)
 		{
 
-			uint32 fakeclass = (proto->DummySubClass ? ((GetOwner() && GetOwner()->getLevel() < 40) ?
-			proto->DummySubClass : proto->SubClass) : proto->SubClass);
-
-			if(!(m_pOwner->GetArmorProficiency()&(((uint32)(1))<<fakeclass)))
+			if(!(m_pOwner->GetArmorProficiency()&(((uint32)(1))<<proto->SubClass)))
 				return INV_ERR_NO_REQUIRED_PROFICIENCY;
 
 		}
@@ -2620,38 +2616,36 @@ void ItemInterface::BuildInventoryChangeError(Item* SrcItem, Item* DstItem, uint
 
 void ItemInterface::EmptyBuyBack()
 {
-	 for (uint32 j = 0;j < 12;j++)
-	 {
-		 if (m_pBuyBack[j] != NULL)
-		 {
-			 m_pBuyBack[j]->DestroyForPlayer(m_pOwner);
-			 m_pBuyBack[j]->DeleteFromDB();
+	for (uint32 j = 0;j < 12;j++)
+	{
+		if (m_pBuyBack[j] != NULL)
+		{
+			m_pBuyBack[j]->DestroyForPlayer(m_pOwner);
+			m_pBuyBack[j]->DeleteFromDB();
 
-			 if(m_pBuyBack[j]->IsContainer())
-			 {
+			if(m_pBuyBack[j]->IsContainer())
+			{
 				if (TO_CONTAINER(m_pBuyBack[j])->IsInWorld())
 					TO_CONTAINER(m_pBuyBack[j])->RemoveFromWorld();
 
-				delete m_pBuyBack[j];
-				m_pBuyBack[j] = NULL;
-			 }
-			 else
-			 {
+				m_pBuyBack[j]->Destructor();
+			}
+			else
+			{
 				if (m_pBuyBack[j]->IsInWorld())
 					m_pBuyBack[j]->RemoveFromWorld();
 
-				delete m_pBuyBack[j];
-				m_pBuyBack[j] = NULL;
-			 }
+				m_pBuyBack[j]->Destructor();
+			}
 
-			 m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),0);
-			 m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_PRICE_1 + j,0);
-			 m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_TIMESTAMP_1 + j,0);
-			 m_pBuyBack[j] = NULL;
-		 }
-		 else
-			 break;
-	 }
+			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*j),0);
+			m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_PRICE_1 + j,0);
+			m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_TIMESTAMP_1 + j,0);
+			m_pBuyBack[j] = NULL;
+		}
+		else
+			break;
+	}
 }
 
 void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
@@ -2669,17 +2663,15 @@ void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 				if (TO_CONTAINER(m_pBuyBack[0])->IsInWorld())
 					TO_CONTAINER(m_pBuyBack[0])->RemoveFromWorld();
 
-				delete m_pBuyBack[0];
-				m_pBuyBack[0] = NULL;
-			 }
-			 else
-			 {
+				m_pBuyBack[0]->Destructor();
+			}
+			else
+			{
 				if (m_pBuyBack[0]->IsInWorld())
 					m_pBuyBack[0]->RemoveFromWorld();
 
-				delete m_pBuyBack[0];
-				m_pBuyBack[0] = NULL;
-			 }
+				m_pBuyBack[0]->Destructor();
+			}
 		}
 
 		for (int j = 0;j < 11;j++)
@@ -2691,9 +2683,9 @@ void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 		}
 		m_pBuyBack[11] = it;
 
-		m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*(11)), m_pBuyBack[11]->GetGUID());
+		m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + (2*(11)),m_pBuyBack[11]->GetGUID());
 		m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_PRICE_1 + 11,price);
-		m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_TIMESTAMP_1 + 11, uint32(UNIXTIME));
+		m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_TIMESTAMP_1 + 11,(uint32)UNIXTIME);
 		return;
 	}
 
@@ -2706,7 +2698,7 @@ void ItemInterface::AddBuyBackItem(Item* it,uint32 price)
 
 			m_pOwner->SetUInt64Value(PLAYER_FIELD_VENDORBUYBACK_SLOT_1 + i,m_pBuyBack[i >> 1]->GetGUID());
 			m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_PRICE_1 + (i >> 1),price);
-			m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_TIMESTAMP_1 + (i >> 1),uint32(UNIXTIME));
+			m_pOwner->SetUInt32Value(PLAYER_FIELD_BUYBACK_TIMESTAMP_1 + (i >> 1),(uint32)UNIXTIME);
 			return;
 		}
 	}
@@ -3047,8 +3039,7 @@ void ItemInterface::mLoadItemsFromDatabase(QueryResult * result)
 				    item->m_isDirty = false;
 				else
 				{
-					delete item;
-					item = NULL;
+					item->Destructor();
 				}
 			}
 		}

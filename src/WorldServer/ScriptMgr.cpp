@@ -31,7 +31,6 @@ ScriptMgr::ScriptMgr()
 
 ScriptMgr::~ScriptMgr()
 {
-
 }
 
 struct ScriptingEngine
@@ -393,7 +392,7 @@ bool ScriptMgr::CallScriptedDummyAura(uint32 uSpellId, uint32 i, Aura* pAura, bo
 
 bool ScriptMgr::CallScriptedItem(Item* pItem, Player* pPlayer)
 {
-	if(pItem->GetProto() && pItem->GetProto()->gossip_script != NULL)
+	if(pItem->GetProto()->gossip_script)
 	{
 		pItem->GetProto()->gossip_script->GossipHello(pItem,pPlayer,true);
 		return true;
@@ -544,7 +543,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 					msg += "priest";
 					break;
 				case CLASS_DEATHKNIGHT:
-					msg += "death knigh";
+					msg += "death knight";
 					break;
 				}
 			}
@@ -592,7 +591,7 @@ void GossipScript::GossipHello(Object* pObject, Player* Plr, bool AutoSend)
 	
 	if( pTrainer &&
 			pTrainer->TrainerType == TRAINER_TYPE_PET &&	// pet trainer type
-			Plr->getClass() == CLASS_HUNTER &&				// hunter class
+			Plr->getClass() == CLASS_HUNTER &&					// hunter class
 			Plr->GetSummon() != NULL )						// have pet
 		Menu->AddItem(GOSSIP_ICON_GOSSIP_NORMAL, "I would like to untrain my pet.", 13);
 

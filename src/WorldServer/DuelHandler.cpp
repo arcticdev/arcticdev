@@ -57,7 +57,7 @@ void WorldSession::HandleDuelCancelled(WorldPacket & recv_data)
 	if( arbiter != NULL )
 	{
 		arbiter->RemoveFromWorld( true );
-		delete arbiter;
+		arbiter->Destructor();
 		arbiter = NULL;
 	}
 

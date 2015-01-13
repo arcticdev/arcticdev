@@ -125,6 +125,7 @@ public:
 	GameObject(uint64 guid);
 	~GameObject( );
 	virtual void Init();
+	virtual void Destructor();
 
 	ARCTIC_INLINE GameObjectInfo* GetInfo() { return pInfo; }
 	ARCTIC_INLINE void SetInfo(GameObjectInfo * goi) { pInfo = goi; }
@@ -240,7 +241,7 @@ public:
 
 	// Destructable Building
 	uint32 Health;
-	void TakeDamage(uint32 ammount, Object* mcaster, Object* pcaster, uint32 spellid);
+	void TakeDamage(uint32 ammount);
 	void Rebuild();
 
 protected:

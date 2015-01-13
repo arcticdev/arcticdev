@@ -162,7 +162,7 @@ void Player::Init()
 	m_afk_reason = "";
 	m_playedtime[0] = 0;
 	m_playedtime[1] = 0;
-	m_playedtime[2] = uint32(UNIXTIME);
+	m_playedtime[2] = (uint32)UNIXTIME;
 
 	m_AllowAreaTriggerPort  = true;
 
@@ -361,7 +361,6 @@ void Player::Init()
 	m_rap_mod_pct = 0;
 	m_modblockabsorbvalue = 0;
 	m_modblockvaluefromspells = 0;
-	Damageshield_amount = 0.0f;
 	m_summoner = 0;
 	m_summonInstanceId = 0;
 	m_summonMapId = 0;
@@ -448,8 +447,6 @@ void Player::Init()
 
 	for(i = 0; i < 21; i++)
 		m_WeaponSubClassDamagePct[i] = 1.0f;
-
-	WinterGrasp = NULL;
 
 	Unit::Init();
 
@@ -915,16 +912,14 @@ void Player::EquipInit(PlayerCreateInfo *EquipInfo)
 				{
 					if( !GetItemInterface()->SafeAddItem(item, INVENTORY_SLOT_NOT_SET, (*is).slot) )
 					{
-						delete item;
-						item = NULL;
+						item->Destructor();
 					}
 				}
 				else
 				{
 					if( !GetItemInterface()->AddItemToFreeSlot(item) )
 					{
-						delete item;
-						item = NULL;
+						item->Destructor();
 					}
 				}
 			}
@@ -1079,7 +1074,7 @@ void Player::Update( uint32 p_time )
 	if(m_session->_latency >= sWorld.LatencyKickMax)
 	{
 	if(LatencyKickTimer == 0)
-		LatencyKickTimer = uint32(UNIXTIME) + (sWorld.LatencyTimer * 1000);
+		LatencyKickTimer = (uint32)UNIXTIME + (sWorld.LatencyTimer * 1000);
 
 	if(p_time >= LatencyKickTimer)
 	{
@@ -1665,7 +1660,7 @@ void Player::BuildPlayerTalentsInfo(WorldPacket *data, bool self)
 		// Send Talents
 		*data << uint8(spec.talents.size());
 		std::map<uint32, uint8>::iterator itr;
-		for(itr = spec.talents.begin(); itr != spec.talents.end(); ++itr)
+		for(itr = spec.talents.begin(); itr != spec.talents.end(); itr++)
 		{
 			*data << uint32(itr->first); // TalentId
 			*data << uint8(itr->second); // TalentRank
@@ -2169,7 +2164,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 		m_uint32Values[PLAYER_CHARACTER_POINTS2]=2;
 
 	//Calc played times
-	uint32 playedt = uint32(UNIXTIME) - m_playedtime[2];
+	uint32 playedt = (uint32)UNIXTIME - m_playedtime[2];
 	m_playedtime[0] += playedt;
 	m_playedtime[1] += playedt;
 	m_playedtime[2] += playedt;
@@ -2266,7 +2261,7 @@ void Player::SaveToDB(bool bNewCharacter /* =false */)
 
 	<< m_banned << ", '"
 	<< CharacterDatabase.EscapeString(m_banreason) << "', "
-	<< uint32(UNIXTIME) << ",";
+	<< (uint32)UNIXTIME << ",";
 
 	//online state
 	if(GetSession()->_loggingOut || bNewCharacter)
@@ -2830,7 +2825,7 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	}
 
 	uint32 banned = fields[33].GetUInt32();
-	if(banned && (banned < 100 || banned > uint32(UNIXTIME)))
+	if(banned && (banned < 100 || banned > (uint32)UNIXTIME))
 	{
 		RemovePendingPlayer();
 		return;
@@ -3341,9 +3336,9 @@ void Player::LoadFromDBProc(QueryResultVector & results)
 	else
 		_AddLanguages(false);
 
-	OnlineTime	= uint32(UNIXTIME);
+	OnlineTime	= (uint32)UNIXTIME;
 	if(GetGuildId())
-		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, uint32(UNIXTIME));
+		SetUInt32Value(PLAYER_GUILD_TIMESTAMP, (uint32)UNIXTIME);
 
 	m_talentActiveSpec = get_next_field.GetUInt32();
 	m_talentSpecsCount = get_next_field.GetUInt32();
@@ -3782,8 +3777,7 @@ void Player::RemoveFromWorld()
 				{
 					m_SummonedObject->RemoveFromWorld(true);
 				}
-				delete m_SummonedObject;
-				m_SummonedObject = NULL;
+				m_SummonedObject->Destructor();
 			}
 		}
 		m_SummonedObject = NULL;
@@ -5134,10 +5128,10 @@ void Player::UpdateChances()
 
 	tmp = CalculateCritFromAgilForClassAndLevel(pClass, pLevel);
 	float cr = tmp + CalcRating( PLAYER_RATING_MODIFIER_MELEE_CRIT ) + melee_bonus;
-	SetFloatValue( PLAYER_CRIT_PERCENTAGE, min( cr, 71.0f ) );
+	SetFloatValue( PLAYER_CRIT_PERCENTAGE, min( cr, 95.0f ) );
 
 	float rcr = tmp + CalcRating( PLAYER_RATING_MODIFIER_RANGED_CRIT ) + ranged_bonus;
-	SetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE, min( rcr, 71.0f ) );
+	SetFloatValue( PLAYER_RANGED_CRIT_PERCENTAGE, min( rcr, 95.0f ) );
 
 	gtFloat* SpellCritBase  = dbcSpellCritBase.LookupEntry(pClass-1);
 	gtFloat* SpellCritPerInt = dbcSpellCrit.LookupEntry(pLevel - 1 + (pClass-1)*100);
@@ -5754,7 +5748,7 @@ void Player::AddInRangeObject(Object* pObj)
 		{
 			WorldPacket data(SMSG_AURA_UPDATE_ALL, 28 * MAX_AURAS);
 			data << pUnit->GetNewGUID();
-			for (uint32 i = 0; i<MAX_AURAS; ++i)
+			for (uint32 i = 0; i < MAX_AURAS; ++i)
 			{
 				aur = pUnit->m_auras[i];
 				if (aur != NULL)
@@ -6655,15 +6649,13 @@ void Player::ResetTitansGrip()
 			offhand->SetOwner( NULL );
 			offhand->SaveToDB( INVENTORY_SLOT_NOT_SET, 0, true, NULL );
 			sMailSystem.DeliverMessage(MAILTYPE_NORMAL, GetGUID(), GetGUID(), "Your offhand item", "", 0, 0, offhand->GetUInt32Value(OBJECT_FIELD_GUID), 1, true);
-			delete offhand;
-			offhand = NULL;
+			offhand->Destructor();
 		}
 		else if( !GetItemInterface()->SafeAddItem(offhand, result.ContainerSlot, result.Slot) )
 		{
 			if( !GetItemInterface()->AddItemToFreeSlot(offhand) ) // shouldn't happen either.
 			{
-				delete offhand;
-				offhand = NULL;
+				offhand->Destructor();
 			}
 		}
 	}
@@ -8132,22 +8124,6 @@ void Player::ForceAreaUpdate()
 		if( m_areaDBC->ZoneId && m_zoneId != m_areaDBC->ZoneId )
 			m_zoneId = m_areaDBC->ZoneId;
 	}
-	if((m_AreaID == WINTERGRASP || (m_areaDBC != NULL && m_areaDBC->ZoneId == WINTERGRASP)) && sWorld.wg_enabled)
-	{
-		if(WinterGrasp == NULL) 
-		{ 
-			WinterGrasp = sWintergraspI.GetWintergrasp(); 
-			if(WinterGrasp != NULL) 
-				WinterGrasp->OnAddPlayer(this); 
-			else // Send clock for till battle. 
-				sWintergraspI.SendInitWorldStates(this); 
-		} 
-	} 
-	else // There is more todo. 
-	{ 
-		if(WinterGrasp != NULL) 
-			WinterGrasp->OnRemovePlayer(this); 
-	}
 }
 
 void Player::ZoneUpdate(uint32 ZoneId)
@@ -8500,7 +8476,7 @@ void Player::EndDuel(uint8 WinCondition)
 	if( arbiter != NULL )
 	{
 		arbiter->RemoveFromWorld( true );
-		delete arbiter;
+		arbiter->Destructor();
 		arbiter = NULL;
 	}
 
@@ -9111,14 +9087,6 @@ void Player::OnWorldPortAck()
 	{
 		if(isDead() && pPMapinfo->type != INSTANCE_NULL && pPMapinfo->type != INSTANCE_PVP)
 			ResurrectPlayer(NULL);
-
-		if(pPMapinfo->phasehorde != 0 || pPMapinfo->phasealliance != 0)
-		{
-			if(GetTeam())
-				SetPhase(pPMapinfo->phasehorde);
-			else
-				SetPhase(pPMapinfo->phasealliance);
-		}
 
 		if(pPMapinfo->HasFlag(WMI_INSTANCE_WELCOME) && GetMapMgr())
 		{
@@ -10598,12 +10566,12 @@ void Player::EjectFromInstance()
 		if(SafeTeleport(m_bgEntryPointMap, m_bgEntryPointInstance, m_bgEntryPointX, m_bgEntryPointY, m_bgEntryPointZ, m_bgEntryPointO))
 			return;
 	}
-	MapInfo* map = WorldMapInfoStorage.LookupEntry(mapid);
+	MapInfo* map = WorldMapInfoStorage.LookupEntry(mapid); 
 
 	if(map)
-		if(map->repopmapid && !IS_INSTANCE(map->repopmapid))
-			if(map->repopx && map->repopy && map->repopz)
-				if(SafeTeleport(map->repopmapid, 0, map->repopx, map->repopy, map->repopz, 0)) // Should be nearest graveyard.
+		if(map->repopmapid && !IS_INSTANCE(map->repopmapid)) 
+			if(map->repopx && map->repopy && map->repopz) 
+				if(SafeTeleport(map->repopmapid, 0, map->repopx, map->repopy, map->repopz, 0)) // Should be nearest graveyard. 
 					return;
 
 	SafeTeleport(m_bind_mapid, 0, m_bind_pos_x, m_bind_pos_y, m_bind_pos_z, 0);
@@ -11090,12 +11058,12 @@ void Player::_SavePlayerCooldowns(QueryBuffer * buf)
 			if( buf != NULL )
 			{
 				buf->AddQuery( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", m_uint32Values[OBJECT_FIELD_GUID],
-					i, itr2->first, seconds + uint32(UNIXTIME), itr2->second.SpellId, itr2->second.ItemId );
+					i, itr2->first, seconds + (uint32)UNIXTIME, itr2->second.SpellId, itr2->second.ItemId );
 			}
 			else
 			{
 				CharacterDatabase.Execute( "INSERT INTO playercooldowns VALUES(%u, %u, %u, %u, %u, %u)", m_uint32Values[OBJECT_FIELD_GUID],
-					i, itr2->first, seconds + uint32(UNIXTIME), itr2->second.SpellId, itr2->second.ItemId );
+					i, itr2->first, seconds + (uint32)UNIXTIME, itr2->second.SpellId, itr2->second.ItemId );
 			}
 		}
 	}
@@ -11131,10 +11099,10 @@ void Player::_LoadPlayerCooldowns(QueryResult * result)
 		// remember the cooldowns were saved in unix timestamp format for the reasons outlined above,
 		// so restore them back to mstime upon loading
 
-		if( uint32(UNIXTIME) > rtime )
+		if( (uint32)UNIXTIME > rtime )
 			continue;
 
-		rtime -= uint32(UNIXTIME);
+		rtime -= (uint32)UNIXTIME;
 
 		if( rtime < 10 )
 			continue;

@@ -140,8 +140,68 @@ World::~World()
 	for(list<SpellEntry*>::iterator itr = dummyspells.begin(); itr != dummyspells.end(); itr++)
 		delete *itr;
 
-	//Log.Notice("DBCs", "FreeDBCs()");
-	//FreeDBCs();
+	// Log.Notice("DBCs", "FreeDBCs()");
+	// FreeDBCs();
+}
+
+void World::Destructor()
+{
+	dummyspells.clear();
+
+	Log.Notice("ObjectMgr", "~ObjectMgr()");
+	delete ObjectMgr::getSingletonPtr();
+
+	Log.Notice("LootMgr", "~LootMgr()");
+	delete LootMgr::getSingletonPtr();
+
+	Log.Notice("LfgMgr", "~LfgMgr()");
+	delete LfgMgr::getSingletonPtr();
+
+	Log.Notice("ChannelMgr", "~ChannelMgr()");
+	delete ChannelMgr::getSingletonPtr();
+
+	Log.Notice("QuestMgr", "~QuestMgr()");
+	delete QuestMgr::getSingletonPtr();
+
+	Log.Notice("WeatherMgr", "~WeatherMgr()");
+	delete WeatherMgr::getSingletonPtr();
+
+	Log.Notice("TaxiMgr", "~TaxiMgr()");
+	delete TaxiMgr::getSingletonPtr();
+
+	Log.Notice("ChatHandler", "~ChatHandler()");
+	delete ChatHandler::getSingletonPtr();
+
+	Log.Notice("CBattlegroundManager", "~CBattlegroundManager()");
+	delete CBattlegroundManager::getSingletonPtr();
+
+	Log.Notice("AuctionMgr", "~AuctionMgr()");
+	delete AuctionMgr::getSingletonPtr();
+
+	Log.Notice("WorldStateTemplateManager", "~WorldStateTemplateManager()");
+	delete WorldStateTemplateManager::getSingletonPtr();
+
+	Log.Notice("DayWatcherThread", "~DayWatcherThread()");
+	delete DayWatcherThread::getSingletonPtr();
+
+	Log.Notice("InstanceMgr", "~InstanceMgr()");
+	sInstanceMgr.Shutdown();
+
+	Log.Notice("WordFilter", "~WordFilter()");
+	delete g_characterNameFilter;
+	g_characterNameFilter = NULL;
+	delete g_chatFilter;
+	g_chatFilter = NULL;
+
+	for( AreaTriggerMap::iterator i = m_AreaTrigger.begin( ); i != m_AreaTrigger.end( ); ++i )
+		delete i->second;
+	m_AreaTrigger.clear();
+
+	eventholder = 0;
+	delete eventholder;
+	eventholder = NULL;
+
+	Storage_Cleanup();
 }
 
 WorldSession* World::FindSession(uint32 id)
@@ -519,11 +579,6 @@ bool World::SetInitialWorldSettings()
 	Log.Notice("World", "Starting Auction System...");
 	new AuctionMgr;
 	sAuctionMgr.LoadAuctionHouses();
-
-	if(wg_enabled)
-	{
-		ThreadPool.ExecuteTask( new WintergraspInternal() );
-	}
 
 	m_queueUpdateTimer = mQueueUpdateInterval;
 	if(Config.MainConfig.GetBoolDefault("Startup", "BackgroundLootLoading", true))
@@ -1131,7 +1186,7 @@ void TaskList::waitForThreadsToExit()
 
 void World::DeleteObject(Object* obj)
 {
-	delete obj;
+	obj->Destructor();
 	obj = NULL;
 }
 
@@ -1152,11 +1207,8 @@ void World::Rehash(bool load)
 #endif
 	MapPath = Config.MainConfig.GetStringDefault("Terrain", "MapPath", "maps");
 	vMapPath = Config.MainConfig.GetStringDefault("Terrain", "vMapPath", "vmaps");
-	MMapPath = Config.MainConfig.GetStringDefault("Terrain", "MMapPath", "mmaps"); 
-	UseMmaps = Config.MainConfig.GetBoolDefault("Terrain", "UseMmaps", false);
 	UnloadMapFiles = Config.MainConfig.GetBoolDefault("Terrain", "UnloadMapFiles", true);
 	BreathingEnabled = Config.MainConfig.GetBoolDefault("Server", "EnableBreathing", true);
-	SendStatsOnJoin = Config.MainConfig.GetBoolDefault("Server", "SendStatsOnJoin", true);
 	compression_threshold = Config.MainConfig.GetIntDefault("Server", "CompressionThreshold", 1000);
 	display_free_items = Config.MainConfig.GetBoolDefault("Server", "DisplayFreeItems", false);
 
@@ -1542,7 +1594,7 @@ void World::PollMailboxInsertQueue(DatabaseConnection * con)
 
 			if( pItem != NULL )
 			{
-				delete pItem;
+				pItem->Destructor();
 				pItem = NULL;
 			}
 
@@ -2205,7 +2257,7 @@ string World::GetUptimeString()
 
 void World::UpdateShutdownStatus()
 {
-	uint32 time_left = (uint32(UNIXTIME) > m_shutdownTime) ? 0 : m_shutdownTime - uint32(UNIXTIME);
+	uint32 time_left = ((uint32)UNIXTIME > m_shutdownTime) ? 0 : m_shutdownTime - (uint32)UNIXTIME;
 	uint32 time_period = 1;
 
 	if( time_left && m_shutdownTime )
@@ -2228,10 +2280,10 @@ void World::UpdateShutdownStatus()
 		}
 
 		// time to send a new packet?
-		if( ( uint32(UNIXTIME) - m_shutdownLastTime ) >= time_period )
+		if( ( (uint32)UNIXTIME - m_shutdownLastTime ) >= time_period )
 		{
 			// send message
-			m_shutdownLastTime = uint32(UNIXTIME);
+			m_shutdownLastTime = (uint32)UNIXTIME;
 
 			WorldPacket data(SMSG_SERVER_MESSAGE, 200);
 			if( m_shutdownType == SERVER_SHUTDOWN_TYPE_RESTART )
@@ -2281,7 +2333,7 @@ void World::QueueShutdown(uint32 delay, uint32 type)
 {
 	// set parameters
 	m_shutdownLastTime = 0;
-	m_shutdownTime = uint32(UNIXTIME) + delay;
+	m_shutdownTime = (uint32)UNIXTIME + delay;
 	m_shutdownType = type;
 
 	// add event

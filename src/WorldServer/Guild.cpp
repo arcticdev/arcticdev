@@ -57,8 +57,7 @@ Guild::~Guild()
 		for(uint32 i = 0; i < MAX_GUILD_BANK_SLOTS; ++i)
 			if((*itr)->pSlots[i] != NULL)
 			{
-				delete (*itr)->pSlots[i];
-				(*itr)->pSlots[i] = NULL;
+				(*itr)->pSlots[i]->Destructor();
 			}
 
 		for(list<GuildBankEvent*>::iterator it2 = (*itr)->lLog.begin(); it2 != (*itr)->lLog.end(); ++it2)
@@ -159,7 +158,7 @@ void Guild::AddGuildLogEntry(uint8 iEvent, uint8 iParamCount, ...)
 	ev = new GuildLogEvent;
 	ev->iLogId = GenerateGuildLogEventId();
 	ev->iEvent = iEvent;
-	ev->iTimeStamp = uint32(UNIXTIME);
+	ev->iTimeStamp = (uint32)UNIXTIME;
 
 	for(i = 0; i < iParamCount; ++i)
 		ev->iEventData[i] = va_arg(ap, uint32);
@@ -251,7 +250,7 @@ void Guild::CreateFromCharter(Charter * pCharter, WorldSession * pTurnIn)
 	m_guildId = objmgr.GenerateGuildId();
 	m_guildName = strdup(pCharter->GuildName.c_str());
 	m_guildLeader = pCharter->LeaderGuid;
-	m_creationTimeStamp = uint32(UNIXTIME);
+	m_creationTimeStamp = (uint32)UNIXTIME;
 
 	// create the guild in the database
 	CreateInDB();
@@ -1319,9 +1318,9 @@ void GuildMember::OnItemWithdraw(uint32 tab)
 		return;
 
 	// reset the counter if a day has passed
-	if((uint32(UNIXTIME) - uLastItemWithdrawReset[tab]) >= TIME_DAY)
+	if(((uint32)UNIXTIME - uLastItemWithdrawReset[tab]) >= TIME_DAY)
 	{
-		uLastItemWithdrawReset[tab] = uint32(UNIXTIME);
+		uLastItemWithdrawReset[tab] = (uint32)UNIXTIME;
 		uItemWithdrawlsSinceLastReset[tab] = 1;
 		CharacterDatabase.Execute("UPDATE guild_data SET lastItemWithdrawReset%u = %u, itemWithdrawlsSinceLastReset%u = 1 WHERE playerid = %u",
 			tab, uLastItemWithdrawReset[tab], tab, pPlayer->guid);
@@ -1351,11 +1350,11 @@ uint32 GuildMember::CalculateAvailableAmount()
 
 void GuildMember::OnMoneyWithdraw(uint32 amt)
 {
-	if(pRank->iGoldLimitPerDay <= 0) // Unlimited
+	if(pRank->iGoldLimitPerDay <= 0)		// Unlimited
 		return;
 
 	// reset the counter if a day has passed
-	if((uint32(UNIXTIME) - uLastWithdrawReset) >= TIME_DAY)
+	if(((uint32)UNIXTIME - uLastWithdrawReset) >= TIME_DAY)
 	{
 		uLastWithdrawReset = (uint32)UNIXTIME;
 		uWithdrawlsSinceLastReset = amt;
@@ -1459,7 +1458,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 	{
 		// sending the money log
 		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
-		uint32 lt = uint32(UNIXTIME);
+		uint32 lt = (uint32)UNIXTIME;
 		data << uint8(0x06);
 		data << uint8((m_moneyLog.size() < 25) ? m_moneyLog.size() : 25);
 		list<GuildBankEvent*>::iterator itr = m_moneyLog.begin();
@@ -1494,7 +1493,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 		}
 
 		WorldPacket data(MSG_GUILD_BANK_LOG_QUERY, (17*m_moneyLog.size()) + 2);
-		uint32 lt = uint32(UNIXTIME);
+		uint32 lt = (uint32)UNIXTIME;
 		data << uint8(iSlot);
 		data << uint8((pTab->lLog.size() < 25) ? pTab->lLog.size() : 25);
 
@@ -1520,7 +1519,7 @@ void Guild::SendGuildBankLog(WorldSession * pClient, uint8 iSlot)
 void Guild::LogGuildBankAction(uint8 iAction, uint32 uGuid, uint32 uEntry, uint8 iStack, GuildBankTab * pTab)
 {
 	GuildBankEvent * ev = new GuildBankEvent;
-	uint32 timest = uint32(UNIXTIME);
+	uint32 timest = (uint32)UNIXTIME;
 	ev->iAction = iAction;
 	ev->iStack = iStack;
 	ev->uEntry = uEntry;
@@ -1551,7 +1550,7 @@ void Guild::LogGuildBankAction(uint8 iAction, uint32 uGuid, uint32 uEntry, uint8
 void Guild::LogGuildBankActionMoney(uint8 iAction, uint32 uGuid, uint32 uAmount)
 {
 	GuildBankEvent * ev = new GuildBankEvent;
-	uint32 timest = uint32(UNIXTIME);
+	uint32 timest = (uint32)UNIXTIME;
 	ev->iAction = iAction;
 	ev->iStack = 0;
 	ev->uEntry = uAmount;

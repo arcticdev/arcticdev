@@ -112,7 +112,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 
 	m_asyncQuery = false;
 
-	//Erm, reset it here in case player deleted his DK.
+	// Erm, reset it here in case player deleted his DK.
 	m_hasDeathKnight= false;
 
 	// should be more than enough.. 200 bytes per char..
@@ -168,7 +168,7 @@ void WorldSession::CharacterEnumProc(QueryResult * result)
 				m_hasDeathKnight = true;
 
 			banned = fields[13].GetUInt32();
-			if(banned && (banned<10 || banned > uint32(UNIXTIME)))
+			if(banned && (banned<10 || banned > (uint32)UNIXTIME))
 				data << uint32(0x01A04040);
 			else
 			{
@@ -277,7 +277,7 @@ void WorldSession::HandleCharEnumOpcode( WorldPacket & recv_data )
 	q->AddQuery("SELECT guid, level, race, class, gender, bytes, bytes2, name, positionX, positionY, positionZ, mapId, zoneId, banned, restState, deathstate, forced_rename_pending, player_flags, guild_data.guildid, recustomize FROM characters LEFT JOIN guild_data ON characters.guid = guild_data.playerid WHERE acct=%u ORDER BY guid ASC LIMIT 10", GetAccountId());
 	m_asyncQuery = true;
 	CharacterDatabase.QueueAsyncQuery(q);
-	m_lastEnumTime = uint32(UNIXTIME);
+	m_lastEnumTime = (uint32)UNIXTIME;
 }
 
 void WorldSession::LoadAccountDataProc(QueryResult * result)
@@ -326,7 +326,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 		return;
 	}
 
-	//reserved for console whisper
+	// reserved for console whisper
 	if(name == "Console" ||  name == "console")
 	{
 		OutPacket(SMSG_CHAR_CREATE, 1, "\x32");
@@ -374,7 +374,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	{
 		// Player not create (race/class problem?)
 		pNewChar->ok_to_remove = true;
-		delete pNewChar;
+		pNewChar->Destructor();
 		pNewChar = NULL;
 		return;
 	}
@@ -409,7 +409,7 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
 	objmgr.AddPlayerInfo(pn);
 
 	pNewChar->ok_to_remove = true;
-	delete pNewChar;
+	pNewChar->Destructor();
 	pNewChar = NULL;
 
 	// CHAR_CREATE_SUCCESS
@@ -859,21 +859,8 @@ void WorldSession::FullLogin(Player* plr)
 	// send friend list (for ignores)
 	_player->Social_SendFriendList(7);
 
-	// Send revision (if enabled)
-#ifdef WIN32
-	// _player->BroadcastMessage("Core server: ArcTic %s r%u/%s-Windows-%s (www.github.com/arcticdev)", MSG_COLOR_WHITE, BUILD_TAG, BUILD_REVISION, CONFIG, ARCH, MSG_COLOR_LIGHTBLUE);
-#else
-	// _player->BroadcastMessage("Core server: ArcTic %s r%u/%s-%s (www.github.com/arcticdev)", MSG_COLOR_WHITE, BUILD_TAG, BUILD_REVISION, PLATFORM_TEXT, ARCH, MSG_COLOR_LIGHTBLUE);
-#endif
 	// Bugs
 	_player->BroadcastMessage("Bugs: %s%s", MSG_COLOR_LIGHTBLUE, BUG_TRACKER);
-
-	if(sWorld.SendStatsOnJoin)
-	{
-		_player->BroadcastMessage("Online Players: %s%u |rPeak: %s%u|r Accepted Connections: %s%u",
-			MSG_COLOR_WHITE, sWorld.GetSessionCount(), MSG_COLOR_WHITE, sWorld.PeakSessionCount, MSG_COLOR_WHITE, sWorld.mAcceptedConnections);
-		_player->BroadcastMessage("Server Uptime: |r%s", sWorld.GetUptimeString().c_str());
-	}
 
 	// send to gms
 	if(HasGMPermissions())
@@ -886,7 +873,7 @@ void WorldSession::FullLogin(Player* plr)
 	//Check if there is a time difference between lastlogoff and now
 	if( plr->m_timeLogoff > 0 && plr->GetUInt32Value(UNIT_FIELD_LEVEL) < plr->GetUInt32Value(PLAYER_FIELD_MAX_LEVEL))	// if timelogoff = 0 then it's the first login
 	{
-		uint32 currenttime = uint32(UNIXTIME);
+		uint32 currenttime = (uint32)UNIXTIME;
 		uint32 timediff = currenttime - plr->m_timeLogoff;
 
 		//Calculate rest bonus

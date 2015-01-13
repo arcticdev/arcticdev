@@ -65,6 +65,11 @@ Item::~Item()
 	m_owner = NULL;
 }
 
+void Item::Destructor()
+{
+	delete this;
+}
+
 void Item::Create( uint32 itemid, Player* owner )
 {
 	SetUInt32Value( OBJECT_FIELD_ENTRY, itemid );

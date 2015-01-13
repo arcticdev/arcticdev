@@ -104,16 +104,12 @@ bool DayWatcherThread::has_timeout_expired(tm * now_time, tm * last_time, uint32
 	{
 	case MONTHLY:
 		return (now_time->tm_mon != last_time->tm_mon);
-
-		case WEEKLY:
+	case WEEKLY:
 		return ( (now_time->tm_mday / 7) != (last_time->tm_mday / 7) || (now_time->tm_mon != last_time->tm_mon) ); 
-
 	case DAILY:
 		return ((now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon)); 
-
 	case HOURLY:
 		return ((now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
-
 	case MINUTELY:
 		return ((now_time->tm_min != last_time->tm_min) || (now_time->tm_hour != last_time->tm_hour) || (now_time->tm_mday != last_time->tm_mday) || (now_time->tm_mon != last_time->tm_mon));
 	}
@@ -134,7 +130,6 @@ bool DayWatcherThread::run()
 	_firstrun[0] = true;
 	_firstrun[1] = true;
 	m_heroic_reset = false;
-	uint32 WGcounter = 0;
 
 #ifdef WIN32
 	m_abortEvent = CreateEvent(NULL, NULL, FALSE, NULL);

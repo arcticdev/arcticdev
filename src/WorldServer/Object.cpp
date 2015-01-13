@@ -90,6 +90,11 @@ void Object::Init()
 {
 }
 
+void Object::Destructor()
+{
+	delete this;
+}
+
 void Object::SetPhase(int32 phase)
 {
 	m_phaseMode = phase;
@@ -127,7 +132,6 @@ void Object::_Create( uint32 mapid, float x, float y, float z, float ang )
 
 uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 {
-	OUT_DEBUG("Object","Building update block for Player");
 	uint16 flags = 0;
 	uint32 flags2 = 0;
 
@@ -162,7 +166,7 @@ uint32 Object::BuildCreateUpdateBlockForPlayer(ByteBuffer *data, Player* target)
 
 			switch(GetByte(GAMEOBJECT_BYTES_1, GAMEOBJECT_BYTES_TYPE_ID))
 			{
-				case GAMEOBJECT_TYPE_MO_TRANSPORT:  
+				case GAMEOBJECT_TYPE_MO_TRANSPORT:
 					{
 						if(GetTypeFromGUID() != HIGHGUID_TYPE_TRANSPORTER)
 							return 0;   // bad transporter
@@ -1937,8 +1941,7 @@ void Object::DealDamage(Unit* pVictim, uint32 damage, uint32 targetEvent, uint32
 						data << dObj->GetGUID();
 						dObj->SendMessageToSet(&data, false);
 						dObj->RemoveFromWorld(true);
-						delete dObj;
-						dObj = NULL;
+						dObj->Destructor();
 					}
 				}
 				if(spl->m_spellInfo->ChannelInterruptFlags == 48140) spl->cancel();
@@ -2896,7 +2899,9 @@ bool Object::PhasedCanInteract(Object* pObj)
 
 	// Hack for Acherus: Horde/Alliance can't see each other!
 	if( pObjI && pObjII && GetMapId() == 609 && pObjI->GetTeam() != pObjII->GetTeam() )
+	{
 		return false;
+	}
 
 	return ret;
 }

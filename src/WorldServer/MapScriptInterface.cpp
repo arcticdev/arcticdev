@@ -42,7 +42,7 @@ uint32 MapScriptInterface::GetPlayerCountInRadius(float x, float y, float z /* =
 			iter = pCell->Begin();
 			iter_end = pCell->End();
 
-			for(; iter != iter_end; ++iter)
+			for(; iter != iter_end; iter++)
 			{
 				if((*iter)->GetTypeId() == TYPEID_PLAYER &&
 					(*iter)->CalcDistance(x, y, (z == 0.0f ? (*iter)->GetPositionZ() : z)) < radius)
@@ -98,7 +98,7 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	sp->bytes2 = 0;
 	sp->displayid = 0;
 	sp->stand_state = 0;
-	sp->channel_spell = sp->channel_target_creature=sp->channel_target_go = 0;
+	sp->channel_spell = sp->channel_target_creature = sp->channel_target_go = 0;
 	sp->MountedDisplayID = 0;
 	sp->phase = 1;
 	sp->vehicle = proto->vehicle_entry;
@@ -108,7 +108,6 @@ Creature* MapScriptInterface::SpawnCreature(uint32 Entry, float cX, float cY, fl
 	if(p == NULL)
 	{
 		delete sp;
-		sp = NULL;
 		return NULL;
 	}
 

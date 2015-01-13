@@ -84,7 +84,7 @@ WarsongGulch::~WarsongGulch()
 		// buffs may not be spawned, so delete them if they're not
 		if(m_buffs[i] && !m_buffs[i]->IsInWorld())
 		{
-			delete m_buffs[i];
+			m_buffs[i]->Destructor();
 			m_buffs[i] = NULL;
 		}
 	}
@@ -214,7 +214,7 @@ void WarsongGulch::HookOnAreaTrigger(Player* plr, uint32 id)
 						HonorHandler::AddHonorPointsToPlayer((*itr), m_CompleteHonor + m_WinHonor);
 						(*itr)->CastSpell((*itr), winner_spell, true);
 						uint32 diff = abs(int32(m_scores[i] - m_scores[i ? 0 : 1]));
-						(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, (uint32(UNIXTIME) - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+						(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
 					}
 				}
 			}

@@ -167,10 +167,12 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 
 	recvPacket >> Guid >> TeachingSpellID;
 	Creature* pCreature = _player->GetMapMgr()->GetCreature(GET_LOWGUID_PART(Guid));
-	if(pCreature == 0) return;
+	if(pCreature == NULL)
+		return;
 
 	Trainer *pTrainer = pCreature->GetTrainer();
-	if(pTrainer == 0 || !CanTrainAt(_player, pTrainer)) return;
+	if(pTrainer == NULL || !CanTrainAt(_player, pTrainer))
+		return;
 
 	TrainerSpell* pSpell = NULL;
 	for(vector<TrainerSpell>::iterator itr = pTrainer->Spells.begin(); itr != pTrainer->Spells.end(); itr++)
@@ -204,7 +206,7 @@ void WorldSession::HandleTrainerBuySpellOpcode(WorldPacket& recvPacket)
 
 		pck.guid = _player->GetGUID();
 		pck.visualid = 0x16a;
-		_player->OutPacketToSet( 0x1F7, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
+		_player->OutPacketToSet( SMSG_PLAY_SPELL_IMPACT, sizeof(packetSMSG_PLAY_SPELL_VISUAL), &pck, true );
 
 		// add the spell
 		_player->addSpell( pSpell->pLearnSpell->Id );
@@ -692,8 +694,7 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 			}
 			else
 			{
-				delete item;
-				item = NULL;
+				item->Destructor();
 			}
 		}
 	}
@@ -720,7 +721,6 @@ void WorldSession::SendInnkeeperBind(Creature* pCreature)
 #undef ITEM_ID_HEARTH_STONE
 #undef BIND_SPELL_ID
 }
-
 
 void WorldSession::SendSpiritHealerRequest(Creature* pCreature)
 {

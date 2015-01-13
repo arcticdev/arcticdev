@@ -61,6 +61,11 @@ void DynamicObject::Init()
 	Object::Init();
 }
 
+void DynamicObject::Destructor()
+{
+	delete this;
+}
+
 void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, float z, uint32 duration, float radius)
 {
 	Object::_Create(caster->GetMapId(),x, y, z, 0);
@@ -101,7 +106,7 @@ void DynamicObject::Create(Object* caster, Spell* pSpell, float x, float y, floa
 	m_position.x = x;
 	m_position.y = y;
 	m_position.z = z;
-	m_uint32Values[DYNAMICOBJECT_CASTTIME] = uint32(UNIXTIME);
+	m_uint32Values[DYNAMICOBJECT_CASTTIME] = (uint32)UNIXTIME;
 
 	m_aliveDuration = duration;
 	m_faction = caster->m_faction;
@@ -243,5 +248,6 @@ void DynamicObject::Remove()
 {
 	if(IsInWorld())
 		RemoveFromWorld(true);
-	delete this;
+	Destructor();
 }
+

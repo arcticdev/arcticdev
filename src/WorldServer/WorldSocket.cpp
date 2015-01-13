@@ -360,7 +360,7 @@ void WorldSocket::InformationRetreiveCallback(WorldPacket & recvData, uint32 req
 	pSession->SetClientBuild(mClientBuild);
 	pSession->LoadSecurity(GMFlags);
 	pSession->SetAccountFlags(AccountFlags);
-	pSession->m_lastPing = uint32(UNIXTIME);
+	pSession->m_lastPing = (uint32)UNIXTIME;
 
 	if(recvData.rpos() != recvData.wpos())
 		recvData >> pSession->m_muted;
@@ -466,7 +466,7 @@ void WorldSocket::_HandlePing(WorldPacket* recvPacket)
 	if(mSession)
 	{
 		mSession->_latency = _latency;
-		mSession->m_lastPing = uint32(UNIXTIME);
+		mSession->m_lastPing = (uint32)UNIXTIME;
 
 		// reset the move time diff calculator, don't worry it will be re-calculated next movement packet.
 		mSession->m_clientTimeDelay = 0;

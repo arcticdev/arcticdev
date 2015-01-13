@@ -200,9 +200,7 @@ EyeOfTheStorm::~EyeOfTheStorm()
 			m_EOTSbuffs[i]->m_battleground = NULL;
 			if( !m_EOTSbuffs[i]->IsInWorld() )
 			{
-				delete m_EOTSbuffs[i];
-				m_EOTSbuffs[i] = NULL;
-				
+				m_EOTSbuffs[i]->Destructor();
 			}
 		}
 	}
@@ -691,7 +689,7 @@ void EyeOfTheStorm::UpdateCPs()
 	unordered_set<Player*  >::iterator itr;
 	unordered_set<Player*  >::iterator itrend;
 	map<uint32,uint32>::iterator it2, it3;
-	uint32 timeptr = uint32(UNIXTIME);
+	uint32 timeptr = (uint32)UNIXTIME;
 	bool in_range;
 	bool is_valid;
 	Player* plr;
@@ -950,7 +948,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 	{
 		m_resourceRewards[team] += m_resToGainBH;
 
-		for(set<Player*  >::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
+		for(set<Player*>::iterator itx = m_players[team].begin(); itx != m_players[team].end(); ++itx)
 		{
 			Player* plr = (*itx);
 			if(!plr) continue;
@@ -977,7 +975,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 
 		for(uint32 i = 0; i < 2; ++i)
 		{
-			for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+			for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			{
 				(*itr)->Root();
 
@@ -997,7 +995,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					(*itr)->m_bgScore.BonusHonor += m_bonusHonor;
 					HonorHandler::AddHonorPointsToPlayer( (*itr), m_bonusHonor );
 					uint32 diff = abs((int32)(m_points[i] - m_points[i ? 0 : 1]));
-					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, (uint32(UNIXTIME) - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
 				}
 
 				Item* pReward;
@@ -1018,7 +1016,7 @@ bool EyeOfTheStorm::GivePoints(uint32 team, uint32 points)
 					{
 						if( !(*itr)->GetItemInterface()->AddItemToFreeSlot(pReward) )
 						{
-							delete pReward;
+							pReward->Destructor();
 							pReward = NULL;
 						}
 					}
@@ -1105,7 +1103,7 @@ void EyeOfTheStorm::OnStart()
 {
 	for(uint32 i = 0; i < 2; ++i)
 	{
-		for(set<Player*  >::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
+		for(set<Player*>::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 			(*itr)->RemoveAura(BG_PREPARATION);
 
 		m_bubbles[i]->RemoveFromWorld(false);

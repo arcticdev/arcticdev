@@ -1735,8 +1735,7 @@ void Aura::SpellAuraPeriodicDamage(bool apply)
 						{
 							dmg += spelld->CalculateEffect(i,m_target->IsUnit()? TO_UNIT(m_target):NULL)*parentsp->EffectBasePoints[0]/100;
 						}
-						delete spelld;
-						spelld = NULL;
+						spelld->Destructor();
 					}
 				}
 			};
@@ -2622,7 +2621,7 @@ void Aura::SpellAuraDummy(bool apply)
 			spell = new Spell(pCaster, m_spellProto, true, NULL);
 			spell->SetUnitTarget( m_target );
 			spell->Heal( mod->m_baseAmount );
-			delete spell;
+			spell->Destructor();
 			spell = NULL;
 		}break;
 
@@ -4996,7 +4995,7 @@ void Aura::SpellAuraProcTriggerDamage(bool apply)
 
 		ds.owner = (void*)this;
 		m_target->m_damageShields.push_back(ds);
-		DEBUG_LOG("Spell","registering dmg proc %u, school %u, flags %u, charges %u \n",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
+		DEBUG_LOG("Spell","registering dmg proc %u, school %u, flags %u, charges %u ",ds.m_spellId,ds.m_school,ds.m_flags,m_spellProto->procCharges);
 	}
 	else
 	{
@@ -5811,8 +5810,8 @@ void Aura::SpellAuraFeignDeath(bool apply)
 
 			data.SetOpcode( SMSG_START_MIRROR_TIMER );
 			data << uint32( 2 ); // type
-			data << int32( GetDuration() );
-			data << int32( GetDuration() );
+			data << uint32( GetDuration() );
+			data << uint32( GetDuration() );
 			data << uint32( 0xFFFFFFFF );
 			data << uint8( 0 );
 			data << uint32( m_spellProto->Id ); // ???
@@ -6596,8 +6595,7 @@ void Aura::SpellAuraChannelDeathItem(bool apply)
 						if(!pCaster->GetItemInterface()->AddItemToFreeSlot(item))
 						{
 							pCaster->GetItemInterface()->BuildInventoryChangeError(NULL, NULL, INV_ERR_INVENTORY_FULL);
-							delete item;
-							item = NULL;
+							item->Destructor();
 							return;
 						}
 						SlotResult * lr = pCaster->GetItemInterface()->LastSearchResult();
@@ -7151,7 +7149,9 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 				if (mod->m_miscValue==849)
 					val = (apply) ? 10 : -10;
 				TO_PLAYER( m_target )->m_RootedCritChanceBonus += val;
-			}break;
+			}
+			break;
+		case 3736:
 		case 4415:
 		case 4418:
 		case 4554:
@@ -7161,82 +7161,91 @@ void Aura::SpellAuraOverrideClassScripts(bool apply)
 		case 5147:
 		case 5148:
 			{
-				if(apply)
+			if(apply)
+			{
+				OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
+				if( itermap == objmgr.mOverrideIdMap.end() )
+					return;
+
+				std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
+
+				SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.find((*itrSE)->Id);
+
+				if(itr != plr->mSpellOverrideMap.end())
 				{
-					OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
-					if( itermap == objmgr.mOverrideIdMap.end() )
-						return;
-
-					std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
-
-					SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.find((*itrSE)->Id);
-
-					if(itr != plr->mSpellOverrideMap.end())
+					ScriptOverrideList::iterator itrSO;
+					for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
 					{
-						ScriptOverrideList::iterator itrSO;
-						for(itrSO = itr->second->begin(); itrSO != itr->second->end(); ++itrSO)
+						if((*itrSO)->id == (uint32)mod->m_miscValue)
 						{
-							if((*itrSO)->id == (uint32)mod->m_miscValue)
+							if((int32)(*itrSO)->damage > mod->m_amount)
 							{
-								if((int32)(*itrSO)->damage > mod->m_amount)
-								{
-									(*itrSO)->damage = mod->m_amount;
-								}
-								return;
+								(*itrSO)->damage = mod->m_amount;
 							}
-						}
-						classScriptOverride *cso = new classScriptOverride;
-						cso->aura = 0;
-						cso->damage = mod->m_amount;
-						cso->effect = 0;
-						cso->id = mod->m_miscValue;
-						itr->second->push_back(cso);
-					}
-					else
-					{
-						classScriptOverride *cso = new classScriptOverride;
-						cso->aura = 0;
-						cso->damage = mod->m_amount;
-						cso->effect = 0;
-						cso->id = mod->m_miscValue;
-						ScriptOverrideList *lst = new ScriptOverrideList();
-						lst->push_back(cso);
-
-						for(;itrSE != itermap->second->end(); ++itrSE)
-						{
-							plr->mSpellOverrideMap.insert( SpellOverrideMap::value_type( (*itrSE)->Id, lst) );
+							return;
 						}
 					}
+					classScriptOverride *cso = new classScriptOverride;
+					cso->aura = 0;
+					cso->damage = mod->m_amount;
+					cso->effect = 0;
+					cso->id = mod->m_miscValue;
+					itr->second->push_back(cso);
 				}
 				else
 				{
-					OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
-					SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.begin(), itr2;
-					while(itr != plr->mSpellOverrideMap.end())
+					classScriptOverride *cso = new classScriptOverride;
+					cso->aura = 0;
+					cso->damage = mod->m_amount;
+					cso->effect = 0;
+					cso->id = mod->m_miscValue;
+					ScriptOverrideList *lst = new ScriptOverrideList();
+					lst->push_back(cso);
+
+					for(;itrSE != itermap->second->end(); ++itrSE)
 					{
-						std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
-						for(;itrSE != itermap->second->end(); ++itrSE)
-						{
-							if(itr->first == (*itrSE)->Id)
-							{
-								itr2 = itr++;
-								plr->mSpellOverrideMap.erase(itr2);
-								break;
-							}
-						}
-						// Check if the loop above got to the end, if so it means the item wasn't found
-						// and the itr wasn't incremented so increment it now.
-						if(itrSE == itermap->second->end())
-							itr++;
+						plr->mSpellOverrideMap.insert( SpellOverrideMap::value_type( (*itrSE)->Id, lst) );
 					}
 				}
-			}break;
+			}
+			else
+			{
+				OverrideIdMap::iterator itermap = objmgr.mOverrideIdMap.find(mod->m_miscValue);
+				SpellOverrideMap::iterator itr = plr->mSpellOverrideMap.begin(), itr2;
+				while(itr != plr->mSpellOverrideMap.end())
+				{
+					std::list<SpellEntry *>::iterator itrSE = itermap->second->begin();
+					for(;itrSE != itermap->second->end(); ++itrSE)
+					{
+						if(itr->first == (*itrSE)->Id)
+						{
+							itr2 = itr++;
+							plr->mSpellOverrideMap.erase(itr2);
+							break;
+						}
+					}
+					// Check if the loop above got to the end, if so it means the item wasn't found
+					// and the itr wasn't incremented so increment it now.
+					if(itrSE == itermap->second->end())      itr++;
+				}
+			}
+		}break;
+/*		case 19421: //hunter : Improved Hunter's Mark
+		case 19422:
+		case 19423:
+		case 19424:
+		case 19425:
+			{
+				//this shoul actually add a new functionality to the spell and not override it. There is a lot to decode and to be done here
+			}break;*/
 		case 4992: // Warlock: Soul Siphon
 		case 4993:
 			{
-				if(m_target != NULL)
-				{
-					m_target->m_soulSiphon.max += (apply ? mod->m_amount : -mod->m_amount);
+				if(m_target) {
+					if( apply )
+						m_target->m_soulSiphon.max+= mod->m_amount;
+					else
+						m_target->m_soulSiphon.max-= mod->m_amount;
 				}
 			}break;
 		case 2689: // Illumination

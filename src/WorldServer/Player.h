@@ -1045,7 +1045,7 @@ public:
 	{
 		if(m_banned)
 		{
-			if(m_banned < 100 || uint32(UNIXTIME) < m_banned)
+			if(m_banned < 100 || (uint32)UNIXTIME < m_banned)
 				return true;
 		}
 		return false;
@@ -1393,7 +1393,6 @@ public:
 	// Battlegrounds xD
 	CBattleground* m_bg;
 	CBattleground* m_pendingBattleground[3];
-	Wintergrasp* WinterGrasp;
 	uint32 m_bgSlot;
 	bool m_bgRatedQueue;
 	uint32 m_bgEntryPointMap;

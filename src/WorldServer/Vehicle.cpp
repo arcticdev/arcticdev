@@ -30,6 +30,11 @@ Vehicle::~Vehicle()
 		RemoveFromWorld(false, true);
 }
 
+void Vehicle::Destructor()
+{
+	delete this;
+}
+
 void Vehicle::Init()
 {
 	Creature::Init();
@@ -175,7 +180,6 @@ void Vehicle::SendSpells(uint32 entry, Player* plr)
 	data << uint16(0);
 	data << uint32(0);
 	data << uint32(0x00000101);
-	
 	uint8 count;
 
 	// Send the actionbar
@@ -190,8 +194,8 @@ void Vehicle::SendSpells(uint32 entry, Player* plr)
 		data << uint16(0) << uint8(0) << uint8(i+8);
 	}
 
-	data << count; // spells count
-	data << uint8(0);     // cooldowns count
+	data << uint8(0); // spells count
+	data << uint8(0); // cooldowns count
 
 	plr->GetSession()->SendPacket(&data);
 }
@@ -257,7 +261,7 @@ void Vehicle::DeleteMe()
 	if(IsInWorld())
 		RemoveFromWorld(false, true);
 
-	delete this;
+	Destructor();
 }
 
 void Vehicle::AddPassenger(Unit* pPassenger)

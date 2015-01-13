@@ -222,8 +222,7 @@ IsleOfConquest::~IsleOfConquest()
 			m_ioccontrolPoints[i]->m_battleground = NULL;
 			if( !m_ioccontrolPoints[i]->IsInWorld() )
 			{
-				delete m_ioccontrolPoints[i];
-				m_ioccontrolPoints[i] = NULL;
+				m_ioccontrolPoints[i]->Destructor();
 			}
 		}
 
@@ -232,8 +231,7 @@ IsleOfConquest::~IsleOfConquest()
 			m_ioccontrolPointAuras[i]->m_battleground = NULL;
 			if( !m_ioccontrolPointAuras[i]->IsInWorld() )
 			{
-				delete m_ioccontrolPointAuras[i];
-				m_ioccontrolPointAuras[i] = NULL;
+				m_ioccontrolPointAuras[i]->Destructor();
 			}
 		}
 	}
@@ -924,7 +922,7 @@ void IsleOfConquest::Finish(uint32 losingTeam)
 			{
 				(*itr)->CastSpell((*itr), winner_spell, true);
 				uint32 diff = abs((int32)(m_reinforcements[i] - m_reinforcements[i ? 0 : 1]));
-				(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, (uint32(UNIXTIME) - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+				(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
 			}
 		}
 		if (m_LiveCaptain[i])

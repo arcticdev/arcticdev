@@ -598,7 +598,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			{
 				c->Destroy();
 				c = NULL;
-				delete i;
+				i->Destructor();
 				i = NULL;
 				return;
 			}
@@ -671,8 +671,7 @@ void WorldSession::HandleCharterBuy(WorldPacket & recv_data)
 			if( !_player->GetItemInterface()->AddItemToFreeSlot(i) )
 			{
 				c->Destroy();
-				delete i;
-				i = NULL;
+				i->Destructor();
 				return;
 			}
 
@@ -1258,7 +1257,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 					pSourceItem->ModUnsigned32Value( ITEM_FIELD_STACK_COUNT, -splitted_count );
 				else
 				{
-					delete pSourceItem;
+					pSourceItem->Destructor();
 					pSourceItem = NULL;
 					pSourceTab->pSlots[source_bankslot] = NULL;
 				}
@@ -1522,8 +1521,7 @@ void WorldSession::HandleGuildBankDepositItem(WorldPacket & recv_data)
 				/* this *really* shouldn't happen. */
 				if(!_player->GetItemInterface()->AddItemToFreeSlot(pDestItem))
 				{
-					delete pDestItem;
-					pDestItem = NULL;
+					pDestItem->Destructor();
 				}
 			}
 			else

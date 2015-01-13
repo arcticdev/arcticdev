@@ -445,7 +445,7 @@ ArathiBasin::~ArathiBasin()
 			m_buffs[i]->m_battleground = NULL;
 			if( !m_buffs[i]->IsInWorld() )
 			{
-				delete m_buffs[i];
+				m_buffs[i]->Destructor();
 				m_buffs[i] = NULL;
 			}
 		}
@@ -455,7 +455,7 @@ ArathiBasin::~ArathiBasin()
 			m_controlPoints[i]->m_battleground = NULL;
 			if( !m_controlPoints[i]->IsInWorld() )
 			{
-				delete m_controlPoints[i];
+				m_controlPoints[i]->Destructor();
 				m_controlPoints[i] = NULL;
 			}
 		}
@@ -465,7 +465,7 @@ ArathiBasin::~ArathiBasin()
 			m_controlPointAuras[i]->m_battleground = NULL;
 			if( !m_controlPointAuras[i]->IsInWorld() )
 			{
-				delete m_controlPointAuras[i];
+				m_controlPointAuras[i]->Destructor();
 				m_controlPointAuras[i] = NULL;
 			}
 		}
@@ -552,7 +552,7 @@ void ArathiBasin::EventUpdateResources(uint32 Team)
 					(*itr)->m_bgScore.BonusHonor += 2*m_bonusHonor;
 					HonorHandler::AddHonorPointsToPlayer((*itr), 2*m_bonusHonor);
 					uint32 diff = abs((int32)(m_resources[i] - m_resources[i ? 0 : 1]));
-					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, (uint32(UNIXTIME) - m_startTime) / 1000, TO_CBATTLEGROUND(this));
+					(*itr)->GetAchievementInterface()->HandleAchievementCriteriaWinBattleground( m_mapMgr->GetMapId(), diff, ((uint32)UNIXTIME - m_startTime) / 1000, TO_CBATTLEGROUND(this));
 				}
 			}
 		}

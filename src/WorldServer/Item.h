@@ -122,6 +122,7 @@ public:
 	Item();
 	Item( uint32 high, uint32 low );
 	virtual ~Item();
+	virtual void Destructor();
 	virtual void Init();
 
 	void Create( uint32 itemid, Player* owner );

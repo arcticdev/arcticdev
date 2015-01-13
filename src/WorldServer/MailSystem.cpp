@@ -116,7 +116,7 @@ void MailMessage::SaveToDBCallBack(QueryResultVector & results)
 
 bool MailMessage::Expired()
 {
-	return (expire_time && expire_time < uint32(UNIXTIME));
+	return (expire_time && expire_time < (uint32)UNIXTIME);
 }
 void Mailbox::AddMessage(MailMessage* Message)
 {
@@ -161,7 +161,7 @@ WorldPacket * Mailbox::MailboxListingPacket()
 	MessageMap::iterator itr;
 	uint32 realcount = 0;
 	uint32 count = 0;
-	uint32 t = uint32(UNIXTIME);
+	uint32 t = (uint32)UNIXTIME;
 	*data << uint32(0);	 // realcount - this can be used to tell the client we have more mail than that fits into this packet
 	*data << uint8(0);	 // size placeholder
 
@@ -198,7 +198,7 @@ bool Mailbox::AddMessageToListingPacket(WorldPacket& data,MailMessage *msg)
 	Item* pItem;
 
 	// add stuff
-	if(msg->deleted_flag || msg->Expired() || uint32(UNIXTIME) < msg->delivery_time)
+	if(msg->deleted_flag || msg->Expired() || (uint32)UNIXTIME < msg->delivery_time)
 		return false;
 
 	data << uint16(0x0032);
@@ -293,7 +293,7 @@ WorldPacket * Mailbox::MailboxTimePacket()
 
 bool Mailbox::AddMessageToTimePacket(WorldPacket& data,MailMessage *msg)
 {
-	if ( msg->deleted_flag == 1 || msg->read_flag == 1  || msg->Expired() || uint32(UNIXTIME) < msg->delivery_time )
+	if ( msg->deleted_flag == 1 || msg->read_flag == 1  || msg->Expired() || (uint32)UNIXTIME < msg->delivery_time )
 		return false;
 	// unread message, w00t.
 	data << uint64(msg->sender_guid);
@@ -331,7 +331,7 @@ void MailSystem::DeliverMessage(MailMessage* message)
 	if(plr != NULL)
 	{
 		plr->m_mailBox->AddMessage(message);
-		if(uint32(UNIXTIME) >= message->delivery_time)
+		if((uint32)UNIXTIME >= message->delivery_time)
 		{
 			uint32 v = 0;
 			plr->GetSession()->OutPacket(SMSG_RECEIVED_MAIL, 4, &v);
@@ -372,7 +372,7 @@ void MailSystem::ReturnToSender(MailMessage* message)
 	msg.copy_made = false;
 	msg.returned_flag = true;
 	msg.cod = 0;
-	msg.delivery_time = msg.items.empty() ? uint32(UNIXTIME) : uint32(UNIXTIME) + 3600;
+	msg.delivery_time = msg.items.empty() ? (uint32)UNIXTIME : (uint32)UNIXTIME + 3600;
 	// returned mail's don't expire
 	msg.expire_time = 0;
 	// add to the senders mailbox
@@ -396,7 +396,7 @@ void MailSystem::DeliverMessage(uint32 type, uint64 sender, uint64 receiver, str
 		msg.items.push_back( GUID_LOPART(item_guid) );
 
 	msg.stationary = stationary;
-	msg.delivery_time = uint32(UNIXTIME);
+	msg.delivery_time = (uint32)UNIXTIME;
 	msg.expire_time = 0;
 	msg.read_flag = false;
 	msg.copy_made = false;
@@ -412,7 +412,7 @@ void MailSystem::UpdateMessages()
 	if((++loopcount % 1200))
 		return;
 
-	QueryResult *result = CharacterDatabase.Query("SELECT * FROM mailbox WHERE expiry_time > 0 and expiry_time <= %u and deleted_flag = 0", uint32(UNIXTIME));
+	QueryResult *result = CharacterDatabase.Query("SELECT * FROM mailbox WHERE expiry_time > 0 and expiry_time <= %u and deleted_flag = 0",(uint32)UNIXTIME);
 
 	if(!result)
 		return;
@@ -459,7 +459,7 @@ void MailSystem::SendAutomatedMessage(uint32 type, uint64 sender, uint64 receive
 		msg.items.push_back( GUID_LOPART(item_guid) );
 
 	msg.stationary = stationary;
-	msg.delivery_time = uint32(UNIXTIME);
+	msg.delivery_time = (uint32)UNIXTIME;
 	msg.expire_time = 0;
 	msg.read_flag = false;
 	msg.copy_made = false;
@@ -584,7 +584,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	msg.read_flag = false;
 	msg.deleted_flag = false;
 	msg.returned_flag = false;
-	msg.delivery_time = uint32(UNIXTIME);
+	msg.delivery_time = (uint32)UNIXTIME;
 
 	if(msg.money != 0 || msg.cod != 0 || !items.size() && player->acct != _player->GetSession()->GetAccountId())
 	{
@@ -595,7 +595,7 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
 	msg.expire_time = 0;
 	if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
 	{
-		msg.expire_time = uint32(UNIXTIME) + (TIME_DAY * 30);
+		msg.expire_time = (uint32)UNIXTIME + (TIME_DAY * 30);
 	}
 
 	// Sending Message
@@ -647,7 +647,7 @@ void WorldSession::HandleMarkAsRead(WorldPacket & recv_data )
 	{
 		// mail now has a 3 day expiry time
 		if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-			message->expire_time = uint32(UNIXTIME) + (TIME_DAY * 3);
+			message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
 	}
 	message->SaveToDB();
 }
@@ -772,7 +772,7 @@ void WorldSession::HandleTakeItem(WorldPacket & recv_data )
 	{
 		// mail now has a 3 day expiry time
 		if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-			message->expire_time = uint32(UNIXTIME) + (TIME_DAY * 3);
+			message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
 	}
 
 	if( message->cod > 0 )
@@ -830,7 +830,7 @@ void WorldSession::HandleTakeMoney(WorldPacket & recv_data )
 	{
 		// mail now has a 3 day expiry time
 		if(!sMailSystem.MailOption(MAIL_FLAG_NO_EXPIRY))
-			message->expire_time = uint32(UNIXTIME) + (TIME_DAY * 3);
+			message->expire_time = (uint32)UNIXTIME + (TIME_DAY * 3);
 	}
 	// update in sql!
 	message->SaveToDB();

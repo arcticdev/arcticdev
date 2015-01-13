@@ -330,7 +330,7 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
 	if(spellId == 33763 || spellId == 48450 || spellId == 48451) // Prevents Lifebloom exploit
 		return;
 
-	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; x++)
+	for(uint32 x = 0; x < MAX_AURAS+MAX_POSITIVE_AURAS; ++x)
 	{
 		if(_player->m_auras[x] && _player->m_auras[x]->IsPositive() && _player->m_auras[x]->GetSpellId() == spellId)
 			_player->RemoveAuraBySlot(x);

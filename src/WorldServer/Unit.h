@@ -916,6 +916,7 @@ public:
 	void CombatStatusHandler_UpdateTargets();
 
 	virtual ~Unit();
+	virtual void Destructor();
 	virtual void Init();
 
 	friend class AIInterface;
@@ -1083,8 +1084,8 @@ public:
 	Aura* FindActiveAura(uint32 spellId, uint64 guid = 0);
 	Aura* FindAura(uint32 spellId, uint64 guid = 0);
 	Aura* FindActiveAuraWithNameHash(uint32 namehash, uint64 guid = 0);
-	bool SetAuraDuration(uint32 spellId,Unit* caster,int32 duration);
-	bool SetAuraDuration(uint32 spellId, int32 duration);
+	bool SetAuraDuration(uint32 spellId,Unit* caster,uint32 duration);
+	bool SetAuraDuration(uint32 spellId,uint32 duration);
 	void EventDeathAuraRemoval();
 
 	void CastSpell(Spell* pSpell);

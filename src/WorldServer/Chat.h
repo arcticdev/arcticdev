@@ -156,7 +156,6 @@ class SERVER_DECL CommandTableStorage : public Singleton<CommandTableStorage>
 	ChatCommand * _TitleCommandTable;
 
 	ChatCommand * GetSubCommandTable(const char * name);
-
 public:
 	void Init();
 	void Dealloc();
@@ -307,6 +306,8 @@ protected:
 	bool HandleGOEnable(const char *args, WorldSession *m_session);
 	bool HandleGOActivate(const char* args, WorldSession *m_session);
 	bool HandleGORebuild(const char* args, WorldSession *m_session);
+	bool HandleGODestroy(const char* args, WorldSession* m_session);
+	bool HandleGODamage(const char* args, WorldSession* m_session);	
 	bool HandleGORotate(const char * args, WorldSession * m_session);
 	bool HandleGOMove(const char * args, WorldSession * m_session);
 	bool HandleAddAIAgentCommand(const char* args, WorldSession *m_session);

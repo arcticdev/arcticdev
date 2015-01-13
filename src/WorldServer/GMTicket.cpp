@@ -37,24 +37,6 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	recv_data >> message;
 	recv_data >> message2;
 
-	/*if (type == GM_TICKET_TYPE_BEHAVIOR_HARASSMENT)
-	{
-		// more magic
-		uint32 unk1;
-		uint32 unk2;
-		uint32 unk3;
-		string unk4;
-		recv_data >> unk1; // count of something
-		for (int i = 0; i < unk1; i++)
-		{
-			recv_data >> unk2
-			// do something with unk2
-		}
-		recv_data >> unk3;
-		if (unk3)
-			recv_data >> unk4;
-	}*/
-
 	// Create new Ticket and store it
 	objmgr.remGMTicket(GetPlayer()->GetGUID());
 
@@ -64,7 +46,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket & recv_data)
 	ticket->posY = y;
 	ticket->posZ = z;
 	ticket->message = message;
-	ticket->timestamp = uint32(UNIXTIME);
+	ticket->timestamp = (uint32)UNIXTIME;
 	ticket->name = GetPlayer()->GetName();
 	ticket->level = GetPlayer()->getLevel();
 
@@ -120,7 +102,7 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket & recv_data)
 		return;
 	}
 	ticket->message = message;
-	ticket->timestamp = uint32(UNIXTIME);
+	ticket->timestamp = (uint32)UNIXTIME;
 
 	objmgr.remGMTicket(GetPlayer()->GetGUID());
 	objmgr.AddGMTicket(ticket,false);

@@ -219,11 +219,6 @@ struct MapInfo
 	float update_distance;
 	uint32 checkpoint_id;
 	bool collision;
-	bool pathfinding;
-	uint32 phasehorde;
-	uint32 phasealliance;
-	// bool cluster_loads_map; // When the clustering is active
-
 	bool HasFlag(uint32 flag)
 	{
 		return (flags & flag) != 0;
@@ -343,6 +338,7 @@ class SERVER_DECL World : public Singleton<World>, public EventableObject
 public:
 	World();
 	~World();
+	void Destructor();
 
 	uint32 GetMaxLevel(Player* plr);
 
@@ -394,7 +390,7 @@ public:
 	void SendMessageToGMs(WorldSession *self, const char * text, ...);
 
 	ARCTIC_INLINE void SetStartTime(uint32 val) { m_StartTime = val; }
-	ARCTIC_INLINE uint32 GetUptime(void) { return uint32(UNIXTIME) - m_StartTime; }
+	ARCTIC_INLINE uint32 GetUptime(void) { return (uint32)UNIXTIME - m_StartTime; }
 	ARCTIC_INLINE uint32 GetStartTime(void) { return m_StartTime; }
 	std::string GetUptimeString();
 
@@ -413,7 +409,7 @@ public:
 	{
 		return regen_values[index];
 	}
-
+	
 	ARCTIC_INLINE uint32 getIntRate(int index)
 	{
 		return int_rates[index];
@@ -476,8 +472,6 @@ public:
 
 	string MapPath;
 	string vMapPath;
-	string MMapPath;
-	bool UseMmaps;
 	bool UnloadMapFiles;
 	bool BreathingEnabled;
 	bool SpeedhackProtection;
@@ -493,7 +487,6 @@ public:
 	uint32 HordePlayers;
 	uint32 AlliancePlayers;
 	uint32 PeakSessionCount;
-	bool SendStatsOnJoin;
 	SessionSet gmList;
 	RWLock gmList_lock;
 
