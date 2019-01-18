@@ -1,7 +1,7 @@
 /*
 /*
- * Arctic MMORPG Server Software
- * Copyright (c) 2008-2014 Arctic Server Team
+ * Arctic MMORPG Software
+ * Copyright (c) 2008-2014 Arctic
  * See COPYING for license details.
  */
 
