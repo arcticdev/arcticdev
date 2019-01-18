@@ -1,15 +1,10 @@
 /*
- * Arctic MMORPG Server Software
- * Copyright (c) 2008-2014 Arctic Server Team
+ * Arctic MMORPG Software
+ * Copyright (c) 2008-2014 Arctic
  * See COPYING for license details.
  */
 
 #pragma once
-
-/*
- * World State Manager Class
- * See doc/World State Manager.txt for implementation details
- */
 
 // forward declaration for mapmgr
 class MapMgr;
