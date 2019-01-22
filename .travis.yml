@@ -1,18 +1,15 @@
-
-sudo: false
+language: c
+sudo: required
 dist: xenial
-language: cpp
-compiler: gcc
-
-addons:
-  apt:
-    packages:
-      - g++
-      - zlib1g-dev
-      - libssl-dev
-      - libpcre3-dev
-      - libbz2-dev
-      - libmysqlclient-dev
-      - libmysql++-dev
-
-install: ./configure.ac && make
+install:
+  - sudo apt-get install -y g++
+  - sudo apt-get install -y zlib1g-dev
+  - sudo apt-get install -y libpcre3-dev
+  - sudo apt-get install -y libbz2-dev
+  - sudo apt-get install -y libmysqlclient-dev
+  - sudo apt-get install -y libmysql++-dev
+  - sudo apt-get install -y autoconf
+  - sudo autoheader
+  - sudo automake --force-missing --add-missing
+  - sudo autoconf
+script: ./configure.ac && make
