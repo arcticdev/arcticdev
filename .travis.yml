@@ -15,4 +15,4 @@ addons:
       - libmysqlclient-dev
       - libmysql++-dev
 
-install: ./configure && make
+install: ./configure.ac && make
