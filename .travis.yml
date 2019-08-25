@@ -1,15 +1,19 @@
-language: c
-sudo: required
-dist: xenial
-install:
-  - sudo apt-get install -y g++
-  - sudo apt-get install -y zlib1g-dev
-  - sudo apt-get install -y libpcre3-dev
-  - sudo apt-get install -y libbz2-dev
-  - sudo apt-get install -y libmysqlclient-dev
-  - sudo apt-get install -y libmysql++-dev
-  - sudo apt-get install -y autoconf
-  - sudo autoheader
-  - sudo automake --force-missing --add-missing
-  - sudo autoconf
-script: ./configure.ac && make
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: make distcheck
+      run: make distcheck
